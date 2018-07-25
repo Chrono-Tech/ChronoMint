@@ -81,79 +81,77 @@ export default class ImportMethodsPage extends PureComponent {
 
   render () {
     return (
-      <MuiThemeProvider>
-        <div styleName='page'>
+      <div styleName='page'>
 
-          <div styleName='page-title'>
-            <Translate value='LoginWithOptions.title' />
-          </div>
-
-          <div styleName='methods'>
-            <Button styleName='button button-trezor' onClick={this.handleTrezorLogin}>
-              <img src={Trezor} alt='' />
-              <br />
-              Trezor
-            </Button>
-
-            <Button styleName='button button-ledger' onClick={this.handleLedgerLogin}>
-              <img src={Ledger} alt='' />
-              <br />
-              LedgerNano
-            </Button>
-
-            <Button styleName='button button-plugin' onClick={this.handlePluginLogin}>
-              <img src={Plugin} alt='' />
-              <br />
-              Browser Plugin
-            </Button>
-
-            <Button
-              styleName='button'
-              onClick={this.handleMnemonicLogin}
-            >
-              <img src={Mnemonic} alt='' />
-              <br />
-              <Translate value='LoginWithOptions.mnemonicKey' />
-            </Button>
-
-            <Button
-              styleName='button'
-              onClick={this.handlePrivateKeyLogin}
-            >
-              <img src={Key} alt='' />
-              <br />
-              <Translate value='LoginWithOptions.privateKey' />
-            </Button>
-
-            <Button
-              styleName='button'
-              onClick={this.handleWalletFileLogin}
-            >
-              <img src={Wallet} alt='' />
-              <br />
-              <Translate value='LoginWithOptions.walletFile' />
-            </Button>
-
-            <Button
-              styleName='button button-uport'
-              disabled
-            >
-              <img src={Uport} alt='' />
-              <br />
-              Uport
-            </Button>
-          </div>
-
-          <div styleName='actions'>
-            <Translate value='LoginWithOptions.or' />
-            <br />
-            <Link to='/login/create-account' href styleName='link' onClick={this.handleCreateAccount}>
-              <Translate value='LoginWithOptions.createAccount' />
-            </Link>
-          </div>
-
+        <div styleName='page-title'>
+          <Translate value='LoginWithOptions.title' />
         </div>
-      </MuiThemeProvider>
+
+        <div styleName='methods'>
+          <Button styleName='button button-trezor' onClick={this.handleTrezorLogin}>
+            <img src={Trezor} alt='' />
+            <br />
+            Trezor
+          </Button>
+
+          <Button styleName='button button-ledger' onClick={this.handleLedgerLogin}>
+            <img src={Ledger} alt='' />
+            <br />
+            LedgerNano
+          </Button>
+
+          <Button styleName='button button-plugin' onClick={this.handlePluginLogin}>
+            <img src={Plugin} alt='' />
+            <br />
+            Browser Plugin
+          </Button>
+
+          <Button
+            styleName='button'
+            onClick={this.handleMnemonicLogin}
+          >
+            <img src={Mnemonic} alt='' />
+            <br />
+            <Translate value='LoginWithOptions.mnemonicKey' />
+          </Button>
+
+          <Button
+            styleName='button'
+            onClick={this.handlePrivateKeyLogin}
+          >
+            <img src={Key} alt='' />
+            <br />
+            <Translate value='LoginWithOptions.privateKey' />
+          </Button>
+
+          <Button
+            styleName='button'
+            onClick={this.handleWalletFileLogin}
+          >
+            <img src={Wallet} alt='' />
+            <br />
+            <Translate value='LoginWithOptions.walletFile' />
+          </Button>
+
+          <Button
+            styleName='button button-uport'
+            disabled
+          >
+            <img src={Uport} alt='' />
+            <br />
+            Uport
+          </Button>
+        </div>
+
+        <div styleName='actions'>
+          <Translate value='LoginWithOptions.or' />
+          <br />
+          <Link to='/login/create-account' href styleName='link' onClick={this.handleCreateAccount}>
+            <Translate value='LoginWithOptions.createAccount' />
+          </Link>
+        </div>
+
+      </div>
     )
   }
 }

@@ -12,7 +12,7 @@ import { Link } from 'react-router'
 import Button from 'components/common/ui/Button/Button'
 import UserRow from 'components/common/ui/UserRow/UserRow'
 import { initAccountsSelector, initAccountsSignature, navigateToSelectImportMethod, onWalletSelect } from '@chronobank/login/redux/network/actions'
-import { getAccountAddress, getAccountAvatar, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
+import { getAccountAddress, getAccountAvatar, getAccountAvatarImg, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 
 import arrow from 'assets/img/icons/prev-white.svg'
@@ -36,7 +36,7 @@ function mapStateToProps (state) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class SelectWalletPage extends PureComponent {
+export default class AccountSelector extends PureComponent {
   static propTypes = {
     onWalletSelect: PropTypes.func,
     walletsList: PropTypes.arrayOf(
@@ -76,7 +76,7 @@ export default class SelectWalletPage extends PureComponent {
               key={i}
               title={getAccountName(w)}
               subtitle={getAccountAddress(w, true)}
-              avatar={getAccountAvatar(w)}
+              avatar={getAccountAvatarImg(w)}
               actionIcon={arrow}
               reverseIcon={true}
               onClick={() => onWalletSelect(w)}
@@ -89,40 +89,38 @@ export default class SelectWalletPage extends PureComponent {
 
   render () {
     return (
-      <MuiThemeProvider>
-        <div styleName='wrapper'>
+      <div styleName='wrapper'>
 
-          <div styleName='page-title'>
-            <Translate value='AccountSelector.title' />
-          </div>
-
-          <div styleName='description'>
-            <Translate value='AccountSelector.description' />
-            <br />
-            <Translate value='AccountSelector.descriptionExtra' />
-          </div>
-
-          <div styleName='content'>
-            {this.renderWalletsList()}
-
-            <div styleName='actions'>
-              <Button
-                styleName='button'
-                buttonType='login'
-                onClick={this.props.navigateToSelectImportMethod}
-              >
-                <Translate value='AccountSelector.button' />
-              </Button>
-              <Translate value='AccountSelector.or' />
-              &nbsp;<br />
-              <Link to='/login/create-account' href styleName='link'>
-                <Translate value='AccountSelector.createAccount' />
-              </Link>
-            </div>
-          </div>
-
+        <div styleName='page-title'>
+          <Translate value='AccountSelector.title' />
         </div>
-      </MuiThemeProvider>
+
+        <div styleName='description'>
+          <Translate value='AccountSelector.description' />
+          <br />
+          <Translate value='AccountSelector.descriptionExtra' />
+        </div>
+
+        <div styleName='content'>
+          {this.renderWalletsList()}
+
+          <div styleName='actions'>
+            <Button
+              styleName='button'
+              buttonType='login'
+              onClick={this.props.navigateToSelectImportMethod}
+            >
+              <Translate value='AccountSelector.button' />
+            </Button>
+            <Translate value='AccountSelector.or' />
+            &nbsp;<br />
+            <Link to='/login/create-account' href styleName='link'>
+              <Translate value='AccountSelector.createAccount' />
+            </Link>
+          </div>
+        </div>
+
+      </div>
     )
   }
 }

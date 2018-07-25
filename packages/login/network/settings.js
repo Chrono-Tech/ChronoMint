@@ -383,8 +383,30 @@ export const isTestingNetwork = (networkId, providerId) => {
   return net.id !== NETWORK_MAIN_ID
 }
 
-export const networkSelectorGroups = [
-  {
+export const getDeveloperNetworksGroup = (isLocal) => {
+  let developerProviders = []
+
+  if (isLocal){
+    developerProviders.push({
+      provider: providerMap.local,
+      network: infuraLocalNetwork,
+    })
+  }
+
+  if (process.env['NODE_ENV'] === 'development'){
+    developerProviders.push({
+      provider: providerMap.chronoBank,
+      network: chronoBankPrivate,
+    })
+  }
+
+  return developerProviders
+}
+
+export const getNetworksSelectorGroup = (isLocal = false) => {
+  let groups
+
+  const productionNetworks = {
     title: 'Production networks',
     description: 'Manage your funds',
     providers: [
@@ -405,8 +427,9 @@ export const networkSelectorGroups = [
         network: givethMainnet,
       },
     ],
-  },
-  {
+  }
+
+  let testNetworks = {
     title: 'Test networks',
     description: 'Test networks with fake funds',
     providers: [
@@ -419,18 +442,19 @@ export const networkSelectorGroups = [
         network: infuraTestnet,
       },
     ],
-  },
-  {
-    title: 'Developer networks',
-    providers: [
-      {
-        provider: providerMap.local,
-        network: infuraLocalNetwork,
-      },
-      process.env['NODE_ENV'] === 'development' ? {
-        provider: providerMap.chronoBank,
-        network: chronoBankPrivate,
-      } : null,
-    ],
-  },
-]
+  }
+
+  groups = [productionNetworks, testNetworks]
+
+  const developerNetworkProviders = getDeveloperNetworksGroup(isLocal)
+
+  if (developerNetworkProviders.length) {
+    groups.push({
+      title: 'Developer networks',
+      providers: developerNetworkProviders,
+    })
+  }
+
+  return groups
+}
+

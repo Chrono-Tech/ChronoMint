@@ -25,8 +25,12 @@ export const removeWallet = (walletsList, name) => {
   return walletsList.filter((w) => w.name !== name)
 }
 
+export const getAddress = (address, hexFormat = false) => {
+  return `${ hexFormat ? '0x' : ''}${address}`
+}
+
 export const getAccountAddress = (account: AccountEntryModel, hexFormat = false) => {
-  return account && account.encrypted && account.encrypted[0] && `${ hexFormat ? '0x' : ''}${account.encrypted[0].address}` || ''
+  return account && account.encrypted && account.encrypted[0] && getAddress(account.encrypted[0].address, hexFormat) || ''
 }
 
 export const getWalletsListAddresses = (walletsList = []) => {
@@ -45,10 +49,16 @@ export const getAccountName = (account: AccountEntryModel) => {
   return account && account.name || ''
 }
 
-export const getAccountAvatar = (account: AccountEntryModel) => {
+export const getAccountAvatarImg = (account) => {
   if (account && account.profile && account.profile.avatar) {
     return account.profile.avatar
   }
 
-  return profileImgJPG
+  return ''
+}
+
+export const getAccountAvatar = (account: AccountEntryModel) => {
+  const img = getAccountAvatarImg(account)
+
+  return img || profileImgJPG
 }

@@ -26,11 +26,6 @@
   text-align: center;
 }
 
-.field {
-  margin-bottom: 50px;
-
-}
-
 .actions {
   text-align: center;
   margin-top: 10px;
@@ -85,4 +80,23 @@
     height: 45px;
     border-radius: 50%;
   }
+}
+
+.label {
+  color: $additionalData-color-1;
+  top: 28px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  text-align: left;
+  transform-origin: left;
+}
+
+.field {
+  margin-bottom: 20px;
+}
+
+.textField {
+  color: $additionalData-color-1;
+  text-align: left;
 }

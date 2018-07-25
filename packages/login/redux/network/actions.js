@@ -18,6 +18,7 @@ import {
   customNetworksDelete,
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/actions'
+import { getAddress } from '@chronobank/core/redux/persistAccount/utils'
 import Web3Legacy from 'web3legacy'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 import uuid from 'uuid/v1'
@@ -233,6 +234,7 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
 
   if (importAccountMode) {
     try {
+      console.log('createAccount', newAccountMnemonic, newAccountPrivateKey)
       let wallet = await dispatch(createAccount({
         name: walletName,
         password: walletPassword,
@@ -465,6 +467,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   try {
     wallet = await dispatch(decryptAccount(selectedWallet.encrypted, password))
 
+    console.log('wallet', wallet)
     let privateKey = wallet && wallet[0] && wallet[0].privateKey
 
     dispatch(getProfileSignature(wallet[0]))
@@ -579,11 +582,11 @@ export const onSubmitWalletUpload = (walletString, password) => async (dispatch,
     let response
 
     try {
-      response = await profileService.getPersonInfo(restoredWalletJSON.address)
+      response = await profileService.getPersonInfo([getAddress(restoredWalletJSON.address, true)])
     } catch (e) {
     }
 
-    if (response && response.data && response.data.length) {
+    if (response && response.data && response.data[0] && response.data[0].userName) {
       const profile = response.data[0]
 
       const account = new AccountEntryModel({

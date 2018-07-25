@@ -17,6 +17,7 @@ import {
 import {
   getAccountName,
   getAccountAvatar,
+  getAccountAvatarImg,
   getAccountAddress,
 } from '@chronobank/core/redux/persistAccount/utils'
 import {
@@ -88,7 +89,7 @@ class RecoverAccountPage extends PureComponent {
           <div styleName='user-row'>
             <UserRow
               title={getAccountName(selectedWallet)}
-              avatar={getAccountAvatar(selectedWallet)}
+              avatar={getAccountAvatarImg(selectedWallet)}
               subtitle={getAccountAddress(selectedWallet, true)}
               onClick={navigateToSelectWallet}
             />

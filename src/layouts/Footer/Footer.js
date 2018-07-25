@@ -36,7 +36,6 @@ import spinner from 'assets/img/spinningwheel-1.gif'
 
 import validate from './validate'
 import scssStyles from './Footer.scss'
-import theme from 'layouts/Splash/styles'
 import styles from './styles'
 
 const mapDispatchToProps = (dispatch) => {
@@ -73,7 +72,6 @@ class Footer extends Component {
   render () {
     const { submitSucceeded, handleSubmit, submitting, error, classes } = this.props
 
-    console.log('footer', classes)
     return (
       <div styleName='footer'>
         <div styleName='footer-container'>
@@ -210,7 +208,7 @@ class Footer extends Component {
                       component={TextField}
                       name='email'
                       inputProps={{
-                        className: scssStyles.emailField
+                        className: classes.emailField,
                       }}
                       placeholder='Enter email to subscribe for newsletter'
                       fullWidth

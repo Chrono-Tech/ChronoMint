@@ -188,7 +188,8 @@
 }
 
 .print-wrapper {
-  background: #ccc;
+  -webkit-print-color-adjust: exact !important;   /* Chrome, Safari */
+  color-adjust: exact !important;
 }
 
 .print-logo {
