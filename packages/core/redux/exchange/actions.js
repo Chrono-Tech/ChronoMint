@@ -92,7 +92,6 @@ export const getTokensAllowance = (exchange: ExchangeOrderModel) => async (dispa
   const { account } = getState().get(DUCK_SESSION)
   const dao = tokenService.getDAO(token)
   const allowance = await dao.getAccountAllowance(account, exchange.address())
-  console.log('--actions#', 2)
   dispatch({
     type: WALLET_ALLOWANCE, allowance: new AllowanceModel({
       amount: new Amount(allowance, token.id()),

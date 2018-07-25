@@ -50,10 +50,10 @@ import { BLOCKCHAIN_WAVES } from '../../dao/WavesDAO'
 import WalletModel from '../../models/wallet/WalletModel'
 import { daoByType } from '../../refactor/redux/daos/selectors'
 import { WALLETS_SET_IS_TIME_REQUIRED, WALLETS_UPDATE_WALLET } from '../wallets/actions'
-import TxHistoryModel from '../../models/wallet/TxHistoryModel'
-import { getMainAddresses, getMainEthWallet, getWallet } from '../wallets/selectors/models'
+import { getMainAddresses, getMainEthWallet, getMainWalletForBlockchain, getWallet } from '../wallets/selectors/models'
 import { getAccount } from '../session/selectors/models'
 import AllowanceCollection from '../../refactor/models/AllowanceCollection'
+import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
@@ -193,11 +193,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
           }),
         })
       } else {
-        const addresses = getState().get(DUCK_MAIN_WALLET)
-          .addresses()
-          .items()
-          .map((address: AddressModel) => address.address())
-
+        const addresses = getMainEthWallet(getState())
         if (addresses.includes(account)) {
           dispatch({
             type: WALLET_TOKEN_BALANCE,
@@ -243,11 +239,11 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
 
   // loading transaction for Current transaction list
   if (token.blockchain() && !token.isERC20()) {
-    let address = getState().get(DUCK_MAIN_WALLET).addresses().item(token.blockchain())
-    if (address.address()) {
+    let wallet = getMainWalletForBlockchain(token.blockchain())(getState())
+    if (wallet && wallet.address) {
       dispatch(getTransactionsForWallet({
-        wallet: getState().get(DUCK_MAIN_WALLET),
-        address: address.address(),
+        wallet,
+        address: wallet.address,
         blockchain: token.blockchain(),
         forcedOffset: true,
       }))
@@ -558,14 +554,14 @@ export const getTransactionsForWallet = ({ wallet, forcedOffset }) => async (dis
       ...wallet,
       transactions: new TxHistoryModel(
         {
-          ...wallet.transactions,
+          ...wallet.transactions.transactions,
           isFetching: true,
         }),
     }),
   })
 
-  let transactions: TxHistoryModel = new TxHistoryModel({ ...wallet.transactions, isFetched: true, isFetching: false }) || new TxHistoryModel()
-  const offset = forcedOffset ? 0 : (transactions.size() || 0)
+  let transactions: TxHistoryModel = new TxHistoryModel({ ...wallet.transactions }) || new TxHistoryModel()
+  const offset = forcedOffset ? 0 : (transactions.transactions.length || 0)
   const newOffset = offset + TXS_PER_PAGE
 
   let txList = []
@@ -595,22 +591,28 @@ export const getTransactionsForWallet = ({ wallet, forcedOffset }) => async (dis
       break
   }
 
+  let blocks = transactions.blocks
+  let endOfList = false
   if (dao) {
     txList = await dao.getTransfer(wallet.address, wallet.address, offset, TXS_PER_PAGE, tokens)
 
     txList.sort((a, b) => b.get('time') - a.get('time'))
 
     for (let tx: TxModel of txList) {
-      transactions = transactions.add(tx)
+      if (!blocks[tx.blockNumber()]) {
+        blocks[tx.blockNumber()] = { transactions: [] }
+      }
+      blocks[tx.blockNumber()].transactions.push(tx)
     }
 
-    if (transactions.items().length < newOffset) {
-      transactions = transactions.endOfList(true)
-    } else {
-      transactions = transactions.endOfList(false)
+    if (transactions.transactions.length < newOffset) {
+      endOfList = true
     }
   }
 
   const newWallet = getWallet(wallet.id)(getState())
-  dispatch({ type: WALLETS_UPDATE_WALLET, wallet: new WalletModel({ ...newWallet, transactions }) })
+  dispatch({
+    type: WALLETS_UPDATE_WALLET,
+    wallet: new WalletModel({ ...newWallet, transactions: new TxHistoryModel({ ...transactions, blocks, endOfList }) }),
+  })
 }
