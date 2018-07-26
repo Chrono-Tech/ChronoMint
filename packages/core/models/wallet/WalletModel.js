@@ -36,7 +36,7 @@ const defaultProps = {
   pendingTxList: null,
   customTokens: null,
   isTIMERequired: false,
-  allowances: new AllowanceCollection(),
+  allowances: new AllowanceCollection({}),
 }
 
 export default class WalletModel extends AbstractModel {

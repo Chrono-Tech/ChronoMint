@@ -10,8 +10,8 @@ import AllowanceModel from '../../models/wallet/AllowanceModel'
 
 const schemaFactory = () => ({
   key: PropTypes.string,
-  isLoading: PropTypes.bool.required,
-  isLoaded: PropTypes.bool.required,
+  isLoading: PropTypes.bool,
+  isLoaded: PropTypes.bool,
   list: PropTypes.objectOf(PropTypes.instanceOf(AllowanceModel)),
 })
 

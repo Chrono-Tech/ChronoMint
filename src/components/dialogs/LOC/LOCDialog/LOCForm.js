@@ -3,9 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { DatePicker, TextField } from 'redux-form-material-ui'
+import { TextField } from 'redux-form-material-ui'
+import DatePicker from 'components/common/DatePicker'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
-import { FlatButton } from '@material-ui/core'
 import { Button } from 'components'
 import { I18n, Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'

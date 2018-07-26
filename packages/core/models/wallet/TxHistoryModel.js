@@ -9,9 +9,8 @@ import AbstractModel from '../../refactor/models/AbstractModel'
 
 const schemaFactory = () => ({
   key: PropTypes.string,
-  isLoading: PropTypes.bool.isRequired,
-  isLoaded: PropTypes.bool.isRequired,
-  address: PropTypes.string.isRequired,
+  isLoading: PropTypes.bool,
+  isLoaded: PropTypes.bool,
   blocks: PropTypes.objectOf(PropTypes.object),
   lastBlock: PropTypes.number,
   cache: PropTypes.any,

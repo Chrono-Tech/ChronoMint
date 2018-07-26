@@ -26,7 +26,6 @@ export default class EthereumEngine {
   }
 
   getAddress () {
-    console.log('get address')
     return this._address || this._wallet.getAddressString()
   }
 

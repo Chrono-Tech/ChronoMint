@@ -101,7 +101,7 @@ function serialize (Immutable, refs) {
           case 'Amount':
             return new Amount(data.value, data.symbol, data.isLoaded)
           case 'WalletModel':
-            return new WalletModel(data.value, data.symbol, data.isLoaded)
+            return new WalletModel(data)
           case 'BalanceModel':
             return new BalanceModel(data)
           case 'BalancesCollection':

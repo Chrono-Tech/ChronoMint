@@ -4,7 +4,8 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { Checkbox, SelectField, TextField } from 'redux-form-material-ui'
+import { Checkbox, TextField } from 'redux-form-material-ui'
+import Select from 'redux-form-material-ui/es/Select'
 import { CircularProgress, MenuItem } from '@material-ui/core'
 import { Button } from 'components'
 import PropTypes from 'prop-types'
@@ -163,7 +164,7 @@ export default class AddTokenForm extends PureComponent {
   }
 
   async handleUploadFile (e) {
-    const file = e.target.files[ 0 ]
+    const file = e.target.files[0]
     if (!file) {
       return
     }
@@ -329,7 +330,7 @@ export default class AddTokenForm extends PureComponent {
           <Field
             styleName='xs-show'
             name='platform'
-            component={SelectField}
+            component={Select}
             fullWidth
             floatingLabelFixed
             floatingLabelText={<Translate value={prefix('choosePlatform')} />}
