@@ -21,6 +21,10 @@ export default class BrandPartial extends PureComponent {
     open: PropTypes.bool,
   }
 
+  handleToggle () {
+    this.props.toggleBrandPartial(!this.props.open)
+  }
+
   render () {
     const { open } = this.props
 
@@ -49,10 +53,6 @@ export default class BrandPartial extends PureComponent {
         </div>
       </div>
     )
-  }
-
-  handleToggle () {
-    this.props.toggleBrandPartial(!this.props.open)
   }
 }
 

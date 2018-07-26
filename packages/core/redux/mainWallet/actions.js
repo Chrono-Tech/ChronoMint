@@ -539,10 +539,6 @@ export const formatDataAndGetTransactionsForWallet = ({ wallet, address, blockch
 }
 
 export const getTransactionsForWallet = ({ wallet, forcedOffset }) => async (dispatch, getState) => {
-  // TODO remove if
-  if (wallet instanceof MainWalletModel) {
-    return null
-  }
   if (!wallet) {
     return null
   }
@@ -554,7 +550,7 @@ export const getTransactionsForWallet = ({ wallet, forcedOffset }) => async (dis
       ...wallet,
       transactions: new TxHistoryModel(
         {
-          ...wallet.transactions.transactions,
+          ...wallet.transactions,
           isFetching: true,
         }),
     }),

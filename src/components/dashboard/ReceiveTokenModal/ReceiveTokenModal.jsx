@@ -8,7 +8,7 @@ import QRCode from 'qrcode'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { Link } from 'react-router'
 import { TOKEN_ICONS } from 'assets'
-import { SelectField } from 'redux-form-material-ui'
+import Select from 'redux-form-material-ui/es/Select'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -124,7 +124,7 @@ export default class ReceiveTokenModal extends PureComponent {
           <div styleName='tokenSelector'>
             <Field
               fullWidth
-              component={SelectField}
+              component={Select}
               name='tokenId'
               {...styles.whiteselectorstyle}
             >
