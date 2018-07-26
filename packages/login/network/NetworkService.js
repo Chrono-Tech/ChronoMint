@@ -42,8 +42,6 @@ import {
   TESTRPC_URL,
 } from './settings'
 import uportProvider, { UPortAddress } from './uportProvider'
-import web3Provider, { Web3Provider } from './Web3Provider'
-import web3Utils from './Web3Utils'
 
 const { web3Converter } = utils
 
@@ -63,18 +61,6 @@ class NetworkService extends EventEmitter {
     if (!account || !provider || !network) {
       throw new Error(`Wrong session arguments: account: ${account}, provider: ${provider}, network: ${network}`)
     }
-    // const accounts = this._store.getState().get(DUCK_NETWORK).accounts || []
-    //if (!accounts.includes(account)) {
-    //  throw new Error('Account not registered')
-    //}
-    //console.log(account)
-    //console.log(provider)
-
-    //web3Provider.resolve()
-
-    // sync with session state
-    // this unlock login
-    // dispatch(createSession(account))
     this.emit('createSession', {
       account, provider, network, dispatch: this._dispatch,
     })
@@ -82,9 +68,6 @@ class NetworkService extends EventEmitter {
 
   async destroyNetworkSession (lastURL, isReset = true) {
     if (isReset) {
-      // for tests
-      web3Provider.beforeReset()
-      web3Provider.afterReset()
     }
 
     this.emit('destroySession', { lastURL, dispatch: this._dispatch })
@@ -96,10 +79,6 @@ class NetworkService extends EventEmitter {
     if (!isTestRPC || !account) {
       return false
     }
-
-    //const web3 = new Web3Legacy()
-    //web3Provider.reinit(web3, new Web3Legacy.providers.HttpProvider(providerURL || TESTRPC_URL))
-    //const accounts = await web3Provider.getAccounts()
 
     // account must be valid
     if (!accounts.includes(account)) {
@@ -145,7 +124,7 @@ class NetworkService extends EventEmitter {
     const provider = uportProvider.getUportProvider()
     dispatch(loading())
     dispatch(clearErrors())
-    web3Provider.reinit(provider.getWeb3(), provider.getProvider())
+    //web3Provider.reinit(provider.getWeb3(), provider.getProvider())
     const encodedAddress: string = await provider.requestAddress()
     const { network, address }: UPortAddress = uportProvider.decodeMNIDaddress(encodedAddress)
     dispatch(this.selectNetwork(web3Converter.hexToDecimal(network)))
@@ -288,9 +267,6 @@ class NetworkService extends EventEmitter {
   async autoSelect () {
     const { priority, preferMainnet } = this._store.getState().get(DUCK_NETWORK)
     const resolveNetwork = () => {
-      // const web3 = new Web3()
-      // web3Provider.reinit(web3, web3Utils.createStatusEngine(this.getProviderURL()))
-      // web3Provider.resolve()
     }
     const selectAndResolve = (networkId, providerId) => {
       console.log('select', networkId, providerId)

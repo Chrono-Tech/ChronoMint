@@ -19,10 +19,8 @@ import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/actions'
 import { getAddress } from '@chronobank/core/redux/persistAccount/utils'
-import Web3Legacy from 'web3legacy'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 import uuid from 'uuid/v1'
-import Web3 from 'web3'
 import axios from 'axios'
 import bip39 from 'bip39'
 import Accounts from 'web3-eth-accounts'

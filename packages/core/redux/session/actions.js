@@ -80,9 +80,16 @@ export const login = (account) => async (dispatch, getState) => {
 
   const network = getNetworkById(selectedNetworkId, selectedProviderId)
 
-  const web3 = typeof window !== 'undefined'
-    ? web3Factory(network)
-    : null
+  //const web3 = typeof window !== 'undefined'
+  //  ? web3Factory(network)
+  //  : null
+
+  const web3 = web3Factory(network) 
+
+  console.log('Network is: ')
+  console.log(network)
+  console.log('Web3 is: ')
+  console.log(web3)
 
   dispatch({ type: WEB3_SETUP, web3 })
 

@@ -18,6 +18,7 @@ export default class ContractsManagerDAO extends EventEmitter {
     }
     // eslint-disable-next-line no-console
     console.log('[ContractsManagerDAO] Connect')
+    console.log(web3)
     this.contract = new web3.eth.Contract(this.abi.abi, this.address, options)
     this.web3 = web3
   }

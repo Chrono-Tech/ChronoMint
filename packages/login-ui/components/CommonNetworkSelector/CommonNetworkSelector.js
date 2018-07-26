@@ -268,7 +268,7 @@ export default class CommonNetworkSelector extends PureComponent {
 
   resolveNetwork (providerUrl) {
     const web3 = new Web3()
-    web3Provider.reinit(web3, web3Utils.createStatusEngine(providerUrl))
+    web3Provider.reinit(web3, providerUrl)
     web3Provider.resolve()
   }
 

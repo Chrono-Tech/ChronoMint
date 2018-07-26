@@ -19,7 +19,7 @@ export default class EthereumWallet extends Wallet {
     switch (true) {
       case type === 'memory' && pk && pk.length == 32:
         return new EthereumWallet(Buffer.from(pk, 'hex'), null, type)
-      case type === 'memory' && pk.startsWith(xpriv):
+      case type === 'memory' && pk && pk.startsWith(xpriv):
         hdWallet = hdKey.fromExtendedPrivateKey(pk)
         hdkey = hdWallet.derivePath(WALLET_HD_PATH)._hdkey
         if (hdkey._privateKey) {

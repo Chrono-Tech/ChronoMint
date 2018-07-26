@@ -8,7 +8,6 @@ import networkService from './NetworkService'
 import AbstractProvider from './AbstractProvider'
 import EthereumEngine from './EthereumEngine'
 import selectEthereumNode from './EthereumNode'
-import web3Provider from './Web3Provider'
 import TxExecModel from '../../core/refactor/models/TxExecModel'
 
 export class EthereumProvider extends AbstractProvider {
@@ -111,7 +110,6 @@ export class EthereumProvider extends AbstractProvider {
 
     this.setEngine(newEngine, ethereumProvider.getNemEngine())
 
-    // web3Provider.pushWallet(num_addresses)
   }
 
   get2FAEncodedKey (callback) {

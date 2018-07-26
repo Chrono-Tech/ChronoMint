@@ -11,7 +11,11 @@ export class ETHDAO extends EventEmitter {
       this.disconnect()
     }
     this.web3 = web3
-    this.logsEmitter = this.web3.eth.subscribe('newBlockHeaders')
+    this.logsEmitter = this.web3.eth.subscribe('newBlockHeaders', function(error, result) {
+    if (!error)
+        console.log(result)
+    else console.log(error)
+    })
       .on('data', this.handleBlockData.bind(this))
       .on('error', this.handleBlockError.bind(this))
   }

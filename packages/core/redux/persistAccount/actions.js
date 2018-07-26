@@ -117,12 +117,12 @@ export const resetPasswordAccount = (wallet, mnemonic, password) => async (dispa
 
 export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => async (dispatch, getState) => {
   let wallet, hex
-  if (privateKey.startsWith(xpriv)) {
+  if (privateKey && privateKey.startsWith(xpriv)) {
     walllet, hex = hdkey.fromExtendedPrivateKey(privateKey).derivePath(WALLET_HD_PATH).getWallet().getPrivateKeyString()
-  } else if (privateKey.length == 32) {
-    let wallet, hex = privateKey 
-  } else if (mnemonic)
-    let wallet, hex = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic)).derivePath(WALLET_HD_PATH).getWallet().getPrivateKeyString() 
+  } else if (privateKey && privateKey.length == 32) {
+    wallet, hex = privateKey 
+  } else if (mnemonic) {
+    wallet, hex = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic)).derivePath(WALLET_HD_PATH).getWallet().getPrivateKeyString() 
   } else {
     //TODO add error handler (mikefluff)	  
     return
@@ -146,7 +146,7 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
     name,
     types,
     encrypted: wallet && wallet.encrypt(password),
-    address: account.address 
+    address: account.address,
     profile: null,
   })
 
