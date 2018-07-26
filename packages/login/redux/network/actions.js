@@ -396,7 +396,7 @@ export const navigateToAccountName = () => (dispatch) => {
 export const onSubmitMnemonicLoginForm = (mnemonic) => async (dispatch) => {
   let mnemonicValue = (mnemonic || '').trim()
 
-  if (!mnemonicProvider.validateMnemonic(mnemonicValue)){
+  if (!mnemonicProvider.validateMnemonic(mnemonicValue)) {
     throw new SubmissionError({ mnemonic: 'Invalid mnemonic' })
   }
 
@@ -704,7 +704,6 @@ export const handleWalletLogin = (wallet, password) => async (dispatch, getState
 
 }
 
-
 export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) => {
   let state = getState()
 
@@ -713,7 +712,7 @@ export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) 
   const provider = privateKeyProvider.getPrivateKeyProvider(
     privateKey.slice(2),
     networkService.getProviderSettings(),
-    state.get('multisigWallet')
+    state.get('multisigWallet'),
   )
 
   networkService.selectAccount(provider.ethereum.getAddress())

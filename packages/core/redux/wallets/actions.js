@@ -75,7 +75,6 @@ const initWalletsFromKeys = () => (dispatch) => {
   ]
 
   providers.map((provider) => {
-    console.log(provider)
     const wallet = new WalletModel({
       address: provider.getAddress(),
       blockchain: provider.id(),
