@@ -11,7 +11,7 @@ import React, { PureComponent } from 'react'
 import { PTPoll } from '@chronobank/core/redux/voting/types'
 import { Translate } from 'react-redux-i18n'
 import { prefix } from './lang'
-import './PollActionMenu.scss'
+import styles from './PollActionMenu.scss'
 
 export default class PollActionMenu extends PureComponent {
   static propTypes = {
@@ -67,7 +67,6 @@ export default class PollActionMenu extends PureComponent {
         <button styleName='menuButton' onClick={this.handleClick}>
           <i styleName='icon' className='chronobank-icon'>more</i>
         </button>
-
         <Popover
           open={this.state.open}
           anchorEl={this.state.anchorEl}
@@ -75,8 +74,13 @@ export default class PollActionMenu extends PureComponent {
           onClose={this.handleRequestClose}
         >
           <Menu
+            classes={{
+              paper: styles.menuDropDown,
+            }}
+            anchorEl={this.state.anchorEl}
             styleName='menuDropDown'
-            open
+            open={this.state.open}
+            onClose={this.handleRequestClose}
           >
             {showRemove
               ? (

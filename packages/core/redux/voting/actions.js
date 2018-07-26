@@ -216,25 +216,3 @@ export const getNextPage = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   return dao.getPollsPaginated(votingState.lastPoll(), PAGE_SIZE, account)
 }
-
-export const estimateGasForVoting = async (mode: string, params, callback, gasPriceMultiplier = 1) => {
-  let dao = null
-  switch (mode) {
-    case TX_CREATE_POLL:
-      dao = await contractsManagerDAO.getVotingManagerDAO()
-      break
-  }
-  try {
-    if (!dao) {
-      callback(new Error('Dao is undefined'))
-    }
-    const { gasLimit, gasFee, gasPrice } = await dao.estimateGas(...params)
-    callback(null, {
-      gasLimit,
-      gasFee: new Amount(gasFee.mul(gasPriceMultiplier), ETH),
-      gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier), ETH),
-    })
-  } catch (e) {
-    callback(e)
-  }
-}
