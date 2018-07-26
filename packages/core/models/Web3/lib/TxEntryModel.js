@@ -15,7 +15,7 @@ const schemaFactory = () => ({
   isSigned: Joi.boolean(),
   isSent: Joi.boolean(),
   isErrored: Joi.boolean(),
-  isMined: Joi.boolean()
+  isMined: Joi.boolean(),
 })
 
 module.exports.schemaFactory = schemaFactory

@@ -72,37 +72,42 @@ export default class PollActionMenu extends PureComponent {
           open={this.state.open}
           anchorEl={this.state.anchorEl}
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-          onRequestClose={this.handleRequestClose}
+          onClose={this.handleRequestClose}
         >
-          <Menu styleName='menuDropDown'>
+          <Menu
+            styleName='menuDropDown'
+            open
+          >
             {showRemove
               ? (
                 <MenuItem
-                  primaryText={<Translate value={`${prefix}.remove`} />}
                   disabled={poll.isFetching}
                   onClick={this.handleItemClick(this.props.handlePollRemove)}
-                />
+                >
+                  <Translate value={`${prefix}.remove`} />
+                </MenuItem>
               )
               : null
             }
             {showEnd
               ? (
                 <MenuItem
-                  primaryText={<Translate value={`${prefix}.endPoll`} />}
                   disabled={poll.isFetching}
                   onClick={this.handleItemClick(this.props.handlePollEnd)}
-                />
+                >
+                  <Translate value={`${prefix}.endPoll`} />
+                </MenuItem>
               )
               : null
             }
             {showActivate
               ? (
                 <MenuItem
-                  primaryText={<Translate value={`${prefix}.activate`} />}
                   disabled={poll.isFetching}
                   onClick={this.handleItemClick(this.props.handlePollActivate)}
-                />
+                >
+                  <Translate value={`${prefix}.activate`} />
+                </MenuItem>
               )
               : null
             }

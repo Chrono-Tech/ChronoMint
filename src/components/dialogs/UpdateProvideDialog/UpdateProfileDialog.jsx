@@ -50,6 +50,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     onSubmit: (values) => {
+      console.log('dispatch(updateUserProfile: ', values)
       dispatch(modalsClose())
       dispatch(updateUserProfile(new ProfileModel(values.toJS())))
     },

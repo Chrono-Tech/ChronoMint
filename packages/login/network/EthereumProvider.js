@@ -111,7 +111,7 @@ export class EthereumProvider extends AbstractProvider {
 
     this.setEngine(newEngine, ethereumProvider.getNemEngine())
 
-    web3Provider.pushWallet(num_addresses)
+    // web3Provider.pushWallet(num_addresses)
   }
 
   get2FAEncodedKey (callback) {
