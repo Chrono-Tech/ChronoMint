@@ -6,7 +6,7 @@
 import EventEmitter from 'events'
 import axios from 'axios'
 
-const PROFILE_BACKEND_REST_URL = 'http://localhost:3000'
+const PROFILE_BACKEND_REST_URL = 'https://backend.profile.tp.ntr1x.com'
 const basePath = '/api/v1'
 const GET_PERSONS_REST = `${basePath}/security/persons/query`
 const GET_SIGNATURE_REST = `${basePath}/security/signin/signature`

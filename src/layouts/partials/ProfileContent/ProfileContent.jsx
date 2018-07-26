@@ -12,7 +12,6 @@ import networkService from '@chronobank/login/network/NetworkService'
 import React, { PureComponent } from 'react'
 import { logout } from '@chronobank/core/redux/session/actions'
 import { getBlockchainAddressesList } from '@chronobank/core/redux/session/selectors'
-import { Icon } from '@material-ui/core'
 import { modalsOpen } from 'redux/modals/actions'
 import { IPFSImage, UpdateProfileDialog } from 'components'
 import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
@@ -178,7 +177,7 @@ class ProfileContent extends PureComponent {
         <div styleName='address-split-hr' />
 
         <div styleName='profile-fee-slider'>
-          {/*<GasSlider />*/}
+          <GasSlider />
         </div>
       </div>
     )
