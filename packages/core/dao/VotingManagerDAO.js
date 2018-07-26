@@ -197,7 +197,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
               published: publishedDates[i].toNumber() ? new Date(publishedDates[i].toNumber() * 1000) : null, // published is just a timestamp
               status: statuses[i],
               active: activeStatuses[i],
-              options: new Immutable.List(options || []),
+              options: options,
               files,
               hasMember,
               memberOption,
@@ -209,7 +209,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
               id: pollAddress,
               poll,
               votes,
-              shareholdersCount,
+              shareholdersCount: new BigNumber(shareholdersCount),
               isFetched: true,
               isFetching: false,
               files: new Immutable.List((pollFiles && pollFiles.links || [])

@@ -189,6 +189,7 @@ export default class AbstractContractDAO extends EventEmitter {
    * @returns {Promise<TxExecModel>}
    */
   async submit (func, args, amount, value, options, additionalOptions) {
+    console.log('submit Tx: ', func, args, amount, value, options, additionalOptions)
     const data = this.contract.methods[func](...args).encodeABI()
 
     const {
@@ -200,7 +201,10 @@ export default class AbstractContractDAO extends EventEmitter {
 
     const { gasLimit, gasFee, gasPrice } = await this.estimateGas(func, args, value, from, { feeMultiplier: feeMultiplier || 1 })
 
+    console.log('submit Tx: gasLimit, gasFee, gasPrice: ', gasLimit, gasFee, gasPrice)
+
     setImmediate(async () => {
+      console.log('submit Tx: setImmediate: ', this)
       this.emit('submit', new TxExecModel({
         contract: this.abi.contractName,
         func,

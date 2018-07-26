@@ -114,6 +114,7 @@ export const createPoll = (poll: PollDetailsModel) => async (dispatch, getState)
 }
 
 export const removePoll = (pollObject: PTPoll) => async (dispatch, getState) => {
+  console.log('removePoll: ', pollObject)
   const state = getState()
   const { account } = state.get(DUCK_SESSION)
   const votingDAO = daoByType('VotingManager')(getState())
@@ -127,14 +128,17 @@ export const removePoll = (pollObject: PTPoll) => async (dispatch, getState) => 
     dispatch(goToVoting())
     const dao = await votingDAO.pollInterfaceManagerDAO.getPollInterfaceDAO(poll.id)
 
-    await dao.removePoll({ from: account, symbol: 'TIME' })
+    await dao.removePoll({ from: account, symbol: 'TIME', blockchain: 'Ethereum' })
   } catch (e) {
+    console.log('removePoll error: ', e)
     dispatch(handlePollCreated(poll))
     throw e
   }
 }
 
 export const vote = (choice: Number) => async (dispatch, getState) => {
+  console.log('vote: ', choice)
+
   const poll = getSelectedPollFromDuck(getState())
   const { account } = getState().get(DUCK_SESSION)
   const votingDAO = daoByType('VotingManager')(getState())
@@ -152,6 +156,8 @@ export const vote = (choice: Number) => async (dispatch, getState) => {
 }
 
 export const activatePoll = (pollObject: PTPoll) => async (dispatch, getState) => {
+  console.log('activatePoll: ', pollObject)
+
   const state = getState()
   const { account } = getState().get(DUCK_SESSION)
   const votingDAO = daoByType('VotingManager')(getState())
@@ -172,6 +178,8 @@ export const activatePoll = (pollObject: PTPoll) => async (dispatch, getState) =
 }
 
 export const endPoll = (pollObject: PTPoll) => async (dispatch, getState) => {
+  console.log('endPoll: ', pollObject)
+
   const poll = getState().get(DUCK_VOTING).list().item(pollObject.id)
   const { account } = getState().get(DUCK_SESSION)
   const votingDAO = daoByType('VotingManager')(getState())

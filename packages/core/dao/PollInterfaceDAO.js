@@ -63,8 +63,7 @@ export default class PollInterfaceDAO extends AbstractContractDAO  {
   async removePoll (options) {
     const txOptions = { allowNoReturn: true, useDefaultGasLimit: true, ...options }
 
-    const tx = await this._tx(TX_REMOVE_POLL, [], new BigNumber(0), new BigNumber(0), txOptions)
-    return tx
+    await this._tx(TX_REMOVE_POLL, [], new BigNumber(0), new BigNumber(0), txOptions)
   }
 
   async endPoll (options) {

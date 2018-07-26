@@ -87,6 +87,7 @@ const configureStore = () => {
       'market/UPDATE_PRICES',
       'market/UPDATE_RATES',
       'tokens/fetched',
+      'wallet/updateBalance',
     ]
     const logger = createLogger({
       collapsed: true,

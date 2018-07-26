@@ -47,7 +47,9 @@ export const TOKENS_FAILED = 'tokens/failed'
 // It is not a redux action
 const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
+    console.log('submitTxHandler: ', tx)
     if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
+      console.log('submitTxHandler BLOCKCHAIN_ETHEREUM: ', tx)
       dispatch(modalsOpenConfirmDialog({
         props: {
           tx,
@@ -97,6 +99,7 @@ const mainedTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExec
 }
 
 export const alternateTxHandlingFlow = (dao) => (dispatch) => {
+  console.log('alternateTxHandlingFlow = (dao): ', dao)
   dao
     .on('submit', submitTxHandler(dao, dispatch))
     .on('accept', acceptTxHandler(dao, dispatch))
