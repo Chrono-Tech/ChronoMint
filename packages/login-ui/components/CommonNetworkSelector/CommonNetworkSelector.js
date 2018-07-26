@@ -278,7 +278,7 @@ export default class CommonNetworkSelector extends PureComponent {
     return (
       <div styleName='root'>
         <Button
-          styleName='langButton'
+          styleName='networkButton'
           onClick={this.handleClickButton}
         >
           {this.getSelectedNetwork()}
@@ -287,7 +287,7 @@ export default class CommonNetworkSelector extends PureComponent {
         <Popover
           open={this.state.open}
           anchorEl={this.state.anchorEl}
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+          anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
           onClose={this.handleRequestClose}
           classes={{
             paper: styles.popover,

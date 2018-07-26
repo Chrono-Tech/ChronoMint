@@ -24,8 +24,8 @@ export default createMuiTheme({
         marginTop: '0 !important',
       },
       input: {
-        color: variables.colorWhite,
-        textAlign: 'center',
+        color: variables.colorPrimaryBlack,
+        textAlign: 'left',
         marginTop: 0,
         paddingTop: 18,
         paddingBottom: 0,
@@ -72,25 +72,25 @@ export default createMuiTheme({
     MuiInputLabel: {
       root: {
         '&$shrink': {
-          color: variables.colorOrange,
+          color: variables.additionalDataColor,
         },
-        color: variables.colorOrange,
+        color: variables.additionalDataColor,
         margin: 'auto',
         right: 0,
         left: 0,
         top: 7,
-        textAlign: 'center',
-        transformOrigin: 'top center',
+        textAlign: 'left',
+        transformOrigin: 'top left',
       },
       shrink: {
         top: 8,
-        transformOrigin: 'top center',
+        transformOrigin: 'top left',
       },
       formControl: {
         top: 7,
       },
       error: {
-        color: variables.colorOrange,
+        color: variables.additionalDataColor,
       },
     },
     MuiFormHelperText: {

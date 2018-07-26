@@ -78,13 +78,14 @@
 
 }
 
-.langButton {
+.networkButton {
   button {
     color: #5DB3ED;
     border:1px solid #5DB3ED;
     background: transparent;
     font-size: 14px;
     text-transform: none;
+    padding: 12px 30px;
 
     &:hover {
       color:#fff;
@@ -95,4 +96,5 @@
 
 .popover {
   background: transparent !important;
+  border-radius: 20px !important;
 }

@@ -192,7 +192,8 @@ class LoginWithWallet extends Component {
             </span> : <Translate value='LoginWithWallet.login' />}
           />
           { error ? <div styleName='error'>{error}</div> : null }
-          <Translate value='LoginWithWallet.or' />&nbsp;
+          <Translate value='LoginWithWallet.or' />
+          <br />
           <Link to='/login' href styleName='link'>
             <Translate value='LoginWithWallet.back' />
           </Link>
