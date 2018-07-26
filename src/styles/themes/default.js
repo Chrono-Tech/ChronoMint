@@ -89,9 +89,6 @@ export default createMuiTheme({
       formControl: {
         top: 7,
       },
-      error: {
-        color: variables.additionalDataColor,
-      },
     },
     MuiFormHelperText: {
       root: {

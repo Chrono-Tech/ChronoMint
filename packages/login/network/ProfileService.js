@@ -10,6 +10,7 @@ const PROFILE_BACKEND_REST_URL = 'https://backend.profile.tp.ntr1x.com'
 const basePath = '/api/v1'
 const GET_PERSONS_REST = `${basePath}/security/persons/query`
 const GET_SIGNATURE_REST = `${basePath}/security/signin/signature`
+const UPDATE_PROFILE_COMBINE = `${basePath}/security/me/profile/combine/update`
 const UPDATE_LEVEL_1 = `${basePath}/security/me/profile/level1`
 const UPDATE_LEVEL_2 = `${basePath}/security/me/profile/level2`
 const UPDATE_LEVEL_3 = `${basePath}/security/me/profile/level3`
@@ -84,13 +85,16 @@ class ProfileService extends EventEmitter {
     return personInfo
   }
 
-  async updateUserProfile({ avatar, userName, email }, token){
+  async updateUserProfile({ avatar, userName, email, company, website, phone }, token){
     const service = this.getServerProvider()
 
-    const { data } = await service.post(UPDATE_LEVEL_1, {
+    const { data } = await service.post(UPDATE_PROFILE_COMBINE, {
       avatar,
       userName,
       email,
+      company,
+      website,
+      phone,
     }, this.withAuthorization(token))
 
     return data

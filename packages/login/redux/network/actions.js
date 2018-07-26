@@ -26,7 +26,7 @@ import Web3 from 'web3'
 import axios from 'axios'
 import bip39 from 'bip39'
 import Accounts from 'web3-eth-accounts'
-import { login } from '@chronobank/core/redux/session/actions'
+import { login, getProfileSignature } from '@chronobank/core/redux/session/actions'
 import { stopSubmit, SubmissionError, change } from 'redux-form'
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 import { push, goBack } from '@chronobank/core-dependencies/router'
@@ -434,26 +434,6 @@ export const onSubmitPrivateKeyLoginFormSuccess = () => (dispatch) => {
 export const onSubmitPrivateKeyLoginFormFail = (errors, dispatch, submitErrors) => (dispatch) => {
   dispatch(stopSubmit(FORM_PRIVATE_KEY_LOGIN_PAGE, submitErrors && submitErrors.errors))
 
-}
-
-export const setProfileSignature = (signature) => (dispatch) => {
-  dispatch({ type: NETWORK_SET_PROFILE_SIGNATURE, signature })
-}
-
-export const getProfileSignature = (wallet) => async (dispatch) => {
-  if (!wallet) {
-    return
-  }
-
-  let signDataString = profileService.getSignData()
-
-  let signData = wallet.sign(signDataString)
-
-  let profileSignature = await profileService.getProfile(signData.signature)
-
-  dispatch(setProfileSignature(profileSignature))
-
-  return profileSignature
 }
 
 export const onSubmitLoginForm = (password) => async (dispatch, getState) => {

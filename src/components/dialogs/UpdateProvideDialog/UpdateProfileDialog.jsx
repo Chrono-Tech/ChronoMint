@@ -13,6 +13,7 @@ import { connect } from 'react-redux'
 import { ACCEPT_IMAGES } from '@chronobank/core/models/FileSelect/FileExtension'
 import ProfileModel from '@chronobank/core/models/ProfileModel'
 import { DUCK_SESSION, updateUserProfile } from '@chronobank/core/redux/session/actions'
+import { getAccountProfileSummary } from '@chronobank/core/redux/session/selectors'
 import {
   getAccountName,
 } from '@chronobank/core/redux/persistAccount/utils'
@@ -32,6 +33,8 @@ function mapStateToProps (state) {
   const selector = formValueSelector(FORM_UPDATE_PROFILE_DIALOG)
   const session = state.get(DUCK_SESSION)
   const selectedAccount = state.get('persistAccount').selectedWallet
+  const signatureProfileSelector = getAccountProfileSummary(state)
+  console.log('mmmmm', signatureProfileSelector)
 
   return {
     selectedAccount: selectedAccount,
@@ -39,7 +42,7 @@ function mapStateToProps (state) {
     name: selector(state, 'name'),
     icon: selector(state, 'icon'),
     account: session.account,
-    initialValues: session.profile.summary(),
+    initialValues: signatureProfileSelector,
   }
 }
 
@@ -47,7 +50,7 @@ function mapDispatchToProps (dispatch) {
   return {
     onSubmit: (values) => {
       dispatch(modalsClose())
-      dispatch(updateUserProfile(new ProfileModel(values.toJS())))
+      dispatch(updateUserProfile(values.toJS()))
     },
   }
 }
@@ -65,6 +68,7 @@ export default class UpdateProfileDialog extends PureComponent {
 
   render () {
     const { selectedAccount } = this.props
+    console.log('update', this.props)
 
     return (
       <ModalDialog title={<Translate value={`${prefix}.title`} />}>
@@ -107,7 +111,7 @@ export default class UpdateProfileDialog extends PureComponent {
               />
               <Field
                 component={TextField}
-                name='name'
+                name='userName'
                 fullWidth
                 label={<Translate value={`${prefix}.name`} />}
               />
@@ -119,7 +123,7 @@ export default class UpdateProfileDialog extends PureComponent {
               />
               <Field
                 component={TextField}
-                name='url'
+                name='website'
                 fullWidth
                 label={<Translate value={`${prefix}.website`} />}
               />

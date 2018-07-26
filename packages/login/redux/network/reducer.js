@@ -42,7 +42,6 @@ const initialState = {
   accountSignaturesLoading: false,
   accountSignaturesData: null,
   accountSignaturesError: null,
-  profileSignature: null,
 }
 
 export default (state = initialState, action) => {
@@ -168,11 +167,7 @@ export default (state = initialState, action) => {
         ...state,
         loadingAccountSignatures: false,
       }
-    case actions.NETWORK_SET_PROFILE_SIGNATURE:
-      return {
-        ...state,
-        profileSignature: action.signature,
-      }
+
     case actions.NETWORK_SET_WALLET_FILE_IMPORTED:
       return {
         ...state,
