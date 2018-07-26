@@ -4,83 +4,56 @@
  */
 
 import Immutable from 'immutable'
-import { globalWatcher } from '@chronobank/core/redux/watcher/actions'
+// import { globalWatcher } from '@chronobank/core/redux/watcher/actions'
 import { SESSION_DESTROY } from '@chronobank/core/redux/session/actions'
-import { browserHistory, createMemoryHistory } from 'react-router'
 import { combineReducers } from 'redux-immutable'
 import { applyMiddleware, compose, createStore } from 'redux'
+import { createLogger } from 'redux-logger'
+import { composeWithDevTools } from 'redux-devtools-extension'
 import { persistStore } from 'redux-persist-immutable'
 import { reducer as formReducer } from 'redux-form/immutable'
 import { DUCK_I18N, loadI18n } from 'redux/i18n/actions'
 import { I18n, i18nReducer, loadTranslations, setLocale } from '@chronobank/core-dependencies/i18n'
 import moment from 'moment'
 import saveAccountMiddleWare from '@chronobank/core/redux/session/saveAccountMiddleWare'
-import { routerMiddleware, syncHistoryWithStore } from 'react-router-redux'
 import thunk from 'redux-thunk'
 import ls from '@chronobank/core-dependencies/utils/LocalStorage'
 import * as ducks from './ducks'
 import routingReducer from './routing'
 import transformer from './serialize'
+import createHistory, { historyMiddleware } from './browserHistoryStore'
+import translations from '../i18n'
 
-// eslint-disable-next-line
+// eslint-disable-next-line no-unused-vars
 let i18nJson // declaration of a global var for the i18n object for a standalone version
-
-const historyEngine = process.env.NODE_ENV === 'standalone' ? createMemoryHistory() : browserHistory
 
 const getNestedReducers = (ducks) => {
   let reducers = {}
-  Object.entries(ducks).forEach(([key, entry]) => {
-    reducers = { ...reducers, ...(typeof (entry) === 'function' ? { [key]: entry } : getNestedReducers(entry)) }
-  })
+  Object
+    .entries(ducks)
+    .forEach(([key, entry]) => {
+      reducers = {
+        ...reducers,
+        ...(typeof (entry) === 'function'
+          ? { [key]: entry }
+          : getNestedReducers(entry)
+        ),
+      }
+    })
   return reducers
 }
-
-// Create enhanced history object for router
-const createSelectLocationState = () => {
-  let prevRoutingState,
-    prevRoutingStateJS
-  return (state) => {
-    const routingState = state.get('routing') // or state.routing
-    if (typeof prevRoutingState === 'undefined' || prevRoutingState !== routingState) {
-      prevRoutingState = routingState
-      prevRoutingStateJS = routingState.toJS()
-    }
-    return prevRoutingStateJS
-  }
-}
-
-// add noised action here
-const IGNORED_ACTIONS = [
-  '@chronobank/core/market/UPDATE_RATES',
-  '@chronobank/core/market/UPDATE_LAST_MARKET',
-  '@chronobank/core/market/UPDATE_PRICES',
-]
-
-let logActions = process.env.NODE_ENV === 'development'
-  ? function (action) {
-    if (IGNORED_ACTIONS.includes(action.type)) {
-      return
-    }
-    // eslint-disable-next-line
-    console.log(`%c ${action.type} `, 'color: #999; background: #333')
-  }
-  : function () {
-  }
 
 const configureStore = () => {
   const initialState = new Immutable.Map()
 
-  const nestedReducers = getNestedReducers(ducks)
   const appReducer = combineReducers({
     form: formReducer,
     i18n: i18nReducer,
     routing: routingReducer,
-    ...nestedReducers,
+    ...getNestedReducers(ducks),
   })
 
   const rootReducer = (state, action) => {
-    // workaround until fix redux devtool
-    logActions(action)
 
     if (action.type === SESSION_DESTROY) {
       const i18nState = state.get('i18n')
@@ -97,18 +70,34 @@ const configureStore = () => {
     return appReducer(state, action)
   }
 
+  const isDevelopmentEnv = process.env.NODE_ENV === 'development'
+  const composeEnhancers = isDevelopmentEnv
+    ? composeWithDevTools({ realtime: true })
+    : compose
+  const middleware = [thunk]
+
+  if (isDevelopmentEnv) {
+    const IGNORED_ACTIONS = [
+      'mainWallet/TOKEN_BALANCE',
+      'market/UPDATE_LAST_MARKET',
+      'market/UPDATE_PRICES',
+      'market/UPDATE_RATES',
+      'tokens/fetched',
+    ]
+    const logger = createLogger({
+      collapsed: true,
+      predicate: (getState, action) => !IGNORED_ACTIONS.includes(action.type),
+    })
+    middleware.push(logger)
+  }
+
   // noinspection JSUnresolvedVariable,JSUnresolvedFunction
-  const createStoreWithMiddleware = compose(
+  const createStoreWithMiddleware = composeEnhancers(
     applyMiddleware(
-      thunk,
-      routerMiddleware(historyEngine),
+      ...middleware,
+      historyMiddleware,
       saveAccountMiddleWare,
-    ),
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
-        actionsBlacklist: IGNORED_ACTIONS,
-      })()
-      : (f) => f,
+    )
   )(createStore)
 
   return createStoreWithMiddleware(
@@ -125,11 +114,10 @@ const persistorConfig = {
   whitelist: ['multisigWallet', 'mainWallet', 'persistAccount', 'wallets'],
   transforms: [transformer()],
 }
+
 store.__persistor = persistStore(store, persistorConfig)
 
-export const history = syncHistoryWithStore(historyEngine, store, {
-  selectLocationState: createSelectLocationState(),
-})
+export const history = createHistory(store)
 
 // syncTranslationWithStore(store) relaced with manual configuration in the next 6 lines
 I18n.setTranslationsGetter(() => store.getState().get(DUCK_I18N).translations)
@@ -139,7 +127,7 @@ const locale = ls.getLocale()
 // set moment locale
 moment.locale(locale)
 
-store.dispatch(loadTranslations(require('../i18n/').default))
+store.dispatch(loadTranslations(translations))
 store.dispatch(setLocale(locale))
 
 // load i18n from the public site
