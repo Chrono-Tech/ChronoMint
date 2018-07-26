@@ -74,7 +74,11 @@ const configureStore = () => {
   const composeEnhancers = isDevelopmentEnv
     ? composeWithDevTools({ realtime: true })
     : compose
-  const middleware = [thunk]
+  const middleware = [
+    thunk,
+    historyMiddleware,
+    saveAccountMiddleWare,
+  ]
 
   if (isDevelopmentEnv) {
     const IGNORED_ACTIONS = [
@@ -88,15 +92,14 @@ const configureStore = () => {
       collapsed: true,
       predicate: (getState, action) => !IGNORED_ACTIONS.includes(action.type),
     })
+    // Note: logger must be the last middleware in chain, otherwise it will log thunk and promise, not actual actions
     middleware.push(logger)
   }
 
   // noinspection JSUnresolvedVariable,JSUnresolvedFunction
   const createStoreWithMiddleware = composeEnhancers(
     applyMiddleware(
-      ...middleware,
-      historyMiddleware,
-      saveAccountMiddleWare,
+      ...middleware
     )
   )(createStore)
 
