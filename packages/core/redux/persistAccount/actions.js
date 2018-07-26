@@ -115,15 +115,20 @@ export const resetPasswordAccount = (wallet, mnemonic, password) => async (dispa
 }
 
 export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => async (dispatch, getState) => {
-  let wallet, hex = (privateKey ? `0x${privateKey}`: null) || hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic)).derivePath(WALLET_HD_PATH).getWallet().getPrivateKeyString() || ''
+  let hex = ''
 
-  // const web3 = new Web3()
-  // web3Provider.reinit(web3, web3Utils.createStatusEngine(settings))
-  // web3Provider.resolve()
+  if (privateKey){
+    hex = `0x${privateKey}`
+  }
+
+  if (mnemonic){
+    const hdKeyWallet = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic)).derivePath(WALLET_HD_PATH).getWallet()
+    hex = hdKeyWallet.getPrivateKeyString()
+  }
 
   const accounts = new Accounts()
 
-  wallet = await accounts.wallet.create(numberOfAccounts)
+  let wallet = await accounts.wallet.create(numberOfAccounts)
   const account = accounts.privateKeyToAccount(hex)
   wallet.add(account)
   console.log(wallet.encrypt(password))
@@ -145,7 +150,16 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
 export const createHWAccount = ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => async (dispatch, getState) => {
   const state = getState()
 
-  let wallet, hex = privateKey || hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic)).derivePath(WALLET_HD_PATH).getWallet().getPrivateKeyString() || ''
+  let wallet, hex = ''
+
+  if (privateKey){
+    hex = `0x${privateKey}`
+  }
+
+  if (mnemonic){
+    const hdKeyWallet = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic)).derivePath(WALLET_HD_PATH).getWallet()
+    hex = hdKeyWallet.getPrivateKeyString()
+  }
 
   const accounts = new Accounts()
   accounts.wallet.clear()

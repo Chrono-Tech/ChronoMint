@@ -20,6 +20,7 @@ export default {
   colorPrimary1Alter1: 'rgba(119, 143, 255, 0.6)',
   colorPrimary1Alter2: 'rgba(119, 143, 255, 0.4)',
   colorBlack: '#333',
-
+  colorOrange: '#E2A864',
+  additionalDataColor: '#A3A3CC',
   fontWeightBold: '600',
 }

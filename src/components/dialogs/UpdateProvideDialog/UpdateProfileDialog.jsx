@@ -13,6 +13,9 @@ import { connect } from 'react-redux'
 import { ACCEPT_IMAGES } from '@chronobank/core/models/FileSelect/FileExtension'
 import ProfileModel from '@chronobank/core/models/ProfileModel'
 import { DUCK_SESSION, updateUserProfile } from '@chronobank/core/redux/session/actions'
+import {
+  getAccountName,
+} from '@chronobank/core/redux/persistAccount/utils'
 import { modalsClose } from 'redux/modals/actions'
 import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
 import FileSelect from 'components/common/FileSelect/FileSelect'
@@ -22,11 +25,6 @@ import ModalDialog from '../ModalDialog'
 import validate from './validate'
 import './UpdateProfileDialog.scss'
 import { prefix } from './lang'
-import {
-  getAccountName,
-  getAccountAvatar,
-} from '@chronobank/core/redux/persistAccount/utils'
-
 
 const FORM_UPDATE_PROFILE_DIALOG = 'UpdateProfileDialog'
 
@@ -79,12 +77,12 @@ export default class UpdateProfileDialog extends PureComponent {
                     styleName='iconImage'
                     multihash={this.props.icon}
                     icon={(
-                      <span
+                      <i
                         styleName='default-icon'
                         color='white'
                         className='material-icons'
                       >account_circle
-                      </span>
+                      </i>
                     )}
                   />
                 </div>

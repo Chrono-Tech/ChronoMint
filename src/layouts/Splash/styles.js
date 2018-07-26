@@ -4,6 +4,7 @@
  */
 
 import { createMuiTheme } from '@material-ui/core/styles'
+import variables from 'styles/themes/variables'
 
 export default createMuiTheme({
   overrides: {
@@ -16,13 +17,21 @@ export default createMuiTheme({
         marginTop: '0 !important',
       },
       input: {
-        color: '#fff',
+        color: variables.colorWhite,
         textAlign: 'center',
         marginTop: 0,
         paddingTop: 18,
         paddingBottom: 0,
         font: '16px proxima nova, sans-serif',
-        height: 'auto !important',
+      },
+      inputType: {
+        height: 'auto',
+      },
+      inputTypeSearch: {
+        height: 'auto',
+      },
+      inputMarginDense: {
+        height: 'auto',
       },
       inputMultiline: {
         height: 62,
@@ -38,26 +47,27 @@ export default createMuiTheme({
           display: 'none',
         },
         '&:after': {
-          borderBottom: '1px solid #A3A3CC',
+          borderBottom: '1px solid',
+          borderBottomColor: variables.additionalDataColor,
           transform: 'none',
         },
         '&:not($disabled):$focused:after': {
-          borderBottom: '1px solid #E2A864',
+          borderBottomColor: variables.colorOrange,
         },
         '&:hover:not($disabled):not($focused):not($error):after': {
-          borderBottomColor: `#E2A864`,
+          borderBottomColor: variables.colorOrange,
         },
         '&$focused:after': {
-          borderBottom: '1px solid #E2A864',
+          borderBottomColor: variables.colorOrange,
         },
       },
     },
     MuiInputLabel: {
       root: {
         '&$shrink': {
-          color: '#A3A3CC',
+          color: variables.colorOrange,
         },
-        color: '#A3A3CC',
+        color: variables.colorOrange,
         margin: 'auto',
         right: 0,
         left: 0,
@@ -73,7 +83,7 @@ export default createMuiTheme({
         top: 7,
       },
       error: {
-        color: '#A3A3CC',
+        color: variables.colorOrange,
       },
     },
     MuiFormHelperText: {
