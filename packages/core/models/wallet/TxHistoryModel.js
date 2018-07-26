@@ -19,15 +19,23 @@ const schemaFactory = () => ({
 
 export default class TxHistoryModel extends AbstractModel {
   constructor (data, options) {
-    super(Object.assign({
-      key: uuid(),
-      isLoading: false,
-      isLoaded: false,
-      blocks: [],
-      lastBlock: null,
-      firstBlock: null,
-      cache: {},
-    }, data), schemaFactory(), options)
+    super(
+      Object.assign(
+        {
+          address: '',
+          blocks: [],
+          cache: {},
+          firstBlock: null,
+          isLoaded: false,
+          isLoading: false,
+          key: uuid(),
+          lastBlock: null,
+        },
+        data
+      ),
+      schemaFactory(),
+      options
+    )
     Object.freeze(this)
   }
 
