@@ -77,4 +77,8 @@ export default class TxHistoryModel extends AbstractModel {
       isLoading: true,
     })
   }
+
+  transform () {
+    return { ...this }
+  }
 }

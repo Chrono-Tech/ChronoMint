@@ -104,6 +104,9 @@ export const login = (account) => async (dispatch, getState) => {
 
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
 
+  dispatch({ type: WEB3_SETUP, web3 })
+  dispatch(watcher({ web3 }))
+
   isCBE && dispatch(cbeWatcher())
   dispatch(replace(ls.getLastURL() || defaultURL))
 }

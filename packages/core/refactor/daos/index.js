@@ -28,10 +28,6 @@ import UserManagerDAO from '../../../core/dao/UserManagerDAO'
 export { default as ethDAO } from './lib/ETHDAO'
 export { default as AbstractContractDAO } from './lib/AbstractContractDAO'
 export { default as AbstractTokenDAO } from './lib/AbstractTokenDAO'
-// export { default as EIP20TokenDAO } from './lib/EIP20TokenDAO'
-export { default as ETHTokenDAO } from './lib/ETHTokenDAO'
-export { default as ContractsManagerDAO } from './lib/ContractsManagerDAO'
-export { default as ERC20LibraryDAO } from './lib/ERC20LibraryDAO'
 
 export const CONTRACTS_MANAGER = new ContractModel({
   type: 'ContractsManager',
