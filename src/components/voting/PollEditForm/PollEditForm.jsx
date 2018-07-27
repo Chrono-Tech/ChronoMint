@@ -273,7 +273,7 @@ export default class PollEditForm extends Component {
                   okLabel={<Translate value='materialUi.DatePicker.okLabel' />}
                   name='deadline'
                   fullWidth
-                  placeholder={<Translate value={`${prefix}.finishedDate`} />}
+                  placeholder={I18n.t(`${prefix}.finishedDate`)}
                   style={{ width: '165px' }}
                 />
                 <Field

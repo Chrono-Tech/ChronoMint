@@ -4,6 +4,7 @@
  */
 
 import EventEmitter from 'events'
+import ipfs from '@chronobank/core-dependencies/utils/IPFS'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import BigNumber from 'bignumber.js'
 import ipfs from '@chronobank/core-dependencies/utils/IPFS'

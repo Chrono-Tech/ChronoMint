@@ -24,73 +24,52 @@ export default createMuiTheme({
         marginTop: '0 !important',
       },
       input: {
-        color: variables.colorWhite,
-        textAlign: 'center',
-        marginTop: 0,
-        paddingTop: 18,
+        color: '#000',
+        textAlign: 'left',
+        marginTop: 16,
+        paddingTop: 0,
         paddingBottom: 0,
         font: '16px proxima nova, sans-serif',
-      },
-      inputType: {
-        height: 'auto',
-      },
-      inputTypeSearch: {
-        height: 'auto',
-      },
-      inputMarginDense: {
-        height: 'auto',
+        height: 'auto !important',
       },
       inputMultiline: {
         height: 62,
         marginTop: 0,
-        padding: 6,
-        textAlign: 'left',
         '&:before': {
           display: 'none',
         },
       },
       underline: {
-        '&:before': {
-          display: 'none',
-        },
-        '&:after': {
-          borderBottom: `1px solid`,
-          borderBottomColor: variables.additionalDataColor,
+        '&:not($disabled):after': {
+          borderBottom: `1px solid #A3A3CC`,
           transform: 'none',
         },
         '&:not($disabled):$focused:after': {
-          borderBottomColor: variables.colorOrange,
+          borderBottomColor: `#E2A864`,
         },
         '&:hover:not($disabled):not($focused):not($error):after': {
-          borderBottomColor: variables.colorOrange,
-        },
-        '&$focused:after': {
-          borderBottomColor: variables.colorOrange,
+          borderBottomColor: `#E2A864`,
         },
       },
     },
-    MuiInputLabel: {
+    MuiFormLabel: {
       root: {
-        '&$shrink': {
-          color: variables.colorOrange,
+        '&$focused': {
+          color: '#A3A3CC',
         },
-        color: variables.colorOrange,
+        '&$shrink': {
+          top: 0,
+        },
+        color: '#A3A3CC',
         margin: 'auto',
         right: 0,
         left: 0,
-        top: 7,
+        top: '7px !important',
         textAlign: 'center',
-        transformOrigin: 'top center',
-      },
-      shrink: {
-        top: 8,
-        transformOrigin: 'top center',
-      },
-      formControl: {
-        top: 7,
+        transformOrigin: 'top center !important',
       },
       error: {
-        color: variables.colorOrange,
+        color: '#A3A3CC !important',
       },
     },
     MuiFormHelperText: {
