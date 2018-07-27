@@ -10,7 +10,7 @@ export const PTWallet = PropTypes.shape({
   address: PropTypes.string,
   blockchain: PropTypes.string,
   name: PropTypes.string,
-  requiredSignatures: PropTypes.number,
+  requiredSignatures: PropTypes.string,
   pendingCount: PropTypes.number,
   isMultisig: PropTypes.bool,
   isTimeLocked: PropTypes.bool,

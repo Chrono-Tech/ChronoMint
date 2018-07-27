@@ -92,7 +92,7 @@ export default class MultisigWalletForm extends PureComponent {
     is2FA: PropTypes.bool,
     ownersCount: PropTypes.number,
     changeSignatures: PropTypes.func,
-    requiredSignatures: PropTypes.number,
+    requiredSignatures: PropTypes.string,
     createWallet: PropTypes.func,
     wallet: PropTypes.instanceOf(MultisigWalletModel),
     ...formPropTypes,

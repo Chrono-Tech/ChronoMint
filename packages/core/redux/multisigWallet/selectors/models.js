@@ -17,3 +17,10 @@ export const getWallet = (address) => createSelector(
     return address ? wallets.item(address) : new MultisigWalletModel()
   },
 )
+export const getEthMultisigWallets = (state) => {
+  return state.get(DUCK_MULTISIG_WALLET)
+}
+
+export const getEthMultisigWallet = (walletId) => (state) => {
+  return state.get(DUCK_MULTISIG_WALLET).item(walletId)
+}

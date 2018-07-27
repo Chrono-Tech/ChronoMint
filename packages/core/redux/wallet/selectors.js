@@ -9,6 +9,7 @@ import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 import Amount from '../../models/Amount'
 import { getMultisigWallets, selectMarketPricesListStore, selectMarketPricesSelectedCurrencyStore, selectTokensStore } from './selectors/models'
 import { getWallet } from '../wallets/selectors/models'
+import { getEthMultisigWallet } from '../multisigWallet/selectors/models'
 
 export {
   getMultisigWallets,
@@ -66,9 +67,10 @@ export const priceTokenSelector = (value: Amount) => createSelector(
 export const makeGetTxListForWallet = (blockchain: string, address: string) => createSelector(
   [
     getWallet(`${blockchain}-${address}`),
+    getEthMultisigWallet(`${blockchain}-${address}`),
   ],
-  (wallet) => {
-    return wallet.transactions.transactions
+  (wallet, ethMultisigWallet) => {
+    return (wallet || ethMultisigWallet).transactions.transactions
   },
 )
 

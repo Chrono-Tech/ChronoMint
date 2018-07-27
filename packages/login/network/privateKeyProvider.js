@@ -45,7 +45,7 @@ class PrivateKeyProvider {
     wallets && wallets
       .items()
       .map((wallet) => {
-        if (wallet.owners().items().filter((owner) => owner.address() === ethereumWallet.getAddressString()).length > 0 && wallet.constructor.name === 'DerivedWalletModel') {
+        if (wallet.owners().items().filter((owner) => owner === ethereumWallet.getAddressString()).length > 0 && wallet.constructor.name === 'DerivedWalletModel') {
           lastDeriveNumbers++
         }
       })

@@ -3,12 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import resultCodes from 'chronobank-smart-contracts/common/errors'
+import EventEmitter from 'events'
 import OwnerModel from '../models/wallet/OwnerModel'
 import MultisigWalletDAO from '../dao/MultisigWalletDAO'
-import EventEmitter from 'events'
 import type MultisigTransactionModel from '../models/wallet/MultisigTransactionModel'
 import type MultisigWalletModel from '../models/wallet/MultisigWalletModel'
-import resultCodes from 'chronobank-smart-contracts/common/errors'
 import MultisigWalletPendingTxModel from '../models/wallet/MultisigWalletPendingTxModel'
 
 export const EE_CONFIRMATION = 'Confirmation'
@@ -29,16 +29,17 @@ class MultisigWalletService extends EventEmitter {
   }
 
   getWalletDAO (address) {
-    return this._cache[ address ]
+    return this._cache[address]
   }
 
-  async createWalletDAO (address) {
-    const oldDAO = this._cache[ address ]
+  async createWalletDAO (address, web3) {
+    const oldDAO = this._cache[address]
     if (oldDAO) {
       await this.unsubscribe(address)
     }
     const newDAO = new MultisigWalletDAO(address)
-    this._cache[ address ] = newDAO
+    newDAO.connect(web3)
+    this._cache[address] = newDAO
     return newDAO
   }
 

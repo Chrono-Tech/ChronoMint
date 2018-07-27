@@ -85,7 +85,7 @@ export default class TimeLockedWalletForm extends PureComponent {
     is2FA: PropTypes.bool,
     ownersCount: PropTypes.number,
     changeSignatures: PropTypes.func,
-    requiredSignatures: PropTypes.number,
+    requiredSignatures: PropTypes.string,
     ...formPropTypes,
   }
 

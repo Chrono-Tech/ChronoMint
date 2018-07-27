@@ -4,44 +4,37 @@
  */
 
 import {
-  createAccount,
-  resetPasswordAccount,
-  validateMnemonicForAccount,
-  validateAccountName,
-  decryptAccount,
   accountAdd,
   accountSelect,
   accountUpdate,
-  setProfilesForAccounts,
+  createAccount,
   customNetworkCreate,
   customNetworkEdit,
   customNetworksDelete,
+  decryptAccount,
   DUCK_PERSIST_ACCOUNT,
+  resetPasswordAccount,
+  setProfilesForAccounts,
+  validateAccountName,
+  validateMnemonicForAccount,
 } from '@chronobank/core/redux/persistAccount/actions'
 import { getAddress } from '@chronobank/core/redux/persistAccount/utils'
-import Web3Legacy from 'web3legacy'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 import uuid from 'uuid/v1'
-import Web3 from 'web3'
 import axios from 'axios'
-import bip39 from 'bip39'
-import Accounts from 'web3-eth-accounts'
 import { login } from '@chronobank/core/redux/session/actions'
-import { stopSubmit, SubmissionError, change } from 'redux-form'
+import { change, stopSubmit, SubmissionError } from 'redux-form'
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
-import { push, goBack } from '@chronobank/core-dependencies/router'
+import { goBack, push } from '@chronobank/core-dependencies/router'
 import networkService from '../../network/NetworkService'
 import profileService from '../../network/ProfileService'
 import privateKeyProvider from '../../network/privateKeyProvider'
 import walletProvider from '../../network/walletProvider'
 import mnemonicProvider from '../../network/mnemonicProvider'
 import { ethereumProvider } from '../../network/EthereumProvider'
-import { btcProvider, ltcProvider, btgProvider } from '../../network/BitcoinProvider'
+import { btcProvider, btgProvider, ltcProvider } from '../../network/BitcoinProvider'
 import { nemProvider } from '../../network/NemProvider'
-import {
-  LOCAL_PRIVATE_KEYS,
-  isLocalNode,
-} from '../../network/settings'
+import { isLocalNode, LOCAL_PRIVATE_KEYS } from '../../network/settings'
 
 export const DUCK_NETWORK = 'network'
 
@@ -234,7 +227,6 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
 
   if (importAccountMode) {
     try {
-      console.log('createAccount', newAccountMnemonic, newAccountPrivateKey)
       let wallet = await dispatch(createAccount({
         name: walletName,
         password: walletPassword,

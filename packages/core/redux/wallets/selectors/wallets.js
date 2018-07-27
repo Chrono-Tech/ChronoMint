@@ -7,15 +7,20 @@ import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
 import { getWallets, getWalletsLengthFromState } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
 import { getAccount } from '../../session/selectors/models'
+import { getEthMultisigWallets } from '../../multisigWallet/selectors/models'
+import MultisigEthWalletModel from '../../../models/wallet/MultisigEthWalletModel'
 
 export const selectWalletsList = createSelector(
   [
     getAccount,
     getWallets,
+    getEthMultisigWallets,
   ],
-  (account, wallets) => {
-    return Object.values(wallets)
-      .filter((wallet: WalletModel) => wallet.isDerived || wallet.isMultisig ? wallet.owners.includes(account) : true)
+  (account, wallets, ethMultisigWallets) => {
+    return [
+      ...Object.values(wallets).filter((wallet: WalletModel) => wallet.isDerived ? wallet.owners.includes(account) : true),
+      ...ethMultisigWallets.items().filter((wallet: MultisigEthWalletModel) => wallet.owners.includes(account)),
+    ]
       .map((wallet: WalletModel) => {
         const jsWallet = Object.create(null)
         jsWallet['address'] = wallet.address
@@ -56,8 +61,8 @@ export const sectionsSelector = createSectionsSelector(
     const sectionsObject = {}
 
     walletsList
-      .forEach((mainWallet) => {
-        const { address, blockchain } = mainWallet
+      .forEach((wallet) => {
+        const { address, blockchain } = wallet
         if (!sectionsObject.hasOwnProperty(blockchain)) {
           sectionsObject[blockchain] = {
             title: blockchain,

@@ -8,7 +8,7 @@ import { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
 import type MultisigWalletDAO from './MultisigWalletDAO'
 import AddressesCollection from '../models/wallet/AddressesCollection'
 import AddressModel from '../models/wallet/AddressModel'
-import MultisigWalletModel from '../models/wallet/MultisigWalletModel'
+import MultisigEthWalletModel from '../models/wallet/MultisigEthWalletModel'
 import OwnerCollection from '../models/wallet/OwnerCollection'
 import OwnerModel from '../models/wallet/OwnerModel'
 import multisigWalletService from '../services/MultisigWalletService'
@@ -60,7 +60,8 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   // --------- actions ----------
 
   async fetchWallets () {
-    const [addresses, is2FA] = await this._call('getWallets')
+    const res = await this.contract.methods.getWallets().call()
+    const [addresses, is2FA] = Object.values(res)
     const validAddresses = addresses.filter((address) => !this.isEmptyAddress(address))
     this.emit(EE_MS_WALLETS_COUNT, validAddresses.length)
 
@@ -69,19 +70,8 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
     })
   }
 
-  _createOwnersCollection (owners: Array, account) {
-    let ownersCollection = new OwnerCollection()
-    owners.forEach((address) => {
-      ownersCollection = ownersCollection.update(new OwnerModel({
-        address,
-        isSelf: account === address,
-      }))
-    })
-    return ownersCollection
-  }
-
   async _createWalletModel (address, is2FA, transactionHash) {
-    const walletDAO: MultisigWalletDAO = await multisigWalletService.createWalletDAO(address)
+    const walletDAO: MultisigWalletDAO = await multisigWalletService.createWalletDAO(address, this.web3)
     const [owners, requiredSignatures, pendingTxList, releaseTime] = await Promise.all([
       walletDAO.getOwners(),
       walletDAO.getRequired(),
@@ -95,21 +85,24 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
       address,
     }))
 
-    const multisigWalletModel = new MultisigWalletModel({
+    const wallet = new MultisigEthWalletModel({
       address,
-      owners: this._createOwnersCollection(owners, address),
+      owners: owners.map((owner) => owner.toLowerCase()),
       transactionHash,
-      requiredSignatures,
+      requiredSignatures: requiredSignatures.toString(),
       is2FA,
       isFetched: true,
       pendingTxList,
       addresses,
-      releaseTime,
+      releaseTime: releaseTime > 0 ? new Date(releaseTime * 1000) : null,
+      blockchain: BLOCKCHAIN_ETHEREUM,
+      isMultisig: true,
+      isTimeLocked: releaseTime > 0,
     })
-    this.emit(EE_MS_WALLET_ADDED, multisigWalletModel)
+    this.emit(EE_MS_WALLET_ADDED, wallet)
   }
 
-  createWallet (wallet: MultisigWalletModel) {
+  createWallet (wallet: MultisigEthWalletModel) {
     const owners = wallet.owners().items().map((item) => item.address())
     this._tx(
       'createWallet',
@@ -127,7 +120,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
     )
   }
 
-  async create2FAWallet (wallet: MultisigWalletModel, feeMultiplier) {
+  async create2FAWallet (wallet: MultisigEthWalletModel, feeMultiplier) {
     const result = await this._tx(
       'create2FAWallet',
       [Math.floor(wallet.releaseTime() / 1000)],

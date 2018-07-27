@@ -8,14 +8,20 @@ import { getMainSymbolForBlockchain } from '@chronobank/core/redux/tokens/select
 import { getWallets } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
 import Amount from '../../../models/Amount'
+import { getEthMultisigWallets } from '../../multisigWallet/selectors/models'
 
 // provides filtered list of addresses of MainWallets
 export const selectWallet = (blockchain, address) => createSelector(
   [
     getWallets,
+    getEthMultisigWallets,
   ],
-  (wallets) => {
-    const wallet: WalletModel = wallets[`${blockchain}-${address}`]
+  (wallets, ethMultisigWallets) => {
+    const walletId = `${blockchain}-${address}`
+    let wallet: WalletModel = wallets[walletId]
+    if (!wallet) {
+      wallet = ethMultisigWallets.item(walletId)
+    }
     const mainSymbol = getMainSymbolForBlockchain(blockchain)
 
     const balance: Amount = wallet ? wallet.balances[mainSymbol] : new Amount(0, mainSymbol)
