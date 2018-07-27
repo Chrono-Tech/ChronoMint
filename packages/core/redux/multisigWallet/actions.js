@@ -207,7 +207,7 @@ export const initMultisigWalletManager = () => async (dispatch, getState) => {
 
   walletsManagerDAO.on('mained', (tx: TxExecModel) => {
     const wallet = getState().get(DUCK_MULTISIG_WALLET).item(tx.id())
-    dispatch(updateWallet(wallet.isPending(false).isFetched(true).address(tx.hash.transactionHash)))
+    dispatch(updateWallet(wallet.isPending(false).isFetched(true).address(tx.hash)))
   })
   /*let wallets = getState().get(DUCK_MULTISIG_WALLET)
   wallets.items().map((wallet) => {
