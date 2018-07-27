@@ -4,12 +4,13 @@
  */
 
 import PropTypes from 'prop-types'
+import uuid from 'uuid/v1'
 import AbstractJsModel from './AbstractJsModel'
 
 const schemaFactory = () => ({
   id: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  hash: PropTypes.string.isRequired,
+  hash: PropTypes.string,
   date: PropTypes.instanceOf(Date),
   details: PropTypes.arrayOf(PropTypes.shape({
     label: PropTypes.string,
@@ -19,8 +20,9 @@ const schemaFactory = () => ({
 
 export default class CurrentTransactionNotificationModel extends AbstractJsModel {
   constructor (props) {
-    super(props, schemaFactory())
-    Object.assign(this, props)
+    const newProps = { ...props, id: props.id || uuid() }
+    super(newProps, schemaFactory())
+    Object.assign(this, newProps)
     Object.freeze(this)
   }
 }

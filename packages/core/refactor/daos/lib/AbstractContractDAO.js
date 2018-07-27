@@ -4,13 +4,13 @@
  */
 
 import EventEmitter from 'events'
+import ipfs from '@chronobank/core-dependencies/utils/IPFS'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import BigNumber from 'bignumber.js'
 import TxExecModel from '../../../refactor/models/TxExecModel'
 import web3Converter from '../../../utils/Web3Converter'
 import Amount from '../../../models/Amount'
 import { BLOCKCHAIN_ETHEREUM } from '../../../dao/EthereumDAO'
-import ipfs from '@chronobank/core-dependencies/utils/IPFS'
 
 export const DEFAULT_TX_OPTIONS = {
   feeMultiplier: null,

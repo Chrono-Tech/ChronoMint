@@ -43,15 +43,10 @@ export default class VotingManagerDAO extends AbstractContractDAO {
   connect (web3, options) {
     super.connect(web3, options)
 
-    this.pollCreatedEmitter = this.contract.events.PollCreated({})
-      .on('data', this.handlePollCreatedData.bind(this))
-      .on('changed', this.handlePollCreatedChanged.bind(this))
-      .on('error', this.handlePollCreatedError.bind(this))
-
-    this.pollRemovedEmitter = this.contract.events.PollRemoved({})
-      .on('data', this.handlePollRemovedData.bind(this))
-      .on('changed', this.handlePollRemovedChanged.bind(this))
-      .on('error', this.handlePollRemovedError.bind(this))
+    this.allEventsEmitter = this.history.events.allEvents({})
+      .on('data', this.handleEventsData.bind(this))
+      .on('changed', this.handleEventsChanged.bind(this))
+      .on('error', this.handleEventsError.bind(this))
   }
 
   disconnect () {
@@ -64,28 +59,18 @@ export default class VotingManagerDAO extends AbstractContractDAO {
     }
   }
 
-  handlePollCreatedData (data) {
-    this.emit('PollCreated', data)
+  handleEventsData (data) {
+    console.log('handleEventsData: ', data.event, data)
+    this.emit(data.event, data)
   }
 
-  handlePollCreatedChanged (data) {
-    console.log('handlePollCreatedChanged: ', data)
+  handleEventsChanged (data) {
+    console.log('handleEventsChanged: ', data.event, data)
   }
 
-  handlePollCreatedError (data) {
-    this.emit('PollCreated_error', data)
-  }
-
-  handlePollRemovedData (data) {
-    this.emit('PollRemoved', data)
-  }
-
-  handlePollRemovedChanged (data) {
-    console.log('handlePollRemovedChanged: ', data)
-  }
-
-  handlePollRemovedError (data) {
-    this.emit('PollRemoved_error', data)
+  handleEventsError (data) {
+    console.log('handleEventsChanged: ', data.event, data)
+    this.emit(data.event + '_error', data)
   }
 
   getVoteLimit (): Promise {
@@ -100,9 +85,9 @@ export default class VotingManagerDAO extends AbstractContractDAO {
     this.pollInterfaceManagerDAO = pollInterfaceDAO
   }
 
-  postStoreDispatchSetup (state, web3, history) {
+  postStoreDispatchSetup (state, web3, history, subscribeTxFlow) {
     const assetHolderDAO = daoByType('TimeHolder')(state)
-    const pollsInterfaceManagerDAO = new PollInterfaceManagerDAO({ web3, history })
+    const pollsInterfaceManagerDAO = new PollInterfaceManagerDAO({ web3, history, subscribeTxFlow })
     this.setPollInterfaceManagerDAO(pollsInterfaceManagerDAO)
     this.setAssetHolderDAO(assetHolderDAO)
   }
@@ -131,7 +116,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
     const voteLimitInTIME = poll.voteLimitInTIME
     let summary = poll.txSummary()
     summary.voteLimitInTIME = new Amount(voteLimitInTIME, 'TIME')
-    summary = { ...poll.txSummary(), ...options, blockchain: 'Ethereum' }
+    summary = { ...poll.txSummary(), ...options, id: options.stubId, blockchain: 'Ethereum' }
 
     await this._tx(TX_CREATE_POLL, [
       poll.options.length,
@@ -256,13 +241,13 @@ export default class VotingManagerDAO extends AbstractContractDAO {
   /** @private */
   _watchCallback = (callback, status, account: string) => async (result) => {
     let notice = new PollNoticeModel({
-      pollId: result.args.pollAddress, // just a long
+      pollId: result.returnValues.pollAddress.toLowerCase(),
       status,
       transactionHash: result.transactionHash,
     })
 
     if (status !== IS_REMOVED) {
-      const poll = await this.getPoll(result.args.pollAddress, account)
+      const poll = await this.getPoll(result.returnValues.pollAddress.toLowerCase(), account)
       notice = notice.poll(poll)
     }
 

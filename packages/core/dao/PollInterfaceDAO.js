@@ -18,18 +18,6 @@ export default class PollInterfaceDAO extends AbstractContractDAO  {
     super({ address, history, abi })
   }
 
-  connect (web3, options) {
-    super.connect(web3, options)
-
-    this.allEventsEmitter = this.contract.events.allEvents({})
-      .on('data', this.handleAllEventsData.bind(this))
-
-  }
-
-  handleAllEventsData = (data) => {
-    console.log('handleAllEventsData: ', data)
-  }
-
   hasMember (address: string): boolean {
     if (!address) {
       return false
