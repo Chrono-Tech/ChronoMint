@@ -18,6 +18,18 @@ export default class PollInterfaceDAO extends AbstractContractDAO  {
     super({ address, history, abi })
   }
 
+  connect (web3, options) {
+    super.connect(web3, options)
+
+    this.allEventsEmitter = this.contract.events.allEvents({})
+      .on('data', this.handleAllEventsData.bind(this))
+
+  }
+
+  handleAllEventsData = (data) => {
+    console.log('handleAllEventsData: ', data)
+  }
+
   hasMember (address: string): boolean {
     if (!address) {
       return false
@@ -52,8 +64,7 @@ export default class PollInterfaceDAO extends AbstractContractDAO  {
   async activatePoll (options) {
     const txOptions = { useDefaultGasLimit: true, ...options }
 
-    const tx = await this._tx(TX_ACTIVATE_POLL, [], new BigNumber(0), new BigNumber(0), txOptions)
-    return tx
+    await this._tx(TX_ACTIVATE_POLL, [], new BigNumber(0), new BigNumber(0), txOptions)
   }
 
   vote (choice, choiceText, options) {
@@ -69,8 +80,7 @@ export default class PollInterfaceDAO extends AbstractContractDAO  {
   async endPoll (options) {
     const txOptions = { useDefaultGasLimit: true, ...options }
 
-    const tx = await this._tx(TX_END_POLL, [], new BigNumber(0), new BigNumber(0), txOptions)
-    return tx
+    await this._tx(TX_END_POLL, [], new BigNumber(0), new BigNumber(0), txOptions)
   }
 
 }

@@ -133,14 +133,12 @@ export default class VotingManagerDAO extends AbstractContractDAO {
     summary.voteLimitInTIME = new Amount(voteLimitInTIME, 'TIME')
     summary = { ...poll.txSummary(), ...options, blockchain: 'Ethereum' }
 
-    const tx = await this._tx(TX_CREATE_POLL, [
+    await this._tx(TX_CREATE_POLL, [
       poll.options.length,
       this._c.ipfsHashToBytes32(hash),
       new BigNumber(voteLimitInTIME),
       poll.deadline.getTime(),
     ], new BigNumber(0), new BigNumber(0), summary)
-
-    return tx
   }
 
   async getPollsDetails (pollsAddresses: Array<string>, account: string) {
@@ -272,15 +270,15 @@ export default class VotingManagerDAO extends AbstractContractDAO {
   }
 
   watchCreated (callback, account) {
-    // return this._watch(EVENT_POLL_CREATED, this._watchCallback(callback, IS_CREATED, account))
+    return this.on(EVENT_POLL_CREATED, this._watchCallback(callback, IS_CREATED, account))
   }
 
   watchUpdated (callback) {
-    // return this._watch(EVENT_POLL_UPDATED, this._watchCallback(callback, IS_UPDATED))
+    return this.on(EVENT_POLL_UPDATED, this._watchCallback(callback, IS_UPDATED))
   }
 
   watchRemoved (callback) {
-    // return this._watch(EVENT_POLL_REMOVED, this._watchCallback(callback, IS_REMOVED))
+    return this.on(EVENT_POLL_REMOVED, this._watchCallback(callback, IS_REMOVED))
   }
 
   estimateGasForVoting = async (mode: string, params, callback, gasPriceMultiplier = 1) => {

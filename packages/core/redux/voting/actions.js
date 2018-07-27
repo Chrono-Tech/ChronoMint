@@ -5,11 +5,8 @@
 
 import BigNumber from 'bignumber.js'
 import { push } from '@chronobank/core-dependencies/router'
-import Amount from '../../models/Amount'
-import { ETH } from '../../redux/mainWallet/actions'
 import { DUCK_SESSION } from '../session/actions'
 import votingService from '../../services/VotingService'
-import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import { EVENT_POLL_ACTIVATED, EVENT_POLL_ENDED, EVENT_POLL_VOTED } from '../../dao/PollEmitterDAO'
 import type PollNoticeModel from '../../models/notices/PollNoticeModel'
 import { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_UPDATED, IS_VOTED } from '../../models/notices/PollNoticeModel'
@@ -19,8 +16,7 @@ import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED, TX_CREATE_POLL } from '../../da
 import { PTPoll } from './types'
 import { getSelectedPollFromDuck, getVoting } from './selectors/models'
 import { daoByType } from '../../refactor/redux/daos/selectors'
-import { sendNewTx } from '../../refactor/redux/transactions/actions'
-import PollModel from "../../models/PollModel";
+import PollModel from '../../models/PollModel'
 
 export const POLLS_VOTE_LIMIT = 'voting/POLLS_LIMIT'
 export const POLLS_LOAD = 'voting/POLLS_LOAD'
