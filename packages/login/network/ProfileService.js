@@ -6,7 +6,7 @@
 import EventEmitter from 'events'
 import axios from 'axios'
 
-const PROFILE_BACKEND_REST_URL = 'https://backend.profile.tp.ntr1x.com'
+const PROFILE_BACKEND_REST_URL = 'http://localhost:3000/'
 const basePath = '/api/v1'
 const GET_PERSONS_REST = `${basePath}/security/persons/query`
 const GET_SIGNATURE_REST = `${basePath}/security/signin/signature`
@@ -19,6 +19,8 @@ const CONFIRM_LEVEL_2 = `${basePath}/security/me/profile/level2/confirm`
 const VALIDATE_LEVEL_2_PHONE = `${basePath}/security/me/profile/level2/validate/phone`
 const VALIDATE_LEVEL_2_EMAIL = `${basePath}/security/me/profile/level2/validate/email`
 const PROFILE_NOTIFICATIONS = `${basePath}/security/me/profile/notifications`
+
+const MEDIA_IMAGE_UPLOAD = `${basePath}/media/image/upload`
 
 const PURPOSE_VALUE = 'exchange'
 
@@ -196,6 +198,25 @@ class ProfileService extends EventEmitter {
       name,
       value,
     }, this.withAuthorization(token))
+
+    return data
+  }
+
+  async avatarUpload (file, token) {
+    const service = this.getServerProvider()
+
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const { data } = await service.post(
+      MEDIA_IMAGE_UPLOAD,
+      formData,
+      this.withAuthorization(token, {
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      })
+    )
 
     return data
   }

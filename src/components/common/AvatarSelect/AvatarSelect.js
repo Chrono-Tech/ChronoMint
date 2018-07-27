@@ -23,10 +23,8 @@ import globalStyles from 'styles'
 import { ACCEPT_ALL } from '@chronobank/core/models/FileSelect/FileExtension'
 import FileCollection from '@chronobank/core/models/FileSelect/FileCollection'
 import FileModel, { fileConfig } from '@chronobank/core/models/FileSelect/FileModel'
-import ipfs from '@chronobank/core-dependencies/utils/IPFS'
-import FileItem from './FileItem'
 
-import './FileSelect.scss'
+import './AvatarSelect.scss'
 import Preloader from '../Preloader/Preloader'
 
 // defaults
@@ -35,7 +33,7 @@ const DEFAULT_MAX_FILE_SIZE = 2 * 1024 * 1024 // 2Mb
 const DEFAULT_ASPECT_RATIO = 2 // means 1:2 ... 2:1
 const DEFAULT_MAX_FILES = 10
 
-class FileSelect extends PureComponent {
+class AvatarSelect extends PureComponent {
   static propTypes = {
     value: PropTypes.string,
     mode: PropTypes.string,
@@ -55,7 +53,7 @@ class FileSelect extends PureComponent {
   }
 
   static defaultProps = {
-    handleChange: () => {},
+    handleChange: null,
   }
 
   constructor (props, context, updater) {
@@ -67,6 +65,9 @@ class FileSelect extends PureComponent {
     this.handleReset = this.handleReset.bind(this)
 
     this.state = {
+      isHandlingFile: false,
+      isHandledFile: false,
+      handleError: null,
       files: new Immutable.Map(),
       fileCollection: new FileCollection(),
       config: {
@@ -96,44 +97,27 @@ class FileSelect extends PureComponent {
   }
 
   async handleChange (e) {
+    const { handleChange } = this.props
+
     if (!e.target.files.length) {
       return
     }
-    const { config } = this.state
-    const { multiple } = this.props
-    let fileCollection = multiple
-      ? this.state.fileCollection
-      : new FileCollection()
-    fileCollection = fileCollection.uploading(true)
-    let fileModel
-    const uploadedFiles = [...e.target.files].slice(0, this.getFilesLeft())
-    for (const file of uploadedFiles) {
-      fileModel = new FileModel({
-        file,
-        uploading: true,
-      })
-      fileCollection = fileCollection.add(fileModel)
-    }
-    this.setState({ fileCollection })
-    await this.uploadCollection(fileCollection, config)
-  }
+    const file = e.target.files[0]
 
-  async handleFileRemove (id) {
-    const fileCollection = this.state.fileCollection.remove(id)
-    this.setState({
-      files: this.state.files.remove(id),
-      fileCollection,
-    })
-    await this.uploadCollection(fileCollection, this.state.config)
+    if (handleChange){
+      this.setState({ isHandlingFile: true })
+      try {
+        await handleChange(file)
+      } catch(e){
+        this.setState({ handleError: e & e.message })
+      }
+      this.setState({ isHandlingFile: false, isHandledFile: true })
+    }
+
   }
 
   async handleReset () {
-    const fileCollection = new FileCollection()
-    this.setState({
-      fileCollection,
-      files: new Immutable.Map(),
-    })
-    await this.uploadCollection(fileCollection, this.state.config)
+    this.props.onChange()
   }
 
   getFilesLeft () {
@@ -141,85 +125,7 @@ class FileSelect extends PureComponent {
   }
 
   async loadCollection (hash) {
-    const data = await ipfs.get(hash)
-    let fileCollection = new FileCollection({
-      hash,
-      uploaded: data && data.links.length,
-    })
-    if (data && data.links) {
-      for (const item of data.links) {
-        fileCollection = fileCollection.add(FileModel.createFromLink(item))
-      }
-    }
-    this.setState({
-      fileCollection,
-    })
-  }
 
-  async uploadCollection (files: FileCollection, config: fileConfig) {
-    const fileCollection = await ipfs.uploadCollection(files, config, this.handleFileUpdate)
-    this.setState({ fileCollection })
-    if (this.props.returnCollection) {
-      this.props.input.onChange(fileCollection)
-    } else {
-      this.props.input.onChange(fileCollection.hasErrors()
-        ? `!${fileCollection.hash()}`
-        : fileCollection.hash())
-    }
-  }
-
-  renderFiles () {
-    const files = this.state.fileCollection.files()
-      .map((item) => (
-        <FileItem
-          onRemove={this.handleFileRemove}
-          key={item.id()}
-          file={item}
-        />
-      ))
-      .toArray()
-    return files.length > 0 && <div styleName='files'>{files}</div>
-  }
-
-  renderStatus () {
-    const { fileCollection } = this.state
-    if (fileCollection.hasErrors()) {
-      return <Error color={globalStyles.colors.error} />
-    }
-    if (fileCollection.uploading()) {
-      return <CircularProgress size={16} thickness={1.5} />
-    }
-    if (fileCollection.uploaded()) {
-      return <Done color={globalStyles.colors.success} />
-    }
-    return null
-  }
-
-  renderMultiple () {
-    const { config, fileCollection } = this.state
-    const { meta } = this.props
-
-    return (
-      <div>
-        {this.renderFiles()}
-        <div styleName='attach'>
-          <div styleName='attachAction'>
-            <Button
-              flat
-              onClick={this.handleOpenFileDialog}
-              disabled={this.getFilesLeft() === 0}
-            >
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Translate value={this.props.label || 'fileSelect.attachNew'} />
-              </div>
-            </Button>
-          </div>
-        </div>
-
-        {fileCollection.error() && <div styleName='error'>{fileCollection.error()}</div>}
-        {meta.touched && meta.error && <div styleName='error'>{meta.error}</div>}
-      </div>
-    )
   }
 
   renderSingle () {
@@ -243,10 +149,10 @@ class FileSelect extends PureComponent {
   }
 
   renderIcon () {
-    const { fileCollection } = this.state
+    const { isHandlingFile, isHandledFile, handleError } = this.state
     return (
       <div styleName='iconWrapper'>
-        {fileCollection.uploading()
+        {isHandlingFile
           ? (
             <div styleName='spinner'>
               <Preloader size={18} thickness={1.5} />
@@ -255,9 +161,9 @@ class FileSelect extends PureComponent {
           : (
             <div styleName='icon'>
               <IconButton
-                onClick={fileCollection.uploaded() ? this.handleReset : this.handleOpenFileDialog}
+                onClick={isHandledFile ? this.handleReset : this.handleOpenFileDialog}
               >
-                {fileCollection.uploaded() ? <Close /> : <AttachFile />}
+                {isHandledFile ? <Close /> : <AttachFile />}
               </IconButton>
             </div>
           )}
@@ -267,21 +173,16 @@ class FileSelect extends PureComponent {
 
   render () {
     const { config } = this.state
-    const { multiple } = this.props
 
     return (
       <div styleName='root'>
-        {multiple
-          ? this.renderMultiple()
-          : this.renderSingle()
-        }
+        { this.renderSingle() }
 
         <input
           ref={(input) => this.input = input}
           type='file'
           onChange={(e) => this.handleChange(e)}
           styleName='hide'
-          multiple={multiple}
           accept={config.accept.join(', ')}
         />
       </div>

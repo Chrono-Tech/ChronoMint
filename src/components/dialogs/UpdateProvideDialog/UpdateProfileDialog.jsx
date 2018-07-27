@@ -12,7 +12,7 @@ import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { ACCEPT_IMAGES } from '@chronobank/core/models/FileSelect/FileExtension'
 import ProfileModel from '@chronobank/core/models/ProfileModel'
-import { DUCK_SESSION, updateUserProfile } from '@chronobank/core/redux/session/actions'
+import { DUCK_SESSION, updateUserProfile, uploadAvatar } from '@chronobank/core/redux/session/actions'
 import { getAccountProfileSummary } from '@chronobank/core/redux/session/selectors'
 import {
   getAccountName,
@@ -38,20 +38,19 @@ function mapStateToProps (state) {
 
   return {
     selectedAccount: selectedAccount,
-    company: selector(state, 'company'),
-    name: selector(state, 'name'),
-    icon: selector(state, 'icon'),
     account: session.account,
-    initialValues: signatureProfileSelector,
+    initialValues: {...signatureProfileSelector, avatar: 'Qmf6aekhWgj3tAdPxvd834wvjxEeUD55jWc8z2fymh5r8Q'},
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     onSubmit: (values) => {
+      console.log('values', values)
       dispatch(modalsClose())
       dispatch(updateUserProfile(values.toJS()))
     },
+    handleAvatarUpload: (img) => dispatch(uploadAvatar(img)),
   }
 }
 
@@ -63,23 +62,24 @@ export default class UpdateProfileDialog extends PureComponent {
     name: PropTypes.string,
     company: PropTypes.string,
     icon: PropTypes.string,
+    handleAvatarUpload: PropTypes.func,
     ...formPropTypes,
   }
 
   render () {
-    const { selectedAccount } = this.props
+    const { selectedAccount, handleAvatarUpload, handleSubmit } = this.props
     console.log('update', this.props)
 
     return (
       <ModalDialog title={<Translate value={`${prefix}.title`} />}>
         <div styleName='root'>
-          <form styleName='content' onSubmit={this.props.handleSubmit}>
+          <form styleName='content' onSubmit={handleSubmit}>
             <div styleName='person'>
               <div styleName='left'>
                 <div styleName='icon'>
                   <IPFSImage
                     styleName='iconImage'
-                    multihash={this.props.icon}
+                    multihash={this.props.avatar}
                     icon={(
                       <i
                         styleName='default-icon'
@@ -104,10 +104,11 @@ export default class UpdateProfileDialog extends PureComponent {
             <div styleName='body'>
               <Field
                 component={FileSelect}
-                name='icon'
+                name='avatar'
                 fullWidth
                 floatingLabelText={`${prefix}.fileTitle`}
                 accept={ACCEPT_IMAGES}
+                handleChange={handleAvatarUpload}
               />
               <Field
                 component={TextField}
