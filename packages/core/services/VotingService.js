@@ -15,10 +15,10 @@ class VotingService extends EventEmitter {
   }
 
   getPollEmitterDAO (address) {
-    if (!this._cache[ address ]) {
-      this._cache[ address ] = new PollEmitter(address)
+    if (!this._cache[address]) {
+      this._cache[address] = new PollEmitter(address)
     }
-    return this._cache[ address ]
+    return this._cache[address]
   }
 
   setVotingManager (VotingManagerDAO) {
@@ -26,14 +26,17 @@ class VotingService extends EventEmitter {
   }
 
   getVotingManager () {
-    if (!this._cache[ 'VotingManager' ]) {
+    if (!this._cache['VotingManager']) {
       throw Error('VotingManagerDAO is not found')
     }
-    return this._cache[ 'VotingManager' ]
+    return this._cache['VotingManager']
   }
 
   subscribeToPoll (address, account) {
-    if (this._cache[ address ]) return null
+    if (this._cache[address]) {
+      return null
+    }
+
     const dao = this.getPollEmitterDAO(address)
 
     return Promise.all([
@@ -67,7 +70,6 @@ class VotingService extends EventEmitter {
       }),
     ])
   }
-
 }
 
 export default new VotingService()

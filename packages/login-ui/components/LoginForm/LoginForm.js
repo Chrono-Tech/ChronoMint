@@ -6,6 +6,7 @@
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import compose from 'recompose/compose'
+import spinner from 'assets/img/spinningwheel-1.gif'
 import React from 'react'
 import { Link } from 'react-router'
 import { Field, formValueSelector, reduxForm } from 'redux-form/immutable'
@@ -30,7 +31,6 @@ import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/acti
 import { getAccountAddress, getAccountAvatarImg, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
 
 import styles from './styles'
-import spinner from 'assets/img/spinningwheel-1.gif'
 import './LoginForm.scss'
 
 function mapStateToProps (state) {
@@ -47,6 +47,9 @@ function mapStateToProps (state) {
     accounts: network.accounts,
     isLocalNode: isLocalNode(network.selectedProviderId, network.selectedNetworkId),
     successMessage: formSelector(state, FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE),
+    initialValues: {
+      password: '1',
+    },
   }
 }
 
@@ -79,6 +82,10 @@ class LoginPage extends React.Component {
 
   componentWillMount () {
     this.props.initLoginPage()
+  }
+
+  componentDidMount () {
+    this.props.handleSubmit()
   }
 
   renderSuccessMessage () {

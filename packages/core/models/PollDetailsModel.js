@@ -14,7 +14,7 @@ import PollModel from './PollModel'
 const schemaFactory = () => ({
   id: PropTypes.string,
   poll: PropTypes.instanceOf(PollModel),
-  votes: PropTypes.instanceOf(Immutable.List),
+  votes: PropTypes.instanceOf(Immutable.Map),
   statistics: PropTypes.instanceOf(Immutable.List),
   totalSupply: PropTypes.instanceOf(BigNumber),
   shareholdersCount: PropTypes.instanceOf(BigNumber),
@@ -26,7 +26,7 @@ const schemaFactory = () => ({
 const defaultProps = {
   id: null,
   poll: new PollModel(),
-  votes: Immutable.List(),
+  votes: Immutable.Map(),
   statistics: Immutable.List(),
   totalSupply: new BigNumber(0),
   shareholdersCount: new BigNumber(0),
