@@ -21,6 +21,7 @@ const VALIDATE_LEVEL_2_EMAIL = `${basePath}/security/me/profile/level2/validate/
 const PROFILE_NOTIFICATIONS = `${basePath}/security/me/profile/notifications`
 
 const MEDIA_IMAGE_UPLOAD = `${basePath}/media/image/upload`
+const MEDIA_IMAGE_DOWNLOAD = (imageId = '') => `${basePath}/media/image/${imageId}`
 
 const PURPOSE_VALUE = 'exchange'
 
@@ -206,7 +207,7 @@ class ProfileService extends EventEmitter {
     const service = this.getServerProvider()
 
     const formData = new FormData()
-    formData.append('file', file)
+    formData.append('image', file, file.name)
 
     const { data } = await service.post(
       MEDIA_IMAGE_UPLOAD,
@@ -216,6 +217,17 @@ class ProfileService extends EventEmitter {
           'content-type': 'multipart/form-data',
         },
       })
+    )
+
+    return data
+  }
+
+  async avatarDownload (imgId, token) {
+    const service = this.getServerProvider()
+
+    const { data } = await service.get(
+      MEDIA_IMAGE_DOWNLOAD(imgId),
+      this.withAuthorization(token)
     )
 
     return data

@@ -15,26 +15,17 @@ import {
   Close,
 } from '@material-ui/icons'
 import Button from 'components/common/ui/Button/Button'
-import Immutable from 'immutable'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
-import globalStyles from 'styles'
-import { ACCEPT_ALL } from '@chronobank/core/models/FileSelect/FileExtension'
-import FileCollection from '@chronobank/core/models/FileSelect/FileCollection'
-import FileModel, { fileConfig } from '@chronobank/core/models/FileSelect/FileModel'
+import ProfileService from '@chronobank/login/network/ProfileService'
 
 import './AvatarSelect.scss'
 import Preloader from '../Preloader/Preloader'
 
-// defaults
-const DEFAULT_MAX_FILE_SIZE = 2 * 1024 * 1024 // 2Mb
-// TODO @dkchv: !!! make as [1,2]
-const DEFAULT_ASPECT_RATIO = 2 // means 1:2 ... 2:1
-const DEFAULT_MAX_FILES = 10
-
-class AvatarSelect extends PureComponent {
+export default class AvatarSelect extends PureComponent {
   static propTypes = {
+    token: PropTypes.string.isRequired,
     value: PropTypes.string,
     mode: PropTypes.string,
     // eslint-disable-next-line
@@ -49,47 +40,24 @@ class AvatarSelect extends PureComponent {
     aspectRatio: PropTypes.number,
     maxFiles: PropTypes.number, returnCollection: PropTypes.bool,
     floatingLabelText: PropTypes.node,
-    handleChange: PropTypes.func,
-  }
-
-  static defaultProps = {
-    handleChange: null,
   }
 
   constructor (props, context, updater) {
     super(props, context, updater)
 
-    // TODO replace with async arrow when class properties will work correctly
-    this.handleChange = this.handleChange.bind(this)
-    this.handleFileRemove = this.handleFileRemove.bind(this)
-    this.handleReset = this.handleReset.bind(this)
-
     this.state = {
-      isHandlingFile: false,
-      isHandledFile: false,
-      handleError: null,
-      files: new Immutable.Map(),
-      fileCollection: new FileCollection(),
-      config: {
-        accept: props.accept || ACCEPT_ALL,
-        maxFileSize: props.maxFileSize || DEFAULT_MAX_FILE_SIZE,
-        aspectRatio: props.aspectRatio || DEFAULT_ASPECT_RATIO,
-        maxFiles: props.maxFiles || DEFAULT_MAX_FILES,
-      },
+      isUploadingFile: false,
+      uploadSuccess: null,
+      uploadError: null,
+      fileName: '',
     }
   }
 
   componentDidMount () {
     const input = this.props.input
     if (input && input.value) {
-      this.loadCollection(this.props.input.value)
+      this.loadImage(this.props.input.value)
     }
-  }
-
-  handleFileUpdate = (file: FileModel) => {
-    this.setState((prevState) => ({
-      fileCollection: prevState.fileCollection.update(file),
-    }))
   }
 
   handleOpenFileDialog = () => {
@@ -97,62 +65,102 @@ class AvatarSelect extends PureComponent {
   }
 
   async handleChange (e) {
-    const { handleChange } = this.props
+    const { token } = this.props
+    let response
 
     if (!e.target.files.length) {
       return
     }
     const file = e.target.files[0]
+    console.log('filename', file.name)
 
-    if (handleChange){
-      this.setState({ isHandlingFile: true })
+    if (token && file){
+      this.setState({
+        isUploadingFile: true,
+        uploadError: null,
+      })
       try {
-        await handleChange(file)
+        response = await ProfileService.avatarUpload(file, token)
+        this.handleUploadSuccess(response)
       } catch(e){
-        this.setState({ handleError: e & e.message })
+        this.handleUploadFail(response)
       }
-      this.setState({ isHandlingFile: false, isHandledFile: true })
+
+      this.setState({ isUploadingFile: false })
     }
 
   }
 
-  async handleReset () {
-    this.props.onChange()
+  handleUploadSuccess (response){
+    if (response && response.url) {
+      this.setState({
+        uploadSuccess: response,
+        fileName: this.getFileNameFromPath(response.url),
+      })
+      this.props.input.onChange (response.id)
+    }
   }
 
-  getFilesLeft () {
-    return Math.max(this.state.config.maxFiles - this.state.fileCollection.size(), 0)
+  handleUploadFail (response){
+    if (response && response.error){
+      this.setState({ uploadError: response.error })
+    }
   }
 
-  async loadCollection (hash) {
+  handleReset () {
+    this.props.input.onChange('')
+    this.setState({ fileName: '' })
+  }
 
+  getFileNameFromPath (path){
+    return path && path.replace(/^.*[\\\/]/, '') || ''
+  }
+
+  async loadImage (imageId){
+    const { token } = this.props
+
+    try {
+      const data = await ProfileService.avatarDownload(imageId, token)
+
+      this.setState({
+        fileName: this.getFileNameFromPath(data.url),
+      })
+    } catch (e) {
+      // eslint-disable-next-line
+      console.log('Failed to load image', imageId)
+    }
   }
 
   renderSingle () {
-    const selectedFile = this.state.fileCollection.files().first()
+    const { meta } = this.props
+    const { uploadError, fileName } = this.state
+
     return (
       <div>
         <div styleName='wrapper'>
           <TextField
-            key={selectedFile}
             onClick={this.handleOpenFileDialog}
             fullWidth
             name='singleUpload'
             label={<Translate value={this.props.floatingLabelText || 'fileSelect.selectFile'} />}
-            defaultValue={selectedFile && selectedFile.name() || ''}
+            value={fileName || ''}
             readOnly
           />
           {this.renderIcon()}
         </div>
+
+        {uploadError && <div styleName='error'>{uploadError}</div>}
+        {meta.touched && meta.error && <div styleName='error'>{meta.error}</div>}
+
       </div>
     )
   }
 
   renderIcon () {
-    const { isHandlingFile, isHandledFile, handleError } = this.state
+    const { isUploadingFile, uploadSuccess, fileName } = this.state
     return (
       <div styleName='iconWrapper'>
-        {isHandlingFile
+        {isUploadingFile
           ? (
             <div styleName='spinner'>
               <Preloader size={18} thickness={1.5} />
@@ -161,9 +169,9 @@ class AvatarSelect extends PureComponent {
           : (
             <div styleName='icon'>
               <IconButton
-                onClick={isHandledFile ? this.handleReset : this.handleOpenFileDialog}
+                onClick={fileName ? this.handleReset.bind(this) : this.handleOpenFileDialog}
               >
-                {isHandledFile ? <Close /> : <AttachFile />}
+                {fileName ? <Close /> : <AttachFile />}
               </IconButton>
             </div>
           )}
@@ -172,8 +180,6 @@ class AvatarSelect extends PureComponent {
   }
 
   render () {
-    const { config } = this.state
-
     return (
       <div styleName='root'>
         { this.renderSingle() }
@@ -183,11 +189,8 @@ class AvatarSelect extends PureComponent {
           type='file'
           onChange={(e) => this.handleChange(e)}
           styleName='hide'
-          accept={config.accept.join(', ')}
         />
       </div>
     )
   }
 }
-
-export default FileSelect

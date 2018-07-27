@@ -64,12 +64,14 @@ export const getAccountProfileSummary = createSelector(
 
       return {
         userName: level1 && level1.userName,
-        avatar: level1 && level1.avatar && level1.avatar.url,
+        avatar: level1 && level1.avatar && level1.avatar.id,
         phone: level2 && level2.phone,
         email: level2 && level2.email,
         company: level2 && level2.company,
         website: level2 && level2.website,
       }
     }
+
+    return {}
   }
 )

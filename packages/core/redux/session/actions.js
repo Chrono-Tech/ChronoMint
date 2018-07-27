@@ -163,7 +163,10 @@ export const updateUserProfile = (profile) => async (dispatch, getState) => {
 
   const newProfile = await profileService.updateUserProfile({ ...profile }, profileSignature.token)
 
-  dispatch(setProfileSignature(newProfile))
+  dispatch(setProfileSignature({
+    ...profileSignature,
+    profile: newProfile,
+  }))
 }
 
 export const uploadAvatar = (img) => (dispatch) => {

@@ -25,10 +25,11 @@
 
         .icon {
           position: relative;
-          display: table;
-          background-color: $color-panel-bg-0;
+          display: flex;
           border-radius: 50%;
           overflow: hidden;
+          align-items: center;
+          justify-content: center;
 
           .iconImage {
             width: 96px;
@@ -91,4 +92,5 @@
 .default-icon {
   font-size: 96px;
   color: white;
+  background-color: $color-panel-bg-0;
 }

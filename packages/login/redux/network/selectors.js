@@ -6,7 +6,7 @@
 import { createSelector } from 'reselect'
 import { DUCK_NETWORK } from './actions'
 
-export const getProfileSignature = () => createSelector(
+export const getProfileSignatureSelector = () => createSelector(
   (state) => state.get(DUCK_NETWORK),
   (network) => {
     const { profileSignature } = network
@@ -16,7 +16,7 @@ export const getProfileSignature = () => createSelector(
 )
 
 export const getAccountProfileSummary = () => createSelector(
-  [getProfileSignature],
+  [getProfileSignatureSelector],
   (profile) => {
     if (profile){
       const level1 = profile.level1.submitted

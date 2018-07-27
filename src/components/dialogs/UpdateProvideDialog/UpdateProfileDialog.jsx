@@ -11,16 +11,15 @@ import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { ACCEPT_IMAGES } from '@chronobank/core/models/FileSelect/FileExtension'
-import ProfileModel from '@chronobank/core/models/ProfileModel'
-import { DUCK_SESSION, updateUserProfile, uploadAvatar } from '@chronobank/core/redux/session/actions'
+import { DUCK_SESSION, updateUserProfile } from '@chronobank/core/redux/session/actions'
 import { getAccountProfileSummary } from '@chronobank/core/redux/session/selectors'
 import {
   getAccountName,
 } from '@chronobank/core/redux/persistAccount/utils'
 import { modalsClose } from 'redux/modals/actions'
 import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
-import FileSelect from 'components/common/FileSelect/FileSelect'
-import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import AvatarSelect from 'components/common/AvatarSelect/AvatarSelect'
+import ProfileImage from 'components/common/ProfileImage/ProfileImage'
 import QRIcon from 'components/dashboard/MicroIcon/QRIcon'
 import ModalDialog from '../ModalDialog'
 import validate from './validate'
@@ -33,13 +32,17 @@ function mapStateToProps (state) {
   const selector = formValueSelector(FORM_UPDATE_PROFILE_DIALOG)
   const session = state.get(DUCK_SESSION)
   const selectedAccount = state.get('persistAccount').selectedWallet
-  const signatureProfileSelector = getAccountProfileSummary(state)
-  console.log('mmmmm', signatureProfileSelector)
+  const accountProfileSummary = getAccountProfileSummary(state)
+  const profileSignature = session.profileSignature
 
   return {
     selectedAccount: selectedAccount,
     account: session.account,
-    initialValues: {...signatureProfileSelector, avatar: 'Qmf6aekhWgj3tAdPxvd834wvjxEeUD55jWc8z2fymh5r8Q'},
+    userName: accountProfileSummary.userName,
+    avatar: selector(state, 'avatar'),
+    company: accountProfileSummary.company,
+    token: profileSignature && profileSignature.token,
+    initialValues: { ...accountProfileSummary },
   }
 }
 
@@ -50,7 +53,6 @@ function mapDispatchToProps (dispatch) {
       dispatch(modalsClose())
       dispatch(updateUserProfile(values.toJS()))
     },
-    handleAvatarUpload: (img) => dispatch(uploadAvatar(img)),
   }
 }
 
@@ -62,24 +64,29 @@ export default class UpdateProfileDialog extends PureComponent {
     name: PropTypes.string,
     company: PropTypes.string,
     icon: PropTypes.string,
+    token: PropTypes.string,
     handleAvatarUpload: PropTypes.func,
     ...formPropTypes,
   }
 
+  static defaultProps = {
+    token: '',
+  }
+
   render () {
-    const { selectedAccount, handleAvatarUpload, handleSubmit } = this.props
-    console.log('update', this.props)
+    const { selectedAccount, handleSubmit, token, avatar, userName, company, account } = this.props
+    console.log('update ava', this.props.avatar)
 
     return (
       <ModalDialog title={<Translate value={`${prefix}.title`} />}>
         <div styleName='root'>
-          <form styleName='content' onSubmit={handleSubmit}>
+          <form styleName='content' name={FORM_UPDATE_PROFILE_DIALOG} onSubmit={handleSubmit}>
             <div styleName='person'>
               <div styleName='left'>
                 <div styleName='icon'>
-                  <IPFSImage
+                  <ProfileImage
                     styleName='iconImage'
-                    multihash={this.props.avatar}
+                    imageId={avatar}
                     icon={(
                       <i
                         styleName='default-icon'
@@ -92,23 +99,22 @@ export default class UpdateProfileDialog extends PureComponent {
                 </div>
               </div>
               <div styleName='right'>
-                <div styleName='name'>{getAccountName(selectedAccount) || <Translate value={`${prefix}.yourName`} />}</div>
-                <div styleName='company'>{this.props.company || <Translate value={`${prefix}.yourCompany`} />}</div>
-                <div styleName='account'>{this.props.account || <Translate value={`${prefix}.accountAddress`} />}</div>
+                <div styleName='name'>{ userName || getAccountName(selectedAccount) || <Translate value={`${prefix}.yourName`} />}</div>
+                <div styleName='company'>{company || <Translate value={`${prefix}.yourCompany`} />}</div>
+                <div styleName='account'>{account || <Translate value={`${prefix}.accountAddress`} />}</div>
                 <div styleName='micros'>
-                  <QRIcon value={this.props.account} />
-                  <CopyIcon value={this.props.account} />
+                  <QRIcon value={account} />
+                  <CopyIcon value={account} />
                 </div>
               </div>
             </div>
             <div styleName='body'>
               <Field
-                component={FileSelect}
+                component={AvatarSelect}
                 name='avatar'
                 fullWidth
                 floatingLabelText={`${prefix}.fileTitle`}
-                accept={ACCEPT_IMAGES}
-                handleChange={handleAvatarUpload}
+                token={token}
               />
               <Field
                 component={TextField}
