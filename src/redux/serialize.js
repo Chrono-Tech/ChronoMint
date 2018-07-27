@@ -103,8 +103,6 @@ function serialize (Immutable, refs) {
           case 'Amount':
             return new Amount(data.value, data.symbol, data.isLoaded)
           case 'WalletModel':
-            // TODO @abdulov remove console.log
-            console.log('reviver', data)
             return new WalletModel(data)
           case 'BalanceModel':
             return new BalanceModel(data)

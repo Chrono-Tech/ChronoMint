@@ -13,7 +13,7 @@ import {
   ContractsManagerABI,
   ERC20ManagerABI,
   MultiEventsHistoryABI,
-  VotingManagerABI,
+  VotingManagerABI, WalletsManagerABI,
 } from '../../../core/dao/abi/'
 
 import ContractsManagerDAO from './lib/ContractsManagerDAO'
@@ -24,6 +24,7 @@ import VotingManagerDAO from '../../dao/VotingManagerDAO'
 import PollInterfaceDAO from '../../dao/PollInterfaceDAO'
 import AssetDonatorDAO from '../../dao/AssetDonatorDAO'
 import UserManagerDAO from '../../../core/dao/UserManagerDAO'
+import WalletsManagerDAO from '../../dao/WalletsManagerDAO'
 
 export { default as ethDAO } from './lib/ETHDAO'
 export { default as AbstractContractDAO } from './lib/AbstractContractDAO'
@@ -82,4 +83,10 @@ export const MULTI_EVENTS_HISTORY = new ContractModel({
   type: 'MultiEventsHistory',
   abi: MultiEventsHistoryABI,
   DAOClass: null,
+})
+
+export const WALLETS_MANAGER = new ContractModel({
+  type: 'WalletsManager',
+  abi: WalletsManagerABI,
+  DAOClass: WalletsManagerDAO,
 })

@@ -13,14 +13,19 @@ import {
   USER_MANAGER_LIBRARY,
   MULTI_EVENTS_HISTORY,
   VOTING_MANAGER_LIBRARY,
+  WALLETS_MANAGER,
 } from '../../daos/index'
 import { alternateTxHandlingFlow } from '../../../redux/tokens/actions'
+import { getAccount } from '../../../redux/session/selectors/models'
+import AbstractContractDAO from '../../daos/lib/AbstractContractDAO'
 
 export const DUCK_DAO = 'dao'
 export const DAOS_REGISTER = 'daos/register'
 export const DAOS_INITIALIZED = 'daos/initialized'
 
 export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
+  const account = getAccount(getState())
+  AbstractContractDAO.setAccount(account)
   const contractManagerDAO = CONTRACTS_MANAGER.create()
   await contractManagerDAO.connect(web3)
 
@@ -42,6 +47,7 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     USER_MANAGER_LIBRARY,
     ERC20_MANAGER,
     VOTING_MANAGER_LIBRARY,
+    WALLETS_MANAGER,
   ]
 
   const models = await Promise.all(

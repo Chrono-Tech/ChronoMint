@@ -6,24 +6,11 @@
 import BigNumber from 'bignumber.js'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { change } from 'redux-form/immutable'
-import {
-  bccProvider,
-  BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_LITECOIN,
-  btcProvider,
-  btgProvider,
-  ltcProvider,
-} from '@chronobank/login/network/BitcoinProvider'
-import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import type MultisigWalletDAO from '../../dao/MultisigWalletDAO'
-import { EE_MS_WALLET_ADDED, EE_MS_WALLET_REMOVED, EE_MS_WALLETS_COUNT } from '../../dao/MultisigWalletsManagerDAO'
+import { EE_MS_WALLET_ADDED, EE_MS_WALLET_REMOVED, EE_MS_WALLETS_COUNT } from '../../dao/WalletsManagerDAO'
 import Amount from '../../models/Amount'
 import WalletNoticeModel, { statuses } from '../../models/notices/WalletNoticeModel'
-import BalanceModel from '../../models/tokens/BalanceModel'
 import TokenModel from '../../models/tokens/TokenModel'
-import TxExecModel from '../../models/TxExecModel'
 import type MultisigWalletModel from '../../models/wallet/MultisigWalletModel'
 import type MultisigWalletPendingTxModel from '../../models/wallet/MultisigWalletPendingTxModel'
 import OwnerModel from '../../models/wallet/OwnerModel'
@@ -40,13 +27,13 @@ import multisigWalletService, {
   EE_REVOKE,
   EE_SINGLE_TRANSACTION,
 } from '../../services/MultisigWalletService'
-import tokenService from '../../services/TokenService'
-import { ETH, getTokensBalancesAndWatch, getTransactionsForWallet } from '../mainWallet/actions'
-import { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
+import { ETH, getTransactionsForWallet } from '../mainWallet/actions'
 import { getMultisigWallets } from '../wallet/selectors/models'
 import { getWallets } from './selectors/models'
 import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 import WalletModel from '../../models/wallet/WalletModel'
+import { daoByType } from '../../refactor/redux/daos/selectors'
+import TxExecModel from '../../refactor/models/TxExecModel'
 
 export const FORM_2FA_WALLET = 'Form2FAWallet'
 export const FORM_2FA_STEPS = [
@@ -67,8 +54,6 @@ export const MULTISIG_REMOVE = 'multisigWallet/REMOVE'
 export const MULTISIG_PENDING_TX = 'multisigWallet/PENDING_TX'
 export const MULTISIG_2_FA_CONFIRMED = 'multisigWallet/2_FA_CONFIRMED'
 
-let walletsManagerDAO
-
 const isOwner = (wallet: MultisigWalletModel | DerivedWalletModel, account) => {
   return wallet.owners().items().filter((owner) => owner.address() === account).length > 0
 }
@@ -86,6 +71,7 @@ export const watchMultisigWallet = (wallet: MultisigWalletModel): Promise => {
 }
 
 const subscribeOnWalletManager = () => (dispatch, getState) => {
+  const walletsManagerDAO = daoByType('WalletsManager')(getState())
   walletsManagerDAO
     .on(EE_MS_WALLET_ADDED, async (wallet: MultisigWalletModel) => {
       const wallets = getMultisigWallets(getState())
@@ -209,10 +195,13 @@ export const initMultisigWalletManager = () => async (dispatch, getState) => {
     return
   }
   dispatch({ type: MULTISIG_INIT, isInited: true })
-  const { account } = getState().get(DUCK_SESSION)
+  const walletsManagerDAO = daoByType('WalletsManager')(getState())
 
-  walletsManagerDAO = await contractsManagerDAO.getWalletsManagerDAO()
-  let wallets = getState().get(DUCK_MULTISIG_WALLET)
+  walletsManagerDAO.on('mained', (tx: TxExecModel) => {
+    const wallet = getState().get(DUCK_MULTISIG_WALLET).item(tx.id())
+    dispatch(updateWallet(wallet.isPending(false).isFetched(true).address(tx.hash.transactionHash)))
+  })
+  /*let wallets = getState().get(DUCK_MULTISIG_WALLET)
   wallets.items().map((wallet) => {
     if (wallet.isDerived() && isOwner(wallet, account)) {
       switch (wallet.blockchain()) {
@@ -238,7 +227,7 @@ export const initMultisigWalletManager = () => async (dispatch, getState) => {
         default:
       }
     }
-  })
+  })*/
 
   dispatch(subscribeOnWalletManager())
   dispatch(subscribeOnMultisigWalletService())
@@ -255,20 +244,20 @@ const selectWalletIfOne = () => (dispatch, getState) => {
   }
 }
 
-export const createWallet = (wallet: MultisigWalletModel) => async (dispatch) => {
+export const createWallet = (wallet: MultisigWalletModel) => (dispatch, getState) => {
   try {
-    const txHash = await walletsManagerDAO.createWallet(wallet)
-    dispatch(updateWallet(wallet.isPending(true).transactionHash(txHash)))
-    dispatch(selectWalletIfOne())
-    return txHash
+    const walletsManagerDAO = daoByType('WalletsManager')(getState())
+    walletsManagerDAO.createWallet(wallet)
+    dispatch(updateWallet(wallet.isPending(true)))
   } catch (e) {
     // eslint-disable-next-line
     console.error('create wallet error', e.message)
   }
 }
 
-export const create2FAWallet = (wallet: MultisigWalletModel, feeMultiplier) => async (dispatch) => {
+export const create2FAWallet = (wallet: MultisigWalletModel, feeMultiplier) => async (dispatch, getState) => {
   try {
+    const walletsManagerDAO = daoByType('WalletsManager')(getState())
     const txHash = await walletsManagerDAO.create2FAWallet(wallet, feeMultiplier)
     dispatch(updateWallet(wallet.isPending(true).transactionHash(txHash)))
     return txHash
@@ -312,11 +301,11 @@ export const removeOwner = (wallet, ownerAddress) => async (/*dispatch*/) => {
   }
 }
 
-export const multisigTransfer = (wallet: WalletModel, token, amount, recipient, feeMultiplier) => async () => {
+export const multisigTransfer = (wallet: WalletModel, token, amount, recipient, feeMultiplier) => async (dispatch, getState) => {
   try {
     let value
     if (wallet.is2FA) {
-      const walletsManagerDAO = await contractsManagerDAO.getWalletsManagerDAO()
+      const walletsManagerDAO = daoByType('WalletsManager')(getState())
       value = await walletsManagerDAO.getOraclePrice()
     }
     const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address)
@@ -369,8 +358,9 @@ export const getPendingData = (wallet, pending: MultisigWalletPendingTxModel) =>
   }
 }
 
-export const estimateGasFor2FAForm = async (account, gasPriceMultiplier = 1, callback) => {
+export const estimateGasFor2FAForm = (account, gasPriceMultiplier = 1, callback) => async (dispatch, getState) => {
   try {
+    const walletsManagerDAO = daoByType('WalletsManager')(getState())
     if (!walletsManagerDAO) {
       throw new Error('Dao is undefined')
     }

@@ -26,7 +26,7 @@ import { getAccount } from '../session/selectors'
 import { DUCK_MULTISIG_WALLET } from '../multisigWallet/actions'
 import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
-import { EE_MS_WALLET_ADDED } from '../../dao/MultisigWalletsManagerDAO'
+import { EE_MS_WALLET_ADDED } from '../../dao/WalletsManagerDAO'
 import MultisigWalletModel from '../../models/wallet/MultisigWalletModel'
 import { ethDAO } from '../../refactor/daos/index'
 
@@ -95,19 +95,19 @@ const initDerivedWallets = () => async (dispatch, getState) => {
     wallet.balances().items().map((balance) => {
       balances[balance.symbol()] = balance.amount()
     })
-    const walletNew = new WalletModel({
-      address: wallet.address(),
-      blockchain: wallet.blockchain(),
-      name: wallet.name(),
-      owners: wallet.owners().items().map((ownerModel) => ownerModel.address()),
-      balances,
-      customTokens: wallet.customTokens(),
-      deriveNumber: wallet.deriveNumber(),
-      isDerived: true,
-    })
+    // const walletNew = new WalletModel({
+    //   address: wallet.address(),
+    //   blockchain: wallet.blockchain(),
+    //   name: wallet.name(),
+    //   owners: wallet.owners().items().map((ownerModel) => ownerModel.address()),
+    //   balances,
+    //   customTokens: wallet.customTokens(),
+    //   deriveNumber: wallet.deriveNumber(),
+    //   isDerived: true,
+    // })
 
     // TODO @abdulov remove this
-    dispatch({ type: WALLETS_SET, wallet: walletNew })
+    // dispatch({ type: WALLETS_SET, wallet: walletNew })
 
     if (wallet.isDerived() && isOwner(wallet, account)) {
 

@@ -534,6 +534,10 @@ export default {
     WalletsManager: {
       'createWallet': {
         title: 'Create multisignature wallet',
+        owners: 'Owners',
+        requiredSignatures: 'Required signatures',
+        releaseTime: 'Release time',
+        isTimeLocked: 'Is timeLocked',
       },
       'create2FAWallet': {
         title: 'Create 2FA wallet',
