@@ -44,7 +44,6 @@ export const TOKENS_FETCHED = 'tokens/fetched'
 export const TOKENS_REMOVE = 'tokens/remove'
 export const TOKENS_FAILED = 'tokens/failed'
 
-// It is not a redux action
 const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
     console.log('submitTxHandler: ', tx)
@@ -66,7 +65,6 @@ const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExec
   }
 }
 
-// It is not a redux action
 const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
     if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
@@ -94,13 +92,11 @@ const rejectTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExec
 
 const mainedTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
-    console.log('mainedTxHandler: ', tx, dao)
     dispatch({ type: WATCHER_TX_END, tx })
   }
 }
 
 export const alternateTxHandlingFlow = (dao) => (dispatch) => {
-  console.log('alternateTxHandlingFlow = (dao): ', dao)
   dao
     .on('submit', submitTxHandler(dao, dispatch))
     .on('accept', acceptTxHandler(dao, dispatch))

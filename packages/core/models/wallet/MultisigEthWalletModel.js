@@ -16,7 +16,7 @@ const schemaFactory = () => ({
   balances: PropTypes.object,
   transactions: PropTypes.instanceOf(TxHistoryModel),
   owners: PropTypes.arrayOf(PropTypes.string),
-  requiredSignatures: PropTypes.string,
+  requiredSignatures: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   pendingTxList: PropTypes.object,
   releaseTime: PropTypes.instanceOf(Date),
   customTokens: PropTypes.object,
@@ -39,7 +39,7 @@ const defaultProps = {
   allowances: new AllowanceCollection({}),
 }
 
-export default class WalletModel extends AbstractModel {
+export default class MultisigEthWalletModel extends AbstractModel {
   constructor (ownProps) {
     const props = { ...defaultProps, ...ownProps }
     super(props, schemaFactory())

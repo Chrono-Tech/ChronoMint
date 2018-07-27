@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import uuid from 'uuid/v1'
 import OwnersList from 'components/wallet/OwnersList/OwnersList'
 import SignaturesList from 'components/wallet/SignaturesList/SignaturesList'
 import Button from 'components/common/ui/Button/Button'
@@ -73,6 +74,7 @@ function mapDispatchToProps (dispatch) {
         ...values.toJS(),
         releaseTime,
         owners: ownersCollection,
+        address: uuid(),
       })
 
       dispatch(createWallet(wallet))
@@ -90,7 +92,7 @@ export default class MultisigWalletForm extends PureComponent {
     is2FA: PropTypes.bool,
     ownersCount: PropTypes.number,
     changeSignatures: PropTypes.func,
-    requiredSignatures: PropTypes.number,
+    requiredSignatures: PropTypes.string,
     createWallet: PropTypes.func,
     wallet: PropTypes.instanceOf(MultisigWalletModel),
     ...formPropTypes,

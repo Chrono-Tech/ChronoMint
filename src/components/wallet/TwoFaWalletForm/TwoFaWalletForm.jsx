@@ -109,7 +109,7 @@ export default class TwoFaWalletForm extends PureComponent {
     clearTimeout(this.timeout)
     this.setState({ isFeeLoading: true })
     this.timeout = setTimeout(() => {
-      estimateGasFor2FAForm(
+      this.props.dispatch(estimateGasFor2FAForm(
         account,
         feeMultiplier,
         (error, { gasFee, gasPrice }) => {
@@ -121,7 +121,7 @@ export default class TwoFaWalletForm extends PureComponent {
           }
         },
         feeMultiplier,
-      )
+      ))
     }, 1000)
   }
 

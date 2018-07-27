@@ -7,16 +7,21 @@ import EventEmitter from 'events'
 import ipfs from '@chronobank/core-dependencies/utils/IPFS'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import BigNumber from 'bignumber.js'
+import ipfs from '@chronobank/core-dependencies/utils/IPFS'
 import TxExecModel from '../../../refactor/models/TxExecModel'
 import web3Converter from '../../../utils/Web3Converter'
 import Amount from '../../../models/Amount'
 import { BLOCKCHAIN_ETHEREUM } from '../../../dao/EthereumDAO'
 
+export const DEFAULT_GAS = 4700000
 export const DEFAULT_TX_OPTIONS = {
   feeMultiplier: null,
 }
 
 export default class AbstractContractDAO extends EventEmitter {
+
+  /** @protected */
+  static _account: string
 
   _c = web3Converter
 
@@ -27,20 +32,36 @@ export default class AbstractContractDAO extends EventEmitter {
     this.abi = abi
   }
 
-  connect (web3, options) {
+  connect (web3, options = {}) {
     if (this.isConnected) {
       this.disconnect()
     }
-    // eslint-disable-next-line no-console
-    console.log(`[${this.constructor.name}] Connect`)
     this.web3 = web3
+    options.from = AbstractContractDAO.getAccount()
+    options.gas = DEFAULT_GAS
+
+    // eslint-disable-next-line no-console
+    console.log(`%c [${this.constructor.name}] Connect`, 'background: grey', options)
+
     this.contract = new web3.eth.Contract(this.abi.abi, this.address, options)
     // eslint-disable-next-line no-console
-    console.log('Contract [' + this.constructor.name + '] connected: ', this.address, this.contract.events)
+    console.log(`%c Contract [${this.constructor.name}] connected`, 'background: grey;', this.address)
 
     this.history = this.history != null // nil check
       ? new web3.eth.Contract(this.abi.abi, this.history, options)
       : this.contract
+  }
+
+  isEmptyAddress (v): boolean {
+    return v === '0x0000000000000000000000000000000000000000'
+  }
+
+  static getAccount () {
+    return AbstractContractDAO._account
+  }
+
+  static setAccount (account) {
+    AbstractContractDAO._account = account
   }
 
   get isConnected () {
@@ -192,12 +213,17 @@ export default class AbstractContractDAO extends EventEmitter {
     console.log('submit Tx: ', this, func, args, amount, value, options, additionalOptions)
     const data = this.contract.methods[func](...args).encodeABI()
 
-    const {
+    let {
       from,
       feeMultiplier,
       fields,
       symbol,
+      id,
     } = Object.assign({}, DEFAULT_TX_OPTIONS, options)
+
+    if (!from) {
+      from = AbstractContractDAO.getAccount()
+    }
 
     const { gasLimit, gasFee, gasPrice } = await this.estimateGas(func, args, value, from, { feeMultiplier: feeMultiplier || 1 })
 
@@ -206,6 +232,7 @@ export default class AbstractContractDAO extends EventEmitter {
     setImmediate(async () => {
       console.log('submit Tx: setImmediate: ', this)
       this.emit('submit', new TxExecModel({
+        _id: id,
         contract: this.abi.contractName,
         func,
         fields: fields || {},

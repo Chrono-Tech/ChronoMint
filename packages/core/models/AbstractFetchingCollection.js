@@ -71,7 +71,7 @@ export const abstractFetchingCollection = (defaultValues) => class AbstractFetch
 
   itemFetched (item) {
     const leftToFetch = Math.max(this.leftToFetch() - 1, 0)
-    return this.add(item.isFetching(false).isFetched(true)).leftToFetch(leftToFetch)
+    return this.add(item).leftToFetch(leftToFetch)
   }
 
   selected (id) {

@@ -103,7 +103,6 @@ export const login = (account) => async (dispatch, getState) => {
   dispatch({ type: SESSION_PROFILE, profile, isCBE })
 
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
-
   isCBE && dispatch(cbeWatcher())
   dispatch(replace(ls.getLastURL() || defaultURL))
 }

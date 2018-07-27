@@ -27,7 +27,7 @@ export default class MultisigWalletModel extends abstractFetchingModel({
   releaseTime: new Date(0),
 }) {
   id () {
-    return this.get('transactionHash') || this.get('address')
+    return this.get('address')
   }
 
   name (value) {
@@ -39,8 +39,8 @@ export default class MultisigWalletModel extends abstractFetchingModel({
   }
 
   // shortcut for eth-address
-  address () {
-    return this.get('address')
+  address (value) {
+    return this._getSet('address', value)
   }
 
   balances (value) {
@@ -120,13 +120,25 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     }
 
     const data = {
-      requiredSignatures: this.requiredSignatures(),
-      owners: this.ownersArray(),
+      requiredSignatures: {
+        value: this.requiredSignatures(),
+        description: 'requiredSignatures',
+      },
+      owners: {
+        value: this.ownersArray(),
+        description: 'owners',
+      },
     }
 
     if (this.isTimeLocked()) {
-      data.releaseTime = this.releaseTime()
-      data.isTimeLocked = true
+      data.releaseTime = {
+        value: this.releaseTime(),
+        description: 'releaseTime',
+      }
+      data.isTimeLocked = {
+        value: true,
+        description: 'isTimeLocked',
+      }
     }
 
     return data

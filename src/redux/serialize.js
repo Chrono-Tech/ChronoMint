@@ -27,6 +27,7 @@ import MainWalletModel from '@chronobank/core/models/wallet/MainWalletModel'
 import AccountModel from '@chronobank/core/models/wallet/persistAccount/AccountModel'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import TxHistoryModel from '@chronobank/core/models/wallet/TxHistoryModel'
+import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 
 function mark (data, type, transformMethod) {
   return {
@@ -61,6 +62,7 @@ function serialize (Immutable, refs) {
       if (value instanceof AccountModel) return null
       if (value instanceof Date) return mark(value, 'Date', 'toString')
       if (value instanceof WalletModel) return mark(value, 'WalletModel', 'transform')
+      if (value instanceof MultisigEthWalletModel) return mark(value, 'MultisigEthWalletModel', 'transform')
       if (value instanceof TxHistoryModel) return mark(value, 'TxHistoryModel', 'transform')
       if (value instanceof Amount) return mark(value, 'Amount', 'transform')
       if (value instanceof BalanceModel) return refer(value, 'BalanceModel', 'toObject', refs)
@@ -103,9 +105,11 @@ function serialize (Immutable, refs) {
           case 'Amount':
             return new Amount(data.value, data.symbol, data.isLoaded)
           case 'WalletModel':
-            // TODO @abdulov remove console.log
-            console.log('reviver', data)
             return new WalletModel(data)
+          case 'MultisigEthWalletModel':
+            return new MultisigEthWalletModel(data)
+          case 'TxHistoryModel':
+            return new TxHistoryModel(data)
           case 'BalanceModel':
             return new BalanceModel(data)
           case 'BalancesCollection':

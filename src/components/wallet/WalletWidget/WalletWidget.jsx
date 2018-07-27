@@ -150,7 +150,7 @@ export default class WalletWidget extends PureComponent {
           {ownersList.slice(0, 2).map((owner) => {
             return (
               <div styleName='owner-icon'>
-                <div styleName='owner' className='chronobank-icon' title={owner.address()}>profile</div>
+                <div styleName='owner' className='chronobank-icon' title={owner}>profile</div>
               </div>
             )
           })

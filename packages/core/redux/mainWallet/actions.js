@@ -457,7 +457,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
   wallets
     .items()
     .map((wallet) => {
-      const isOwner = wallet.owners().items().filter((owner) => owner.address() === account).length > 0
+      const isOwner = wallet.owners.filter((owner) => owner === account).length > 0
       if (wallet instanceof DerivedWalletModel && isOwner) {
         const deriveNumber = wallet.deriveNumber ? wallet.deriveNumber() : null
         if (!lastDeriveNumbers[wallet.blockchain()] || (lastDeriveNumbers[wallet.blockchain()] && lastDeriveNumbers[wallet.blockchain()] < deriveNumber)) {

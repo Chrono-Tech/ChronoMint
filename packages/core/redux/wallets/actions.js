@@ -26,9 +26,10 @@ import { getAccount } from '../session/selectors'
 import { DUCK_MULTISIG_WALLET } from '../multisigWallet/actions'
 import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
-import { EE_MS_WALLET_ADDED } from '../../dao/MultisigWalletsManagerDAO'
+import { EE_MS_WALLET_ADDED } from '../../dao/WalletsManagerDAO'
 import MultisigWalletModel from '../../models/wallet/MultisigWalletModel'
 import { ethDAO } from '../../refactor/daos/index'
+import { getWallets } from './selectors/models'
 
 export const DUCK_WALLETS = 'wallets'
 export const WALLETS_SET = 'wallet/set'
@@ -39,7 +40,7 @@ export const WALLETS_SET_IS_TIME_REQUIRED = 'wallet/isTimeRequired'
 
 let walletsManagerDAO
 const isOwner = (wallet, account) => {
-  return wallet.owners().items().filter((owner) => owner.address() === account).length > 0
+  return wallet.owners().items().filter((owner) => owner === account).length > 0
 }
 
 export const get2FAEncodedKey = (callback) => () => {
@@ -88,47 +89,28 @@ const initWalletsFromKeys = () => (dispatch) => {
 
 const initDerivedWallets = () => async (dispatch, getState) => {
   const { account } = getAccount(getState())
-  const wallets = getState().get(DUCK_MULTISIG_WALLET)
+  const wallets = getWallets(getState())
 
-  wallets.items().map((wallet: DerivedWalletModel) => {
-    const balances = {}
-    wallet.balances().items().map((balance) => {
-      balances[balance.symbol()] = balance.amount()
-    })
-    const walletNew = new WalletModel({
-      address: wallet.address(),
-      blockchain: wallet.blockchain(),
-      name: wallet.name(),
-      owners: wallet.owners().items().map((ownerModel) => ownerModel.address()),
-      balances,
-      customTokens: wallet.customTokens(),
-      deriveNumber: wallet.deriveNumber(),
-      isDerived: true,
-    })
-
-    // TODO @abdulov remove this
-    dispatch({ type: WALLETS_SET, wallet: walletNew })
-
-    if (wallet.isDerived() && isOwner(wallet, account)) {
-
+  Object.values(wallets).map((wallet: WalletModel) => {
+    if (wallet.isDerived && !wallet.isMain && isOwner(wallet, account)) {
       dispatch(updateWalletBalance({ wallet }))
 
-      switch (wallet.blockchain()) {
+      switch (wallet.blockchain) {
         case BLOCKCHAIN_BITCOIN:
-          btcProvider.createNewChildAddress(wallet.deriveNumber())
-          btcProvider.subscribeNewWallet(wallet.address())
+          btcProvider.createNewChildAddress(wallet.deriveNumber)
+          btcProvider.subscribeNewWallet(wallet.address)
           break
         case BLOCKCHAIN_BITCOIN_CASH:
-          bccProvider.createNewChildAddress(wallet.deriveNumber())
-          bccProvider.subscribeNewWallet(wallet.address())
+          bccProvider.createNewChildAddress(wallet.deriveNumber)
+          bccProvider.subscribeNewWallet(wallet.address)
           break
         case BLOCKCHAIN_BITCOIN_GOLD:
-          btgProvider.createNewChildAddress(wallet.deriveNumber())
-          btgProvider.subscribeNewWallet(wallet.address())
+          btgProvider.createNewChildAddress(wallet.deriveNumber)
+          btgProvider.subscribeNewWallet(wallet.address)
           break
         case BLOCKCHAIN_LITECOIN:
-          ltcProvider.createNewChildAddress(wallet.deriveNumber())
-          ltcProvider.subscribeNewWallet(wallet.address())
+          ltcProvider.createNewChildAddress(wallet.deriveNumber)
+          ltcProvider.subscribeNewWallet(wallet.address)
           break
         case BLOCKCHAIN_ETHEREUM:
           // dispatch(subscribeOnTokens(getTokensBalancesAndWatch(wallet.address(), wallet.blockchain(), wallet.customTokens())))

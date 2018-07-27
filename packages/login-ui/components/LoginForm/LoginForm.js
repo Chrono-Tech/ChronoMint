@@ -48,7 +48,7 @@ function mapStateToProps (state) {
     isLocalNode: isLocalNode(network.selectedProviderId, network.selectedNetworkId),
     successMessage: formSelector(state, FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE),
     initialValues: {
-      password: '123',
+      password: '1',
     },
   }
 }
@@ -82,6 +82,10 @@ class LoginPage extends React.Component {
 
   componentWillMount () {
     this.props.initLoginPage()
+  }
+
+  componentDidMount () {
+    this.props.handleSubmit()
   }
 
   renderSuccessMessage () {

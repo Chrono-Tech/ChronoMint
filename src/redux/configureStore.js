@@ -35,8 +35,8 @@ const getNestedReducers = (ducks) => {
       reducers = {
         ...reducers,
         ...(typeof (entry) === 'function'
-          ? { [key]: entry }
-          : getNestedReducers(entry)
+            ? { [key]: entry }
+            : getNestedReducers(entry)
         ),
       }
     })
@@ -81,17 +81,20 @@ const configureStore = () => {
   ]
 
   if (isDevelopmentEnv) {
-    const IGNORED_ACTIONS = [
-      'mainWallet/TOKEN_BALANCE',
-      'market/UPDATE_LAST_MARKET',
-      'market/UPDATE_PRICES',
-      'market/UPDATE_RATES',
-      'tokens/fetched',
-      'wallet/updateBalance',
+    const WHITE_LIST = [
+      'multisig/INIT',
+      'multisig/FETCHING',
+      'multisig/FETCHED',
+      'multisigWallet/UPDATE',
+      'multisigWallet/BALANCE',
+      'multisigWallet/SELECT',
+      'multisigWallet/REMOVE',
+      'multisigWallet/PENDING_TX',
+      'multisigWallet/2_FA_CONFIRMED',
     ]
     const logger = createLogger({
       collapsed: true,
-      predicate: (getState, action) => !IGNORED_ACTIONS.includes(action.type),
+      predicate: (getState, action) => WHITE_LIST.includes(action.type),
     })
     // Note: logger must be the last middleware in chain, otherwise it will log thunk and promise, not actual actions
     middleware.push(logger)
@@ -100,8 +103,8 @@ const configureStore = () => {
   // noinspection JSUnresolvedVariable,JSUnresolvedFunction
   const createStoreWithMiddleware = composeEnhancers(
     applyMiddleware(
-      ...middleware
-    )
+      ...middleware,
+    ),
   )(createStore)
 
   return createStoreWithMiddleware(

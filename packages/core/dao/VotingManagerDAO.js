@@ -154,7 +154,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
             }
 
             const pollInterface = await this.pollInterfaceManagerDAO.getPollInterfaceDAO(pollAddress)
-            let [ votes, hasMember, memberOption ] = await Promise.all([
+            let [votes, hasMember, memberOption] = await Promise.all([
               await pollInterface.getVotesBalances(),
               await pollInterface.hasMember(account),
               await pollInterface.memberOption(account),
@@ -230,7 +230,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
   }
 
   async getPoll (pollId: string, account: string): PollDetailsModel {
-    const polls = await this.getPollsDetails([ pollId ], account)
+    const polls = await this.getPollsDetails([pollId], account)
     return polls.item(pollId)
   }
 
