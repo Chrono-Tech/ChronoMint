@@ -7,7 +7,7 @@ import BigNumber from 'bignumber.js'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { change } from 'redux-form/immutable'
 import type MultisigWalletDAO from '../../dao/MultisigWalletDAO'
-import { EE_MS_WALLET_ADDED, EE_MS_WALLET_REMOVED, EE_MS_WALLETS_COUNT } from '../../dao/WalletsManagerDAO'
+import { EE_MS_WALLET_ADDED, EE_MS_WALLET_REMOVED, EE_MS_WALLETS_COUNT } from '../../dao/constants'
 import Amount from '../../models/Amount'
 import WalletNoticeModel, { statuses } from '../../models/notices/WalletNoticeModel'
 import TokenModel from '../../models/tokens/TokenModel'
@@ -16,8 +16,8 @@ import type MultisigWalletPendingTxModel from '../../models/wallet/MultisigWalle
 import OwnerModel from '../../models/wallet/OwnerModel'
 import { notify, notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/actions'
-import { subscribeOnTokens } from '../tokens/actions'
-import multisigWalletService, {
+import { alternateTxHandlingFlow, subscribeOnTokens } from '../tokens/actions'
+import {
   EE_CONFIRMATION,
   EE_CONFIRMATION_NEEDED,
   EE_MULTI_TRANSACTION,
@@ -26,7 +26,8 @@ import multisigWalletService, {
   EE_REQUIREMENT_CHANGED,
   EE_REVOKE,
   EE_SINGLE_TRANSACTION,
-} from '../../services/MultisigWalletService'
+} from '../../services/constants'
+import multisigWalletService from '../../services/MultisigWalletService'
 import { ETH, getTransactionsForWallet } from '../mainWallet/actions'
 import { getMultisigWallets } from '../wallet/selectors/models'
 import { getWallets } from './selectors/models'
@@ -36,29 +37,20 @@ import { daoByType } from '../../refactor/redux/daos/selectors'
 import TxExecModel from '../../refactor/models/TxExecModel'
 import MultisigEthWalletModel from '../../models/wallet/MultisigEthWalletModel'
 import tokenService from '../../services/TokenService'
-
-export const FORM_2FA_WALLET = 'Form2FAWallet'
-export const FORM_2FA_STEPS = [
-  'formStep',
-  'waitStep',
-  'successStep',
-]
-
-export const DUCK_ETH_MULTISIG_WALLET = 'ethMultisigWallet'
-
-export const ETH_MULTISIG_INIT = 'ethMultisigWallet/INIT'
-export const ETH_MULTISIG_FETCHING = 'ethMultisigWallet/FETCHING'
-export const ETH_MULTISIG_FETCHED = 'ethMultisigWallet/FETCHED'
-export const ETH_MULTISIG_UPDATE = 'ethMultisigWallet/UPDATE'
-export const ETH_MULTISIG_BALANCE = 'ethMultisigWallet/BALANCE'
-export const ETH_MULTISIG_SELECT = 'ethMultisigWallet/SELECT'
-export const ETH_MULTISIG_REMOVE = 'ethMultisigWallet/REMOVE'
-export const ETH_MULTISIG_PENDING_TX = 'ethMultisigWallet/PENDING_TX'
-export const ETH_MULTISIG_2_FA_CONFIRMED = 'ethMultisigWallet/2_FA_CONFIRMED'
-
-const isOwner = (wallet: MultisigEthWalletModel, account) => {
-  return wallet.owners.items().filter((owner) => owner === account).length > 0
-}
+import {
+  ETH_MULTISIG_2_FA_CONFIRMED,
+  ETH_MULTISIG_PENDING_TX,
+  ETH_MULTISIG_REMOVE,
+  ETH_MULTISIG_SELECT,
+  ETH_MULTISIG_BALANCE,
+  ETH_MULTISIG_UPDATE,
+  ETH_MULTISIG_FETCHED,
+  ETH_MULTISIG_FETCHING,
+  ETH_MULTISIG_INIT,
+  DUCK_ETH_MULTISIG_WALLET,
+  FORM_2FA_STEPS,
+  FORM_2FA_WALLET,
+} from './constants'
 
 const updateWallet = (wallet: MultisigWalletModel) => (dispatch) => dispatch({ type: ETH_MULTISIG_UPDATE, wallet })
 export const selectMultisigWallet = (id) => (dispatch) => dispatch({ type: ETH_MULTISIG_SELECT, id })
@@ -76,6 +68,9 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
   const walletsManagerDAO = daoByType('WalletsManager')(getState())
   walletsManagerDAO
     .on(EE_MS_WALLET_ADDED, async (wallet: MultisigEthWalletModel) => {
+      const walletDao = multisigWalletService.getWalletDAO(wallet.address)
+      dispatch(alternateTxHandlingFlow(walletDao))
+
       const wallets = getMultisigWallets(getState())
 
       const walletFromDuck = wallets.item(wallet.id)
@@ -312,10 +307,6 @@ export const multisigTransfer = (wallet: WalletModel, token, amount, recipient, 
       const walletsManagerDAO = daoByType('WalletsManager')(getState())
       value = await walletsManagerDAO.getOraclePrice()
     }
-    // TODO @abdulov remove console.log
-    console.log('%c wallet', 'background: #222; color: #fff', wallet)
-    // TODO @abdulov remove console.log
-    console.log('%c wallet.address', 'background: #222; color: #fff', wallet.address)
     const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address)
     await dao.transfer(wallet, token, amount, recipient, feeMultiplier, value)
   } catch (e) {

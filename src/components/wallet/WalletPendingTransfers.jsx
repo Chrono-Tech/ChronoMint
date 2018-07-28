@@ -14,8 +14,9 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { confirmMultisigTx, DUCK_ETH_MULTISIG_WALLET, getPendingData, revokeMultisigTx } from '@chronobank/core/redux/multisigWallet/actions'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
+import { confirmMultisigTx, getPendingData, revokeMultisigTx } from '@chronobank/core/redux/multisigWallet/actions'
+import { DUCK_ETH_MULTISIG_WALLET } from '@chronobank/core/redux/multisigWallet/constants'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import './WalletPendingTransfers.scss'
 
 function mapStateToProps (state) {

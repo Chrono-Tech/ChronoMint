@@ -5,7 +5,7 @@
 
 import { REHYDRATE } from 'redux-persist'
 import MultisigWalletCollection from '../../models/wallet/MultisigWalletCollection'
-import * as a from './actions'
+import * as a from './constants'
 
 const initialState = new MultisigWalletCollection()
 

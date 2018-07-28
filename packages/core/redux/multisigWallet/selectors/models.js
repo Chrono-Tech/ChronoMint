@@ -5,7 +5,7 @@
 
 import { createSelector } from 'reselect'
 import MultisigWalletModel from '../../../models/wallet/MultisigWalletModel'
-import { DUCK_ETH_MULTISIG_WALLET } from '../actions'
+import { DUCK_ETH_MULTISIG_WALLET } from '../constants'
 
 export const getWallets = (state) => {
   return state.get(DUCK_ETH_MULTISIG_WALLET)

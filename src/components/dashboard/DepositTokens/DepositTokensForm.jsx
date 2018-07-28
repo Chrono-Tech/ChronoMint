@@ -29,7 +29,7 @@ import { estimateGasForDeposit, ETH, FEE_RATE_MULTIPLIER, mainApprove, mainRevok
 import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from '@chronobank/core/dao/AssetHolderDAO'
 import { TX_APPROVE } from '@chronobank/core/dao/ERC20DAO'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import AllowanceModel from '@chronobank/core/models/wallet/AllowanceModel'
 import classnames from 'classnames'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'

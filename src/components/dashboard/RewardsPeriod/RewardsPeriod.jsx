@@ -20,7 +20,7 @@ import { Translate } from 'react-redux-i18n'
 import { DUCK_ASSETS_HOLDER } from '@chronobank/core/redux/assetsHolder/actions'
 import { DUCK_I18N } from 'redux/i18n/actions'
 import { DUCK_REWARDS } from '@chronobank/core/redux/rewards/actions'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import './RewardsPeriod.scss'
 
 function prefix (token) {

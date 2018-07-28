@@ -4,7 +4,7 @@
  */
 
 import { createSelector } from 'reselect'
-import { DUCK_ETH_MULTISIG_WALLET } from '../multisigWallet/actions'
+import { DUCK_ETH_MULTISIG_WALLET } from '../multisigWallet/constants'
 import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 import Amount from '../../models/Amount'
 import { getMultisigWallets, selectMarketPricesListStore, selectMarketPricesSelectedCurrencyStore, selectTokensStore } from './selectors/models'

@@ -6,7 +6,6 @@
 export { getWallets } from './selectors/models'
 export { getWallet } from './selectors/models'
 export { filteredBalancesAndTokens } from './selectors/balances'
-export { multisigTokensAndAmountsSelector } from './selectors/tokens'
 export { multisigBalanceSelector } from './selectors/balances'
 export { tokensCountBalanceSelector } from './selectors/balances'
 export { multisigTokensCountSelector } from './selectors/tokens'

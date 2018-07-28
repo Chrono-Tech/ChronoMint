@@ -209,7 +209,6 @@ export default class AbstractContractDAO extends EventEmitter {
    * @returns {Promise<TxExecModel>}
    */
   async submit (func, args, amount, value, options, additionalOptions) {
-    console.log('submit Tx: ', this, func, args, amount, value, options, additionalOptions)
     const data = this.contract.methods[func](...args).encodeABI()
 
     let {

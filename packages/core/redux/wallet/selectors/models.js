@@ -3,9 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { DUCK_ETH_MULTISIG_WALLET } from '../../multisigWallet/actions'
+import { DUCK_ETH_MULTISIG_WALLET } from '../../multisigWallet/constants'
 import { DUCK_MARKET } from '../../market/actions'
-import { DUCK_TOKENS } from '../../tokens/actions'
+import { DUCK_TOKENS } from '../../tokens/constants'
 
 /**
  * SIMPLE SELECTORS

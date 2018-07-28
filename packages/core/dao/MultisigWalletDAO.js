@@ -11,11 +11,11 @@ import Amount from '../models/Amount'
 import TokenModel from '../models/tokens/TokenModel'
 import TxExecModel from '../models/TxExecModel'
 import MultisigTransactionModel from '../models/wallet/MultisigTransactionModel'
-import MultisigWalletModel from '../models/wallet/MultisigWalletModel'
 import MultisigWalletPendingTxCollection from '../models/wallet/MultisigWalletPendingTxCollection'
 import MultisigWalletPendingTxModel from '../models/wallet/MultisigWalletPendingTxModel'
 import OwnerModel from '../models/wallet/OwnerModel'
 import { MultiEventsHistoryABI, WalletABI } from './abi'
+import MultisigEthWalletModel from '../models/wallet/MultisigEthWalletModel'
 
 export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
@@ -199,20 +199,28 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     return result.tx
   }
 
-  async transfer (wallet: MultisigWalletModel, token: TokenModel, amount, to, feeMultiplier: Number = 1, value) {
+  async transfer (wallet: MultisigEthWalletModel, token: TokenModel, amount, to, feeMultiplier: Number = 1, value) {
     // const tokenDAO = tokenService.getDAO(token.id())
     // const value = tokenDAO.addDecimals(amount)
-    const result = await this._tx('transfer', [
-      to,
-      new BigNumber(amount),
-      token.symbol(),
-    ], {
-      from: wallet.address(),
-      to,
-      symbol: token.symbol(),
-      amount,
-    }, value)
-    return result.tx
+    /*
+    func: string,
+    args: Array = [],
+    amount: BigNumber = new BigNumber(0),
+    value: BigNumber = new BigNumber(0),
+    options: Object = {},
+    additionalOptions: Object = {},
+    */
+
+    await this._tx('transfer',
+      [
+        to,
+        new BigNumber(amount),
+        this.web3.utils.asciiToHex(token.symbol()),
+      ],
+      new BigNumber(0),
+      new BigNumber(0),
+      {},
+      value)
   }
 
   async confirmPendingTx (tx) {

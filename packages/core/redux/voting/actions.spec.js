@@ -11,12 +11,12 @@ import Immutable from 'immutable'
 import { accounts, mockStore } from 'specsInit'
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import PollModel from '../../models/PollModel'
-import PollNoticeModel, { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_VOTED, } from '../../models/notices/PollNoticeModel'
+import PollNoticeModel, { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_VOTED } from '../../models/notices/PollNoticeModel'
 import ERC20ManagerDAO, { EVENT_NEW_ERC20_TOKEN } from '../../dao/ERC20ManagerDAO'
 import TokenModel from '../../models/tokens/TokenModel'
 import TokensCollection from '../../models/tokens/TokensCollection'
 import { DUCK_SESSION } from '../session/actions'
-import { DUCK_TOKENS } from '../tokens/actions'
+import { DUCK_TOKENS } from '../tokens/constants'
 import VotingMainModel from '../../models/voting/VotingMainModel'
 import {
   activatePoll,
@@ -41,7 +41,7 @@ const poll1 = {
     title: 'First poll',
     description: 'First poll description',
     voteLimitInTIME: new BigNumber(1),
-    options: new Immutable.List([ 'option1', 'option2' ]),
+    options: new Immutable.List(['option1', 'option2']),
     deadline: moment().add(1, 'day').toDate(),
   }),
   details: null,
@@ -52,7 +52,7 @@ const poll2 = {
     title: 'Second poll',
     description: 'Second poll description',
     voteLimitInTIME: new BigNumber(1),
-    options: new Immutable.List([ 'First', 'Second' ]),
+    options: new Immutable.List(['First', 'Second']),
     deadline: moment().add(1, 'day').toDate(),
   }),
   details: null,
@@ -61,11 +61,11 @@ const poll2 = {
 let store
 let tokens = new TokensCollection()
 const mock = new Immutable.Map({
-  [ DUCK_SESSION ]: {
-    account: accounts[ 0 ],
+  [DUCK_SESSION]: {
+    account: accounts[0],
   },
-  [ DUCK_TOKENS ]: tokens,
-  [ DUCK_VOTING ]: new VotingMainModel(),
+  [DUCK_TOKENS]: tokens,
+  [DUCK_VOTING]: new VotingMainModel(),
 })
 
 describe('Voting actions', () => {
@@ -131,9 +131,9 @@ describe('Voting actions', () => {
     await store.dispatch(listPolls())
     const actions = store.getActions()
 
-    expect(actions[ 0 ].type).toEqual(POLLS_LOAD)
-    expect(actions[ 1 ].type).toEqual(POLLS_LIST)
-    expect(actions[ 1 ].list.size() > 0).toBeTruthy()
+    expect(actions[0].type).toEqual(POLLS_LOAD)
+    expect(actions[1].type).toEqual(POLLS_LIST)
+    expect(actions[1].list.size() > 0).toBeTruthy()
   })
 
   it.skip('should remove poll1', async (done) => {
@@ -202,36 +202,36 @@ describe('Voting actions', () => {
       poll: new PollModel(),
     })))
     actions = store.getActions()
-    expect(actions[ 0 ].type).toEqual(POLLS_REMOVE)
-    expect(actions[ 1 ].type).toEqual(POLLS_CREATE)
+    expect(actions[0].type).toEqual(POLLS_REMOVE)
+    expect(actions[1].type).toEqual(POLLS_CREATE)
 
     store.clearActions()
     store.dispatch(watchPoll(new PollNoticeModel({
       status: IS_REMOVED,
     })))
     actions = store.getActions()
-    expect(actions[ 0 ].type).toEqual(POLLS_REMOVE)
+    expect(actions[0].type).toEqual(POLLS_REMOVE)
 
     store.clearActions()
     store.dispatch(watchPoll(new PollNoticeModel({
       status: IS_ACTIVATED,
     })))
     actions = store.getActions()
-    expect(actions[ 0 ].type).toEqual(POLLS_UPDATE)
+    expect(actions[0].type).toEqual(POLLS_UPDATE)
 
     store.clearActions()
     store.dispatch(watchPoll(new PollNoticeModel({
       status: IS_ENDED,
     })))
     actions = store.getActions()
-    expect(actions[ 0 ].type).toEqual(POLLS_UPDATE)
+    expect(actions[0].type).toEqual(POLLS_UPDATE)
 
     store.clearActions()
     store.dispatch(watchPoll(new PollNoticeModel({
       status: IS_VOTED,
     })))
     actions = store.getActions()
-    expect(actions[ 0 ].type).toEqual(POLLS_UPDATE)
+    expect(actions[0].type).toEqual(POLLS_UPDATE)
   })
 
   it('should check updateVoteLimit', async () => {
@@ -239,9 +239,9 @@ describe('Voting actions', () => {
     await store.dispatch(updateVoteLimit())
     const actions = store.getActions()
 
-    expect(actions[ 0 ].type).toEqual(POLLS_VOTE_LIMIT)
-    expect(actions[ 0 ].voteLimitInTIME.gt(0)).toBeTruthy()
-    expect(actions[ 0 ].voteLimitInPercent.gt(0)).toBeTruthy()
+    expect(actions[0].type).toEqual(POLLS_VOTE_LIMIT)
+    expect(actions[0].voteLimitInTIME.gt(0)).toBeTruthy()
+    expect(actions[0].voteLimitInPercent.gt(0)).toBeTruthy()
   })
 
 })

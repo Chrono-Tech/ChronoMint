@@ -23,7 +23,7 @@ import ERC20ManagerDAO from '../../dao/ERC20ManagerDAO'
 import VotingManagerDAO from '../../dao/VotingManagerDAO'
 import PollInterfaceDAO from '../../dao/PollInterfaceDAO'
 import AssetDonatorDAO from '../../dao/AssetDonatorDAO'
-import UserManagerDAO from '../../../core/dao/UserManagerDAO'
+import UserManagerDAO from '../../dao/UserManagerDAO'
 import WalletsManagerDAO from '../../dao/WalletsManagerDAO'
 
 export { default as ethDAO } from './lib/ETHDAO'
