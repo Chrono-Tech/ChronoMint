@@ -58,12 +58,12 @@ const configureStore = () => {
     if (action.type === SESSION_DESTROY) {
       const i18nState = state.get('i18n')
       const mainWalletsState = state.get('mainWallet')
-      const walletsState = state.get('multisigWallet')
+      const walletsState = state.get('ethMultisigWallet')
       const persistAccount = state.get('persistAccount')
       state = new Immutable.Map()
       state = state
         .set('i18n', i18nState)
-        .set('multisigWallet', walletsState)
+        .set('ethMultisigWallet', walletsState)
         .set('mainWallet', mainWalletsState)
         .set('persistAccount', persistAccount)
     }
@@ -81,20 +81,19 @@ const configureStore = () => {
   ]
 
   if (isDevelopmentEnv) {
-    const WHITE_LIST = [
-      'multisig/INIT',
-      'multisig/FETCHING',
-      'multisig/FETCHED',
-      'multisigWallet/UPDATE',
-      'multisigWallet/BALANCE',
-      'multisigWallet/SELECT',
-      'multisigWallet/REMOVE',
-      'multisigWallet/PENDING_TX',
-      'multisigWallet/2_FA_CONFIRMED',
+    // Highest priority, IGNORED_ACTIONS and DOMAINS are ignored by WHITE_LIST
+    const WHITE_LIST = []
+    // The following actions will be ignored if not whitelisted but presents in DOMAINS
+    // So, we can enable whole domain, but still exclude aome actions from domain
+    const IGNORED_ACTIONS = []
+    // All actions like network/* (starts with network)
+    const DOMAINS = [
+      'ethMultisigWallet/',
+      '@@router/',
     ]
     const logger = createLogger({
       collapsed: true,
-      predicate: (getState, action) => WHITE_LIST.includes(action.type),
+      predicate: (getState, action) => WHITE_LIST.includes(action.type) || (!IGNORED_ACTIONS.includes(action.type) && DOMAINS.some((domain) => action.type.startsWith(domain))),
     })
     // Note: logger must be the last middleware in chain, otherwise it will log thunk and promise, not actual actions
     middleware.push(logger)
@@ -118,7 +117,7 @@ export const store = configureStore()
 
 const persistorConfig = {
   key: 'root',
-  whitelist: ['multisigWallet', 'mainWallet', 'persistAccount', 'wallets'],
+  whitelist: ['ethMultisigWallet', 'mainWallet', 'persistAccount', 'wallets'],
   transforms: [transformer()],
 }
 

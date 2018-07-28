@@ -49,7 +49,7 @@ export const getMainAddresses = (state) => {
 
 export const getWalletTransactions = (walletId) => (state) => {
   const wallet = getWallet(walletId)(state)
-  return wallet.transactions.transactions
+  return wallet ? wallet.transactions.transactions : null
 }
 
 export const getTwoFaCheckedFromState = (state) => {

@@ -23,8 +23,7 @@ import tokenService from '../../services/TokenService'
 import Amount from '../../models/Amount'
 import { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
 import { getAccount } from '../session/selectors'
-import { DUCK_MULTISIG_WALLET } from '../multisigWallet/actions'
-import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
+import { updateEthMultisigWalletBalance } from '../multisigWallet/actions'
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import { EE_MS_WALLET_ADDED } from '../../dao/WalletsManagerDAO'
 import MultisigWalletModel from '../../models/wallet/MultisigWalletModel'
@@ -170,7 +169,12 @@ export const subscribeWallet = ({ wallet }) => async (dispatch) => {
     const checkedFrom = data.from ? data.from.toLowerCase() === wallet.address.toLowerCase() : false
     const checkedTo = data.to ? data.to.toLowerCase() === wallet.address.toLowerCase() : false
     if (checkedFrom || checkedTo) {
-      dispatch(updateWalletBalance({ wallet }))
+      if (wallet.isMain) {
+        dispatch(updateWalletBalance({ wallet }))
+      }
+      if (wallet.isMultisig) {
+        dispatch(updateEthMultisigWalletBalance({ wallet }))
+      }
     }
   }
   switch (wallet.blockchain) {

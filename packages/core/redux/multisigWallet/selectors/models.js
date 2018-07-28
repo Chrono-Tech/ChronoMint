@@ -5,10 +5,10 @@
 
 import { createSelector } from 'reselect'
 import MultisigWalletModel from '../../../models/wallet/MultisigWalletModel'
-import { DUCK_MULTISIG_WALLET } from '../actions'
+import { DUCK_ETH_MULTISIG_WALLET } from '../actions'
 
 export const getWallets = (state) => {
-  return state.get(DUCK_MULTISIG_WALLET)
+  return state.get(DUCK_ETH_MULTISIG_WALLET)
 }
 
 export const getWallet = (address) => createSelector(
@@ -18,9 +18,14 @@ export const getWallet = (address) => createSelector(
   },
 )
 export const getEthMultisigWallets = (state) => {
-  return state.get(DUCK_MULTISIG_WALLET)
+  return state.get(DUCK_ETH_MULTISIG_WALLET)
 }
 
 export const getEthMultisigWallet = (walletId) => (state) => {
-  return state.get(DUCK_MULTISIG_WALLET).item(walletId)
+  return state.get(DUCK_ETH_MULTISIG_WALLET).item(walletId)
+}
+
+export const getEthMultisigWalletTransactions = (walletId) => (state) => {
+  const wallet = getEthMultisigWallet(walletId)(state)
+  return wallet ? wallet.transactions.transactions : null
 }

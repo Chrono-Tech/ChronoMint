@@ -704,7 +704,7 @@ export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) 
   const provider = privateKeyProvider.getPrivateKeyProvider(
     privateKey.slice(2),
     networkService.getProviderSettings(),
-    state.get('multisigWallet'),
+    state.get('ethMultisigWallet'),
   )
 
   networkService.selectAccount(provider.ethereum.getAddress())
@@ -794,7 +794,7 @@ export const handleLoginLocalAccountClick = (account = '') => async (dispatch, g
   let state = getState()
 
   const { accounts } = state.get(DUCK_NETWORK)
-  const wallets = state.get('multisigWallet')
+  const wallets = state.get('ethMultisigWallet')
 
   const index = Math.max(accounts.indexOf(account), 0)
   const provider = privateKeyProvider.getPrivateKeyProvider(

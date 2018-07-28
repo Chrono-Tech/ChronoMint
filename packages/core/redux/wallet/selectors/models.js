@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { DUCK_MULTISIG_WALLET } from '../../multisigWallet/actions'
+import { DUCK_ETH_MULTISIG_WALLET } from '../../multisigWallet/actions'
 import { DUCK_MARKET } from '../../market/actions'
 import { DUCK_TOKENS } from '../../tokens/actions'
 
@@ -13,7 +13,7 @@ import { DUCK_TOKENS } from '../../tokens/actions'
  */
 
 export const getMultisigWallets = (state) => {
-  return state.get(DUCK_MULTISIG_WALLET)
+  return state.get(DUCK_ETH_MULTISIG_WALLET)
 }
 
 export const selectTokensStore = (state) =>

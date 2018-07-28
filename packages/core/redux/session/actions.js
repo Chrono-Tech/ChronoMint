@@ -123,7 +123,7 @@ export const bootstrap = (relogin = true) => async (dispatch, getState) => {
   const localAccount = ls.getLocalAccount()
   const isPassed = await networkService.checkLocalSession(localAccount)
   if (isPassed) {
-    await networkService.restoreLocalSession(localAccount, getState().get('multisigWallet'))
+    await networkService.restoreLocalSession(localAccount, getState().get('ethMultisigWallet'))
     networkService.createNetworkSession(localAccount, LOCAL_PROVIDER_ID, LOCAL_ID)
     dispatch(login(localAccount))
   } else {

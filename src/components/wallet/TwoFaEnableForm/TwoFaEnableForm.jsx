@@ -11,7 +11,7 @@ import { Translate } from 'react-redux-i18n'
 import { Checkbox, TextField } from 'redux-form-material-ui'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { goToWallets } from '@chronobank/core/redux/mainWallet/actions'
-import { confirm2FASecret, get2FAEncodedKey, MULTISIG_2_FA_CONFIRMED } from '@chronobank/core/redux/multisigWallet/actions'
+import { confirm2FASecret, get2FAEncodedKey, ETH_MULTISIG_2_FA_CONFIRMED } from '@chronobank/core/redux/multisigWallet/actions'
 import PropTypes from 'prop-types'
 import TWO_FA_LOGO_PNG from 'assets/img/2fa/2-fa.png'
 import APPSTORE_SVG from 'assets/img/appstore.svg'
@@ -58,7 +58,7 @@ function mapDispatchToProps (dispatch) {
     confirm2FASecret: (account, confirmToken, callback) => {
       dispatch(confirm2FASecret(account, confirmToken, callback))
     },
-    handleSetTwoFAConfirmed: (twoFAConfirmed) => dispatch({ type: MULTISIG_2_FA_CONFIRMED, twoFAConfirmed }),
+    handleSetTwoFAConfirmed: (twoFAConfirmed) => dispatch({ type: ETH_MULTISIG_2_FA_CONFIRMED, twoFAConfirmed }),
     handleGoToWallets: () => dispatch(goToWallets()),
   }
 }

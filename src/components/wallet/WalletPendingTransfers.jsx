@@ -14,13 +14,13 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { confirmMultisigTx, DUCK_MULTISIG_WALLET, getPendingData, revokeMultisigTx } from '@chronobank/core/redux/multisigWallet/actions'
+import { confirmMultisigTx, DUCK_ETH_MULTISIG_WALLET, getPendingData, revokeMultisigTx } from '@chronobank/core/redux/multisigWallet/actions'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
 import './WalletPendingTransfers.scss'
 
 function mapStateToProps (state) {
   return {
-    wallet: state.get(DUCK_MULTISIG_WALLET).selected(),
+    wallet: state.get(DUCK_ETH_MULTISIG_WALLET).selected(),
     tokens: state.get(DUCK_TOKENS),
   }
 }
