@@ -20,19 +20,21 @@ import {
   getAccountAvatarImg,
   getAccountAddress,
 } from '@chronobank/core/redux/persistAccount/utils'
+import styles from 'layouts/Splash/styles'
+import {
+  initRecoverAccountPage,
+} from '@chronobank/login/redux/network/actions'
+import Button from 'components/common/ui/Button/Button'
+import UserRow from 'components/common/ui/UserRow/UserRow'
+import {
+  FORM_RECOVER_ACCOUNT,
+  navigateToSelectWallet,
+} from '../../redux/actions'
 import {
   onSubmitRecoverAccountForm,
   onSubmitRecoverAccountFormSuccess,
   onSubmitRecoverAccountFormFail,
-  initRecoverAccountPage,
-  FORM_RECOVER_ACCOUNT,
-  navigateToSelectWallet,
-} from '@chronobank/login/redux/network/actions'
-
-import Button from 'components/common/ui/Button/Button'
-import UserRow from 'components/common/ui/UserRow/UserRow'
-
-import styles from 'layouts/Splash/styles'
+} from '../../redux/thunks'
 import './RecoverAccount.scss'
 
 function mapStateToProps (state) {

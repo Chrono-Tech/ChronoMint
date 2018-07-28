@@ -17,19 +17,22 @@ import {
   getAccountAddress,
   getAccountAvatarImg,
 } from '@chronobank/core/redux/persistAccount/utils'
-import {
-  onSubmitResetAccountPasswordForm,
-  onSubmitResetAccountPasswordSuccess,
-  onSubmitResetAccountPasswordFail,
-  initResetPasswordPage,
-  FORM_RESET_PASSWORD,
-} from '@chronobank/login/redux/network/actions'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import Button from 'components/common/ui/Button/Button'
 import UserRow from 'components/common/ui/UserRow/UserRow'
-
 import styles from 'layouts/Splash/styles'
+import {
+  onSubmitResetAccountPasswordForm,
+} from '@chronobank/login/redux/network/thunks'
+import {
+  FORM_RESET_PASSWORD,
+} from '../../redux/actions'
+import {
+  onSubmitResetAccountPasswordSuccess,
+  onSubmitResetAccountPasswordFail,
+  initResetPasswordPage,
+} from '../../redux/thunks'
 import validate from './validate'
 import './ResetPassword.scss'
 

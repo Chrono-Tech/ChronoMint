@@ -13,12 +13,13 @@ import { TextField } from 'redux-form-material-ui'
 import styles from 'layouts/Splash/styles'
 import Button from 'components/common/ui/Button/Button'
 import {
+  FORM_PRIVATE_KEY_LOGIN_PAGE,
+} from '../../redux/actions'
+import {
   onSubmitPrivateKeyLoginForm,
   onSubmitPrivateKeyLoginFormSuccess,
   onSubmitPrivateKeyLoginFormFail,
-  FORM_PRIVATE_KEY_LOGIN_PAGE,
-} from '@chronobank/login/redux/network/actions'
-
+} from '../../redux/thunks'
 import validate from './validate'
 import './LoginWithPrivateKey.scss'
 

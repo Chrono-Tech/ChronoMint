@@ -13,13 +13,15 @@ import React, { Component } from 'react'
 import { Link } from 'react-router'
 import Button from 'components/common/ui/Button/Button'
 import {
-  FORM_CONFIRM_MNEMONIC,
-  initConfirmMnemonicPage,
   navigateToConfirmMnemonicPage,
+  FORM_CONFIRM_MNEMONIC,
+} from '@chronobank/login-ui/redux/actions'
+import {
+  initConfirmMnemonicPage,
   onSubmitConfirmMnemonic,
   onSubmitConfirmMnemonicFail,
   onSubmitConfirmMnemonicSuccess,
-} from '@chronobank/login/redux/network/actions'
+} from '@chronobank/login-ui/redux/thunks'
 
 import './ConfirmMnemonic.scss'
 
@@ -94,7 +96,7 @@ class ConfirmMnemonicPage extends Component {
   }
 
   onClickWord (word, e){
-    const { dispatch, change } = this.props
+    const { change } = this.props
 
     if (!this.state.confirmPhrase.includes(word)) {
       this.setState(
@@ -105,7 +107,7 @@ class ConfirmMnemonicPage extends Component {
   }
 
   clearMnemonic (){
-    const { dispatch, change } = this.props
+    const { change } = this.props
 
     this.setState(
       { confirmPhrase: [] },

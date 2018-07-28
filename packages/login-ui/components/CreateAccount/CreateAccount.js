@@ -17,8 +17,10 @@ import {
   onSubmitCreateAccountPage,
   onSubmitCreateAccountPageSuccess,
   onSubmitCreateAccountPageFail,
+} from '../../redux/thunks'
+import {
   FORM_CREATE_ACCOUNT,
-} from '@chronobank/login/redux/network/actions'
+} from '../../redux/actions'
 import styles from 'layouts/Splash/styles'
 
 import validate from './validate'

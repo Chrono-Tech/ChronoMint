@@ -12,12 +12,10 @@ import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
 import compose from 'recompose/compose'
 import { withStyles } from '@material-ui/core/styles/index'
-
 import {
   FORM_NETWORK_CREATE,
-} from '@chronobank/login/redux/network/actions'
+} from '../../../redux/actions'
 import validate from './validate'
-
 import styles from './styles'
 import scss from './NetworkCreateModalForm.scss'
 

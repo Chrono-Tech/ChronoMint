@@ -7,9 +7,6 @@ import networkService from '@chronobank/login/network/NetworkService'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import web3Utils from '@chronobank/login/network/Web3Utils'
 import {
-  initCommonNetworkSelector,
-} from '@chronobank/login-ui/redux/thunks'
-import {
   selectProviderWithNetwork,
 } from '@chronobank/login/redux/network/thunks'
 import {
@@ -28,6 +25,9 @@ import { modalsOpen } from 'redux/modals/actions'
 import classnames from 'classnames'
 import Web3 from 'web3'
 import NetworkCreateModal from '../NetworkCreateModal/NetworkCreateModal'
+import {
+  initCommonNetworkSelector,
+} from '../../redux/thunks'
 
 import styles from './CommonNetworkSelector.scss'
 

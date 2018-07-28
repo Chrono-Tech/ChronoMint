@@ -13,14 +13,19 @@ import Button from 'components/common/ui/Button/Button'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import {
-  onSubmitWalletUpload,
-  onSubmitWalletUploadFail,
   clearErrors,
   loading,
-  initLoginWithWallet,
-  FORM_WALLET_UPLOAD,
 } from '@chronobank/login/redux/network/actions'
-
+import {
+  initLoginWithWallet,
+} from '@chronobank/login/redux/network/thunks'
+import {
+  FORM_WALLET_UPLOAD,
+} from '../../redux/actions'
+import {
+  onSubmitWalletUpload,
+  onSubmitWalletUploadFail,
+} from '../../redux/thunks'
 import FileIcon from 'assets/img/icons/file-white.svg'
 import DeleteIcon from 'assets/img/icons/delete-white.svg'
 import SpinnerGif from 'assets/img/spinningwheel.gif'
@@ -67,7 +72,7 @@ class LoginWithWallet extends Component {
     }
   }
 
-  componentWillMount(){
+  componentWillMount (){
     this.props.initLoginWithWallet()
   }
 
@@ -182,14 +187,17 @@ class LoginWithWallet extends Component {
             buttonType='login'
             type='submit'
             disabled={isLoading || !isUploaded}
-            label={isLoading ? <span styleName='spinner-wrapper'>
-              <img
-                src={spinner}
-                alt=''
-                width={24}
-                height={24}
-              />
-            </span> : <Translate value='LoginWithWallet.login' />}
+            label={isLoading ? (
+              <span styleName='spinner-wrapper'>
+                <img
+                  src={spinner}
+                  alt=''
+                  width={24}
+                  height={24}
+                />
+              </span> ) :
+              <Translate value='LoginWithWallet.login' />
+            }
           />
           { error ? <div styleName='error'>{error}</div> : null }
           <Translate value='LoginWithWallet.or' />&nbsp;

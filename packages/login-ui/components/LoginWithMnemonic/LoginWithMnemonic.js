@@ -17,9 +17,10 @@ import {
   onSubmitMnemonicLoginForm,
   onSubmitMnemonicLoginFormSuccess,
   onSubmitMnemonicLoginFormFail,
+} from '../../redux/thunks'
+import {
   FORM_MNEMONIC_LOGIN_PAGE,
-} from '@chronobank/login/redux/network/actions'
-
+} from '../../redux/actions'
 import validate from './validate'
 import './LoginWithMnemonic.scss'
 

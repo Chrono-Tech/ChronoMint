@@ -15,7 +15,6 @@ import {
   initAccountsSignature,
 } from '@chronobank/login/redux/network/thunks'
 import { onWalletSelect } from '@chronobank/login/redux/network/actions'
-import { navigateToSelectImportMethod } from '@chronobank/login-ui/redux/actions'
 import {
   getAccountAddress,
   // getAccountAvatar,
@@ -23,9 +22,9 @@ import {
   getAccountName,
 } from '@chronobank/core/redux/persistAccount/utils'
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
-
 import arrow from 'assets/img/icons/prev-white.svg'
 import './AccountSelector.scss'
+import { navigateToSelectImportMethod } from '../../redux/actions'
 
 function mapDispatchToProps (dispatch) {
   return {

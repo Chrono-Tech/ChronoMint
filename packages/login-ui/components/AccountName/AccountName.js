@@ -11,14 +11,17 @@ import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
-
 import {
   onSubmitAccountName,
+} from '@chronobank/login/redux/network/thunks'
+import {
   onSubmitAccountNameSuccess,
   onSubmitAccountNameFail,
   initAccountNamePage,
+} from '../../redux/thunks'
+import {
   FORM_LOGIN_PAGE,
-} from '@chronobank/login/redux/network/actions'
+} from '../../redux/actions'
 import validate from './validate'
 
 import styles from 'layouts/Splash/styles'

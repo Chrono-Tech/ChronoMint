@@ -25,13 +25,13 @@ import {
 import {
   FORM_LOGIN_PAGE,
   FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
-} from '@chronobank/login-ui/redux/actions'
+  navigateToSelectWallet,
+} from '../../redux/actions'
 import {
   initLoginPage,
-  navigateToSelectWallet,
   onSubmitLoginForm,
   onSubmitLoginFormFail,
-} from '@chronobank/login-ui/redux/thunks'
+} from '../../redux/thunks'
 import { isLocalNode } from '@chronobank/login/network/settings'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/actions'
 import { getAccountAddress, getAccountAvatarImg, getAccountName } from '@chronobank/core/redux/persistAccount/utils'

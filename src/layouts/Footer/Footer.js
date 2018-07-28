@@ -14,10 +14,12 @@ import { withStyles } from '@material-ui/core/styles'
 import compose from 'recompose/compose'
 import {
   FORM_FOOTER_EMAIL_SUBSCRIPTION,
+} from '@chronobank/login-ui/redux/actions'
+import {
   onSubmitSubscribeNewsletter,
   onSubmitSubscribeNewsletterFail,
   onSubmitSubscribeNewsletterSuccess,
-} from '@chronobank/login/redux/network/actions'
+} from '@chronobank/login-ui/redux/thunks'
 
 import { Button } from 'components'
 import { TextField } from 'redux-form-material-ui'
