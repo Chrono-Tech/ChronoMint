@@ -13,8 +13,10 @@ import {
   onSubmitLoginTestRPCFail,
   initLoginLocal,
   handleLoginLocalAccountClick,
-  navigateToLoginPage,
 } from '@chronobank/login/redux/network/actions'
+import {
+  navigateToLoginPage,
+} from '../../redux/actions'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
