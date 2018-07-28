@@ -4,15 +4,24 @@
  */
 
 import PropTypes from 'prop-types'
-import { MuiThemeProvider } from '@material-ui/core'
+// import { MuiThemeProvider } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
 import Button from 'components/common/ui/Button/Button'
 import UserRow from 'components/common/ui/UserRow/UserRow'
-import { initAccountsSelector, initAccountsSignature, navigateToSelectImportMethod, onWalletSelect } from '@chronobank/login/redux/network/actions'
-import { getAccountAddress, getAccountAvatar, getAccountAvatarImg, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
+import {
+  initAccountsSignature,
+} from '@chronobank/login/redux/network/thunks'
+import { onWalletSelect } from '@chronobank/login/redux/network/actions'
+import { navigateToSelectImportMethod } from '@chronobank/login-ui/redux/actions'
+import {
+  getAccountAddress,
+  // getAccountAvatar,
+  getAccountAvatarImg,
+  getAccountName,
+} from '@chronobank/core/redux/persistAccount/utils'
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 
 import arrow from 'assets/img/icons/prev-white.svg'
@@ -23,7 +32,6 @@ function mapDispatchToProps (dispatch) {
     navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
     onWalletSelect: (wallet) => dispatch(onWalletSelect(wallet)),
     initAccountsSignature: () => dispatch(initAccountsSignature()),
-    initAccountsSelector: () => dispatch(initAccountsSelector()),
   }
 }
 
@@ -44,7 +52,6 @@ export default class AccountSelector extends PureComponent {
     ),
     navigateToSelectImportMethod: PropTypes.func,
     initAccountsSignature: PropTypes.func,
-    initAccountsSelector: PropTypes.func,
   }
 
   static defaultProps = {
@@ -54,7 +61,7 @@ export default class AccountSelector extends PureComponent {
   }
 
   componentDidMount () {
-    this.props.initAccountsSelector()
+    this.props.initAccountsSignature()
   }
 
   renderWalletsList () {

@@ -15,21 +15,26 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
 import UserRow from 'components/common/ui/UserRow/UserRow'
-
+import spinner from 'assets/img/spinningwheel-1.gif'
 import {
   DUCK_NETWORK,
+} from '@chronobank/login/redux/network/actions'
+import {
+  initAccountsSignature,
+} from '@chronobank/login/redux/network/thunks'
+import {
   FORM_LOGIN_PAGE,
   FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
-  initAccountsSignature,
+} from '@chronobank/login-ui/redux/actions'
+import {
   initLoginPage,
   navigateToSelectWallet,
   onSubmitLoginForm,
   onSubmitLoginFormFail,
-} from '@chronobank/login/redux/network/actions'
+} from '@chronobank/login-ui/redux/thunks'
 import { isLocalNode } from '@chronobank/login/network/settings'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/actions'
 import { getAccountAddress, getAccountAvatarImg, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
-
 import styles from './styles'
 import './LoginForm.scss'
 
@@ -39,13 +44,13 @@ function mapStateToProps (state) {
   const formSelector = formValueSelector(FORM_LOGIN_PAGE)
 
   return {
-    selectedWallet: selectedWallet,
-    isLoginSubmitting: network.isLoginSubmitting,
-    selectedNetworkId: network.selectedNetworkId,
-    selectedProvider: network.selectedProviderId,
-    selectedAccount: network.selectedAccount,
     accounts: network.accounts,
     isLocalNode: isLocalNode(network.selectedProviderId, network.selectedNetworkId),
+    isLoginSubmitting: network.isLoginSubmitting,
+    selectedAccount: network.selectedAccount,
+    selectedNetworkId: network.selectedNetworkId,
+    selectedProvider: network.selectedProviderId,
+    selectedWallet: selectedWallet,
     successMessage: formSelector(state, FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE),
     initialValues: {
       password: '1',
@@ -57,7 +62,6 @@ function mapDispatchToProps (dispatch) {
   return {
     onSubmit: async (values) => {
       const password = values.get('password')
-
       await dispatch(onSubmitLoginForm(password))
     },
     onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitLoginFormFail(errors, dispatch, submitErrors)),
@@ -69,14 +73,14 @@ function mapDispatchToProps (dispatch) {
 
 class LoginPage extends React.Component {
   static propTypes = {
-    initLoginPage: PropTypes.func,
-    navigateToSelectWallet: PropTypes.func,
-    isLoginSubmitting: PropTypes.bool,
-    initAccountsSignature: PropTypes.func,
     accounts: PropTypes.array,
+    initAccountsSignature: PropTypes.func,
+    initLoginPage: PropTypes.func,
+    isLocalNode: PropTypes.bool,
+    isLoginSubmitting: PropTypes.bool,
+    navigateToSelectWallet: PropTypes.func,
     selectedAccount: PropTypes.string,
     selectedWallet: PropTypes.object,
-    isLocalNode: PropTypes.bool,
     successMessage: PropTypes.string,
   }
 
@@ -104,8 +108,18 @@ class LoginPage extends React.Component {
 
   render () {
     const {
-      handleSubmit, pristine, valid, initialValues, isImportMode, error, onSubmit, selectedWallet,
-      navigateToSelectWallet, isLoginSubmitting, isLocalNode, classes,
+      classes,
+      error,
+      handleSubmit,
+      initialValues,
+      isImportMode,
+      isLocalNode,
+      isLoginSubmitting,
+      navigateToSelectWallet,
+      onSubmit,
+      pristine,
+      selectedWallet,
+      valid,
     } = this.props
 
     return (

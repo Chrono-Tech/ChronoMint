@@ -7,6 +7,11 @@ import uuid from 'uuid/v1'
 import hdkey from 'ethereumjs-wallet/hdkey'
 import bip39 from 'bip39'
 import Accounts from 'web3-eth-accounts'
+import profileService from '@chronobank/login/network/ProfileService'
+// import networkService from '@chronobank/login/network/NetworkService'
+// import web3Provider from '@chronobank/login/network/Web3Provider'
+// import web3Utils from '@chronobank/login/network/Web3Utils'
+// import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import {
   AccountEntryModel,
   AccountProfileModel,
@@ -15,12 +20,7 @@ import {
 import {
   getWalletsListAddresses,
   getAccountAddress,
-} from '@chronobank/core/redux/persistAccount/utils'
-import networkService from '@chronobank/login/network/NetworkService'
-import profileService from '@chronobank/login/network/ProfileService'
-import web3Provider from '@chronobank/login/network/Web3Provider'
-import web3Utils from '@chronobank/login/network/Web3Utils'
-import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
+} from './utils'
 
 export const WALLETS_ADD = 'persistAccount/WALLETS_ADD'
 export const WALLETS_SELECT = 'persistAccount/WALLETS_SELECT'
@@ -114,7 +114,7 @@ export const resetPasswordAccount = (wallet, mnemonic, password) => async (dispa
 
 }
 
-export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => async (dispatch, getState) => {
+export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => async (dispatch) => {
   let hex = ''
 
   if (privateKey){
@@ -131,6 +131,7 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
   let wallet = await accounts.wallet.create(numberOfAccounts)
   const account = accounts.privateKeyToAccount(hex)
   wallet.add(account)
+  // eslint-disable-next-line no-console
   console.log(wallet.encrypt(password))
 
   const entry = new AccountEntryModel({
@@ -147,9 +148,7 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
 
 }
 
-export const createHWAccount = ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => async (dispatch, getState) => {
-  const state = getState()
-
+export const createHWAccount = ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => async (dispatch) => {
   let wallet, hex = ''
 
   if (privateKey){

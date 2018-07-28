@@ -3,12 +3,14 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+// #region imports
+
 import contractsManagerDAO from '@chronobank/core/dao/ContractsManagerDAO'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/actions'
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
 import EventEmitter from 'events'
-import Web3 from 'web3'
-
+// import Web3 from 'web3'
+import { store } from '@chronobank/core-dependencies/configureStore'
 import {
   addError,
   clearErrors,
@@ -17,12 +19,13 @@ import {
   NETWORK_ADD_ERROR,
   NETWORK_SELECT_ACCOUNT,
   NETWORK_SET_ACCOUNTS,
-  NETWORK_SET_NETWORK,
-  NETWORK_SET_PROVIDER,
   NETWORK_SET_TEST_METAMASK,
-  NETWORK_SET_TEST_RPC,
+  // NETWORK_SET_TEST_RPC,
+  networkSetNetwork,
+  networkResetNetwork,
+  networkSetProvider,
 } from '../redux/network/actions'
-import { utils } from '../settings'
+import { utils as web3Converter } from '../settings'
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from './BitcoinProvider'
 import { ethereumProvider } from './EthereumProvider'
 import metaMaskResolver from './metaMaskResolver'
@@ -39,21 +42,31 @@ import {
   LOCAL_PRIVATE_KEYS,
   LOCAL_PROVIDER_ID,
   NETWORK_MAIN_ID,
-  TESTRPC_URL,
+  // TESTRPC_URL,
 } from './settings'
 import uportProvider, { UPortAddress } from './uportProvider'
-import web3Provider, { Web3Provider } from './Web3Provider'
-import web3Utils from './Web3Utils'
+import web3Provider/*, { Web3Provider }*/ from './Web3Provider'
+// import web3Utils from './Web3Utils'
 
-const { web3Converter } = utils
+// #endregion imports
 
+// #region constants
+
+// TODO: to ad I18n translation
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
+// #endregion constants
+
 class NetworkService extends EventEmitter {
-  connectStore (store) {
+  constructor () {
+    super()
     this._store = store
     this._dispatch = store.dispatch
   }
+  // connectStore (store) {
+  //   this._store = store
+  //   this._dispatch = store.dispatch
+  // }
 
   createNetworkSession = (account, provider, network) => {
     if (!this._account) {
@@ -102,9 +115,9 @@ class NetworkService extends EventEmitter {
     //const accounts = await web3Provider.getAccounts()
 
     // account must be valid
-    if (!accounts.includes(account)) {
-      return false
-    }
+    // if (!accounts.includes(account)) {
+    //   return false
+    // }
 
     // contacts and network must be valid
     const isDeployed = await this.checkNetwork()
@@ -132,12 +145,12 @@ class NetworkService extends EventEmitter {
 
   selectProvider = (selectedProviderId) => {
     const dispatch = this._dispatch
-    dispatch({ type: NETWORK_SET_NETWORK, networkId: null })
-    dispatch({ type: NETWORK_SET_PROVIDER, selectedProviderId })
+    dispatch(networkResetNetwork())
+    dispatch(networkSetProvider(selectedProviderId))
   }
 
   selectNetwork = (selectedNetworkId) => {
-    this._dispatch({ type: NETWORK_SET_NETWORK, selectedNetworkId })
+    this._dispatch(networkSetNetwork(selectedNetworkId))
   }
 
   async loginUport () {
@@ -188,8 +201,8 @@ class NetworkService extends EventEmitter {
   }
 
   async setup ({ networkCode, ethereum, btc, bcc, btg, ltc, nem, waves }) {
-   // const web3 = new Web3()
-   // web3Provider.reinit(web3, ethereum.getProvider())
+    // const web3 = new Web3()
+    // web3Provider.reinit(web3, ethereum.getProvider())
     networkProvider.setNetworkCode(networkCode)
     ethereumProvider.setEngine(ethereum, nem, waves)
     bcc && bccProvider.setEngine(bcc)
@@ -269,7 +282,7 @@ class NetworkService extends EventEmitter {
     return this.isMetamask
   }
 
-  async checkTestRPC (providerUrl) {
+  async checkTestRPC (/*providerUrl*/) {
     // const web3 = new Web3Legacy()
     // web3.setProvider(new Web3Legacy.providers.HttpProvider(providerUrl || TESTRPC_URL))
     // const web3Provider = new Web3Provider(web3)

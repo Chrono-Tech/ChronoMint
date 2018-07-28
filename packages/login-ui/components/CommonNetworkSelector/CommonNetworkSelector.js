@@ -6,7 +6,16 @@
 import networkService from '@chronobank/login/network/NetworkService'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import web3Utils from '@chronobank/login/network/Web3Utils'
-import { clearErrors, DUCK_NETWORK, initCommonNetworkSelector, selectProviderWithNetwork } from '@chronobank/login/redux/network/actions'
+import {
+  initCommonNetworkSelector,
+} from '@chronobank/login-ui/redux/thunks'
+import {
+  selectProviderWithNetwork,
+} from '@chronobank/login/redux/network/thunks'
+import {
+  DUCK_NETWORK,
+  clearErrors,
+} from '@chronobank/login/redux/network/actions'
 import { getNetworkWithProviderNames, getProviderById, isLocalNode, getNetworksSelectorGroup } from '@chronobank/login/network/settings'
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
 import { customNetworksListAdd } from '@chronobank/core/redux/persistAccount/actions'
@@ -162,30 +171,24 @@ export default class CommonNetworkSelector extends PureComponent {
     return `${item.provider.name} - ${item.network.name}`
   }
 
-  renderCustomNetworksList () {
-    const { customNetworksList, selectedNetworkId } = this.props
+  getSelectedNetwork () {
+    const { selectedNetworkId, selectedProviderId, customNetworksList } = this.props
 
-    if (!customNetworksList) {
-      return
+    const foundCustomSelectedNetwork = customNetworksList.find((network) => network.id === selectedNetworkId)
+
+    if (foundCustomSelectedNetwork) {
+      return foundCustomSelectedNetwork.name
     }
 
-    return (
-      <div>
-        {customNetworksList.map((network, i) => (
-          <MenuCustomItem
-            onClickEdit={(e) => {
-              e.stopPropagation()
-              this.openModalAddNetwork(network)
-            }}
-            onClick={() => this.handleClickCustomNetwork(network)}
-            checked={selectedNetworkId === (network && network.id)}
-            key={i}
-          >
-            {network && network.name}
-          </MenuCustomItem>
-        ))}
-      </div>
-    )
+    const baseNetworkNames = getNetworkWithProviderNames(selectedProviderId, selectedNetworkId)
+
+    if (!baseNetworkNames) {
+      networkService.autoSelect()
+
+      return ''
+    }
+
+    return baseNetworkNames
   }
 
   openModalAddNetwork (network) {
@@ -196,6 +199,12 @@ export default class CommonNetworkSelector extends PureComponent {
     } else {
       this.props.modalOpenAddNetwork()
     }
+  }
+
+  resolveNetwork (providerUrl) {
+    const web3 = new Web3()
+    web3Provider.reinit(web3, web3Utils.createStatusEngine(providerUrl))
+    web3Provider.resolve()
   }
 
   renderCustomNetworksGroup () {
@@ -246,35 +255,33 @@ export default class CommonNetworkSelector extends PureComponent {
     )
   }
 
-  getSelectedNetwork () {
-    const { selectedNetworkId, selectedProviderId, selectedProvider, customNetworksList } = this.props
+  renderCustomNetworksList () {
+    const { customNetworksList, selectedNetworkId } = this.props
 
-    const foundCustomSelectedNetwork = customNetworksList.find((network) => network.id === selectedNetworkId)
-
-    if (foundCustomSelectedNetwork) {
-      return foundCustomSelectedNetwork.name
+    if (!customNetworksList) {
+      return
     }
 
-    const baseNetworkNames = getNetworkWithProviderNames(selectedProviderId, selectedNetworkId)
-
-    if (!baseNetworkNames) {
-      networkService.autoSelect()
-
-      return ''
-    }
-
-    return baseNetworkNames
-  }
-
-  resolveNetwork (providerUrl) {
-    const web3 = new Web3()
-    web3Provider.reinit(web3, web3Utils.createStatusEngine(providerUrl))
-    web3Provider.resolve()
+    return (
+      <div>
+        {customNetworksList.map((network, i) => (
+          <MenuCustomItem
+            onClickEdit={(e) => {
+              e.stopPropagation()
+              this.openModalAddNetwork(network)
+            }}
+            onClick={() => this.handleClickCustomNetwork(network)}
+            checked={selectedNetworkId === (network && network.id)}
+            key={i}
+          >
+            {network && network.name}
+          </MenuCustomItem>
+        ))}
+      </div>
+    )
   }
 
   render () {
-    const { selectedProvider, providersList } = this.props
-
     return (
       <div styleName='root'>
         <Button

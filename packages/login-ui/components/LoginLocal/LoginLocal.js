@@ -19,8 +19,6 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-
-import styles from 'layouts/Splash/styles'
 import './LoginLocal.scss'
 
 export const FORM_LOGIN_TEST_RPC = 'FormLoginTestRPCPage'
@@ -61,7 +59,7 @@ class LoginLocal extends PureComponent {
     this.props.initLoginLocal()
   }
 
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps (nextProps){
     if (!nextProps.isLocalNode){
       this.props.navigateToLoginPage()
     }
@@ -88,13 +86,13 @@ class LoginLocal extends PureComponent {
     const { accounts } = this.props
 
     return (
-        <div styleName='wrapper'>
+      <div styleName='wrapper'>
 
-          <div styleName='page-title'>
-            <Translate value='LoginLocal.title' />
-          </div>
-          {accounts.map((item, i) => this.renderRPCSelectorMenuItem(item, i))}
+        <div styleName='page-title'>
+          <Translate value='LoginLocal.title' />
         </div>
+        {accounts.map((item, i) => this.renderRPCSelectorMenuItem(item, i))}
+      </div>
     )
   }
 }

@@ -4,12 +4,12 @@
  */
 
 import 'flexboxgrid/css/flexboxgrid.css'
-import networkService from '@chronobank/login/network/NetworkService'
+// import networkService from '@chronobank/login/network/NetworkService'
 import { bootstrap } from '@chronobank/core/redux/session/actions'
 import { store } from 'redux/configureStore'
 import i18n from './i18n'
 
-networkService.connectStore(store)
+// networkService.connectStore(store)
 store.dispatch(bootstrap()).then(() => {
   document.getElementById('react-root').innerText = JSON.stringify(i18n)
 })

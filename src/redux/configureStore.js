@@ -35,8 +35,8 @@ const getNestedReducers = (ducks) => {
       reducers = {
         ...reducers,
         ...(typeof (entry) === 'function'
-            ? { [key]: entry }
-            : getNestedReducers(entry)
+          ? { [key]: entry }
+          : getNestedReducers(entry)
         ),
       }
     })
@@ -85,10 +85,17 @@ const configureStore = () => {
     const WHITE_LIST = []
     // The following actions will be ignored if not whitelisted but presents in DOMAINS
     // So, we can enable whole domain, but still exclude aome actions from domain
-    const IGNORED_ACTIONS = []
+    const IGNORED_ACTIONS = [
+      'mainWallet/TOKEN_BALANCE',
+      'market/UPDATE_LAST_MARKET',
+      'market/UPDATE_PRICES',
+      'market/UPDATE_RATES',
+      'tokens/fetched',
+    ]
     // All actions like network/* (starts with network)
     const DOMAINS = [
       'ethMultisigWallet/',
+      'network/',
       '@@router/',
     ]
     const logger = createLogger({
@@ -121,6 +128,7 @@ const persistorConfig = {
   transforms: [transformer()],
 }
 
+// eslint-disable-next-line no-underscore-dangle
 store.__persistor = persistStore(store, persistorConfig)
 
 export const history = createHistory(store)
