@@ -15,7 +15,13 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
 import UserRow from 'components/common/ui/UserRow/UserRow'
-import spinner from 'assets/img/spinningwheel-1.gif'
+import { isLocalNode } from '@chronobank/login/network/settings'
+import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/actions'
+import {
+  getAccountAddress,
+  getAccountAvatarImg,
+  getAccountName,
+} from '@chronobank/core/redux/persistAccount/utils'
 import {
   DUCK_NETWORK,
 } from '@chronobank/login/redux/network/actions'
@@ -32,9 +38,6 @@ import {
   onSubmitLoginForm,
   onSubmitLoginFormFail,
 } from '../../redux/thunks'
-import { isLocalNode } from '@chronobank/login/network/settings'
-import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/actions'
-import { getAccountAddress, getAccountAvatarImg, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
 import styles from './styles'
 import './LoginForm.scss'
 
