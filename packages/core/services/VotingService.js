@@ -16,7 +16,9 @@ class VotingService extends EventEmitter {
 
   getPollEmitterDAO (address) {
     if (!this._cache[address]) {
-      this._cache[address] = new PollEmitter(address)
+      const pollEmitter = new PollEmitter(address)
+      pollEmitter.setVotingManagerDAO(this.getVotingManager())
+      this._cache[address] = pollEmitter
     }
     return this._cache[address]
   }

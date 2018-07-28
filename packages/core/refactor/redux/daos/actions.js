@@ -50,13 +50,17 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     WALLETS_MANAGER,
   ]
 
+  const subscribeToFlow = (dao) => {
+    dispatch(alternateTxHandlingFlow(dao))
+  }
+
   const models = await Promise.all(
     contracts.map(
       async (contract) => {
         const address = await contractManagerDAO.getContractAddressByType(contract.type)
         const dao = contract.create(address.toLowerCase(), history)
         dao.connect(web3)
-        dispatch(alternateTxHandlingFlow(dao))
+        subscribeToFlow(dao)
         return new ContractDAOModel({
           contract,
           address,
@@ -78,7 +82,7 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
   // post registration setup
   for (const model of models) {
     if (typeof model.dao.postStoreDispatchSetup === 'function') {
-      model.dao.postStoreDispatchSetup(state, web3, history)
+      model.dao.postStoreDispatchSetup(state, web3, history, subscribeToFlow)
     }
   }
 
