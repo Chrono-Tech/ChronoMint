@@ -69,7 +69,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
   }
 
   handleEventsError (data) {
-    console.log('handleEventsChanged: ', data.event, data)
+    console.log('handleEventsError: ', data.event, data)
     this.emit(data.event + '_error', data)
   }
 
@@ -116,14 +116,14 @@ export default class VotingManagerDAO extends AbstractContractDAO {
     const voteLimitInTIME = poll.voteLimitInTIME
     let summary = poll.txSummary()
     summary.voteLimitInTIME = new Amount(voteLimitInTIME, 'TIME')
-    summary = { ...poll.txSummary(), ...options, id: options.stubId, blockchain: 'Ethereum' }
+    summary = { ...poll.txSummary(), blockchain: 'Ethereum' }
 
     await this._tx(TX_CREATE_POLL, [
       poll.options.length,
       this._c.ipfsHashToBytes32(hash),
       new BigNumber(voteLimitInTIME),
       poll.deadline.getTime(),
-    ], new BigNumber(0), new BigNumber(0), summary)
+    ], new BigNumber(0), new BigNumber(0), summary, { stubPoll: options.stubPoll })
   }
 
   async getPollsDetails (pollsAddresses: Array<string>, account: string) {
@@ -214,6 +214,8 @@ export default class VotingManagerDAO extends AbstractContractDAO {
       // eslint-disable-next-line
       console.error('getPollsDetails error: ' + e.message)
     }
+
+    console.log('new VotingCollection(): ', result)
 
     let collection = new VotingCollection()
     result.map((item) => {

@@ -225,10 +225,8 @@ export default class AbstractContractDAO extends EventEmitter {
 
     const { gasLimit, gasFee, gasPrice } = await this.estimateGas(func, args, value, from, { feeMultiplier: feeMultiplier || 1 })
 
-    console.log('submit Tx: gasLimit, gasFee, gasPrice: ', gasLimit, gasFee, gasPrice)
-
     setImmediate(async () => {
-      console.log('submit Tx: setImmediate: ', this)
+      console.log('submit Tx: setImmediate tx: ', this, func, args, amount, value, options, additionalOptions)
       this.emit('submit', new TxExecModel({
         _id: id,
         contract: this.abi.contractName,
