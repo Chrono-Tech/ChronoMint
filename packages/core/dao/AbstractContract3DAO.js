@@ -51,6 +51,10 @@ export default class AbstractContractDAO extends EventEmitter {
       : this.contract
   }
 
+  getContractName () {
+    return this.abi.contractName
+  }
+
   isEmptyAddress (v): boolean {
     return v === '0x0000000000000000000000000000000000000000'
   }

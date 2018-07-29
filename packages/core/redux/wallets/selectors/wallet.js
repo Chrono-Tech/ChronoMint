@@ -9,26 +9,32 @@ import { getWallets } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
 import Amount from '../../../models/Amount'
 import { getEthMultisigWallets } from '../../multisigWallet/selectors/models'
+import MultisigEthWalletModel from '../../../models/wallet/MultisigEthWalletModel'
 
-// provides filtered list of addresses of MainWallets
 export const selectWallet = (blockchain, address) => createSelector(
   [
     getWallets,
     getEthMultisigWallets,
   ],
   (wallets, ethMultisigWallets) => {
-    const walletId = `${blockchain}-${address}`
-    let wallet: WalletModel = wallets[walletId]
-    if (!wallet) {
-      wallet = ethMultisigWallets.item(walletId)
-    }
     const mainSymbol = getMainSymbolForBlockchain(blockchain)
+    const walletId = `${blockchain}-${address}`
 
+    let wallet: WalletModel = wallets[walletId]
+    if (wallet) {
+      const balance: Amount = wallet ? wallet.balances[mainSymbol] : new Amount(0, mainSymbol)
+      return new WalletModel({
+        ...wallet,
+        amount: balance,
+      })
+    }
+    wallet = ethMultisigWallets.item(walletId)
     const balance: Amount = wallet ? wallet.balances[mainSymbol] : new Amount(0, mainSymbol)
-    return new WalletModel({
+    return new MultisigEthWalletModel({
       ...wallet,
       amount: balance,
     })
+
   },
 )
 

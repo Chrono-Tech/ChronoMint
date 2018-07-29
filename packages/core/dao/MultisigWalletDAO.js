@@ -126,11 +126,14 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     const res = await this.contract.methods.getPendings().call()
     const [values, operations, isConfirmed] = Object.values(res)
 
-    let promises = []
-    operations.map((operation) => {
-      promises.push(ethereumProvider.checkConfirm2FAtx(operation))
+    let verifiedOperationsPromises = []
+    let pendingDataPromises = []
+    operations.filter(this.isValidId).map((operation) => {
+      verifiedOperationsPromises.push(ethereumProvider.checkConfirm2FAtx(operation))
+      pendingDataPromises.push(this.getPendingData(operation))
     })
-    const verifiedOperations = await Promise.all(promises)
+    const verifiedOperations = await Promise.all(verifiedOperationsPromises)
+    const pendingData = await Promise.all(pendingDataPromises)
 
     operations.filter(this.isValidId).forEach((id, i) => {
       let pendingTxModel
@@ -139,6 +142,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
         value: values [i],
         isConfirmed: isConfirmed[i],
         isPending: verifiedOperations[i] ? verifiedOperations[i].activated : false,
+        decodedTx: pendingData[i] ? pendingData[i] : null,
       })
       pendingTxCollection = pendingTxCollection.add(pendingTxModel)
     })
@@ -159,7 +163,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   async getPendingData (id: string): Promise<TxExecModel> {
-    const data = await this._call('getData', [id])
+    const data = await this.contract.methods.getData(id).call()
     return this.decodeData(data)
   }
 
@@ -170,47 +174,33 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   // actions
 
   async removeWallet (wallet, account: string) {
-    const result = await this._tx('kill', [
+    await this._tx('kill', [
       account,
     ], {
       address: wallet.address(),
       account,
     })
-    return result.tx
   }
 
   async addOwner (wallet, ownerAddress) {
-    const result = await this._tx('addOwner', [
+    await this._tx('addOwner', [
       ownerAddress,
     ], {
       wallet: wallet.address(),
       ownerAddress,
     })
-    return result.tx
   }
 
   async removeOwner (wallet, ownerAddress) {
-    const result = await this._tx('removeOwner', [
+    await this._tx('removeOwner', [
       ownerAddress,
     ], {
       wallet: wallet.address(),
       ownerAddress,
     })
-    return result.tx
   }
 
   async transfer (wallet: MultisigEthWalletModel, token: TokenModel, amount, to, feeMultiplier: Number = 1, value) {
-    // const tokenDAO = tokenService.getDAO(token.id())
-    // const value = tokenDAO.addDecimals(amount)
-    /*
-    func: string,
-    args: Array = [],
-    amount: BigNumber = new BigNumber(0),
-    value: BigNumber = new BigNumber(0),
-    options: Object = {},
-    additionalOptions: Object = {},
-    */
-
     await this._tx('transfer',
       [
         to,
@@ -224,26 +214,23 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   async confirmPendingTx (tx) {
-    const result = await this._tx('confirm', [
+    await this._tx('confirm', [
       tx.id(),
     ])
-    return result.tx
   }
 
   async revokePendingTx (tx) {
-    const result = await this._tx('revoke', [
+    await this._tx('revoke', [
       tx.id(),
     ], tx.txRevokeSummary())
-    return result.tx
   }
 
   async changeRequirement (newRequired: Number) {
-    const result = await this._tx('changeRequirement', [
+    await this._tx('changeRequirement', [
       newRequired,
     ], {
       signatureRequirements: newRequired,
     })
-    return result.tx
   }
 
   // helpers

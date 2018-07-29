@@ -57,14 +57,10 @@ const configureStore = () => {
 
     if (action.type === SESSION_DESTROY) {
       const i18nState = state.get('i18n')
-      const mainWalletsState = state.get('mainWallet')
-      const walletsState = state.get('ethMultisigWallet')
       const persistAccount = state.get('persistAccount')
       state = new Immutable.Map()
       state = state
         .set('i18n', i18nState)
-        .set('ethMultisigWallet', walletsState)
-        .set('mainWallet', mainWalletsState)
         .set('persistAccount', persistAccount)
     }
     return appReducer(state, action)
@@ -85,17 +81,10 @@ const configureStore = () => {
     const WHITE_LIST = []
     // The following actions will be ignored if not whitelisted but presents in DOMAINS
     // So, we can enable whole domain, but still exclude aome actions from domain
-    const IGNORED_ACTIONS = [
-      'mainWallet/TOKEN_BALANCE',
-      'market/UPDATE_LAST_MARKET',
-      'market/UPDATE_PRICES',
-      'market/UPDATE_RATES',
-      'tokens/fetched',
-    ]
+    const IGNORED_ACTIONS = []
     // All actions like network/* (starts with network)
     const DOMAINS = [
       'ethMultisigWallet/',
-      'network/',
       '@@router/',
     ]
     const logger = createLogger({
@@ -124,7 +113,7 @@ export const store = configureStore()
 
 const persistorConfig = {
   key: 'root',
-  whitelist: ['ethMultisigWallet', 'mainWallet', 'persistAccount', 'wallets'],
+  whitelist: ['persistAccount', 'wallets'],
   transforms: [transformer()],
 }
 

@@ -8,7 +8,6 @@ import { getWallets, getWalletsLengthFromState } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
 import { getAccount } from '../../session/selectors/models'
 import { getEthMultisigWallets } from '../../multisigWallet/selectors/models'
-import MultisigEthWalletModel from '../../../models/wallet/MultisigEthWalletModel'
 
 export const selectWalletsList = createSelector(
   [
@@ -18,8 +17,10 @@ export const selectWalletsList = createSelector(
   ],
   (account, wallets, ethMultisigWallets) => {
     return [
-      ...Object.values(wallets).filter((wallet: WalletModel) => wallet.isDerived ? wallet.owners.includes(account) : true),
-      ...ethMultisigWallets.items().filter((wallet: MultisigEthWalletModel) => wallet.owners.includes(account)),
+      ...Object.values(wallets)
+        .filter((wallet: WalletModel) => !!wallet.address && !!wallet.blockchain)
+        .filter((wallet: WalletModel) => wallet.isDerived ? wallet.owners.includes(account) : true),
+      ...ethMultisigWallets.items(),
     ]
       .map((wallet: WalletModel) => {
         const jsWallet = Object.create(null)

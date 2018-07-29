@@ -16,7 +16,8 @@ import OwnersListWidget from 'components/wallet/OwnersListWidget/OwnersListWidge
 import { getTransactionsForWallet, goToWallets } from '@chronobank/core/redux/mainWallet/actions'
 import { getWalletInfo } from '@chronobank/core/redux/wallets/selectors/wallet'
 import TransactionsListWidget from 'components/wallet/TransactionsListWidget/TransactionsListWidget'
-import { PTWallet } from '@chronobank/core/redux/wallet/types'
+import WalletModel from '@chronobank/core/models/wallet/WalletModel'
+import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 
 import './WalletContent.scss'
 
@@ -52,7 +53,7 @@ export default class WalletContent extends Component {
     getTransactions: PropTypes.func,
     address: PropTypes.string,
     blockchain: PropTypes.string,
-    wallet: PTWallet,
+    wallet: PropTypes.oneOfType([PropTypes.instanceOf(WalletModel), PropTypes.instanceOf(MultisigEthWalletModel)]),
   }
 
   constructor (props) {
@@ -81,8 +82,7 @@ export default class WalletContent extends Component {
 
         <TokensListWidget wallet={wallet} />
 
-        {/*TODO Fix this component after implemented multisig */}
-        {/*<PendingTxWidget walletInfo={wallet} />*/}
+        <PendingTxWidget wallet={wallet} />
 
         <OwnersListWidget wallet={wallet} />
 

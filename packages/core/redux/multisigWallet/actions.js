@@ -205,7 +205,7 @@ export const initMultisigWalletManager = () => async (dispatch, getState) => {
 
   walletsManagerDAO.on('mained', (tx: TxExecModel) => {
     const wallet = getState().get(DUCK_ETH_MULTISIG_WALLET).item(tx.id())
-    dispatch(updateWallet(wallet.isPending(false).isFetched(true).address(tx.hash)))
+    dispatch(updateWallet(new MultisigEthWalletModel({ ...wallet, address: tx.hash, isPending: false, isFetched: true })))
   })
   /*let wallets = getState().get(DUCK_ETH_MULTISIG_WALLET)
   wallets.items().map((wallet) => {
@@ -243,7 +243,7 @@ export const initMultisigWalletManager = () => async (dispatch, getState) => {
   walletsManagerDAO.fetchWallets()
 }
 
-export const createWallet = (wallet: MultisigWalletModel) => (dispatch, getState) => {
+export const createWallet = (wallet: MultisigEthWalletModel) => (dispatch, getState) => {
   try {
     const walletsManagerDAO = daoByType('WalletsManager')(getState())
     walletsManagerDAO.createWallet(wallet)
@@ -317,7 +317,7 @@ export const multisigTransfer = (wallet: WalletModel, token, amount, recipient, 
 
 export const confirmMultisigTx = (wallet, tx: MultisigWalletPendingTxModel) => async () => {
   try {
-    const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address())
+    const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address)
     await dao.confirmPendingTx(tx)
   } catch (e) {
     // eslint-disable-next-line
@@ -342,18 +342,6 @@ export const revokeMultisigTx = (wallet: MultisigWalletModel, tx: MultisigWallet
   } catch (e) {
     // eslint-disable-next-line
     console.error('revoke ms tx error', e.message)
-  }
-}
-
-export const getPendingData = (wallet, pending: MultisigWalletPendingTxModel) => async (dispatch) => {
-  try {
-    dispatch({ type: ETH_MULTISIG_PENDING_TX, walletId: wallet.id(), pending: pending.isPending(true) })
-    const walletDAO: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address())
-    const decodedTx: TxExecModel = await walletDAO.getPendingData(pending.id())
-    dispatch({ type: ETH_MULTISIG_PENDING_TX, walletId: wallet.id(), pending: pending.decodedTx(decodedTx).isPending(false) })
-  } catch (e) {
-    // eslint-disable-next-line
-    console.error('get pending data error', e.message)
   }
 }
 

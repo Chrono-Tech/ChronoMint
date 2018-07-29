@@ -19,6 +19,7 @@ import { Translate } from 'react-redux-i18n'
 import { change, Field, FieldArray, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { goToWallets, resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
+import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import { prefix } from './lang'
 import validate from './validate'
 import './MultisigWalletForm.scss'
@@ -47,12 +48,10 @@ function mapDispatchToProps (dispatch) {
     onSubmit: (values, dispatch, props) => {
       // owners
       const owners = values.get('owners')
-      let ownersCollection = new OwnerCollection()
-      ownersCollection = ownersCollection.add(new OwnerModel({
-        address: props.account,
-      }))
+      let ownersCollection = []
+      ownersCollection.push(props.account)
       owners.forEach(({ address }) => {
-        ownersCollection = ownersCollection.add(new OwnerModel({ address }))
+        ownersCollection.push(address)
       })
 
       // date
@@ -69,7 +68,7 @@ function mapDispatchToProps (dispatch) {
         ))
       }
 
-      const wallet = new MultisigWalletModel({
+      const wallet = new MultisigEthWalletModel({
         ...props.initialValues.toJS(),
         ...values.toJS(),
         releaseTime,

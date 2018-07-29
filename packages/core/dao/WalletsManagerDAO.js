@@ -98,19 +98,18 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   }
 
   createWallet (wallet: MultisigEthWalletModel) {
-    const owners = wallet.owners().items().map((item) => item.address())
     this._tx(
       'createWallet',
       [
-        owners,
-        wallet.requiredSignatures(),
-        Math.floor(wallet.releaseTime() / 1000),
+        wallet.owners,
+        wallet.requiredSignatures,
+        Math.floor(wallet.releaseTime / 1000),
       ],
       new BigNumber(0),
       new BigNumber(0),
       {
         fields: wallet.toCreateWalletTx(),
-        id: wallet.id(),
+        id: wallet.id,
       },
     )
   }

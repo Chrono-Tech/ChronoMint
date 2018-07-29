@@ -59,14 +59,16 @@ export default class WalletsContent extends Component {
         {this.props.check2FAChecked === false && this.props.isHave2FAWallets && <TwoFAWarningWidget />}
         {this.props.walletsList.map((walletGroup) => (
           <div key={walletGroup.title}>
-            {walletGroup.data.map((wallet, i) => (
-              <Component
-                showGroupTitle={i === 0}
-                key={`${walletGroup.title}-${wallet.address}`}
-                blockchain={walletGroup.title}
-                address={wallet.address}
-              />
-            ))}
+            {walletGroup.data.map((wallet, i) => {
+              return (
+                <Component
+                  showGroupTitle={i === 0}
+                  key={`${walletGroup.title}-${wallet.address}`}
+                  blockchain={walletGroup.title}
+                  address={wallet.address}
+                />
+              )
+            })}
           </div>
         ))}
       </div>

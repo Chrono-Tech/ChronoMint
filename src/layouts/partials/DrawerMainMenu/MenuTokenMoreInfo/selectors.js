@@ -11,7 +11,6 @@ import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import { getMainWallets } from '@chronobank/core/redux/wallets/selectors/models'
 import MultisigWalletCollection from '@chronobank/core/models/wallet/MultisigWalletCollection'
 
-// provides filtered list of addresses of MainWallets
 export const selectWallet = () => createSelector(
   [
     getMultisigWallets,

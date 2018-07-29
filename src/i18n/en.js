@@ -481,6 +481,12 @@ export default {
         to: 'To',
         symbol: 'Symbol',
       },
+      confirm: {
+        title: 'Confirm tx',
+        value: 'Value',
+        to: 'To',
+        symbol: 'Symbol',
+      },
       addOwner: {
         title: 'Add owner',
         owner: 'New Owner',

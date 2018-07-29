@@ -28,8 +28,7 @@ export default class MultisigWalletCollection extends abstractFetchingCollection
 
   pending (walletId, pending: MultisigWalletPendingTxModel) {
     const wallet: MultisigWalletModel = this.item(walletId)
-    const updatedPending = wallet.pendingTxList().itemFetched(pending)
-    return this.update(wallet.pendingTxList(updatedPending))
+    return this.update(wallet.updatePendingTx(pending))
   }
 
   activeWallets () {

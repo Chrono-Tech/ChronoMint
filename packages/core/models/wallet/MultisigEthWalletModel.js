@@ -4,10 +4,12 @@
  */
 
 import PropTypes from 'prop-types'
-import AbstractModel from '../AbstractModelOld'
+import AbstractModel from '../../models/AbstractModel'
 import Amount from '../Amount'
 import TxHistoryModel from './TxHistoryModel'
-import AllowanceCollection from '../AllowanceCollection'
+import AllowanceCollection from '../../models/AllowanceCollection'
+import MultisigWalletPendingTxModel from './MultisigWalletPendingTxModel'
+import MultisigWalletPendingTxCollection from './MultisigWalletPendingTxCollection'
 
 const schemaFactory = () => ({
   address: PropTypes.string.isRequired,
@@ -17,7 +19,7 @@ const schemaFactory = () => ({
   transactions: PropTypes.instanceOf(TxHistoryModel),
   owners: PropTypes.arrayOf(PropTypes.string),
   requiredSignatures: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  pendingTxList: PropTypes.object,
+  pendingTxList: PropTypes.instanceOf(MultisigWalletPendingTxCollection),
   releaseTime: PropTypes.instanceOf(Date),
   customTokens: PropTypes.object,
   deriveNumber: PropTypes.number,
@@ -33,7 +35,7 @@ const defaultProps = {
   balances: {},
   transactions: new TxHistoryModel(),
   owners: [],
-  pendingTxList: null,
+  pendingTxList: new MultisigWalletPendingTxCollection({}),
   customTokens: null,
   isTIMERequired: false,
   allowances: new AllowanceCollection({}),
@@ -59,6 +61,63 @@ export default class MultisigEthWalletModel extends AbstractModel {
         [balance.symbol()]: balance,
       },
     })
+  }
+
+  updatePendingTx (PendingTx: MultisigWalletPendingTxModel) {
+    return new MultisigEthWalletModel({
+      ...this,
+      pendingTxList: this.pendingTxList.update(PendingTx),
+    })
+  }
+
+  // forms
+
+  toAddFormJS () {
+    const time = this.releaseTime.getTime() === 0 ? new Date() : this.releaseTime
+
+    return {
+      requiredSignatures: this.requiredSignatures,
+      owners: this.owners,
+      timeLockDate: time,
+      timeLockTime: time,
+    }
+  }
+
+  toCreateWalletTx () {
+    if (this.is2FA) {
+      return {}
+    }
+
+    const data = {
+      requiredSignatures: {
+        value: this.requiredSignatures,
+        description: 'requiredSignatures',
+      },
+      owners: {
+        value: this.owners,
+        description: 'owners',
+      },
+    }
+
+    if (this.isTimeLocked) {
+      data.releaseTime = {
+        value: this.releaseTime,
+        description: 'releaseTime',
+      }
+      data.isTimeLocked = {
+        value: true,
+        description: 'isTimeLocked',
+      }
+    }
+
+    return data
+  }
+
+  toRequiredSignaturesFormJS () {
+    return {
+      ownersCount: this.owners,
+      requiredSignatures: this.requiredSignatures,
+    }
   }
 
   transform () {

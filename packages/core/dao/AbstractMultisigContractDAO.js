@@ -75,7 +75,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
     const methodId = dataBuf.slice(0, 4).toString('hex')
     const inputsBuf = dataBuf.slice(4)
 
-    const tx = await this._json.abi.reduce((acc, obj) => {
+    const tx = await this.abi.abi.reduce((acc, obj) => {
       if (!obj.hasOwnProperty('inputs')) {
         return acc
       }

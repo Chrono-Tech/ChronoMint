@@ -93,7 +93,7 @@ class LoginPage extends React.Component {
   }
 
   componentDidMount () {
-    this.props.handleSubmit()
+    // this.props.handleSubmit()
   }
 
   renderSuccessMessage () {
