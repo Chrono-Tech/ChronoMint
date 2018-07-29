@@ -10,16 +10,18 @@ import MultisigWalletDAO from '../dao/MultisigWalletDAO'
 import type MultisigTransactionModel from '../models/wallet/MultisigTransactionModel'
 import type MultisigWalletModel from '../models/wallet/MultisigWalletModel'
 import MultisigWalletPendingTxModel from '../models/wallet/MultisigWalletPendingTxModel'
-
-export const EE_CONFIRMATION = 'Confirmation'
-export const EE_REVOKE = 'Revoke'
-export const EE_DEPOSIT = 'Deposit'
-export const EE_CONFIRMATION_NEEDED = 'ConfirmationNeeded'
-export const EE_SINGLE_TRANSACTION = 'SingleTransact'
-export const EE_MULTI_TRANSACTION = 'MultiTransact'
-export const EE_OWNER_REMOVED = 'OwnerRemoved'
-export const EE_OWNER_ADDED = 'OwnerAdded'
-export const EE_REQUIREMENT_CHANGED = 'RequirementChanged'
+import {
+  EE_CONFIRMATIO,
+  EE_CONFIRMATION,
+  EE_CONFIRMATION_NEEDED,
+  EE_DEPOSIT,
+  EE_MULTI_TRANSACTION,
+  EE_OWNER_ADDED,
+  EE_OWNER_REMOVED,
+  EE_REQUIREMENT_CHANGED,
+  EE_REVOKE,
+  EE_SINGLE_TRANSACTION,
+} from './constants'
 
 class MultisigWalletService extends EventEmitter {
 

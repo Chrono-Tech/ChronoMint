@@ -11,7 +11,6 @@ import { push, replace } from '@chronobank/core-dependencies/router'
 import ls from '@chronobank/core-dependencies/utils/LocalStorage'
 import web3Factory from '@chronobank/core/refactor/web3/index'
 import { removeWatchersUserMonitor } from '@chronobank/core-dependencies/redux/ui/actions'
-import contractsManagerDAO from '../../refactor/daos/lib/ContractsManagerDAO'
 import ProfileModel from '../../models/ProfileModel'
 import { cbeWatcher, watcher } from '../watcher/actions'
 import { watchStopMarket } from '../market/actions'
@@ -123,7 +122,7 @@ export const bootstrap = (relogin = true) => async (dispatch, getState) => {
   const localAccount = ls.getLocalAccount()
   const isPassed = await networkService.checkLocalSession(localAccount)
   if (isPassed) {
-    await networkService.restoreLocalSession(localAccount, getState().get('multisigWallet'))
+    await networkService.restoreLocalSession(localAccount, getState().get('ethMultisigWallet'))
     networkService.createNetworkSession(localAccount, LOCAL_PROVIDER_ID, LOCAL_ID)
     dispatch(login(localAccount))
   } else {

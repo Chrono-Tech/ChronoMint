@@ -51,6 +51,16 @@ export default class MultisigEthWalletModel extends AbstractModel {
     return `${this.blockchain}-${this.address}`
   }
 
+  updateBalance (balance: Amount) {
+    return new MultisigEthWalletModel({
+      ...this,
+      balances: {
+        ...this.balances,
+        [balance.symbol()]: balance,
+      },
+    })
+  }
+
   transform () {
     return { ...this }
   }

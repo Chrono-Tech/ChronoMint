@@ -17,7 +17,8 @@ import PropTypes from 'prop-types'
 import TWO_FA_LOGO_PNG from 'assets/img/2fa/2-fa.png'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import Preloader from 'components/common/Preloader/Preloader'
-import { create2FAWallet, DUCK_MULTISIG_WALLET, estimateGasFor2FAForm, FORM_2FA_STEPS, FORM_2FA_WALLET } from '@chronobank/core/redux/multisigWallet/actions'
+import { create2FAWallet, estimateGasFor2FAForm } from '@chronobank/core/redux/multisigWallet/actions'
+import { DUCK_ETH_MULTISIG_WALLET, FORM_2FA_STEPS, FORM_2FA_WALLET } from '@chronobank/core/redux/multisigWallet/constants'
 import OwnerCollection from '@chronobank/core/models/wallet/OwnerCollection'
 import OwnerModel from '@chronobank/core/models/wallet/OwnerModel'
 import MultisigWalletModel from '@chronobank/core/models/wallet/MultisigWalletModel'
@@ -34,7 +35,7 @@ function mapStateToProps (state) {
   const feeMultiplier = selector(state, 'feeMultiplier')
   const step = selector(state, 'step')
   const { account } = state.get(DUCK_SESSION)
-  const check2FAChecked = state.get(DUCK_MULTISIG_WALLET).twoFAConfirmed()
+  const check2FAChecked = state.get(DUCK_ETH_MULTISIG_WALLET).twoFAConfirmed()
 
   return {
     selectedCurrency,

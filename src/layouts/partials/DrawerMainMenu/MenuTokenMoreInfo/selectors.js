@@ -7,7 +7,7 @@ import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
 import { getMultisigWallets } from '@chronobank/core/redux/wallet/selectors'
 import OwnerModel from '@chronobank/core/models/wallet/OwnerModel'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import { getMainWallets } from '@chronobank/core/redux/wallets/selectors/models'
 import MultisigWalletCollection from '@chronobank/core/models/wallet/MultisigWalletCollection'
 

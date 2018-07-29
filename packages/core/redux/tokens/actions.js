@@ -30,19 +30,11 @@ import { notifyError } from '../notifier/actions'
 import { EVENT_NEW_BLOCK } from '../../dao/AbstractContractDAO'
 import Amount from '../../models/Amount'
 import { ETH } from '../mainWallet/actions'
-import { EVENT_UPDATE_LAST_BLOCK } from '../../dao/AbstractTokenDAO'
+import { EVENT_UPDATE_LAST_BLOCK } from '../../dao/constants'
 import { daoByType } from '../../refactor/redux/daos/selectors'
 import TxExecModel from '../../refactor/models/TxExecModel'
 import { WATCHER_TX_END, WATCHER_TX_SET } from '../watcher/actions'
-
-export const DUCK_TOKENS = 'tokens'
-export const TOKENS_UPDATE = 'tokens/update'
-export const TOKENS_UPDATE_LATEST_BLOCK = 'tokens/updateLatestBlock'
-export const TOKENS_INIT = 'tokens/init'
-export const TOKENS_FETCHING = 'tokens/fetching'
-export const TOKENS_FETCHED = 'tokens/fetched'
-export const TOKENS_REMOVE = 'tokens/remove'
-export const TOKENS_FAILED = 'tokens/failed'
+import { DUCK_TOKENS, TOKENS_FAILED, TOKENS_FETCHED, TOKENS_FETCHING, TOKENS_INIT, TOKENS_UPDATE_LATEST_BLOCK } from './constants'
 
 const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {

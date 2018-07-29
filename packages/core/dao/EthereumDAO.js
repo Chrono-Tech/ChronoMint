@@ -11,7 +11,7 @@ import TokenModel from '../models/tokens/TokenModel'
 import TxExecModel from '../refactor/models/TxExecModel'
 import TxModel from '../models/TxModel'
 import AbstractContractDAO, { EVENT_NEW_BLOCK } from './AbstractContractDAO'
-import { EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from './AbstractTokenDAO'
+import { EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from './constants'
 import AbstractTokenDAO from '../refactor/daos/lib/AbstractTokenDAO'
 
 const transferSignature = '0x940c4b3549ef0aaff95807dc27f62d88ca15532d1bf535d7d63800f40395d16c'

@@ -9,14 +9,9 @@ import type MultisigWalletDAO from './MultisigWalletDAO'
 import AddressesCollection from '../models/wallet/AddressesCollection'
 import AddressModel from '../models/wallet/AddressModel'
 import MultisigEthWalletModel from '../models/wallet/MultisigEthWalletModel'
-import OwnerCollection from '../models/wallet/OwnerCollection'
-import OwnerModel from '../models/wallet/OwnerModel'
 import multisigWalletService from '../services/MultisigWalletService'
 import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
-
-export const EE_MS_WALLET_ADDED = 'MSWalletAdded'
-export const EE_MS_WALLET_REMOVED = 'MSWalletRemoved'
-export const EE_MS_WALLETS_COUNT = 'msWalletCount'
+import { EE_MS_WALLET_ADDED, EE_MS_WALLET_REMOVED, EE_MS_WALLETS_COUNT } from './constants'
 
 export default class WalletsManagerDAO extends AbstractContractDAO {
 

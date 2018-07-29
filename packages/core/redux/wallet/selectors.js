@@ -4,7 +4,7 @@
  */
 
 import { createSelector } from 'reselect'
-import { DUCK_MULTISIG_WALLET } from '../multisigWallet/actions'
+import { DUCK_ETH_MULTISIG_WALLET } from '../multisigWallet/constants'
 import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 import Amount from '../../models/Amount'
 import { getMultisigWallets, selectMarketPricesListStore, selectMarketPricesSelectedCurrencyStore, selectTokensStore } from './selectors/models'
@@ -20,7 +20,7 @@ export {
 
 export const getDeriveWalletsAddresses = (state, blockchain) => {
   let accounts = []
-  state.get(DUCK_MULTISIG_WALLET)
+  state.get(DUCK_ETH_MULTISIG_WALLET)
     .list()
     .map((wallet) => {
       if (wallet instanceof DerivedWalletModel && wallet.blockchain() === blockchain) {
@@ -31,7 +31,7 @@ export const getDeriveWalletsAddresses = (state, blockchain) => {
 }
 
 export const getIsHave2FAWallets = (state) => {
-  return state.get(DUCK_MULTISIG_WALLET)
+  return state.get(DUCK_ETH_MULTISIG_WALLET)
     .list()
     .some((wallet) => {
       if (wallet.is2FA()) {

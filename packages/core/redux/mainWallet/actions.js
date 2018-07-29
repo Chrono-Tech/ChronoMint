@@ -19,7 +19,7 @@ import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import { history } from '@chronobank/core-dependencies/configureStore'
 import { push } from '@chronobank/core-dependencies/router'
-import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, EVENT_UPDATE_TRANSACTION } from '../../dao/AbstractTokenDAO'
+import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, EVENT_UPDATE_TRANSACTION } from '../../dao/constants'
 import { getDeriveWalletsAddresses, getMultisigWallets } from '../wallet/selectors'
 import { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
 import Amount from '../../models/Amount'
@@ -34,17 +34,17 @@ import { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
 import { addMarketToken } from '../market/actions'
 import { notify, notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/actions'
-import { DUCK_TOKENS, subscribeOnTokens } from '../tokens/actions'
+import { subscribeOnTokens } from '../tokens/actions'
+import { DUCK_TOKENS } from '../tokens/constants'
 import tokenService from '../../services/TokenService'
 import type TxModel from '../../models/TxModel'
 import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from '../../dao/AssetHolderDAO'
 import { TX_APPROVE } from '../../dao/ERC20DAO'
 import OwnerCollection from '../../models/wallet/OwnerCollection'
 import OwnerModel from '../../models/wallet/OwnerModel'
-import { DUCK_MULTISIG_WALLET, MULTISIG_BALANCE, MULTISIG_FETCHED } from '../multisigWallet/actions'
+import { DUCK_ETH_MULTISIG_WALLET, ETH_MULTISIG_BALANCE, ETH_MULTISIG_FETCHED } from '../multisigWallet/constants'
 import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 import AddressesCollection from '../../models/wallet/AddressesCollection'
-import MainWalletModel from '../../models/wallet/MainWalletModel'
 import { BLOCKCHAIN_NEM } from '../../dao/NemDAO'
 import { BLOCKCHAIN_WAVES } from '../../dao/WavesDAO'
 import WalletModel from '../../models/wallet/WalletModel'
@@ -156,12 +156,12 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
         if (walletsAccounts.includes(tx.from()) || walletsAccounts.includes(tx.to())) { // for derive wallets
           const setDerivedWalletBalance = async (wallet: DerivedWalletModel) => {
 
-            dispatch({ type: MULTISIG_FETCHED, wallet: wallet.set('transactions', wallet.transactions().add(tx)) })
+            dispatch({ type: ETH_MULTISIG_FETCHED, wallet: wallet.set('transactions', wallet.transactions().add(tx)) })
 
             const dao = tokenService.getDAO(token)
             const balance = await dao.getAccountBalance(wallet.address())
             dispatch({
-              type: MULTISIG_BALANCE,
+              type: ETH_MULTISIG_BALANCE,
               walletId: wallet.address(),
               balance: new BalanceModel({
                 id: token.id(),
@@ -170,7 +170,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
             })
           }
 
-          const walletFrom = getState().get(DUCK_MULTISIG_WALLET).item(tx.from())
+          const walletFrom = getState().get(DUCK_ETH_MULTISIG_WALLET).item(tx.from())
           if (walletFrom && walletFrom.isFetched()) {
             setDerivedWalletBalance(walletFrom)
           }
@@ -182,10 +182,10 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       }
     })
     .on(EVENT_UPDATE_BALANCE, ({ account, balance }) => {
-      const wallets = getState().get(DUCK_MULTISIG_WALLET)
+      const wallets = getState().get(DUCK_ETH_MULTISIG_WALLET)
       if (wallets.item(account)) {
         dispatch({
-          type: MULTISIG_BALANCE,
+          type: ETH_MULTISIG_BALANCE,
           walletId: account,
           balance: new BalanceModel({
             id: token.id(),
@@ -517,7 +517,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
     customTokens: tokens,
   })
 
-  dispatch({ type: MULTISIG_FETCHED, wallet })
+  dispatch({ type: ETH_MULTISIG_FETCHED, wallet })
   dispatch(subscribeOnTokens(getTokensBalancesAndWatch(address, blockchain, tokens)))
 }
 

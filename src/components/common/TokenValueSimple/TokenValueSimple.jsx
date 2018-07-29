@@ -8,7 +8,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import { integerWithDelimiter } from '@chronobank/core-dependencies/utils/formatter'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 

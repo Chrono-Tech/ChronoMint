@@ -7,17 +7,20 @@ import { createSelector } from 'reselect'
 import { getWallets } from '../../wallets/selectors/models'
 import { getTokens } from '../../tokens/selectors'
 import { selectMarketPricesListStore, selectMarketPricesSelectedCurrencyStore } from './models'
+import { getEthMultisigWallets } from '../../multisigWallet/selectors/models'
 
 export const getWalletTokens = (walletId: string, isAmountGt: boolean) => {
   return createSelector(
     [
       getWallets,
+      getEthMultisigWallets,
       getTokens,
       selectMarketPricesListStore,
       selectMarketPricesSelectedCurrencyStore,
     ],
     (
       wallets,
+      ethMultisigWallets,
       tokens,
       prices,
       selectedCurrency,
@@ -33,7 +36,8 @@ export const getWalletTokens = (walletId: string, isAmountGt: boolean) => {
           .removeDecimals(amount)
           .toNumber()
 
-      const wallet = wallets[walletId]
+      const wallet = wallets[walletId] || ethMultisigWallets.item(walletId)
+
       if (!wallets) {
         return null
       }

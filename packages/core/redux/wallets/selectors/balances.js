@@ -8,20 +8,24 @@ import { getTokens } from '../../tokens/selectors'
 import { selectMarketPricesListStore, selectMarketPricesSelectedCurrencyStore } from '../../wallet/selectors'
 import { getWallet } from './models'
 import { PTWallet } from '../../wallet/types'
+import { getEthMultisigWallet } from '../../multisigWallet/selectors/models'
 
 export const filteredBalancesAndTokens = (walletId, symbol) => createSelector(
   [
     getWallet(walletId),
+    getEthMultisigWallet(walletId),
     getTokens,
   ],
   (
     wallet,
+    ethMultisigWallet,
     tokens,
   ) => {
-    if (!wallet) {
+    if (!wallet && !ethMultisigWallet) {
       return []
     }
-    return Object.values(wallet.balances)
+    const resWallet = wallet || ethMultisigWallet
+    return Object.values(resWallet.balances)
       .filter((balance) => {
         if (tokens.item(balance.symbol()).isFetched()) {
           return symbol ? balance.symbol() === symbol : true

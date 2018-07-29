@@ -8,7 +8,7 @@ import TokenModel from '../models/tokens/TokenModel'
 import ExchangeManagerDAO from '../dao/ExchangeManagerDAO'
 import { ExchangeDAO } from '../dao/ExchangeDAO'
 import EventEmitter from 'events'
-import { EVENT_NEW_TRANSFER } from '../dao/AbstractTokenDAO'
+import { EVENT_NEW_TRANSFER } from '../dao/constants'
 import TxModel from '../models/TxModel'
 
 class ExchangeService extends EventEmitter {
