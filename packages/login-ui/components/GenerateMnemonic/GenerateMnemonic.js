@@ -9,9 +9,14 @@ import { Translate } from 'react-redux-i18n'
 import ReactDOM from 'react-dom'
 import React, { Component } from 'react'
 import QRCode from 'qrcode'
-import { initMnemonicPage, navigateToConfirmMnemonicPage } from '@chronobank/login/redux/network/actions'
 import PrintIcon from 'assets/img/icons/print-white.svg'
 import LogoPrintVersion from 'assets/img/logo-chrono-wallet-bw.svg'
+import {
+  initMnemonicPage,
+} from '../../redux/thunks'
+import {
+  navigateToConfirmMnemonicPage,
+} from '../../redux/actions'
 import { Button } from '../../settings'
 
 import './GenerateMnemonic.scss'

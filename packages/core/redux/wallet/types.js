@@ -3,8 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+/* eslint-disable import/prefer-default-export */
+
 import PropTypes from 'prop-types'
-import Amount from '@chronobank/core/models/Amount'
+import Amount from '../../models/Amount'
 
 export const PTWallet = PropTypes.shape({
   address: PropTypes.string,

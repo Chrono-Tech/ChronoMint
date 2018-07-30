@@ -4,7 +4,7 @@
  */
 
 import hdkey from 'ethereumjs-wallet/hdkey'
-import { WALLET_HD_PATH } from './mnemonicProvider'
+import { WALLET_HD_PATH } from './constants'
 
 export default class HDWalletProvider {
   constructor (wallet, provider_url, address_index = 0, num_addresses = 0) {

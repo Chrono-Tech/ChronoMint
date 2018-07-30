@@ -4,7 +4,7 @@
  */
 
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
-import { getMainSymbolForBlockchain } from '@chronobank/core/redux/tokens/selectors'
+import { getMainSymbolForBlockchain } from '../../../redux/tokens/selectors'
 import { getWallets } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
 import Amount from '../../../models/Amount'

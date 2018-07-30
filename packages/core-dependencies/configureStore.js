@@ -3,4 +3,4 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export { history } from 'redux/configureStore'
+export { history, store } from 'redux/configureStore'

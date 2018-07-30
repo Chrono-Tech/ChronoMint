@@ -6,7 +6,7 @@
 import Web3 from 'web3'
 import hdKey from 'ethereumjs-wallet/hdkey'
 import Web3Utils from './Web3Utils'
-import { WALLET_HD_PATH } from './mnemonicProvider'
+import { WALLET_HD_PATH } from './constants'
 
 export default class EthereumEngine {
   constructor (wallet, network, url, engine, deriveNumber) {
@@ -16,7 +16,8 @@ export default class EthereumEngine {
     try {
       this._address = engine && web3.eth.accounts[0]
     } catch (e) {
-      dispatch(addError(e.message))
+      // FIXME: what is that? Was merged as is long time ago.
+      // dispatch(addError(e.message))
     }
     this._engine = engine || Web3Utils.createEngine(wallet, url, deriveNumber)
   }

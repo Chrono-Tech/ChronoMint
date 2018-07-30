@@ -4,31 +4,31 @@
  */
 
 import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import { TextField } from 'redux-form-material-ui'
-import { reduxForm, Field } from 'redux-form/immutable'
+import { reduxForm } from 'redux-form/immutable'
 import React, { Component } from 'react'
 import { Link } from 'react-router'
 import Button from 'components/common/ui/Button/Button'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import {
-  onSubmitWalletUpload,
-  onSubmitWalletUploadFail,
   clearErrors,
   loading,
-  initLoginWithWallet,
-  FORM_WALLET_UPLOAD,
 } from '@chronobank/login/redux/network/actions'
-
+import {
+  initLoginWithWallet,
+} from '@chronobank/login/redux/network/thunks'
 import FileIcon from 'assets/img/icons/file-white.svg'
 import DeleteIcon from 'assets/img/icons/delete-white.svg'
 import SpinnerGif from 'assets/img/spinningwheel.gif'
-import WarningIcon from 'assets/img/icons/warning.svg'
 import CheckIcon from 'assets/img/icons/check-green.svg'
 import spinner from 'assets/img/spinningwheel-1.gif'
-
-import styles from 'layouts/Splash/styles'
+import {
+  FORM_WALLET_UPLOAD,
+} from '../../redux/actions'
+import {
+  onSubmitWalletUpload,
+  onSubmitWalletUploadFail,
+} from '../../redux/thunks'
 import './LoginWithWallet.scss'
 
 const mapStateToProps = (state) => ({
@@ -45,7 +45,7 @@ const mapDispatchToProps = (dispatch) => {
       await dispatch(onSubmitWalletUpload(walletString, password))
     },
     initLoginWithWallet: () => dispatch(initLoginWithWallet()),
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitWalletUploadFail(errors, dispatch, submitErrors)),
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitWalletUploadFail(errors, submitErrors)),
   }
 }
 
@@ -67,7 +67,7 @@ class LoginWithWallet extends Component {
     }
   }
 
-  componentWillMount(){
+  componentWillMount (){
     this.props.initLoginWithWallet()
   }
 
@@ -105,7 +105,7 @@ class LoginWithWallet extends Component {
     this.walletFileUploadInput.value = ''
   }
 
-  async handleSubmitForm(values, dispatch, t,b,c){
+  async handleSubmitForm (values, dispatch, t, b, c){
     const { onSubmit } = this.props
     const { wallet } = this.state
 
@@ -182,14 +182,17 @@ class LoginWithWallet extends Component {
             buttonType='login'
             type='submit'
             disabled={isLoading || !isUploaded}
-            label={isLoading ? <span styleName='spinner-wrapper'>
-              <img
-                src={spinner}
-                alt=''
-                width={24}
-                height={24}
-              />
-            </span> : <Translate value='LoginWithWallet.login' />}
+            label={isLoading ? (
+              <span styleName='spinner-wrapper'>
+                <img
+                  src={spinner}
+                  alt=''
+                  width={24}
+                  height={24}
+                />
+              </span> ) :
+              <Translate value='LoginWithWallet.login' />
+            }
           />
           { error ? <div styleName='error'>{error}</div> : null }
           <Translate value='LoginWithWallet.or' />&nbsp;

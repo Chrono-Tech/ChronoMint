@@ -6,9 +6,10 @@
 import { ModalDialog } from 'components'
 import {
   BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_LITECOIN,
-} from '@chronobank/login/network/BitcoinProvider'
+} from '@chronobank/login/network/constants'
 import Amount from '@chronobank/core/models/Amount'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
