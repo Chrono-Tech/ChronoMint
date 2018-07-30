@@ -59,7 +59,7 @@ function mapDispatchToProps (dispatch,) {
       await dispatch(onSubmitRecoverAccountForm(mnemonic))
     },
     onSubmitSuccess: () => dispatch(onSubmitRecoverAccountFormSuccess()),
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitRecoverAccountFormFail(errors, dispatch, submitErrors)),
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitRecoverAccountFormFail(errors, submitErrors)),
     initRecoverAccountPage: () => dispatch(initRecoverAccountPage()),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
   }

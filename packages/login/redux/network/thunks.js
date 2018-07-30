@@ -9,7 +9,6 @@
 
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
 import { createAccountEntry } from '@chronobank/core/redux/persistAccount/utils'
-import { DUCK_MULTISIG_WALLET } from '@chronobank/core/redux/multisigWallet'
 import { login } from '@chronobank/core/redux/session/actions'
 import * as NetworkActions from './actions'
 import mnemonicProvider from '../../network/mnemonicProvider'

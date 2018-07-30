@@ -11,7 +11,6 @@ import { reduxForm, Field } from 'redux-form/immutable'
 import { Link } from 'react-router'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
-import styles from 'layouts/Splash/styles'
 import Button from 'components/common/ui/Button/Button'
 import {
   onSubmitMnemonicLoginForm,
@@ -31,7 +30,7 @@ function mapDispatchToProps (dispatch) {
       await dispatch(onSubmitMnemonicLoginForm(confirmMnemonic))
     },
     onSubmitSuccess: () => dispatch(onSubmitMnemonicLoginFormSuccess()),
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitMnemonicLoginFormFail(errors, dispatch, submitErrors)),
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitMnemonicLoginFormFail(errors, submitErrors)),
   }
 }
 

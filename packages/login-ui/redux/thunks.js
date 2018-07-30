@@ -68,7 +68,7 @@ export const onSubmitAccountNameSuccess = () => (dispatch) => {
  * TODO: to replace all onSubmitAccountNameFail and delete this thunk
  */
 // eslint-disable-next-line no-unused-vars
-export const onSubmitAccountNameFail = (errors, dispatch, submitErrors) => (dispatch) => {
+export const onSubmitAccountNameFail = (errors, submitErrors) => (dispatch) => {
   // FIXME: empty thunk
 }
 
@@ -328,6 +328,25 @@ export const onSubmitCreateHWAccountPage = (walletName) =>
 /*
  * Thunk dispatched by "" screen.
  * TODO: to add description
+ * TODO: to rework it
+ */
+export const onSubmitCreateHWAccountPageSuccess = () => {
+  // FIXME: empty thunk
+}
+
+/*
+ * Thunk dispatched by "" screen.
+ * TODO: to add description
+ * TODO: to rework it
+ */
+// eslint-disable-next-line no-unused-vars
+export const onSubmitCreateHWAccountPageFail = (errors, submitErrors) => {
+  // FIXME: empty thunk
+}
+
+/*
+ * Thunk dispatched by "" screen.
+ * TODO: to add description
  * TODO: to remove throws
  * TODO: to rework it
  * TODO: to move logic to utils
@@ -557,7 +576,7 @@ export const onWalletSelect = (wallet) => (dispatch, getState) => {
  * TODO: to add description
  * TODO: to rework it, merge into one action onSubmitPageFail
  */
-export const onSubmitSubscribeNewsletterFail = (submitErrors) =>
+export const onSubmitSubscribeNewsletterFail = (errors, submitErrors) =>
   (dispatch) => {
     dispatch(stopSubmit(LoginUIActions.FORM_FOOTER_EMAIL_SUBSCRIPTION, submitErrors && submitErrors.errors))
   }
@@ -567,7 +586,7 @@ export const onSubmitSubscribeNewsletterFail = (submitErrors) =>
  * TODO: to add description
  * TODO: to rework it, merge into one action onSubmitPageFail
  */
-export const onSubmitCreateAccountPageFail = (submitErrors) => (dispatch) => {
+export const onSubmitCreateAccountPageFail = (errors, submitErrors) => (dispatch) => {
   dispatch(stopSubmit(LoginUIActions.FORM_CREATE_ACCOUNT, submitErrors && submitErrors.errors))
 }
 
@@ -576,7 +595,7 @@ export const onSubmitCreateAccountPageFail = (submitErrors) => (dispatch) => {
  * TODO: to add description
  * TODO: to rework it, merge into one action onSubmitPageFail
  */
-export const onSubmitConfirmMnemonicFail = (submitErrors) => (dispatch) => {
+export const onSubmitConfirmMnemonicFail = (errors, submitErrors) => (dispatch) => {
   dispatch(stopSubmit(LoginUIActions.FORM_CONFIRM_MNEMONIC, submitErrors && submitErrors.errors))
 }
 
@@ -585,7 +604,7 @@ export const onSubmitConfirmMnemonicFail = (submitErrors) => (dispatch) => {
  * TODO: to add description
  * TODO: to rework it, merge into one action onSubmitPageFail
  */
-export const onSubmitMnemonicLoginFormFail = (submitErrors) => (dispatch) => {
+export const onSubmitMnemonicLoginFormFail = (errors, submitErrors) => (dispatch) => {
   dispatch(stopSubmit(LoginUIActions.FORM_MNEMONIC_LOGIN_PAGE, submitErrors && submitErrors.errors))
 }
 
@@ -594,7 +613,7 @@ export const onSubmitMnemonicLoginFormFail = (submitErrors) => (dispatch) => {
  * TODO: to add description
  * TODO: to rework it, merge into one action onSubmitPageFail
  */
-export const onSubmitPrivateKeyLoginFormFail = (submitErrors) => (dispatch) => {
+export const onSubmitPrivateKeyLoginFormFail = (errors, submitErrors) => (dispatch) => {
   dispatch(stopSubmit(LoginUIActions.FORM_PRIVATE_KEY_LOGIN_PAGE, submitErrors && submitErrors.errors))
 }
 
@@ -603,7 +622,7 @@ export const onSubmitPrivateKeyLoginFormFail = (submitErrors) => (dispatch) => {
  * TODO: to add description
  * TODO: to rework it, merge into one action onSubmitPageFail
  */
-export const onSubmitLoginFormFail = (submitErrors) => (dispatch) => {
+export const onSubmitLoginFormFail = (errors, submitErrors) => (dispatch) => {
   dispatch(stopSubmit(LoginUIActions.FORM_LOGIN_PAGE, submitErrors && submitErrors.errors))
   dispatch(NetworkActions.networkResetLoginSubmitting())
 }
@@ -613,7 +632,7 @@ export const onSubmitLoginFormFail = (submitErrors) => (dispatch) => {
  * TODO: to add description
  * TODO: to rework it, merge into one action onSubmitPageFail
  */
-export const onSubmitRecoverAccountFormFail = (submitErrors) => (dispatch) => {
+export const onSubmitRecoverAccountFormFail = (errors, submitErrors) => (dispatch) => {
   dispatch(stopSubmit(LoginUIActions.FORM_RECOVER_ACCOUNT, submitErrors && submitErrors.errors))
 }
 
@@ -622,7 +641,7 @@ export const onSubmitRecoverAccountFormFail = (submitErrors) => (dispatch) => {
  * TODO: to add description
  * TODO: to rework it, merge into one action onSubmitPageFail
  */
-export const onSubmitResetAccountPasswordFail = (submitErrors) => (dispatch) => {
+export const onSubmitResetAccountPasswordFail = (errors, submitErrors) => (dispatch) => {
   dispatch(stopSubmit(LoginUIActions.FORM_RESET_PASSWORD, submitErrors && submitErrors.errors))
 }
 
@@ -631,8 +650,26 @@ export const onSubmitResetAccountPasswordFail = (submitErrors) => (dispatch) => 
  * TODO: to add description
  * TODO: to rework it, merge into one action onSubmitPageFail
  */
-export const onSubmitWalletUploadFail = (submitError) => (dispatch) => {
-  dispatch(stopSubmit(LoginUIActions.FORM_WALLET_UPLOAD, submitError && submitError.errors))
+export const onSubmitWalletUploadFail = (errors, submitErrors) => (dispatch) => {
+  dispatch(stopSubmit(LoginUIActions.FORM_WALLET_UPLOAD, submitErrors && submitErrors.errors))
+}
+
+/*
+ * Thunk dispatched by "" screen.
+ * TODO: to add description
+ */
+// eslint-disable-next-line no-unused-vars
+export const onSubmitLoginTestRPC = () => (dispatch) => {
+  // FIXME: empty thunk
+}
+
+/*
+ * Thunk dispatched by "" screen.
+ * TODO: to add description
+ */
+// eslint-disable-next-line no-unused-vars
+export const onSubmitLoginTestRPCFail = (errors, submitErrors) => (dispatch) => {
+  // FIXME: empty thunk
 }
 
 // #endregion

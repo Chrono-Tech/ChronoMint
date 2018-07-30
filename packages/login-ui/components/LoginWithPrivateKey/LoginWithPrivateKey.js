@@ -3,14 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core'
+import { MuiThemeProvider } from '@material-ui/core'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
-import styles from 'layouts/Splash/styles'
 import Button from 'components/common/ui/Button/Button'
 import {
   FORM_PRIVATE_KEY_LOGIN_PAGE,
@@ -30,7 +29,7 @@ function mapDispatchToProps (dispatch) {
       await dispatch(onSubmitPrivateKeyLoginForm(privateKey))
     },
     onSubmitSuccess: () => dispatch(onSubmitPrivateKeyLoginFormSuccess()),
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitPrivateKeyLoginFormFail(errors, dispatch, submitErrors)),
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitPrivateKeyLoginFormFail(errors, submitErrors)),
   }
 }
 

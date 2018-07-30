@@ -42,7 +42,7 @@ function mapDispatchToProps (dispatch) {
       dispatch(onSubmitConfirmMnemonic(confirmMnemonic))
     },
     onSubmitSuccess: () => dispatch(onSubmitConfirmMnemonicSuccess()),
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitConfirmMnemonicFail(errors, dispatch, submitErrors)),
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitConfirmMnemonicFail(errors, submitErrors)),
   }
 }
 

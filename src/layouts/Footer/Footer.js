@@ -46,7 +46,7 @@ const mapDispatchToProps = (dispatch) => {
 
       await dispatch(onSubmitSubscribeNewsletter(email))
     },
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitSubscribeNewsletterFail(errors, dispatch, submitErrors)),
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitSubscribeNewsletterFail(errors, submitErrors)),
     onSubmitSuccess: () => dispatch(onSubmitSubscribeNewsletterSuccess),
   }
 }

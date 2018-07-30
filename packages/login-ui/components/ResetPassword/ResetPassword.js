@@ -51,7 +51,7 @@ function mapDispatchToProps (dispatch) {
       await dispatch(onSubmitResetAccountPasswordForm(password))
     },
     onSubmitSuccess: () => dispatch(onSubmitResetAccountPasswordSuccess()),
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitResetAccountPasswordFail(errors, dispatch, submitErrors)),
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitResetAccountPasswordFail(errors, submitErrors)),
     initResetPasswordPage: () => dispatch(initResetPasswordPage()),
   }
 }
@@ -62,11 +62,11 @@ class ResetPasswordPage extends PureComponent {
     initResetPasswordPage: PropTypes.func,
   }
 
-  componentWillMount(){
+  componentWillMount () {
     this.props.initResetPasswordPage()
   }
 
-  get getSelectedWalletName(){
+  get getSelectedWalletName () {
     const { selectedWallet } = this.props
     return selectedWallet && selectedWallet.name || ''
   }
