@@ -194,20 +194,6 @@ export const initRecoverAccountPage = () => (dispatch) => {
  * Thunk dispatched by "" screen.
  * TODO: to add description
  */
-export const validateMnemonic = (mnemonic) =>
-  async (dispatch, getState) => {
-    const state = getState()
-    const { selectedWallet } = state.get(PersistAccountActions.DUCK_PERSIST_ACCOUNT)
-    dispatch(PersistAccountActions.validateMnemonicForAccount(
-      selectedWallet,
-      mnemonic
-    ))
-  }
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
 export const onSubmitResetAccountPasswordForm = (password) =>
   async (dispatch, getState) => {
     const state = getState()

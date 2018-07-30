@@ -534,7 +534,7 @@ export const onSubmitMnemonicLoginForm = (mnemonic) =>
  */
 export const onSubmitRecoverAccountForm = (mnemonic) =>
   async (dispatch) => {
-    const validForm = await dispatch(NetworkThunks.validateMnemonic(mnemonic))
+    const validForm = await dispatch(PersistAccountActions.validateMnemonicForAccount(mnemonic))
 
     if (!validForm) {
       throw new SubmissionError({ _error: 'Mnemonic incorrect for this wallet' })

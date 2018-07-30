@@ -12,7 +12,7 @@ import {
   handleSubmitCreateNetwork,
   handleSubmitEditNetwork,
   handleDeleteNetwork,
-} from '@chronobank/login/redux/network/actions'
+} from '@chronobank/login/redux/network/thunks'
 import {
   AccountCustomNetwork,
 } from '@chronobank/core/models/wallet/persistAccount'
@@ -52,7 +52,7 @@ export default class NetworkCreateModal extends PureComponent {
     this.props.handleCloseModal()
   }
 
-  handleSubmit(values){
+  handleSubmit (values){
     const { handleSubmitCreateNetwork, handleSubmitEditNetwork, network } = this.props
 
     const url = values.get('url')
@@ -72,7 +72,7 @@ export default class NetworkCreateModal extends PureComponent {
     }
   }
 
-  handleDeleteNetwork(){
+  handleDeleteNetwork () {
     const { network, openConfirmDeleteModal, handleCloseModal } = this.props
 
     if (network){
