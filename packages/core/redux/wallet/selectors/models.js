@@ -3,23 +3,17 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { createSelector } from 'reselect'
-import { DUCK_MAIN_WALLET } from '../../mainWallet/actions'
-import { DUCK_MULTISIG_WALLET } from '../../multisigWallet/actions'
+import { DUCK_ETH_MULTISIG_WALLET } from '../../multisigWallet/constants'
 import { DUCK_MARKET } from '../../market/actions'
-import { DUCK_TOKENS } from '../../tokens/actions'
+import { DUCK_TOKENS } from '../../tokens/constants'
 
 /**
  * SIMPLE SELECTORS
  * ==============================================================================
  */
 
-export const getMainWallet = (state) => {
-  return state.get(DUCK_MAIN_WALLET)
-}
-
 export const getMultisigWallets = (state) => {
-  return state.get(DUCK_MULTISIG_WALLET)
+  return state.get(DUCK_ETH_MULTISIG_WALLET)
 }
 
 export const selectTokensStore = (state) =>

@@ -25,8 +25,6 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
     if (this.isConnected) {
       this.disconnect()
     }
-    // eslint-disable-next-line no-console
-    console.log('[ERC20TokenDAO] Connect')
     this.contract = new web3.eth.Contract(this.abi.abi, this.token.address(), options)
     this.web3 = web3
 

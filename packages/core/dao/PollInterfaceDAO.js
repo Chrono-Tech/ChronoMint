@@ -52,8 +52,7 @@ export default class PollInterfaceDAO extends AbstractContractDAO  {
   async activatePoll (options) {
     const txOptions = { useDefaultGasLimit: true, ...options }
 
-    const tx = await this._tx(TX_ACTIVATE_POLL, [], new BigNumber(0), new BigNumber(0), txOptions)
-    return tx
+    await this._tx(TX_ACTIVATE_POLL, [], new BigNumber(0), new BigNumber(0), txOptions)
   }
 
   vote (choice, choiceText, options) {
@@ -63,15 +62,13 @@ export default class PollInterfaceDAO extends AbstractContractDAO  {
   async removePoll (options) {
     const txOptions = { allowNoReturn: true, useDefaultGasLimit: true, ...options }
 
-    const tx = await this._tx(TX_REMOVE_POLL, [], new BigNumber(0), new BigNumber(0), txOptions)
-    return tx
+    await this._tx(TX_REMOVE_POLL, [], new BigNumber(0), new BigNumber(0), txOptions)
   }
 
   async endPoll (options) {
     const txOptions = { useDefaultGasLimit: true, ...options }
 
-    const tx = await this._tx(TX_END_POLL, [], new BigNumber(0), new BigNumber(0), txOptions)
-    return tx
+    await this._tx(TX_END_POLL, [], new BigNumber(0), new BigNumber(0), txOptions)
   }
 
 }

@@ -12,9 +12,6 @@ import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_WATCHER, WATCHER_TX_SET } from '@chronobank/core/redux/watcher/actions'
 import ConfirmTxDialog from 'components/dialogs/ConfirmTxDialog/ConfirmTxDialog'
 import UserActiveDialog from 'components/dialogs/UserActiveDialog/UserActiveDialog'
-import {
-  AccountCustomNetwork,
-} from '@chronobank/core/models/wallet/persistAccount'
 import { CHANGE_WALLET_VIEW } from './reducer'
 import ConfirmTransferDialog from '../../components/dialogs/ConfirmTransferDialog/ConfirmTransferDialog'
 

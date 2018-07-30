@@ -21,7 +21,7 @@ import {
   MIDDLEWARE_EVENT_UNPAUSED,
 } from '../../dao/AssetsManagerDAO'
 import { DUCK_SESSION } from '../session/actions'
-import { DUCK_TOKENS, TOKENS_FETCHED, TOKENS_UPDATE } from '../tokens/actions'
+import { DUCK_TOKENS, TOKENS_FETCHED, TOKENS_UPDATE } from '../tokens/constants'
 import AssetsManagerNoticeModel, {
   ASSET_PAUSED,
   ASSET_UNPAUSED,
@@ -32,6 +32,7 @@ import AssetsManagerNoticeModel, {
 } from '../../models/notices/AssetsManagerNoticeModel'
 import PausedModel from '../../models/tokens/PausedModel'
 import BlacklistModel from '../../models/tokens/BlacklistModel'
+import { daoByType } from '../../refactor/redux/daos/selectors'
 
 export const DUCK_ASSETS_MANAGER = 'assetsManager'
 
@@ -66,7 +67,8 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
   dispatch({ type: GET_ASSETS_MANAGER_COUNTS_START })
   const { account } = getState().get(DUCK_SESSION)
 
-  const assetsManagerDao = await contractManager.getAssetsManagerDAO()
+  const assetsManagerDao = daoByType('AssetsManager')(getState())
+
   const platforms = await assetsManagerDao.getPlatformList(account)
   const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
   const managers = await assetsManagerDao.getManagers(Object.entries(assets).map((item) => item[1].symbol), [account])
@@ -77,6 +79,7 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
     dispatch(setTxFromMiddlewareForBlockAsset(asset.address, symbol))
     dispatch(setTxFromMiddlewareForBlackList(asset.address, symbol))
   })
+
   dispatch({
     type: GET_ASSETS_MANAGER_COUNTS, payload: {
       platforms,
@@ -106,15 +109,16 @@ export const getPlatforms = () => async (dispatch, getState) => {
   dispatch({ type: GET_PLATFORMS, payload: { platforms, usersPlatforms } })
 }
 
-export const createPlatform = (values) => async () => {
+export const createPlatform = (values) => async (dispatch, getState) => {
   try {
-    const dao = await contractManager.getPlatformManagerDAO()
+    const dao = daoByType('PlatformsManager')(getState())
     if (values.get('alreadyHave')) {
       await dao.attachPlatform(values.get('platformAddress'))
     } else {
       await dao.createPlatform()
     }
   } catch (e) {
+    console.log('createPlatform error: ', e)
     // eslint-disable-next-line
     console.error(e.message)
   }
@@ -240,8 +244,8 @@ export const getTransactions = () => async (dispatch, getState) => {
   dispatch({ type: GET_TRANSACTIONS_START })
   const { account } = getState().get(DUCK_SESSION)
   const tokens = getState().get(DUCK_TOKENS)
-  const assetsManagerDAO = await contractManager.getAssetsManagerDAO()
-  const transactionsList = await assetsManagerDAO.getTransactions(account, tokens)
+  const assetsManagerDao = daoByType('AssetsManager')(getState())
+  const transactionsList = await assetsManagerDao.getTransactions(account, tokens)
 
   dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList } })
 }
@@ -295,6 +299,7 @@ export const setManagers = (tx) => async (dispatch, getState) => {
 
 export const watchInitTokens = () => async (dispatch, getState) => {
   dispatch(getAssetsManagerData())
+  console.log('watchInitTokens: getAssetsManagerData: ')
   dispatch(getTransactions())
   const { account } = getState().get(DUCK_SESSION)
   const [, chronoBankPlatformDAO, platformTokenExtensionGatewayManagerEmitterDAO] = await Promise.all([

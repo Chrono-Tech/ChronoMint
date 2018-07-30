@@ -20,20 +20,20 @@ export default class OwnerItem extends PureComponent {
 
     return (
       <div styleName='root'>
-        <div styleName='icon' className='material-icons'>account_circle</div>
+        <i styleName='icon' className='material-icons'>account_circle</i>
         <div styleName='details'>
           {title && <div styleName='title'>{title}</div>}
           <div styleName='address'>{address}</div>
         </div>
         {!isNoActions && (
           <div styleName='actions'>
-            <div
+            <i
               styleName='action'
               className='material-icons'
               onClick={onRemove}
             >
               delete
-            </div>
+            </i>
           </div>
         )}
       </div>

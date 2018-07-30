@@ -5,6 +5,7 @@
 
 import EventEmitter from 'events'
 import axios from 'axios'
+import { store } from '@chronobank/core-dependencies/configureStore'
 
 const PROFILE_BACKEND_REST_URL = 'https://backend.profile.tp.ntr1x.com'
 const basePath = '/api/v1'
@@ -22,10 +23,15 @@ const PROFILE_NOTIFICATIONS = `${basePath}/security/me/profile/notifications`
 const PURPOSE_VALUE = 'exchange'
 
 class ProfileService extends EventEmitter {
-  connectStore (store) {
+  constructor () {
+    super()
     this._store = store
     this._dispatch = store.dispatch
   }
+  // connectStore (store) {
+  //   this._store = store
+  //   this._dispatch = store.dispatch
+  // }
 
   getProfileHost () {
     return PROFILE_BACKEND_REST_URL
@@ -82,6 +88,18 @@ class ProfileService extends EventEmitter {
     const personInfo = await service.post(GET_PERSONS_REST, addresses)
 
     return personInfo
+  }
+
+  async updateUserProfile ({ avatar, userName, email }, token){
+    const service = this.getServerProvider()
+
+    const { data } = await service.post(UPDATE_LEVEL_1, {
+      avatar,
+      userName,
+      email,
+    }, this.withAuthorization(token))
+
+    return data
   }
 
   // state.token

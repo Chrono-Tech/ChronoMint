@@ -6,14 +6,13 @@
 import networkService from '@chronobank/login/network/NetworkService'
 import { getNetworkById, LOCAL_ID, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
-import { daoByType } from '@chronobank/core/refactor/redux/daos/selectors'
+import { daoByType } from '../../refactor/redux/daos/selectors'
 import { push, replace } from '@chronobank/core-dependencies/router'
 import ls from '@chronobank/core-dependencies/utils/LocalStorage'
-import web3Factory from '@chronobank/core/refactor/web3/index'
-import contractsManagerDAO from '../../refactor/daos/lib/ContractsManagerDAO'
+import web3Factory from '../../refactor/web3/index'
+import { removeWatchersUserMonitor } from '@chronobank/core-dependencies/redux/ui/actions'
 import ProfileModel from '../../models/ProfileModel'
 import { cbeWatcher, watcher } from '../watcher/actions'
-import { removeWatchersUserMonitor } from '../ui/actions'
 import { watchStopMarket } from '../market/actions'
 import { notify } from '../notifier/actions'
 import { WEB3_SETUP } from '../web3/reducer'
@@ -110,7 +109,6 @@ export const login = (account) => async (dispatch, getState) => {
   dispatch({ type: SESSION_PROFILE, profile, isCBE })
 
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
-
   isCBE && dispatch(cbeWatcher())
   dispatch(replace(ls.getLastURL() || defaultURL))
 }
@@ -131,7 +129,7 @@ export const bootstrap = (relogin = true) => async (dispatch, getState) => {
   const localAccount = ls.getLocalAccount()
   const isPassed = await networkService.checkLocalSession(localAccount)
   if (isPassed) {
-    await networkService.restoreLocalSession(localAccount, getState().get('multisigWallet'))
+    await networkService.restoreLocalSession(localAccount, getState().get('ethMultisigWallet'))
     networkService.createNetworkSession(localAccount, LOCAL_PROVIDER_ID, LOCAL_ID)
     dispatch(login(localAccount))
   } else {
@@ -149,7 +147,7 @@ export const updateUserProfile = (newProfile: ProfileModel) => async (dispatch, 
 
   dispatch({ type: SESSION_PROFILE_UPDATE, profile: newProfile })
   try {
-    const dao = await contractsManagerDAO.getUserManagerDAO()
+    const dao = daoByType('UserManager')(getState())
     await dao.setMemberProfile(account, newProfile.version(CURRENT_PROFILE_VERSION))
   } catch (e) {
     // eslint-disable-next-line

@@ -6,14 +6,17 @@
 import { createSelector } from 'reselect'
 
 import { getWalletTransactions } from './models'
+import { getEthMultisigWalletTransactions } from '../../multisigWallet/selectors/models'
 
 export const getTxListForWallet = (walletId: string) => createSelector(
   [
     getWalletTransactions(walletId),
+    getEthMultisigWalletTransactions(walletId),
   ],
   (
     walletTransactions,
+    ethMultisigWalletTransactions,
   ) => {
-    return Object.values(walletTransactions)
+    return Object.values(walletTransactions || ethMultisigWalletTransactions)
   },
 )

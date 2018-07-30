@@ -14,24 +14,24 @@ import {
   ERC20ManagerABI,
   MultiEventsHistoryABI,
   VotingManagerABI,
+  WalletsManagerABI,
+  PlatformsManagerABI,
 } from '../../../core/dao/abi/'
 
 import ContractsManagerDAO from './lib/ContractsManagerDAO'
-import AssetManagerLibraryDAO from './lib/AssetManagerLibraryDAO'
 import AssetHolderDAO from '../../dao/AssetHolderDAO'
 import ERC20ManagerDAO from '../../dao/ERC20ManagerDAO'
 import VotingManagerDAO from '../../dao/VotingManagerDAO'
 import PollInterfaceDAO from '../../dao/PollInterfaceDAO'
 import AssetDonatorDAO from '../../dao/AssetDonatorDAO'
-import UserManagerDAO from '../../../core/dao/UserManagerDAO'
+import UserManagerDAO from '../../dao/UserManagerDAO'
+import WalletsManagerDAO from '../../dao/WalletsManagerDAO'
+import AssetsManagerDAO from '../../dao/AssetsManagerDAO'
+import PlatformManagerDAO from '../../dao/PlatformsManagerDAO'
 
 export { default as ethDAO } from './lib/ETHDAO'
 export { default as AbstractContractDAO } from './lib/AbstractContractDAO'
 export { default as AbstractTokenDAO } from './lib/AbstractTokenDAO'
-// export { default as EIP20TokenDAO } from './lib/EIP20TokenDAO'
-export { default as ETHTokenDAO } from './lib/ETHTokenDAO'
-export { default as ContractsManagerDAO } from './lib/ContractsManagerDAO'
-export { default as ERC20LibraryDAO } from './lib/ERC20LibraryDAO'
 
 export const CONTRACTS_MANAGER = new ContractModel({
   type: 'ContractsManager',
@@ -40,10 +40,10 @@ export const CONTRACTS_MANAGER = new ContractModel({
   DAOClass: ContractsManagerDAO,
 })
 
-export const ASSET_MANAGER_LIBRARY = new ContractModel({
-  type: 'AssetManagerLibrary',
+export const ASSETS_MANAGER_LIBRARY = new ContractModel({
+  type: 'AssetsManager',
   abi: AssetsManagerABI,
-  DAOClass: AssetManagerLibraryDAO,
+  DAOClass: AssetsManagerDAO,
 })
 
 export const ASSET_DONATOR_LIBRARY = new ContractModel({
@@ -70,6 +70,12 @@ export const POLL_INTERFACE_MANAGER = new ContractModel({
   DAOClass: PollInterfaceDAO,
 })
 
+export const PLATFORMS_MANAGER_LIBRARY = new ContractModel({
+  type: 'PlatformsManager',
+  abi: PlatformsManagerABI,
+  DAOClass: PlatformManagerDAO,
+})
+
 export const VOTING_MANAGER_LIBRARY = new ContractModel({
   type: 'VotingManager',
   abi: VotingManagerABI,
@@ -86,4 +92,10 @@ export const MULTI_EVENTS_HISTORY = new ContractModel({
   type: 'MultiEventsHistory',
   abi: MultiEventsHistoryABI,
   DAOClass: null,
+})
+
+export const WALLETS_MANAGER = new ContractModel({
+  type: 'WalletsManager',
+  abi: WalletsManagerABI,
+  DAOClass: WalletsManagerDAO,
 })

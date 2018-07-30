@@ -5,22 +5,19 @@
 
 import BigNumber from 'bignumber.js'
 import { push } from '@chronobank/core-dependencies/router'
-import Amount from '../../models/Amount'
-import { ETH } from '../../redux/mainWallet/actions'
 import { DUCK_SESSION } from '../session/actions'
 import votingService from '../../services/VotingService'
-import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import { EVENT_POLL_ACTIVATED, EVENT_POLL_ENDED, EVENT_POLL_VOTED } from '../../dao/PollEmitterDAO'
 import type PollNoticeModel from '../../models/notices/PollNoticeModel'
 import { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_UPDATED, IS_VOTED } from '../../models/notices/PollNoticeModel'
 import PollDetailsModel from '../../models/PollDetailsModel'
 import { notify } from '../notifier/actions'
-import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED, TX_CREATE_POLL } from '../../dao/VotingManagerDAO'
+import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED } from '../../dao/VotingManagerDAO'
 import { PTPoll } from './types'
 import { getSelectedPollFromDuck, getVoting } from './selectors/models'
 import { daoByType } from '../../refactor/redux/daos/selectors'
-import { sendNewTx } from '../../refactor/redux/transactions/actions'
-import PollModel from "../../models/PollModel";
+import PollModel from '../../models/PollModel'
+import TxExecModel from '../../refactor/models/TxExecModel'
 
 export const POLLS_VOTE_LIMIT = 'voting/POLLS_LIMIT'
 export const POLLS_LOAD = 'voting/POLLS_LOAD'
@@ -39,6 +36,7 @@ let counter = 1
 export const goToVoting = () => (dispatch) => dispatch(push('/voting'))
 
 export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
+  console.log('watchPoll: ', notice)
   switch (notice.status()) {
     case IS_CREATED:
       dispatch(handlePollRemoved(notice.transactionHash()))
@@ -86,13 +84,20 @@ export const watchInitPolls = () => async (dispatch, getState) => {
     .on(EVENT_POLL_ENDED, callback)
     .on(EVENT_POLL_VOTED, callback)
 
+  votingManagerDAO.on('mained', (tx: TxExecModel) => {
+    console.log('votingManagerDAO.on: ', tx)
+    if (tx.func === 'createPoll') {
+      const stubPoll = tx.additionalOptions.stubPoll
+      dispatch(handlePollRemoved(stubPoll.id))
+    }
+  })
+
   return Promise.all([
     dispatch(updateVoteLimit()),
   ])
 }
 
 export const createPoll = (poll: PollDetailsModel) => async (dispatch, getState) => {
-  const { account } = getState().get(DUCK_SESSION)
   const id = `stub_${--counter}`
   const stub = poll.mutate({ id: id, isFetching: true })
   const votingDAO = daoByType('VotingManager')(getState())
@@ -100,22 +105,15 @@ export const createPoll = (poll: PollDetailsModel) => async (dispatch, getState)
   try {
     dispatch(handlePollCreated(stub))
     dispatch(goToVoting())
-    await votingDAO.createPoll(poll.poll, { from: account })
-    votingDAO.on('CreatePoll', (data) => {
-      console.log('votingDAO.on(: ', data)
-      // dispatch(sendNewTx(tx, (transactionHash) => {
-      //   dispatch(handlePollRemoved(stub.id))
-      //   dispatch(handlePollUpdated(stub.mutate({ transactionHash: transactionHash })))
-      // }))
-    })
+    await votingDAO.createPoll(poll.poll, { stubPoll: stub })
   } catch (e) {
     dispatch(handlePollRemoved(stub.id))
   }
 }
 
 export const removePoll = (pollObject: PTPoll) => async (dispatch, getState) => {
+  console.log('removePoll: ', pollObject)
   const state = getState()
-  const { account } = state.get(DUCK_SESSION)
   const votingDAO = daoByType('VotingManager')(getState())
 
   let poll = pollObject && pollObject.id
@@ -127,23 +125,25 @@ export const removePoll = (pollObject: PTPoll) => async (dispatch, getState) => 
     dispatch(goToVoting())
     const dao = await votingDAO.pollInterfaceManagerDAO.getPollInterfaceDAO(poll.id)
 
-    await dao.removePoll({ from: account, symbol: 'TIME' })
+    await dao.removePoll({ symbol: 'TIME', blockchain: 'Ethereum' })
   } catch (e) {
+    console.log('removePoll error: ', e)
     dispatch(handlePollCreated(poll))
     throw e
   }
 }
 
 export const vote = (choice: Number) => async (dispatch, getState) => {
+  console.log('vote: ', choice)
+
   const poll = getSelectedPollFromDuck(getState())
-  const { account } = getState().get(DUCK_SESSION)
   const votingDAO = daoByType('VotingManager')(getState())
 
   try {
     dispatch(handlePollUpdated(poll.isFetching(true)))
     const options = poll.voteEntries()
     const dao = await votingDAO.pollInterfaceManagerDAO.getPollInterfaceDAO(poll.id)
-    await dao.vote(choice, options.get(choice), { from: account, symbol: 'TIME' })
+    await dao.vote(choice, options.get(choice), { symbol: 'TIME' })
   } catch (e) {
     console.log('Vote poll error: ', e)
     dispatch(handlePollUpdated(poll))
@@ -152,8 +152,9 @@ export const vote = (choice: Number) => async (dispatch, getState) => {
 }
 
 export const activatePoll = (pollObject: PTPoll) => async (dispatch, getState) => {
+  console.log('activatePoll: ', pollObject)
+
   const state = getState()
-  const { account } = getState().get(DUCK_SESSION)
   const votingDAO = daoByType('VotingManager')(getState())
 
   let poll = pollObject && pollObject.id
@@ -164,7 +165,7 @@ export const activatePoll = (pollObject: PTPoll) => async (dispatch, getState) =
     dispatch(handlePollUpdated(poll.mutate({ poll: new PollModel({ ...poll.poll, active: true, isFetching: true }) })))
 
     const dao = await votingDAO.pollInterfaceManagerDAO.getPollInterfaceDAO(poll.id)
-    await dao.activatePoll({ from: account, symbol: 'TIME' })
+    await dao.activatePoll({ symbol: 'TIME' })
   } catch (e) {
     console.log('Active poll error: ', e)
     dispatch(handlePollUpdated(poll))
@@ -172,8 +173,9 @@ export const activatePoll = (pollObject: PTPoll) => async (dispatch, getState) =
 }
 
 export const endPoll = (pollObject: PTPoll) => async (dispatch, getState) => {
+  console.log('endPoll: ', pollObject)
+
   const poll = getState().get(DUCK_VOTING).list().item(pollObject.id)
-  const { account } = getState().get(DUCK_SESSION)
   const votingDAO = daoByType('VotingManager')(getState())
 
   try {
@@ -184,7 +186,7 @@ export const endPoll = (pollObject: PTPoll) => async (dispatch, getState) => {
         isFetching: true,
       }))))
     const dao = await votingDAO.pollInterfaceManagerDAO.getPollInterfaceDAO(poll.id)
-    await dao.endPoll({ from: account, symbol: 'TIME' })
+    await dao.endPoll({ symbol: 'TIME' })
   } catch (e) {
     console.log('End poll error: ', e)
     dispatch(handlePollUpdated(poll))
@@ -215,26 +217,4 @@ export const getNextPage = () => async (dispatch, getState) => {
   const votingState = getState().get(DUCK_VOTING)
   const { account } = getState().get(DUCK_SESSION)
   return dao.getPollsPaginated(votingState.lastPoll(), PAGE_SIZE, account)
-}
-
-export const estimateGasForVoting = async (mode: string, params, callback, gasPriceMultiplier = 1) => {
-  let dao = null
-  switch (mode) {
-    case TX_CREATE_POLL:
-      dao = await contractsManagerDAO.getVotingManagerDAO()
-      break
-  }
-  try {
-    if (!dao) {
-      callback(new Error('Dao is undefined'))
-    }
-    const { gasLimit, gasFee, gasPrice } = await dao.estimateGas(...params)
-    callback(null, {
-      gasLimit,
-      gasFee: new Amount(gasFee.mul(gasPriceMultiplier), ETH),
-      gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier), ETH),
-    })
-  } catch (e) {
-    callback(e)
-  }
 }

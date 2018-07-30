@@ -13,7 +13,7 @@ export default function validate (values, props) {
     voteLimitInTIME = voteLimitInTIME.toNumber()
   }
   const deadline = values.get('deadline')
-  const options = values.get('options').toArray().filter((optionText) => optionText.length > 0)
+  const options = values.get('options').toArray().filter((optionText) => optionText && optionText.length > 0)
   const filesCollection = values.get('files')
 
   return {

@@ -12,7 +12,8 @@ import { DUCK_SESSION } from '../session/actions'
 import exchangeService from '../../services/ExchangeService'
 import { fetchTokenBalance, WALLET_ALLOWANCE } from '../mainWallet/actions'
 import TokenModel from '../../models/tokens/TokenModel'
-import { DUCK_TOKENS, subscribeOnTokens } from '../tokens/actions'
+import { subscribeOnTokens } from '../tokens/actions'
+import { DUCK_TOKENS } from '../tokens/constants'
 import AllowanceModel from '../../models/wallet/AllowanceModel'
 import Amount from '../../models/Amount'
 
@@ -92,7 +93,6 @@ export const getTokensAllowance = (exchange: ExchangeOrderModel) => async (dispa
   const { account } = getState().get(DUCK_SESSION)
   const dao = tokenService.getDAO(token)
   const allowance = await dao.getAccountAllowance(account, exchange.address())
-  console.log('--actions#', 2)
   dispatch({
     type: WALLET_ALLOWANCE, allowance: new AllowanceModel({
       amount: new Amount(allowance, token.id()),

@@ -8,17 +8,18 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import classnames from 'classnames'
-import { reduxForm, Field } from 'redux-form/immutable'
+import { Field, reduxForm } from 'redux-form/immutable'
 import { Link } from 'react-router'
 import { withStyles } from '@material-ui/core/styles'
 import compose from 'recompose/compose'
 import {
-  onSubmitSubscribeNewsletter,
-  onSubmitSubscribeNewsletterSuccess,
-  onSubmitSubscribeNewsletterFail,
   FORM_FOOTER_EMAIL_SUBSCRIPTION,
-} from '@chronobank/login/redux/network/actions'
-import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
+} from '@chronobank/login-ui/redux/actions'
+import {
+  onSubmitSubscribeNewsletter,
+  onSubmitSubscribeNewsletterFail,
+  onSubmitSubscribeNewsletterSuccess,
+} from '@chronobank/login-ui/redux/thunks'
 
 import { Button } from 'components'
 import { TextField } from 'redux-form-material-ui'
@@ -45,7 +46,7 @@ const mapDispatchToProps = (dispatch) => {
 
       await dispatch(onSubmitSubscribeNewsletter(email))
     },
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitSubscribeNewsletterFail(errors, dispatch, submitErrors)),
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitSubscribeNewsletterFail(errors, submitErrors)),
     onSubmitSuccess: () => dispatch(onSubmitSubscribeNewsletterSuccess),
   }
 }
@@ -55,7 +56,7 @@ class Footer extends Component {
     children: PropTypes.node,
   }
 
-  renderFormMessage(){
+  renderFormMessage () {
     const { submitSucceeded, submitting, error } = this.props
     const msgClasses = classnames({
       subscriptionSubmitSucceeded: submitSucceeded,
@@ -64,7 +65,7 @@ class Footer extends Component {
 
     return (
       <div styleName={msgClasses}>
-        { submitSucceeded ? 'Thank you for subscribing!' : error }
+        {submitSucceeded ? 'Thank you for subscribing!' : error}
       </div>
     )
   }
@@ -81,7 +82,7 @@ class Footer extends Component {
                 <img styleName='navigation-chrono-logo' src={LogoChronobankFull} />
               </div>
 
-              <ul styleName='navigation-menu navigation-list' >
+              <ul styleName='navigation-menu navigation-list'>
                 <li>
                   <Link to='/' href styleName='footerLink'>
                     Home
@@ -139,7 +140,7 @@ class Footer extends Component {
                 <img styleName='android-market-logo ' src={PlayWhite} />
               </div>
 
-              <ul styleName='navigation-list' >
+              <ul styleName='navigation-list'>
                 <li>Desktop App (Windows)</li>
                 <li>Desktop App (MacOS)</li>
               </ul>
@@ -183,7 +184,7 @@ class Footer extends Component {
                 </div>
               </div>
 
-              <ul styleName='navigation-list' >
+              <ul styleName='navigation-list'>
                 <li styleName='first'>
                   <Link href='mailto:info@chronobank.io' styleName='footerLink'>
                     info@chronobank.io
@@ -203,7 +204,7 @@ class Footer extends Component {
             <form name={FORM_FOOTER_EMAIL_SUBSCRIPTION} styleName='subscription' onSubmit={handleSubmit}>
               <div styleName='subscription-input'>
                 {
-                  (submitSucceeded || error) ? this.renderFormMessage(): (
+                  (submitSucceeded || error) ? this.renderFormMessage() : (
                     <Field
                       component={TextField}
                       name='email'
@@ -217,7 +218,7 @@ class Footer extends Component {
                 }
               </div>
               <div styleName='subscription-button'>
-                { submitting ? (
+                {submitting ? (
                   <img
                     src={spinner}
                     styleName='spinner'
@@ -253,4 +254,4 @@ class Footer extends Component {
 }
 
 const form = reduxForm({ form: FORM_FOOTER_EMAIL_SUBSCRIPTION, validate })(Footer)
-export default compose(withStyles(styles),connect(null, mapDispatchToProps))(form)
+export default compose(withStyles(styles), connect(null, mapDispatchToProps))(form)

@@ -12,7 +12,6 @@ import networkService from '@chronobank/login/network/NetworkService'
 import React, { PureComponent } from 'react'
 import { logout } from '@chronobank/core/redux/session/actions'
 import { getBlockchainAddressesList } from '@chronobank/core/redux/session/selectors'
-import { Icon } from '@material-ui/core'
 import { modalsOpen } from 'redux/modals/actions'
 import { IPFSImage, UpdateProfileDialog } from 'components'
 import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
@@ -92,12 +91,12 @@ class ProfileContent extends PureComponent {
                 styleName='avatar-icon-content'
                 multihash={this.props.profile.icon()}
                 icon={
-                  <Icon
-                    style={{ fontSize: 60, cursor: 'default' }}
+                  <i
+                    styleName='default-icon'
                     color='white'
                     className='material-icons'
                   >account_circle
-                  </Icon>
+                  </i>
                 }
               />
             </div>
@@ -109,10 +108,10 @@ class ProfileContent extends PureComponent {
           </div>
           <div styleName='account-info-icons'>
             <div styleName='account-info-setting' onClick={this.props.handleProfileEdit}>
-              <Icon className='material-icons'>settings</Icon>
+              <i className='material-icons'>settings</i>
             </div>
             <div styleName='account-info-setting' onClick={this.props.handleLogout}>
-              <Icon className='material-icons'>power_settings_new</Icon>
+              <i className='material-icons'>power_settings_new</i>
             </div>
           </div>
         </div>

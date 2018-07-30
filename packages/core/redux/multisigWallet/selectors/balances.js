@@ -6,8 +6,31 @@
 import { createSelector } from 'reselect'
 import { getTokens } from '../../tokens/selectors'
 import { selectMarketPricesListStore, selectMarketPricesSelectedCurrencyStore } from '../../wallet/selectors'
-import { multisigTokensAndAmountsSelector } from './tokens'
 import { getWallet } from './models'
+
+export const multisigTokensAndAmountsSelector = (address: string, symbol: string) => createSelector(
+  [
+    filteredBalancesAndTokens(address, symbol),
+  ],
+  (
+    balancesInfo,
+  ) => {
+
+    return balancesInfo
+      .map((info) => {
+        const symbol = info.balance.symbol()
+        return {
+          [symbol]: info.token.removeDecimals(info.balance.amount()).toNumber(),
+        }
+      })
+      .sort((a, b) => {
+        const oA = Object.keys(a)[0]
+        const oB = Object.keys(b)[0]
+        return (oA > oB) - (oA < oB)
+      })
+      .toArray()
+  },
+)
 
 export const filteredBalancesAndTokens = (address, symbol: string) => createSelector(
   [

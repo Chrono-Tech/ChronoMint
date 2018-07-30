@@ -7,6 +7,14 @@ import uuid from 'uuid/v1'
 import hdkey from 'ethereumjs-wallet/hdkey'
 import bip39 from 'bip39'
 import Accounts from 'web3-eth-accounts'
+import profileService from '@chronobank/login/network/ProfileService'
+import {
+  WALLET_HD_PATH,
+} from '@chronobank/login/network/constants'
+// import networkService from '@chronobank/login/network/NetworkService'
+// import web3Provider from '@chronobank/login/network/Web3Provider'
+// import web3Utils from '@chronobank/login/network/Web3Utils'
+// import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import {
   AccountEntryModel,
   AccountProfileModel,
@@ -15,12 +23,7 @@ import {
 import {
   getWalletsListAddresses,
   getAccountAddress,
-} from '@chronobank/core/redux/persistAccount/utils'
-import networkService from '@chronobank/login/network/NetworkService'
-import profileService from '@chronobank/login/network/ProfileService'
-import web3Provider from '@chronobank/login/network/Web3Provider'
-import web3Utils from '@chronobank/login/network/Web3Utils'
-import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
+} from './utils'
 
 export const WALLETS_ADD = 'persistAccount/WALLETS_ADD'
 export const WALLETS_SELECT = 'persistAccount/WALLETS_SELECT'
@@ -30,11 +33,7 @@ export const WALLETS_REMOVE = 'persistAccount/WALLETS_REMOVE'
 export const CUSTOM_NETWORKS_LIST_ADD = 'persistAccount/CUSTOM_NETWORKS_LIST_ADD'
 export const CUSTOM_NETWORKS_LIST_UPDATE = 'persistAccount/CUSTOM_NETWORKS_LIST_UPDATE'
 export const CUSTOM_NETWORKS_LIST_RESET = 'persistAccount/CUSTOM_NETWORKS_LIST_RESET'
-
 export const DUCK_PERSIST_ACCOUNT = 'persistAccount'
-
-export const COIN_TYPE_ETH = 60
-export const WALLET_HD_PATH = `m/44'/${COIN_TYPE_ETH}'/0'/0/0`
 
 export const accountAdd = (wallet) => (dispatch) => {
   dispatch({ type: WALLETS_ADD, wallet })
@@ -70,7 +69,6 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
 export const decryptAccount = (encrypted, password) => async () => {
   const accounts = new Accounts()
   await accounts.wallet.clear()
-  console.log('en', encrypted, password)
 
   let wallet = await accounts.wallet.decrypt(encrypted, password)
 
@@ -86,13 +84,21 @@ export const validateAccountName = (name) => (dispatch, getState) => {
   return !walletsList.find((item) => item.name === name)
 }
 
-export const validateMnemonicForAccount = (wallet, mnemonic) => async () => {
+export const validateMnemonicForAccount = (mnemonic) => async (dispatch, getState) => {
+  const state = getState()
+  const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
   const accounts = new Accounts()
   accounts.wallet.clear()
-
-  const addressFromWallet = wallet && getAccountAddress(wallet, true)
-
-  const account = accounts.privateKeyToAccount(hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic)).derivePath(WALLET_HD_PATH).getWallet().getPrivateKeyString())
+  const addressFromWallet = selectedWallet && getAccountAddress(selectedWallet, true)
+  const account = await accounts.privateKeyToAccount(
+    hdkey
+      .fromMasterSeed(
+        bip39.mnemonicToSeed(mnemonic)
+      )
+      .derivePath(WALLET_HD_PATH)
+      .getWallet()
+      .getPrivateKeyString()
+  )
   const address = account && account.address && account.address.toLowerCase()
 
   return addressFromWallet === address
@@ -132,13 +138,12 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
   // web3Provider.resolve()
   console.log('hex', hex, mnemonic, privateKey, password)
 
-
   const accounts = new Accounts()
 
-  wallet = await accounts.wallet.create(numberOfAccounts)
+  let wallet = await accounts.wallet.create(numberOfAccounts)
   const account = accounts.privateKeyToAccount(hex)
   wallet.add(account)
-  console.log('hex', hex, account)
+  // eslint-disable-next-line no-console
   console.log(wallet.encrypt(password))
 
   const entry = new AccountEntryModel({
@@ -159,20 +164,10 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
 export const createHWAccount = ({ name, address, types = {} }) => async (dispatch, getState) => {
   const state = getState()
 
-  let wallet, hex = privateKey || hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic)).derivePath(WALLET_HD_PATH).getWallet().getPrivateKeyString() || ''
-
-  const accounts = new Accounts()
-  accounts.wallet.clear()
-
-  wallet = await accounts.wallet.create(numberOfAccounts)
-  const account = accounts.privateKeyToAccount(hex)
-  wallet.add(account)
-
   const entry = new AccountEntryModel({
     key: uuid(),
     name,
     types,
-    encrypted: wallet && wallet.encrypt(password),
     profile: null,
   })
 

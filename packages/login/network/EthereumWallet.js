@@ -7,7 +7,7 @@ import ethUtil from 'ethereumjs-util'
 import Wallet from 'ethereumjs-wallet'
 import hdKey from 'ethereumjs-wallet/hdkey'
 import bip39 from 'bip39'
-import { WALLET_HD_PATH } from './mnemonicProvider'
+import { WALLET_HD_PATH } from './constants'
 
 export default class EthereumWallet extends Wallet {
   static createWallet (params) {

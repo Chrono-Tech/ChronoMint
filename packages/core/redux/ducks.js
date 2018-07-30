@@ -9,7 +9,7 @@ import * as exchange from './exchange'
 import * as locs from './locs'
 import * as mainWallet from './mainWallet'
 import * as market from './market'
-import * as multisigWallet from './multisigWallet'
+import * as ethMultisigWallet from './multisigWallet'
 import * as notifier from './notifier'
 import * as operations from './operations'
 import * as rewards from './rewards'
@@ -31,7 +31,7 @@ export default {
   voting,
   wallet,
   mainWallet,
-  multisigWallet,
+  ethMultisigWallet,
   rewards,
   exchange,
   settings,

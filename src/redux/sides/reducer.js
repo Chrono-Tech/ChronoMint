@@ -13,6 +13,15 @@ const initialState = {
   isProfilePanelOpen: false,
   mainMenuIsOpen: false,
   stack: {
+    [ PROFILE_SIDE_PANEL_KEY ]: {
+      component: ProfileContent,
+      panelKey: PROFILE_SIDE_PANEL_KEY,
+      isOpened: false,
+      direction: 'right',
+      drawerProps: {
+        width: 300,
+      },
+    },
     [NOTIFICATION_PANEL_KEY]: {
       component: NotificationContent,
       panelKey: NOTIFICATION_PANEL_KEY,

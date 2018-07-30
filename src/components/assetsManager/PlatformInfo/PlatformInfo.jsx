@@ -7,7 +7,6 @@ import classnames from 'classnames'
 import { Button, IPFSImage, TokenValue } from 'components'
 import Amount from '@chronobank/core/models/Amount'
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
-import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
 import RevokeDialog from 'components/assetsManager/RevokeDialog/RevokeDialog'
 import Preloader from 'components/common/Preloader/Preloader'
 import PropTypes from 'prop-types'
@@ -43,9 +42,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleCrowdsaleDialog: () => dispatch(modalsOpen({
-      component: CrowdsaleDialog,
-    })),
     handleAddManagerDialog: () => dispatch(modalsOpen({
       component: AssetManagerDialog,
     })),
@@ -74,7 +70,6 @@ export default class PlatformInfo extends PureComponent {
   static propTypes = {
     selectedToken: PropTypes.instanceOf(TokenModel),
     selectedPlatform: PropTypes.string,
-    handleCrowdsaleDialog: PropTypes.func,
     handleAddManagerDialog: PropTypes.func,
     openBlockAssetDialog: PropTypes.func,
     getManagersForAssetSymbol: PropTypes.func,

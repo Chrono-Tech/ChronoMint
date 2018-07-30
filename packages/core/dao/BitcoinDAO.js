@@ -5,14 +5,16 @@
 
 import {
   bccProvider,
-  BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_LITECOIN,
   btcProvider,
   btgProvider,
   ltcProvider,
 } from '@chronobank/login/network/BitcoinProvider'
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_LITECOIN,
+} from '@chronobank/login/network/constants'
 import EventEmitter from 'events'
 import BigNumber from 'bignumber.js'
 import Amount from '../models/Amount'
@@ -20,7 +22,7 @@ import TokenModel from '../models/tokens/TokenModel'
 import TxModel from '../models/TxModel'
 import TransferExecModel from '../models/TransferExecModel'
 import { bitcoinAddress } from '../models/validator'
-import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, EVENT_UPDATE_LAST_BLOCK, EVENT_UPDATE_TRANSACTION } from './AbstractTokenDAO'
+import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, EVENT_UPDATE_LAST_BLOCK, EVENT_UPDATE_TRANSACTION } from './constants'
 
 const EVENT_TX = 'tx'
 const EVENT_TRANSACTION_MAINED = 'transaction'

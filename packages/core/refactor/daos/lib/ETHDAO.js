@@ -33,8 +33,6 @@ export class ETHDAO extends EventEmitter {
   }
 
   async handleBlockData (data) {
-    // eslint-disable-next-line no-console
-    console.log('[ETHDAO] Block received', data)
     const block = await this.web3.eth.getBlock(data.hash, true)
     setImmediate(() => {
       this.emit('block', block)

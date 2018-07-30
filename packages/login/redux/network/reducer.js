@@ -45,6 +45,7 @@ const initialState = {
   profileSignature: null,
 }
 
+// eslint-disable-next-line complexity
 export default (state = initialState, action) => {
   switch (action.type) {
     case actions.NETWORK_LOADING:
@@ -63,7 +64,15 @@ export default (state = initialState, action) => {
         isMetamask: true,
       }
     case actions.NETWORK_SET_NETWORK:
-      return { ...state, selectedNetworkId: action.selectedNetworkId }
+      return {
+        ...state,
+        selectedNetworkId: action.selectedNetworkId,
+      }
+    case actions.NETWORK_RESET_NETWORK:
+      return {
+        ...state,
+        selectedNetworkId:  null,
+      }
     case actions.NETWORK_SET_PROVIDER:
       return {
         ...state,
@@ -176,14 +185,13 @@ export default (state = initialState, action) => {
     case actions.NETWORK_SET_WALLET_FILE_IMPORTED:
       return {
         ...state,
-        walletFileImportObject: action.data,
+        walletFileImportObject: action.wallet,
       }
     case actions.NETWORK_RESET_WALLET_FILE_IMPORTED:
       return {
         ...state,
         walletFileImportObject: null,
       }
-
     default:
       return state
   }

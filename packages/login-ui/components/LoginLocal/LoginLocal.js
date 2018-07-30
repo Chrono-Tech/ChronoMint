@@ -9,27 +9,29 @@ import {
 } from '@chronobank/login/network/settings'
 import {
   DUCK_NETWORK,
-  onSubmitLoginTestRPC,
-  onSubmitLoginTestRPCFail,
-  initLoginLocal,
-  handleLoginLocalAccountClick,
-  navigateToLoginPage,
 } from '@chronobank/login/redux/network/actions'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-
-import styles from 'layouts/Splash/styles'
+import {
+  handleLoginLocalAccountClick,
+} from '@chronobank/login/redux/network/thunks'
+import {
+  navigateToLoginPage,
+} from '../../redux/actions'
+import {
+  initLoginLocal,
+  onSubmitLoginTestRPC,
+  onSubmitLoginTestRPCFail,
+} from '../../redux/thunks'
 import './LoginLocal.scss'
 
 export const FORM_LOGIN_TEST_RPC = 'FormLoginTestRPCPage'
 
 const mapDispatchToProps = (dispatch) => ({
-  onSubmit: async () => {
-    await dispatch(onSubmitLoginTestRPC())
-  },
-  onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitLoginTestRPCFail(errors, dispatch, submitErrors)),
+  onSubmit: () => dispatch(onSubmitLoginTestRPC()),
+  onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitLoginTestRPCFail(errors, submitErrors)),
   selectAccount: (value) => networkService.selectAccount(value),
   initLoginLocal: () => dispatch(initLoginLocal()),
   navigateToLoginPage: () => dispatch(navigateToLoginPage()),
@@ -61,7 +63,7 @@ class LoginLocal extends PureComponent {
     this.props.initLoginLocal()
   }
 
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps (nextProps){
     if (!nextProps.isLocalNode){
       this.props.navigateToLoginPage()
     }
@@ -88,13 +90,13 @@ class LoginLocal extends PureComponent {
     const { accounts } = this.props
 
     return (
-        <div styleName='wrapper'>
+      <div styleName='wrapper'>
 
-          <div styleName='page-title'>
-            <Translate value='LoginLocal.title' />
-          </div>
-          {accounts.map((item, i) => this.renderRPCSelectorMenuItem(item, i))}
+        <div styleName='page-title'>
+          <Translate value='LoginLocal.title' />
         </div>
+        {accounts.map((item, i) => this.renderRPCSelectorMenuItem(item, i))}
+      </div>
     )
   }
 }
