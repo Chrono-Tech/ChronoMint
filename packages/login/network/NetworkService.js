@@ -139,7 +139,7 @@ class NetworkService extends EventEmitter {
     try {
       let accounts = this._accounts
       if (accounts == null) {
-        accounts = await web3Provider.getAccounts()
+        //accounts = await web3Provider.getAccounts()
       }
       if (!accounts || accounts.length === 0) {
         throw new Error(ERROR_NO_ACCOUNTS)
@@ -293,13 +293,13 @@ class NetworkService extends EventEmitter {
     const resetCheckers = () => {
       this.checkerIndex = 0
       this.checkers.length = this.checkerIndex
-      web3Provider.getMonitorService().removeListener('network', handleNetwork)
+      //web3Provider.getMonitorService().removeListener('network', handleNetwork)
     }
 
     const runNextChecker = () => {
       if (this.checkerIndex < this.checkers.length) {
-        web3Provider.beforeReset()
-        web3Provider.afterReset()
+        //web3Provider.beforeReset()
+        //web3Provider.afterReset()
         this.checkers[this.checkerIndex]()
         this.checkerIndex++
       } else {
@@ -320,8 +320,8 @@ class NetworkService extends EventEmitter {
       }
     })
 
-    web3Provider.getMonitorService()
-      .on('network', handleNetwork)
+    //web3Provider.getMonitorService()
+    //  .on('network', handleNetwork)
     runNextChecker()
   }
 
