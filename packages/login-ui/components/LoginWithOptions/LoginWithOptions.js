@@ -4,7 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
-import { MuiThemeProvider } from '@material-ui/core/styles'
+// import { MuiThemeProvider } from '@material-ui/core/styles'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
@@ -12,17 +12,18 @@ import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
 
 import {
-  navigateToTrezorImportMethod,
-  navigateToLedgerImportMethod,
-  navigateToPluginImportMethod,
-  navigateToMnemonicImportMethod,
-  navigateToPrivateKeyImportMethod,
-  navigateToCreateAccount,
   initImportMethodsPage,
-  navigateToCreateAccountWithoutImport,
-  navigateToWalletUploadMethod,
 } from '@chronobank/login/redux/network/actions'
-
+import {
+  navigateToCreateAccount,
+  navigateToCreateAccountWithoutImport,
+  navigateToLedgerImportMethod,
+  navigateToMnemonicImportMethod,
+  navigateToPluginImportMethod,
+  navigateToPrivateKeyImportMethod,
+  navigateToTrezorImportMethod,
+  navigateToWalletUploadMethod,
+} from '@chronobank/login-ui/redux/actions'
 import Trezor from 'assets/img/icons/trezor-white.svg'
 import Ledger from 'assets/img/icons/ledger-nano-white.svg'
 import Plugin from 'assets/img/icons/plugin-white.svg'
@@ -61,7 +62,7 @@ export default class ImportMethodsPage extends PureComponent {
     navigateToWalletUploadMethod: PropTypes.func,
   }
 
-  componentWillMount(){
+  componentWillMount (){
     this.props.initImportMethodsPage()
   }
 

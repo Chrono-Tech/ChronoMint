@@ -11,14 +11,13 @@ import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
-
+import styles from 'layouts/Splash/styles'
 import Button from 'components/common/ui/Button/Button'
 import {
   onSubmitCreateHWAccountPage,
   onSubmitCreateHWAccountPageSuccess,
   onSubmitCreateHWAccountPageFail,
-} from '@chronobank/login/redux/network/actions'
-import styles from 'layouts/Splash/styles'
+} from '../../redux/thunks'
 
 import validate from './validate'
 
@@ -42,7 +41,7 @@ function mapDispatchToProps (dispatch) {
       await dispatch(onSubmitCreateHWAccountPage(walletName))
     },
     onSubmitSuccess: () => dispatch(onSubmitCreateHWAccountPageSuccess()),
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitCreateHWAccountPageFail(errors, dispatch, submitErrors)),
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitCreateHWAccountPageFail(errors, submitErrors)),
   }
 }
 

@@ -18,7 +18,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import {
-  handleLoginTrezorAccountClick,
+  navigateToCreateAccountFromHW,
 } from '@chronobank/login/redux/network/actions'
 
 import './LoginWithTrezor.scss'
@@ -46,7 +46,7 @@ function mapDispatchToProps (dispatch) {
     startTrezorSync: () => dispatch(startTrezorSync()),
     stopTrezorSync: (isReset) => dispatch(stopTrezorSync(isReset)),
     fetchAccount: () => dispatch(fetchAccount()),
-    handleLoginTrezorAccountClick: (account) => dispatch(handleLoginTrezorAccountClick(account)),
+    navigateToCreateAccountFromHW: (account) => dispatch(navigateToCreateAccountFromHW(account)),
   }
 }
 
@@ -61,7 +61,7 @@ class LoginTrezor extends PureComponent {
     trezor: PropTypes.object,
     isLoading: PropTypes.bool,
     account: PropTypes.instanceOf(Array),
-    handleLoginTrezorAccountClick: PropTypes.func,
+    navigateToCreateAccountFromHW: PropTypes.func,
   }
 
   static getDerivedStateFromProps (props, state) {
@@ -101,7 +101,7 @@ class LoginTrezor extends PureComponent {
   _buildItem = (item, index) => {
     return (
       <div key={index}>
-        <ListItem button type='submit' name='address' value={item} component="button" disableGutters={true} style={{ margin: 0 }} onClick={() => this.props.handleLoginTrezorAccountClick(item)}>
+        <ListItem button type='submit' name='address' value={item} component="button" disableGutters={true} style={{ margin: 0 }} onClick={() => this.props.navigateToCreateAccountFromHW(item)}>
           <ListItemText style={{ paddingLeft:"10px" }} disableTypography
             primary={<Typography type='body2' style={{ color: 'black', fontWeight: 'bold' }}>{item}</Typography>} secondary='eth 0' />
           <ChevronRight />

@@ -5,7 +5,7 @@
 
 import bip39 from 'bip39'
 import bitcoin from 'bitcoinjs-lib'
-import hdKey from 'ethereumjs-wallet/hdkey'
+// import hdKe y from 'ethereumjs-wallet/hdkey'
 import * as WavesApi from '@waves/waves-api'
 import nemSdk from 'nem-sdk'
 
@@ -23,16 +23,14 @@ import NemWallet from './NemWallet'
 import WavesWallet from './WavesWallet'
 import EthereumWallet from './EthereumWallet'
 
-// coin_types 8, 9, 16, 17 used, but they are not standardized
-export const COIN_TYPE_ETH = 60
-export const COIN_TYPE_BTC_MAINNET = 0
-export const COIN_TYPE_BTC_TESTNET = 1
-export const COIN_TYPE_LTC_MAINNET = 9
-export const COIN_TYPE_LTC_TESTNET = 8
-export const COIN_TYPE_BTG_MAINNET = 17
-export const COIN_TYPE_BTG_TESTNET = 16
-// get the first account using the standard hd path
-export const WALLET_HD_PATH = `m/44'/${COIN_TYPE_ETH}'/0'/0/0`
+import {
+  COIN_TYPE_BTC_MAINNET,
+  COIN_TYPE_BTC_TESTNET,
+  COIN_TYPE_LTC_MAINNET,
+  COIN_TYPE_LTC_TESTNET,
+  COIN_TYPE_BTG_MAINNET,
+  COIN_TYPE_BTG_TESTNET,
+} from './constants'
 
 class MnemonicProvider {
   getMnemonicProvider (mnemonic, { url, network } = {}) {
