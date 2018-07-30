@@ -16,14 +16,14 @@ import {
 } from '@chronobank/core/models/wallet/persistAccount'
 import {
   getAccountName,
-  getAccountAvatar,
+  // getAccountAvatar,
   getAccountAvatarImg,
   getAccountAddress,
 } from '@chronobank/core/redux/persistAccount/utils'
 import styles from 'layouts/Splash/styles'
 import {
   initRecoverAccountPage,
-} from '@chronobank/login/redux/network/actions'
+} from '@chronobank/login/redux/network/thunks'
 import Button from 'components/common/ui/Button/Button'
 import UserRow from 'components/common/ui/UserRow/UserRow'
 import {
@@ -72,7 +72,7 @@ class RecoverAccountPage extends PureComponent {
     navigateToSelectWallet: PropTypes.func,
   }
 
-  componentWillMount(){
+  componentWillMount () {
     this.props.initRecoverAccountPage()
   }
 
