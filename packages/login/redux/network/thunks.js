@@ -242,7 +242,7 @@ export const handlePrivateKeyLogin = (privateKey) =>
     dispatch(NetworkActions.clearErrors())
 
     let state = getState()
-    const multisigWalletState = state.get(DUCK_MULTISIG_WALLET)
+    const multisigWalletState = state.get('ethMultisigWallet')
     const provider = privateKeyProvider.getPrivateKeyProvider(
       privateKey.slice(2),
       networkService.getProviderSettings(),
@@ -282,7 +282,7 @@ export const handleLoginLocalAccountClick = (account = '') =>
   async (dispatch, getState) => {
     let state = getState()
     const { accounts } = state.get(NetworkActions.DUCK_NETWORK)
-    const wallets = state.get(DUCK_MULTISIG_WALLET)
+    const wallets = state.get('ethMultisigWallet') // FIXME: to use constant
 
     const index = Math.max(accounts.indexOf(account), 0)
     const provider = privateKeyProvider.getPrivateKeyProvider(
