@@ -40,7 +40,7 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     }),
   })
 
-  const history = await contractManagerDAO.getContractAddressByType(MULTI_EVENTS_HISTORY.type)
+  const historyAddress = await contractManagerDAO.getContractAddressByType(MULTI_EVENTS_HISTORY.type)
 
   const contracts = [
     ASSETS_MANAGER_LIBRARY,
@@ -62,13 +62,13 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     contracts.map(
       async (contract) => {
         const address = await contractManagerDAO.getContractAddressByType(contract.type)
-        const dao = contract.create(address.toLowerCase(), history)
+        const dao = contract.create(address.toLowerCase(), historyAddress)
         dao.connect(web3)
         subscribeToFlow(dao)
         return new ContractDAOModel({
           contract,
           address,
-          history,
+          history: historyAddress,
           dao,
         })
       },

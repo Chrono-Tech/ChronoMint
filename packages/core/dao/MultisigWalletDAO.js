@@ -7,6 +7,7 @@ import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
+import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
 import Amount from '../models/Amount'
 import TokenModel from '../models/tokens/TokenModel'
 import TxExecModel from '../models/TxExecModel'
@@ -14,113 +15,111 @@ import MultisigTransactionModel from '../models/wallet/MultisigTransactionModel'
 import MultisigWalletPendingTxCollection from '../models/wallet/MultisigWalletPendingTxCollection'
 import MultisigWalletPendingTxModel from '../models/wallet/MultisigWalletPendingTxModel'
 import OwnerModel from '../models/wallet/OwnerModel'
-import { MultiEventsHistoryABI, WalletABI } from './abi'
+import { WalletABI } from './abi'
 import MultisigEthWalletModel from '../models/wallet/MultisigEthWalletModel'
 
 export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
-  constructor (at) {
-    super({ address: at, history: MultiEventsHistoryABI, abi: WalletABI })
+  constructor (address, history) {
+    super({ address, history, abi: WalletABI })
     this._okCodes.push(resultCodes.WALLET_CONFIRMATION_NEEDED)
   }
 
   // watchers
-  _transactCallback = (wallet, callback) => async (result) => {
+  _transactCallback = (callback) => async (result) => {
     const { owner, operation, value, to, data } = result.args
 
     callback(new MultisigTransactionModel({
       id: operation,
       owner,
-      wallet: wallet.address(),
+      wallet: this.address,
       value,
       to,
       data: await this.decodeData(data),
     }))
   }
 
-  watchMultiTransact (wallet, callback) {
-    return this._watch(
-      'MultisigWalletMultiTransact',
-      this._transactCallback(wallet, callback),
-      { self: wallet.address() },
-    )
+  connect (web3, options) {
+    super.connect(web3, options)
+
+    this.allEventsEmitter = this.history.events.allEvents({})
+      .on('data', this.handleAllEventsData)
+
   }
 
-  watchSingleTransact (wallet, callback) {
-    return this._watch(
-      'MultisigWalletSingleTransact',
-      this._transactCallback(wallet, callback),
-      { self: wallet.address() },
-    )
+  handleAllEventsData = (data) => {
+    this.emit(data.event, data)
   }
 
-  watchDeposit (wallet, callback) {
-    return this._watch('MultisigWalletDeposit', (result) => {
-      callback(result.args.value)
-    }, { self: wallet.address() })
+  watchMultiTransact (callback) {
+    return this.on('MultisigWalletMultiTransact', this._transactCallback(callback))
   }
 
-  watchRevoke (wallet, callback) {
-    return this._watch('MultisigWalletRevoke', (result) => {
-      callback(result.args.operation)
-    }, { self: wallet.address() })
+  watchSingleTransact (callback) {
+    return this.on('MultisigWalletSingleTransact', this._transactCallback(callback))
   }
 
-  watchConfirmation (wallet, callback) {
-    return this._watch('MultisigWalletConfirmation', (result) => {
+  watchDeposit (callback) {
+    return this.on('MultisigWalletDeposit', (data) => callback(data.returnValues.value))
+  }
+
+  watchRevoke (callback) {
+    return this.on('MultisigWalletRevoke', (data) => callback(data.returnValues.operation))
+  }
+
+  watchConfirmation (callback) {
+    return this.on('MultisigWalletConfirmation', (data) => {
       // TODO @dkchv: something wrong with contract
-      if (result.args.owner === '0x') {
+      if (data.returnValues.owner === '0x') {
         return
       }
-      callback(result.args.operation, result.args.owner)
-    }, { self: wallet.address() })
+      callback(data.returnValues.operation, data.returnValues.owner)
+    })
   }
 
-  watchConfirmationNeeded (wallet, callback) {
-    return this._watch('MultisigWalletConfirmationNeeded', async (result) => {
-      const { operation, initiator, value, to, data } = result.args
-
+  watchConfirmationNeeded (callback) {
+    return this.on('MultisigWalletConfirmationNeeded', async (tx) => {
+      const { operation, initiator, value, to } = tx.returnValues
       callback(new MultisigWalletPendingTxModel({
         id: operation,
         value,
         to,
-        isConfirmed: initiator === this.getAccount(),
-        decodedTx: await this.decodeData(data),
+        isConfirmed: initiator === AbstractContractDAO.getAccount(),
+        decodedTx: await this.decodeData(tx.raw.data),
       }))
-    }, { self: wallet.address() })
+    })
   }
 
-  watchOwnerAdded (wallet, callback) {
-    return this._watch('MultisigWalletOwnerAdded', (result) => {
+  watchOwnerAdded (callback) {
+    return this.on('MultisigWalletOwnerAdded', async (data) => {
       callback(new OwnerModel({
-        address: result.args.newOwner,
+        address: data.returnValues.newOwner,
       }))
-    }, { self: wallet.address() })
+    })
   }
 
-  watchOwnerRemoved (wallet, callback) {
-    return this._watch('MultisigWalletOwnerRemoved', (result) => {
+  watchOwnerRemoved (callback) {
+    return this.on('MultisigWalletOwnerRemoved', async (data) => {
       // TODO @dkchv: if its me - remove wallet!
       callback(new OwnerModel({
-        address: result.args.oldOwner,
+        address: data.returnValues.oldOwner,
       }))
-    }, { self: wallet.address() })
+    })
   }
 
-  watchError (wallet, callback) {
-    return this._watch('Error', (result) => {
-      callback(this._c.hexToDecimal(result.args.errorCode))
-    }, { self: wallet.address() })
+  watchError (callback) {
+    return this.on('Error', async (data) => {
+      callback(this._c.hexToDecimal(data.returnValues.errorCode))
+    })
   }
 
-  watchRequirementChanged (wallet, callback) {
-    return this._watch('MultisigWalletRequirementChanged', (result) => {
-      callback(+result.args.newRequirement)
-    }, { self: wallet.address() })
+  watchRequirementChanged (callback) {
+    return this.on('MultisigWalletRequirementChanged', async (data) => {
+      callback(+data.returnValues.newRequirement)
+    })
   }
 
   // getters
-
   async getPendings () {
     let pendingTxCollection = new MultisigWalletPendingTxCollection()
     const res = await this.contract.methods.getPendings().call()
@@ -172,7 +171,6 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   // actions
-
   async removeWallet (wallet, account: string) {
     await this._tx('kill', [
       account,
@@ -234,7 +232,6 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   // helpers
-
   isValidId (id) {
     return id !== '0x0000000000000000000000000000000000000000000000000000000000000000'
   }
@@ -271,6 +268,6 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   use2FA () {
-    return this._call('use2FA')
+    return this.contract.methods.use2FA().call()
   }
 }

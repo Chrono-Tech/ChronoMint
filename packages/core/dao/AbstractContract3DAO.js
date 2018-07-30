@@ -44,9 +44,9 @@ export default class AbstractContractDAO extends EventEmitter {
 
     this.contract = new web3.eth.Contract(this.abi.abi, this.address, options)
     // eslint-disable-next-line no-console
-    console.log(`%c Contract [${this.constructor.name}] connected`, 'background: grey;', this.address)
+    console.log(`%c Contract [${this.constructor.name}] connected`, 'background: grey;', this.address, this.history)
 
-    this.history = this.history != null // nil check
+    this.history = this.history != null
       ? new web3.eth.Contract(this.abi.abi, this.history, options)
       : this.contract
   }
