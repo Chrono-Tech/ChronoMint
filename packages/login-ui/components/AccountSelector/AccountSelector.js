@@ -14,7 +14,7 @@ import UserRow from 'components/common/ui/UserRow/UserRow'
 import {
   initAccountsSignature,
 } from '@chronobank/login/redux/network/thunks'
-import { onWalletSelect } from '@chronobank/login/redux/network/actions'
+import { onWalletSelect } from '@chronobank/login-ui/redux/thunks'
 import {
   getAccountAddress,
   // getAccountAvatar,
