@@ -3,8 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { MultiEventsHistoryABI, PlatformsManagerABI } from './abi'
-import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
+import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
 
 export const TX_CREATE_PLATFORM = 'createPlatform'
 export const TX_ATTACH_PLATFORM = 'attachPlatform'
@@ -14,20 +13,49 @@ export const TX_PLATFORM_REQUESTED = 'PlatformRequested'
 export const TX_PLATFORM_ATTACHED = 'PlatformAttached'
 export const TX_PLATFORM_DETACHED = 'PlatformDetached'
 
-export default class PlatformsManagerDAO extends AbstractMultisigContractDAO {
+export default class PlatformsManagerDAO extends AbstractContractDAO {
+  constructor ({ address, history, abi }) {
+    super({ address, history, abi })
+  }
 
-  constructor (at = null) {
-    super(PlatformsManagerABI, at, MultiEventsHistoryABI)
+  connect (web3, options) {
+    super.connect(web3, options)
+
+    this.allEventsEmitter = this.history.events.allEvents({})
+      .on('data', this.handleEventsData)
+      .on('changed', this.handleEventsChanged)
+      .on('error', this.handleEventsError)
+  }
+
+  disconnect () {
+    if (this.isConnected) {
+      this.allEventsEmitter.removeAllListeners()
+      this.contract = null
+      this.history = null
+      this.web3 = null
+    }
+  }
+
+  handleEventsData = (data) => {
+    console.log('PlatformsManagerDAO handleEventsData: ', data.event, data)
+    this.emit(data.event, data)
+  }
+
+  handleEventsChanged = (data) => {
+    console.log('PlatformsManagerDAO handleEventsChanged: ', data.event, data)
+  }
+
+  handleEventsError = (data) => {
+    console.log('PlatformsManagerDAO handleEventsError: ', data.event, data)
+    this.emit(data.event + '_error', data)
   }
 
   async reissueAsset (symbol, amount) {
-    const tx = await this._tx(TX_REISSUE_ASSET, [ symbol, amount ])
-    return tx.tx
+    this._tx(TX_REISSUE_ASSET, [ symbol, amount ])
   }
 
   async createPlatform () {
-    const tx = await this._tx(TX_CREATE_PLATFORM)
-    return tx.tx
+    this._tx(TX_CREATE_PLATFORM)
   }
 
   async attachPlatform (address) {

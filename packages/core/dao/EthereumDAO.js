@@ -117,7 +117,6 @@ export class EthereumDAO extends AbstractTokenDAO {
 
   /** @private */
   _getTxModel (tx, time = Date.now() / 1000): TxModel {
-    console.log('_getTxModel: ', tx, time)
     const gasPrice = tx.gasPrice && new BigNumber('' + tx.gasPrice)
     const gasFee = gasPrice && gasPrice.mul(tx.gas)
 

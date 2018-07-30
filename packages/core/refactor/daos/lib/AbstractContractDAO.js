@@ -167,6 +167,7 @@ export default class AbstractContractDAO extends EventEmitter {
     options: Object = {},
     additionalOptions: Object = {},
   ): Promise {
+    console.log('Abstract _tx: ', func, args, amount, value, options, additionalOptions)
     this.submit(func, args, amount, value, options, additionalOptions)
   }
 

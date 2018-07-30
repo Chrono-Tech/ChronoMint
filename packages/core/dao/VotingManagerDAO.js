@@ -51,8 +51,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
 
   disconnect () {
     if (this.isConnected) {
-      this.pollCreatedEmitter.removeAllListeners()
-      this.pollRemovedEmitter.removeAllListeners()
+      this.allEventsEmitter.removeAllListeners()
       this.contract = null
       this.history = null
       this.web3 = null

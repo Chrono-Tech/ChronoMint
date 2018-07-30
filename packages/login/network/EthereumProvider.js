@@ -139,6 +139,7 @@ export class EthereumProvider extends AbstractProvider {
   }
 
   async transfer (tx: TxExecModel, web3) {
+    console.log('EthereumProvider transfer: ', tx)
     const signedTx = await this.createTransaction(tx, web3)
     const serializedTx = signedTx.serialize().toString('hex')
     return web3.eth.sendSignedTransaction('0x' + serializedTx)
