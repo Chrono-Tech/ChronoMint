@@ -16,7 +16,8 @@ export default class EthereumEngine {
     try {
       this._address = engine && web3.eth.accounts[0]
     } catch (e) {
-      dispatch(addError(e.message))
+      // FIXME: what is that? Was merged as is long time ago.
+      // dispatch(addError(e.message))
     }
     this._engine = engine || Web3Utils.createEngine(wallet, url, deriveNumber)
   }
