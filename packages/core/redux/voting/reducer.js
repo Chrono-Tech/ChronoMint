@@ -27,8 +27,7 @@ export default (state = initialState, action) => {
       return state
         .list(state.list().update(action.poll))
     case POLLS_UPDATE:
-      return state
-        .list(state.list().update(action.poll))
+      return state.list(state.list().update(action.poll))
     case POLLS_REMOVE:
       return state
         .list(state.list().remove(action.id))

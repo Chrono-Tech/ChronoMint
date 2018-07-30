@@ -4,73 +4,69 @@
  */
 
 import PropTypes from 'prop-types'
-import { MuiThemeProvider } from 'material-ui'
+// import { MuiThemeProvider } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
 import Button from 'components/common/ui/Button/Button'
 import UserRow from 'components/common/ui/UserRow/UserRow'
-
 import {
-  navigateToSelectImportMethod,
-  onWalletSelect,
   initAccountsSignature,
-  initAccountsSelector,
-} from '@chronobank/login/redux/network/actions'
+} from '@chronobank/login/redux/network/thunks'
+import { onWalletSelect } from '@chronobank/login-ui/redux/thunks'
 import {
+  getAccountAddress,
+  // getAccountAvatar,
+  getAccountAvatarImg,
   getAccountName,
-  getAccountAvatar,
 } from '@chronobank/core/redux/persistAccount/utils'
-import {
-  AccountEntryModel,
-} from '@chronobank/core/models/wallet/persistAccount'
-
+import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 import arrow from 'assets/img/icons/prev-white.svg'
 import './AccountSelector.scss'
+import { navigateToSelectImportMethod } from '../../redux/actions'
 
 function mapDispatchToProps (dispatch) {
   return {
     navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
     onWalletSelect: (wallet) => dispatch(onWalletSelect(wallet)),
     initAccountsSignature: () => dispatch(initAccountsSignature()),
-    initAccountsSelector: () => dispatch(initAccountsSelector()),
   }
 }
 
 function mapStateToProps (state) {
   return {
     walletsList: state.get('persistAccount').walletsList.map(
-      (wallet) => new AccountEntryModel({...wallet})
+      (wallet) => new AccountEntryModel({ ...wallet }),
     ),
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class SelectWalletPage extends PureComponent {
+export default class AccountSelector extends PureComponent {
   static propTypes = {
     onWalletSelect: PropTypes.func,
     walletsList: PropTypes.arrayOf(
-      PropTypes.instanceOf(AccountEntryModel)
+      PropTypes.instanceOf(AccountEntryModel),
     ),
     navigateToSelectImportMethod: PropTypes.func,
     initAccountsSignature: PropTypes.func,
-    initAccountsSelector: PropTypes.func,
   }
 
   static defaultProps = {
-    onWalletSelect: () => {},
+    onWalletSelect: () => {
+    },
     walletsList: [],
   }
 
-  componentDidMount(){
-    this.props.initAccountsSelector()
+  componentDidMount () {
+    this.props.initAccountsSignature()
   }
 
-  renderWalletsList (){
+  renderWalletsList () {
     const { onWalletSelect, walletsList } = this.props
 
-    if (!walletsList || !walletsList.length){
+    if (!walletsList || !walletsList.length) {
       return (
         <div styleName='empty-list'>
           <Translate value='AccountSelector.emptyList' />
@@ -85,7 +81,8 @@ export default class SelectWalletPage extends PureComponent {
             <UserRow
               key={i}
               title={getAccountName(w)}
-              avatar={getAccountAvatar(w)}
+              subtitle={getAccountAddress(w, true)}
+              avatar={getAccountAvatarImg(w)}
               actionIcon={arrow}
               reverseIcon={true}
               onClick={() => onWalletSelect(w)}
@@ -98,40 +95,38 @@ export default class SelectWalletPage extends PureComponent {
 
   render () {
     return (
-      <MuiThemeProvider>
-        <div styleName='wrapper'>
+      <div styleName='wrapper'>
 
-          <div styleName='page-title'>
-            <Translate value='AccountSelector.title' />
-          </div>
-
-          <div styleName='description'>
-            <Translate value='AccountSelector.description' />
-            <br />
-            <Translate value='AccountSelector.descriptionExtra' />
-          </div>
-
-          <div styleName='content'>
-            { this.renderWalletsList() }
-
-            <div styleName='actions'>
-              <Button
-                styleName='button'
-                buttonType='login'
-                onClick={this.props.navigateToSelectImportMethod}
-              >
-                <Translate value='AccountSelector.button' />
-              </Button>
-              <Translate value='AccountSelector.or' />
-              &nbsp;<br />
-              <Link to='/login/create-account' href styleName='link'>
-                <Translate value='AccountSelector.createAccount' />
-              </Link>
-            </div>
-          </div>
-
+        <div styleName='page-title'>
+          <Translate value='AccountSelector.title' />
         </div>
-      </MuiThemeProvider>
+
+        <div styleName='description'>
+          <Translate value='AccountSelector.description' />
+          <br />
+          <Translate value='AccountSelector.descriptionExtra' />
+        </div>
+
+        <div styleName='content'>
+          {this.renderWalletsList()}
+
+          <div styleName='actions'>
+            <Button
+              styleName='button'
+              buttonType='login'
+              onClick={this.props.navigateToSelectImportMethod}
+            >
+              <Translate value='AccountSelector.button' />
+            </Button>
+            <Translate value='AccountSelector.or' />
+            &nbsp;<br />
+            <Link to='/login/create-account' href styleName='link'>
+              <Translate value='AccountSelector.createAccount' />
+            </Link>
+          </div>
+        </div>
+
+      </div>
     )
   }
 }

@@ -247,8 +247,9 @@ export default {
     noTransactions: 'No transactions',
     confirm: 'Confirm Transaction',
     fee: 'Fee',
-    balanceAfter: 'Balance after',
+    balanceAfter: '%{symbol} balance after',
     feeLeft: 'Transaction fee left',
+    notEnough: 'Not enough %{symbol}',
     TokenManagementInterface: {
       createAssetWithoutFee: {
         title: 'Confirm create token',
@@ -308,6 +309,7 @@ export default {
     Ethereum: {
       [eth.TX_TRANSFER]: {
         title: 'Transfer ETH',
+        to: 'Address to',
       },
     },
     /* eslint-disable global-require */
@@ -371,6 +373,7 @@ export default {
     AssetDonator: {
       [assetDonator.TX_REQUIRE_TIME]: {
         title: 'Require TIME',
+        donation: 'Donation',
       },
     },
     PlatformsManager: {
@@ -449,6 +452,7 @@ export default {
         title: 'Transfer tokens',
         account: 'Account',
         amount: 'Amount',
+        to: 'Address to',
       },
     },
     ExchangeManager: {
@@ -530,6 +534,10 @@ export default {
     WalletsManager: {
       'createWallet': {
         title: 'Create multisignature wallet',
+        owners: 'Owners',
+        requiredSignatures: 'Required signatures',
+        releaseTime: 'Release time',
+        isTimeLocked: 'Is timeLocked',
       },
       'create2FAWallet': {
         title: 'Create 2FA wallet',
@@ -846,18 +854,6 @@ export default {
         cancel: 'Cancel',
         addAddress: 'Add Address',
       },
-      AddCurrencyDialog: {
-        addToken: 'Add Token',
-        howToAddYourToken: 'How to add your token? It\'s easy!',
-        youCanConnectToYourPersonalWallet: 'You can connect to your personal wallet one of the already added tokens or add any other ERC20 token.',
-        clickOnThePlusButtonAbove: 'Click on the + plus button above.',
-        fillTheForm: 'Fill the form, check values and press SAVE.',
-        waitUntilYourToken: 'Wait until your token will be added (mined), select it in the list on the left and press SAVE.',
-        allTokens: 'All tokens',
-        save: 'Save',
-        close: 'Close',
-        tokens: 'Tokens',
-      },
       AddTokenDialog: {
         tokenContractAddress: 'Token contract address',
         tokenName: 'Token name',
@@ -893,5 +889,6 @@ export default {
     publish: 'Publish',
     endPoll: 'End poll',
     addToken: 'Add a token',
+    voteHistory: 'Changes History',
   },
 }

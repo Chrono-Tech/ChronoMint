@@ -5,9 +5,9 @@
 
 import { createSelector } from 'reselect'
 import { PROFILE_PANEL_TOKENS } from '../actions'
-import { selectMainWalletAddressesListStore } from '../../wallet/selectors'
+import { getMainWallets } from '../../wallets/selectors/models'
 import { getGasSliderCollection, getIsCBE } from './models'
-import AddressModel from '../../../models/wallet/AddressModel'
+import WalletModel from '../../../models/wallet/WalletModel'
 
 export const getGasPriceMultiplier = (blockchain) => createSelector([getGasSliderCollection],
   (gasSliderCollection) => {
@@ -16,11 +16,11 @@ export const getGasPriceMultiplier = (blockchain) => createSelector([getGasSlide
 )
 
 export const getAddressesList = () => createSelector(
-  [selectMainWalletAddressesListStore],
-  (addressesInWallet: Array<AddressModel>) => {
-    return addressesInWallet
-      .reduce((accumulator, address: AddressModel, blockchain: string) => {
-        accumulator[blockchain] = address.address()
+  [getMainWallets],
+  (wallets: Array<WalletModel>) => {
+    return wallets
+      .reduce((accumulator, wallet: WalletModel) => {
+        accumulator[wallet.blockchain] = wallet.address
         return accumulator
       }, {})
   },

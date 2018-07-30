@@ -6,12 +6,13 @@
 import { Button } from 'components'
 import { change, Field, formValueSelector, reduxForm } from 'redux-form/immutable'
 import Preloader from 'components/common/Preloader/Preloader'
-import { MenuItem } from 'material-ui'
+import { MenuItem } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React from 'react'
 import Immutable from 'immutable'
 import SwipeableViews from 'react-swipeable-views'
-import { SelectField, TextField } from 'redux-form-material-ui'
+import { TextField } from 'redux-form-material-ui'
+import Select from 'redux-form-material-ui/es/Select'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { modalsOpen } from 'redux/modals/actions'
@@ -36,7 +37,7 @@ const mapStateToProps = (state) => {
     isFetched: exchange.isFetched(),
     assetSymbols: exchange.assetSymbols(),
     filterMode: selector(state, 'filterMode'),
-    initialValues: new Immutable.Map({ filterMode: MODES[ 0 ] }),
+    initialValues: new Immutable.Map({ filterMode: MODES[0] }),
     showFilter: exchange.showFilter(),
   }
 }
@@ -75,7 +76,7 @@ export default class ExchangeWidget extends React.Component {
   }
 
   handleChangeMode (value) {
-    this.props.dispatch(change(FORM_EXCHANGE, 'filterMode', MODES[ value ]))
+    this.props.dispatch(change(FORM_EXCHANGE, 'filterMode', MODES[value]))
   }
 
   render () {
@@ -128,7 +129,7 @@ export default class ExchangeWidget extends React.Component {
                       <Field
                         name='token'
                         disabled={!this.props.isFetched || this.props.isFetching || !this.props.showFilter}
-                        component={SelectField}
+                        component={Select}
                         fullWidth
                         floatingLabelText={<Translate value={prefix('token')} />}
                       >

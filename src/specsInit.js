@@ -15,7 +15,7 @@ import web3provider from '@chronobank/login/network/Web3Provider'
 import networkService from '@chronobank/login/network/NetworkService'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
-import Web3 from 'web3'
+import Web3legacy from 'web3legacy'
 import AbstractContractDAO from '@chronobank/core/dao/AbstractContractDAO'
 import MarketSocket from '@chronobank/core/market/MarketSocket'
 import ls from '@chronobank/core-dependencies/utils/LocalStorage'
@@ -24,17 +24,17 @@ Enzyme.configure({ adapter: new Adapter() })
 // we need enough time to test contract watch functionality
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000
 
-const web3 = new Web3()
+const web3 = new Web3legacy()
 
-web3provider.reinit(web3, new web3.providers.HttpProvider('http://localhost:8545'))
+web3provider.reinit(Web3legacy, new Web3legacy.providers.HttpProvider('http://localhost:8545'))
 web3provider.resolve()
-export const accounts = web3.eth.accounts
+export const accounts = Web3legacy.eth.accounts
 
-AbstractContractDAO.setup(accounts[ 0 ], [ resultCodes.OK, true ], resultCodes)
+AbstractContractDAO.setup(accounts[0], [resultCodes.OK, true], resultCodes)
 
 const reverter = new Reverter(web3provider.getWeb3instance())
 
-export const mockStore = configureMockStore([ thunk ])
+export const mockStore = configureMockStore([thunk])
 export let store = null
 
 beforeAll((done) => {
@@ -53,7 +53,7 @@ afterAll((done) => {
 
 beforeEach(() => {
   // NOTE: session is always as CBE
-  ls.createSession(accounts[ 0 ], LOCAL_ID, LOCAL_ID)
+  ls.createSession(accounts[0], LOCAL_ID, LOCAL_ID)
   store = mockStore()
   networkService.connectStore(store)
 })

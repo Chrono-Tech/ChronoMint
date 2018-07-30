@@ -5,7 +5,7 @@
 
 import { Button } from 'components'
 import Preloader from 'components/common/Preloader/Preloader'
-import { Paper } from 'material-ui'
+import { Paper } from '@material-ui/core'
 import Amount from '@chronobank/core/models/Amount'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import MultisigWalletModel from '@chronobank/core/models/wallet/MultisigWalletModel'
@@ -14,13 +14,14 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { confirmMultisigTx, DUCK_MULTISIG_WALLET, getPendingData, revokeMultisigTx } from '@chronobank/core/redux/multisigWallet/actions'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
+import { confirmMultisigTx, getPendingData, revokeMultisigTx } from '@chronobank/core/redux/multisigWallet/actions'
+import { DUCK_ETH_MULTISIG_WALLET } from '@chronobank/core/redux/multisigWallet/constants'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import './WalletPendingTransfers.scss'
 
 function mapStateToProps (state) {
   return {
-    wallet: state.get(DUCK_MULTISIG_WALLET).selected(),
+    wallet: state.get(DUCK_ETH_MULTISIG_WALLET).selected(),
     tokens: state.get(DUCK_TOKENS),
   }
 }

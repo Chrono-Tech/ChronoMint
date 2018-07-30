@@ -130,3 +130,15 @@
   display: flex;
   justify-content: center;
 }
+
+.removeButton {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.buttonWallet {
+  button {
+    max-width: 100%;
+  }
+}

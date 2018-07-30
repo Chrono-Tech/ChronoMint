@@ -25,7 +25,7 @@ const walletModel = new MultisigWalletModel({
 
 const get = (wallet) => (duck) => {
   switch (duck) {
-    case a.DUCK_MULTISIG_WALLET:
+    case a.DUCK_ETH_MULTISIG_WALLET:
       return new MultisigWalletCollection(wallet)
   }
 }

@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+/* eslint-disable */
 export { default as ChronoBankPlatformABI } from 'chronobank-smart-contracts/build/contracts/ChronoBankPlatform.json'
 export { default as MultiEventsHistoryABI } from 'chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'
 export { default as WalletABI } from 'chronobank-smart-contracts/build/contracts/Wallet.json'

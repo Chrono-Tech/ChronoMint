@@ -4,74 +4,36 @@
  */
 
 import { createSelector } from 'reselect'
-import { filteredBalancesAndTokens } from './balances'
-import { getMainWallet } from '../../wallet/selectors/models'
+import { getMainWallets } from '../../wallets/selectors/models'
+import WalletModel from '../../../models/wallet/WalletModel'
 
-export const tokensAndAmountsSelector = (blockchain: string, symbol: string) => createSelector(
+export const getAllPendingTransactions = createSelector(
   [
-    filteredBalancesAndTokens(blockchain, symbol),
+    getMainWallets,
   ],
   (
-    balancesInfo,
+    mainWallets,
   ) => {
+    let pendingTransactions = {}
 
-    return balancesInfo
-      .map((info) => {
-        const symbol = info.balance.symbol()
-        return {
-          [symbol]: info.token.removeDecimals(info.balance.amount()).toNumber(),
-        }
-      })
-      .sort((a, b) => {
-        const oA = Object.keys(a)[0]
-        const oB = Object.keys(b)[0]
-        return (oA > oB) - (oA < oB)
-      })
-      .toArray()
+    mainWallets.map((wallet: WalletModel) => {
+      if (wallet.transactions.blocks && wallet.transactions.blocks['-1']) {
+        wallet.transactions.blocks['-1'].transactions.map((tx) => {
+          pendingTransactions[tx.id()] = tx
+        })
+      }
+    })
+    return Object.values(pendingTransactions)
   },
 )
 
-export const tokensCountBalanceSelector = (blockchain: string, symbol: string, notFilterZero: boolean) => createSelector(
+export const pendingTransactionsSelector = () => createSelector(
   [
-    filteredBalancesAndTokens(blockchain, symbol),
+    getAllPendingTransactions,
   ],
   (
-    balancesInfo,
+    pendingTxs,
   ) => {
-
-    return balancesInfo
-      .map((info) => {
-        const symbol = info.balance.symbol()
-        return {
-          'symbol': symbol,
-          'value': info.token.removeDecimals(info.balance.amount()).toNumber(),
-        }
-      })
-      .filter((balance) => {
-        return notFilterZero ? true : balance.value > 0
-      })
-      .toArray()
-  },
-)
-
-export const tokensCountSelector = (blockchain: string) => createSelector(
-  [
-    tokensCountBalanceSelector(blockchain),
-  ],
-  (
-    balances,
-  ) => {
-    return balances.length
-  },
-)
-
-export const pendingTransactionsSelector = (blockchain, address) => createSelector(
-  [
-    getMainWallet,
-  ],
-  (
-    mainWallet,
-  ) => {
-    return mainWallet.getAllPendingTransactions(blockchain, address)
+    return pendingTxs
   },
 )

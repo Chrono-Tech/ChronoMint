@@ -5,73 +5,91 @@
 
 import {
   bccProvider,
-  BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_LITECOIN,
   btcProvider,
   btgProvider,
   ltcProvider,
 } from '@chronobank/login/network/BitcoinProvider'
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_LITECOIN,
+} from '@chronobank/login/network/constants'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import BigNumber from 'bignumber.js'
+import { modalsOpenConfirmDialog } from '@chronobank/core-dependencies/redux/modals/actions'
+import { showConfirmTransferModal } from '@chronobank/core-dependencies/redux/ui/actions'
 import { bccDAO, btcDAO, btgDAO, ltcDAO } from '../../dao/BitcoinDAO'
-import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import ERC20ManagerDAO, { EVENT_ERC20_TOKENS_COUNT, EVENT_NEW_ERC20_TOKEN } from '../../dao/ERC20ManagerDAO'
 import ethereumDAO, { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
 import NemDAO, { NEM_DECIMALS, NEM_XEM_NAME, NEM_XEM_SYMBOL } from '../../dao/NemDAO'
 import TokenModel from '../../models/tokens/TokenModel'
-import TransferErrorNoticeModel from '../../models/notices/TransferErrorNoticeModel'
 import type TransferExecModel from '../../models/TransferExecModel'
-import TransferError, { TRANSFER_CANCELLED, TRANSFER_UNKNOWN } from '../../models/TransferError'
+import TransferError, { TRANSFER_CANCELLED } from '../../models/TransferError'
 import tokenService, { EVENT_NEW_TOKEN } from '../../services/TokenService'
-import { notify } from '../notifier/actions'
-import { showConfirmTransferModal } from '../ui/actions'
+import { notifyError } from '../notifier/actions'
 import { EVENT_NEW_BLOCK } from '../../dao/AbstractContractDAO'
 import Amount from '../../models/Amount'
 import { ETH } from '../mainWallet/actions'
-import { EVENT_UPDATE_LAST_BLOCK } from '../../dao/AbstractTokenDAO'
+import { EVENT_UPDATE_LAST_BLOCK } from '../../dao/constants'
+import { daoByType } from '../../refactor/redux/daos/selectors'
+import TxExecModel from '../../refactor/models/TxExecModel'
+import { WATCHER_TX_END, WATCHER_TX_SET } from '../watcher/actions'
+import { DUCK_TOKENS, TOKENS_FAILED, TOKENS_FETCHED, TOKENS_FETCHING, TOKENS_INIT, TOKENS_UPDATE_LATEST_BLOCK } from './constants'
 
-export const DUCK_TOKENS = 'tokens'
-export const TOKENS_UPDATE = 'tokens/update'
-export const TOKENS_UPDATE_LATEST_BLOCK = 'tokens/updateLatestBlock'
-export const TOKENS_INIT = 'tokens/init'
-export const TOKENS_FETCHING = 'tokens/fetching'
-export const TOKENS_FETCHED = 'tokens/fetched'
-export const TOKENS_REMOVE = 'tokens/remove'
-export const TOKENS_FAILED = 'tokens/failed'
-
-// It is not a redux action
-const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
+const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
-    await dispatch(showConfirmTransferModal(dao, tx))
+    console.log('submitTxHandler: ', tx)
+    if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
+      console.log('submitTxHandler BLOCKCHAIN_ETHEREUM: ', tx)
+      dispatch(modalsOpenConfirmDialog({
+        props: {
+          tx,
+          dao,
+          confirm: (tx) => dao.accept(tx),
+          reject: (tx) => dao.reject(tx),
+        },
+      }))
+    } else {
+      await dispatch(showConfirmTransferModal(dao, tx))
+    }
   } catch (e) {
-    // eslint-disable-next-line
-    console.error('Transfer error', e)
-    const err = new TransferError(e.message, TRANSFER_UNKNOWN)
-    dispatch(notify(new TransferErrorNoticeModel(tx, err)))
+    dispatch(notifyError(e, tx.funcTitle()))
   }
 }
 
-// It is not a redux action
-const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
+const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
-    const txOptions = tx.options()
-    // TODO @ipavlenko: Pass arguments
-    await dao.immediateTransfer(tx.from(), tx.to(), tx.amount(), tx.amountToken(), tx.feeMultiplier(), txOptions.advancedParams)
-  } catch (e) {
     // eslint-disable-next-line
-    console.error('Transfer error', e)
-    const err = new TransferError(e.message, TRANSFER_UNKNOWN)
-    dispatch(notify(new TransferErrorNoticeModel(tx, err)))
+    console.log('acceptTxHandler start: ', tx, dao)
+    if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
+      dispatch({ type: WATCHER_TX_SET, tx })
+      const txData = await dao.immediateTransfer(tx)
+      // eslint-disable-next-line
+      console.log('acceptTxHandler mained: ', txData, dao, tx)
+
+      dao.emit('mained', new TxExecModel({ ...tx, hash: txData.transactionHash }))
+    } else {
+      const txOptions = tx.options()
+      // TODO @ipavlenko: Pass arguments
+      const hash = await dao.immediateTransfer(tx.from(), tx.to(), tx.amount(), tx.amountToken(), tx.feeMultiplier(), txOptions.advancedParams)
+      dao.emit('mained', hash, new TransferExecModel({ ...tx, hash }))
+    }
+  } catch (e) {
+    dispatch(notifyError(e, tx.funcTitle()))
   }
 }
 
-// It is not a redux action
-const rejectTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
+const rejectTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   const e = new TransferError('Rejected', TRANSFER_CANCELLED)
-  dispatch(notify(new TransferErrorNoticeModel(tx, e)))
+  dispatch(notifyError(e, tx.funcTitle()))
+}
+
+const mainedTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
+  if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
+    dispatch({ type: WATCHER_TX_END, tx })
+  }
 }
 
 export const alternateTxHandlingFlow = (dao) => (dispatch) => {
@@ -79,20 +97,24 @@ export const alternateTxHandlingFlow = (dao) => (dispatch) => {
     .on('submit', submitTxHandler(dao, dispatch))
     .on('accept', acceptTxHandler(dao, dispatch))
     .on('reject', rejectTxHandler(dao, dispatch))
+    .on('mained', mainedTxHandler(dao, dispatch))
 }
 
 export const initTokens = () => async (dispatch, getState) => {
   if (getState().get(DUCK_TOKENS).isInited()) {
     return
   }
+  const web3 = getState().get('web3')
+  ethereumDAO.connect(web3)
+  dispatch(alternateTxHandlingFlow(ethereumDAO))
   dispatch({ type: TOKENS_INIT, isInited: true })
 
   dispatch({ type: TOKENS_FETCHING, count: 0 })
 
-  const erc20: ERC20ManagerDAO = await contractsManagerDAO.getERC20ManagerDAO()
+  const erc20: ERC20ManagerDAO = daoByType('ERC20Manager')(getState())
+
   erc20
     .on(EVENT_ERC20_TOKENS_COUNT, async (count) => {
-
       const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
       dispatch({ type: TOKENS_FETCHING, count: currentCount + count + 1 /*eth*/ })
 
@@ -105,7 +127,8 @@ export const initTokens = () => async (dispatch, getState) => {
     })
     .on(EVENT_NEW_ERC20_TOKEN, (token: TokenModel) => {
       dispatch({ type: TOKENS_FETCHED, token })
-      tokenService.createDAO(token)
+      const dao = tokenService.createDAO(token, web3)
+      dispatch(alternateTxHandlingFlow(dao))
     })
     .fetchTokens()
 
@@ -124,7 +147,13 @@ export const initBtcLikeTokens = () => async (dispatch, getState) => {
     btcLikeTokens
       .map(async (dao) => {
         try {
-          dao.on(EVENT_UPDATE_LAST_BLOCK, (block) => dispatch({ type: TOKENS_UPDATE_LATEST_BLOCK, ...block }))
+          dao.on(EVENT_UPDATE_LAST_BLOCK, (newBlock) => {
+            const blocks = getState().get(DUCK_TOKENS).latestBlocks()
+            const currentBlock = blocks[dao.getBlockchain()]
+            if (currentBlock && newBlock.block.blockNumber > currentBlock.blockNumber) {
+              dispatch({ type: TOKENS_UPDATE_LATEST_BLOCK, ...newBlock })
+            }
+          })
           await dao.watchLastBlock()
           const token = await dao.fetchToken()
           tokenService.registerDAO(token, dao)

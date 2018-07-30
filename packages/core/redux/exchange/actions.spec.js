@@ -18,7 +18,7 @@ import ExchangeOrderModel from '../../models/exchange/ExchangeOrderModel'
 import ExchangeModel from '../../models/exchange/ExchangeModel'
 import TokensCollection from '../../models/tokens/TokensCollection'
 import TokenModel from '../../models/tokens/TokenModel'
-import { DUCK_TOKENS } from '../tokens/actions'
+import { DUCK_TOKENS } from '../tokens/constants'
 import ERC20ManagerDAO, { EVENT_NEW_ERC20_TOKEN } from '../../dao/ERC20ManagerDAO'
 import * as a from './actions'
 

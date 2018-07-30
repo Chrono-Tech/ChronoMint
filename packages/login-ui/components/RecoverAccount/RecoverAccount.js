@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { MuiThemeProvider } from 'material-ui'
+import { MuiThemeProvider } from '@material-ui/core'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -16,20 +16,25 @@ import {
 } from '@chronobank/core/models/wallet/persistAccount'
 import {
   getAccountName,
-  getAccountAvatar,
+  // getAccountAvatar,
+  getAccountAvatarImg,
+  getAccountAddress,
 } from '@chronobank/core/redux/persistAccount/utils'
+import styles from 'layouts/Splash/styles'
+import {
+  initRecoverAccountPage,
+} from '@chronobank/login/redux/network/thunks'
+import Button from 'components/common/ui/Button/Button'
+import UserRow from 'components/common/ui/UserRow/UserRow'
+import {
+  FORM_RECOVER_ACCOUNT,
+  navigateToSelectWallet,
+} from '../../redux/actions'
 import {
   onSubmitRecoverAccountForm,
   onSubmitRecoverAccountFormSuccess,
   onSubmitRecoverAccountFormFail,
-  initRecoverAccountPage,
-  FORM_RECOVER_ACCOUNT,
-} from '@chronobank/login/redux/network/actions'
-
-import Button from 'components/common/ui/Button/Button'
-import UserRow from 'components/common/ui/UserRow/UserRow'
-
-import styles from 'layouts/Splash/styles'
+} from '../../redux/thunks'
 import './RecoverAccount.scss'
 
 function mapStateToProps (state) {
@@ -54,8 +59,9 @@ function mapDispatchToProps (dispatch,) {
       await dispatch(onSubmitRecoverAccountForm(mnemonic))
     },
     onSubmitSuccess: () => dispatch(onSubmitRecoverAccountFormSuccess()),
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitRecoverAccountFormFail(errors, dispatch, submitErrors)),
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitRecoverAccountFormFail(errors, submitErrors)),
     initRecoverAccountPage: () => dispatch(initRecoverAccountPage()),
+    navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
   }
 }
 
@@ -63,14 +69,15 @@ class RecoverAccountPage extends PureComponent {
   static propTypes = {
     selectedWallet: PropTypes.instanceOf(AccountEntryModel),
     initRecoverAccountPage: PropTypes.func,
+    navigateToSelectWallet: PropTypes.func,
   }
 
-  componentWillMount(){
+  componentWillMount () {
     this.props.initRecoverAccountPage()
   }
 
   render () {
-    const { handleSubmit, selectedWallet, error } = this.props
+    const { handleSubmit, selectedWallet, navigateToSelectWallet, error } = this.props
 
     const wordsArray = new Array(12).fill()
 
@@ -84,8 +91,9 @@ class RecoverAccountPage extends PureComponent {
           <div styleName='user-row'>
             <UserRow
               title={getAccountName(selectedWallet)}
-              avatar={getAccountAvatar(selectedWallet)}
-              hideActionIcon
+              avatar={getAccountAvatarImg(selectedWallet)}
+              subtitle={getAccountAddress(selectedWallet, true)}
+              onClick={navigateToSelectWallet}
             />
           </div>
 
@@ -97,7 +105,7 @@ class RecoverAccountPage extends PureComponent {
                   styleName='field'
                   component={TextField}
                   name={`word-${i + 1}`}
-                  floatingLabelText={<div><Translate value='RecoverAccount.word' />&nbsp;{ i + 1 }</div>}
+                  label={<div><Translate value='RecoverAccount.word' />&nbsp;{ i + 1 }</div>}
                   fullWidth
                   {...styles.textField}
                 />

@@ -6,16 +6,7 @@
 import type Amount from '../models/Amount'
 import type TxModel from '../models/TxModel'
 import { address } from '../models/validator'
-import TokenModel from '../models/tokens/TokenModel'
 import AbstractContractDAO from './AbstractContractDAO'
-
-export const EVENT_NEW_TRANSFER = 'TokenTxTransfer'
-export const EVENT_UPDATE_TRANSACTION = 'TokenUpdateTransaction'
-export const EVENT_UPDATE_BALANCE = 'TokenUpdateBalance'
-export const EVENT_UPDATE_LAST_BLOCK = 'updateLastBlock'
-export const FETCH_NEW_BALANCE = 'TokenFetchNewBalance'
-export const EVENT_MODIFY_BALANCE = 'TokenModifyBalance'
-export const EVENT_APPROVAL_TRANSFER = 'TokenApprovalTransfer'
 
 export default class AbstractTokenDAO extends AbstractContractDAO {
   constructor (json, at) {
@@ -59,7 +50,7 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
   }
 
   // eslint-disable-next-line no-unused-vars
-  transfer (from: string, to: string, amount: Amount, token: TokenModel, fee): Promise {
+  transfer (from: string, to: string, amount: Amount, token, fee): Promise {
     throw new Error('should be overridden')
   }
 

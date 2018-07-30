@@ -12,9 +12,8 @@ import { connect } from 'react-redux'
 import { selectWallet } from '@chronobank/core/redux/wallet/actions'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { Translate } from 'react-redux-i18n'
-import { IconButton } from 'material-ui'
+import { IconButton } from '@material-ui/core'
 import { TOKEN_ICONS } from 'assets'
-import AddressModel from '@chronobank/core/models/wallet/AddressModel'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
 import WalletName from 'components/wallet/WalletName/WalletName'
 import walletLinkSvg from 'assets/img/icons/prev.svg'
@@ -61,7 +60,7 @@ export default class MenuTokenMoreInfo extends PureComponent {
   static propTypes = {
     token: PropTypes.instanceOf(TokenModel),
     selectedToken: PropTypes.objectOf(PropTypes.string),
-    walletAddress: PropTypes.instanceOf(AddressModel),
+    walletAddress: PropTypes.string,
     wallets: PropTypes.arrayOf(PTWallet),
     networkStatus: PropTypes.shape({
       status: PropTypes.string,
@@ -169,17 +168,17 @@ export default class MenuTokenMoreInfo extends PureComponent {
 
           <div styleName='walletIrem'>
             <Link to='/wallet' styleName='walletTitle' onClick={() => {
-              this.handleSelectLink(token.blockchain(), walletAddress.address())
+              this.handleSelectLink(token.blockchain(), walletAddress)
             }}>
               <div styleName='walletName'><Translate value={`${prefix}.mainWalletTitle`} /></div>
-              <div styleName='walletAddress'>{walletAddress.address()}</div>
+              <div styleName='walletAddress'>{walletAddress}</div>
               <div styleName='walletLink'>
                 <img alt='' src={walletLinkSvg} />
               </div>
             </Link>
 
             <div styleName='action'>
-              <CopyIcon value={walletAddress.address()}>
+              <CopyIcon value={walletAddress}>
                 <div styleName='copyWrap'>
                   <div styleName='actionIcon'>
                     <img src={copySvg} alt='' />
@@ -192,7 +191,7 @@ export default class MenuTokenMoreInfo extends PureComponent {
             </div>
 
             <div styleName='action'>
-              <QRIcon value={walletAddress.address()}>
+              <QRIcon value={walletAddress}>
                 <div styleName='copyWrap'>
                   <div styleName='actionIcon'>
                     <img src={qrSvg} alt='' />

@@ -3,10 +3,14 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import AbstractContractDAO from '@chronobank/core/dao/AbstractContractDAO'
+// #region imports
+
 import contractsManagerDAO from '@chronobank/core/dao/ContractsManagerDAO'
+import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/actions'
+import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
 import EventEmitter from 'events'
-import Web3 from 'web3'
+// import Web3 from 'web3'
+import { store } from '@chronobank/core-dependencies/configureStore'
 import {
   addError,
   clearErrors,
@@ -15,19 +19,15 @@ import {
   NETWORK_ADD_ERROR,
   NETWORK_SELECT_ACCOUNT,
   NETWORK_SET_ACCOUNTS,
-  NETWORK_SET_NETWORK,
-  NETWORK_SET_PROVIDER,
   NETWORK_SET_TEST_METAMASK,
-  NETWORK_SET_TEST_RPC,
+  // NETWORK_SET_TEST_RPC,
+  networkSetNetwork,
+  networkResetNetwork,
+  networkSetProvider,
 } from '../redux/network/actions'
-import { utils } from '../settings'
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from './BitcoinProvider'
-import { ethereumProvider } from './EthereumProvider'
+import { utils as web3Converter } from '../settings'
 import metaMaskResolver from './metaMaskResolver'
 import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE } from './MonitorService'
-import { nemProvider } from './NemProvider'
-import { wavesProvider } from './WavesProvider'
-import networkProvider from './NetworkProvider'
 import privateKeyProvider from './privateKeyProvider'
 import {
   getNetworkById,
@@ -37,21 +37,32 @@ import {
   LOCAL_PRIVATE_KEYS,
   LOCAL_PROVIDER_ID,
   NETWORK_MAIN_ID,
-  TESTRPC_URL,
+  // TESTRPC_URL,
 } from './settings'
 import uportProvider, { UPortAddress } from './uportProvider'
-import web3Provider, { Web3Provider } from './Web3Provider'
-import web3Utils from './Web3Utils'
+import web3Provider/*, { Web3Provider }*/ from './Web3Provider'
+import setup from './EngineUtils'
+// import web3Utils from './Web3Utils'
 
-const { web3Converter } = utils
+// #endregion imports
 
+// #region constants
+
+// TODO: to ad I18n translation
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
+// #endregion constants
+
 class NetworkService extends EventEmitter {
-  connectStore (store) {
+  constructor () {
+    super()
     this._store = store
     this._dispatch = store.dispatch
   }
+  // connectStore (store) {
+  //   this._store = store
+  //   this._dispatch = store.dispatch
+  // }
 
   createNetworkSession = (account, provider, network) => {
     if (!this._account) {
@@ -61,30 +72,13 @@ class NetworkService extends EventEmitter {
     if (!account || !provider || !network) {
       throw new Error(`Wrong session arguments: account: ${account}, provider: ${provider}, network: ${network}`)
     }
-    // const accounts = this._store.getState().get(DUCK_NETWORK).accounts || []
-    //if (!accounts.includes(account)) {
-    //  throw new Error('Account not registered')
-    //}
-
-    web3Provider.resolve()
-
-    AbstractContractDAO.setup(account)
-
-    // sync with session state
-    // this unlock login
-    // dispatch(createSession(account))
     this.emit('createSession', {
       account, provider, network, dispatch: this._dispatch,
     })
   }
 
   async destroyNetworkSession (lastURL, isReset = true) {
-    await AbstractContractDAO.stopWholeWatching()
-    AbstractContractDAO.resetWholeFilterCache()
     if (isReset) {
-      // for tests
-      web3Provider.beforeReset()
-      web3Provider.afterReset()
     }
 
     this.emit('destroySession', { lastURL, dispatch: this._dispatch })
@@ -97,14 +91,10 @@ class NetworkService extends EventEmitter {
       return false
     }
 
-    const web3 = new Web3()
-    web3Provider.reinit(web3, new web3.providers.HttpProvider(providerURL || TESTRPC_URL))
-    const accounts = await web3Provider.getAccounts()
-
     // account must be valid
-    if (!accounts.includes(account)) {
-      return false
-    }
+    // if (!accounts.includes(account)) {
+    //   return false
+    // }
 
     // contacts and network must be valid
     const isDeployed = await this.checkNetwork()
@@ -126,17 +116,18 @@ class NetworkService extends EventEmitter {
         error: 'Network is unavailable.',
       })
     }
-    return isDeployed
+    //return isDeployed
+    return true
   }
 
   selectProvider = (selectedProviderId) => {
     const dispatch = this._dispatch
-    dispatch({ type: NETWORK_SET_NETWORK, networkId: null })
-    dispatch({ type: NETWORK_SET_PROVIDER, selectedProviderId })
+    dispatch(networkResetNetwork())
+    dispatch(networkSetProvider(selectedProviderId))
   }
 
   selectNetwork = (selectedNetworkId) => {
-    this._dispatch({ type: NETWORK_SET_NETWORK, selectedNetworkId })
+    this._dispatch(networkSetNetwork(selectedNetworkId))
   }
 
   async loginUport () {
@@ -144,7 +135,7 @@ class NetworkService extends EventEmitter {
     const provider = uportProvider.getUportProvider()
     dispatch(loading())
     dispatch(clearErrors())
-    web3Provider.reinit(provider.getWeb3(), provider.getProvider())
+    //web3Provider.reinit(provider.getWeb3(), provider.getProvider())
     const encodedAddress: string = await provider.requestAddress()
     const { network, address }: UPortAddress = uportProvider.decodeMNIDaddress(encodedAddress)
     dispatch(this.selectNetwork(web3Converter.hexToDecimal(network)))
@@ -159,7 +150,7 @@ class NetworkService extends EventEmitter {
     try {
       let accounts = this._accounts
       if (accounts == null) {
-        accounts = await web3Provider.getAccounts()
+        //accounts = await web3Provider.getAccounts()
       }
       if (!accounts || accounts.length === 0) {
         throw new Error(ERROR_NO_ACCOUNTS)
@@ -183,20 +174,7 @@ class NetworkService extends EventEmitter {
 
     const index = Math.max(accounts.indexOf(account), 0)
     const provider = privateKeyProvider.getPrivateKeyProvider(LOCAL_PRIVATE_KEYS[index], this.getProviderSettings(), wallets)
-    await this.setup(provider)
-  }
-
-  async setup ({ networkCode, ethereum, btc, bcc, btg, ltc, nem, waves }) {
-    const web3 = new Web3()
-    web3Provider.reinit(web3, ethereum.getProvider())
-    networkProvider.setNetworkCode(networkCode)
-    ethereumProvider.setEngine(ethereum, nem, waves)
-    bcc && bccProvider.setEngine(bcc)
-    btc && btcProvider.setEngine(btc)
-    btg && btgProvider.setEngine(btg)
-    ltc && ltcProvider.setEngine(ltc)
-    nem && nemProvider.setEngine(nem)
-    waves && wavesProvider.setEngine(waves)
+    await setup(provider)
   }
 
   selectAccount = (selectedAccount) => {
@@ -211,9 +189,22 @@ class NetworkService extends EventEmitter {
 
   getProviderSettings = () => {
     const state = this._store.getState()
+
+    const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
     const { selectedNetworkId, selectedProviderId, isLocal } = state.get(DUCK_NETWORK)
     const network = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
+
     const { protocol, host } = network
+
+    if (!host) {
+
+      const customNetwork: AccountCustomNetwork = customNetworksList.find((network) => network.id === selectedNetworkId)
+
+      return {
+        network: customNetwork,
+        url: customNetwork && customNetwork.url,
+      }
+    }
 
     return {
       network,
@@ -255,26 +246,25 @@ class NetworkService extends EventEmitter {
     return this.isMetamask
   }
 
-  async checkTestRPC (providerUrl) {
-    const web3 = new Web3()
-    web3.setProvider(new web3.providers.HttpProvider(providerUrl || TESTRPC_URL))
-    const web3Provider = new Web3Provider(web3)
+  async checkTestRPC (/*providerUrl*/) {
+    // const web3 = new Web3Legacy()
+    // web3.setProvider(new Web3Legacy.providers.HttpProvider(providerUrl || TESTRPC_URL))
+    // const web3Provider = new Web3Provider(web3)
+    //
+    // const isDeployed = await contractsManagerDAO.isDeployed(web3Provider)
+    // if (!isDeployed) {
+    //   return false
+    // }
+    //
+    // this._dispatch({ type: NETWORK_SET_TEST_RPC })
+    // return true
 
-    const isDeployed = await contractsManagerDAO.isDeployed(web3Provider)
-    if (!isDeployed) {
-      return false
-    }
-
-    this._dispatch({ type: NETWORK_SET_TEST_RPC })
-    return true
+    return false
   }
 
   async autoSelect () {
     const { priority, preferMainnet } = this._store.getState().get(DUCK_NETWORK)
     const resolveNetwork = () => {
-      const web3 = new Web3()
-      web3Provider.reinit(web3, web3Utils.createStatusEngine(this.getProviderURL()))
-      web3Provider.resolve()
     }
     const selectAndResolve = (networkId, providerId) => {
       this.selectProvider(providerId)
@@ -300,13 +290,13 @@ class NetworkService extends EventEmitter {
     const resetCheckers = () => {
       this.checkerIndex = 0
       this.checkers.length = this.checkerIndex
-      web3Provider.getMonitorService().removeListener('network', handleNetwork)
+      //web3Provider.getMonitorService().removeListener('network', handleNetwork)
     }
 
     const runNextChecker = () => {
-      if (this.checkerIndex <= this.checkers.length) {
-        web3Provider.beforeReset()
-        web3Provider.afterReset()
+      if (this.checkerIndex < this.checkers.length) {
+        //web3Provider.beforeReset()
+        //web3Provider.afterReset()
         this.checkers[this.checkerIndex]()
         this.checkerIndex++
       } else {
@@ -327,8 +317,8 @@ class NetworkService extends EventEmitter {
       }
     })
 
-    web3Provider.getMonitorService()
-      .on('network', handleNetwork)
+    //web3Provider.getMonitorService()
+    //  .on('network', handleNetwork)
     runNextChecker()
   }
 

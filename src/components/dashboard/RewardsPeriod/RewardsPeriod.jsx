@@ -6,7 +6,7 @@
 import Moment from 'components/common/Moment'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import ProgressSection from 'components/dashboard/ProgressSection/ProgressSection'
-import { Paper } from 'material-ui'
+import { Paper } from '@material-ui/core'
 import Amount from '@chronobank/core/models/Amount'
 import { SHORT_DATE } from '@chronobank/core/models/constants'
 import RewardsCollection from '@chronobank/core/models/rewards/RewardsCollection'
@@ -20,7 +20,7 @@ import { Translate } from 'react-redux-i18n'
 import { DUCK_ASSETS_HOLDER } from '@chronobank/core/redux/assetsHolder/actions'
 import { DUCK_I18N } from 'redux/i18n/actions'
 import { DUCK_REWARDS } from '@chronobank/core/redux/rewards/actions'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import './RewardsPeriod.scss'
 
 function prefix (token) {

@@ -8,6 +8,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
+import { I18n } from '@chronobank/core-dependencies/i18n'
 import { Checkbox, TextField } from 'redux-form-material-ui'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { createPlatform } from '@chronobank/core/redux/assetsManager/actions'
@@ -55,7 +56,7 @@ export default class AddPlatformForm extends PureComponent {
             styleName='checkboxField'
             component={Checkbox}
             name='alreadyHave'
-            label={<Translate value={prefix('alreadyHave')} />}
+            label={I18n.t(prefix('alreadyHave'))}
           />
 
           {
@@ -64,7 +65,7 @@ export default class AddPlatformForm extends PureComponent {
                 component={TextField}
                 name='platformAddress'
                 fullWidth
-                floatingLabelText={<Translate value={prefix('platformAddress')} />}
+                placeholder={I18n.t(prefix('platformAddress'))}
               />
               : null
           }
@@ -76,7 +77,7 @@ export default class AddPlatformForm extends PureComponent {
           <Button
             disabled={!!this.props.formErrors}
             styleName='action'
-            label={<Translate value={prefix('dialogTitle')} />}
+            label={I18n.t(prefix('platformAddress'))}
             type='submit'
             primary
           />

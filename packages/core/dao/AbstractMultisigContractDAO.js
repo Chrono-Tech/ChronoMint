@@ -5,20 +5,21 @@
 
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-import type PendingManagerDAO from './PendingManagerDAO'
 import ethABI from 'ethereumjs-abi'
+import type PendingManagerDAO from './PendingManagerDAO'
 import type AbstractModel from '../models/AbstractModel'
 import TxError from '../models/TxError'
 import TxExecModel from '../models/TxExecModel'
-import AbstractContractDAO, { DEFAULT_TX_OPTIONS, TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
+import { DEFAULT_TX_OPTIONS, TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
+import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
 
 export default class AbstractMultisigContractDAO extends AbstractContractDAO {
-  constructor (json, at = null, eventsJSON) {
+  constructor ({ address, history, abi }) {
+    super({ address, history, abi })
     if (new.target === AbstractMultisigContractDAO) {
       throw new TypeError('Cannot construct AbstractMultisigContractDAO instance directly')
     }
-    super(json, at, eventsJSON)
 
     this._okCodes = [resultCodes.OK, resultCodes.MULTISIG_ADDED]
   }

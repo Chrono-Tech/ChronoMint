@@ -5,7 +5,8 @@
 import Button from 'components/common/ui/Button/Button'
 import { createWallet } from '@chronobank/core/redux/multisigWallet/actions'
 import MultisigWalletModel from '@chronobank/core/models/wallet/MultisigWalletModel'
-import { DatePicker, TextField, TimePicker } from 'redux-form-material-ui'
+import { TextField, TimePicker } from 'redux-form-material-ui'
+import DatePicker from 'components/common/DatePicker'
 import OwnerCollection from '@chronobank/core/models/wallet/OwnerCollection'
 import OwnerModel from '@chronobank/core/models/wallet/OwnerModel'
 import PropTypes from 'prop-types'
@@ -84,7 +85,7 @@ export default class TimeLockedWalletForm extends PureComponent {
     is2FA: PropTypes.bool,
     ownersCount: PropTypes.number,
     changeSignatures: PropTypes.func,
-    requiredSignatures: PropTypes.number,
+    requiredSignatures: PropTypes.string,
     ...formPropTypes,
   }
 

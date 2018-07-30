@@ -3,16 +3,17 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import tokenService from '../../services/TokenService'
 import BigNumber from 'bignumber.js'
-import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import Immutable from 'immutable'
+import tokenService from '../../services/TokenService'
+import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import ExchangeOrderModel from '../../models/exchange/ExchangeOrderModel'
 import { DUCK_SESSION } from '../session/actions'
 import exchangeService from '../../services/ExchangeService'
 import { fetchTokenBalance, WALLET_ALLOWANCE } from '../mainWallet/actions'
 import TokenModel from '../../models/tokens/TokenModel'
-import { DUCK_TOKENS, subscribeOnTokens } from '../tokens/actions'
+import { subscribeOnTokens } from '../tokens/actions'
+import { DUCK_TOKENS } from '../tokens/constants'
 import AllowanceModel from '../../models/wallet/AllowanceModel'
 import Amount from '../../models/Amount'
 
@@ -92,7 +93,6 @@ export const getTokensAllowance = (exchange: ExchangeOrderModel) => async (dispa
   const { account } = getState().get(DUCK_SESSION)
   const dao = tokenService.getDAO(token)
   const allowance = await dao.getAccountAllowance(account, exchange.address())
-  console.log('--actions#', 2)
   dispatch({
     type: WALLET_ALLOWANCE, allowance: new AllowanceModel({
       amount: new Amount(allowance, token.id()),
@@ -209,7 +209,7 @@ export const watchExchanges = () => async (dispatch, getState) => {
     if (account === tx.args.user) {
       const exchangeManageDAO = await contractsManagerDAO.getExchangeManagerDAO()
       const exchangeAddress = tx.args.exchange
-      const exchangeData = await exchangeManageDAO.getExchangeData([ exchangeAddress ], getState().get(DUCK_TOKENS))
+      const exchangeData = await exchangeManageDAO.getExchangeData([exchangeAddress], getState().get(DUCK_TOKENS))
       const exchange = exchangeData.item(exchangeAddress)
       dispatch(getAssetsSymbols())
       dispatch(subscribeOnTokens((token: TokenModel) => () => {
@@ -258,8 +258,9 @@ export const watchExchanges = () => async (dispatch, getState) => {
   exchangeService.on('Sell', async (tx) => {
     const state = getState().get(DUCK_EXCHANGE)
     const tokens = getState().get(DUCK_TOKENS)
+    const { account } = getState().get(DUCK_SESSION)
     const exchange = getExchangeFromState(state, tx.exchange)
-    dispatch(fetchTokenBalance(tokens.item('ETH')))
+    dispatch(fetchTokenBalance(tokens.item('ETH'), account))
     dispatch(updateExchange(exchange
       .ethBalance(exchange.ethBalance().minus(tx.ethAmount)),
     ))

@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Popover } from 'material-ui'
+import { Popover } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -12,7 +12,7 @@ import { Button } from 'components'
 import { changeMomentLocale } from 'redux/ui/actions'
 import classnames from 'classnames'
 
-import './LocaleDropDown.scss'
+import styles from './LocaleDropDown.scss'
 
 function mapStateToProps (state) {
   return {
@@ -88,11 +88,11 @@ export default class LocaleDropDown extends PureComponent {
         <Popover
           open={this.state.open}
           anchorEl={this.state.anchorEl}
-          anchorOrigin={{ horizontal: 'middle', vertical: 'bottom' }}
-          targetOrigin={{ horizontal: 'middle', vertical: 'top' }}
-          onRequestClose={this.handleRequestClose}
-          style={{
-            background: 'transparent',
+          anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
+          targetOrigin={{ horizontal: 'center', vertical: 'top' }}
+          onClose={this.handleRequestClose}
+          classes={{
+            paper: styles.popover,
           }}
         >
           <ul styleName='LocaleDropDown'>

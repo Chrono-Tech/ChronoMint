@@ -61,16 +61,20 @@
     color: #FFFFFF;
     background-color: #614DBA;
     text-transform: lowercase;
-    line-height: 62px;
+    line-height: 38px;
     border-radius: 2px;
     font-size: 16px;
     font-weight: 700;
     padding: 12px 0;
-  }
 
-  &:hover {
-    background-color: $button-color-2;
-    color: $background-color-1;
+    &:disabled {
+      background: $background-color-1;
+    }
+
+    &:hover:not(:disabled) {
+      background-color: $button-color-2;
+      color: $background-color-1;
+    }
   }
 
   @include md-only {

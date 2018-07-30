@@ -3,13 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Amount from '../models/Amount'
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import tokenService from '../services/TokenService'
-import { AssetHolderABI } from './abi'
-import AbstractContractDAO from './AbstractContractDAO'
+import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
 import type ERC20DAO from './ERC20DAO'
+import Amount from '../models/Amount'
 
 export const TX_DEPOSIT = 'deposit'
 export const TX_WITHDRAW_SHARES = 'withdrawShares'
@@ -17,8 +16,9 @@ export const TX_WITHDRAW_SHARES = 'withdrawShares'
 export const TIME = 'TIME'
 
 export default class AssetHolderDAO extends AbstractContractDAO {
-  constructor (at) {
-    super(AssetHolderABI, at)
+  constructor ({ address, history, abi }) {
+    super({ address, history, abi })
+
     this._okCodes = [
       resultCodes.OK,
       resultCodes.TIMEHOLDER_DEPOSIT_FAILED,
@@ -26,8 +26,12 @@ export default class AssetHolderDAO extends AbstractContractDAO {
     ]
   }
 
+  connect (web3, options) {
+    super.connect(web3, options)
+  }
+
   async getSharesContract (): Promise {
-    return this._call('getDefaultShares')
+    return this.contract.methods.getDefaultShares().call()
   }
 
   async getAssetDAO (): Promise<ERC20DAO> {
@@ -36,38 +40,53 @@ export default class AssetHolderDAO extends AbstractContractDAO {
   }
 
   getWalletAddress (): Promise {
-    return this._call('wallet')
+    return this.contract.methods.wallet().call()
   }
 
-  async deposit (tokenAddress: String, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined) {
+  async deposit (token, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined) {
     return this._tx(TX_DEPOSIT, [
-      tokenAddress,
+      token.address(),
       new BigNumber(amount),
-    ], {
-      amount,
-    }, new BigNumber(0), {
+    ], amount, new BigNumber(0), {
       feeMultiplier,
       advancedOptions,
+      from: advancedOptions && advancedOptions.account,
+      symbol: token.symbol(),
+      blockchain: token.blockchain(),
+      fields: {
+        amount: {
+          value: amount,
+          description: 'amount',
+        },
+      },
     })
   }
 
   shareholdersCount (): Promise {
-    return this._call('defaultShareholdersCount')
+    return this.contract.methods.defaultShareholdersCount().call()
   }
 
-  async withdraw (tokenAddress: String, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined) {
+  async withdraw (token, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined) {
     return this._tx(TX_WITHDRAW_SHARES, [
-      tokenAddress,
+      token.address(),
       new BigNumber(amount),
-    ], {
-      amount,
-    }, new BigNumber(0), {
+    ], amount, new BigNumber(0), {
       feeMultiplier,
       advancedOptions,
+      from: advancedOptions && advancedOptions.account,
+      symbol: token.symbol(),
+      blockchain: token.blockchain(),
+      fields: {
+        amount: {
+          value: amount,
+          description: 'withdraw',
+          mark: 'plus',
+        },
+      },
     })
   }
 
   getDeposit (tokenAddress: String, account: String): Promise {
-    return this._call('getDepositBalance', [ tokenAddress, account ])
+    return this.contract.methods.getDepositBalance(tokenAddress, account).call()
   }
 }

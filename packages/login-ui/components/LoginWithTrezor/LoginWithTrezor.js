@@ -3,36 +3,32 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import trezorProvider from '@chronobank/login/network/TrezorProvider'
+import styles from 'layouts/Splash/styles'
 import { fetchAccount, startTrezorSync, stopTrezorSync } from '@chronobank/login/redux/trezor/actions'
-import { CircularProgress, RaisedButton } from 'material-ui'
-import networkService from '@chronobank/login/network/NetworkService'
-import SelectField from 'material-ui/SelectField'
-import MenuItem from 'material-ui/MenuItem'
-import Subheader from 'material-ui/Subheader'
+import { Link } from 'react-router'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import Divider from '@material-ui/core/Divider'
+import Typography from '@material-ui/core/Typography'
+import ChevronRight from '@material-ui/icons/ChevronRight'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import BackButton from '../../components/BackButton/BackButton'
+import {
+  navigateToCreateAccountFromHW,
+} from '@chronobank/login/redux/network/actions'
+
 import './LoginWithTrezor.scss'
-import { Button } from '../../settings'
+
+export const FORM_TREZOR_LOGIN_PAGE = 'FormTrezorLoginPage'
 
 const trezorStates = [ {
-  flag: 'isHttps',
-  successTitle: 'LoginWithTrezor.isHttps.successTitle',
-  errorTitle: 'LoginWithTrezor.isHttps.errorTitle',
-  errorTip: 'LoginWithTrezor.isHttps.errorTip',
-}, {
-  flag: 'isU2F',
-  successTitle: 'LoginWithTrezor.isU2F.successTitle',
-  errorTitle: 'LoginWithTrezor.isU2F.errorTitle',
-  errorTip: 'LoginWithTrezor.isU2F.errorTip',
-}, {
   flag: 'isFetched',
-  successTitle: 'LoginWithTrezor.isFetched.successTitle',
-  errorTitle: 'LoginWithTrezor.isFetched.errorTitle',
-  errorTip: 'LoginWithTrezor.isFetched.errorTip',
+  successTitle: 'LoginWithTrezor.isConnected.successTitle',
+  errorTitle: 'LoginWithTrezor.isConnected.errorTitle',
+  errorTip: 'LoginWithTrezor.isConnected.errorTip',
 } ]
 
 const mapStateToProps = (state) => {
@@ -40,15 +36,18 @@ const mapStateToProps = (state) => {
   return {
     trezor: state.get('trezor'),
     isLoading: network.isLoading,
-    account: network.accounts
+    account: network.accounts,
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  startTrezorSync: () => dispatch(startTrezorSync()),
-  stopTrezorSync: (isReset) => dispatch(stopTrezorSync(isReset)),
-  fetchAccount: () => dispatch(fetchAccount()),
-})
+function mapDispatchToProps (dispatch) {
+  return {
+    startTrezorSync: () => dispatch(startTrezorSync()),
+    stopTrezorSync: (isReset) => dispatch(stopTrezorSync(isReset)),
+    fetchAccount: () => dispatch(fetchAccount()),
+    navigateToCreateAccountFromHW: (account) => dispatch(navigateToCreateAccountFromHW(account)),
+  }
+}
 
 @connect(mapStateToProps, mapDispatchToProps)
 class LoginTrezor extends PureComponent {
@@ -56,35 +55,23 @@ class LoginTrezor extends PureComponent {
     startTrezorSync: PropTypes.func,
     stopTrezorSync: PropTypes.func,
     fetchAccount: PropTypes.func,
-    onBack: PropTypes.func.isRequired,
-    onLogin: PropTypes.func.isRequired,
+    onBack: PropTypes.func,
+    onLogin: PropTypes.func,
     trezor: PropTypes.object,
     isLoading: PropTypes.bool,
-    account: PropTypes.array,
+    account: PropTypes.instanceOf(Array),
+    navigateToCreateAccountFromHW: PropTypes.func,
   }
 
-  state = {
-    value: 0
-  }
-
-  componentWillMount () {
-    this.props.startTrezorSync()
-  }
-
-  componentWillReceiveProps ({ trezor }) {
-    if (!trezor.isFetched && !trezor.isFetching && trezor.isHttps && trezor.isU2F) {
-      this.props.fetchAccount()
+  static getDerivedStateFromProps (props, state) {
+    if (!props.trezor.isFetched && !props.trezor.isFetching) {
+      props.startTrezorSync()
+      props.fetchAccount()
     }
-    trezorProvider.setWallet(this.props.account[0]); networkService.selectAccount(this.props.account[0]); networkService.setAccounts(this.props.account)
   }
 
   componentWillUnmount () {
     this.props.stopTrezorSync()
-  }
-
-  handleBackClick = () => {
-    this.props.stopTrezorSync(true)
-    this.props.onBack()
   }
 
   renderStates () {
@@ -92,14 +79,11 @@ class LoginTrezor extends PureComponent {
 
     return trezorStates.map((item) => trezor[ item.flag ]
       ? (
-        <div styleName='state' key={item.flag}>
-          <div styleName='flag flagDone' className='material-icons'>done</div>
-          <div styleName='titleContent'><Translate value={item.successTitle} /></div>
+        <div key={item.flag}>
         </div>
       )
       : (
         <div styleName='state' key={item.flag}>
-          <div styleName='flag flagError' className='material-icons'>error</div>
           <div styleName='titleContent'>
             <div styleName='title'><Translate value={item.errorTitle} /></div>
             <div styleName='subtitle'><Translate value={item.errorTip} /></div>
@@ -108,59 +92,53 @@ class LoginTrezor extends PureComponent {
       ))
   }
 
-  _buildItem(item, index) {
-    return <MenuItem value={index} key={index} primaryText={item}/>
+  handleChange = (index, value) => {
+    console.log(index, value)
+    this.setState({ value })
   }
 
-  handleChange = (event, index, value) => {this.setState({value}); trezorProvider.setWallet(this.props.account[index]); networkService.selectAccount(this.props.account[index]); networkService.setAccounts(this.props.account)}
+  _buildItem = (item, index) => {
+    return (
+      <div key={index}>
+        <ListItem button type='submit' name='address' value={item} component="button" disableGutters={true} style={{ margin: 0 }} onClick={() => this.props.navigateToCreateAccountFromHW(item)}>
+          <ListItemText style={{ paddingLeft:"10px" }} disableTypography
+            primary={<Typography type='body2' style={{ color: 'black', fontWeight: 'bold' }}>{item}</Typography>} secondary='eth 0' />
+          <ChevronRight />
+        </ListItem>
+        <Divider light />
+      </div>
+    )
+  }
 
   render () {
-    const { isLoading, trezor, account } = this.props
+    const { trezor } = this.props
 
     return (
-      <div styleName='root'>
-        <BackButton
-          onClick={this.handleBackClick}
-          to='options'
-        />
-
-        <div styleName='states'>
-          {this.renderStates()}
-        </div>
-
-        {trezor.isFetched && (
-          <div styleName='account'>
-            <SelectField floatingLabelText="Select address"
-                         autoWidth={true}
-                         fullWidth={true}
-                         floatingLabelStyle={{ color: 'white' }}
-                         labelStyle={{ color: 'white' }}
-                         value={this.state.value}
-                         onChange={this.handleChange}>
-              {this.props.account.map(this._buildItem)}
-            </SelectField>
+        <div styleName='form'>
+          <div styleName='page-title'>
+            <Translate value='LoginWithTrezor.title' />
           </div>
-        )}
 
-        <div styleName='actions'>
-          <div styleName='action'>
-            <Button
-              label={isLoading
-                ? (
-                  <CircularProgress
-                    style={{ verticalAlign: 'middle', marginTop: -2 }}
-                    size={24}
-                    thickness={1.5}
-                  />
-                )
-                : <Translate value='LoginWithTrezor.login' />
-              }
-              disabled={isLoading || !account}
-              onClick={() => this.props.onLogin()}
-            />
+          <div styleName='states'>
+            {this.renderStates()}
+          </div>
+
+          {trezor.isFetched && (
+            <div styleName='account'>
+              <List component='nav' className='list'>
+                {this.props.account.map(this._buildItem)}
+              </List>
+            </div>
+          )}
+
+          <div styleName='actions'>
+            <Translate value='LoginWithMnemonic.or' />
+            <br />
+            <Link to='/login/import-methods' href styleName='link'>
+              <Translate value='LoginWithMnemonic.back' />
+            </Link>
           </div>
         </div>
-      </div>
     )
   }
 }

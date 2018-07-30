@@ -10,7 +10,7 @@ import TxModel from '../models/TxModel'
 import TransferExecModel from '../models/TransferExecModel'
 import Amount from '../models/Amount'
 import { wavesAddress } from '../models/validator'
-import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from './AbstractTokenDAO'
+import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from './constants'
 
 export const BLOCKCHAIN_WAVES = 'WAVES'
 export const WAVES_WAVES_SYMBOL = 'WAVES'

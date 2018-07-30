@@ -4,7 +4,7 @@
  */
 
 import { Link } from 'react-router'
-import { List, ListItem, IconButton, FontIcon } from 'material-ui'
+import { List, ListItem, IconButton } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -36,11 +36,11 @@ export default class DrawerPartial extends PureComponent {
         primaryText={<Translate value={item.title} />}
         onClick={this.props.handleDrawerHide}
         leftIcon={
-          <FontIcon
+          <i
             style={item.disabled ? styles.drawer.item.iconStyleDisabled : styles.drawer.item.iconStyle}
             className='material-icons'
           >{item.icon}
-          </FontIcon>
+          </i>
         }
         containerElement={!item.disabled
           ? <Link
@@ -67,7 +67,7 @@ export default class DrawerPartial extends PureComponent {
         <div styleName='content'>
           <div styleName='menu'>
             <IconButton onClick={this.props.handleDrawerToggle}>
-              <FontIcon className='material-icons'>menu</FontIcon>
+              <i className='material-icons'>menu</i>
             </IconButton>
           </div>
           {!menu.user ? null : (

@@ -3,8 +3,17 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { ActionDone, AlertError, EditorAttachFile, NavigationClose } from 'material-ui/svg-icons'
-import { CircularProgress, IconButton, TextField } from 'material-ui'
+import {
+  CircularProgress,
+  IconButton,
+  TextField,
+} from '@material-ui/core'
+import {
+  Done,
+  Error,
+  AttachFile,
+  Close,
+} from '@material-ui/icons'
 import Button from 'components/common/ui/Button/Button'
 import Immutable from 'immutable'
 import PropTypes from 'prop-types'
@@ -41,7 +50,7 @@ class FileSelect extends PureComponent {
     input: PropTypes.object,
     aspectRatio: PropTypes.number,
     maxFiles: PropTypes.number, returnCollection: PropTypes.bool,
-    floatingLabelText: PropTypes.string,
+    floatingLabelText: PropTypes.node,
   }
 
   constructor (props, context, updater) {
@@ -170,13 +179,13 @@ class FileSelect extends PureComponent {
   renderStatus () {
     const { fileCollection } = this.state
     if (fileCollection.hasErrors()) {
-      return <AlertError color={globalStyles.colors.error} />
+      return <Error color={globalStyles.colors.error} />
     }
     if (fileCollection.uploading()) {
       return <CircularProgress size={16} thickness={1.5} />
     }
     if (fileCollection.uploaded()) {
-      return <ActionDone color={globalStyles.colors.success} />
+      return <Done color={globalStyles.colors.success} />
     }
     return null
   }
@@ -218,7 +227,7 @@ class FileSelect extends PureComponent {
             onClick={this.handleOpenFileDialog}
             fullWidth
             name='singleUpload'
-            floatingLabelText={<Translate value={this.props.floatingLabelText || 'fileSelect.selectFile'} />}
+            label={<Translate value={this.props.floatingLabelText || 'fileSelect.selectFile'} />}
             defaultValue={selectedFile && selectedFile.name() || ''}
             readOnly
           />
@@ -243,7 +252,7 @@ class FileSelect extends PureComponent {
               <IconButton
                 onClick={fileCollection.uploaded() ? this.handleReset : this.handleOpenFileDialog}
               >
-                {fileCollection.uploaded() ? <NavigationClose /> : <EditorAttachFile />}
+                {fileCollection.uploaded() ? <Close /> : <AttachFile />}
               </IconButton>
             </div>
           )}

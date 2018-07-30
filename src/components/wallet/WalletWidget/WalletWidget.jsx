@@ -8,32 +8,31 @@ import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { Link } from 'react-router'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { openSendForm, selectWallet } from '@chronobank/core/redux/wallet/actions'
+import { selectWallet } from '@chronobank/core/redux/wallet/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 import { TOKEN_ICONS } from 'assets'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import ReceiveTokenModal from 'components/dashboard/ReceiveTokenModal/ReceiveTokenModal'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import { getMainSymbolForBlockchain, getTokens, isBTCLikeBlockchain } from '@chronobank/core/redux/tokens/selectors'
-import TransactionsCollection from "@chronobank/core/models/wallet/TransactionsCollection"
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
 import SendTokens from 'components/dashboard/SendTokens/SendTokens'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
-import { PTWallet } from '@chronobank/core/redux/wallet/types'
-import { getAccount } from '@chronobank/core/redux/session/selectors'
 import { makeGetTxListForWallet } from "@chronobank/core/redux/wallet/selectors"
+import { getWalletInfo } from '@chronobank/core/redux/wallets/selectors/wallet'
+import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import './WalletWidget.scss'
 import { prefix } from './lang'
 import Moment from '../../common/Moment'
 import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
 import WalletSettingsForm from '../AddWalletWidget/WalletSettingsForm/WalletSettingsForm'
-import { getWalletInfo } from '../WalletWidgetMini/selectors'
 import WalletMainCoinBalance from './WalletMainCoinBalance'
 import WalletTokensList from './WalletTokensList'
 import WalletName from '../WalletName/WalletName'
+import BalanceSubscription from '../../micros/BalanceSubscription/BalanceSubscription'
 
 function makeMapStateToProps (state, ownProps) {
   const getWallet = getWalletInfo(ownProps.blockchain, ownProps.address)
@@ -46,7 +45,6 @@ function makeMapStateToProps (state, ownProps) {
       pendingTransactions: getTransactions(ownState),
       token: tokens.item(getMainSymbolForBlockchain(ownProps.blockchain)),
       tokens: state.get(DUCK_TOKENS),
-      account: getAccount(ownState),
     }
   }
   return mapStateToProps
@@ -55,18 +53,19 @@ function makeMapStateToProps (state, ownProps) {
 function mapDispatchToProps (dispatch) {
   return {
     send: (token, wallet) => {
-      dispatch(openSendForm({
-        wallet,
-        isModal: true,
-        token,
-        blockchain: wallet.blockchain,
-        address: wallet.address,
-      }, SendTokens))
+      dispatch(modalsOpen({
+        component: SendTokens,
+        props: {
+          wallet,
+          isModal: true,
+          token,
+        },
+      }))
     },
-    receive: (blockchain) => dispatch(modalsOpen({
+    receive: (wallet) => dispatch(modalsOpen({
       component: ReceiveTokenModal,
       props: {
-        blockchain,
+        wallet,
       },
     })),
     deposit: (props) => dispatch(modalsOpen({ component: DepositTokensModal, props })),
@@ -85,11 +84,10 @@ function mapDispatchToProps (dispatch) {
 @connect(makeMapStateToProps, mapDispatchToProps)
 export default class WalletWidget extends PureComponent {
   static propTypes = {
-    account: PropTypes.string,
     setWalletName: PropTypes.func,
     blockchain: PropTypes.string,
-    pendingTransactions: PropTypes.instanceOf(TransactionsCollection),
-    wallet: PTWallet,
+    pendingTransactions: PropTypes.arrayOf(PropTypes.object),
+    wallet: PropTypes.instanceOf(WalletModel),
     address: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
     tokens: PropTypes.instanceOf(TokensCollection),
@@ -110,7 +108,7 @@ export default class WalletWidget extends PureComponent {
   }
 
   handleReceive = () => {
-    this.props.receive(this.props.blockchain)
+    this.props.receive(this.props.wallet)
   }
 
   handleDeposit = () => {
@@ -152,7 +150,7 @@ export default class WalletWidget extends PureComponent {
           {ownersList.slice(0, 2).map((owner) => {
             return (
               <div styleName='owner-icon'>
-                <div styleName='owner' className='chronobank-icon' title={owner.address()}>profile</div>
+                <div styleName='owner' className='chronobank-icon' title={owner}>profile</div>
               </div>
             )
           })
@@ -170,12 +168,12 @@ export default class WalletWidget extends PureComponent {
   }
 
   renderLastIncomingIcon = () => {
-    if (!this.props.pendingTransactions.size() || !isBTCLikeBlockchain(this.props.blockchain)) {
+    if (!this.props.pendingTransactions.length || !isBTCLikeBlockchain(this.props.blockchain)) {
       return null
     }
 
     let incoming = null
-    this.props.pendingTransactions.items().map((t) => {
+    this.props.pendingTransactions.map((t) => {
       if (!incoming && t.from() !== this.props.address && t.confirmations() < 4) {
         incoming = t
       }
@@ -192,12 +190,12 @@ export default class WalletWidget extends PureComponent {
   }
 
   renderLastSendingIcon = () => {
-    if (!this.props.pendingTransactions.size() || !isBTCLikeBlockchain(this.props.blockchain)) {
+    if (!this.props.pendingTransactions.length || !isBTCLikeBlockchain(this.props.blockchain)) {
       return null
     }
 
     let sending = null
-    this.props.pendingTransactions.items().map((t) => {
+    this.props.pendingTransactions.map((t) => {
 
       if (!sending && t.from() === this.props.address && t.confirmations() < 4) {
         sending = t
@@ -215,80 +213,77 @@ export default class WalletWidget extends PureComponent {
   }
 
   render () {
-    const { address, token, blockchain, wallet, showGroupTitle, account } = this.props
+    const { address, token, blockchain, wallet, showGroupTitle } = this.props
     const tokenIsFetched = (token && token.isFetched())
 
-    if (Array.isArray(wallet.owners) && !wallet.owners.includes(account)) {
-      return null
-    }
-
     return (
-      <div styleName='header-container'>
-        {showGroupTitle && <h1 styleName='header-text' id={blockchain}><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>}
-        <div styleName='wallet-list-container'>
+      <BalanceSubscription wallet={wallet}>
+        <div styleName='header-container'>
+          {showGroupTitle && <h1 styleName='header-text' id={blockchain}><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>}
+          <div styleName='wallet-list-container'>
 
-          <div styleName='wallet-container'>
-            {wallet.pendingCount > 0 && (
-              <div styleName='pendings-container'>
-                <div styleName='pendings-icon'><Translate value={`${prefix}.pending`} count={wallet.pendingCount} /></div>
-              </div>
-            )}
-            {this.renderLastIncomingIcon()}
-            {this.renderLastSendingIcon()}
-            <div styleName='settings-container'>
-              <div styleName='settings-icon' className='chronobank-icon' onClick={this.handleOpenSettings}>settings
-              </div>
-            </div>
-            <div styleName='token-container'>
-              {blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}
-              <div styleName='token-icon'>
-                <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()] || TOKEN_ICONS.DEFAULT} />
-              </div>
-            </div>
-            <div styleName='content-container'>
-              <Link styleName='addressWrapper' href='' to='/wallet' onClick={this.handleSelectWallet}>
-                <div styleName='address-title'>
-                  <h3><WalletName wallet={wallet} /></h3>
-                  <span styleName='address-address'>{address}</span>
-                </div>
-
-                {token && token.isFetched()
-                  ? <WalletMainCoinBalance wallet={wallet} />
-                  : (
-                    <span styleName='noToken'>
-                      <Translate value={`${prefix}.tokenNotAvailable`} />
-                    </span>
-                  )}
-              </Link>
-
-              {this.isMySharedWallet() && this.getOwnersList()}
-
-              {token && token.isFetched() && <WalletTokensList wallet={wallet} />}
-
-              {wallet.isTimeLocked && (
-                <div styleName='unlockDateWrapper'>
-                  <Translate value={`${prefix}.unlockDate`} /> <Moment data={wallet.releaseTime} format='HH:mm, Do MMMM YYYY' />
+            <div styleName='wallet-container'>
+              {wallet.pendingCount > 0 && (
+                <div styleName='pendings-container'>
+                  <div styleName='pendings-icon'><Translate value={`${prefix}.pending`} count={wallet.pendingCount} /></div>
                 </div>
               )}
+              {this.renderLastIncomingIcon()}
+              {this.renderLastSendingIcon()}
+              <div styleName='settings-container'>
+                <div styleName='settings-icon' className='chronobank-icon' onClick={this.handleOpenSettings}>settings
+                </div>
+              </div>
+              <div styleName='token-container'>
+                {blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}
+                <div styleName='token-icon'>
+                  <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()] || TOKEN_ICONS.DEFAULT} />
+                </div>
+              </div>
+              <div styleName='content-container'>
+                <Link styleName='addressWrapper' href='' to='/wallet' onClick={this.handleSelectWallet}>
+                  <div styleName='address-title'>
+                    <h3><WalletName wallet={wallet} /></h3>
+                    <span styleName='address-address'>{address}</span>
+                  </div>
 
-              <div styleName='actions-container'>
-                <div styleName='action'>
-                  <Button
-                    disabled={!tokenIsFetched}
-                    type='submit'
-                    label={<Translate value={`${prefix}.sendButton`} />}
-                    onClick={this.handleSend(wallet)}
-                  />
-                </div>
-                <div styleName='action'>
-                  <Button
-                    disabled={!tokenIsFetched}
-                    type='submit'
-                    label={<Translate value={`${prefix}.receiveButton`} />}
-                    onClick={this.handleReceive}
-                  />
-                </div>
-                {/*blockchain === BLOCKCHAIN_ETHEREUM && (
+                  {token && token.isFetched()
+                    ? <WalletMainCoinBalance wallet={wallet} />
+                    : (
+                      <span styleName='noToken'>
+                        <Translate value={`${prefix}.tokenNotAvailable`} />
+                      </span>
+                    )}
+                </Link>
+
+                {this.isMySharedWallet() && this.getOwnersList()}
+
+                <WalletTokensList wallet={wallet} />
+
+                {wallet.isTimeLocked && (
+                  <div styleName='unlockDateWrapper'>
+                    <Translate value={`${prefix}.unlockDate`} /> <Moment data={wallet.releaseTime} format='HH:mm, Do MMMM YYYY' />
+                  </div>
+                )}
+
+                <div styleName='actions-container'>
+                  <div styleName='action'>
+                    <Button
+                      disabled={!tokenIsFetched}
+                      type='submit'
+                      label={<Translate value={`${prefix}.sendButton`} />}
+                      onClick={this.handleSend(wallet)}
+                    />
+                  </div>
+                  <div styleName='action'>
+                    <Button
+                      disabled={!tokenIsFetched}
+                      type='submit'
+                      label={<Translate value={`${prefix}.receiveButton`} />}
+                      onClick={this.handleReceive}
+                    />
+                  </div>
+                  {/*blockchain === BLOCKCHAIN_ETHEREUM && (
                   <div styleName='action'>
                     <Button
                       disabled={false}
@@ -299,11 +294,12 @@ export default class WalletWidget extends PureComponent {
                     />
                   </div>
                 )*/}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </BalanceSubscription>
     )
   }
 }

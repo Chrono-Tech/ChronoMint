@@ -10,6 +10,7 @@ const DEFAULT_BACKEND_HOST = 'https://backend.chronobank.io'
 export default class PublicBackendProvider {
 
   getPublicHost = () => {
+    // FIXME: ti use process.env.PUBLIC_BACKEND_REST_URL or rework this part of code
     return PUBLIC_BACKEND_REST_URL || DEFAULT_BACKEND_HOST // PUBLIC_BACKEND_REST_URL - global CONST from Webpack
   }
 

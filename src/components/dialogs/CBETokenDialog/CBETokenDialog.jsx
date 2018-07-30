@@ -17,7 +17,7 @@ import { modalsClose } from 'redux/modals/actions'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import validate from './validate'
 

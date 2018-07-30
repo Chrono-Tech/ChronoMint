@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "dependencies": {
     "axios": "^0.16.2",
+    "async-lock": "^1.1.2",
     "bignumber.js": "^4.1.0",
     "bs58": "latest",
     "chronobank-smart-contracts": "1.1.47",
-    "eth-crypto": "^1.2.0",
-    "ethereumjs-abi": "^0.6.4",
+    "eth-crypto": "^1.2.2",
+    "ethereumjs-abi": "^0.6.5",
     "immutable": ">=3",
+    "joi": "^13.1.2",
     "lodash": "^4.17.4",
     "moment": "^2.17.1",
     "prop-types": "latest",
@@ -16,9 +18,8 @@
     "redux-persist": "^5.9.1",
     "reselect": "^3.0.1",
     "socket.io-client": "^2.0.3",
-    "truffle-contract": "^3.0.5",
     "uuid": "^3.3.0",
-    "web3": "^0.20.1"
+    "web3": "latest"
   },
   "peerDependencies": {
     "@chronobank/core-dependencies": "*"

@@ -11,7 +11,7 @@ import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { DUCK_ASSETS_MANAGER, reissueAsset } from '@chronobank/core/redux/assetsManager/actions'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import validate from './validate'
 

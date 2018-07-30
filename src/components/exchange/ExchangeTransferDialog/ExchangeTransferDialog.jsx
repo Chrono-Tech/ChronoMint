@@ -12,11 +12,12 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { withdrawFromExchange } from '@chronobank/core/redux/exchange/actions'
-import { DUCK_MAIN_WALLET, mainTransfer } from '@chronobank/core/redux/mainWallet/actions'
+import { mainTransfer } from '@chronobank/core/redux/mainWallet/actions'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import Amount from '@chronobank/core/models/Amount'
 import { modalsClose } from 'redux/modals/actions'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
+import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
 import ExchangeDepositForm from './ExchangeDepositForm'
 import './ExchangeTransferDialog.scss'
 
@@ -40,7 +41,7 @@ function mapDispatchToProps (dispatch) {
 function mapStateToProps (state) {
   const tokens = state.get(DUCK_TOKENS)
   return {
-    userWallet: state.get(DUCK_MAIN_WALLET),
+    userWallet: getMainEthWallet(state),
     tokens,
   }
 }

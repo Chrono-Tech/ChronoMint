@@ -7,20 +7,21 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { push } from 'react-router-redux'
-import { MuiThemeProvider } from 'material-ui'
-import { reduxForm, Field } from 'redux-form/immutable'
+import { MuiThemeProvider } from '@material-ui/core'
+import { Field, reduxForm } from 'redux-form/immutable'
 import React, { Component } from 'react'
 import { Link } from 'react-router'
 import Button from 'components/common/ui/Button/Button'
 import {
-  initConfirmMnemonicPage,
   navigateToConfirmMnemonicPage,
-  onSubmitConfirmMnemonic,
-  onSubmitConfirmMnemonicSuccess,
-  onSubmitConfirmMnemonicFail,
   FORM_CONFIRM_MNEMONIC,
-} from '@chronobank/login/redux/network/actions'
+} from '@chronobank/login-ui/redux/actions'
+import {
+  initConfirmMnemonicPage,
+  onSubmitConfirmMnemonic,
+  onSubmitConfirmMnemonicFail,
+  onSubmitConfirmMnemonicSuccess,
+} from '@chronobank/login-ui/redux/thunks'
 
 import './ConfirmMnemonic.scss'
 
@@ -41,7 +42,7 @@ function mapDispatchToProps (dispatch) {
       dispatch(onSubmitConfirmMnemonic(confirmMnemonic))
     },
     onSubmitSuccess: () => dispatch(onSubmitConfirmMnemonicSuccess()),
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitConfirmMnemonicFail(errors, dispatch, submitErrors)),
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitConfirmMnemonicFail(errors, submitErrors)),
   }
 }
 
@@ -95,7 +96,7 @@ class ConfirmMnemonicPage extends Component {
   }
 
   onClickWord (word, e){
-    const { dispatch, change } = this.props
+    const { change } = this.props
 
     if (!this.state.confirmPhrase.includes(word)) {
       this.setState(
@@ -106,7 +107,7 @@ class ConfirmMnemonicPage extends Component {
   }
 
   clearMnemonic (){
-    const { dispatch, change } = this.props
+    const { change } = this.props
 
     this.setState(
       { confirmPhrase: [] },

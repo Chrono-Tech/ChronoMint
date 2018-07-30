@@ -3,25 +3,25 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER } from '../../dao/AbstractTokenDAO'
-import AssetHolderDAO from '../../dao/AssetHolderDAO'
-import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import Amount from '../../models/Amount'
 import AssetModel from '../../models/assetHolder/AssetModel'
 import TokenModel from '../../models/tokens/TokenModel'
 import AllowanceModel from '../../models/wallet/AllowanceModel'
-import { WALLET_ALLOWANCE } from '../mainWallet/actions'
 import { DUCK_SESSION } from '../session/actions'
 import { subscribeOnTokens } from '../tokens/actions'
 import tokenService from '../../services/TokenService'
+import { daoByType } from '../../refactor/redux/daos/selectors'
+import TxExecModel from '../../models/TxExecModel'
+import { getWallet } from '../wallets/selectors/models'
+import { WALLETS_UPDATE_WALLET } from '../wallets/actions'
+import WalletModel from '../../models/wallet/WalletModel'
+import AllowanceCollection from '../../refactor/models/AllowanceCollection'
 
 export const DUCK_ASSETS_HOLDER = 'assetsHolder'
 
 export const ASSET_HOLDER_INIT = 'assetHolder/INIT'
 export const ASSET_HOLDER_ADDRESS = 'assetHolder/timeHolderAddress'
 export const ASSET_HOLDER_ASSET_UPDATE = 'assetHolder/assetUpdate'
-
-let assetHolderDAO: AssetHolderDAO = null
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const assetHolder = getState().get(DUCK_ASSETS_HOLDER)
@@ -31,7 +31,6 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
     return
   }
 
-  const holderAccount = assetHolder.account()
   const holderWallet = assetHolder.wallet()
 
   // set symbol for asset
@@ -41,20 +40,22 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   // subscribe to token
   const tokenDAO = tokenService.getDAO(token.id())
   tokenDAO
-    .on(EVENT_APPROVAL_TRANSFER, (results) => {
+    .on('approval', (results) => {
       if (results.from === holderWallet || results.spender === holderWallet) {
         dispatch(fetchAssetAllowance(token))
       }
     })
-    .on(EVENT_NEW_TRANSFER, (tx) => {
-      if (!(tx.from() === holderWallet || tx.to() === holderWallet)) {
+    .on('transfer', (data) => {
+      if (!(data.from === holderWallet || data.to === holderWallet)) {
         return
       }
       dispatch(fetchAssetDeposit(token))
       dispatch(fetchAssetAllowance(token))
     })
 
-  await tokenDAO.watch(holderAccount)
+  // need to be uncomment
+  // const holderAccount = assetHolder.account()
+  // await tokenDAO.watch(holderAccount)
 
   // fetch deposit and allowance
   dispatch(fetchAssetDeposit(token))
@@ -63,6 +64,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
 
 export const fetchAssetDeposit = (token: TokenModel) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
+  const assetHolderDAO = daoByType('TimeHolder')(getState())
   const deposit = await assetHolderDAO.getDeposit(token.address(), account)
   const asset = getState().get(DUCK_ASSETS_HOLDER).assets().item(token.address()).deposit(new Amount(
     deposit,
@@ -79,13 +81,25 @@ export const fetchAssetAllowance = (token: TokenModel) => async (dispatch, getSt
   const tokenDAO = tokenService.getDAO(token.id())
   const assetHolderWalletAllowance = await tokenDAO.getAccountAllowance(account, holderWallet)
 
+  const wallet = getWallet(`Ethereum-${account}`)(getState())
+  const allowance = new AllowanceModel({
+    amount: new Amount(assetHolderWalletAllowance, token.id()),
+    spender: holderWallet,
+    token: token.id(),
+    isFetching: false,
+    isFetched: true,
+  })
+
   dispatch({
-    type: WALLET_ALLOWANCE, allowance: new AllowanceModel({
-      amount: new Amount(assetHolderWalletAllowance, token.id()),
-      spender: holderWallet,
-      token: token.id(),
-      isFetching: false,
-      isFetched: true,
+    type: WALLETS_UPDATE_WALLET,
+    wallet: new WalletModel({
+      ...wallet,
+      allowances: new AllowanceCollection({
+        list: {
+          ...wallet.allowances.list,
+          [allowance.id()]: allowance,
+        },
+      }),
     }),
   })
 }
@@ -96,24 +110,23 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
   }
   dispatch({ type: ASSET_HOLDER_INIT, inInited: true })
 
-  // init holder
-  assetHolderDAO = await contractsManagerDAO.getAssetHolderDAO()
-  const [ account, wallet ] = await Promise.all([
-    assetHolderDAO.getAddress(),
+  const assetHolderDAO = daoByType('TimeHolder')(getState())
+  const [walletAddress] = await Promise.all([
     assetHolderDAO.getWalletAddress(),
   ])
-  dispatch({ type: ASSET_HOLDER_ADDRESS, account, wallet })
+
+  dispatch({ type: ASSET_HOLDER_ADDRESS, account: assetHolderDAO.address, wallet: walletAddress.toLowerCase() })
 
   // get assets list
-  const [ timeAddress ] = await Promise.all([
+  const [timeAddress] = await Promise.all([
     assetHolderDAO.getSharesContract(),
   ])
-  const assets = [ timeAddress ]
+  const assets = [timeAddress]
   assets.forEach((address) => {
     dispatch({
       type: ASSET_HOLDER_ASSET_UPDATE,
       asset: new AssetModel({
-        address,
+        address: address.toLowerCase(),
       }),
     })
   })
@@ -121,20 +134,26 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
   dispatch(subscribeOnTokens(handleToken))
 }
 
-export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: Number = 1, advancedOptions = undefined) => async () => {
+export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: Number = 1, advancedOptions = undefined) => async (dispatch, getState) => {
   try {
-    await assetHolderDAO.deposit(token.address(), amount, feeMultiplier, advancedOptions)
+    const assetHolderDAO = daoByType('TimeHolder')(getState())
+    const { account } = getState().get(DUCK_SESSION)
+    advancedOptions['account'] = account
+    await assetHolderDAO.deposit(token, amount, feeMultiplier, advancedOptions)
   } catch (e) {
     // eslint-disable-next-line
-    console.error('deposit error', e.message)
+    console.error('deposit error', e)
   }
 }
 
-export const withdrawAsset = (amount: Amount, token: TokenModel, feeMultiplier: Number = 1, advancedOptions = undefined) => async () => {
+export const withdrawAsset = (amount: Amount, token: TokenModel, feeMultiplier: Number = 1, advancedOptions = undefined) => async (dispatch, getState) => {
   try {
-    await assetHolderDAO.withdraw(token.address(), amount, feeMultiplier, advancedOptions)
+    const assetHolderDAO = daoByType('TimeHolder')(getState())
+    const { account } = getState().get(DUCK_SESSION)
+    advancedOptions['account'] = account
+    const tx: TxExecModel = await assetHolderDAO.withdraw(token, amount, feeMultiplier, advancedOptions)
   } catch (e) {
     // eslint-disable-next-line
-    console.error('withdraw error', e.message)
+    console.error('withdraw error', e)
   }
 }

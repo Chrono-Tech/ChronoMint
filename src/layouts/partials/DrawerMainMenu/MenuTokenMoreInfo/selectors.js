@@ -4,13 +4,12 @@
  */
 
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
-import MultisigWalletCollection from '@chronobank/core/models/wallet/MultisigWalletCollection'
 import { getMultisigWallets } from '@chronobank/core/redux/wallet/selectors'
 import OwnerModel from '@chronobank/core/models/wallet/OwnerModel'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
-import AddressModel from '@chronobank/core/models/wallet/AddressModel'
-import { DUCK_MAIN_WALLET } from '@chronobank/core/redux/mainWallet/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
+import { getMainWallets } from '@chronobank/core/redux/wallets/selectors/models'
+import MultisigWalletCollection from '@chronobank/core/models/wallet/MultisigWalletCollection'
 
 // provides filtered list of addresses of MainWallets
 export const selectWallet = () => createSelector(
@@ -20,18 +19,16 @@ export const selectWallet = () => createSelector(
   (multisigWallets: MultisigWalletCollection) => {
     return multisigWallets.list().map((wallet) => {
       return {
-        address: wallet.address(),
-        blockchain: wallet.blockchain(),
-        name: wallet.name(),
-        requiredSignatures: wallet.requiredSignatures && wallet.requiredSignatures(),
-        pendingCount: wallet.pendingCount && wallet.pendingCount(),
-        isMultisig: wallet.isMultisig(),
-        isTimeLocked: wallet.isTimeLocked(),
-        owners: wallet.owners ? wallet.owners().items().map((owner: OwnerModel) => owner.address()) : null,
-        is2FA: wallet.is2FA(),
-        isDerived: wallet.isDerived(),
-        customTokens: wallet.customTokens ? wallet.customTokens() : null,
-        releaseTime: wallet.releaseTime ? wallet.releaseTime() : null,
+        address: wallet.address,
+        blockchain: wallet.blockchain,
+        name: wallet.name,
+        requiredSignatures: wallet.requiredSignatures,
+        pendingCount: wallet.pendingTxList.size(),
+        isMultisig: wallet.isMultisig,
+        isTimeLocked: wallet.isTimeLocked,
+        owners: wallet.owners ? wallet.owners.map((owner: OwnerModel) => owner) : null,
+        is2FA: wallet.is2FA,
+        releaseTime: wallet.releaseTime,
         isMain: false,
       }
     }).toArray()
@@ -93,8 +90,14 @@ export const getSelectedToken = () => createWalletSelector(
 
 const getWalletAddress = (state, props) => {
   const { selectedToken } = props
-  const addresses = state.get(DUCK_MAIN_WALLET).addresses()
-  return selectedToken && selectedToken.blockchain ? addresses.item(selectedToken.blockchain) : new AddressModel()
+  const wallets = getMainWallets(state)
+  let selectedAddress
+  wallets.some((wallet) => {
+    if (selectedToken && selectedToken.blockchain === wallet.blockchain) {
+      selectedAddress = wallet.address
+    }
+  })
+  return selectedAddress
 }
 
 export const getSelectedWalletAddress = () => createSelector(

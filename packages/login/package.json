@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "author": "chronobank",
   "license": "AGPL-3.0",
-  "scripts": {
-    "postinstall": "patch-package"
-  },
   "dependencies": {
     "@waves/waves-api": "0.28.2",
     "axios": "^0.16.2",
@@ -16,20 +13,17 @@
     "eth-crypto": "^1.2.0",
     "ethereumjs-wallet": "^0.6.0",
     "immutable": ">=3",
-    "keythereum": "^0.5.2",
-    "ledger-wallet-provider": "github:mikefluff/ledger-wallet-provider",
+    "keythereum": "^1.0.4",
+    "@ledgerhq/hw-transport-u2f": "latest",
+    "@ledgerhq/hw-app-eth": "latest",
     "mnid": "^0.1.1",
     "nem-sdk": "github:ipavlenko/NEM-sdk",
     "promisify-node-callback": "^1.0.2",
     "sockjs-client": "1.0.3",
-    "uport-connect": "^0.6.0",
-    "web3": "^0.20.1",
-    "web3-eth-accounts": "^1.0.0-beta.34",
-    "web3-provider-engine": "^14.0.3",
-    "webstomp-client": "^1.2.0"
-  },
-  "devDependencies": {
-    "patch-package": "^5.1.1",
-    "postinstall-postinstall": "^1.0.0"
+    "trezor-connect": "latest",
+    "uport-connect": "^0.7.3",
+    "web3": "latest",
+    "webstomp-client": "^1.2.0",
+    "web3-eth-accounts": "latest"
   }
 }

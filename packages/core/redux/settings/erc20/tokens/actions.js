@@ -13,11 +13,12 @@ import type TokenNoticeModel from '../../../../models/notices/TokenNoticeModel'
 import type TokenModel from '../../../../models/tokens/TokenModel'
 import { notify } from '../../../notifier/actions'
 import { DUCK_SESSION } from '../../../session/actions'
-import { TOKENS_FETCHED, TOKENS_REMOVE, TOKENS_UPDATE } from '../../../tokens/actions'
+import { TOKENS_FETCHED, TOKENS_REMOVE, TOKENS_UPDATE } from '../../../tokens/constants'
 import tokenService from '../../../../services/TokenService'
 import Amount from '../../../../models/Amount'
 import contractsManagerDAO from '../../../../dao/ContractsManagerDAO'
 import ERC20DAO from '../../../../dao/ERC20DAO'
+import { daoByType } from '../../../../refactor/redux/daos/selectors'
 
 export const DUCK_SETTINGS_ERC20_TOKENS = 'settingsERC20Tokens'
 
@@ -45,16 +46,16 @@ export const watchToken = (notice: TokenNoticeModel) => async (dispatch, getStat
   }
 }
 
-export const watchInitERC20Tokens = () => async (dispatch) => {
+export const watchInitERC20Tokens = () => async (dispatch, getState) => {
   const callback = (notice) => dispatch(watchToken(notice))
+  const dao = daoByType('ERC20Manager')(getState())
 
-  const dao = await contractsManagerDAO.getERC20ManagerDAO()
-
-  return Promise.all([
-    dao.watchAdd(callback),
-    dao.watchModify(callback),
-    dao.watchRemove(callback),
-  ])
+  dao.addWatchers(callback)
+  // return Promise.all([
+  //   dao.watchAdd(callback),
+  //   dao.watchModify(callback),
+  //   dao.watchRemove(callback),
+  // ])
 }
 
 export const formTokenLoadMetaData = async (token: TokenModel, dispatch, ownProps) => {

@@ -11,9 +11,8 @@ import CBENoticeModel from '../models/notices/CBENoticeModel'
 import ProfileModel from '../models/ProfileModel'
 import AdditionalActionModel from '../models/AdditionalActionModel'
 import ProfileNoticeModel from '../models/notices/ProfileNoticeModel'
-import { MultiEventsHistoryABI, UserManagerABI } from './abi'
-import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import { DEFAULT_TX_OPTIONS } from './AbstractContractDAO'
+import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
 
 export const TX_ADD_CBE = 'addCBE'
 export const TX_REVOKE_CBE = 'revokeCBE'
@@ -24,33 +23,78 @@ export const TX_SET_MEMBER_HASH = 'setMemberHash'
 const EVENT_CBE_UPDATE = 'CBEUpdate'
 const EVENT_PROFILE_UPDATE = 'SetHash'
 
-export default class UserManagerDAO extends AbstractMultisigContractDAO {
-  constructor (at) {
-    super(UserManagerABI, at, MultiEventsHistoryABI)
+export default class UserManagerDAO extends AbstractContractDAO {
+  constructor ({ address, history, abi }) {
+    super({ address, history, abi })
+  }
+
+  connect (web3, options) {
+    super.connect(web3, options)
+
+    this.CBEUpdateEmitter = this.contract.events.CBEUpdate({})
+      .on('data', this.handleCBEUpdateData.bind(this))
+      .on('changed', this.handleCBEUpdateChanged.bind(this))
+      .on('error', this.handleCBEUpdateError.bind(this))
+
+    this.NewUserRegisteredEmitter = this.contract.events.NewUserRegistered({})
+      .on('data', this.handleNewUserRegisteredData.bind(this))
+      .on('changed', this.handleNewUserRegisteredChanged.bind(this))
+      .on('error', this.handleNewUserRegisteredError.bind(this))
+  }
+
+  disconnect () {
+    if (this.isConnected) {
+      this.CBEUpdateEmitter.removeAllListeners()
+      this.NewUserRegisteredEmitter.removeAllListeners()
+      this.contract = null
+      this.history = null
+      this.web3 = null
+    }
+  }
+
+  handleCBEUpdateData = (data) => {
+    this.emit('CBEUpdate', data)
+  }
+
+  handleCBEUpdateChanged = (data) => {}
+
+  handleCBEUpdateError = (data) => {
+    this.emit('CBEUpdate_error', data)
+  }
+
+  handleNewUserRegisteredData = (data) => {
+    this.emit('NewUserRegistered', data)
+  }
+
+  handleNewUserRegisteredChanged = (data) => {}
+
+  handleNewUserRegisteredError = (data) => {
+    this.emit('NewUserRegistered_error', data)
   }
 
   isCBE (account): Promise<boolean> {
-    return this._call('getCBE', [ account ])
+    return this.contract.methods.getCBE(account).call()
   }
 
-  usersTotal () {
-    return this._callNum('userCount').then((r) => r - 1)
+  async usersTotal () {
+    const userCount = await this.contract.methods.userCount().call()
+    return userCount - 1
   }
 
   getMemberId (account) {
-    return this._callNum('getMemberId', [ account ])
+    return this.contract.methods.getMemberId(account).call()
   }
 
   getSignsRequired () {
-    return this._callNum('required')
+    return this.contract.methods.required().call()
   }
 
   getAdminCount () {
-    return this._callNum('adminCount')
+    return this.contract.methods.adminCount().call()
   }
 
   async getCBEList (): Immutable.Map<CBEModel> {
-    const [ addresses, hashes ] = await this._call('getCBEMembers')
+    const [ addresses, hashes ] = await this.contract.methods.getCBEMembers().call()
     let map = new Immutable.Map()
 
     const callback = async (address, hash) => {
@@ -75,8 +119,9 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async getMemberProfile (account): Promise<ProfileModel | AbstractModel> {
-    const hash = await this._call('getMemberHash', [ account ])
-    return new ProfileModel(await this._ipfs(hash))
+    const hash = await this.contract.methods.getMemberHash(account).call()
+    const ipfsData = await this._ipfs(hash.toString())
+    return new ProfileModel(ipfsData)
   }
 
   /**
@@ -162,7 +207,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async watchProfile (callback) {
-    return this._watch(EVENT_PROFILE_UPDATE, async (result, block, time) => {
+    return this.on(EVENT_PROFILE_UPDATE, async (result, block, time) => {
       const address = result.args.key
       const profile = await this.getMemberProfile(address)
       callback(new ProfileNoticeModel({
@@ -173,7 +218,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async watchCBE (callback) {
-    return this._watch(EVENT_CBE_UPDATE, async (result, block, time) => {
+    return this.on(EVENT_CBE_UPDATE, async (result, block, time) => {
       const address = result.args.key
       const isNotRevoked = await this.isCBE(address)
       const user = await this.getMemberProfile(address)

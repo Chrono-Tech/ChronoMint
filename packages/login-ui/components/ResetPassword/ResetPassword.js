@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { MuiThemeProvider } from 'material-ui'
+import { MuiThemeProvider } from '@material-ui/core'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
@@ -14,20 +14,25 @@ import {
 import {
   getAccountName,
   getAccountAvatar,
+  getAccountAddress,
+  getAccountAvatarImg,
 } from '@chronobank/core/redux/persistAccount/utils'
-import {
-  onSubmitResetAccountPasswordForm,
-  onSubmitResetAccountPasswordSuccess,
-  onSubmitResetAccountPasswordFail,
-  initResetPasswordPage,
-  FORM_RESET_PASSWORD,
-} from '@chronobank/login/redux/network/actions'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import Button from 'components/common/ui/Button/Button'
 import UserRow from 'components/common/ui/UserRow/UserRow'
-
 import styles from 'layouts/Splash/styles'
+import {
+  onSubmitResetAccountPasswordForm,
+} from '@chronobank/login/redux/network/thunks'
+import {
+  FORM_RESET_PASSWORD,
+} from '../../redux/actions'
+import {
+  onSubmitResetAccountPasswordSuccess,
+  onSubmitResetAccountPasswordFail,
+  initResetPasswordPage,
+} from '../../redux/thunks'
 import validate from './validate'
 import './ResetPassword.scss'
 
@@ -46,7 +51,7 @@ function mapDispatchToProps (dispatch) {
       await dispatch(onSubmitResetAccountPasswordForm(password))
     },
     onSubmitSuccess: () => dispatch(onSubmitResetAccountPasswordSuccess()),
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitResetAccountPasswordFail(errors, dispatch, submitErrors)),
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitResetAccountPasswordFail(errors, submitErrors)),
     initResetPasswordPage: () => dispatch(initResetPasswordPage()),
   }
 }
@@ -57,11 +62,11 @@ class ResetPasswordPage extends PureComponent {
     initResetPasswordPage: PropTypes.func,
   }
 
-  componentWillMount(){
+  componentWillMount () {
     this.props.initResetPasswordPage()
   }
 
-  get getSelectedWalletName(){
+  get getSelectedWalletName () {
     const { selectedWallet } = this.props
     return selectedWallet && selectedWallet.name || ''
   }
@@ -69,7 +74,7 @@ class ResetPasswordPage extends PureComponent {
     const { handleSubmit, selectedWallet } = this.props
 
     return (
-      <MuiThemeProvider muiTheme={styles.inverted}>
+      <MuiThemeProvider >
         <form styleName='form' name={FORM_RESET_PASSWORD} onSubmit={handleSubmit}>
 
           <div styleName='page-title'>
@@ -79,8 +84,8 @@ class ResetPasswordPage extends PureComponent {
           <div styleName='user-row'>
             <UserRow
               title={getAccountName(selectedWallet)}
-              avatar={getAccountAvatar(selectedWallet)}
-              onClick={() => {}}
+              avatar={getAccountAvatarImg(selectedWallet)}
+              subtitle={getAccountAddress(selectedWallet, true)}
             />
           </div>
 
@@ -89,7 +94,7 @@ class ResetPasswordPage extends PureComponent {
               component={TextField}
               name='password'
               type='password'
-              floatingLabelText={<Translate value='ResetPassword.password' />}
+              label={<Translate value='ResetPassword.password' />}
               fullWidth
               {...styles.textField}
             />
@@ -97,7 +102,7 @@ class ResetPasswordPage extends PureComponent {
               component={TextField}
               name='confirmPassword'
               type='password'
-              floatingLabelText={<Translate value='ResetPassword.confirmPassword' />}
+              label={<Translate value='ResetPassword.confirmPassword' />}
               fullWidth
               {...styles.textField}
             />

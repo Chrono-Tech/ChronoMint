@@ -45,10 +45,10 @@ export default class Poll extends PureComponent {
 
   render () {
     const { poll, userAccount, isCBE } = this.props
-    if (!isCBE && !poll.active && poll.owner !== userAccount) {
+
+    if (!isCBE  && !poll.active && poll.owner !== userAccount) {
       return null
     }
-
     return (
       <div styleName='root'>
         <PollActionMenu {...this.props} />

@@ -5,8 +5,8 @@
 
 export const en = {
   title: 'Download a Wallet File',
-  description: 'You can use this wallet file in password recovery option to\n' +
-  '              make your account available in another browser, for example.',
+  description: 'You can use this wallet file to add your account available in' +
+  ' another browser, for example. The file is protected by the same password as you\'ve created.',
   descriptionExtra: 'The file is protected by the same password as you created before.',
   download: 'Download',
   finish: 'Finish',

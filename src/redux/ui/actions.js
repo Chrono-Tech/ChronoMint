@@ -11,9 +11,9 @@ import userMonitorService from 'user/monitorService'
 import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_WATCHER, WATCHER_TX_SET } from '@chronobank/core/redux/watcher/actions'
 import ConfirmTxDialog from 'components/dialogs/ConfirmTxDialog/ConfirmTxDialog'
-import ConfirmTransferDialog from 'components/dialogs/ConfirmTransferDialog/ConfirmTransferDialog'
 import UserActiveDialog from 'components/dialogs/UserActiveDialog/UserActiveDialog'
 import { CHANGE_WALLET_VIEW } from './reducer'
+import ConfirmTransferDialog from '../../components/dialogs/ConfirmTransferDialog/ConfirmTransferDialog'
 
 export const removeWatchersUserMonitor = () => () => {
   userMonitorService
@@ -87,4 +87,10 @@ export const download = (hash, name) => async () => {
 
 export const changeWalletView = () => (dispatch) => {
   dispatch({ type: CHANGE_WALLET_VIEW })
+}
+
+export const deleteCustomNetwork = (network) => (dispatch, getState) => {
+  const state = getState()
+
+
 }

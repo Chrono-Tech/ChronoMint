@@ -5,15 +5,12 @@
 
 import React from 'react'
 import Immutable from 'immutable'
-import injectTapEventPlugin from 'react-tap-event-plugin'
 import { Provider } from 'react-redux'
 import { mockStore } from 'specsInit'
 import { DUCK_MODALS } from 'redux/modals/actions'
 import { mount } from 'enzyme'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import ModalStack from 'components/common/ModalStack/ModalStack'
-
-injectTapEventPlugin()
 
 const modals = {
   foo: {

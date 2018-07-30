@@ -7,7 +7,7 @@ import networkService from '@chronobank/login/network/NetworkService'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import web3Utils from '@chronobank/login/network/Web3Utils'
 import { clearErrors, DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
-import { MenuItem, SelectField } from 'material-ui'
+import { MenuItem, SelectField } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -57,7 +57,7 @@ export default class NetworkSelector extends PureComponent {
 
   resolveNetwork = () => {
     const web3 = new Web3()
-    web3Provider.reinit(web3, web3Utils.createStatusEngine(this.props.getProviderURL()))
+    web3Provider.reinit(web3, this.props.getProviderURL())
     web3Provider.resolve()
   }
 
@@ -67,7 +67,7 @@ export default class NetworkSelector extends PureComponent {
     const { selectedNetworkId, networks, isLoading } = this.props
     return (
       <SelectField
-        floatingLabelText={<Translate value='NetworkSelector.network' />}
+        label={<Translate value='NetworkSelector.network' />}
         onChange={this.handleChange}
         value={selectedNetworkId}
         fullWidth

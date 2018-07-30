@@ -11,6 +11,7 @@
   overflow: hidden;
   background: #fff;
   margin-top: 10px;
+  font-size: 14px;
 
   @include xs-only {
     width: 100%;
@@ -19,13 +20,58 @@
 }
 .providerItem {
   padding: 15px 20px;
-  font-size: 14px;
-  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+
+  &.providerItemActive {
+    background: $color-grey-3;
+    font-weight: 500;
+  }
+
+  &:hover {
+    background: $color-grey-3;
+  }
+}
+
+.providerItemCustomNetwork {
+  cursor: initial;
+}
+
+.providerItemText {
+  flex: 1;
+  padding-right: 10px;
+  text-overflow: ellipsis;
+  min-width: 0;
+  overflow: hidden ;
+}
+
+.providerItemIcon {
+  font-size: 20px;
+  color: $color-grey-2;
   cursor: pointer;
 
-  &:hover, &.providerItemActive {
-    background: #F2F2F2;
+  &:hover {
+    color: $color-primary-0;
   }
+}
+
+.providerGroupItem {
+  background-color: $color-grey-3;
+  padding: 15px 20px;
+  line-height: 17px;
+  border-top: 1px solid $color-white;
+  border-bottom: 1px solid $color-white;
+}
+
+.providerGroupItemTitle {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.providerGroupItemDescription {
+  color: $color-grey-2;
+  font-weight: 500;
 }
 
 .root {
@@ -45,4 +91,8 @@
       border-color: transparent;
     }
   }
+}
+
+.popover {
+  background: transparent !important;
 }

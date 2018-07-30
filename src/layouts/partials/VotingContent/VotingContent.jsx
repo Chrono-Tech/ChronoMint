@@ -92,6 +92,7 @@ export default class VotingContent extends Component {
   }
 
   renderBody (polls) {
+    console.log('renderBody polls: ', polls)
     const { filter } = this.state
     const { userAccount, isCBE } = this.props
     const filteredPolls = polls
