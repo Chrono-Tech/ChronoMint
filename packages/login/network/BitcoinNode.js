@@ -5,6 +5,10 @@
 
 import axios from 'axios'
 import { networks } from 'bitcoinjs-lib'
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_LITECOIN,
+} from '@chronobank/login/network/constants'
 import BitcoinBlockexplorerNode from './BitcoinBlockexplorerNode'
 import BitcoinMiddlewareNode from './BitcoinMiddlewareNode'
 
@@ -13,7 +17,7 @@ const BTC_MAINNET_NODE = new BitcoinMiddlewareNode({
     baseURL: 'https://middleware-bitcoin-mainnet-rest.chronobank.io',
     timeout: 4000,
   }),
-  blockchain: 'Bitcoin', // @todo replace on BLOCKCHAIN_BITCOIN after resolving import issue
+  blockchain: BLOCKCHAIN_BITCOIN,
   symbol: 'BTC',
   socket: {
     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
@@ -33,7 +37,7 @@ export const BTC_TESTNET_NODE = new BitcoinMiddlewareNode({
     baseURL: 'https://middleware-testnet-internal-bitcoin-rest.chronobank.io',
     timeout: 4000,
   }),
-  blockchain: 'Bitcoin', // @todo replace on BLOCKCHAIN_BITCOIN after resolving import issue
+  blockchain: BLOCKCHAIN_BITCOIN,
   symbol: 'BTC',
   socket: {
     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
@@ -86,7 +90,7 @@ export const LTC_MAINNET_NODE = new BitcoinMiddlewareNode({
     baseURL: 'https://middleware-litecoin-mainnet-rest.chronobank.io',
     timeout: 4000,
   }),
-  blockchain: 'Litecoin', // @todo replace on BLOCKCHAIN_LITECOIN after resolving import issue
+  blockchain: BLOCKCHAIN_LITECOIN,
   symbol: 'LTC',
   socket: {
     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
@@ -106,7 +110,7 @@ export const LTC_TESTNET_NODE = new BitcoinMiddlewareNode({
     baseURL: 'https://middleware-litecoin-testnet-rest.chronobank.io',
     timeout: 4000,
   }),
-  blockchain: 'Litecoin', // @todo replace on BLOCKCHAIN_LITECOIN after resolving import issue
+  blockchain: BLOCKCHAIN_LITECOIN,
   symbol: 'LTC',
   socket: {
     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',

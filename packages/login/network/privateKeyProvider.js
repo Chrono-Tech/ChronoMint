@@ -24,8 +24,7 @@ import {
   COIN_TYPE_BTG_TESTNET,
   COIN_TYPE_LTC_MAINNET,
   COIN_TYPE_LTC_TESTNET,
-  WALLET_HD_PATH,
-} from './mnemonicProvider'
+} from './constants'
 import EthereumWallet from './EthereumWallet'
 
 class PrivateKeyProvider {
@@ -45,7 +44,7 @@ class PrivateKeyProvider {
     wallets && wallets
       .items()
       .map((wallet) => {
-        if (wallet.owners().items().filter((owner) => owner.address() === ethereumWallet.getAddressString()).length > 0 && wallet.constructor.name === 'DerivedWalletModel') {
+        if (wallet.owners().items().filter((owner) => owner === ethereumWallet.getAddressString()).length > 0 && wallet.constructor.name === 'DerivedWalletModel') {
           lastDeriveNumbers++
         }
       })

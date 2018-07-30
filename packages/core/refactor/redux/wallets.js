@@ -1,6 +1,6 @@
 // import assert from 'assert'
 import Accounts from 'web3-eth-accounts'
-import uniqid from 'uniqid'
+import uuid from 'uuid/v1'
 import { remove } from 'lodash'
 import { WalletEntryModel, SignerMemoryModel, SignerDeviceModel, SignerPluginModel, WalletModel } from '@laborx/exchange.core'
 
@@ -19,14 +19,14 @@ export default ({ web3 }) => ({
   namespaced: true,
   state: {
     list: [],
-    active: null
+    active: null,
   },
   mutations: {
     [WALLETS_SELECT] (state, wallet: WalletModel) {
       state.active = wallet
     },
     [WALLETS_UPDATE] (state, { entry, data }) {
-      let foundIndex = state.list.findIndex(wallet => wallet.name === entry.name)
+      let foundIndex = state.list.findIndex((wallet) => wallet.name === entry.name)
       if (foundIndex !== -1) {
         if ('name' in data) {
           Object.assign(state.list[foundIndex], { name: data.name })
@@ -44,11 +44,11 @@ export default ({ web3 }) => ({
       if (state.active && state.active.entry.name === name) {
         state.active = null
       }
-    }
+    },
   },
   getters: {
     signer: (state) => state.active && state.active.signer,
-    active: (state) => state.active
+    active: (state) => state.active,
   },
   actions: {
     async changePassword ({ state, dispatch }, { entry, oldPassword, newPassword }) {
@@ -67,7 +67,7 @@ export default ({ web3 }) => ({
       const signer = await SignerMemoryModel.decrypt({ web3, entry, password })
       const model = new WalletModel({
         signer,
-        entry
+        entry,
       })
       commit(WALLETS_SELECT, model)
       return model
@@ -76,7 +76,7 @@ export default ({ web3 }) => ({
       const signer = await SignerDeviceModel.decrypt({ web3, entry, device: DEVICES[entry.encrypted.device] })
       const model = new WalletModel({
         signer,
-        entry
+        entry,
       })
       commit(WALLETS_SELECT, model)
       return model
@@ -85,7 +85,7 @@ export default ({ web3 }) => ({
       const signer = await SignerPluginModel.decrypt({ web3, entry, plugin: PLUGINS[entry.encrypted.plugin] })
       const model = new WalletModel({
         signer,
-        entry
+        entry,
       })
       commit(WALLETS_SELECT, model)
       return model
@@ -95,12 +95,12 @@ export default ({ web3 }) => ({
       const entry = new WalletEntryModel({
         key: uniqid(),
         name,
-        encrypted: await signer.encrypt(password)
+        encrypted: await signer.encrypt(password),
       })
       commit(WALLETS_CREATE, entry)
       return new WalletModel({
         entry,
-        signer
+        signer,
       })
     },
     async createDeviceWallet ({ state, commit }, { name, device, address, path, publicKey }) {
@@ -109,27 +109,27 @@ export default ({ web3 }) => ({
         key: uniqid(),
         name,
         type: 'device',
-        encrypted: await signer.encrypt()
+        encrypted: await signer.encrypt(),
       })
       commit(WALLETS_CREATE, entry)
       return new WalletModel({
         entry,
-        signer
+        signer,
       })
     },
     async createPluginWallet ({ state, commit }, { name, plugin, address }) {
       console.log('createPluginWallet', name, address)
       const signer = await SignerPluginModel.create({ web3, plugin, address })
       const entry = new WalletEntryModel({
-        key: uniqid(),
+        key: uuid(),
         name,
         type: 'plugin',
-        encrypted: await signer.encrypt()
+        encrypted: await signer.encrypt(),
       })
       commit(WALLETS_CREATE, entry)
       return new WalletModel({
         entry,
-        signer
+        signer,
       })
     },
     async removeWallet ({ state, commit }, name) {
@@ -141,6 +141,6 @@ export default ({ web3 }) => ({
     async logout ({ state, commit, dispatch }) {
       commit(WALLETS_SELECT, null)
       // web3.eth.accounts.wallet.clear()
-    }
-  }
+    },
+  },
 })

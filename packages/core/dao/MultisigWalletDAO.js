@@ -5,27 +5,26 @@
 
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
+import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import Amount from '../models/Amount'
 import TokenModel from '../models/tokens/TokenModel'
 import TxExecModel from '../models/TxExecModel'
 import MultisigTransactionModel from '../models/wallet/MultisigTransactionModel'
-import MultisigWalletModel from '../models/wallet/MultisigWalletModel'
 import MultisigWalletPendingTxCollection from '../models/wallet/MultisigWalletPendingTxCollection'
 import MultisigWalletPendingTxModel from '../models/wallet/MultisigWalletPendingTxModel'
-import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import OwnerModel from '../models/wallet/OwnerModel'
 import { MultiEventsHistoryABI, WalletABI } from './abi'
+import MultisigEthWalletModel from '../models/wallet/MultisigEthWalletModel'
 
 export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   constructor (at) {
-    super(WalletABI, at, MultiEventsHistoryABI)
+    super({ address: at, history: MultiEventsHistoryABI, abi: WalletABI })
     this._okCodes.push(resultCodes.WALLET_CONFIRMATION_NEEDED)
   }
 
   // watchers
-
   _transactCallback = (wallet, callback) => async (result) => {
     const { owner, operation, value, to, data } = result.args
 
@@ -124,7 +123,8 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   async getPendings () {
     let pendingTxCollection = new MultisigWalletPendingTxCollection()
-    const [values, operations, isConfirmed] = await this._call('getPendings')
+    const res = await this.contract.methods.getPendings().call()
+    const [values, operations, isConfirmed] = Object.values(res)
 
     let promises = []
     operations.map((operation) => {
@@ -146,16 +146,16 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   async getOwners () {
-    const counter = await this._callNum('m_numOwners')
+    const counter = await this.contract.methods.m_numOwners().call()
     let promises = []
     for (let i = 0; i < counter; i++) {
-      promises.push(this._call('getOwner', [i]))
+      promises.push(this.contract.methods.getOwner(i).call())
     }
     return Promise.all(promises)
   }
 
   getRequired () {
-    return this._callNum('m_required')
+    return this.contract.methods.m_required().call()
   }
 
   async getPendingData (id: string): Promise<TxExecModel> {
@@ -163,8 +163,8 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     return this.decodeData(data)
   }
 
-  getReleaseTime (): Promise {
-    return this._callDate('releaseTime')
+  async getReleaseTime () {
+    return this.contract.methods.releaseTime().call()
   }
 
   // actions
@@ -199,20 +199,28 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     return result.tx
   }
 
-  async transfer (wallet: MultisigWalletModel, token: TokenModel, amount, to, feeMultiplier: Number = 1, value) {
+  async transfer (wallet: MultisigEthWalletModel, token: TokenModel, amount, to, feeMultiplier: Number = 1, value) {
     // const tokenDAO = tokenService.getDAO(token.id())
     // const value = tokenDAO.addDecimals(amount)
-    const result = await this._tx('transfer', [
-      to,
-      new BigNumber(amount),
-      token.symbol(),
-    ], {
-      from: wallet.address(),
-      to,
-      symbol: token.symbol(),
-      amount,
-    }, value)
-    return result.tx
+    /*
+    func: string,
+    args: Array = [],
+    amount: BigNumber = new BigNumber(0),
+    value: BigNumber = new BigNumber(0),
+    options: Object = {},
+    additionalOptions: Object = {},
+    */
+
+    await this._tx('transfer',
+      [
+        to,
+        new BigNumber(amount),
+        this.web3.utils.asciiToHex(token.symbol()),
+      ],
+      new BigNumber(0),
+      new BigNumber(0),
+      {},
+      value)
   }
 
   async confirmPendingTx (tx) {

@@ -22,17 +22,17 @@ describe('Multisig Wallet reducer', () => {
     expect(reducer(undefined, {})).toEqual(new MultisigWalletCollection())
   })
 
-  it('should handle MULTISIG_FETCHING', () => {
+  it('should handle ETH_MULTISIG_FETCHING', () => {
     expect(reducer(new MultisigWalletCollection(), {
-      type: a.MULTISIG_FETCHING,
+      type: a.ETH_MULTISIG_FETCHING,
     })).toMatchSnapshot()
   })
 
-  it('should handle MULTISIG_FETCHED', () => {
+  it('should handle ETH_MULTISIG_FETCHED', () => {
     expect(reducer(new MultisigWalletCollection({
       isFetching: true,
     }), {
-      type: a.MULTISIG_FETCHED,
+      type: a.ETH_MULTISIG_FETCHED,
       wallets: new Immutable.Map({
         a1: wallet1,
         a2: wallet2,
@@ -40,18 +40,18 @@ describe('Multisig Wallet reducer', () => {
     })).toMatchSnapshot()
   })
 
-  it('should handle MULTISIG_UPDATE (add new wallet)', () => {
+  it('should handle ETH_MULTISIG_UPDATE (add new wallet)', () => {
     expect(reducer(new MultisigWalletCollection({
       list: new Immutable.Map({
         a1: wallet1,
       }),
     }), {
-      type: a.MULTISIG_UPDATE,
+      type: a.ETH_MULTISIG_UPDATE,
       wallet: wallet2,
     }))
   })
 
-  it('should handle MULTISIG_UPDATE (update existing wallet)', () => {
+  it('should handle ETH_MULTISIG_UPDATE (update existing wallet)', () => {
     const updatedWallet = new MultisigWalletModel({
       address: 'a1',
       tokens: new Immutable.Map({
@@ -63,30 +63,30 @@ describe('Multisig Wallet reducer', () => {
         a1: wallet1,
       }),
     }), {
-      type: a.MULTISIG_UPDATE,
+      type: a.ETH_MULTISIG_UPDATE,
       wallet: updatedWallet,
     })).toMatchSnapshot()
   })
 
-  it('should handle MULTISIG_SELECT', () => {
+  it('should handle ETH_MULTISIG_SELECT', () => {
     expect(reducer(new MultisigWalletCollection({
       list: new Immutable.Map({
         a1: wallet1,
       }),
     }), {
-      type: a.MULTISIG_SELECT,
+      type: a.ETH_MULTISIG_SELECT,
       wallet: wallet1,
     })).toMatchSnapshot()
   })
 
-  it('should handle MULTISIG_REMOVE', () => {
+  it('should handle ETH_MULTISIG_REMOVE', () => {
     expect(reducer(new MultisigWalletCollection({
       list: new Immutable.Map({
         a1: wallet1,
         a2: wallet2,
       }),
     }), {
-      type: a.MULTISIG_REMOVE,
+      type: a.ETH_MULTISIG_REMOVE,
       wallet: wallet1,
     })).toMatchSnapshot()
   })

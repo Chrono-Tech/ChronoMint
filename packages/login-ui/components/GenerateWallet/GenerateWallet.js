@@ -10,7 +10,7 @@ import { Translate } from 'react-redux-i18n'
 import React, { Component } from 'react'
 import Button from 'components/common/ui/Button/Button'
 import { downloadWallet } from '@chronobank/core/redux/persistAccount/actions'
-import { navigateToLoginPage } from '@chronobank/login/redux/network/actions'
+import { navigateToLoginPage } from '../../redux/actions'
 
 import Wallet from 'assets/img/icons/wallet-white.svg'
 

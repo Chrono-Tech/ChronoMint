@@ -19,6 +19,13 @@ export const getMainEthWallet = (state) => {
   return Object.values(wallets).find((wallet) => wallet.isMain && wallet.blockchain === BLOCKCHAIN_ETHEREUM)
 }
 
+export const getMainWalletForBlockchain = (blockchain) => (state) => {
+  const wallets = getWallets(state)
+  return Object.values(wallets).find((wallet) => {
+    return wallet.isMain && wallet.blockchain === blockchain
+  })
+}
+
 export const getMainWallets = (state) => {
   const wallets = getWallets(state)
   return Object.values(wallets).filter((wallet) => wallet.isMain)
@@ -42,7 +49,7 @@ export const getMainAddresses = (state) => {
 
 export const getWalletTransactions = (walletId) => (state) => {
   const wallet = getWallet(walletId)(state)
-  return wallet.transactions.transactions
+  return wallet ? wallet.transactions.transactions : null
 }
 
 export const getTwoFaCheckedFromState = (state) => {

@@ -3,26 +3,20 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import AbstractContractDAO from './AbstractContractDAO'
+import BigNumber from 'bignumber.js'
 import { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
 import type MultisigWalletDAO from './MultisigWalletDAO'
 import AddressesCollection from '../models/wallet/AddressesCollection'
 import AddressModel from '../models/wallet/AddressModel'
-import MultisigWalletModel from '../models/wallet/MultisigWalletModel'
-import OwnerCollection from '../models/wallet/OwnerCollection'
-import OwnerModel from '../models/wallet/OwnerModel'
+import MultisigEthWalletModel from '../models/wallet/MultisigEthWalletModel'
 import multisigWalletService from '../services/MultisigWalletService'
-import { MultiEventsHistoryABI, WalletsManagerABI } from './abi'
-
-export const EE_MS_WALLET_ADDED = 'MSWalletAdded'
-export const EE_MS_WALLET_REMOVED = 'MSWalletRemoved'
-export const EE_MS_WALLETS_COUNT = 'msWalletCount'
+import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
+import { EE_MS_WALLET_ADDED, EE_MS_WALLET_REMOVED, EE_MS_WALLETS_COUNT } from './constants'
 
 export default class WalletsManagerDAO extends AbstractContractDAO {
 
-  constructor (at) {
-    super(WalletsManagerABI, at, MultiEventsHistoryABI)
-    this._isInit = false
+  constructor ({ address, history, abi }) {
+    super({ address, history, abi })
   }
 
   isInited () {
@@ -30,11 +24,11 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   }
 
   async init () {
-    await Promise.all([
-      this.watchWalletCreate(),
-      this.watchWalletRemoved(),
-    ])
-    this._isInit = true
+    // await Promise.all([
+    //   this.watchWalletCreate(),
+    //   this.watchWalletRemoved(),
+    // ])
+    // this._isInit = true
   }
 
   // ---------- watchers ---------
@@ -61,7 +55,8 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   // --------- actions ----------
 
   async fetchWallets () {
-    const [addresses, is2FA] = await this._call('getWallets')
+    const res = await this.contract.methods.getWallets().call()
+    const [addresses, is2FA] = Object.values(res)
     const validAddresses = addresses.filter((address) => !this.isEmptyAddress(address))
     this.emit(EE_MS_WALLETS_COUNT, validAddresses.length)
 
@@ -70,19 +65,8 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
     })
   }
 
-  _createOwnersCollection (owners: Array, account) {
-    let ownersCollection = new OwnerCollection()
-    owners.forEach((address) => {
-      ownersCollection = ownersCollection.update(new OwnerModel({
-        address,
-        isSelf: account === address,
-      }))
-    })
-    return ownersCollection
-  }
-
   async _createWalletModel (address, is2FA, transactionHash) {
-    const walletDAO: MultisigWalletDAO = await multisigWalletService.createWalletDAO(address)
+    const walletDAO: MultisigWalletDAO = await multisigWalletService.createWalletDAO(address, this.web3)
     const [owners, requiredSignatures, pendingTxList, releaseTime] = await Promise.all([
       walletDAO.getOwners(),
       walletDAO.getRequired(),
@@ -96,32 +80,42 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
       address,
     }))
 
-    const multisigWalletModel = new MultisigWalletModel({
+    const wallet = new MultisigEthWalletModel({
       address,
-      owners: this._createOwnersCollection(owners, address),
+      owners: owners.map((owner) => owner.toLowerCase()),
       transactionHash,
-      requiredSignatures,
+      requiredSignatures: requiredSignatures.toString(),
       is2FA,
       isFetched: true,
       pendingTxList,
       addresses,
-      releaseTime,
+      releaseTime: releaseTime > 0 ? new Date(releaseTime * 1000) : null,
+      blockchain: BLOCKCHAIN_ETHEREUM,
+      isMultisig: true,
+      isTimeLocked: releaseTime > 0,
     })
-    this.emit(EE_MS_WALLET_ADDED, multisigWalletModel)
+    this.emit(EE_MS_WALLET_ADDED, wallet)
   }
 
-  async createWallet (wallet: MultisigWalletModel) {
+  createWallet (wallet: MultisigEthWalletModel) {
     const owners = wallet.owners().items().map((item) => item.address())
-
-    const result = await this._tx('createWallet', [
-      owners,
-      wallet.requiredSignatures(),
-      Math.floor(wallet.releaseTime() / 1000),
-    ], wallet.toCreateWalletTx())
-    return result.tx
+    this._tx(
+      'createWallet',
+      [
+        owners,
+        wallet.requiredSignatures(),
+        Math.floor(wallet.releaseTime() / 1000),
+      ],
+      new BigNumber(0),
+      new BigNumber(0),
+      {
+        fields: wallet.toCreateWalletTx(),
+        id: wallet.id(),
+      },
+    )
   }
 
-  async create2FAWallet (wallet: MultisigWalletModel, feeMultiplier) {
+  async create2FAWallet (wallet: MultisigEthWalletModel, feeMultiplier) {
     const result = await this._tx(
       'create2FAWallet',
       [Math.floor(wallet.releaseTime() / 1000)],

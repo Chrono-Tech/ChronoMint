@@ -5,8 +5,10 @@
 
 import EventEmitter from 'events'
 import axios from 'axios'
+import { store } from '@chronobank/core-dependencies/configureStore'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
 
-const PROFILE_BACKEND_REST_URL = 'http://localhost:3000/'
+const PROFILE_BACKEND_REST_URL = 'https://backend.profile.tp.ntr1x.com'
 const basePath = '/api/v1'
 const GET_PERSONS_REST = `${basePath}/security/persons/query`
 const GET_SIGNATURE_REST = `${basePath}/security/signin/signature`
@@ -26,7 +28,8 @@ const MEDIA_IMAGE_DOWNLOAD = (imageId = '') => `${basePath}/media/image/${imageI
 const PURPOSE_VALUE = 'exchange'
 
 class ProfileService extends EventEmitter {
-  connectStore (store) {
+  constructor () {
+    super()
     this._store = store
     this._dispatch = store.dispatch
   }
@@ -88,7 +91,12 @@ class ProfileService extends EventEmitter {
     return personInfo
   }
 
-  async updateUserProfile({ avatar, userName, email, company, website, phone }, token){
+  async updateUserProfile ({ avatar, userName, email, company, website, phone }){
+    const state = this._store.getState()
+
+    const { profileSignature } = state.get(DUCK_SESSION)
+    const token = profileSignature && profileSignature.token || ''
+
     const service = this.getServerProvider()
 
     const { data } = await service.post(UPDATE_PROFILE_COMBINE, {
@@ -103,107 +111,12 @@ class ProfileService extends EventEmitter {
     return data
   }
 
-  // state.token
-  async updateLevel1 ({ userName, birthDate, avatar }, token) {
-    const service = this.getServerProvider()
+  async avatarUpload (file) {
+    const state = this._store.getState()
 
-    const { data } = await service.post(UPDATE_LEVEL_1, {
-      userName,
-      birthDate,
-      avatar,
-    }, this.withAuthorization(token))
+    const { profileSignature } = state.get(DUCK_SESSION)
+    const token = profileSignature && profileSignature.token || ''
 
-    return data
-  }
-
-  async updateLevel2 ({ phone, email }, token) {
-    const service = this.getServerProvider()
-
-    const { data } = await service.post(UPDATE_LEVEL_2, {
-      phone,
-      email,
-    }, this.withAuthorization(token))
-
-    return data
-  }
-
-  async confirmLevel2 ({ phoneCode, emailCode }, token) {
-    const service = this.getServerProvider()
-
-    const { data } = await service.post(CONFIRM_LEVEL_2, {
-      phoneCode,
-      emailCode,
-    }, this.withAuthorization(token))
-
-    return data
-  }
-
-  async validateLevel2Phone (token) {
-    const service = this.getServerProvider()
-
-    const { data } = await service.post(
-      VALIDATE_LEVEL_2_PHONE,
-      null,
-      this.withAuthorization(token),
-    )
-
-    return data
-  }
-
-  async validateLevel2Email (token) {
-    const service = this.getServerProvider()
-
-    const { data } = await service.post(
-      VALIDATE_LEVEL_2_EMAIL,
-      null,
-      this.withAuthorization(token),
-    )
-
-    return data
-  }
-
-  async updateLevel3 ({ passport, expirationDate, attachments }, token) {
-    const service = this.getServerProvider()
-
-    const { data } = await service.post(UPDATE_LEVEL_3, {
-      passport,
-      expirationDate,
-      attachments,
-    }, this.withAuthorization(token))
-
-    return data
-  }
-
-  async updateLevel4 ({ country, region, city, zip, addressLine1, addressLine2, attachments }, token) {
-    const service = this.getServerProvider()
-
-    const { data } = await service.post(UPDATE_LEVEL_4, {
-      country,
-      state: region,
-      city,
-      zip,
-      addressLine1,
-      addressLine2,
-      attachments,
-    }, this.withAuthorization(token))
-
-    return data
-  }
-
-  async toggleNotification ({ domain, type, name, value }, token) {
-    const service = this.getServerProvider()
-
-    const { data } = await service.post(PROFILE_NOTIFICATIONS, {
-      domain,
-      type,
-      name,
-      value,
-    }, this.withAuthorization(token))
-
-    return data
-  }
-
-  async avatarUpload (file, token) {
     const service = this.getServerProvider()
 
     const formData = new FormData()
@@ -222,7 +135,12 @@ class ProfileService extends EventEmitter {
     return data
   }
 
-  async avatarDownload (imgId, token) {
+  async avatarDownload (imgId) {
+    const state = this._store.getState()
+
+    const { profileSignature } = state.get(DUCK_SESSION)
+    const token = profileSignature && profileSignature.token || ''
+
     const service = this.getServerProvider()
 
     const { data } = await service.get(

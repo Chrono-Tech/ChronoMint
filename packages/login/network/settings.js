@@ -9,7 +9,7 @@ import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_LITECOIN,
-} from './BitcoinProvider'
+} from './constants'
 
 export const NETWORK_MAIN_ID = 1
 export const CUSTOM_PROVIDER_ID = 'CustomProviderID'

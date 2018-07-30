@@ -12,17 +12,15 @@ import { selectWallet } from '@chronobank/core/redux/wallet/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 import { TOKEN_ICONS } from 'assets'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import ReceiveTokenModal from 'components/dashboard/ReceiveTokenModal/ReceiveTokenModal'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import { getMainSymbolForBlockchain, getTokens, isBTCLikeBlockchain } from '@chronobank/core/redux/tokens/selectors'
-import TransactionsCollection from "@chronobank/core/models/wallet/TransactionsCollection"
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
 import SendTokens from 'components/dashboard/SendTokens/SendTokens'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
-import { getAccount } from '@chronobank/core/redux/session/selectors'
 import { makeGetTxListForWallet } from "@chronobank/core/redux/wallet/selectors"
 import { getWalletInfo } from '@chronobank/core/redux/wallets/selectors/wallet'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
@@ -47,7 +45,6 @@ function makeMapStateToProps (state, ownProps) {
       pendingTransactions: getTransactions(ownState),
       token: tokens.item(getMainSymbolForBlockchain(ownProps.blockchain)),
       tokens: state.get(DUCK_TOKENS),
-      account: getAccount(ownState),
     }
   }
   return mapStateToProps
@@ -87,10 +84,9 @@ function mapDispatchToProps (dispatch) {
 @connect(makeMapStateToProps, mapDispatchToProps)
 export default class WalletWidget extends PureComponent {
   static propTypes = {
-    account: PropTypes.string,
     setWalletName: PropTypes.func,
     blockchain: PropTypes.string,
-    pendingTransactions: PropTypes.instanceOf(TransactionsCollection),
+    pendingTransactions: PropTypes.arrayOf(PropTypes.object),
     wallet: PropTypes.instanceOf(WalletModel),
     address: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
@@ -154,7 +150,7 @@ export default class WalletWidget extends PureComponent {
           {ownersList.slice(0, 2).map((owner) => {
             return (
               <div styleName='owner-icon'>
-                <div styleName='owner' className='chronobank-icon' title={owner.address()}>profile</div>
+                <div styleName='owner' className='chronobank-icon' title={owner}>profile</div>
               </div>
             )
           })
@@ -172,12 +168,12 @@ export default class WalletWidget extends PureComponent {
   }
 
   renderLastIncomingIcon = () => {
-    if (!this.props.pendingTransactions.size() || !isBTCLikeBlockchain(this.props.blockchain)) {
+    if (!this.props.pendingTransactions.length || !isBTCLikeBlockchain(this.props.blockchain)) {
       return null
     }
 
     let incoming = null
-    this.props.pendingTransactions.items().map((t) => {
+    this.props.pendingTransactions.map((t) => {
       if (!incoming && t.from() !== this.props.address && t.confirmations() < 4) {
         incoming = t
       }
@@ -194,12 +190,12 @@ export default class WalletWidget extends PureComponent {
   }
 
   renderLastSendingIcon = () => {
-    if (!this.props.pendingTransactions.size() || !isBTCLikeBlockchain(this.props.blockchain)) {
+    if (!this.props.pendingTransactions.length || !isBTCLikeBlockchain(this.props.blockchain)) {
       return null
     }
 
     let sending = null
-    this.props.pendingTransactions.items().map((t) => {
+    this.props.pendingTransactions.map((t) => {
 
       if (!sending && t.from() === this.props.address && t.confirmations() < 4) {
         sending = t
@@ -217,7 +213,7 @@ export default class WalletWidget extends PureComponent {
   }
 
   render () {
-    const { address, token, blockchain, wallet, showGroupTitle, account } = this.props
+    const { address, token, blockchain, wallet, showGroupTitle } = this.props
     const tokenIsFetched = (token && token.isFetched())
 
     return (

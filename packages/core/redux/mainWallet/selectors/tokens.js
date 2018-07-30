@@ -4,15 +4,36 @@
  */
 
 import { createSelector } from 'reselect'
-import { getMainWallet } from '../../wallet/selectors/models'
+import { getMainWallets } from '../../wallets/selectors/models'
+import WalletModel from '../../../models/wallet/WalletModel'
 
-export const pendingTransactionsSelector = (blockchain, address) => createSelector(
+export const getAllPendingTransactions = createSelector(
   [
-    getMainWallet,
+    getMainWallets,
   ],
   (
-    mainWallet,
+    mainWallets,
   ) => {
-    return mainWallet.getAllPendingTransactions(blockchain, address)
+    let pendingTransactions = {}
+
+    mainWallets.map((wallet: WalletModel) => {
+      if (wallet.transactions.blocks && wallet.transactions.blocks['-1']) {
+        wallet.transactions.blocks['-1'].transactions.map((tx) => {
+          pendingTransactions[tx.id()] = tx
+        })
+      }
+    })
+    return Object.values(pendingTransactions)
+  },
+)
+
+export const pendingTransactionsSelector = () => createSelector(
+  [
+    getAllPendingTransactions,
+  ],
+  (
+    pendingTxs,
+  ) => {
+    return pendingTxs
   },
 )

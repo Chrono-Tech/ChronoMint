@@ -4,30 +4,25 @@
  */
 
 import PropTypes from 'prop-types'
-import { MuiThemeProvider } from '@material-ui/core'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
-
 import Button from 'components/common/ui/Button/Button'
 import {
   onSubmitCreateAccountPage,
   onSubmitCreateAccountPageSuccess,
   onSubmitCreateAccountPageFail,
+} from '../../redux/thunks'
+import {
   FORM_CREATE_ACCOUNT,
-} from '@chronobank/login/redux/network/actions'
-import styles from 'layouts/Splash/styles'
-
+} from '../../redux/actions'
 import validate from './validate'
-
-import fieldStyles from './styles'
 import './CreateAccount.scss'
 
 function mapStateToProps (state) {
-
   return {
     isImportMode: state.get('network').importAccountMode,
   }
@@ -42,7 +37,7 @@ function mapDispatchToProps (dispatch) {
       await dispatch(onSubmitCreateAccountPage(walletName, password))
     },
     onSubmitSuccess: () => dispatch(onSubmitCreateAccountPageSuccess()),
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitCreateAccountPageFail(errors, dispatch, submitErrors)),
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitCreateAccountPageFail(errors, submitErrors)),
   }
 }
 

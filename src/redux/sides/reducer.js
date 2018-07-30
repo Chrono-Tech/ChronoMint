@@ -19,9 +19,6 @@ const initialState = {
       isOpened: false,
       direction: 'right',
       drawerProps: {
-        containerStyle: {
-          width: '300px',
-        },
         width: 300,
       },
     },

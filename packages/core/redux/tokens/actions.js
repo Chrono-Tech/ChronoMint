@@ -5,14 +5,16 @@
 
 import {
   bccProvider,
-  BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_LITECOIN,
   btcProvider,
   btgProvider,
   ltcProvider,
 } from '@chronobank/login/network/BitcoinProvider'
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_LITECOIN,
+} from '@chronobank/login/network/constants'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import BigNumber from 'bignumber.js'
@@ -30,24 +32,17 @@ import { notifyError } from '../notifier/actions'
 import { EVENT_NEW_BLOCK } from '../../dao/AbstractContractDAO'
 import Amount from '../../models/Amount'
 import { ETH } from '../mainWallet/actions'
-import { EVENT_UPDATE_LAST_BLOCK } from '../../dao/AbstractTokenDAO'
+import { EVENT_UPDATE_LAST_BLOCK } from '../../dao/constants'
 import { daoByType } from '../../refactor/redux/daos/selectors'
 import TxExecModel from '../../refactor/models/TxExecModel'
 import { WATCHER_TX_END, WATCHER_TX_SET } from '../watcher/actions'
+import { DUCK_TOKENS, TOKENS_FAILED, TOKENS_FETCHED, TOKENS_FETCHING, TOKENS_INIT, TOKENS_UPDATE_LATEST_BLOCK } from './constants'
 
-export const DUCK_TOKENS = 'tokens'
-export const TOKENS_UPDATE = 'tokens/update'
-export const TOKENS_UPDATE_LATEST_BLOCK = 'tokens/updateLatestBlock'
-export const TOKENS_INIT = 'tokens/init'
-export const TOKENS_FETCHING = 'tokens/fetching'
-export const TOKENS_FETCHED = 'tokens/fetched'
-export const TOKENS_REMOVE = 'tokens/remove'
-export const TOKENS_FAILED = 'tokens/failed'
-
-// It is not a redux action
 const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
+    console.log('submitTxHandler: ', tx)
     if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
+      console.log('submitTxHandler BLOCKCHAIN_ETHEREUM: ', tx)
       dispatch(modalsOpenConfirmDialog({
         props: {
           tx,
@@ -64,19 +59,21 @@ const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExec
   }
 }
 
-// It is not a redux action
 const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
+    // eslint-disable-next-line
+    console.log('acceptTxHandler start: ', tx, dao)
     if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
       dispatch({ type: WATCHER_TX_SET, tx })
-      const hash = await dao.immediateTransfer(tx)
-      dao.emit('mained', new TxExecModel({ ...tx, hash }))
+      const txData = await dao.immediateTransfer(tx)
+      // eslint-disable-next-line
+      console.log('acceptTxHandler mained: ', txData, dao, tx)
+
+      dao.emit('mained', new TxExecModel({ ...tx, hash: txData.transactionHash }))
     } else {
       const txOptions = tx.options()
       // TODO @ipavlenko: Pass arguments
       const hash = await dao.immediateTransfer(tx.from(), tx.to(), tx.amount(), tx.amountToken(), tx.feeMultiplier(), txOptions.advancedParams)
-      // eslint-disable-next-line
-      console.log('hash', hash)
       dao.emit('mained', hash, new TransferExecModel({ ...tx, hash }))
     }
   } catch (e) {
@@ -91,7 +88,6 @@ const rejectTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExec
 
 const mainedTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
-    console.log('mainedTxHandler: ', tx, dao)
     dispatch({ type: WATCHER_TX_END, tx })
   }
 }

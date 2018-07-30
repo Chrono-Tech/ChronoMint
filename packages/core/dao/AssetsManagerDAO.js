@@ -4,22 +4,21 @@
  */
 
 import Immutable from 'immutable'
-import web3Converter from '../utils/Web3Converter'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import BigNumber from 'bignumber.js'
+import { unionBy } from 'lodash'
 import contractManager from './ContractsManagerDAO'
 import TxModel from '../models/TxModel'
-import { unionBy } from 'lodash'
 import OwnerCollection from '../models/wallet/OwnerCollection'
 import OwnerModel from '../models/wallet/OwnerModel'
 import BlacklistModel from '../models/tokens/BlacklistModel'
-import { AssetsManagerABI, MultiEventsHistoryABI } from './abi'
-import AbstractContractDAO from './AbstractContractDAO'
+import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
 import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from './ChronoBankPlatformDAO'
 import { TX_PLATFORM_ATTACHED, TX_PLATFORM_DETACHED, TX_PLATFORM_REQUESTED } from './PlatformsManagerDAO'
 import { TX_PAUSED, TX_RESTRICTED, TX_UNPAUSED, TX_UNRESTRICTED } from './ChronoBankAssetDAO'
 import { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
+import web3Converter from '../utils/Web3Converter'
 
 export const TX_ASSET_CREATED = 'AssetCreated'
 
@@ -32,12 +31,12 @@ export const MIDDLEWARE_EVENT_PAUSED = 'paused'
 export const MIDDLEWARE_EVENT_UNPAUSED = 'unpaused'
 
 export default class AssetsManagerDAO extends AbstractContractDAO {
-  constructor (at = null) {
-    super(AssetsManagerABI, at, MultiEventsHistoryABI)
+  constructor ({ address, history, abi }) {
+    super({ address, history, abi })
   }
 
   getTokenExtension (platform) {
-    return this._call('getTokenExtension', [platform])
+    return this.contract.methods.getTokenExtension(platform).call()
   }
 
   async getSystemAssetsForOwner (account: string) {

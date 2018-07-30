@@ -15,13 +15,13 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { exchange, getTokensAllowance } from '@chronobank/core/redux/exchange/actions'
 import { modalsClose } from 'redux/modals/actions'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import Amount from '@chronobank/core/models/Amount'
 import BalancesCollection from '@chronobank/core/models/tokens/BalancesCollection'
 import BalanceModel from '@chronobank/core/models/tokens/BalanceModel'
+import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
 import './BuyTokensDialog.scss'
 import BuyTokensForm from './BuyTokensForm'
-import { getMainEthWallet } from '../../../../packages/core/redux/wallets/selectors/models'
 
 function prefix (token) {
   return `components.exchange.BuyTokensDialog.${token}`

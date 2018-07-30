@@ -22,8 +22,6 @@ export default class DatePickerWrapper extends PureComponent {
   }
 
   render () {
-    console.log('TimePicker props: ', this.props)
-
     const { input, ...props } = this.props
     return (
       <MuiPickersUtilsProvider utils={MomentUtils}>

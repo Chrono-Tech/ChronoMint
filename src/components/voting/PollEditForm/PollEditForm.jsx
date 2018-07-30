@@ -20,7 +20,7 @@ import Slider from 'components/common/Slider'
 import DatePicker from 'components/common/DatePicker'
 import TimePicker from 'components/common/TimePicker'
 import { DUCK_I18N } from 'redux/i18n/actions'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import { daoByType } from '@chronobank/core/refactor/redux/daos/selectors'
 import VotingManagerDAO, { TX_CREATE_POLL } from '@chronobank/core/dao/VotingManagerDAO'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
@@ -171,6 +171,7 @@ export default class PollEditForm extends Component {
   render () {
     const { isModify, handleSubmit, pristine, invalid, voteLimitInTIME, maxVoteLimitInPercent, options, feeMultiplier, formErrors } = this.props
     const limitInTIME = this.props.maxVoteLimitInTIME.div(100).mul(voteLimitInTIME || 1)
+
     return (
       <div styleName='root'>
         <div styleName='header'>
@@ -272,17 +273,17 @@ export default class PollEditForm extends Component {
                   okLabel={<Translate value='materialUi.DatePicker.okLabel' />}
                   name='deadline'
                   fullWidth
-                  placeholder={<Translate value={`${prefix}.finishedDate`} />}
+                  placeholder={I18n.t(`${prefix}.finishedDate`)}
                   style={{ width: '165px' }}
                 />
                 <Field
                   component={TimePicker}
                   format={(value) => value === '' ? null : value}
-                  cancelLabel={<Translate value='materialUi.DatePicker.cancelLabel' />}
+                  cancelLabel={I18n.t('materialUi.DatePicker.cancelLabel')}
                   okLabel={<Translate value='materialUi.DatePicker.okLabel' />}
                   name='deadlineTime'
                   fullWidth
-                  placeholder={<Translate value={`${prefix}.finishedTime`} />}
+                  placeholder={I18n.t(`${prefix}.finishedTime`)}
                   style={{ width: '165px', marginLeft: '40px' }}
                 />
               </div>
