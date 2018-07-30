@@ -59,11 +59,13 @@ const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExec
 
 const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
+    // eslint-disable-next-line
+    console.log('acceptTxHandler start: ', tx, dao)
     if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
       dispatch({ type: WATCHER_TX_SET, tx })
       const txData = await dao.immediateTransfer(tx)
       // eslint-disable-next-line
-      console.log('acceptTxHandler: ', txData, dao, tx)
+      console.log('acceptTxHandler mained: ', txData, dao, tx)
 
       dao.emit('mained', new TxExecModel({ ...tx, hash: txData.transactionHash }))
     } else {

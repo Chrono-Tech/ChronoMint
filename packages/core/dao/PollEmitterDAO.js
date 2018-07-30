@@ -5,7 +5,7 @@
 
 import PollNoticeModel, { IS_VOTED, IS_ACTIVATED, IS_ENDED } from '../models/notices/PollNoticeModel'
 import { MultiEventsHistoryABI, PollEmitterABI } from './abi'
-import AbstractContractDAO from './AbstractContractDAO'
+import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
 
 export const EVENT_POLL_VOTED = 'PollVoted'
 export const EVENT_POLL_ACTIVATED = 'PollActivated'
@@ -21,8 +21,8 @@ export default class PollEmitterDAO extends AbstractContractDAO {
   connect (web3, options) {
     super.connect(web3, options)
 
-    this.allEventsEmitter = this.contract.events.allEvents({})
-      .on('data', this.handleAllEventsData.bind(this))
+    this.allEventsEmitter = this.history.events.allEvents({})
+      .on('data', this.handleAllEventsData)
   }
 
   disconnect () {

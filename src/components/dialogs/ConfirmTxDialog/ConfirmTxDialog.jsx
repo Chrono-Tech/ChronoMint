@@ -120,6 +120,7 @@ export default class ConfirmTxDialog extends PureComponent {
 
   render () {
     const { tx, amountBalanceAfter, feeBalanceAfter, fields, mainSymbol } = this.props
+
     return (
       <ModalDialog hideCloseIcon title={<Translate value={tx.funcTitle()} />}>
         <div styleName='root'>
