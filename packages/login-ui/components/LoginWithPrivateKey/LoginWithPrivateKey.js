@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { MuiThemeProvider } from '@material-ui/core'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
@@ -38,49 +37,47 @@ class MnemonicLoginPage extends PureComponent {
     const { handleSubmit, error } = this.props
 
     return (
-      <MuiThemeProvider>
-        <form styleName='form' name={FORM_PRIVATE_KEY_LOGIN_PAGE} onSubmit={handleSubmit}>
+      <form styleName='form' name={FORM_PRIVATE_KEY_LOGIN_PAGE} onSubmit={handleSubmit}>
 
-          <div styleName='page-title'>
-            <Translate value='LoginWithPrivateKey.title' />
-          </div>
+        <div styleName='page-title'>
+          <Translate value='LoginWithPrivateKey.title' />
+        </div>
 
-          <div styleName='field'>
-            <Field
-              styleName='pkField'
-              component={TextField}
-              name='pk'
-              type='text'
-              fullWidth
-              multiline
-              InputProps={{
-                disableUnderline: true,
-              }}
-              rows={2}
-              rowsMax={2}
-            />
-          </div>
+        <div styleName='field'>
+          <Field
+            styleName='pkField'
+            component={TextField}
+            name='pk'
+            type='text'
+            fullWidth
+            multiline
+            InputProps={{
+              disableUnderline: true,
+            }}
+            rows={2}
+            rowsMax={2}
+          />
+        </div>
 
-          <div styleName='actions'>
-            <Button
-              styleName='button'
-              buttonType='login'
-              type='submit'
-            >
-              <Translate value='LoginWithPrivateKey.submit' />
-            </Button>
+        <div styleName='actions'>
+          <Button
+            styleName='button'
+            buttonType='login'
+            type='submit'
+          >
+            <Translate value='LoginWithPrivateKey.submit' />
+          </Button>
 
-            { error ? (<div styleName='form-error'>{error}</div>) : null }
+          { error ? (<div styleName='form-error'>{error}</div>) : null }
 
-            <Translate value='LoginWithPrivateKey.or' />
-            <br />
-            <Link to='/login/import-methods' href styleName='link'>
-              <Translate value='LoginWithPrivateKey.back' />
-            </Link>
-          </div>
+          <Translate value='LoginWithPrivateKey.or' />
+          <br />
+          <Link to='/login/import-methods' href styleName='link'>
+            <Translate value='LoginWithPrivateKey.back' />
+          </Link>
+        </div>
 
-        </form>
-      </MuiThemeProvider>
+      </form>
     )
   }
 }

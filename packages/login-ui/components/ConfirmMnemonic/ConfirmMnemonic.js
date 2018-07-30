@@ -7,7 +7,6 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { MuiThemeProvider } from '@material-ui/core'
 import { Field, reduxForm } from 'redux-form/immutable'
 import React, { Component } from 'react'
 import { Link } from 'react-router'
@@ -84,7 +83,6 @@ class ConfirmMnemonicPage extends Component {
 
       return (
         <Button
-          key={index}
           onClick={this.onClickWord.bind(this, item)}
           styleName={classnames('word')}
           disabled={wordSelected}
@@ -127,63 +125,61 @@ class ConfirmMnemonicPage extends Component {
   render () {
     const { handleSubmit, error } = this.props
     return (
-      <MuiThemeProvider>
-        <form styleName='form' name={FORM_CONFIRM_MNEMONIC} onSubmit={handleSubmit}>
-          <div>
-            <div styleName='page-title'>
-              <Translate value='ConfirmMnemonic.title' />
+      <form styleName='form' name={FORM_CONFIRM_MNEMONIC} onSubmit={handleSubmit}>
+        <div>
+          <div styleName='page-title'>
+            <Translate value='ConfirmMnemonic.title' />
+          </div>
+
+          <p styleName='description'>
+            <Translate value='ConfirmMnemonic.description' />
+          </p>
+
+          <div styleName='passPhraseWrapper'>
+            <div styleName='passPhrase'>{ this.getCurrentMnemonic() }</div>
+            <Field
+              component='input'
+              type='hidden'
+              name='mnemonic'
+              readOnly
+            />
+
+          </div>
+
+          <div styleName={classnames({ error: true,  visible: error })}>
+            {error}
+          </div>
+
+          <div styleName='wordsBlock'>
+            { this.getWordsButtons() }
+          </div>
+
+          <div styleName='controlsBlock'>
+            <div styleName='control' onClick={this.clearMnemonic.bind(this)}>
+              <Translate value='ConfirmMnemonic.startOver' />
             </div>
-
-            <p styleName='description'>
-              <Translate value='ConfirmMnemonic.description' />
-            </p>
-
-            <div styleName='passPhraseWrapper'>
-              <div styleName='passPhrase'>{ this.getCurrentMnemonic() }</div>
-              <Field
-                component='input'
-                type='hidden'
-                name='mnemonic'
-                readOnly
-              />
-
-            </div>
-
-            <div styleName={classnames({ error: true,  visible: error })}>
-              {error}
-            </div>
-
-            <div styleName='wordsBlock'>
-              { this.getWordsButtons() }
-            </div>
-
-            <div styleName='controlsBlock'>
-              <div styleName='control' onClick={this.clearMnemonic.bind(this)}>
-                <Translate value='ConfirmMnemonic.startOver' />
-              </div>
-              <div styleName='control' onClick={this.clearLastWord.bind(this)}>
-                <Translate value='ConfirmMnemonic.undo' />
-              </div>
-            </div>
-
-            <div styleName='actions'>
-              <Button styleName='submit' type='submit' buttonType='login'>
-                <Translate value='ConfirmMnemonic.done' />
-              </Button>
-
-              <Link to='/login/mnemonic' href styleName='link'>
-                <Translate value='ConfirmMnemonic.back' />
-              </Link>
-            </div>
-
-            <div styleName='progressBlock'>
-              <div styleName='progressPoint' />
-              <div styleName='progressPoint' />
-              <div styleName='progressPoint progressPointInactive' />
+            <div styleName='control' onClick={this.clearLastWord.bind(this)}>
+              <Translate value='ConfirmMnemonic.undo' />
             </div>
           </div>
-        </form>
-      </MuiThemeProvider>
+
+          <div styleName='actions'>
+            <Button styleName='submit' type='submit' buttonType='login'>
+              <Translate value='ConfirmMnemonic.done' />
+            </Button>
+
+            <Link to='/login/mnemonic' href styleName='link'>
+              <Translate value='ConfirmMnemonic.back' />
+            </Link>
+          </div>
+
+          <div styleName='progressBlock'>
+            <div styleName='progressPoint' />
+            <div styleName='progressPoint' />
+            <div styleName='progressPoint progressPointInactive' />
+          </div>
+        </div>
+      </form>
     )
   }
 }

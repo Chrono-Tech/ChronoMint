@@ -21,14 +21,14 @@ import { Button } from '../../settings'
 
 import './GenerateMnemonic.scss'
 
-function mapStateToProps (state) {
+function mapStateToProps (state, ownProps) {
 
   return {
     mnemonic: state.get('network').newAccountMnemonic,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps (dispatch, ownProps) {
   return {
     initMnemonicPage: () => dispatch(initMnemonicPage()),
     navigateToConfirmPage: () => dispatch(navigateToConfirmMnemonicPage()),

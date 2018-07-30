@@ -4,7 +4,6 @@
  */
 
 import PropTypes from 'prop-types'
-import { MuiThemeProvider } from '@material-ui/core'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
@@ -54,46 +53,43 @@ class CreateHWAccountPage extends PureComponent {
     const { handleSubmit, pristine, valid, initialValues, error, isImportMode } = this.props
 
     return (
-      <MuiThemeProvider muiTheme={styles.inverted}>
-        <form styleName='form' name={FORM_CREATE_HW_ACCOUNT} onSubmit={handleSubmit}>
-          <div styleName='create-title'>
-            <Translate value='CreateAccount.title' />
-          </div>
+      <form styleName='form' name={FORM_CREATE_HW_ACCOUNT} onSubmit={handleSubmit}>
+        <div styleName='create-title'>
+          <Translate value='CreateAccount.title' />
+        </div>
 
-          <div styleName='create-title-description'>
-            <Translate value='CreateAccount.description' />
-          </div>
+        <div styleName='create-title-description'>
+          <Translate value='CreateAccount.description' />
+        </div>
 
-          <div styleName='fields-block'>
-            <Field
-              component={TextField}
-              name='walletName'
-              label={<Translate value='CreateAccount.walletName' />}
-              fullWidth
-              {...styles.textField}
-              {...fieldStyles.textField}
-            />
-          </div>
+        <div styleName='fields-block'>
+          <Field
+            component={TextField}
+            name='walletName'
+            label={<Translate value='CreateAccount.walletName' />}
+            fullWidth
+            {...styles.textField}
+            {...fieldStyles.textField}
+          />
+        </div>
 
-          <div styleName='actions'>
-            <Button
-              styleName='button'
-              buttonType='login'
-              type='submit'
-            >
-              <Translate value='CreateAccount.login' />
-            </Button>
-            { error && (<div styleName='form-error'>{error}</div>) }
-            <Translate value='CreateAccount.or' />
-            <br />
-            <Link to='/login/select-account' href styleName='link'>
-              <Translate value='CreateAccount.useAccount' />
-            </Link>
-          </div>
+        <div styleName='actions'>
+          <Button
+            styleName='button'
+            buttonType='login'
+            type='submit'
+          >
+            <Translate value='CreateAccount.login' />
+          </Button>
+          { error && (<div styleName='form-error'>{error}</div>) }
+          <Translate value='CreateAccount.or' />
+          <br />
+          <Link to='/login/select-account' href styleName='link'>
+            <Translate value='CreateAccount.useAccount' />
+          </Link>
+        </div>
 
-        </form>
-
-      </MuiThemeProvider>
+      </form>
     )
   }
 }

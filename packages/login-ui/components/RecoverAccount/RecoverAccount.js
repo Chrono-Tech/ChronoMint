@@ -82,56 +82,53 @@ class RecoverAccountPage extends PureComponent {
     const wordsArray = new Array(12).fill()
 
     return (
-      <MuiThemeProvider>
-        <form styleName='form' name={FORM_RECOVER_ACCOUNT} onSubmit={handleSubmit}>
-          <div styleName='title'>
-            <Translate value='RecoverAccount.title' />
-          </div>
+      <form styleName='form' name={FORM_RECOVER_ACCOUNT} onSubmit={handleSubmit}>
+        <div styleName='title'>
+          <Translate value='RecoverAccount.title' />
+        </div>
 
-          <div styleName='user-row'>
-            <UserRow
-              title={getAccountName(selectedWallet)}
-              avatar={getAccountAvatarImg(selectedWallet)}
-              subtitle={getAccountAddress(selectedWallet, true)}
-              onClick={navigateToSelectWallet}
-            />
-          </div>
+        <div styleName='user-row'>
+          <UserRow
+            title={getAccountName(selectedWallet)}
+            avatar={getAccountAvatarImg(selectedWallet)}
+            subtitle={getAccountAddress(selectedWallet, true)}
+            onClick={navigateToSelectWallet}
+          />
+        </div>
 
-          <div styleName='fields-block'>
-            {
-              wordsArray.map((item, i) => (
-                <Field
-                  key={i}
-                  styleName='field'
-                  component={TextField}
-                  name={`word-${i + 1}`}
-                  label={<div><Translate value='RecoverAccount.word' />&nbsp;{ i + 1 }</div>}
-                  fullWidth
-                  {...styles.textField}
-                />
-              ))
-            }
-          </div>
+        <div styleName='fields-block'>
+          {
+            wordsArray.map((item, i) => (
+              <Field
+                key={i}
+                styleName='field'
+                component={TextField}
+                name={`word-${i + 1}`}
+                label={<div><Translate value='RecoverAccount.word' />&nbsp;{ i + 1 }</div>}
+                fullWidth
+                {...styles.textField}
+              />
+            ))
+          }
+        </div>
 
-          <div styleName='actions'>
-            <Button
-              styleName='button'
-              buttonType='login'
-              type='submit'
-            >
-              <Translate value='RecoverAccount.resetPassword' />
-            </Button>
-            { error && (<div styleName='form-error'>{error}</div>) }
-            <Translate value='RecoverAccount.or' />
-            <br />
-            <Link to='/login' href styleName='link'>
-              <Translate value='RecoverAccount.back' />
-            </Link>
-          </div>
+        <div styleName='actions'>
+          <Button
+            styleName='button'
+            buttonType='login'
+            type='submit'
+          >
+            <Translate value='RecoverAccount.resetPassword' />
+          </Button>
+          { error && (<div styleName='form-error'>{error}</div>) }
+          <Translate value='RecoverAccount.or' />
+          <br />
+          <Link to='/login' href styleName='link'>
+            <Translate value='RecoverAccount.back' />
+          </Link>
+        </div>
 
-        </form>
-
-      </MuiThemeProvider>
+      </form>
     )
   }
 }

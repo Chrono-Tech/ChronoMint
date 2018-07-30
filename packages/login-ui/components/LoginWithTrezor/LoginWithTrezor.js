@@ -115,33 +115,31 @@ class LoginTrezor extends PureComponent {
     const { trezor } = this.props
 
     return (
-      <MuiThemeProvider muiTheme={styles.inverted}>
-        <div styleName='form'>
-          <div styleName='page-title'>
-            <Translate value='LoginWithTrezor.title' />
-          </div>
-
-          <div styleName='states'>
-            {this.renderStates()}
-          </div>
-
-          {trezor.isFetched && (
-            <div styleName='account'>
-              <List component='nav' className='list'>
-                {this.props.account.map(this._buildItem)}
-              </List>
-            </div>
-          )}
-
-          <div styleName='actions'>
-            <Translate value='LoginWithMnemonic.or' />
-            <br />
-            <Link to='/login/import-methods' href styleName='link'>
-              <Translate value='LoginWithMnemonic.back' />
-            </Link>
-          </div>
+      <div styleName='form'>
+        <div styleName='page-title'>
+          <Translate value='LoginWithTrezor.title' />
         </div>
-      </MuiThemeProvider>
+
+        <div styleName='states'>
+          {this.renderStates()}
+        </div>
+
+        {trezor.isFetched && (
+          <div styleName='account'>
+            <List component='nav' className='list'>
+              {this.props.account.map(this._buildItem)}
+            </List>
+          </div>
+        )}
+
+        <div styleName='actions'>
+          <Translate value='LoginWithMnemonic.or' />
+          <br />
+          <Link to='/login/import-methods' href styleName='link'>
+            <Translate value='LoginWithMnemonic.back' />
+          </Link>
+        </div>
+      </div>
     )
   }
 }
