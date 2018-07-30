@@ -84,10 +84,6 @@ class LoginPage extends React.Component {
     this.props.initLoginPage()
   }
 
-  componentDidMount () {
-    this.props.handleSubmit()
-  }
-
   renderSuccessMessage () {
     const { successMessage } = this.props
 
