@@ -57,7 +57,7 @@ export const setTxFromMiddlewareForBlackList = (address, symbol) => async (dispa
 
 export const setTxFromMiddlewareForBlockAsset = (address, symbol) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
-  const assetsManagerDAO = await contractManager.getAssetsManagerDAO()
+  const assetsManagerDAO = daoByType('AssetsManager')(getState())
   const transactionsList = await assetsManagerDAO.getTransactionsForBlockAsset(address, symbol, account)
 
   dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList } })
@@ -66,7 +66,6 @@ export const setTxFromMiddlewareForBlockAsset = (address, symbol) => async (disp
 export const getAssetsManagerData = () => async (dispatch, getState) => {
   dispatch({ type: GET_ASSETS_MANAGER_COUNTS_START })
   const { account } = getState().get(DUCK_SESSION)
-
   const assetsManagerDao = daoByType('AssetsManager')(getState())
 
   const platforms = await assetsManagerDao.getPlatformList(account)
@@ -92,8 +91,9 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
 
 export const getAssetDataBySymbol = (symbol) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
-  const assetsManagerDao = await contractManager.getAssetsManagerDAO()
-  const asset = await assetsManagerDao.getAssetDataBySymbol(symbol)
+  const assetsManagerDAO = daoByType('AssetsManager')(getState())
+
+  const asset = await assetsManagerDAO.getAssetDataBySymbol(symbol)
   if (asset.by === account) {
     dispatch(setTxFromMiddlewareForBlockAsset(asset.token, symbol))
     dispatch(setTxFromMiddlewareForBlackList(asset.token, symbol))
@@ -103,8 +103,9 @@ export const getAssetDataBySymbol = (symbol) => async (dispatch, getState) => {
 
 export const getPlatforms = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
-  const assetsManagerDao = await contractManager.getAssetsManagerDAO()
-  const platforms = await assetsManagerDao.getPlatformList(account)
+  const assetsManagerDAO = daoByType('AssetsManager')(getState())
+
+  const platforms = await assetsManagerDAO.getPlatformList(account)
   const usersPlatforms = platforms.filter((platform) => platform.by === account)
   dispatch({ type: GET_PLATFORMS, payload: { platforms, usersPlatforms } })
 }
@@ -124,28 +125,47 @@ export const createPlatform = (values) => async (dispatch, getState) => {
   }
 }
 
-export const detachPlatform = (platform) => async (dispatch) => {
-  const dao = await contractManager.getPlatformManagerDAO()
-  const result = await dao.detachPlatform(platform)
+/**
+ *
+ * @param platform
+ * @returns {Function}
+ */
+export const detachPlatform = (platform) => async (dispatch, getState) => {
+  const assetsManagerDAO = daoByType('AssetsManager')(getState())
+  const result = await assetsManagerDAO.detachPlatform(platform)
 
   if (result) {
     dispatch(getPlatforms())
   }
 }
 
+/**
+ *
+ * @returns {Function}
+ */
 export const watchPlatformManager = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
-  const platformManagerDAO = await contractManager.getPlatformManagerDAO()
+  console.log('watchPlatformManager account: ', account)
+  const platformsManagerDAO = daoByType('PlatformsManager')(getState())
+
   const callback = (tx) => {
     dispatch(setTx(tx))
   }
-  platformManagerDAO.watchCreatePlatform(callback, account)
+  platformsManagerDAO.watchCreatePlatform(callback, account)
 }
 
+/**
+ *
+ * @param token
+ * @returns {Function}
+ */
 export const createAsset = (token: TokenModel) => async (dispatch, getState) => {
-  try {
+  try {PlatformsManager
+    console.log('createAsset: ', token.toJSON())
     let txHash
-    const tokenManagementExtension = await contractManager.getTokenManagementExtensionDAO(token.platform().address)
+    const platformsManagerDAO = daoByType('PlatformsManager')(getState())
+    const tokenManagementExtension =
+      await platformsManagerDAO.tokenManagementExtensionManager.getTokenManagementExtensionDAO(token.platform().address)
     if (token.withFee()) {
       txHash = await tokenManagementExtension.createAssetWithFee(token)
     } else {
@@ -169,12 +189,24 @@ export const createAsset = (token: TokenModel) => async (dispatch, getState) => 
   }
 }
 
+/**
+ *
+ * @param symbol
+ * @param excludeAccounts
+ * @returns {Promise<*>}
+ */
 export const getManagersForAssetSymbol = async (symbol: string, excludeAccounts: Array<string> = []) => {
-  const assetsManagerDAO = await contractManager.getAssetsManagerDAO()
+  const assetsManagerDAO = daoByType('AssetsManager')(getState())
   const managersList = await assetsManagerDAO.getManagersForAssetSymbol(symbol, excludeAccounts)
   return managersList.isFetched(true)
 }
 
+/**
+ *
+ * @param token
+ * @param owner
+ * @returns {Function}
+ */
 export const removeManager = (token: TokenModel, owner: string) => async (dispatch, getState) => {
   try {
     const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
@@ -188,6 +220,12 @@ export const removeManager = (token: TokenModel, owner: string) => async (dispat
   }
 }
 
+/**
+ *
+ * @param token
+ * @param owner
+ * @returns {Function}
+ */
 export const addManager = (token: TokenModel, owner: string) => async (dispatch, getState) => {
   try {
     const assets = getState().get(DUCK_ASSETS_MANAGER).assets()

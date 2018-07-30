@@ -16,6 +16,7 @@ import {
   VotingManagerABI,
   WalletsManagerABI,
   PlatformsManagerABI,
+  TokenManagementInterfaceABI,
 } from '../../../core/dao/abi/'
 
 import ContractsManagerDAO from './lib/ContractsManagerDAO'
@@ -28,6 +29,7 @@ import UserManagerDAO from '../../dao/UserManagerDAO'
 import WalletsManagerDAO from '../../dao/WalletsManagerDAO'
 import AssetsManagerDAO from '../../dao/AssetsManagerDAO'
 import PlatformManagerDAO from '../../dao/PlatformsManagerDAO'
+import TokenManagementExtensionDAO from '../../dao/TokenManagementExtensionDAO'
 
 export { default as ethDAO } from './lib/ETHDAO'
 export { default as AbstractContractDAO } from './lib/AbstractContractDAO'
@@ -74,6 +76,12 @@ export const PLATFORMS_MANAGER_LIBRARY = new ContractModel({
   type: 'PlatformsManager',
   abi: PlatformsManagerABI,
   DAOClass: PlatformManagerDAO,
+})
+
+export const TOKEN_MANAGMENT_EXTENSION_LIBRARY = new ContractModel({
+  type: 'PlatformsManager',
+  abi: TokenManagementInterfaceABI,
+  DAOClass: TokenManagementExtensionDAO,
 })
 
 export const VOTING_MANAGER_LIBRARY = new ContractModel({

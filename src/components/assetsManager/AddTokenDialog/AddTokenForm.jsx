@@ -13,6 +13,7 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import avaToken from 'assets/img/avaToken.svg'
 import { change, Field, formPropTypes, reduxForm } from 'redux-form/immutable'
+import { submit } from 'redux-form'
 import classnames from 'classnames'
 import colors from 'styles/themes/variables'
 import { connect } from 'react-redux'
@@ -22,6 +23,7 @@ import platformIconInCircle from 'assets/img/assets1.svg'
 import { ACCEPT_ALL } from '@chronobank/core/models/FileSelect/FileExtension'
 import FileModel from '@chronobank/core/models/FileSelect/FileModel'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
+import { I18n } from '@chronobank/core-dependencies/i18n'
 import { createAsset, DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
@@ -39,25 +41,9 @@ export const prefix = (token) => {
 
 export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
 
-function mapStateToProps (state) {
-  const assetsManager = state.get(DUCK_ASSETS_MANAGER)
-  const form = state.get('form')
-  return {
-    formValues: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('values'),
-    formErrors: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('syncErrors'),
-    platformsList: assetsManager.usersPlatforms(),
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    handleAddPlatformDialog: () => dispatch(modalsOpen({
-      component: AddPlatformDialog,
-    })),
-  }
-}
-
 const onSubmit = (values, dispatch) => {
+  console.log('onSubmitonSubmit: ', values.toJSON())
+
   dispatch(createAsset(new TokenModel({
     decimals: values.get('smallestUnit'),
     name: values.get('description'),
@@ -74,6 +60,26 @@ const onSubmit = (values, dispatch) => {
     isReissuable: new ReissuableModel({ value: !!values.get('reissuable') }),
     blockchain: 'Ethereum',
   })))
+}
+
+function mapStateToProps (state) {
+  const assetsManager = state.get(DUCK_ASSETS_MANAGER)
+  const form = state.get('form')
+  return {
+    formValues: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('values'),
+    formErrors: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('syncErrors'),
+    platformsList: assetsManager.usersPlatforms(),
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    handleAddPlatformDialog: () => dispatch(modalsOpen({
+      component: AddPlatformDialog,
+    })),
+    onSubmit: onSubmit,
+    submitForm: () => dispatch(submit(FORM_ADD_TOKEN_DIALOG)),
+  }
 }
 
 // defaults
@@ -116,7 +122,7 @@ class Platform extends PureComponent {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({ form: FORM_ADD_TOKEN_DIALOG, validate, onSubmit })
+@reduxForm({ form: FORM_ADD_TOKEN_DIALOG, validate })
 export default class AddTokenForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
@@ -179,6 +185,8 @@ export default class AddTokenForm extends PureComponent {
 
   handleSubmitClick = () => {
     this.setState({ showPlatformError: !this.props.formErrors || !!this.props.formErrors.platform })
+    this.props.submitForm()
+    console.log('this.props.submitForm: ')
   }
 
   handleWalletClick = () => {
@@ -332,8 +340,7 @@ export default class AddTokenForm extends PureComponent {
             name='platform'
             component={Select}
             fullWidth
-            floatingLabelFixed
-            floatingLabelText={<Translate value={prefix('choosePlatform')} />}
+            placeholder={I18n.t(prefix('choosePlatform'))}
           >
             {
               platformsList
@@ -357,14 +364,14 @@ export default class AddTokenForm extends PureComponent {
             component={TextField}
             name='tokenSymbol'
             fullWidth
-            floatingLabelText={<Translate value={prefix('tokenSymbol')} />}
+            placeholder={I18n.t(prefix('tokenSymbol'))}
           />
 
           <Field
             component={TextField}
             name='description'
             fullWidth
-            floatingLabelText={<Translate value={prefix('description')} />}
+            placeholder={I18n.t(prefix('description'))}
           />
 
           <div className='AddTokenForm__grid'>
@@ -374,7 +381,7 @@ export default class AddTokenForm extends PureComponent {
                   component={TextField}
                   name='smallestUnit'
                   fullWidth
-                  floatingLabelText={<Translate value={prefix('smallestUnit')} />}
+                  placeholder={I18n.t(prefix('smallestUnit'))}
                   normalize={normalizeSmallestUnit}
                 />
               </div>
@@ -384,34 +391,34 @@ export default class AddTokenForm extends PureComponent {
                 <Field
                   component={Checkbox}
                   name='reissuable'
-                  label={<Translate value={prefix('reissuable')} />}
+                  label={I18n.t(prefix('reissuable'))}
                 />
                 <Field
                   component={TextField}
                   name='amount'
                   fullWidth
-                  floatingLabelText={<Translate value={prefix('amount')} />}
+                  placeholder={I18n.t(prefix('amount'))}
                 />
               </div>
               <div className='col-xs-12 col-sm-6'>
                 <Field
                   component={Checkbox}
                   name='withFee'
-                  label={<Translate value={prefix('withFee')} />}
+                  label={I18n.t(prefix('withFee'))}
                 />
                 <Field
                   disabled={!withFee}
                   component={TextField}
                   name='feeAddress'
                   fullWidth
-                  floatingLabelText={<Translate value={prefix('feeAddress')} />}
+                  placeholder={I18n.t(prefix('feeAddress'))}
                 />
                 <Field
                   disabled={!withFee}
                   component={TextField}
                   name='feePercent'
                   fullWidth
-                  floatingLabelText={<Translate value={prefix('feePercent')} />}
+                  placeholder={I18n.t(prefix('feePercent'))}
                 />
               </div>
             </div>
@@ -421,8 +428,8 @@ export default class AddTokenForm extends PureComponent {
           <Button
             onClick={this.handleSubmitClick}
             styleName='action'
-            label={<Translate value={prefix('dialogTitle')} />}
-            type='submit'
+            label={I18n.t(prefix('dialogTitle'))}
+            type='button'
           />
         </div>
       </form>

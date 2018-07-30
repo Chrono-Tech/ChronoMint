@@ -15,6 +15,7 @@ import {
   MULTI_EVENTS_HISTORY,
   VOTING_MANAGER_LIBRARY,
   WALLETS_MANAGER,
+  TOKEN_MANAGMENT_EXTENSION_LIBRARY,
 } from '../../daos/index'
 import { alternateTxHandlingFlow } from '../../../redux/tokens/actions'
 import { getAccount } from '../../../redux/session/selectors/models'
@@ -46,6 +47,7 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     ASSET_HOLDER_LIBRARY,
     ASSET_DONATOR_LIBRARY,
     PLATFORMS_MANAGER_LIBRARY,
+    TOKEN_MANAGMENT_EXTENSION_LIBRARY,
     USER_MANAGER_LIBRARY,
     ERC20_MANAGER,
     VOTING_MANAGER_LIBRARY,

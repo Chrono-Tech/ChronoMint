@@ -48,7 +48,7 @@ function mapStateToProps (state) {
     isLocalNode: isLocalNode(network.selectedProviderId, network.selectedNetworkId),
     successMessage: formSelector(state, FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE),
     initialValues: {
-      password: '1',
+      password: '123',
     },
   }
 }
