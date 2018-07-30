@@ -6,7 +6,7 @@
 import Web3 from 'web3'
 import hdKey from 'ethereumjs-wallet/hdkey'
 import Web3Utils from './Web3Utils'
-import { WALLET_HD_PATH } from './mnemonicProvider'
+import { WALLET_HD_PATH } from './constants'
 
 export default class EthereumEngine {
   constructor (wallet, network, url, engine, deriveNumber) {

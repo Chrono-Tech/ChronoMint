@@ -8,6 +8,9 @@ import hdkey from 'ethereumjs-wallet/hdkey'
 import bip39 from 'bip39'
 import Accounts from 'web3-eth-accounts'
 import profileService from '@chronobank/login/network/ProfileService'
+import {
+  WALLET_HD_PATH,
+} from '@chronobank/login/network/constants'
 // import networkService from '@chronobank/login/network/NetworkService'
 // import web3Provider from '@chronobank/login/network/Web3Provider'
 // import web3Utils from '@chronobank/login/network/Web3Utils'
@@ -30,11 +33,7 @@ export const WALLETS_REMOVE = 'persistAccount/WALLETS_REMOVE'
 export const CUSTOM_NETWORKS_LIST_ADD = 'persistAccount/CUSTOM_NETWORKS_LIST_ADD'
 export const CUSTOM_NETWORKS_LIST_UPDATE = 'persistAccount/CUSTOM_NETWORKS_LIST_UPDATE'
 export const CUSTOM_NETWORKS_LIST_RESET = 'persistAccount/CUSTOM_NETWORKS_LIST_RESET'
-
 export const DUCK_PERSIST_ACCOUNT = 'persistAccount'
-
-export const COIN_TYPE_ETH = 60
-export const WALLET_HD_PATH = `m/44'/${COIN_TYPE_ETH}'/0'/0/0`
 
 export const accountAdd = (wallet) => (dispatch) => {
   dispatch({ type: WALLETS_ADD, wallet })

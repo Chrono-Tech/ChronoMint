@@ -12,12 +12,12 @@ import {
   profileImgJPG,
 } from '@chronobank/core-dependencies/assets'
 import {
+  WALLET_HD_PATH,
+} from '@chronobank/login/network/constants'
+import {
   AccountEntryModel,
   AccountProfileModel,
 } from '../../models/wallet/persistAccount'
-
-export const COIN_TYPE_ETH = 60
-export const WALLET_HD_PATH = `m/44'/${COIN_TYPE_ETH}'/0'/0/0`
 
 export const replaceWallet = (wallet, walletList) => {
   let index = walletList.findIndex((item) => item.key === wallet.key)

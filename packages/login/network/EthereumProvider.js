@@ -8,7 +8,6 @@ import networkService from './NetworkService'
 import AbstractProvider from './AbstractProvider'
 import EthereumEngine from './EthereumEngine'
 import selectEthereumNode from './EthereumNode'
-import web3Provider from './Web3Provider'
 import TxExecModel from '../../core/refactor/models/TxExecModel'
 
 export class EthereumProvider extends AbstractProvider {
@@ -61,6 +60,7 @@ export class EthereumProvider extends AbstractProvider {
     if (address) {
       let pk = null
       this._engine
+        // eslint-disable-next-line no-underscore-dangle
         ? this._engine._engine.wallets.map((wallet) => {
           if (wallet.getAddressString() === address) {
             pk = wallet.privKey
@@ -97,6 +97,7 @@ export class EthereumProvider extends AbstractProvider {
   }
 
   getWallet () {
+    // eslint-disable-next-line no-underscore-dangle
     return this._engine ? this._engine._wallet : null
   }
 

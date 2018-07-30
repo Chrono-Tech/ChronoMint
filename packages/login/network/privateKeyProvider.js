@@ -24,8 +24,7 @@ import {
   COIN_TYPE_BTG_TESTNET,
   COIN_TYPE_LTC_MAINNET,
   COIN_TYPE_LTC_TESTNET,
-  WALLET_HD_PATH,
-} from './mnemonicProvider'
+} from './constants'
 import EthereumWallet from './EthereumWallet'
 
 class PrivateKeyProvider {
