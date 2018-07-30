@@ -26,13 +26,8 @@ import {
   networkSetProvider,
 } from '../redux/network/actions'
 import { utils as web3Converter } from '../settings'
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from './BitcoinProvider'
-import { ethereumProvider } from './EthereumProvider'
 import metaMaskResolver from './metaMaskResolver'
 import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE } from './MonitorService'
-import { nemProvider } from './NemProvider'
-import { wavesProvider } from './WavesProvider'
-import networkProvider from './NetworkProvider'
 import privateKeyProvider from './privateKeyProvider'
 import {
   getNetworkById,
@@ -46,6 +41,7 @@ import {
 } from './settings'
 import uportProvider, { UPortAddress } from './uportProvider'
 import web3Provider/*, { Web3Provider }*/ from './Web3Provider'
+import setup from './EngineUtils'
 // import web3Utils from './Web3Utils'
 
 // #endregion imports
@@ -197,20 +193,7 @@ class NetworkService extends EventEmitter {
 
     const index = Math.max(accounts.indexOf(account), 0)
     const provider = privateKeyProvider.getPrivateKeyProvider(LOCAL_PRIVATE_KEYS[index], this.getProviderSettings(), wallets)
-    await this.setup(provider)
-  }
-
-  async setup ({ networkCode, ethereum, btc, bcc, btg, ltc, nem, waves }) {
-    // const web3 = new Web3()
-    // web3Provider.reinit(web3, ethereum.getProvider())
-    networkProvider.setNetworkCode(networkCode)
-    ethereumProvider.setEngine(ethereum, nem, waves)
-    bcc && bccProvider.setEngine(bcc)
-    btc && btcProvider.setEngine(btc)
-    btg && btgProvider.setEngine(btg)
-    ltc && ltcProvider.setEngine(ltc)
-    nem && nemProvider.setEngine(nem)
-    waves && wavesProvider.setEngine(waves)
+    await setup(provider)
   }
 
   selectAccount = (selectedAccount) => {

@@ -13,7 +13,7 @@ import {
   handleSubmitCreateNetwork,
   handleSubmitEditNetwork,
   handleDeleteNetwork,
-} from '@chronobank/login/redux/network/actions'
+} from '@chronobank/login/redux/network/thunks'
 import {
   AccountCustomNetwork,
 } from '@chronobank/core/models/wallet/persistAccount'

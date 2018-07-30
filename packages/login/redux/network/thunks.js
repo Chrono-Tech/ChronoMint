@@ -19,6 +19,7 @@ import {
   LOCAL_PRIVATE_KEYS,
 } from '../../network/settings'
 import * as networkUtils from './utils'
+import setup from '../../network/EngineUtils'
 
 // #endregion
 
@@ -157,7 +158,7 @@ export const handleWalletLogin = (wallet, password) => async (dispatch, getState
   const provider = networkUtils.getWalletProvider(wallet[0], password)
 
   networkService.selectAccount(provider.ethereum.getAddress())
-  await networkService.setup(provider)
+  await setup(provider)
 
   state = getState()
   const {
@@ -235,7 +236,7 @@ export const handlePrivateKeyLogin = (privateKey) =>
     )
 
     networkService.selectAccount(provider.ethereum.getAddress())
-    await networkService.setup(provider)
+    await setup(provider)
 
     state = getState()
     const {
@@ -276,7 +277,7 @@ export const handleLoginLocalAccountClick = (account = '') =>
       wallets,
     )
     networkService.selectAccount(account)
-    await networkService.setup(provider)
+    await setup(provider)
 
     state = getState()
     const {

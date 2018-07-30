@@ -4,11 +4,18 @@
  */
 
 import Tx from 'ethereumjs-tx'
-import networkService from './NetworkService'
+import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/actions'
+import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
 import AbstractProvider from './AbstractProvider'
 import EthereumEngine from './EthereumEngine'
 import selectEthereumNode from './EthereumNode'
 import TxExecModel from '../../core/refactor/models/TxExecModel'
+import {
+  getNetworkById,
+} from './settings'
+import {
+  DUCK_NETWORK,
+} from '../redux/network/actions'
 
 export class EthereumProvider extends AbstractProvider {
   constructor () {
@@ -54,6 +61,31 @@ export class EthereumProvider extends AbstractProvider {
   getTransactionsList (address, skip, offset) {
     const node = this._selectNode(this._engine)
     return node.getTransactionsList(address, this._id, skip, offset)
+  }
+
+  getProviderSettings = () => {
+    const state = this._store.getState()
+
+    const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
+    const { selectedNetworkId, selectedProviderId, isLocal } = state.get(DUCK_NETWORK)
+    const network = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
+
+    const { protocol, host } = network
+
+    if (!host) {
+
+      const customNetwork: AccountCustomNetwork = customNetworksList.find((network) => network.id === selectedNetworkId)
+
+      return {
+        network: customNetwork,
+        url: customNetwork && customNetwork.url,
+      }
+    }
+
+    return {
+      network,
+      url: protocol ? `${protocol}://${host}` : `//${host}`,
+    }
   }
 
   getPrivateKey (address) {
@@ -106,7 +138,7 @@ export class EthereumProvider extends AbstractProvider {
   }
 
   addNewEthWallet (num_addresses) {
-    const { network, url } = networkService.getProviderSettings()
+    const { network, url } = this.getProviderSettings()
     const wallet = this.getWallet()
     const newEngine = new EthereumEngine(wallet, network, url, null, num_addresses)
 
