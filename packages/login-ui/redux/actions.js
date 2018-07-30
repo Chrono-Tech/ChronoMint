@@ -10,7 +10,7 @@
 import {
   goBack,
   push,
-} from '@chronobank/core-dependencies/router'
+} from 'react-router-redux'
 
 // #endregion
 
