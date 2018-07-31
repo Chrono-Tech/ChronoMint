@@ -4,7 +4,7 @@
  */
 
 import Tx from 'ethereumjs-tx'
-import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/actions'
+// import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/actions'
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
 import AbstractProvider from './AbstractProvider'
 import EthereumEngine from './EthereumEngine'
@@ -13,9 +13,9 @@ import TxExecModel from '../../core/refactor/models/TxExecModel'
 import {
   getNetworkById,
 } from './settings'
-import {
-  DUCK_NETWORK,
-} from '../redux/network/actions'
+// import {
+//   DUCK_NETWORK,
+// } from '../redux/network/actions'
 
 export class EthereumProvider extends AbstractProvider {
   constructor () {
@@ -66,8 +66,8 @@ export class EthereumProvider extends AbstractProvider {
   getProviderSettings = () => {
     const state = this._store.getState()
 
-    const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
-    const { selectedNetworkId, selectedProviderId, isLocal } = state.get(DUCK_NETWORK)
+    const { customNetworksList } = state.get('persistAccount')
+    const { selectedNetworkId, selectedProviderId, isLocal } = state.get('network')
     const network = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
 
     const { protocol, host } = network

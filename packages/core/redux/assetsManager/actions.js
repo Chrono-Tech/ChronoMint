@@ -145,8 +145,8 @@ export const detachPlatform = (platform) => async (dispatch, getState) => {
  */
 export const watchPlatformManager = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
-  console.log('watchPlatformManager account: ', account)
   const platformsManagerDAO = daoByType('PlatformsManager')(getState())
+  console.log('watchPlatformManager account: ', account, platformsManagerDAO)
 
   const callback = (tx) => {
     dispatch(setTx(tx))
@@ -160,7 +160,7 @@ export const watchPlatformManager = () => async (dispatch, getState) => {
  * @returns {Function}
  */
 export const createAsset = (token: TokenModel) => async (dispatch, getState) => {
-  try {PlatformsManager
+  try {
     console.log('createAsset: ', token.toJSON())
     let txHash
     const platformsManagerDAO = daoByType('PlatformsManager')(getState())
