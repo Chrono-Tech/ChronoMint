@@ -7,7 +7,11 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import {
-  onSubmitCreateAccountImportMnemonic,
+  downloadWallet,
+  accountDeselect,
+} from '@chronobank/core/redux/persistAccount/actions'
+import {
+  onSubmitCreateAccountImportPrivateKey,
 } from '@chronobank/login-ui/redux/thunks'
 import {
   navigateToSelectWallet,
@@ -16,13 +20,16 @@ import {
 import {
   LoginWithPrivateKeyContainer,
   CreateAccountContainer,
+  GenerateWalletContainer,
 } from '@chronobank/login-ui/components'
 
 function mapDispatchToProps (dispatch) {
   return {
+    downloadWallet: () => dispatch(downloadWallet()),
+    accountDeselect: () => dispatch(accountDeselect()),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
     navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
-    onSubmitCreateAccountImportMnemonic: (name, password, mnemonic) => dispatch(onSubmitCreateAccountImportMnemonic(name, password, mnemonic)),
+    onSubmitCreateAccountImportPrivateKey: (name, password, mnemonic) => dispatch(onSubmitCreateAccountImportPrivateKey(name, password, mnemonic)),
   }
 }
 
@@ -30,11 +37,12 @@ class PrivateKeyImportPage extends PureComponent {
   static PAGES = {
     PRIVATE_KEY_FORM: 1,
     CREATE_ACCOUNT_FORM: 2,
+    DOWNLOAD_WALLET_PAGE: 3,
   }
 
   static propTypes = {
-    previousPage: PropTypes.func.isRequired,
-    nextPage: PropTypes.func.isRequired,
+    accountDeselect: PropTypes.func,
+    downloadWallet: PropTypes.func,
     navigateToSelectWallet: PropTypes.func,
     navigateToSelectImportMethod: PropTypes.func,
     onSubmitCreateAccountImportPrivateKey: PropTypes.func,
@@ -42,9 +50,6 @@ class PrivateKeyImportPage extends PureComponent {
 
   constructor (props) {
     super(props)
-
-    this.nextPage = this.nextPage.bind(this)
-    this.previousPage = this.previousPage.bind(this)
 
     this.state = {
       page: PrivateKeyImportPage.PAGES.PRIVATE_KEY_FORM,
@@ -68,8 +73,13 @@ class PrivateKeyImportPage extends PureComponent {
             privateKey={this.state.privateKey}
             previousPage={this.previousPage.bind(this)}
             onSubmit={this.onSubmitCreateAccount.bind(this)}
-            onSubmitSuccess={this.onSubmitCreateAccountSuccess.bind(this)}
+            onSubmitSuccess={this.nextPage.bind(this)}
           />
+        )
+
+      case PrivateKeyImportPage.PAGES.DOWNLOAD_WALLET_PAGE:
+        return (
+          <GenerateWalletContainer />
         )
 
       default:
@@ -91,10 +101,6 @@ class PrivateKeyImportPage extends PureComponent {
     const { onSubmitCreateAccountImportPrivateKey } = this.props
 
     return onSubmitCreateAccountImportPrivateKey(walletName, password, this.state.privateKey)
-  }
-
-  onSubmitCreateAccountSuccess () {
-    this.props.navigateToSelectWallet()
   }
 
   nextPage () {

@@ -14,8 +14,8 @@ import LoginWithMnemonic from './LoginWithMnemonic'
 
 export default class LoginWithMnemonicContainer extends PureComponent {
   static propTypes = {
-    previousPage: PropTypes.func.isRequired,
-    onSubmitSuccess: PropTypes.func.isRequired,
+    previousPage: PropTypes.func,
+    onSubmitSuccess: PropTypes.func,
   }
 
   handleSubmit (values) {

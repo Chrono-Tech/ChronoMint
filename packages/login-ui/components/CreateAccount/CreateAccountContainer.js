@@ -14,7 +14,7 @@ import CreateAccount from './CreateAccount'
 export default class CreateAccountContainer extends PureComponent {
   static propTypes = {
     previousPage: PropTypes.func,
-    onSubmit: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func,
     onSubmitSuccess: PropTypes.func,
   }
 

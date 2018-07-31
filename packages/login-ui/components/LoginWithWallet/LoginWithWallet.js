@@ -9,14 +9,6 @@ import React, { Component } from 'react'
 import { Link } from 'react-router'
 import Button from 'components/common/ui/Button/Button'
 import { Translate } from 'react-redux-i18n'
-import { connect } from 'react-redux'
-import {
-  clearErrors,
-  loading,
-} from '@chronobank/login/redux/network/actions'
-import {
-  initLoginWithWallet,
-} from '@chronobank/login/redux/network/thunks'
 import FileIcon from 'assets/img/icons/file-white.svg'
 import DeleteIcon from 'assets/img/icons/delete-white.svg'
 import SpinnerGif from 'assets/img/spinningwheel.gif'
@@ -25,36 +17,11 @@ import spinner from 'assets/img/spinningwheel-1.gif'
 import {
   FORM_WALLET_UPLOAD,
 } from '../../redux/actions'
-import {
-  onSubmitWalletUpload,
-  onSubmitWalletUploadFail,
-} from '../../redux/thunks'
 import './LoginWithWallet.scss'
-
-const mapStateToProps = (state) => ({
-  isLoading: state.get('network').isLoading,
-})
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    clearErrors: () => dispatch(clearErrors()),
-    loading: (isLoading) => dispatch(loading(isLoading)),
-    onSubmit: async (values, dispatch, walletString) => {
-      const password = values.get('password')
-
-      await dispatch(onSubmitWalletUpload(walletString, password))
-    },
-    initLoginWithWallet: () => dispatch(initLoginWithWallet()),
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitWalletUploadFail(errors, submitErrors)),
-  }
-}
 
 class LoginWithWallet extends Component {
   static propTypes = {
     isLoading: PropTypes.bool,
-    clearErrors: PropTypes.func,
-    loading: PropTypes.func,
-    initLoginWithWallet: PropTypes.func,
   }
 
   constructor () {
@@ -67,12 +34,7 @@ class LoginWithWallet extends Component {
     }
   }
 
-  componentWillMount (){
-    this.props.initLoginWithWallet()
-  }
-
   handleFileUploaded = (e) => {
-    this.props.clearErrors()
     this.setState({
       isUploading: false,
       isUploaded: true,
@@ -92,7 +54,6 @@ class LoginWithWallet extends Component {
     const reader = new FileReader()
     reader.onload = this.handleFileUploaded
     reader.readAsText(file)
-    this.props.clearErrors()
   }
 
   handleRemoveWallet = () => {
@@ -105,15 +66,15 @@ class LoginWithWallet extends Component {
     this.walletFileUploadInput.value = ''
   }
 
-  async handleSubmitForm (values, dispatch, t, b, c){
+  async handleSubmitForm (values, dispatch){
     const { onSubmit } = this.props
     const { wallet } = this.state
 
-    await onSubmit(values, dispatch, wallet)
+    await onSubmit(wallet)
   }
 
   render () {
-    const { isLoading, handleSubmit, onSubmit, error } = this.props
+    const { handleSubmit, onSubmit, error } = this.props
     const { isUploading, isUploaded, fileName } = this.state
 
     return (
@@ -181,8 +142,8 @@ class LoginWithWallet extends Component {
             styleName='submit'
             buttonType='login'
             type='submit'
-            disabled={isLoading || !isUploaded}
-            label={isLoading ? (
+            disabled={!isUploaded}
+            label={isUploading ? (
               <span styleName='spinner-wrapper'>
                 <img
                   src={spinner}
@@ -207,5 +168,4 @@ class LoginWithWallet extends Component {
   }
 }
 
-const form = reduxForm({ form: FORM_WALLET_UPLOAD })(LoginWithWallet)
-export default connect(mapStateToProps, mapDispatchToProps)(form)
+export default reduxForm({ form: FORM_WALLET_UPLOAD })(LoginWithWallet)

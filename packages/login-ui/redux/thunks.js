@@ -37,15 +37,6 @@ import * as LoginUIActions from './actions'
 /*
  * Thunk dispatched by "" screen.
  * TODO: to add description
- */
-// eslint-disable-next-line no-unused-vars
-export const initAccountNamePage = () => (dispatch) => {
-  // FIXME: empty thunk
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
  * TODO: to replace all onSubmitSubscribeNewsletterSuccess and delete this thunk
  */
 // eslint-disable-next-line no-unused-vars
@@ -287,16 +278,27 @@ export const onSubmitCreateAccountImportMnemonic = (name, password, mnemonic) =>
   }
 
 /*
+ * Thunk dispatched by "" screen.
+ * TODO: to add description
+ * TODO: to remove throws
+ * TODO: to rework it
+ */
+export const onSubmitCreateAccountImportPrivateKey = (name, password, privateKey) =>
+  async (dispatch) => {
+    await dispatch(onSubmitImportAccount({
+      name,
+      password,
+      privateKey,
+    }))
+
+  }
+
+/*
  * Thunk dispatched by
  * LoginWithMnemonic, LoginWithPrivateKey screen.
  */
 export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKey = '' }) =>
   async (dispatch) => {
-    const validateName = dispatch(PersistAccountActions.validateAccountName(name))
-
-    if (!validateName) {
-      throw new SubmissionError({ walletName: 'Wrong wallet name' })
-    }
 
     try {
       let wallet = await dispatch(PersistAccountActions.createAccount({
@@ -308,6 +310,7 @@ export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKe
       }))
 
       dispatch(PersistAccountActions.accountAdd(wallet))
+      dispatch(PersistAccountActions.accountSelect(wallet))
 
     } catch (e) {
       throw new SubmissionError({ _error: e && e.message })
@@ -394,30 +397,42 @@ export const onSubmitWalletUpload = (walletString) =>
       throw new SubmissionError({ _error: 'Broken wallet file' })
     }
 
-    if (restoredWalletJSON && restoredWalletJSON.address) {
-      let response
-
-      try {
-        response = await profileService.getPersonInfo([getAddress(restoredWalletJSON.address, true)])
-      } catch (e) {
-        throw new SubmissionError({ _error: 'Could not receive user profile' })
-      }
-
-      if (response && response.data && response.data[0] && response.data[0].userName) {
-        const profile = response.data[0]
-        const account = createAccountEntry(profile.userName, restoredWalletJSON, profile)
-
-        dispatch(PersistAccountActions.accountAdd(account))
-        dispatch(PersistAccountActions.accountSelect(account))
-        dispatch(LoginUIActions.navigateToLoginPage())
-      } else {
-        dispatch(NetworkActions.setImportedWalletFile(restoredWalletJSON))
-        dispatch(LoginUIActions.navigateToAccountName())
-      }
-    } else {
+    if (!restoredWalletJSON.address) {
       throw new SubmissionError({ _error: 'Wrong wallet address' })
     }
+
+    let response
+
+    try {
+      response = await profileService.getPersonInfo([getAddress(restoredWalletJSON.address, true)])
+    } catch (e) {
+      throw new SubmissionError({ _error: 'Could not receive user profile' })
+    }
+
+    if (response && response.data && response.data[0] && response.data[0].userName) {
+      const profile = response.data[0]
+      const account = createAccountEntry(profile.userName, restoredWalletJSON, profile)
+
+      dispatch(PersistAccountActions.accountAdd(account))
+      dispatch(PersistAccountActions.accountSelect(account))
+      dispatch(LoginUIActions.navigateToLoginPage())
+    } else {
+      dispatch(NetworkActions.setImportedWalletFile(restoredWalletJSON))
+      dispatch(LoginUIActions.navigateToAccountName())
+    }
   }
+
+/*
+ * Thunk dispatched by "" screen.
+ * TODO: to add description
+ * TODO: to move logic to utils
+*/
+export const onCreateWalletFromJSON = (name, walletJSON, profile) => (dispatch) => {
+  const account = createAccountEntry(name, walletJSON, profile)
+
+  dispatch(PersistAccountActions.accountAdd(account))
+
+}
 
 /*
  * Thunk dispatched by "" screen.

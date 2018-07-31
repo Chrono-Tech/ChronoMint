@@ -18,29 +18,23 @@ import {
   navigateToSelectImportMethod,
 } from '@chronobank/login-ui/redux/actions'
 import {
-  LoginWithMnemonicContainer,
-  CreateAccountContainer,
-  GenerateWalletContainer,
+  ResetPasswordContainer,
+  RecoverAccountContainer
 } from '@chronobank/login-ui/components'
 
 function mapDispatchToProps (dispatch) {
   return {
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
-    navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
-    onSubmitCreateAccountImportMnemonic: (name, password, mnemonic) => dispatch(onSubmitCreateAccountImportMnemonic(name, password, mnemonic)),
-  }
+ }
 }
 
-class MnemonicImportPage extends PureComponent {
+class RecoverAccountPage extends PureComponent {
   static PAGES = {
-    MNEMONIC_FORM: 1,
-    CREATE_ACCOUNT_FORM: 2,
-    DOWNLOAD_WALLET_PAGE: 3,
+    MNEMONIC_RESET_FORM: 1,
+    RESET_PASSWORD_FORM: 2,
   }
 
   static propTypes = {
-    previousPage: PropTypes.func.isRequired,
-    nextPage: PropTypes.func.isRequired,
     navigateToSelectWallet: PropTypes.func,
     navigateToSelectImportMethod: PropTypes.func,
     onSubmitCreateAccountImportMnemonic: PropTypes.func,
@@ -50,39 +44,33 @@ class MnemonicImportPage extends PureComponent {
     super(props)
 
     this.state = {
-      page: MnemonicImportPage.PAGES.MNEMONIC_FORM,
+      page: RecoverAccountPage.PAGES.MNEMONIC_RESET_FORM,
       mnemonic: null,
     }
   }
 
   getCurrentPage () {
     switch(this.state.page){
-      case MnemonicImportPage.PAGES.MNEMONIC_FORM:
+      case RecoverAccountPage.PAGES.MNEMONIC_RESET_FORM:
         return (
-          <LoginWithMnemonicContainer
+          <RecoverAccountContainer
             previousPage={this.previousPage.bind(this)}
             onSubmitSuccess={this.onSubmitMnemonic.bind(this)}
           />
         )
 
-      case MnemonicImportPage.PAGES.CREATE_ACCOUNT_FORM:
+      case RecoverAccountPage.PAGES.RESET_PASSWORD_FORM:
         return (
-          <CreateAccountContainer
-            mnemonic={this.state.mnemonic}
+          <ResetPasswordContainer
             previousPage={this.previousPage.bind(this)}
             onSubmit={this.onSubmitCreateAccount.bind(this)}
             onSubmitSuccess={this.onSubmitCreateAccountSuccess.bind(this)}
           />
         )
 
-      case MnemonicImportPage.PAGES.DOWNLOAD_WALLET_PAGE:
-        return (
-          <GenerateWalletContainer />
-        )
-
       default:
         return (
-          <LoginWithMnemonicContainer
+          <RecoverAccountContainer
             previousPage={this.previousPage.bind(this)}
             onSubmitSuccess={this.onSubmitMnemonic.bind(this)}
           />
@@ -90,27 +78,13 @@ class MnemonicImportPage extends PureComponent {
     }
   }
 
-  onSubmitMnemonic ({ mnemonic }) {
-    this.setState({ mnemonic })
-    this.nextPage()
-  }
-
-  async onSubmitCreateAccount ({ walletName, password }) {
-    const { onSubmitCreateAccountImportMnemonic } = this.props
-
-    return onSubmitCreateAccountImportMnemonic(walletName, password, this.state.mnemonic)
-  }
-
-  onSubmitCreateAccountSuccess () {
-    this.props.navigateToSelectWallet()
-  }
 
   nextPage () {
     this.setState ({ page: this.state.page + 1 })
   }
 
   previousPage () {
-    if (this.state.page === MnemonicImportPage.PAGES.MNEMONIC_FORM){
+    if (this.state.page === RecoverAccountPage.PAGES.MNEMONIC_FORM){
       this.props.navigateToSelectImportMethod()
     } else {
       this.setState ({ page: this.state.page - 1 })
@@ -123,4 +97,4 @@ class MnemonicImportPage extends PureComponent {
   }
 }
 
-export default connect(null, mapDispatchToProps)(MnemonicImportPage)
+export default connect(null, mapDispatchToProps)(RecoverAccountPage)

@@ -26,6 +26,9 @@ export function integerWithDelimiter (value: any, withFraction = false, fraction
   return sign + roundedValue.toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, '$1\u00a0')
 }
 
+/**
+ * Get file name from url and local path
+ */
 export function getFileNameFromPath (path): string {
   return path && path.replace(/^.*[\\\/]/, '') || ''
 }

@@ -19,7 +19,7 @@ import './LoginWithMnemonic.scss'
 
 class LoginWithMnemonic extends PureComponent {
   static propTypes = {
-    previousPage: PropTypes.func.isRequired,
+    previousPage: PropTypes.func,
   }
 
   render () {

@@ -8,7 +8,7 @@ import axios from 'axios'
 import { store } from '@chronobank/core-dependencies/configureStore'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
 
-const PROFILE_BACKEND_REST_URL = 'https://localhost:3000/'
+const PROFILE_BACKEND_REST_URL = 'https://backend.profile.tp.ntr1x.com/'
 const basePath = '/api/v1'
 const GET_PERSONS_REST = `${basePath}/security/persons/query`
 const GET_SIGNATURE_REST = `${basePath}/security/signin/signature`

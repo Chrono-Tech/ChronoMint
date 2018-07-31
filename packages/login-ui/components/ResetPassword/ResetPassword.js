@@ -62,64 +62,54 @@ class ResetPasswordPage extends PureComponent {
     initResetPasswordPage: PropTypes.func,
   }
 
-  componentWillMount () {
-    this.props.initResetPasswordPage()
-  }
-
-  get getSelectedWalletName () {
-    const { selectedWallet } = this.props
-    return selectedWallet && selectedWallet.name || ''
-  }
   render () {
     const { handleSubmit, selectedWallet } = this.props
 
     return (
-      <MuiThemeProvider >
-        <form styleName='form' name={FORM_RESET_PASSWORD} onSubmit={handleSubmit}>
+      <form styleName='form' name={FORM_RESET_PASSWORD} onSubmit={handleSubmit}>
 
-          <div styleName='page-title'>
-            <Translate value='ResetPassword.title' />
-          </div>
+        <div styleName='page-title'>
+          <Translate value='ResetPassword.title' />
+        </div>
 
-          <div styleName='user-row'>
-            <UserRow
-              title={getAccountName(selectedWallet)}
-              avatar={getAccountAvatarImg(selectedWallet)}
-              subtitle={getAccountAddress(selectedWallet, true)}
-            />
-          </div>
+        <div styleName='user-row'>
+          <UserRow
+            title={getAccountName(selectedWallet)}
+            avatar={getAccountAvatarImg(selectedWallet)}
+            subtitle={getAccountAddress(selectedWallet, true)}
+          />
+        </div>
 
-          <div styleName='field'>
-            <Field
-              component={TextField}
-              name='password'
-              type='password'
-              label={<Translate value='ResetPassword.password' />}
-              fullWidth
-              {...styles.textField}
-            />
-            <Field
-              component={TextField}
-              name='confirmPassword'
-              type='password'
-              label={<Translate value='ResetPassword.confirmPassword' />}
-              fullWidth
-              {...styles.textField}
-            />
-          </div>
+        <div styleName='field'>
+          <Field
+            component={TextField}
+            name='password'
+            type='password'
+            label={<Translate value='ResetPassword.password' />}
+            fullWidth
+            {...styles.textField}
+          />
+          <Field
+            component={TextField}
+            name='confirmPassword'
+            type='password'
+            label={<Translate value='ResetPassword.confirmPassword' />}
+            fullWidth
+            {...styles.textField}
+          />
+        </div>
 
-          <div styleName='actions'>
-            <Button
-              styleName='button'
-              buttonType='login'
-              type='submit'
-            >
-              <Translate value='ResetPassword.reset' />
-            </Button>
-          </div>
+        <div styleName='actions'>
+          <Button
+            styleName='button'
+            buttonType='login'
+            type='submit'
+          >
+            <Translate value='ResetPassword.reset' />
+          </Button>
+        </div>
 
-        </form>
-      </MuiThemeProvider>
+      </form>
     )
   }
 }

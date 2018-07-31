@@ -4,7 +4,6 @@
  */
 
 import PropTypes from 'prop-types'
-import { MuiThemeProvider } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import React, { Component } from 'react'
@@ -27,11 +26,11 @@ function mapDispatchToProps (dispatch) {
 export default class MnemonicPage extends Component {
   static propTypes = {
     downloadWallet: PropTypes.func,
-    navigateToLoginPage: PropTypes.func,
+    onContinue: PropTypes.func,
   }
 
   render () {
-    const { downloadWallet, navigateToLoginPage } = this.props
+    const { downloadWallet, onContinue } = this.props
 
     return (
       <div styleName='wrapper'>
@@ -57,7 +56,7 @@ export default class MnemonicPage extends Component {
             <Button
               styleName='submit'
               buttonType='login'
-              onClick={navigateToLoginPage}
+              onClick={onContinue}
             >
               <Translate value='GenerateWallet.finish' />
             </Button>

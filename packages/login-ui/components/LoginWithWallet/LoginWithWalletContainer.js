@@ -5,12 +5,11 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
-import { stopSubmit, SubmissionError } from 'redux-form'
+import { stopSubmit } from 'redux-form'
 import {
-  FORM_PRIVATE_KEY_LOGIN_PAGE,
+  FORM_WALLET_UPLOAD,
 } from '../../redux/actions'
-import LoginWithPrivateKey from './LoginWithPrivateKey'
+import LoginWithWallet from './LoginWithWallet'
 
 export default class LoginWithPrivateKeyContainer extends PureComponent {
   static propTypes = {
@@ -18,22 +17,10 @@ export default class LoginWithPrivateKeyContainer extends PureComponent {
     onSubmitSuccess: PropTypes.func,
   }
 
-  handleSubmit (values) {
-    let privateKey = values.get('pk')
+  async handleSubmit (walletString) {
+    const { onSubmit } = this.props
 
-    privateKey = (privateKey || '').trim()
-
-    if (!privateKeyProvider.validatePrivateKey(privateKey)) {
-      throw new SubmissionError({ pk: 'Wrong private key' })
-    }
-
-    if (privateKey.slice(0, 2) === '0x') {
-      privateKey = privateKey.slice(2)
-    }
-
-    return {
-      privateKey,
-    }
+    onSubmit && await onSubmit(walletString)
   }
 
   handleSubmitSuccess (result) {
@@ -43,12 +30,12 @@ export default class LoginWithPrivateKeyContainer extends PureComponent {
   }
 
   handleSubmitFail (errors, dispatch, submitErrors) {
-    dispatch(stopSubmit(FORM_PRIVATE_KEY_LOGIN_PAGE, submitErrors && submitErrors.errors))
+    dispatch(stopSubmit(FORM_WALLET_UPLOAD, submitErrors && submitErrors.errors))
   }
 
   render () {
     return (
-      <LoginWithPrivateKey
+      <LoginWithWallet
         onSubmit={this.handleSubmit.bind(this)}
         onSubmitSuccess={this.handleSubmitSuccess.bind(this)}
         onSubmitFail={this.handleSubmitFail.bind(this)}
