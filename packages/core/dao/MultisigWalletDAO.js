@@ -12,7 +12,6 @@ import Amount from '../models/Amount'
 import TokenModel from '../models/tokens/TokenModel'
 import TxExecModel from '../models/TxExecModel'
 import MultisigTransactionModel from '../models/wallet/MultisigTransactionModel'
-import MultisigWalletPendingTxCollection from '../models/wallet/MultisigWalletPendingTxCollection'
 import MultisigWalletPendingTxModel from '../models/wallet/MultisigWalletPendingTxModel'
 import OwnerModel from '../models/wallet/OwnerModel'
 import { WalletABI } from './abi'
@@ -64,7 +63,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   watchRevoke (callback) {
-    return this.on('MultisigWalletRevoke', (data) => callback(data.returnValues.operation))
+    return this.on('MultisigWalletRevoke', (data) => callback(data.returnValues.operation.toLowerCase()))
   }
 
   watchConfirmation (callback) {
@@ -73,7 +72,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
       if (data.returnValues.owner === '0x') {
         return
       }
-      callback(data.returnValues.operation, data.returnValues.owner)
+      callback(data.returnValues.operation.toLowerCase(), data.returnValues.owner.toLowerCase())
     })
   }
 
@@ -81,9 +80,9 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     return this.on('MultisigWalletConfirmationNeeded', async (tx) => {
       const { operation, initiator, value, to } = tx.returnValues
       callback(new MultisigWalletPendingTxModel({
-        id: operation,
+        id: operation.toLowerCase(),
         value,
-        to,
+        to: to.toLowerCase(),
         isConfirmed: initiator === AbstractContractDAO.getAccount(),
         decodedTx: await this.decodeData(tx.raw.data),
       }))
@@ -93,7 +92,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   watchOwnerAdded (callback) {
     return this.on('MultisigWalletOwnerAdded', async (data) => {
       callback(new OwnerModel({
-        address: data.returnValues.newOwner,
+        address: data.returnValues.newOwner.toLowerCase(),
       }))
     })
   }
@@ -102,7 +101,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     return this.on('MultisigWalletOwnerRemoved', async (data) => {
       // TODO @dkchv: if its me - remove wallet!
       callback(new OwnerModel({
-        address: data.returnValues.oldOwner,
+        address: data.returnValues.oldOwner.toLowerCase(),
       }))
     })
   }
@@ -115,13 +114,13 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   watchRequirementChanged (callback) {
     return this.on('MultisigWalletRequirementChanged', async (data) => {
-      callback(+data.returnValues.newRequirement)
+      callback(+data.returnValues.newRequirement.toLowerCase())
     })
   }
 
   // getters
   async getPendings () {
-    let pendingTxCollection = new MultisigWalletPendingTxCollection()
+    let pendingTxCollection = {}
     const res = await this.contract.methods.getPendings().call()
     const [values, operations, isConfirmed] = Object.values(res)
 
@@ -138,12 +137,12 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
       let pendingTxModel
       pendingTxModel = new MultisigWalletPendingTxModel({
         id,
-        value: values [i],
+        value: new BigNumber(values [i]),
         isConfirmed: isConfirmed[i],
         isPending: verifiedOperations[i] ? verifiedOperations[i].activated : false,
         decodedTx: pendingData[i] ? pendingData[i] : null,
       })
-      pendingTxCollection = pendingTxCollection.add(pendingTxModel)
+      pendingTxCollection[pendingTxModel.id] = pendingTxModel
     })
     return pendingTxCollection
   }
@@ -213,13 +212,13 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   async confirmPendingTx (tx) {
     await this._tx('confirm', [
-      tx.id(),
+      tx.id,
     ])
   }
 
   async revokePendingTx (tx) {
     await this._tx('revoke', [
-      tx.id(),
+      tx.id,
     ], tx.txRevokeSummary())
   }
 

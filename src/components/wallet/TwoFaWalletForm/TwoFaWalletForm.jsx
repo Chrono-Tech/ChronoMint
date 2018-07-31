@@ -21,10 +21,10 @@ import { create2FAWallet, estimateGasFor2FAForm } from '@chronobank/core/redux/m
 import { DUCK_ETH_MULTISIG_WALLET, FORM_2FA_STEPS, FORM_2FA_WALLET } from '@chronobank/core/redux/multisigWallet/constants'
 import OwnerCollection from '@chronobank/core/models/wallet/OwnerCollection'
 import OwnerModel from '@chronobank/core/models/wallet/OwnerModel'
-import MultisigWalletModel from '@chronobank/core/models/wallet/MultisigWalletModel'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
 import { getMarket } from '@chronobank/core/redux/market/selectors'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
+import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import { prefix } from './lang'
 import './TwoFaWalletForm.scss'
 
@@ -64,7 +64,7 @@ function mapDispatchToProps (dispatch) {
       // date
       let releaseTime = new Date(0)
 
-      const wallet = new MultisigWalletModel({
+      const wallet = new MultisigEthWalletModel({
         ...props.initialValues.toJS(),
         ...values.toJS(),
         releaseTime,

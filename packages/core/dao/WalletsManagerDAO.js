@@ -51,6 +51,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   }
 
   // ---------- handlers ---------
+
   /**
    * handler for event "WalletCreated"
    * @param data - Object from blockchain

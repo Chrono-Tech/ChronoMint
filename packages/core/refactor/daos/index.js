@@ -17,7 +17,7 @@ import {
   WalletsManagerABI,
   PlatformsManagerABI,
   TokenManagementInterfaceABI,
-} from '../../../core/dao/abi/'
+} from '../../../core/dao/abi'
 
 import ContractsManagerDAO from './lib/ContractsManagerDAO'
 import AssetHolderDAO from '../../dao/AssetHolderDAO'

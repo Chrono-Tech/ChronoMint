@@ -9,7 +9,6 @@ import Amount from '../Amount'
 import TxHistoryModel from './TxHistoryModel'
 import AllowanceCollection from '../../models/AllowanceCollection'
 import MultisigWalletPendingTxModel from './MultisigWalletPendingTxModel'
-import MultisigWalletPendingTxCollection from './MultisigWalletPendingTxCollection'
 
 const schemaFactory = () => ({
   address: PropTypes.string.isRequired,
@@ -19,7 +18,7 @@ const schemaFactory = () => ({
   transactions: PropTypes.instanceOf(TxHistoryModel),
   owners: PropTypes.arrayOf(PropTypes.string),
   requiredSignatures: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  pendingTxList: PropTypes.instanceOf(MultisigWalletPendingTxCollection),
+  pendingTxList: PropTypes.objectOf(PropTypes.instanceOf(MultisigWalletPendingTxModel)),
   releaseTime: PropTypes.instanceOf(Date),
   customTokens: PropTypes.object,
   deriveNumber: PropTypes.number,
@@ -35,7 +34,7 @@ const defaultProps = {
   balances: {},
   transactions: new TxHistoryModel(),
   owners: [],
-  pendingTxList: new MultisigWalletPendingTxCollection({}),
+  pendingTxList: {},
   customTokens: null,
   isTIMERequired: false,
   allowances: new AllowanceCollection({}),
@@ -53,6 +52,10 @@ export default class MultisigEthWalletModel extends AbstractModel {
     return `${this.blockchain}-${this.address}`
   }
 
+  get pendingCount () {
+    return Object.values(this.pendingTxList).length
+  }
+
   updateBalance (balance: Amount) {
     return new MultisigEthWalletModel({
       ...this,
@@ -63,10 +66,13 @@ export default class MultisigEthWalletModel extends AbstractModel {
     })
   }
 
-  updatePendingTx (PendingTx: MultisigWalletPendingTxModel) {
+  updatePendingTx (pendingTx: MultisigWalletPendingTxModel) {
     return new MultisigEthWalletModel({
       ...this,
-      pendingTxList: this.pendingTxList.update(PendingTx),
+      pendingTxList: {
+        ...this.pendingTxList,
+        [pendingTx.id]: pendingTx,
+      },
     })
   }
 
@@ -118,9 +124,5 @@ export default class MultisigEthWalletModel extends AbstractModel {
       ownersCount: this.owners,
       requiredSignatures: this.requiredSignatures,
     }
-  }
-
-  transform () {
-    return { ...this }
   }
 }

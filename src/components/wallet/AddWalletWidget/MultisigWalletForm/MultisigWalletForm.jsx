@@ -8,10 +8,7 @@ import OwnersList from 'components/wallet/OwnersList/OwnersList'
 import SignaturesList from 'components/wallet/SignaturesList/SignaturesList'
 import Button from 'components/common/ui/Button/Button'
 import { createWallet } from '@chronobank/core/redux/multisigWallet/actions'
-import MultisigWalletModel from '@chronobank/core/models/wallet/MultisigWalletModel'
 import { TextField } from 'redux-form-material-ui'
-import OwnerCollection from '@chronobank/core/models/wallet/OwnerCollection'
-import OwnerModel from '@chronobank/core/models/wallet/OwnerModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -29,7 +26,7 @@ export const FORM_MULTISIG_WALLET_ADD = 'MultisigWalletForm'
 function mapStateToProps (state, ownProps) {
   const selector = formValueSelector(FORM_MULTISIG_WALLET_ADD)
   let owners = selector(state, 'owners')
-  const wallet = ownProps.wallet || new MultisigWalletModel()
+  const wallet = ownProps.wallet || new MultisigEthWalletModel()
 
   return {
     initialValues: wallet.toAddFormJS(),
@@ -93,7 +90,7 @@ export default class MultisigWalletForm extends PureComponent {
     changeSignatures: PropTypes.func,
     requiredSignatures: PropTypes.string,
     createWallet: PropTypes.func,
-    wallet: PropTypes.instanceOf(MultisigWalletModel),
+    wallet: PropTypes.instanceOf(MultisigEthWalletModel),
     ...formPropTypes,
   }
 

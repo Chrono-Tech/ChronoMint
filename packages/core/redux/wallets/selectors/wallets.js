@@ -18,7 +18,7 @@ export const selectWalletsList = createSelector(
   (account, wallets, ethMultisigWallets) => {
     return [
       ...Object.values(wallets)
-        .filter((wallet: WalletModel) => !!wallet.address && !!wallet.blockchain)
+        .filter((wallet: WalletModel) => !(!wallet.address || !wallet.blockchain))
         .filter((wallet: WalletModel) => wallet.isDerived ? wallet.owners.includes(account) : true),
       ...ethMultisigWallets.items(),
     ]

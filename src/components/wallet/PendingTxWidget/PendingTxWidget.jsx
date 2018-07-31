@@ -70,7 +70,7 @@ export default class PendingTxWidget extends PureComponent {
   }
 
   renderIcon (tx: MultisigWalletPendingTxModel) {
-    const func = tx.decodedTx().funcName()
+    const func = tx.decodedTx.funcName()
     let icon = null
     let styleName = ''
     switch (func) {
@@ -99,10 +99,10 @@ export default class PendingTxWidget extends PureComponent {
   }
 
   renderRow (wallet, item: MultisigWalletPendingTxModel) {
-    const isConfirmed = item.isConfirmed()
+    const isConfirmed = item.isConfirmed
 
     return (
-      <div styleName='row' key={item.id()}>
+      <div styleName='row' key={item.id}>
         <div styleName='rowTable'>
           {this.renderIcon(item)}
           <div styleName='values'>
@@ -122,7 +122,7 @@ export default class PendingTxWidget extends PureComponent {
           {wallet.is2FA
             ? (
               <div styleName='actions'>
-                {item.isPending()
+                {item.isPending
                   ? <Preloader />
                   : (
                     <Button
@@ -157,6 +157,7 @@ export default class PendingTxWidget extends PureComponent {
     if (!wallet.isMultisig) {
       return false
     }
+    const showProloader = !wallet
 
     return (
       <div styleName='root' className='PendingTxWidget__root'>
@@ -164,11 +165,10 @@ export default class PendingTxWidget extends PureComponent {
           <Translate value={`${prefix}.title`} />
         </div>
         <div styleName='body'>
-          {!wallet
-            ? <Preloader />
-            : wallet.pendingTxList.size() > 0
-              ? wallet.pendingTxList.items().map((item) => this.renderRow(wallet, item))
-              : <Translate value={`${prefix}.noTransfers`} />
+          {showProloader && <Preloader />}
+          {wallet && wallet.pendingCount > 0
+            ? Object.values(wallet.pendingTxList).map((item) => this.renderRow(wallet, item))
+            : <Translate value={`${prefix}.noTransfers`} />
           }
         </div>
       </div>

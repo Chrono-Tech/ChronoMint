@@ -243,7 +243,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   if (token.blockchain() && !token.isERC20()) {
     let wallet = getMainWalletForBlockchain(token.blockchain())(getState())
     if (wallet && wallet.address) {
-      dispatch(getTransactionsForWallet({
+      dispatch(getTransactionsForMainWallet({
         wallet,
         address: wallet.address,
         blockchain: token.blockchain(),
@@ -528,19 +528,7 @@ export const resetWalletsForm = () => (dispatch) => {
   dispatch(change(FORM_ADD_NEW_WALLET, 'ethWalletType', null))
 }
 
-/**
- * Format data for transaction widget
- *
- * @param wallet - WalletModel
- * @param address - string
- * @param blockchain - string
- * @returns {function(*, *): *}
- */
-export const formatDataAndGetTransactionsForWallet = ({ wallet, address, blockchain }) => async (dispatch) => {
-  return dispatch(getTransactionsForWallet({ wallet, address, blockchain }))
-}
-
-export const getTransactionsForWallet = ({ wallet, forcedOffset }) => async (dispatch, getState) => {
+export const getTransactionsForMainWallet = ({ wallet, forcedOffset }) => async (dispatch, getState) => {
   if (!wallet) {
     return null
   }
@@ -557,6 +545,17 @@ export const getTransactionsForWallet = ({ wallet, forcedOffset }) => async (dis
         }),
     }),
   })
+
+  const transactions = await getTxList({ wallet, forcedOffset, tokens })
+
+  const newWallet = getWallet(wallet.id)(getState())
+  dispatch({
+    type: WALLETS_UPDATE_WALLET,
+    wallet: new WalletModel({ ...newWallet, transactions }),
+  })
+}
+
+export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
 
   let transactions: TxHistoryModel = new TxHistoryModel({ ...wallet.transactions }) || new TxHistoryModel()
   const offset = forcedOffset ? 0 : (transactions.transactions.length || 0)
@@ -610,9 +609,5 @@ export const getTransactionsForWallet = ({ wallet, forcedOffset }) => async (dis
     }
   }
 
-  const newWallet = getWallet(wallet.id)(getState())
-  dispatch({
-    type: WALLETS_UPDATE_WALLET,
-    wallet: new WalletModel({ ...newWallet, transactions: new TxHistoryModel({ ...transactions, blocks, endOfList }) }),
-  })
+  return new TxHistoryModel({ ...transactions, blocks, endOfList })
 }

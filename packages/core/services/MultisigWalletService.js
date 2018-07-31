@@ -8,7 +8,6 @@ import EventEmitter from 'events'
 import OwnerModel from '../models/wallet/OwnerModel'
 import MultisigWalletDAO from '../dao/MultisigWalletDAO'
 import type MultisigTransactionModel from '../models/wallet/MultisigTransactionModel'
-import type MultisigWalletModel from '../models/wallet/MultisigWalletModel'
 import MultisigWalletPendingTxModel from '../models/wallet/MultisigWalletPendingTxModel'
 import {
   EE_CONFIRMATION,
@@ -21,6 +20,7 @@ import {
   EE_REVOKE,
   EE_SINGLE_TRANSACTION,
 } from './constants'
+import MultisigEthWalletModel from '../models/wallet/MultisigEthWalletModel'
 
 class MultisigWalletService extends EventEmitter {
 
@@ -44,12 +44,9 @@ class MultisigWalletService extends EventEmitter {
     return newDAO
   }
 
-  subscribeToWalletDAO (wallet: MultisigWalletModel): Promise {
+  subscribeToWalletDAO (wallet: MultisigEthWalletModel): Promise {
     const address = wallet.address
     const dao = this.getWalletDAO(address)
-
-    // TODO @abdulov remove console.log
-    console.log('%c subscribeToWalletDAO', 'background: #222; color: #fff', address, dao)
 
     if (!dao) {
       // eslint-disable-next-line
@@ -58,43 +55,27 @@ class MultisigWalletService extends EventEmitter {
 
     return Promise.all([
       dao.watchOwnerAdded((owner: OwnerModel) => {
-        // TODO @abdulov remove console.log
-        console.log('%c watchOwnerAdded', 'background: #222; color: #fff')
         this.emit(EE_OWNER_ADDED, wallet.id, owner)
       }),
       dao.watchOwnerRemoved((owner: OwnerModel) => {
-        // TODO @abdulov remove console.log
-        console.log('%c watchOwnerRemoved', 'background: #222; color: #fff')
         this.emit(EE_OWNER_REMOVED, wallet.id, owner)
       }),
       dao.watchMultiTransact((multisigTransactionModel: MultisigTransactionModel) => {
-        // TODO @abdulov remove console.log
-        console.log('%c watchMultiTransact', 'background: #222; color: #fff')
         this.emit(EE_MULTI_TRANSACTION, wallet.id, multisigTransactionModel)
       }),
       dao.watchSingleTransact((result) => {
-        // TODO @abdulov remove console.log
-        console.log('%c watchSingleTransact', 'background: #222; color: #fff')
         this.emit(EE_SINGLE_TRANSACTION, result)
       }),
       dao.watchConfirmationNeeded((pendingTxModel) => {
-        // TODO @abdulov remove console.log
-        console.log('%c watchConfirmationNeeded', 'background: #222; color: #fff')
         this.emit(EE_CONFIRMATION_NEEDED, wallet.id, pendingTxModel)
       }),
       dao.watchDeposit(() => {
-        // TODO @abdulov remove console.log
-        console.log('%c watchDeposit', 'background: #222; color: #fff')
         this.emit(EE_DEPOSIT, wallet.id, 'ETH')
       }),
       dao.watchRevoke((id) => {
-        // TODO @abdulov remove console.log
-        console.log('%c watchRevoke', 'background: #222; color: #fff')
         this.emit(EE_REVOKE, wallet.id, id)
       }),
       dao.watchConfirmation((id, owner) => {
-        // TODO @abdulov remove console.log
-        console.log('%c watchConfirmation', 'background: #222; color: #fff')
         this.emit(EE_CONFIRMATION, wallet.id, id, owner)
       }),
       dao.watchError((errorCode) => {

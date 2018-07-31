@@ -4,11 +4,11 @@
  */
 import Button from 'components/common/ui/Button/Button'
 import { createWallet } from '@chronobank/core/redux/multisigWallet/actions'
-import MultisigWalletModel from '@chronobank/core/models/wallet/MultisigWalletModel'
 import { TextField, TimePicker } from 'redux-form-material-ui'
 import DatePicker from 'components/common/DatePicker'
 import OwnerCollection from '@chronobank/core/models/wallet/OwnerCollection'
 import OwnerModel from '@chronobank/core/models/wallet/OwnerModel'
+import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -24,7 +24,7 @@ export const FORM_TIME_LOCKED_WALLET_ADD = 'TimeLockedWalletForm'
 function mapStateToProps (state, ownProps) {
   const selector = formValueSelector(FORM_TIME_LOCKED_WALLET_ADD)
   let owners = selector(state, 'owners')
-  const wallet = ownProps.wallet || new MultisigWalletModel()
+  const wallet = ownProps.wallet || new MultisigEthWalletModel()
 
   return {
     initialValues: wallet.toAddFormJS(),
@@ -63,7 +63,7 @@ function mapDispatchToProps (dispatch) {
         ))
       }
 
-      const wallet = new MultisigWalletModel({
+      const wallet = new MultisigEthWalletModel({
         ...props.initialValues.toJS(),
         ...values.toJS(),
         releaseTime,

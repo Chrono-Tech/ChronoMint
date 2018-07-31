@@ -50,8 +50,4 @@ export default class WalletModel extends AbstractModel {
   get id () {
     return `${this.blockchain}-${this.address}`
   }
-
-  transform () {
-    return { ...this }
-  }
 }

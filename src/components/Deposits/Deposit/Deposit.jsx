@@ -8,7 +8,7 @@ import PropTypes from 'prop-types'
 import Amount from '@chronobank/core/models/Amount'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { getTransactionsForWallet, TIME } from '@chronobank/core/redux/mainWallet/actions'
+import { TIME } from '@chronobank/core/redux/mainWallet/actions'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
 import { getDeposit } from '@chronobank/core/redux/mainWallet/selectors'
@@ -23,6 +23,7 @@ import TransactionsTable from 'components/dashboard/TransactionsTable/Transactio
 import TransactionsCollection from '@chronobank/core/models/wallet/TransactionsCollection'
 import { getWallet } from '@chronobank/core/redux/wallets/selectors/models'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
+import { formatDataAndGetTransactionsForWallet } from '@chronobank/core/redux/wallet/actions'
 
 import { prefix } from './lang'
 import './Deposit.scss'
@@ -46,7 +47,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     addDeposit: (props) => dispatch(modalsOpen({ component: DepositTokensModal, props })),
-    getTransactions: (params) => dispatch(getTransactionsForWallet(params)),
+    getTransactions: (params) => dispatch(formatDataAndGetTransactionsForWallet(params)),
   }
 }
 

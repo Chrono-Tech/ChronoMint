@@ -22,7 +22,7 @@ export const selectWallet = () => createSelector(
         blockchain: wallet.blockchain,
         name: wallet.name,
         requiredSignatures: wallet.requiredSignatures,
-        pendingCount: wallet.pendingTxList.size(),
+        pendingCount: wallet.pendingCount,
         isMultisig: wallet.isMultisig,
         isTimeLocked: wallet.isTimeLocked,
         owners: wallet.owners ? wallet.owners.map((owner: OwnerModel) => owner) : null,

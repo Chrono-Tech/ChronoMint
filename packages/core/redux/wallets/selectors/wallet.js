@@ -5,22 +5,20 @@
 
 import { createSelector } from 'reselect'
 import { getMainSymbolForBlockchain } from '../../../redux/tokens/selectors'
-import { getWallets } from './models'
+import { getWallet } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
 import Amount from '../../../models/Amount'
-import { getEthMultisigWallets } from '../../multisigWallet/selectors/models'
+import { getEthMultisigWallet } from '../../multisigWallet/selectors/models'
 import MultisigEthWalletModel from '../../../models/wallet/MultisigEthWalletModel'
 
 export const selectWallet = (blockchain, address) => createSelector(
   [
-    getWallets,
-    getEthMultisigWallets,
+    getWallet(`${blockchain}-${address}`),
+    getEthMultisigWallet(`${blockchain}-${address}`),
   ],
-  (wallets, ethMultisigWallets) => {
+  (wallet, ethMultisigWallet) => {
     const mainSymbol = getMainSymbolForBlockchain(blockchain)
-    const walletId = `${blockchain}-${address}`
 
-    let wallet: WalletModel = wallets[walletId]
     if (wallet) {
       const balance: Amount = wallet ? wallet.balances[mainSymbol] : new Amount(0, mainSymbol)
       return new WalletModel({
@@ -28,13 +26,13 @@ export const selectWallet = (blockchain, address) => createSelector(
         amount: balance,
       })
     }
-    wallet = ethMultisigWallets.item(walletId)
-    const balance: Amount = wallet ? wallet.balances[mainSymbol] : new Amount(0, mainSymbol)
-    return new MultisigEthWalletModel({
-      ...wallet,
-      amount: balance,
-    })
-
+    if (ethMultisigWallet) {
+      const balance: Amount = ethMultisigWallet ? ethMultisigWallet.balances[mainSymbol] : new Amount(0, mainSymbol)
+      return new MultisigEthWalletModel({
+        ...ethMultisigWallet,
+        amount: balance,
+      })
+    }
   },
 )
 
@@ -44,5 +42,7 @@ export const getWalletInfo = (blockchain, address) => createSelector(
   ],
   (
     wallet,
-  ) => wallet,
+  ) => {
+    return wallet
+  },
 )
