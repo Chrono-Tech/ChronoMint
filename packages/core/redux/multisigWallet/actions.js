@@ -261,7 +261,7 @@ export const createWallet = (wallet: MultisigEthWalletModel) => (dispatch, getSt
   try {
     const walletsManagerDAO = daoByType('WalletsManager')(getState())
     walletsManagerDAO.createWallet(wallet)
-    dispatch(updateEthMultisigWallet(wallet.isPending(true)))
+    dispatch(updateEthMultisigWallet(new MultisigEthWalletModel({ ...wallet, isPending: true })))
   } catch (e) {
     // eslint-disable-next-line
     console.error('create wallet error', e.message)
@@ -272,7 +272,7 @@ export const create2FAWallet = (wallet: MultisigEthWalletModel, feeMultiplier) =
   try {
     const walletsManagerDAO = daoByType('WalletsManager')(getState())
     const txHash = await walletsManagerDAO.create2FAWallet(wallet, feeMultiplier)
-    dispatch(updateEthMultisigWallet(wallet.isPending(true).transactionHash(txHash)))
+    dispatch(updateEthMultisigWallet(new MultisigEthWalletModel({ ...wallet, isPending: true, transactionHash: txHash })))
     return txHash
   } catch (e) {
     // eslint-disable-next-line
@@ -401,7 +401,7 @@ export const check2FAChecked = () => async (dispatch) => {
 
 export const updatePendingTx = (walletAddress: string, tx: MultisigWalletPendingTxModel) => (dispatch, getState) => {
   const wallet = getMultisigWallets(getState()).item(walletAddress)
-  dispatch(updateEthMultisigWallet(wallet.updatePendingTx(tx.isPending(true))))
+  dispatch(updateEthMultisigWallet(wallet.updatePendingTx(new MultisigWalletPendingTxModel({ ...tx, isPending: true }))))
 }
 
 export const checkConfirm2FAtx = (txAddress, callback) => {

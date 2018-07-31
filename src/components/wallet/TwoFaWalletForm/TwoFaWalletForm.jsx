@@ -8,7 +8,7 @@ import web3Converter from '@chronobank/core/utils/Web3Converter'
 import React, { PureComponent } from 'react'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
 import { push } from 'react-router-redux'
-import { change, Field, formValueSelector, reduxForm } from 'redux-form/immutable'
+import { Field, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Slider } from 'redux-form-material-ui'
@@ -17,14 +17,11 @@ import PropTypes from 'prop-types'
 import TWO_FA_LOGO_PNG from 'assets/img/2fa/2-fa.png'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import Preloader from 'components/common/Preloader/Preloader'
-import { create2FAWallet, estimateGasFor2FAForm } from '@chronobank/core/redux/multisigWallet/actions'
+import { estimateGasFor2FAForm } from '@chronobank/core/redux/multisigWallet/actions'
 import { DUCK_ETH_MULTISIG_WALLET, FORM_2FA_STEPS, FORM_2FA_WALLET } from '@chronobank/core/redux/multisigWallet/constants'
-import OwnerCollection from '@chronobank/core/models/wallet/OwnerCollection'
-import OwnerModel from '@chronobank/core/models/wallet/OwnerModel'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
 import { getMarket } from '@chronobank/core/redux/market/selectors'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
-import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import { prefix } from './lang'
 import './TwoFaWalletForm.scss'
 
@@ -54,27 +51,6 @@ function mapDispatchToProps (dispatch) {
   return {
     handleGoWallets: () => dispatch(goToWallets()),
     handleGoTo2FA: () => dispatch(push('/2fa')),
-    onSubmit: (values, dispatch, props) => {
-      // owners
-      let ownersCollection = new OwnerCollection()
-      ownersCollection = ownersCollection.add(new OwnerModel({
-        address: props.account,
-      }))
-
-      // date
-      let releaseTime = new Date(0)
-
-      const wallet = new MultisigEthWalletModel({
-        ...props.initialValues.toJS(),
-        ...values.toJS(),
-        releaseTime,
-        is2FA: true,
-        owners: ownersCollection,
-      })
-
-      dispatch(create2FAWallet(wallet, values.get('feeMultiplier')))
-      dispatch(change(FORM_2FA_WALLET, 'step', FORM_2FA_STEPS[1]))
-    },
   }
 }
 

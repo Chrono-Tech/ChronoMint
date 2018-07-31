@@ -58,7 +58,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
    * @returns {Promise<void>}
    */
   async handleWalletCreate (data) {
-    const walletDAO: MultisigWalletDAO = await multisigWalletService.createWalletDAO(data.returnValues.wallet, this.web3, this.history)
+    const walletDAO: MultisigWalletDAO = await multisigWalletService.createWalletDAO(data.returnValues.wallet, this.web3, this.history._address)
     const is2FA = await walletDAO.use2FA()
     await this._createWalletModel(data.returnValues.wallet, is2FA, data.transactionHash)
   }

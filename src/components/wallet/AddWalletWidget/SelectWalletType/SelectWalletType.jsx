@@ -10,11 +10,11 @@ import classnames from 'classnames'
 import { Translate } from 'react-redux-i18n'
 import { IPFSImage } from 'components'
 import { TOKEN_ICONS } from 'assets'
-import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
 import { BTC, createNewChildAddress, ETH, goToWallets, LTC, resetWalletsForm, XEM, WAVES } from '@chronobank/core/redux/mainWallet/actions'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
 import { BLOCKCHAIN_NEM } from '@chronobank/core/dao/NemDAO'
 import { BLOCKCHAIN_WAVES } from '@chronobank/core/dao/WavesDAO'
+import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/constants'
 
 import './SelectWalletType.scss'
 import { prefix } from '../lang'
@@ -54,8 +54,7 @@ export default class SelectWalletType extends PureComponent {
     const wallets = [
       {
         blockchain: BLOCKCHAIN_BITCOIN,
-        symbol: BTC,
-        title: `${prefix}.btc`,
+        symbol: BTC, title: `${prefix}.btc`,
       },
       {
         blockchain: BLOCKCHAIN_LITECOIN,

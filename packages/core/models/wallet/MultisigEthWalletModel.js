@@ -9,10 +9,11 @@ import Amount from '../Amount'
 import TxHistoryModel from './TxHistoryModel'
 import AllowanceCollection from '../../models/AllowanceCollection'
 import MultisigWalletPendingTxModel from './MultisigWalletPendingTxModel'
+import { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
 
 const schemaFactory = () => ({
-  address: PropTypes.string.isRequired,
-  blockchain: PropTypes.string.isRequired,
+  address: PropTypes.string,
+  blockchain: PropTypes.string,
   name: PropTypes.string,
   balances: PropTypes.object,
   transactions: PropTypes.instanceOf(TxHistoryModel),
@@ -38,6 +39,7 @@ const defaultProps = {
   customTokens: null,
   isTIMERequired: false,
   allowances: new AllowanceCollection({}),
+  blockchain: BLOCKCHAIN_ETHEREUM,
 }
 
 export default class MultisigEthWalletModel extends AbstractModel {
@@ -79,10 +81,12 @@ export default class MultisigEthWalletModel extends AbstractModel {
   // forms
 
   toAddFormJS () {
-    const time = this.releaseTime.getTime() === 0 ? new Date() : this.releaseTime
+    const time = !this.releaseTime || this.releaseTime.getTime() === 0
+      ? new Date()
+      : this.releaseTime
 
     return {
-      requiredSignatures: this.requiredSignatures,
+      requiredSignatures: `${this.requiredSignatures || 0}`,
       owners: this.owners,
       timeLockDate: time,
       timeLockTime: time,

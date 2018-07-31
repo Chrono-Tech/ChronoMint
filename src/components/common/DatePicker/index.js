@@ -4,7 +4,6 @@
  */
 
 import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
 import moment from 'moment/moment'
 import DatePicker from 'material-ui-pickers/DatePicker'
 import MomentUtils from 'material-ui-pickers/utils/moment-utils'
@@ -26,7 +25,6 @@ export default class DatePickerWrapper extends PureComponent {
           {...props}
           value={input.value ? moment(input.value) : null}
           onChange={this.handleChange}
-          style={{ width: '230px' }}
         />
       </MuiPickersUtilsProvider>
     )

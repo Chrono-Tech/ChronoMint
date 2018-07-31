@@ -3,18 +3,15 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import uuid from 'uuid/v1'
 import OwnersList from 'components/wallet/OwnersList/OwnersList'
 import SignaturesList from 'components/wallet/SignaturesList/SignaturesList'
 import Button from 'components/common/ui/Button/Button'
-import { createWallet } from '@chronobank/core/redux/multisigWallet/actions'
 import { TextField } from 'redux-form-material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { change, Field, FieldArray, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
-import { goToWallets, resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import { prefix } from './lang'
@@ -31,7 +28,7 @@ function mapStateToProps (state, ownProps) {
   return {
     initialValues: wallet.toAddFormJS(),
     isTimeLocked: selector(state, 'isTimeLocked'),
-    requiredSignatures: +selector(state, 'requiredSignatures'),
+    requiredSignatures: selector(state, 'requiredSignatures'),
     is2FA: selector(state, 'is2FA'),
     ownersCount: owners ? owners.size + 1 : 1,
     account: state.get(DUCK_SESSION).account,
@@ -42,41 +39,6 @@ function mapStateToProps (state, ownProps) {
 function mapDispatchToProps (dispatch) {
   return {
     changeSignatures: (count) => dispatch(change(FORM_MULTISIG_WALLET_ADD, 'requiredSignatures', count)),
-    onSubmit: (values, dispatch, props) => {
-      // owners
-      const owners = values.get('owners')
-      let ownersCollection = []
-      ownersCollection.push(props.account)
-      owners.forEach(({ address }) => {
-        ownersCollection.push(address)
-      })
-
-      // date
-      let releaseTime = new Date(0)
-      const isTimeLocked = values.get('isTimeLocked')
-      if (isTimeLocked) {
-        const date = values.get('timeLockDate')
-        const time = values.get('timeLockTime')
-        releaseTime = new Date(date.setHours(
-          time.getHours(),
-          time.getMinutes(),
-          time.getSeconds(),
-          time.getMilliseconds(),
-        ))
-      }
-
-      const wallet = new MultisigEthWalletModel({
-        ...props.initialValues.toJS(),
-        ...values.toJS(),
-        releaseTime,
-        owners: ownersCollection,
-        address: uuid(),
-      })
-
-      dispatch(createWallet(wallet))
-      dispatch(goToWallets())
-      dispatch(resetWalletsForm())
-    },
   }
 }
 
@@ -88,7 +50,7 @@ export default class MultisigWalletForm extends PureComponent {
     is2FA: PropTypes.bool,
     ownersCount: PropTypes.number,
     changeSignatures: PropTypes.func,
-    requiredSignatures: PropTypes.string,
+    requiredSignatures: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     createWallet: PropTypes.func,
     wallet: PropTypes.instanceOf(MultisigEthWalletModel),
     ...formPropTypes,
@@ -111,7 +73,7 @@ export default class MultisigWalletForm extends PureComponent {
               component={TextField}
               name='name'
               fullWidth
-              floatingLabelText={<Translate value={`${prefix}.name`} />}
+              label={<Translate value={`${prefix}.name`} />}
             />
           </div>
           <div styleName='block'>

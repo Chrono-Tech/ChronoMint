@@ -2,19 +2,17 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
+
 import Button from 'components/common/ui/Button/Button'
-import { createWallet } from '@chronobank/core/redux/multisigWallet/actions'
-import { TextField, TimePicker } from 'redux-form-material-ui'
+import { TextField } from 'redux-form-material-ui'
 import DatePicker from 'components/common/DatePicker'
-import OwnerCollection from '@chronobank/core/models/wallet/OwnerCollection'
-import OwnerModel from '@chronobank/core/models/wallet/OwnerModel'
+import TimePicker from 'components/common/TimePicker'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
-import { goToWallets, resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
 import { prefix } from './lang'
 import './TimeLockedWalletForm.scss'
@@ -28,7 +26,7 @@ function mapStateToProps (state, ownProps) {
 
   return {
     initialValues: wallet.toAddFormJS(),
-    requiredSignatures: +selector(state, 'requiredSignatures'),
+    requiredSignatures: selector(state, 'requiredSignatures'),
     is2FA: selector(state, 'is2FA'),
     ownersCount: owners ? owners.size + 1 : 1,
     account: state.get(DUCK_SESSION).account,
@@ -39,41 +37,6 @@ function mapStateToProps (state, ownProps) {
 function mapDispatchToProps (dispatch) {
   return {
     changeSignatures: (count) => dispatch(change(FORM_TIME_LOCKED_WALLET_ADD, 'requiredSignatures', count)),
-    onSubmit: (values, dispatch, props) => {
-      // owners
-      const owners = values.get('owners')
-      let ownersCollection = new OwnerCollection()
-      ownersCollection = ownersCollection.add(new OwnerModel({
-        address: props.account,
-      }))
-      owners.forEach(({ address }) => {
-        ownersCollection = ownersCollection.add(new OwnerModel({ address }))
-      })
-
-      // date
-      let releaseTime = new Date(0)
-      const date = values.get('timeLockDate')
-      const time = values.get('timeLockTime')
-      if (date && time) {
-        releaseTime = new Date(date.setHours(
-          time.getHours(),
-          time.getMinutes(),
-          time.getSeconds(),
-          time.getMilliseconds(),
-        ))
-      }
-
-      const wallet = new MultisigEthWalletModel({
-        ...props.initialValues.toJS(),
-        ...values.toJS(),
-        releaseTime,
-        owners: ownersCollection,
-      })
-
-      dispatch(createWallet(wallet))
-      dispatch(goToWallets())
-      dispatch(resetWalletsForm())
-    },
   }
 }
 
@@ -100,7 +63,7 @@ export default class TimeLockedWalletForm extends PureComponent {
               component={TextField}
               name='name'
               fullWidth
-              floatingLabelText={<Translate value={`${prefix}.name`} />}
+              label={<Translate value={`${prefix}.name`} />}
             />
           </div>
           <div styleName='block'>
@@ -111,7 +74,7 @@ export default class TimeLockedWalletForm extends PureComponent {
                 <Field
                   component={DatePicker}
                   name='timeLockDate'
-                  floatingLabelText={<Translate value={`${prefix}.date`} />}
+                  label={<Translate value={`${prefix}.date`} />}
                   fullWidth
                 />
               </div>
@@ -119,7 +82,7 @@ export default class TimeLockedWalletForm extends PureComponent {
                 <Field
                   component={TimePicker}
                   name='timeLockTime'
-                  floatingLabelText={<Translate value={`${prefix}.time`} />}
+                  label={<Translate value={`${prefix}.time`} />}
                   fullWidth
                 />
               </div>
