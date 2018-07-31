@@ -7,31 +7,24 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import {
-  onSubmitMnemonicLoginForm,
-  onSubmitMnemonicLoginFormSuccess,
-  onSubmitMnemonicLoginFormFail,
+  onSubmitCreateAccountImportMnemonic,
 } from '@chronobank/login-ui/redux/thunks'
 import {
-  FORM_MNEMONIC_LOGIN_PAGE,
+  navigateToSelectWallet,
+  navigateToSelectImportMethod,
 } from '@chronobank/login-ui/redux/actions'
 import {
-  LoginWithMnemonic,
-  CreateAccount,
+  LoginWithMnemonicContainer,
+  CreateAccountContainer,
 } from '@chronobank/login-ui/components'
-
-import './MnemonicImportPage.scss'
 
 function mapDispatchToProps (dispatch) {
   return {
-    onSubmitMnemonicForm: async (values) => {
-      const confirmMnemonic = values.get('mnemonic')
-      await dispatch(onSubmitMnemonicLoginForm(confirmMnemonic))
-    },
-    onSubmitSuccessMnemonicForm: () => dispatch(onSubmitMnemonicLoginFormSuccess()),
-    onSubmitFailMnemonicForm: (errors, dispatch, submitErrors) => dispatch(onSubmitMnemonicLoginFormFail(errors, submitErrors)),
+    navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
+    navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
+    onSubmitCreateAccountImportMnemonic: (name, password, mnemonic) => dispatch(onSubmitCreateAccountImportMnemonic(name, password, mnemonic)),
   }
 }
-
 
 class MnemonicImportPage extends PureComponent {
   static PAGES = {
@@ -39,7 +32,15 @@ class MnemonicImportPage extends PureComponent {
     CREATE_ACCOUNT_FORM: 2,
   }
 
-  constructor (props){
+  static propTypes = {
+    previousPage: PropTypes.func.isRequired,
+    nextPage: PropTypes.func.isRequired,
+    navigateToSelectWallet: PropTypes.func,
+    navigateToSelectImportMethod: PropTypes.func,
+    onSubmitCreateAccountImportMnemonic: PropTypes.func,
+  }
+
+  constructor (props) {
     super(props)
 
     this.nextPage = this.nextPage.bind(this)
@@ -47,43 +48,64 @@ class MnemonicImportPage extends PureComponent {
 
     this.state = {
       page: MnemonicImportPage.PAGES.MNEMONIC_FORM,
+      mnemonic: null,
     }
   }
 
-  nextPage () {
-    if (this.state.page === MnemonicImportPage.PAGES.CREATE_ACCOUNT_FORM) {
-      this.props.nextPage()
-    } else {
-      this.setState({ page: this.state.page + 1 })
-    }
-
-  }
-
-  previousPage () {
-    if (this.state.page === MnemonicImportPage.PAGES.MNEMONIC_FORM) {
-      this.props.previousPage()
-    } else {
-      this.setState({ page: this.state.page - 1 })
-    }
-
-  }
-
-  getCurrentPage (){
+  getCurrentPage () {
     switch(this.state.page){
       case MnemonicImportPage.PAGES.MNEMONIC_FORM:
         return (
-          <LoginWithMnemonic />
+          <LoginWithMnemonicContainer
+            previousPage={this.previousPage.bind(this)}
+            onSubmitSuccess={this.onSubmitMnemonic.bind(this)}
+          />
         )
 
       case MnemonicImportPage.PAGES.CREATE_ACCOUNT_FORM:
         return (
-          <CreateAccount />
+          <CreateAccountContainer
+            mnemonic={this.state.mnemonic}
+            previousPage={this.previousPage.bind(this)}
+            onSubmit={this.onSubmitCreateAccount.bind(this)}
+            onSubmitSuccess={this.onSubmitCreateAccountSuccess.bind(this)}
+          />
         )
 
       default:
         return (
-          <LoginWithMnemonic />
+          <LoginWithMnemonicContainer
+            previousPage={this.previousPage.bind(this)}
+            onSubmitSuccess={this.onSubmitMnemonic.bind(this)}
+          />
         )
+    }
+  }
+
+  onSubmitMnemonic ({ mnemonic }) {
+    this.setState({ mnemonic })
+    this.nextPage()
+  }
+
+  async onSubmitCreateAccount ({ walletName, password }) {
+    const { onSubmitCreateAccountImportMnemonic } = this.props
+
+    return onSubmitCreateAccountImportMnemonic(walletName, password, this.state.mnemonic)
+  }
+
+  onSubmitCreateAccountSuccess () {
+    this.props.navigateToSelectWallet()
+  }
+
+  nextPage () {
+    this.setState ({ page: this.state.page + 1 })
+  }
+
+  previousPage () {
+    if (this.state.page === MnemonicImportPage.PAGES.MNEMONIC_FORM){
+      this.props.navigateToSelectImportMethod()
+    } else {
+      this.setState ({ page: this.state.page - 1 })
     }
   }
 

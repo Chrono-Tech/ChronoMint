@@ -12,11 +12,6 @@ import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
 import {
-  onSubmitMnemonicLoginForm,
-  onSubmitMnemonicLoginFormSuccess,
-  onSubmitMnemonicLoginFormFail,
-} from '../../redux/thunks'
-import {
   FORM_MNEMONIC_LOGIN_PAGE,
 } from '../../redux/actions'
 import validate from './validate'
@@ -24,12 +19,11 @@ import './LoginWithMnemonic.scss'
 
 class LoginWithMnemonic extends PureComponent {
   static propTypes = {
-    previousPage: PropTypes.func,
-    nextPage: PropTypes.func,
+    previousPage: PropTypes.func.isRequired,
   }
 
   render () {
-    const { handleSubmit, error } = this.props
+    const { handleSubmit, error, previousPage } = this.props
 
     return (
       <form styleName='form' name={FORM_MNEMONIC_LOGIN_PAGE} onSubmit={handleSubmit}>
@@ -67,7 +61,7 @@ class LoginWithMnemonic extends PureComponent {
 
           <Translate value='LoginWithMnemonic.or' />
           <br />
-          <Link to='/login/import-methods' href styleName='link'>
+          <Link onClick={previousPage} styleName='link'>
             <Translate value='LoginWithMnemonic.back' />
           </Link>
         </div>

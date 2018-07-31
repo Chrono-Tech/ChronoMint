@@ -22,32 +22,13 @@ import {
 import validate from './validate'
 import './CreateAccount.scss'
 
-function mapStateToProps (state) {
-  return {
-    isImportMode: state.get('network').importAccountMode,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    onSubmit: async (values) => {
-      const walletName = values.get('walletName')
-      const password = values.get('password')
-
-      await dispatch(onSubmitCreateAccountPage(walletName, password))
-    },
-    onSubmitSuccess: () => dispatch(onSubmitCreateAccountPageSuccess()),
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitCreateAccountPageFail(errors, submitErrors)),
-  }
-}
-
-class CreateAccountPage extends PureComponent {
+class CreateAccount extends PureComponent {
   static propTypes = {
     isImportMode: PropTypes.bool,
   }
 
   render () {
-    const { handleSubmit, pristine, valid, initialValues, error, isImportMode } = this.props
+    const { handleSubmit, pristine, valid, initialValues, error } = this.props
 
     return (
       <form styleName='form' name={FORM_CREATE_ACCOUNT} onSubmit={handleSubmit}>
@@ -104,6 +85,5 @@ class CreateAccountPage extends PureComponent {
   }
 }
 
-const form = reduxForm({ form: FORM_CREATE_ACCOUNT, validate })(CreateAccountPage)
-export default connect(mapStateToProps, mapDispatchToProps)(form)
+export default reduxForm({ form: FORM_CREATE_ACCOUNT, validate })(CreateAccount)
 

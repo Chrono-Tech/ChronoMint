@@ -149,7 +149,7 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
     profile: null,
   })
 
-  const newAccounts = await dispatch(setProfilesForAccounts([entry]))
+  const newAccounts = dispatch(setProfilesForAccounts([entry]))
 
   return newAccounts[0] || entry
 

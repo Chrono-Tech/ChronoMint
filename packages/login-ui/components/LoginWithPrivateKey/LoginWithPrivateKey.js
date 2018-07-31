@@ -4,7 +4,6 @@
  */
 
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { Translate } from 'react-redux-i18n'
@@ -13,26 +12,10 @@ import Button from 'components/common/ui/Button/Button'
 import {
   FORM_PRIVATE_KEY_LOGIN_PAGE,
 } from '../../redux/actions'
-import {
-  onSubmitPrivateKeyLoginForm,
-  onSubmitPrivateKeyLoginFormSuccess,
-  onSubmitPrivateKeyLoginFormFail,
-} from '../../redux/thunks'
 import validate from './validate'
 import './LoginWithPrivateKey.scss'
 
-function mapDispatchToProps (dispatch) {
-  return {
-    onSubmit: async (values) => {
-      const privateKey = values.get('pk')
-      await dispatch(onSubmitPrivateKeyLoginForm(privateKey))
-    },
-    onSubmitSuccess: () => dispatch(onSubmitPrivateKeyLoginFormSuccess()),
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitPrivateKeyLoginFormFail(errors, submitErrors)),
-  }
-}
-
-class MnemonicLoginPage extends PureComponent {
+class LoginWithPrivateKey extends PureComponent {
   render () {
     const { handleSubmit, error } = this.props
 
@@ -82,5 +65,4 @@ class MnemonicLoginPage extends PureComponent {
   }
 }
 
-const form = reduxForm({ form: FORM_PRIVATE_KEY_LOGIN_PAGE, validate })(MnemonicLoginPage)
-export default connect(null, mapDispatchToProps)(form)
+export default reduxForm({ form: FORM_PRIVATE_KEY_LOGIN_PAGE, validate })(LoginWithPrivateKey)

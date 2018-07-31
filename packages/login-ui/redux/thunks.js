@@ -104,24 +104,6 @@ export const onSubmitRecoverAccountFormSuccess = () => (dispatch) => {
 /*
  * Thunk dispatched by "" screen.
  * TODO: to add description
- * TODO: to replace all onSubmitMnemonicLoginFormSuccess and delete this thunk
- */
-export const onSubmitMnemonicLoginFormSuccess = () => (dispatch) => {
-  dispatch(LoginUIActions.navigateToCreateAccount())
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to replace all onSubmitMnemonicLoginFormSuccess and delete this thunk
- */
-export const onSubmitPrivateKeyLoginFormSuccess = () => (dispatch) => {
-  dispatch(LoginUIActions.navigateToCreateAccount())
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
  */
 export const navigateToCreateAccountFromHW = (address) => (dispatch) => {
   dispatch(NetworkActions.networkSetAccounts(address))
@@ -286,6 +268,51 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) =>
 
     dispatch(NetworkActions.generateNewMnemonic())
     dispatch(LoginUIActions.navigateToGenerateMnemonicPage())
+  }
+
+/*
+ * Thunk dispatched by "" screen.
+ * TODO: to add description
+ * TODO: to remove throws
+ * TODO: to rework it
+ */
+export const onSubmitCreateAccountImportMnemonic = (name, password, mnemonic) =>
+  async (dispatch) => {
+    await dispatch(onSubmitImportAccount({
+      name,
+      password,
+      mnemonic,
+    }))
+
+  }
+
+/*
+ * Thunk dispatched by
+ * LoginWithMnemonic, LoginWithPrivateKey screen.
+ */
+export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKey = '' }) =>
+  async (dispatch) => {
+    const validateName = dispatch(PersistAccountActions.validateAccountName(name))
+
+    if (!validateName) {
+      throw new SubmissionError({ walletName: 'Wrong wallet name' })
+    }
+
+    try {
+      let wallet = await dispatch(PersistAccountActions.createAccount({
+        name,
+        password,
+        mnemonic,
+        privateKey,
+        numberOfAccounts: 0,
+      }))
+
+      dispatch(PersistAccountActions.accountAdd(wallet))
+
+    } catch (e) {
+      throw new SubmissionError({ _error: e && e.message })
+    }
+
   }
 
 /*
@@ -491,42 +518,6 @@ export const onSubmitResetAccountPasswordSuccess = () => (dispatch) => {
   ))
 }
 
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to add I18n translation
- * TODO: to extract trimming and other logic from here
- */
-export const onSubmitPrivateKeyLoginForm = (privateKey) => (dispatch) => {
-  let pk = (privateKey || '').trim()
-
-  if (!privateKeyProvider.validatePrivateKey(privateKey)) {
-    throw new SubmissionError({ pk: 'Wrong private key' })
-  }
-
-  if (pk.slice(0, 2) === '0x') {
-    pk = pk.slice(2)
-  }
-
-  dispatch(NetworkActions.networkSetImportPrivateKey(pk))
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to extract trimming from here
- */
-export const onSubmitMnemonicLoginForm = (mnemonic) =>
-  async (dispatch) => {
-    let mnemonicValue = (mnemonic || '').trim()
-
-    if (!mnemonicProvider.validateMnemonic(mnemonicValue)) {
-      throw new SubmissionError({ mnemonic: 'Invalid mnemonic' })
-    }
-
-    dispatch(NetworkActions.networkSetNewMnemonic(mnemonicValue))
-  }
-
   /*
  * Thunk dispatched by "" screen.
  * TODO: to add description
@@ -598,24 +589,6 @@ export const onSubmitCreateAccountPageFail = (errors, submitErrors) => (dispatch
  */
 export const onSubmitConfirmMnemonicFail = (errors, submitErrors) => (dispatch) => {
   dispatch(stopSubmit(LoginUIActions.FORM_CONFIRM_MNEMONIC, submitErrors && submitErrors.errors))
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to rework it, merge into one action onSubmitPageFail
- */
-export const onSubmitMnemonicLoginFormFail = (errors, submitErrors) => (dispatch) => {
-  dispatch(stopSubmit(LoginUIActions.FORM_MNEMONIC_LOGIN_PAGE, submitErrors && submitErrors.errors))
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to rework it, merge into one action onSubmitPageFail
- */
-export const onSubmitPrivateKeyLoginFormFail = (errors, submitErrors) => (dispatch) => {
-  dispatch(stopSubmit(LoginUIActions.FORM_PRIVATE_KEY_LOGIN_PAGE, submitErrors && submitErrors.errors))
 }
 
 /*

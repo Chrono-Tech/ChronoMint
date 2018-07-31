@@ -20,7 +20,6 @@ import {
   GenerateMnemonic,
   GenerateWallet,
   LoginWithWallet,
-  LoginWithMnemonic,
   LoginWithTrezor,
   LoginWithLedger,
   LoginWithPlugin,
@@ -47,6 +46,7 @@ import {
   NewPollPage,
   VoteHistoryPage,
 } from 'pages/lib'
+import MnemonicImportPage from 'components/login/MnemonicImportPage/MnemonicImportPage'
 import { store, history } from './redux/configureStore'
 import ls from '@chronobank/core-dependencies/utils/LocalStorage'
 import './styles/themes/default.scss'
@@ -112,7 +112,7 @@ const router = (
         <Route path='/login/trezor-login' component={LoginWithTrezor} />
         <Route path='/login/ledger-login' component={LoginWithLedger} />
         <Route path='/login/plugin-login' component={LoginWithPlugin} />
-        <Route path='/login/mnemonic-login' component={LoginWithMnemonic} />
+        <Route path='/login/mnemonic-login' component={MnemonicImportPage} />
         <Route path='/login/private-key-login' component={LoginWithPrivateKey} />
         <Route path='/login/create-hw-account' component={CreateHWAccount} />
         <Route path='/login/local-login' component={LoginLocal} />

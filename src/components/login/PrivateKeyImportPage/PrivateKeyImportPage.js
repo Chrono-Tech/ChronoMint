@@ -7,26 +7,22 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import {
-  onSubmitMnemonicLoginForm,
-  onSubmitMnemonicLoginFormSuccess,
-  onSubmitMnemonicLoginFormFail,
+  onSubmitCreateAccountImportMnemonic,
 } from '@chronobank/login-ui/redux/thunks'
 import {
-  FORM_MNEMONIC_LOGIN_PAGE,
+  navigateToSelectWallet,
+  navigateToSelectImportMethod,
 } from '@chronobank/login-ui/redux/actions'
 import {
-  LoginWithPrivateKey,
-  CreateAccount,
+  LoginWithPrivateKeyContainer,
+  CreateAccountContainer,
 } from '@chronobank/login-ui/components'
 
 function mapDispatchToProps (dispatch) {
   return {
-    onSubmitPrivateKeyForm: async (values) => {
-      const confirmMnemonic = values.get('mnemonic')
-      await dispatch(onSubmitMnemonicLoginForm(confirmMnemonic))
-    },
-    onSubmitSuccessPrivateKeyForm: () => dispatch(onSubmitMnemonicLoginFormSuccess()),
-    onSubmitFailPrivateKeyForm: (errors, dispatch, submitErrors) => dispatch(onSubmitMnemonicLoginFormFail(errors, submitErrors)),
+    navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
+    navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
+    onSubmitCreateAccountImportMnemonic: (name, password, mnemonic) => dispatch(onSubmitCreateAccountImportMnemonic(name, password, mnemonic)),
   }
 }
 
@@ -36,51 +32,80 @@ class PrivateKeyImportPage extends PureComponent {
     CREATE_ACCOUNT_FORM: 2,
   }
 
-  constructor (props){
+  static propTypes = {
+    previousPage: PropTypes.func.isRequired,
+    nextPage: PropTypes.func.isRequired,
+    navigateToSelectWallet: PropTypes.func,
+    navigateToSelectImportMethod: PropTypes.func,
+    onSubmitCreateAccountImportPrivateKey: PropTypes.func,
+  }
+
+  constructor (props) {
     super(props)
 
     this.nextPage = this.nextPage.bind(this)
     this.previousPage = this.previousPage.bind(this)
 
     this.state = {
-      page: PrivateKeyImportPage.PAGES.MNEMONIC_FORM,
+      page: PrivateKeyImportPage.PAGES.PRIVATE_KEY_FORM,
+      privateKey: null,
     }
   }
 
-  nextPage () {
-    if (this.state.page === PrivateKeyImportPage.PAGES.CREATE_ACCOUNT_FORM) {
-      this.props.nextPage()
-    } else {
-      this.setState({ page: this.state.page + 1 })
-    }
-
-  }
-
-  previousPage () {
-    if (this.state.page === PrivateKeyImportPage.PAGES.PRIVATE_KEY_FORM) {
-      this.props.previousPage()
-    } else {
-      this.setState({ page: this.state.page - 1 })
-    }
-
-  }
-
-  getCurrentPage (){
+  getCurrentPage () {
     switch(this.state.page){
       case PrivateKeyImportPage.PAGES.PRIVATE_KEY_FORM:
         return (
-          <LoginWithPrivateKey />
+          <LoginWithPrivateKeyContainer
+            previousPage={this.previousPage.bind(this)}
+            onSubmitSuccess={this.onSubmitPrivateKey.bind(this)}
+          />
         )
 
       case PrivateKeyImportPage.PAGES.CREATE_ACCOUNT_FORM:
         return (
-          <CreateAccount />
+          <CreateAccountContainer
+            privateKey={this.state.privateKey}
+            previousPage={this.previousPage.bind(this)}
+            onSubmit={this.onSubmitCreateAccount.bind(this)}
+            onSubmitSuccess={this.onSubmitCreateAccountSuccess.bind(this)}
+          />
         )
 
       default:
         return (
-          <LoginWithPrivateKey />
+          <LoginWithPrivateKeyContainer
+            previousPage={this.previousPage.bind(this)}
+            onSubmitSuccess={this.onSubmitPrivateKey.bind(this)}
+          />
         )
+    }
+  }
+
+  onSubmitPrivateKey ({ privateKey }) {
+    this.setState({ privateKey })
+    this.nextPage()
+  }
+
+  async onSubmitCreateAccount ({ walletName, password }) {
+    const { onSubmitCreateAccountImportPrivateKey } = this.props
+
+    return onSubmitCreateAccountImportPrivateKey(walletName, password, this.state.privateKey)
+  }
+
+  onSubmitCreateAccountSuccess () {
+    this.props.navigateToSelectWallet()
+  }
+
+  nextPage () {
+    this.setState ({ page: this.state.page + 1 })
+  }
+
+  previousPage () {
+    if (this.state.page === PrivateKeyImportPage.PAGES.PRIVATE_KEY_FORM){
+      this.props.navigateToSelectImportMethod()
+    } else {
+      this.setState ({ page: this.state.page - 1 })
     }
   }
 
