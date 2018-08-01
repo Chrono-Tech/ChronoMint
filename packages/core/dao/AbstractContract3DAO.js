@@ -22,8 +22,6 @@ export default class AbstractContractDAO extends EventEmitter {
   /** @protected */
   static _account: string
 
-  _c = web3Converter
-
   constructor ({ address, history, abi }) {
     super()
     this.address = address
@@ -116,12 +114,12 @@ export default class AbstractContractDAO extends EventEmitter {
 
   /** @protected */
   async _ipfs (bytes): any {
-    return ipfs.get(this._c.bytes32ToIPFSHash(bytes))
+    return ipfs.get(web3Converter.bytes32ToIPFSHash(bytes))
   }
 
   /** @protected */
   async _ipfsPut (data): string {
-    return this._c.ipfsHashToBytes32(await ipfs.put(data))
+    return web3Converter.ipfsHashToBytes32(await ipfs.put(data))
   }
 
   /**

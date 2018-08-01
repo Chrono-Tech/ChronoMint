@@ -7,6 +7,7 @@ import TokenNoticeModel from '../models/notices/TokenNoticeModel'
 import TokenModel from '../models/tokens/TokenModel'
 import AbstractContractDAO from './AbstractContract3DAO'
 import ethereumDAO, { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
+import web3Converter from '../utils/Web3Converter'
 
 export const TX_ADD_TOKEN = 'addToken'
 export const TX_MODIFY_TOKEN = 'setToken'
@@ -53,18 +54,18 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     const feeRate = await ethereumDAO.getGasPrice()
 
     addresses.forEach((address, i) => {
-      const symbol = this._c.bytesToString(symbols[i]).toUpperCase()
+      const symbol = web3Converter.bytesToString(symbols[i]).toUpperCase()
       const model = new TokenModel({
         address: address.toLowerCase(),
-        name: this._c.bytesToString(names[i]),
+        name: web3Converter.bytesToString(names[i]),
         symbol,
-        url: this._c.bytesToString(urls[i]),
+        url: web3Converter.bytesToString(urls[i]),
         decimals: parseInt(decimalsArr[i]),
-        icon: this._c.bytes32ToIPFSHash(ipfsHashes[i]),
+        icon: web3Converter.bytes32ToIPFSHash(ipfsHashes[i]),
         isFetched: true,
         blockchain: BLOCKCHAIN_ETHEREUM,
         isERC20: true,
-        feeRate: this._c.toWei(this._c.fromWei(feeRate), 'gwei'), // gas price in gwei
+        feeRate: web3Converter.toWei(web3Converter.fromWei(feeRate), 'gwei'), // gas price in gwei
       })
 
       this.emit(EVENT_NEW_ERC20_TOKEN, model)
@@ -87,7 +88,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       token.symbol(),
       token.url() || '',
       token.decimals(),
-      token.icon() ? this._c.ipfsHashToBytes32(token.icon()) : null,
+      token.icon() ? web3Converter.ipfsHashToBytes32(token.icon()) : null,
       '', // swarm hash
     ]
   }
@@ -129,15 +130,15 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
   /** @private */
   _watchCallback = (callback, isRemoved = false, isAdded = true) => async (result, block, time) => {
-    const symbol = this._c.bytesToString(result.args.symbol).toUpperCase()
+    const symbol = web3Converter.bytesToString(result.args.symbol).toUpperCase()
     callback(new TokenNoticeModel(
       new TokenModel({
         address: result.args.token,
-        name: this._c.bytesToString(result.args.name),
+        name: web3Converter.bytesToString(result.args.name),
         symbol,
-        url: this._c.bytesToString(result.args.url),
+        url: web3Converter.bytesToString(result.args.url),
         decimals: result.args.decimals.toNumber(),
-        icon: this._c.bytes32ToIPFSHash(result.args.ipfsHash),
+        icon: web3Converter.bytes32ToIPFSHash(result.args.ipfsHash),
         blockchain: BLOCKCHAIN_ETHEREUM,
         isERC20: true,
         isFetched: true,
