@@ -6,7 +6,6 @@
 import { persistReducer, REHYDRATE } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import * as a from './constants'
-import { removeWallet } from './utils'
 
 const persistConfig = {
   key: 'account',
@@ -55,12 +54,6 @@ const persistAccount = (state = initialState, action) => {
       return {
         ...state,
         walletsList: action.walletsList,
-      }
-
-    case a.WALLETS_REMOVE :
-      return {
-        ...state,
-        walletsList: removeWallet(state.walletsList, action.name),
       }
 
     case a.CUSTOM_NETWORKS_LIST_ADD :
