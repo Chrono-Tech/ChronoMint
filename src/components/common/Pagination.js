@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { FlatButton } from 'material-ui'
 import React from 'react'
 import ReactPaginate from 'react-paginate'
 import createFragment from 'react-addons-create-fragment'

@@ -50,7 +50,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
     }
   }
 
-  // ---------- handlers ---------
+  //#region Handlers
 
   /**
    * handler for event "WalletCreated"
@@ -72,7 +72,10 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
     this.emit(EE_MS_WALLET_REMOVED, `${BLOCKCHAIN_ETHEREUM}-${data.returnValues.wallet}`)
   }
 
-  // --------- actions ----------
+  //#endregion
+
+  //#region Actions
+
   /**
    * fetch ethereum multisig wallets
    * @returns {Promise<void>}
@@ -172,4 +175,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   getOraclePrice () {
     return this.contract.methods.getOraclePrice().call()
   }
+
+  //#endregion
+
 }
