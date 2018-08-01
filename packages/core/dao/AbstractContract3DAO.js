@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import Tx from 'ethereumjs-tx'
 import EventEmitter from 'events'
 import ipfs from '@chronobank/core-dependencies/utils/IPFS'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
@@ -182,12 +183,26 @@ export default class AbstractContractDAO extends EventEmitter {
 
   async immediateTransfer (tx: TxExecModel) {
     try {
-      return await ethereumProvider.transfer(tx, this.web3)
+      const rawTx = await this.createRawTx(tx)
+      ethereumProvider.transfer(rawTx, tx.from)
     } catch (e) {
       // eslint-disable-next-line
       console.log('Transfer failed', e)
       throw e
     }
+  }
+
+  async createRawTx (tx: TxExecModel) {
+    const nonce = await this.web3.eth.getTransactionCount(tx.from)
+    return new Tx({
+      data: tx.data || '',
+      nonce: this.web3.utils.toHex(nonce),
+      gasLimit: this.web3.utils.toHex(tx.fee.gasLimit.toString()),
+      gasPrice: this.web3.utils.toHex(tx.fee.gasPrice.toString()),
+      to: tx.to,
+      from: tx.from,
+      value: this.web3.utils.toHex(tx.value.toString()),
+    })
   }
 
   estimateGas = async (func, args, value, from, additionalOptions): Object => {

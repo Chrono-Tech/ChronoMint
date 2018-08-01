@@ -59,6 +59,7 @@ class NetworkService extends EventEmitter {
     this._store = store
     this._dispatch = store.dispatch
   }
+
   // connectStore (store) {
   //   this._store = store
   //   this._dispatch = store.dispatch
@@ -347,6 +348,16 @@ class NetworkService extends EventEmitter {
   login (account) {
     this._account = account
     this.emit('login', { account: this._account, dispatch: this._dispatch })
+  }
+
+  getCurrentNetwork () {
+    const { selectedNetworkId } = this._store.getState().get(DUCK_NETWORK)
+    return selectedNetworkId
+  }
+
+  getCurrentProvider () {
+    const { selectedProviderId } = this._store.getState().get(DUCK_NETWORK)
+    return selectedProviderId
   }
 }
 

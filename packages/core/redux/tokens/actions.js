@@ -65,16 +65,10 @@ const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExec
     console.log('acceptTxHandler start: ', tx, dao)
     if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
       dispatch({ type: WATCHER_TX_SET, tx })
-      const txData = await dao.immediateTransfer(tx)
-      // eslint-disable-next-line
-      console.log('acceptTxHandler mained: ', txData, dao, tx)
-
-      dao.emit('mained', new TxExecModel({ ...tx, hash: txData.transactionHash }))
+      await dao.immediateTransfer(tx)
     } else {
       const txOptions = tx.options()
-      // TODO @ipavlenko: Pass arguments
-      const hash = await dao.immediateTransfer(tx.from(), tx.to(), tx.amount(), tx.amountToken(), tx.feeMultiplier(), txOptions.advancedParams)
-      dao.emit('mained', hash, new TransferExecModel({ ...tx, hash }))
+      await dao.immediateTransfer(tx.from(), tx.to(), tx.amount(), tx.amountToken(), tx.feeMultiplier(), txOptions.advancedParams)
     }
   } catch (e) {
     dispatch(notifyError(e, tx.funcTitle()))
@@ -97,7 +91,6 @@ export const alternateTxHandlingFlow = (dao) => (dispatch) => {
     .on('submit', submitTxHandler(dao, dispatch))
     .on('accept', acceptTxHandler(dao, dispatch))
     .on('reject', rejectTxHandler(dao, dispatch))
-    .on('mained', mainedTxHandler(dao, dispatch))
 }
 
 export const initTokens = () => async (dispatch, getState) => {

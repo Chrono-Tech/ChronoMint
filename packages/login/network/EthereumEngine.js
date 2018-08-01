@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import Tx from 'ethereumjs-tx'
 import Web3 from 'web3'
 import hdKey from 'ethereumjs-wallet/hdkey'
 import Web3Utils from './Web3Utils'
@@ -34,16 +35,52 @@ export default class EthereumEngine {
     return this._engine
   }
 
-  getPrivateKey () {
-    return this._wallet && this._wallet.getPrivateKey && Buffer.from(this._wallet.getPrivateKey()).toString('hex')
+  getPrivateKeyBufer (address) {
+    const wallet = this.getWallet(address)
+    return wallet.getPrivateKey()
+  }
+
+  getPrivateKey (address) {
+    const wallet = this.getWallet(address)
+    return wallet && wallet.getPublicKey && Buffer.from(wallet.getPublicKey()).toString('hex')
   }
 
   getPublicKey () {
     return this._wallet && this._wallet.getPublicKey && Buffer.from(this._wallet.getPublicKey()).toString('hex')
   }
 
+  getWallet (address) {
+    if (address) {
+      let resultWallet = null
+      this._engine
+        // eslint-disable-next-line no-underscore-dangle
+        ? this._engine.wallets.some((wallet) => {
+          if (wallet.getAddressString() === address) {
+            resultWallet = wallet
+            return true
+          }
+        })
+        : null
+      return resultWallet
+    }
+    return this._wallet
+  }
+
   createNewChildAddress (deriveNumber = 0) {
     const hdWallet = hdKey.fromMasterSeed(this._wallet.getPrivateKey())
     return hdWallet.derivePath(`${WALLET_HD_PATH}/${deriveNumber}`).getWallet()
+  }
+
+  signTx (tx: Tx, signerAddress) {
+    switch (this._wallet.type) {
+      case  'memory':
+        tx.sign(this.getPrivateKeyBufer(signerAddress))
+
+        const wallet = this.getWallet(signerAddress)
+        return {
+          walletType: wallet ? wallet.type : null,
+          signedTx: tx,
+        }
+    }
   }
 }

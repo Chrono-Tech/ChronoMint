@@ -213,7 +213,8 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
 
   async immediateTransfer (tx: TxExecModel) {
     try {
-      return await ethereumProvider.transfer(tx, this.web3)
+      const rawTx = await this.createRawTx(tx)
+      ethereumProvider.transfer(rawTx, tx.from)
     } catch (e) {
       // eslint-disable-next-line
       console.log('Transfer failed', e)
