@@ -6,7 +6,7 @@
 import BigNumber from 'bignumber.js'
 import AbstractTokenDAO from './AbstractTokenDAO'
 import ethDAO from './ETHDAO'
-import TokenModel from '../../../models/tokens/TokenModel'
+import TokenModel from '../models/tokens/TokenModel'
 
 export default class ETHTokenDAO extends AbstractTokenDAO {
   connect (web3) {

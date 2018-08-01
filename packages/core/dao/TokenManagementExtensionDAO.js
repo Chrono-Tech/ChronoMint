@@ -4,7 +4,7 @@
  */
 
 import TokenModel from '../models/tokens/TokenModel'
-import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
+import AbstractContractDAO from './AbstractContract3DAO'
 
 export default class TokenManagementExtensionDAO extends AbstractContractDAO {
 

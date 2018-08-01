@@ -56,7 +56,7 @@ function mapStateToProps (state) {
     selectedWallet: selectedWallet,
     successMessage: formSelector(state, FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE),
     initialValues: {
-      password: '123',
+      password: 'QWEpoi123',
     },
   }
 }
@@ -76,12 +76,13 @@ function mapDispatchToProps (dispatch) {
 
 class LoginPage extends React.Component {
   static propTypes = {
-    accounts: PropTypes.array,
+    accounts: PropTypes.instanceOf(Array),
     initAccountsSignature: PropTypes.func,
     initLoginPage: PropTypes.func,
     isLocalNode: PropTypes.bool,
     isLoginSubmitting: PropTypes.bool,
     navigateToSelectWallet: PropTypes.func,
+    handleSubmit: PropTypes.func,
     selectedAccount: PropTypes.string,
     selectedWallet: PropTypes.object,
     successMessage: PropTypes.string,

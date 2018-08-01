@@ -3,10 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
-import PollInterfaceManagerDAO from "../refactor/daos/lib/PollInterfaceManagerDAO";
-import {daoByType} from "../refactor/redux/daos/selectors";
-import TokenManagementExtensionManager from "./TokenManagementExtensionManager";
+import AbstractContractDAO from './AbstractContract3DAO'
+import TokenManagementExtensionManager from './TokenManagementExtensionManager'
 
 export const TX_CREATE_PLATFORM = 'createPlatform'
 export const TX_ATTACH_PLATFORM = 'attachPlatform'

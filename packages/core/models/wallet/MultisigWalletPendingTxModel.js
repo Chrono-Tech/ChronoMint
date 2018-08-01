@@ -4,7 +4,7 @@
  */
 
 import BigNumber from 'bignumber.js'
-import TxExecModel from '../TxExecModel'
+import TxExecModel from '../TxExecModelOld'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 
 class MultisigWalletPendingTxModel extends abstractFetchingModel({

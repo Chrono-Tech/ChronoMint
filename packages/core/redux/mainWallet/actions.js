@@ -50,11 +50,11 @@ import AddressesCollection from '../../models/wallet/AddressesCollection'
 import { BLOCKCHAIN_NEM } from '../../dao/NemDAO'
 import { BLOCKCHAIN_WAVES } from '../../dao/WavesDAO'
 import WalletModel from '../../models/wallet/WalletModel'
-import { daoByType } from '../../refactor/redux/daos/selectors'
+import { daoByType } from '../daos/selectors'
 import { WALLETS_SET_IS_TIME_REQUIRED, WALLETS_UPDATE_WALLET } from '../wallets/actions'
 import { getMainAddresses, getMainEthWallet, getMainWalletForBlockchain, getWallet } from '../wallets/selectors/models'
 import { getAccount } from '../session/selectors/models'
-import AllowanceCollection from '../../refactor/models/AllowanceCollection'
+import AllowanceCollection from '../../models/AllowanceCollection'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
@@ -595,6 +595,8 @@ export const getTransactionsForWallet = ({ wallet, forcedOffset }) => async (dis
     txList = await dao.getTransfer(wallet.address, wallet.address, offset, TXS_PER_PAGE, tokens)
 
     txList.sort((a, b) => b.get('time') - a.get('time'))
+
+    console.log('txList: ', txList)
 
     for (let tx: TxModel of txList) {
       if (!blocks[tx.blockNumber()]) {

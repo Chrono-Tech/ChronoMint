@@ -29,7 +29,7 @@ import { updateEthMultisigWalletBalance } from '../multisigWallet/actions'
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import { EE_MS_WALLET_ADDED } from '../../dao/constants'
 import MultisigWalletModel from '../../models/wallet/MultisigWalletModel'
-import { ethDAO } from '../../refactor/daos/index'
+import ethDAO from '../../dao/ETHDAO'
 import { getWallets } from './selectors/models'
 
 export const DUCK_WALLETS = 'wallets'

@@ -5,14 +5,13 @@
 
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
-import type AbstractModel from '../models/AbstractModel'
+import type AbstractModel from '../models/AbstractModelOld'
 import CBEModel from '../models/CBEModel'
 import CBENoticeModel from '../models/notices/CBENoticeModel'
 import ProfileModel from '../models/ProfileModel'
 import AdditionalActionModel from '../models/AdditionalActionModel'
 import ProfileNoticeModel from '../models/notices/ProfileNoticeModel'
-import { DEFAULT_TX_OPTIONS } from './AbstractContractDAO'
-import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
+import AbstractContractDAO, { DEFAULT_TX_OPTIONS } from './AbstractContract3DAO'
 
 export const TX_ADD_CBE = 'addCBE'
 export const TX_REVOKE_CBE = 'revokeCBE'

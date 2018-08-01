@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { ContractDAOModel } from '../../models/index'
+import ContractDAOModel from '../../models/contracts/ContractDAOModel'
 import {
   ASSET_HOLDER_LIBRARY,
   ASSET_DONATOR_LIBRARY,
@@ -16,10 +16,10 @@ import {
   VOTING_MANAGER_LIBRARY,
   WALLETS_MANAGER,
   TOKEN_MANAGMENT_EXTENSION_LIBRARY,
-} from '../../daos/index'
-import { alternateTxHandlingFlow } from '../../../redux/tokens/actions'
-import { getAccount } from '../../../redux/session/selectors/models'
-import AbstractContractDAO from '../../daos/lib/AbstractContractDAO'
+} from '../../dao/ContractList'
+import { alternateTxHandlingFlow } from '../tokens/actions'
+import { getAccount } from '../session/selectors/models'
+import AbstractContractDAO from '../../dao/AbstractContract3DAO'
 
 export const DUCK_DAO = 'dao'
 export const DAOS_REGISTER = 'daos/register'

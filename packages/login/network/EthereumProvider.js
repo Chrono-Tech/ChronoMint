@@ -9,7 +9,7 @@ import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAcco
 import AbstractProvider from './AbstractProvider'
 import EthereumEngine from './EthereumEngine'
 import selectEthereumNode from './EthereumNode'
-import TxExecModel from '../../core/refactor/models/TxExecModel'
+import TxExecModel from '../../core/models/TxExecModel'
 import {
   getNetworkById,
 } from './settings'

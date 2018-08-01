@@ -4,12 +4,12 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
-import TokenModel from '../../../models/tokens/TokenModel'
+import { ethereumProvider } from '../../login/network/EthereumProvider'
+import TokenModel from '../models/tokens/TokenModel'
 import AbstractTokenDAO from './AbstractTokenDAO'
-import ERC20DAODefaultABI from '../../../dao/abi/ERC20DAODefaultABI'
-import TxExecModel from '../../models/TxExecModel'
-import Amount from '../../../models/Amount'
+import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'
+import TxExecModel from '../models/TxExecModel'
+import Amount from '../models/Amount'
 import { DEFAULT_TX_OPTIONS } from './AbstractContractDAO'
 
 const ETH = 'ETH'

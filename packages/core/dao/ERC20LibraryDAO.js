@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import AbstractContractDAO from './AbstractContractDAO'
+import AbstractContractDAO from './AbstractContract3DAO'
 
 export default class ERC20LibraryDAO extends AbstractContractDAO {
   constructor (address, abi) {

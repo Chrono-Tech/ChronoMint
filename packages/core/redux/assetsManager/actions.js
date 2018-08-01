@@ -32,7 +32,7 @@ import AssetsManagerNoticeModel, {
 } from '../../models/notices/AssetsManagerNoticeModel'
 import PausedModel from '../../models/tokens/PausedModel'
 import BlacklistModel from '../../models/tokens/BlacklistModel'
-import { daoByType } from '../../refactor/redux/daos/selectors'
+import { daoByType } from '../daos/selectors'
 
 export const DUCK_ASSETS_MANAGER = 'assetsManager'
 

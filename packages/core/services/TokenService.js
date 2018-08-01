@@ -5,7 +5,7 @@
 
 import EventEmitter from 'events'
 import TokenModel from '../models/tokens/TokenModel'
-import ERC20TokenDAO from '../refactor/daos/lib/ERC20TokenDAO'
+import ERC20TokenDAO from '../dao/ERC20TokenDAO'
 
 export const EVENT_NEW_TOKEN = 'newToken'
 export const EVENT_TOKENS_FETCHED = 'tokensFetched'

@@ -229,6 +229,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
       await dispatch(NetworkThunks.handleWalletLogin(selectedWallet.encrypted, password))
     }
   } catch (e) {
+    console.log('onSubmitLoginForm: ', e)
     throw new SubmissionError({ password: e && e.message })
   }
 }

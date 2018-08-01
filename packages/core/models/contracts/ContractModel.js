@@ -4,7 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
-import AbstractModel from '../AbstractModel'
+import AbstractModel from '../AbstractModelOld'
 
 const schemaFactory = () => ({
   type: PropTypes.string.isRequired,

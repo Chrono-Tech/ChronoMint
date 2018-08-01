@@ -13,10 +13,10 @@ import FileModel from '../models/FileSelect/FileModel'
 import VotingCollection from '../models/voting/VotingCollection'
 import Amount from '../models/Amount'
 import votingService from '../services/VotingService'
-import { daoByType } from '../refactor/redux/daos/selectors'
-import PollInterfaceManagerDAO from '../refactor/daos/lib/PollInterfaceManagerDAO'
+import { daoByType } from '../redux/daos/selectors'
+import PollInterfaceManagerDAO from './PollInterfaceManagerDAO'
 import web3Converter from '../utils/Web3Converter'
-import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
+import AbstractContractDAO from './AbstractContract3DAO'
 
 export const TX_CREATE_POLL = 'createPoll'
 export const TX_REMOVE_POLL = 'removePoll'
@@ -89,6 +89,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
 
   postStoreDispatchSetup (state, web3, history, subscribeTxFlow) {
     const assetHolderDAO = daoByType('TimeHolder')(state)
+    console.log('VotingManagerDAO postStoreDispatchSetup: ', state, web3, history, subscribeTxFlow)
     const pollsInterfaceManagerDAO = new PollInterfaceManagerDAO({ web3, history, subscribeTxFlow })
     this.setPollInterfaceManagerDAO(pollsInterfaceManagerDAO)
     this.setAssetHolderDAO(assetHolderDAO)
@@ -156,6 +157,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
             }
 
             const pollInterface = await this.pollInterfaceManagerDAO.getPollInterfaceDAO(pollAddress)
+            console.log('const pollInterface: ', pollInterface)
             let [votes, hasMember, memberOption] = await Promise.all([
               await pollInterface.getVotesBalances(),
               await pollInterface.hasMember(account),
