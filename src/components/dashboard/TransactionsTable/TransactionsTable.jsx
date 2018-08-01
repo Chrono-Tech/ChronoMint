@@ -40,7 +40,7 @@ export default class TransactionsTable extends PureComponent {
   static propTypes = {
     blockchain: PropTypes.string,
     walletAddress: PropTypes.string,
-    transactions: PropTypes.array,
+    transactions: PropTypes.instanceOf(Array),
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
     locale: PropTypes.string,
