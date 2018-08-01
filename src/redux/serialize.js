@@ -29,6 +29,10 @@ import TxHistoryModel from '@chronobank/core/models/wallet/TxHistoryModel'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 
 function mark (data, type, transformMethod) {
+  if (typeof data[transformMethod] !== 'function') {
+    // TODO @abdulov remove console.log
+    console.log('%c mark', 'background: #222; color: #fff', data, type, transformMethod)
+  }
   return {
     data: transformMethod ? data[transformMethod]() : data,
     __serializedType__: type,

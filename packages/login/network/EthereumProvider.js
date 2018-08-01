@@ -6,7 +6,7 @@
 import networkService from '@chronobank/login/network/NetworkService'
 // import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/actions'
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
-import web3Factory from '@chronobank/core/refactor/web3/index'
+import web3Factory from '@chronobank/core/web3/index'
 import AbstractProvider from './AbstractProvider'
 import EthereumEngine from './EthereumEngine'
 import selectEthereumNode from './EthereumNode'

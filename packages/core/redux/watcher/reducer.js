@@ -9,7 +9,7 @@ import * as a from './actions'
 
 export const initialState = {
   pendingTxs: new Immutable.Map(),
-  confirmTx: new TxExecModel(),
+  confirmTx: new TxExecModel({}),
 }
 
 export default (state = initialState, action) => {

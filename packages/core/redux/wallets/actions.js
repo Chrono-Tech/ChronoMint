@@ -18,7 +18,7 @@ import { getAccount } from '../session/selectors'
 import { updateEthMultisigWalletBalance } from '../multisigWallet/actions'
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import { EE_MS_WALLET_ADDED } from '../../dao/constants'
-import { ethDAO } from '../../daos/index'
+import ethDAO from '../../dao/ETHDAO'
 import { getWallets } from './selectors/models'
 import MultisigEthWalletModel from '../../models/wallet/MultisigEthWalletModel'
 

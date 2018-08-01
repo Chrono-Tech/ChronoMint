@@ -4,7 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
-import AbstractModel from '../AbstractModelOld'
+import AbstractModel from '../AbstractModel'
 import Amount from '../Amount'
 import TxHistoryModel from './TxHistoryModel'
 import AllowanceCollection from '../AllowanceCollection'

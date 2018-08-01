@@ -123,7 +123,8 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
       return new TxExecModel({
         contract: this.getContractName(),
         func: name,
-        args,
+        // FIXME @abdulov
+        // args,
       })
     }, null)
 
@@ -131,8 +132,10 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
       return null
     }
 
-    const args = await this._decodeArgs(tx.funcName(), tx.args())
+    // FIXME @abdulov
+    // const args = await this._decodeArgs(tx.funcName(), tx.args())
 
-    return tx.set('args', args)
+    // FIXME @abdulov
+    // return tx.set('args', args)
   }
 }

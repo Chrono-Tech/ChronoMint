@@ -23,7 +23,7 @@ const defaultValues = {
   to: null,
   value: new BigNumber(0),
   isConfirmed: false,
-  decodedTx: new TxExecModel(), // decoded data
+  decodedTx: new TxExecModel({}), // decoded data
 }
 
 export default class MultisigWalletPendingTxModel extends AbstractModel {
