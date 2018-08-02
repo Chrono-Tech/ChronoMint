@@ -74,6 +74,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
     const dataBuf = Buffer.from(data.replace(/^0x/, ''), 'hex')
     const methodId = dataBuf.slice(0, 4).toString('hex')
     const inputsBuf = dataBuf.slice(4)
+    let args = {}
 
     const tx = await this.abi.abi.reduce((acc, obj) => {
       if (!obj.hasOwnProperty('inputs')) {
@@ -114,7 +115,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
           }
         }
       }
-      const args = {}
+
       for (const i in obj.inputs) {
         if (obj.inputs.hasOwnProperty(i)) {
           args[obj.inputs[i].name] = inputs[i]
@@ -123,8 +124,6 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
       return new TxExecModel({
         contract: this.getContractName(),
         func: name,
-        // FIXME @abdulov
-        // args,
       })
     }, null)
 
@@ -132,10 +131,20 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
       return null
     }
 
-    // FIXME @abdulov
-    // const args = await this._decodeArgs(tx.funcName(), tx.args())
+    args = await this._decodeArgs(tx.funcName(), args)
 
-    // FIXME @abdulov
-    // return tx.set('args', args)
+    let fields = {}
+    Object.entries(args).map(([key, value]) => {
+      fields[key] = {
+        value,
+        description: key,
+      }
+    })
+
+    return new TxExecModel({
+      ...tx,
+      fields,
+      contract: this.getContractName(),
+    })
   }
 }

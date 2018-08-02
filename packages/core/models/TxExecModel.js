@@ -56,6 +56,10 @@ export default class TxExecModel extends AbstractModel {
    * @returns {string}
    * @private
    */
+  funcName () {
+    return this.func
+  }
+
   _i18n () {
     return `tx.${this.contract}.`
   }

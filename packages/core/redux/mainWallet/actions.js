@@ -425,7 +425,6 @@ export const estimateGasForDeposit = (mode: string, params, callback, gasPriceMu
     if (!dao) {
       throw new Error('Dao is undefined')
     }
-    console.log('DAO actions: ', dao)
     const { gasLimit, gasFee, gasPrice } = await dao.estimateGas(...params)
     callback(null, {
       gasLimit,
@@ -594,8 +593,6 @@ export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
     txList = await dao.getTransfer(wallet.address, wallet.address, offset, TXS_PER_PAGE, tokens)
 
     txList.sort((a, b) => b.get('time') - a.get('time'))
-
-    console.log('txList: ', txList)
 
     for (let tx: TxModel of txList) {
       if (!blocks[tx.blockNumber()]) {
