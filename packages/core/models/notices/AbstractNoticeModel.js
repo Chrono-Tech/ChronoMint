@@ -7,7 +7,7 @@ import { I18n } from '@chronobank/core-dependencies/i18n'
 import { Icons } from '@chronobank/core-dependencies/icons'
 import moment from 'moment'
 import uuid from 'uuid/v1'
-import { abstractModel } from '../AbstractModel'
+import { abstractModel } from '../AbstractModelOld'
 
 // noinspection JSUnusedLocalSymbols
 export const abstractNoticeModel = (defaultValues) => class AbstractNoticeModel extends abstractModel({ ...defaultValues }) {

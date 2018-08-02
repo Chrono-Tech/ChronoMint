@@ -5,7 +5,7 @@
 
 import BigNumber from 'bignumber.js'
 import PropTypes from 'prop-types'
-import AbstractModel from '../refactor/models/AbstractModel'
+import AbstractModel from './AbstractModel'
 import Amount from '../../core/models/Amount'
 
 const schemaFactory = () => ({

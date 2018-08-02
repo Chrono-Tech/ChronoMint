@@ -8,10 +8,8 @@ import EventEmitter from 'events'
 import OwnerModel from '../models/wallet/OwnerModel'
 import MultisigWalletDAO from '../dao/MultisigWalletDAO'
 import type MultisigTransactionModel from '../models/wallet/MultisigTransactionModel'
-import type MultisigWalletModel from '../models/wallet/MultisigWalletModel'
 import MultisigWalletPendingTxModel from '../models/wallet/MultisigWalletPendingTxModel'
 import {
-  EE_CONFIRMATIO,
   EE_CONFIRMATION,
   EE_CONFIRMATION_NEEDED,
   EE_DEPOSIT,
@@ -22,6 +20,7 @@ import {
   EE_REVOKE,
   EE_SINGLE_TRANSACTION,
 } from './constants'
+import MultisigEthWalletModel from '../models/wallet/MultisigEthWalletModel'
 
 class MultisigWalletService extends EventEmitter {
 
@@ -34,19 +33,19 @@ class MultisigWalletService extends EventEmitter {
     return this._cache[address]
   }
 
-  async createWalletDAO (address, web3) {
+  async createWalletDAO (address, web3, history) {
     const oldDAO = this._cache[address]
     if (oldDAO) {
-      await this.unsubscribe(address)
+      return this._cache[address]
     }
-    const newDAO = new MultisigWalletDAO(address)
+    const newDAO = new MultisigWalletDAO(address, history)
     newDAO.connect(web3)
     this._cache[address] = newDAO
     return newDAO
   }
 
-  subscribeToWalletDAO (wallet: MultisigWalletModel): Promise {
-    const address = wallet.address()
+  subscribeToWalletDAO (wallet: MultisigEthWalletModel): Promise {
+    const address = wallet.address
     const dao = this.getWalletDAO(address)
 
     if (!dao) {
@@ -55,39 +54,39 @@ class MultisigWalletService extends EventEmitter {
     }
 
     return Promise.all([
-      dao.watchOwnerAdded(wallet, (owner: OwnerModel) => {
-        this.emit(EE_OWNER_ADDED, address, owner)
+      dao.watchOwnerAdded((owner: OwnerModel) => {
+        this.emit(EE_OWNER_ADDED, wallet.id, owner)
       }),
-      dao.watchOwnerRemoved(wallet, (owner: OwnerModel) => {
-        this.emit(EE_OWNER_REMOVED, address, owner)
+      dao.watchOwnerRemoved((owner: OwnerModel) => {
+        this.emit(EE_OWNER_REMOVED, wallet.id, owner)
       }),
-      dao.watchMultiTransact(wallet, (multisigTransactionModel: MultisigTransactionModel) => {
-        this.emit(EE_MULTI_TRANSACTION, address, multisigTransactionModel)
+      dao.watchMultiTransact((multisigTransactionModel: MultisigTransactionModel) => {
+        this.emit(EE_MULTI_TRANSACTION, wallet.id, multisigTransactionModel)
       }),
-      dao.watchSingleTransact(wallet, (result) => {
+      dao.watchSingleTransact((result) => {
         this.emit(EE_SINGLE_TRANSACTION, result)
       }),
-      dao.watchConfirmationNeeded(wallet, (pendingTxModel) => {
-        this.emit(EE_CONFIRMATION_NEEDED, address, pendingTxModel)
+      dao.watchConfirmationNeeded((pendingTxModel) => {
+        this.emit(EE_CONFIRMATION_NEEDED, wallet.id, pendingTxModel)
       }),
-      dao.watchDeposit(wallet, () => {
-        this.emit(EE_DEPOSIT, address, 'ETH')
+      dao.watchDeposit(() => {
+        this.emit(EE_DEPOSIT, wallet.id, 'ETH')
       }),
-      dao.watchRevoke(wallet, (id) => {
-        this.emit(EE_REVOKE, address, id)
+      dao.watchRevoke((id) => {
+        this.emit(EE_REVOKE, wallet.id, id)
       }),
-      dao.watchConfirmation(wallet, (id, owner) => {
-        this.emit(EE_CONFIRMATION, address, id, owner)
+      dao.watchConfirmation((id, owner) => {
+        this.emit(EE_CONFIRMATION, wallet.id, id, owner)
       }),
-      dao.watchError(wallet, (errorCode) => {
+      dao.watchError((errorCode) => {
         if (errorCode === resultCodes.WALLET_CONFIRMATION_NEEDED) {
-          this.emit(EE_CONFIRMATION_NEEDED, address, new MultisigWalletPendingTxModel({
+          this.emit(EE_CONFIRMATION_NEEDED, wallet.id, new MultisigWalletPendingTxModel({
             // TODO @dkchv: no id (operation here) :(
           }))
         }
       }),
-      dao.watchRequirementChanged(wallet, (required) => {
-        this.emit(EE_REQUIREMENT_CHANGED, address, required)
+      dao.watchRequirementChanged((required) => {
+        this.emit(EE_REQUIREMENT_CHANGED, wallet.id, required)
       }),
     ])
   }

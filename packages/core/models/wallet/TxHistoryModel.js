@@ -5,7 +5,7 @@
 
 import uuid from 'uuid/v1'
 import PropTypes from 'prop-types'
-import AbstractModel from '../../refactor/models/AbstractModel'
+import AbstractModel from '../AbstractModel'
 
 const schemaFactory = () => ({
   key: PropTypes.string,
@@ -62,12 +62,14 @@ export default class TxHistoryModel extends AbstractModel {
   }
 
   get transactions () {
-    const array = []
+    const txList = {}
     Object.entries(this.blocks)
       .map(([, block]) => {
-        array.push(...block.transactions)
+        block.transactions.map((tx) => {
+          txList[tx.id()] = tx
+        })
       })
-    return array
+    return Object.values(txList)
   }
 
   loading () {

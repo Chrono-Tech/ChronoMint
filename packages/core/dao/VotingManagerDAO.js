@@ -13,10 +13,10 @@ import FileModel from '../models/FileSelect/FileModel'
 import VotingCollection from '../models/voting/VotingCollection'
 import Amount from '../models/Amount'
 import votingService from '../services/VotingService'
-import { daoByType } from '../refactor/redux/daos/selectors'
-import PollInterfaceManagerDAO from '../refactor/daos/lib/PollInterfaceManagerDAO'
+import { daoByType } from '../redux/daos/selectors'
+import PollInterfaceManagerDAO from './PollInterfaceManagerDAO'
 import web3Converter from '../utils/Web3Converter'
-import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
+import AbstractContractDAO from './AbstractContract3DAO'
 
 export const TX_CREATE_POLL = 'createPoll'
 export const TX_REMOVE_POLL = 'removePoll'
@@ -27,11 +27,6 @@ export const EVENT_POLL_UPDATED = 'PollUpdated'
 export const EVENT_POLL_REMOVED = 'PollRemoved'
 
 export default class VotingManagerDAO extends AbstractContractDAO {
-  /**
-   * @type Web3Converter
-   * @protected
-   */
-  _c = web3Converter
 
   constructor ({ address, history, abi }) {
     super({ address, history, abi })
@@ -59,7 +54,10 @@ export default class VotingManagerDAO extends AbstractContractDAO {
   }
 
   handleEventsData (data) {
-    console.log('handleEventsData: ', data.event, data)
+    if (!data.event) {
+      return
+    }
+    console.log('VotingManagerDAO handleEventsData: ', data.event, data)
     this.emit(data.event, data)
   }
 
@@ -119,7 +117,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
 
     await this._tx(TX_CREATE_POLL, [
       poll.options.length,
-      this._c.ipfsHashToBytes32(hash),
+      web3Converter.ipfsHashToBytes32(hash),
       new BigNumber(voteLimitInTIME),
       poll.deadline.getTime(),
     ], new BigNumber(0), new BigNumber(0), summary, { stubPoll: options.stubPoll })
@@ -153,6 +151,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
             }
 
             const pollInterface = await this.pollInterfaceManagerDAO.getPollInterfaceDAO(pollAddress)
+
             let [votes, hasMember, memberOption] = await Promise.all([
               await pollInterface.getVotesBalances(),
               await pollInterface.hasMember(account),
@@ -160,7 +159,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
             ])
             memberOption = new BigNumber(memberOption)
 
-            const hash = this._c.bytes32ToIPFSHash(bytesHashes[i])
+            const hash = web3Converter.bytes32ToIPFSHash(bytesHashes[i])
             const result = await ipfs.get(hash)
             if (!result) {
               throw new Error(`ipfs hash [${hash}] for voting is outdated`)
@@ -213,8 +212,6 @@ export default class VotingManagerDAO extends AbstractContractDAO {
       // eslint-disable-next-line
       console.error('getPollsDetails error: ' + e.message)
     }
-
-    console.log('new VotingCollection(): ', result)
 
     let collection = new VotingCollection()
     result.map((item) => {

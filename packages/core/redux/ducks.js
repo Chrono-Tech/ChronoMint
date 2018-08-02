@@ -21,8 +21,8 @@ import * as wallet from './wallet'
 import * as watcher from './watcher'
 import * as persistAccount from './persistAccount'
 import * as web3 from './web3'
-import * as dao from '../refactor/redux/daos'
-import * as transactions from '../refactor/redux/transactions'
+import * as dao from './daos'
+import * as transactions from './transactions'
 import * as wallets from './wallets'
 
 export default {

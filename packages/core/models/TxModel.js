@@ -6,7 +6,7 @@
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
 import { FULL_DATE } from './constants'
-import { abstractModel } from './AbstractModel'
+import { abstractModel } from './AbstractModelOld'
 
 class TxModel extends abstractModel({
   txHash: null,

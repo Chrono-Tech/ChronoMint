@@ -5,7 +5,7 @@
 
 import PropTypes from 'prop-types'
 import ContractModel from './ContractModel'
-import AbstractModel from '../AbstractModel'
+import AbstractModel from '../AbstractModelOld'
 
 const schemaFactory = () => ({
   contract: PropTypes.instanceOf(ContractModel).isRequired,

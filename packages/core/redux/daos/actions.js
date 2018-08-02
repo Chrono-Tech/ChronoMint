@@ -3,11 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { ContractDAOModel } from '../../models/index'
+import ContractDAOModel from '../../models/contracts/ContractDAOModel'
 import {
   ASSET_HOLDER_LIBRARY,
   ASSET_DONATOR_LIBRARY,
-  ASSETS_MANAGER_LIBRARY,
+  // ASSETS_MANAGER_LIBRARY,
   PLATFORMS_MANAGER_LIBRARY,
   CONTRACTS_MANAGER,
   ERC20_MANAGER,
@@ -15,10 +15,11 @@ import {
   MULTI_EVENTS_HISTORY,
   VOTING_MANAGER_LIBRARY,
   WALLETS_MANAGER,
-} from '../../daos/index'
-import { alternateTxHandlingFlow } from '../../../redux/tokens/actions'
-import { getAccount } from '../../../redux/session/selectors/models'
-import AbstractContractDAO from '../../daos/lib/AbstractContractDAO'
+  TOKEN_MANAGMENT_EXTENSION_LIBRARY,
+} from '../../dao/ContractList'
+import { alternateTxHandlingFlow } from '../tokens/actions'
+import { getAccount } from '../session/selectors/models'
+import AbstractContractDAO from '../../dao/AbstractContract3DAO'
 
 export const DUCK_DAO = 'dao'
 export const DAOS_REGISTER = 'daos/register'
@@ -39,13 +40,14 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     }),
   })
 
-  const history = await contractManagerDAO.getContractAddressByType(MULTI_EVENTS_HISTORY.type)
+  const historyAddress = await contractManagerDAO.getContractAddressByType(MULTI_EVENTS_HISTORY.type)
 
   const contracts = [
-    ASSETS_MANAGER_LIBRARY,
+    // ASSETS_MANAGER_LIBRARY,
     ASSET_HOLDER_LIBRARY,
     ASSET_DONATOR_LIBRARY,
     PLATFORMS_MANAGER_LIBRARY,
+    TOKEN_MANAGMENT_EXTENSION_LIBRARY,
     USER_MANAGER_LIBRARY,
     ERC20_MANAGER,
     VOTING_MANAGER_LIBRARY,
@@ -60,13 +62,13 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     contracts.map(
       async (contract) => {
         const address = await contractManagerDAO.getContractAddressByType(contract.type)
-        const dao = contract.create(address.toLowerCase(), history)
+        const dao = contract.create(address.toLowerCase(), historyAddress)
         dao.connect(web3)
         subscribeToFlow(dao)
         return new ContractDAOModel({
           contract,
           address,
-          history,
+          history: historyAddress,
           dao,
         })
       },

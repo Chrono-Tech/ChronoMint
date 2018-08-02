@@ -50,11 +50,11 @@ import AddressesCollection from '../../models/wallet/AddressesCollection'
 import { BLOCKCHAIN_NEM } from '../../dao/NemDAO'
 import { BLOCKCHAIN_WAVES } from '../../dao/WavesDAO'
 import WalletModel from '../../models/wallet/WalletModel'
-import { daoByType } from '../../refactor/redux/daos/selectors'
+import { daoByType } from '../daos/selectors'
 import { WALLETS_SET_IS_TIME_REQUIRED, WALLETS_UPDATE_WALLET } from '../wallets/actions'
 import { getMainAddresses, getMainEthWallet, getMainWalletForBlockchain, getWallet } from '../wallets/selectors/models'
 import { getAccount } from '../session/selectors/models'
-import AllowanceCollection from '../../refactor/models/AllowanceCollection'
+import AllowanceCollection from '../../models/AllowanceCollection'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
@@ -243,7 +243,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   if (token.blockchain() && !token.isERC20()) {
     let wallet = getMainWalletForBlockchain(token.blockchain())(getState())
     if (wallet && wallet.address) {
-      dispatch(getTransactionsForWallet({
+      dispatch(getTransactionsForMainWallet({
         wallet,
         address: wallet.address,
         blockchain: token.blockchain(),
@@ -425,7 +425,6 @@ export const estimateGasForDeposit = (mode: string, params, callback, gasPriceMu
     if (!dao) {
       throw new Error('Dao is undefined')
     }
-    console.log('DAO actions: ', dao)
     const { gasLimit, gasFee, gasPrice } = await dao.estimateGas(...params)
     callback(null, {
       gasLimit,
@@ -528,19 +527,7 @@ export const resetWalletsForm = () => (dispatch) => {
   dispatch(change(FORM_ADD_NEW_WALLET, 'ethWalletType', null))
 }
 
-/**
- * Format data for transaction widget
- *
- * @param wallet - WalletModel
- * @param address - string
- * @param blockchain - string
- * @returns {function(*, *): *}
- */
-export const formatDataAndGetTransactionsForWallet = ({ wallet, address, blockchain }) => async (dispatch) => {
-  return dispatch(getTransactionsForWallet({ wallet, address, blockchain }))
-}
-
-export const getTransactionsForWallet = ({ wallet, forcedOffset }) => async (dispatch, getState) => {
+export const getTransactionsForMainWallet = ({ wallet, forcedOffset }) => async (dispatch, getState) => {
   if (!wallet) {
     return null
   }
@@ -557,6 +544,17 @@ export const getTransactionsForWallet = ({ wallet, forcedOffset }) => async (dis
         }),
     }),
   })
+
+  const transactions = await getTxList({ wallet, forcedOffset, tokens })
+
+  const newWallet = getWallet(wallet.id)(getState())
+  dispatch({
+    type: WALLETS_UPDATE_WALLET,
+    wallet: new WalletModel({ ...newWallet, transactions }),
+  })
+}
+
+export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
 
   let transactions: TxHistoryModel = new TxHistoryModel({ ...wallet.transactions }) || new TxHistoryModel()
   const offset = forcedOffset ? 0 : (transactions.transactions.length || 0)
@@ -608,9 +606,5 @@ export const getTransactionsForWallet = ({ wallet, forcedOffset }) => async (dis
     }
   }
 
-  const newWallet = getWallet(wallet.id)(getState())
-  dispatch({
-    type: WALLETS_UPDATE_WALLET,
-    wallet: new WalletModel({ ...newWallet, transactions: new TxHistoryModel({ ...transactions, blocks, endOfList }) }),
-  })
+  return new TxHistoryModel({ ...transactions, blocks, endOfList })
 }

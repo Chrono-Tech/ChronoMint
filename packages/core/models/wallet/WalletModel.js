@@ -4,10 +4,10 @@
  */
 
 import PropTypes from 'prop-types'
-import AbstractModel from '../../refactor/models/AbstractModel'
+import AbstractModel from '../AbstractModel'
 import Amount from '../Amount'
 import TxHistoryModel from './TxHistoryModel'
-import AllowanceCollection from '../../refactor/models/AllowanceCollection'
+import AllowanceCollection from '../AllowanceCollection'
 
 const schemaFactory = () => ({
   address: PropTypes.string.isRequired,
@@ -49,9 +49,5 @@ export default class WalletModel extends AbstractModel {
 
   get id () {
     return `${this.blockchain}-${this.address}`
-  }
-
-  transform () {
-    return { ...this }
   }
 }

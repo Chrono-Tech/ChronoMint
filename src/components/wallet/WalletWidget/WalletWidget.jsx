@@ -24,6 +24,7 @@ import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokens
 import { makeGetTxListForWallet } from "@chronobank/core/redux/wallet/selectors"
 import { getWalletInfo } from '@chronobank/core/redux/wallets/selectors/wallet'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
+import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import './WalletWidget.scss'
 import { prefix } from './lang'
 import Moment from '../../common/Moment'
@@ -87,7 +88,7 @@ export default class WalletWidget extends PureComponent {
     setWalletName: PropTypes.func,
     blockchain: PropTypes.string,
     pendingTransactions: PropTypes.arrayOf(PropTypes.object),
-    wallet: PropTypes.instanceOf(WalletModel),
+    wallet: PropTypes.oneOfType([PropTypes.instanceOf(WalletModel), PropTypes.instanceOf(MultisigEthWalletModel)]),
     address: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
     tokens: PropTypes.instanceOf(TokensCollection),

@@ -4,7 +4,7 @@
  */
 
 export { getWallets } from './selectors/models'
-export { getWallet } from './selectors/models'
+export { getEthMultisigWallet } from './selectors/models'
 export { filteredBalancesAndTokens } from './selectors/balances'
 export { multisigBalanceSelector } from './selectors/balances'
 export { tokensCountBalanceSelector } from './selectors/balances'

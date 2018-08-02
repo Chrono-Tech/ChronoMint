@@ -3,28 +3,20 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Record as record } from 'immutable'
+import PropTypes from 'prop-types'
 
-export const abstractModel = (defaultValues) => class AbstractModel extends record({
-  id: null,
-  timestamp: null,
-  ...defaultValues,
-}) {
-  id () {
-    return this.get('id')
+export default class AbstractModel {
+  constructor (props, schema) {
+    PropTypes.checkPropTypes()
+    PropTypes.checkPropTypes(schema, props, 'prop', '' + this.class)
+    Object.assign(this, props)
   }
 
-  txSummary () {
-    return this.toJS()
+  transform () {
+    return { ...this }
   }
 
-  summary (): Object {
-    return this.toJS()
-  }
-
-  _getSet (key, value) {
-    return value === undefined ? this.get(key) : this.set(key, value)
+  mutate (values: Object) {
+    return new this.constructor({ ...this, ...values })
   }
 }
-
-export default abstractModel()

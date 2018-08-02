@@ -41,7 +41,6 @@ export { default as AlertDialog } from './dialogs/AlertDialog'
 export { default as UpdateProfileDialog } from './dialogs/UpdateProvideDialog/UpdateProfileDialog'
 export { default as CopyDialog } from './dialogs/CopyDialog/CopyDialog'
 
-export { default as WalletPendingTransfers } from './wallet/WalletPendingTransfers'
 export { default as WalletWidget } from './wallet/WalletWidget/WalletWidget'
 export { default as Button } from './common/ui/Button/Button'
 export { default as UserRow } from './common/ui/UserRow/UserRow'

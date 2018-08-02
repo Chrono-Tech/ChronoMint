@@ -6,7 +6,7 @@
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import tokenService from '../services/TokenService'
-import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
+import AbstractContractDAO from './AbstractContract3DAO'
 import type ERC20DAO from './ERC20DAO'
 import Amount from '../models/Amount'
 

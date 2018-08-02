@@ -3,14 +3,15 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import Tx from 'ethereumjs-tx'
 import EventEmitter from 'events'
 import ipfs from '@chronobank/core-dependencies/utils/IPFS'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import BigNumber from 'bignumber.js'
-import TxExecModel from '../../../refactor/models/TxExecModel'
-import web3Converter from '../../../utils/Web3Converter'
-import Amount from '../../../models/Amount'
-import { BLOCKCHAIN_ETHEREUM } from '../../../dao/EthereumDAO'
+import TxExecModel from '../models/TxExecModel'
+import web3Converter from '../utils/Web3Converter'
+import Amount from '../models/Amount'
+import { BLOCKCHAIN_ETHEREUM } from '../dao/EthereumDAO'
 
 export const DEFAULT_GAS = 4700000
 export const DEFAULT_TX_OPTIONS = {
@@ -21,8 +22,6 @@ export default class AbstractContractDAO extends EventEmitter {
 
   /** @protected */
   static _account: string
-
-  _c = web3Converter
 
   constructor ({ address, history, abi }) {
     super()
@@ -44,11 +43,15 @@ export default class AbstractContractDAO extends EventEmitter {
 
     this.contract = new web3.eth.Contract(this.abi.abi, this.address, options)
     // eslint-disable-next-line no-console
-    console.log(`%c Contract [${this.constructor.name}] connected`, 'background: grey;', this.address)
+    console.log(`%c Contract [${this.constructor.name}] connected`, 'background: grey;', this.address, this.history)
 
-    this.history = this.history != null // nil check
+    this.history = this.history != null
       ? new web3.eth.Contract(this.abi.abi, this.history, options)
       : this.contract
+  }
+
+  getContractName () {
+    return this.abi.contractName
   }
 
   isEmptyAddress (v): boolean {
@@ -73,81 +76,6 @@ export default class AbstractContractDAO extends EventEmitter {
       this.history = null
       this.web3 = null
     }
-  }
-
-  createTransferTx (sender, recipient, amount) {
-    const data = this.contract.methods.transfer(recipient, amount).encodeABI()
-    return {
-      from: sender,
-      to: this.token.address(),
-      data,
-    }
-  }
-
-  createApproveTx (owner, spender, amount) {
-    const data = this.contract.methods.approve(spender, amount).encodeABI()
-    const tx = {
-      from: owner,
-      to: this.token.address(),
-      data,
-    }
-    return tx
-  }
-
-  handleTransferData (data) {
-    // eslint-disable-next-line no-console
-    console.log(`[${this.constructor.name}] Transfer occurred`, data)
-    const { returnValues } = data
-    setImmediate(() => {
-      this.emit('transfer', {
-        key: `${data.transactionHash}/${data.logIndex}`,
-        token: this.token,
-        // eslint-disable-next-line no-underscore-dangle
-        from: returnValues._from,
-        // eslint-disable-next-line no-underscore-dangle
-        to: returnValues._to,
-        // eslint-disable-next-line no-underscore-dangle
-        value: new BigNumber(returnValues._value),
-      })
-    })
-  }
-
-  handleTransferChanged (event) {
-    // eslint-disable-next-line no-console
-    console.warning(`[${this.constructor.name}] Transfer event changed`, event)
-  }
-
-  handleTransferError (error) {
-    // eslint-disable-next-line no-console
-    console.error(`[${this.constructor.name}] Error in Transfer event subscription`, error)
-  }
-
-  handleApprovalData (data) {
-    // eslint-disable-next-line no-console
-    console.log(`[${this.constructor.name}] Approve occurred`, data)
-    const { returnValues } = data
-    setImmediate(() => {
-      this.emit('approval', {
-        key: `${data.transactionHash}/${data.logIndex}`,
-        token: this.token,
-        // eslint-disable-next-line no-underscore-dangle
-        owner: returnValues._owner,
-        // eslint-disable-next-line no-underscore-dangle
-        spender: returnValues._spender,
-        // eslint-disable-next-line no-underscore-dangle
-        value: new BigNumber(returnValues._value),
-      })
-    })
-  }
-
-  handleApprovalChanged (event) {
-    // eslint-disable-next-line no-console
-    console.warning(`[${this.constructor.name}] Approval event changed`, event)
-  }
-
-  handleApprovalError (error) {
-    // eslint-disable-next-line no-console
-    console.error(`[${this.constructor.name}] Error in Approval event subscription`, error)
   }
 
   /**
@@ -191,12 +119,12 @@ export default class AbstractContractDAO extends EventEmitter {
 
   /** @protected */
   async _ipfs (bytes): any {
-    return ipfs.get(this._c.bytes32ToIPFSHash(bytes))
+    return ipfs.get(web3Converter.bytes32ToIPFSHash(bytes))
   }
 
   /** @protected */
   async _ipfsPut (data): string {
-    return this._c.ipfsHashToBytes32(await ipfs.put(data))
+    return web3Converter.ipfsHashToBytes32(await ipfs.put(data))
   }
 
   /**
@@ -253,12 +181,26 @@ export default class AbstractContractDAO extends EventEmitter {
 
   async immediateTransfer (tx: TxExecModel) {
     try {
-      return await ethereumProvider.transfer(tx, this.web3)
+      const rawTx = await this.createRawTx(tx)
+      ethereumProvider.transfer(rawTx, tx.from)
     } catch (e) {
       // eslint-disable-next-line
       console.log('Transfer failed', e)
       throw e
     }
+  }
+
+  async createRawTx (tx: TxExecModel) {
+    const nonce = await this.web3.eth.getTransactionCount(tx.from)
+    return new Tx({
+      data: tx.data || '',
+      nonce: this.web3.utils.toHex(nonce),
+      gasLimit: this.web3.utils.toHex(tx.fee.gasLimit.toString()),
+      gasPrice: this.web3.utils.toHex(tx.fee.gasPrice.toString()),
+      to: tx.to,
+      from: tx.from,
+      value: this.web3.utils.toHex(tx.value.toString()),
+    })
   }
 
   estimateGas = async (func, args, value, from, additionalOptions): Object => {

@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { ContractModel } from '../models/index'
+import ContractModel from '../models/contracts/ContractModel'
 
 import {
   AssetsManagerABI,
@@ -16,22 +16,20 @@ import {
   VotingManagerABI,
   WalletsManagerABI,
   PlatformsManagerABI,
-} from '../../../core/dao/abi/'
+  TokenManagementInterfaceABI,
+} from './abi/'
 
-import ContractsManagerDAO from './lib/ContractsManagerDAO'
-import AssetHolderDAO from '../../dao/AssetHolderDAO'
-import ERC20ManagerDAO from '../../dao/ERC20ManagerDAO'
-import VotingManagerDAO from '../../dao/VotingManagerDAO'
-import PollInterfaceDAO from '../../dao/PollInterfaceDAO'
-import AssetDonatorDAO from '../../dao/AssetDonatorDAO'
-import UserManagerDAO from '../../dao/UserManagerDAO'
-import WalletsManagerDAO from '../../dao/WalletsManagerDAO'
-import AssetsManagerDAO from '../../dao/AssetsManagerDAO'
-import PlatformManagerDAO from '../../dao/PlatformsManagerDAO'
-
-export { default as ethDAO } from './lib/ETHDAO'
-export { default as AbstractContractDAO } from './lib/AbstractContractDAO'
-export { default as AbstractTokenDAO } from './lib/AbstractTokenDAO'
+import ContractsManagerDAO from './ContractsManagerDAO3'
+import AssetHolderDAO from './AssetHolderDAO'
+import ERC20ManagerDAO from './ERC20ManagerDAO'
+import VotingManagerDAO from './VotingManagerDAO'
+import PollInterfaceDAO from './PollInterfaceDAO'
+import AssetDonatorDAO from './AssetDonatorDAO'
+import UserManagerDAO from './UserManagerDAO'
+import WalletsManagerDAO from './WalletsManagerDAO'
+import AssetsManagerDAO from './AssetsManagerDAO'
+import PlatformManagerDAO from './PlatformsManagerDAO'
+import TokenManagementExtensionDAO from './TokenManagementExtensionDAO'
 
 export const CONTRACTS_MANAGER = new ContractModel({
   type: 'ContractsManager',
@@ -74,6 +72,12 @@ export const PLATFORMS_MANAGER_LIBRARY = new ContractModel({
   type: 'PlatformsManager',
   abi: PlatformsManagerABI,
   DAOClass: PlatformManagerDAO,
+})
+
+export const TOKEN_MANAGMENT_EXTENSION_LIBRARY = new ContractModel({
+  type: 'TOKEN_MANAGMENT_EXTENSION',
+  abi: TokenManagementInterfaceABI,
+  DAOClass: TokenManagementExtensionDAO,
 })
 
 export const VOTING_MANAGER_LIBRARY = new ContractModel({

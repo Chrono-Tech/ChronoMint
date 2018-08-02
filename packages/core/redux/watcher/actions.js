@@ -17,7 +17,7 @@ import { notify } from '../notifier/actions'
 import { watchInitOperations } from '../operations/actions'
 import { watchInitCBE } from '../settings/user/cbe/actions'
 import { initTokens } from '../tokens/actions'
-import { initDAOs } from '../../refactor/redux/daos/actions'
+import { initDAOs } from '../daos/actions'
 import { watchInitPolls } from '../voting/actions'
 import { watchInitProfile } from '../session/actions'
 import { initMultisigWalletManager } from '../multisigWallet/actions'
@@ -82,7 +82,7 @@ export const watcher = ({ web3 }) => async (dispatch) => {
   dispatch(initMainWallet())
   dispatch(initWallets())
   dispatch(watchPlatformManager())
-  dispatch(watchInitTokens())
+  // dispatch(watchInitTokens())
   dispatch(watchInitMonitor())
   dispatch(watchInitUserMonitor())
   dispatch(watchInitMarket())

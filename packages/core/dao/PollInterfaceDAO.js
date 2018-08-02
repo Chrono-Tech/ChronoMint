@@ -6,7 +6,7 @@
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
 import Amount from '../models/Amount'
-import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
+import AbstractContractDAO from './AbstractContract3DAO'
 
 export const TX_ACTIVATE_POLL = 'activatePoll'
 export const TX_VOTE = 'vote'

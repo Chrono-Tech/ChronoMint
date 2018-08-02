@@ -10,7 +10,7 @@ import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import { getTxListForWallet } from '@chronobank/core/redux/wallets/selectors/transactions'
-import { formatDataAndGetTransactionsForWallet } from '@chronobank/core/redux/mainWallet/actions'
+import { formatDataAndGetTransactionsForWallet } from '@chronobank/core/redux/wallet/actions'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
 
 import { prefix } from './lang'

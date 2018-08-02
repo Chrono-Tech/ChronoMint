@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { abstractModel } from './AbstractModel'
+import { abstractModel } from './AbstractModelOld'
 
 export const abstractFetchingModel = (defaultValues) => class AbstractFetchingModel extends abstractModel({
   isInited: false,

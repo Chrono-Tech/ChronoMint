@@ -6,14 +6,14 @@
 import Immutable from 'immutable'
 import TokenModel from '../../models/tokens/TokenModel'
 import MultisigWalletCollection from '../../models/wallet/MultisigWalletCollection'
-import MultisigWalletModel from '../../models/wallet/MultisigWalletModel'
 import * as a from './actions'
 import reducer from './reducer'
+import MultisigEthWalletModel from '../../models/wallet/MultisigEthWalletModel'
 
-const wallet1 = new MultisigWalletModel({
+const wallet1 = new MultisigEthWalletModel({
   address: 'a1',
 })
-const wallet2 = new MultisigWalletModel({
+const wallet2 = new MultisigEthWalletModel({
   address: 'a2',
 })
 
@@ -52,7 +52,7 @@ describe('Multisig Wallet reducer', () => {
   })
 
   it('should handle ETH_MULTISIG_UPDATE (update existing wallet)', () => {
-    const updatedWallet = new MultisigWalletModel({
+    const updatedWallet = new MultisigEthWalletModel({
       address: 'a1',
       tokens: new Immutable.Map({
         t1: new TokenModel(),

@@ -76,7 +76,7 @@ function mapDispatchToProps (dispatch) {
 
 class LoginPage extends React.Component {
   static propTypes = {
-    accounts: PropTypes.array,
+    accounts: PropTypes.instanceOf(Array),
     initAccountsSignature: PropTypes.func,
     initLoginPage: PropTypes.func,
     isLocalNode: PropTypes.bool,

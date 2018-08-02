@@ -7,7 +7,7 @@ import moment from 'moment'
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
 import PropTypes from 'prop-types'
-import AbstractModel from '../refactor/models/AbstractModel'
+import AbstractModel from './AbstractModel'
 import Amount from '../../core/models/Amount'
 import PollModel from './PollModel'
 
@@ -52,6 +52,7 @@ class PollDetailsModel extends AbstractModel {
   }
 
   voteEntries () {
+    console.log('voteEntries: ', this.poll)
     const options = this.poll.options
     const votes = this.votes
 

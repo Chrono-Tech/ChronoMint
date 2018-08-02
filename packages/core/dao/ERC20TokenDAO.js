@@ -4,12 +4,12 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
-import TokenModel from '../../../models/tokens/TokenModel'
+import { ethereumProvider } from '../../login/network/EthereumProvider'
+import TokenModel from '../models/tokens/TokenModel'
 import AbstractTokenDAO from './AbstractTokenDAO'
-import ERC20DAODefaultABI from '../../../dao/abi/ERC20DAODefaultABI'
-import TxExecModel from '../../models/TxExecModel'
-import Amount from '../../../models/Amount'
+import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'
+import TxExecModel from '../models/TxExecModel'
+import Amount from '../models/Amount'
 import { DEFAULT_TX_OPTIONS } from './AbstractContractDAO'
 
 const ETH = 'ETH'
@@ -213,7 +213,8 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
 
   async immediateTransfer (tx: TxExecModel) {
     try {
-      return await ethereumProvider.transfer(tx, this.web3)
+      const rawTx = await this.createRawTx(tx)
+      ethereumProvider.transfer(rawTx, tx.from)
     } catch (e) {
       // eslint-disable-next-line
       console.log('Transfer failed', e)

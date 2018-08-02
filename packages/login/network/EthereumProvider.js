@@ -3,19 +3,17 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Tx from 'ethereumjs-tx'
-import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/actions'
+import networkService from '@chronobank/login/network/NetworkService'
+// import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/actions'
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
+import web3Factory from '@chronobank/core/web3/index'
 import AbstractProvider from './AbstractProvider'
 import EthereumEngine from './EthereumEngine'
 import selectEthereumNode from './EthereumNode'
-import TxExecModel from '../../core/refactor/models/TxExecModel'
-import {
-  getNetworkById,
-} from './settings'
-import {
-  DUCK_NETWORK,
-} from '../redux/network/actions'
+import { getNetworkById } from './settings'
+// import {
+//   DUCK_NETWORK,
+// } from '../redux/network/actions'
 
 export class EthereumProvider extends AbstractProvider {
   constructor () {
@@ -66,8 +64,8 @@ export class EthereumProvider extends AbstractProvider {
   getProviderSettings = () => {
     const state = this._store.getState()
 
-    const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
-    const { selectedNetworkId, selectedProviderId, isLocal } = state.get(DUCK_NETWORK)
+    const { customNetworksList } = state.get('persistAccount')
+    const { selectedNetworkId, selectedProviderId, isLocal } = state.get('network')
     const network = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
 
     const { protocol, host } = network
@@ -171,29 +169,21 @@ export class EthereumProvider extends AbstractProvider {
     return this._engine
   }
 
-  async transfer (tx: TxExecModel, web3) {
-    console.log('EthereumProvider transfer: ', tx)
-    const signedTx = await this.createTransaction(tx, web3)
-    const serializedTx = signedTx.serialize().toString('hex')
-    return web3.eth.sendSignedTransaction('0x' + serializedTx)
+  async transfer (rawTx, from) {
+    const engine = this.getEngine()
+    const { signedTx, walletType } = engine.signTx(rawTx, from)
+    if (walletType === 'memory' || walletType === 'plugin') {
+      this.sendSignedTransaction(signedTx)
+    }
   }
 
-  async createTransaction (tx, web3) {
-    const nonce = await web3.eth.getTransactionCount(tx.from)
-    const txData = {
-      data: tx.data || '',
-      nonce: web3.utils.toHex(nonce),
-      gasLimit: web3.utils.toHex(tx.fee.gasLimit.toString()),
-      gasPrice: web3.utils.toHex(tx.fee.gasPrice.toString()),
-      to: tx.to,
-      from: tx.from,
-      value: web3.utils.toHex(tx.value.toString()),
-    }
-
-    const pk = this.getPrivateKey(tx.from)
-    const transaction = new Tx(txData)
-    transaction.sign(pk)
-    return transaction
+  sendSignedTransaction (signedTx) {
+    const currentNetworkId = networkService.getCurrentNetwork()
+    const currentProviderId = networkService.getCurrentProvider()
+    const network = getNetworkById(currentNetworkId, currentProviderId)
+    const web3 = web3Factory(network)
+    const serializedTx = signedTx.serialize().toString('hex')
+    web3.eth.sendSignedTransaction('0x' + serializedTx)
   }
 }
 

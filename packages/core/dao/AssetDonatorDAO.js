@@ -4,7 +4,7 @@
  */
 
 import BigNumber from 'bignumber.js'
-import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
+import AbstractContractDAO from './AbstractContract3DAO'
 import Amount from '../models/Amount'
 
 export const TX_REQUIRE_TIME = 'sendTime'

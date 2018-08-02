@@ -4,7 +4,7 @@
  */
 
 import Web3 from 'web3_1'
-import { ethDAO } from '../daos/index'
+import ethDAO from '../dao/ETHDAO'
 
 export default (network) => {
   if (!network.ws) {

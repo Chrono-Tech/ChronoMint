@@ -18,7 +18,7 @@ import tokenService from '../../../../services/TokenService'
 import Amount from '../../../../models/Amount'
 import contractsManagerDAO from '../../../../dao/ContractsManagerDAO'
 import ERC20DAO from '../../../../dao/ERC20DAO'
-import { daoByType } from '../../../../refactor/redux/daos/selectors'
+import { daoByType } from '../../../daos/selectors'
 
 export const DUCK_SETTINGS_ERC20_TOKENS = 'settingsERC20Tokens'
 

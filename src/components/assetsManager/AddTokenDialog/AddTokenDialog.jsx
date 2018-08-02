@@ -37,6 +37,7 @@ export default class AddTokenDialog extends PureComponent {
         <AddTokenForm
           onClose={this.handleClose}
           onSubmitSuccess={this.handleSubmitSuccess}
+          handleSubmit={this.handleSubmitSuccess}
         />
       </ModalDialog>
     )

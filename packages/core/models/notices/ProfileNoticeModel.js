@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import { I18n } from '@chronobank/core-dependencies/i18n'
 import { Icons } from '@chronobank/core-dependencies/icons'
 import ProfileModel from '../ProfileModel'
-import AbstractModel from '../../refactor/models/AbstractModel'
+import AbstractModel from '../AbstractModelOld'
 
 const schemaFactory = () => ({
   profile: PropTypes.instanceOf(ProfileModel),

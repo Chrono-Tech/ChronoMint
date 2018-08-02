@@ -4,18 +4,18 @@
  */
 
 import BigNumber from 'bignumber.js'
+import Immutable from 'immutable'
+import { accounts, mockStore } from 'specsInit'
+import MultisigEthWalletModel from '../../models/wallet/MultisigEthWalletModel'
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import ethereumDAO from '../../dao/EthereumDAO'
 import type MultisigWalletDAO from '../../dao/MultisigWalletDAO'
-import Immutable from 'immutable'
 import MultisigTransactionModel from '../../models/wallet/MultisigTransactionModel'
 import MultisigWalletCollection from '../../models/wallet/MultisigWalletCollection'
-import MultisigWalletModel from '../../models/wallet/MultisigWalletModel'
 import multisigWalletService from '../../services/MultisigWalletService'
-import { accounts, mockStore } from 'specsInit'
 import * as a from './actions'
 
-const walletModel = new MultisigWalletModel({
+const walletModel = new MultisigEthWalletModel({
   owners: new Immutable.List([
     accounts[ 0 ],
     accounts[ 1 ],

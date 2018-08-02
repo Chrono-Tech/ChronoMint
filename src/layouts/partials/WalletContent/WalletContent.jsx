@@ -8,15 +8,16 @@ import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { DUCK_WALLET } from '@chronobank/core/redux/wallet/actions'
+import { DUCK_WALLET, formatDataAndGetTransactionsForWallet } from '@chronobank/core/redux/wallet/actions'
 import WalletWidgetDetail from 'components/wallet/WalletWidgetDetail/WalletWidgetDetail'
 import TokensListWidget from 'components/wallet/TokensListWidget/TokensListWidget'
 import PendingTxWidget from 'components/wallet/PendingTxWidget/PendingTxWidget'
 import OwnersListWidget from 'components/wallet/OwnersListWidget/OwnersListWidget'
-import { getTransactionsForWallet, goToWallets } from '@chronobank/core/redux/mainWallet/actions'
+import { goToWallets } from '@chronobank/core/redux/mainWallet/actions'
 import { getWalletInfo } from '@chronobank/core/redux/wallets/selectors/wallet'
 import TransactionsListWidget from 'components/wallet/TransactionsListWidget/TransactionsListWidget'
-import { PTWallet } from '@chronobank/core/redux/wallet/types'
+import WalletModel from '@chronobank/core/models/wallet/WalletModel'
+import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 
 import './WalletContent.scss'
 
@@ -38,7 +39,7 @@ function makeMapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     goToWallets: () => dispatch(goToWallets()),
-    getTransactions: (params) => dispatch(getTransactionsForWallet(params)),
+    getTransactions: (params) => dispatch(formatDataAndGetTransactionsForWallet(params)),
   }
 }
 
@@ -52,13 +53,13 @@ export default class WalletContent extends Component {
     getTransactions: PropTypes.func,
     address: PropTypes.string,
     blockchain: PropTypes.string,
-    wallet: PTWallet,
+    wallet: PropTypes.oneOfType([PropTypes.instanceOf(WalletModel), PropTypes.instanceOf(MultisigEthWalletModel)]),
   }
 
   constructor (props) {
     super(props)
 
-    if (!props.wallet.blockchain || !props.wallet.address) {
+    if (!props.wallet || !props.wallet.blockchain || !props.wallet.address) {
       props.goToWallets()
     }
   }
@@ -75,14 +76,17 @@ export default class WalletContent extends Component {
   render () {
     const { wallet } = this.props
 
+    if (!wallet) {
+      return null
+    }
+
     return (
       <div styleName='root'>
         <WalletWidgetDetail wallet={wallet} />
 
         <TokensListWidget wallet={wallet} />
 
-        {/*TODO Fix this component after implemented multisig */}
-        {/*<PendingTxWidget walletInfo={wallet} />*/}
+        <PendingTxWidget wallet={wallet} />
 
         <OwnersListWidget wallet={wallet} />
 

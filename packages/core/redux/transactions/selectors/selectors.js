@@ -5,9 +5,9 @@
 
 import { createSelector } from 'reselect'
 import TxExecModel from '../../../models/TxExecModel'
-import { getWallet } from '../../../../redux/wallets/selectors/models'
-import { getMainSymbolForBlockchain } from '../../../../redux/tokens/selectors'
-import WalletModel from '../../../../models/wallet/WalletModel'
+import { getWallet } from '../../wallets/selectors/models'
+import { getMainSymbolForBlockchain } from '../../tokens/selectors'
+import WalletModel from '../../../models/wallet/WalletModel'
 
 export const getDataForConfirm = (tx: TxExecModel) => createSelector(
   [

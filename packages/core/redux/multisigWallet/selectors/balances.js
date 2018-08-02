@@ -6,7 +6,7 @@
 import { createSelector } from 'reselect'
 import { getTokens } from '../../tokens/selectors'
 import { selectMarketPricesListStore, selectMarketPricesSelectedCurrencyStore } from '../../wallet/selectors'
-import { getWallet } from './models'
+import { getEthMultisigWallet } from './models'
 
 export const multisigTokensAndAmountsSelector = (address: string, symbol: string) => createSelector(
   [
@@ -34,7 +34,7 @@ export const multisigTokensAndAmountsSelector = (address: string, symbol: string
 
 export const filteredBalancesAndTokens = (address, symbol: string) => createSelector(
   [
-    getWallet(address),
+    getEthMultisigWallet(address),
     getTokens,
   ],
   (

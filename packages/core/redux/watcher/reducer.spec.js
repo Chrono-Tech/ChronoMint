@@ -16,7 +16,7 @@ map = map.set(tx.id(), tx)
 
 const mapWithGas = map.set(tx.id(), txWithGas)
 
-const emptyTx = new TxExecModel()
+const emptyTx = new TxExecModel({})
 
 describe('watcher reducer', () => {
   it('should return the initial state', () => {

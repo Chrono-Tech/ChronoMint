@@ -4,18 +4,35 @@
  */
 
 import TokenModel from '../models/tokens/TokenModel'
-import { MultiEventsHistoryABI, TokenManagementInterfaceABI } from './abi'
-import AbstractContractDAO from './AbstractContractDAO'
+import AbstractContractDAO from './AbstractContract3DAO'
 
 export default class TokenManagementExtensionDAO extends AbstractContractDAO {
 
-  constructor (at = null) {
-    super(TokenManagementInterfaceABI, at, MultiEventsHistoryABI)
+  constructor ({ address, history, abi }) {
+    super({ address, history, abi })
+  }
+
+  connect (web3, options) {
+    super.connect(web3, options)
+
+    this.allEventsEmitter = this.history.events.allEvents({})
+      .on('data', this.handleEventsData)
+      .on('changed', this.handleEventsChanged)
+      .on('error', this.handleEventsError)
+  }
+
+  handleEventsData = (data) => {
+    if (!data.event) {
+      return
+    }
+
+    console.log('TokenManagementExtensionDAO handleEventsData: ', data.event, data)
+    this.emit(data.event, data)
   }
 
   async createAssetWithFee (token: TokenModel) {
     const fee = token.fee()
-    const tx = await this._tx(
+    await this._tx(
       'createAssetWithFee',
       [
         token.symbol(),
@@ -30,11 +47,10 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
       ],
       token,
     )
-    return tx.tx
   }
 
   async createAssetWithoutFee (token: TokenModel) {
-    const tx = await this._tx(
+    await this._tx(
       'createAssetWithoutFee',
       [
         token.symbol(),
@@ -47,6 +63,5 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
       ],
       token,
     )
-    return tx.tx
   }
 }

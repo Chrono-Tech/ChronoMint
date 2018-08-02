@@ -4,7 +4,7 @@
  */
 
 import Immutable from 'immutable'
-import { abstractModel } from './AbstractModel'
+import { abstractModel } from './AbstractModelOld'
 import TokenModel from './tokens/TokenModel'
 
 class ProfileModel extends abstractModel({

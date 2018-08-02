@@ -4,10 +4,10 @@
  */
 
 import Tx from 'ethereumjs-tx'
-import { modalsOpenConfirmDialog } from '@chronobank/core-dependencies/redux/modals/actions'
-import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
-import { WATCHER_TX_SET } from '../../../redux/watcher/actions'
-import CurrentTransactionNotificationModel from '../../../models/CurrentTransactionNotificationModel'
+import { modalsOpenConfirmDialog } from '../../../core-dependencies/redux/modals/actions'
+import { ethereumProvider } from '../../../login/network/EthereumProvider'
+import { WATCHER_TX_SET } from '../watcher/actions'
+import CurrentTransactionNotificationModel from '../../models/CurrentTransactionNotificationModel'
 
 export const DUCK_TRANSACTIONS = 'transactions'
 export const TRANSACTIONS_NEW = 'transactions/new'

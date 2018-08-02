@@ -15,9 +15,9 @@ import { notify } from '../notifier/actions'
 import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED } from '../../dao/VotingManagerDAO'
 import { PTPoll } from './types'
 import { getSelectedPollFromDuck, getVoting } from './selectors/models'
-import { daoByType } from '../../refactor/redux/daos/selectors'
+import { daoByType } from '../daos/selectors'
 import PollModel from '../../models/PollModel'
-import TxExecModel from '../../refactor/models/TxExecModel'
+import TxExecModel from '../../models/TxExecModel'
 
 export const POLLS_VOTE_LIMIT = 'voting/POLLS_LIMIT'
 export const POLLS_LOAD = 'voting/POLLS_LOAD'
@@ -83,14 +83,6 @@ export const watchInitPolls = () => async (dispatch, getState) => {
     .on(EVENT_POLL_ACTIVATED, callback)
     .on(EVENT_POLL_ENDED, callback)
     .on(EVENT_POLL_VOTED, callback)
-
-  votingManagerDAO.on('mained', (tx: TxExecModel) => {
-    console.log('votingManagerDAO.on: ', tx)
-    if (tx.func === 'createPoll') {
-      const stubPoll = tx.additionalOptions.stubPoll
-      dispatch(handlePollRemoved(stubPoll.id))
-    }
-  })
 
   return Promise.all([
     dispatch(updateVoteLimit()),

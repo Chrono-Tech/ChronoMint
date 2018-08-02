@@ -6,7 +6,7 @@
 import uuid from 'uuid/v1'
 import PropTypes from 'prop-types'
 import AbstractModel from './AbstractModel'
-import AllowanceModel from '../../models/wallet/AllowanceModel'
+import AllowanceModel from './wallet/AllowanceModel'
 
 const schemaFactory = () => ({
   key: PropTypes.string,

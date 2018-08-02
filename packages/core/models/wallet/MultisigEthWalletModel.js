@@ -4,20 +4,22 @@
  */
 
 import PropTypes from 'prop-types'
-import AbstractModel from '../../refactor/models/AbstractModel'
+import AbstractModel from '../../models/AbstractModel'
 import Amount from '../Amount'
 import TxHistoryModel from './TxHistoryModel'
-import AllowanceCollection from '../../refactor/models/AllowanceCollection'
+import AllowanceCollection from '../../models/AllowanceCollection'
+import MultisigWalletPendingTxModel from './MultisigWalletPendingTxModel'
+import { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
 
 const schemaFactory = () => ({
-  address: PropTypes.string.isRequired,
-  blockchain: PropTypes.string.isRequired,
+  address: PropTypes.string,
+  blockchain: PropTypes.string,
   name: PropTypes.string,
   balances: PropTypes.object,
   transactions: PropTypes.instanceOf(TxHistoryModel),
   owners: PropTypes.arrayOf(PropTypes.string),
   requiredSignatures: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  pendingTxList: PropTypes.object,
+  pendingTxList: PropTypes.objectOf(PropTypes.instanceOf(MultisigWalletPendingTxModel)),
   releaseTime: PropTypes.instanceOf(Date),
   customTokens: PropTypes.object,
   deriveNumber: PropTypes.number,
@@ -33,10 +35,11 @@ const defaultProps = {
   balances: {},
   transactions: new TxHistoryModel(),
   owners: [],
-  pendingTxList: null,
+  pendingTxList: {},
   customTokens: null,
   isTIMERequired: false,
   allowances: new AllowanceCollection({}),
+  blockchain: BLOCKCHAIN_ETHEREUM,
 }
 
 export default class MultisigEthWalletModel extends AbstractModel {
@@ -51,6 +54,10 @@ export default class MultisigEthWalletModel extends AbstractModel {
     return `${this.blockchain}-${this.address}`
   }
 
+  get pendingCount () {
+    return Object.values(this.pendingTxList).length
+  }
+
   updateBalance (balance: Amount) {
     return new MultisigEthWalletModel({
       ...this,
@@ -61,7 +68,65 @@ export default class MultisigEthWalletModel extends AbstractModel {
     })
   }
 
-  transform () {
-    return { ...this }
+  updatePendingTx (pendingTx: MultisigWalletPendingTxModel) {
+    return new MultisigEthWalletModel({
+      ...this,
+      pendingTxList: {
+        ...this.pendingTxList,
+        [pendingTx.id]: pendingTx,
+      },
+    })
+  }
+
+  // forms
+
+  toAddFormJS () {
+    const time = !this.releaseTime || this.releaseTime.getTime() === 0
+      ? new Date()
+      : this.releaseTime
+
+    return {
+      requiredSignatures: `${this.requiredSignatures || 0}`,
+      owners: this.owners,
+      timeLockDate: time,
+      timeLockTime: time,
+    }
+  }
+
+  toCreateWalletTx () {
+    if (this.is2FA) {
+      return {}
+    }
+
+    const data = {
+      requiredSignatures: {
+        value: this.requiredSignatures,
+        description: 'requiredSignatures',
+      },
+      owners: {
+        value: this.owners,
+        description: 'owners',
+      },
+    }
+
+    if (this.isTimeLocked) {
+      data.releaseTime = {
+        value: this.releaseTime,
+        description: 'releaseTime',
+      }
+      data.isTimeLocked = {
+        value: true,
+        description: 'isTimeLocked',
+      }
+    }
+
+    return data
+  }
+
+  toRequiredSignaturesFormJS () {
+    return {
+      ownersCount: this.owners,
+      requiredSignatures: this.requiredSignatures,
+    }
   }
 }
