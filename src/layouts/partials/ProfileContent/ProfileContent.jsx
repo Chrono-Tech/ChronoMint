@@ -177,7 +177,7 @@ class ProfileContent extends PureComponent {
         <div styleName='address-split-hr' />
 
         <div styleName='profile-fee-slider'>
-          <GasSlider />
+          {/*<GasSlider />*/}
         </div>
       </div>
     )
