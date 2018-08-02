@@ -58,3 +58,4 @@ export default class ConfirmMnemonicContainer extends Component {
     )
   }
 }
+
