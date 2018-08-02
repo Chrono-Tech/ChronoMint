@@ -19,6 +19,7 @@ import {
   GenerateMnemonicContainer,
   ConfirmMnemonicContainer,
 } from '@chronobank/login-ui/components'
+import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -51,12 +52,11 @@ class CreateAccountPage extends PureComponent {
       page: CreateAccountPage.PAGES.CREATE_ACCOUNT_FORM,
       accountName: null,
       password: null,
-      mnemonic: null,
+      mnemonic: mnemonicProvider.generateMnemonic(),
     }
   }
 
   getCurrentPage () {
-    console.log('getcurrentpage', this.props)
     switch(this.state.page){
       case CreateAccountPage.PAGES.CREATE_ACCOUNT_FORM:
         return (
@@ -68,6 +68,7 @@ class CreateAccountPage extends PureComponent {
       case CreateAccountPage.PAGES.GENERATE_MNEMONIC_FORM:
         return (
           <GenerateMnemonicContainer
+            mnemonic={this.state.mnemonic}
             onProceed={this.onProceedGenerateMnemonic.bind(this)}
           />
         )
@@ -77,6 +78,7 @@ class CreateAccountPage extends PureComponent {
           <ConfirmMnemonicContainer
             mnemonic={this.state.mnemonic}
             onSubmit={this.onSubmitConfirmMnemonic.bind(this)}
+            previousPage={this.previousPage.bind(this)}
           />
         )
 
@@ -103,9 +105,8 @@ class CreateAccountPage extends PureComponent {
     })
   }
 
-  onProceedGenerateMnemonic (mnemonic) {
+  onProceedGenerateMnemonic () {
     this.setState({
-      mnemonic,
       page: CreateAccountPage.PAGES.CONFIRM_MNEMONIC_FORM,
     })
   }

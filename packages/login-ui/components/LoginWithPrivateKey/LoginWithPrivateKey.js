@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
@@ -16,8 +17,12 @@ import validate from './validate'
 import './LoginWithPrivateKey.scss'
 
 class LoginWithPrivateKey extends PureComponent {
+  static propTypes = {
+    previousPage: PropTypes.func,
+  }
+
   render () {
-    const { handleSubmit, error } = this.props
+    const { handleSubmit, error, previousPage } = this.props
 
     return (
       <form styleName='form' name={FORM_PRIVATE_KEY_LOGIN_PAGE} onSubmit={handleSubmit}>
@@ -55,7 +60,7 @@ class LoginWithPrivateKey extends PureComponent {
 
           <Translate value='LoginWithPrivateKey.or' />
           <br />
-          <Link to='/login/import-methods' href styleName='link'>
+          <Link onClick={previousPage} href styleName='link'>
             <Translate value='LoginWithPrivateKey.back' />
           </Link>
         </div>

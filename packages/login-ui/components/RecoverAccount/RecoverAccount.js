@@ -11,35 +11,26 @@ import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import {
   getAccountName,
-  // getAccountAvatar,
   getAccountAvatarImg,
   getAccountAddress,
 } from '@chronobank/core/redux/persistAccount/utils'
 import styles from 'layouts/Splash/styles'
-import {
-  initRecoverAccountPage,
-} from '@chronobank/login/redux/network/thunks'
 import Button from 'components/common/ui/Button/Button'
 import UserRow from 'components/common/ui/UserRow/UserRow'
 import {
   FORM_RECOVER_ACCOUNT,
-  navigateToSelectWallet,
 } from '../../redux/actions'
-import {
-  onSubmitRecoverAccountForm,
-  onSubmitRecoverAccountFormSuccess,
-  onSubmitRecoverAccountFormFail,
-} from '../../redux/thunks'
 import './RecoverAccount.scss'
 
 class RecoverAccount extends PureComponent {
   static propTypes = {
     selectedWallet: PropTypes.object,
     navigateToSelectWallet: PropTypes.func,
+    previousPage: PropTypes.func,
   }
 
   render () {
-    const { handleSubmit, error, selectedWallet, navigateToSelectWallet } = this.props
+    const { handleSubmit, error, selectedWallet, navigateToSelectWallet, previousPage } = this.props
 
     const wordsArray = new Array(12).fill()
 
@@ -85,7 +76,7 @@ class RecoverAccount extends PureComponent {
           { error && (<div styleName='form-error'>{error}</div>) }
           <Translate value='RecoverAccount.or' />
           <br />
-          <Link to='/login' href styleName='link'>
+          <Link onClick={previousPage} styleName='link'>
             <Translate value='RecoverAccount.back' />
           </Link>
         </div>

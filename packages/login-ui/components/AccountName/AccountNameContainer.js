@@ -5,11 +5,19 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import { navigateBack } from '@chronobank/login-ui/redux/actions'
 import AccountName from './AccountName'
 
-export default class LoginWithPrivateKeyContainer extends PureComponent {
+const mapDispatchToProps = (dispatch) => {
+  return {
+    navigateBack: () => dispatch(navigateBack()),
+  }
+}
+
+class AccountNameContainer extends PureComponent {
   static propTypes = {
-    previousPage: PropTypes.func,
+    navigateBack: PropTypes.func,
     onSubmit: PropTypes.func,
   }
 
@@ -26,8 +34,10 @@ export default class LoginWithPrivateKeyContainer extends PureComponent {
     return (
       <AccountName
         onSubmit={this.handleSubmit.bind(this)}
-        previousPage={this.props.previousPage}
+        previousPage={this.props.navigateBack}
       />
     )
   }
 }
+
+export default connect(null, mapDispatchToProps)(AccountNameContainer)

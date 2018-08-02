@@ -32,6 +32,7 @@ import {
   FORM_LOGIN_PAGE,
   FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
   navigateToSelectWallet,
+  navigateToRecoverAccountPage,
 } from '../../redux/actions'
 import {
   initLoginPage,
@@ -68,6 +69,7 @@ function mapDispatchToProps (dispatch) {
     initLoginPage: async () => dispatch(initLoginPage()),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
     initAccountsSignature: () => dispatch(initAccountsSignature()),
+    navigateToRecoverAccountPage: () => dispatch(navigateToRecoverAccountPage()),
   }
 }
 
@@ -112,6 +114,7 @@ class LoginPage extends React.Component {
       isLocalNode,
       isLoginSubmitting,
       navigateToSelectWallet,
+      navigateToRecoverAccountPage,
       onSubmit,
       pristine,
       selectedWallet,
@@ -170,7 +173,7 @@ class LoginPage extends React.Component {
 
             {error ? (<div styleName='form-error'>{error}</div>) : null}
 
-            <Link to='/login/recover-account' href styleName='link'>
+            <Link onClick={navigateToRecoverAccountPage} styleName='link'>
               <Translate value='LoginForm.forgotPassword' />
             </Link>
           </div>

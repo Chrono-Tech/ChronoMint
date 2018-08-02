@@ -22,6 +22,7 @@ import './LoginWithWallet.scss'
 class LoginWithWallet extends Component {
   static propTypes = {
     isLoading: PropTypes.bool,
+    previousPage: PropTypes.func,
   }
 
   constructor () {
@@ -66,7 +67,7 @@ class LoginWithWallet extends Component {
     this.walletFileUploadInput.value = ''
   }
 
-  async handleSubmitForm (values, dispatch){
+  async handleSubmitForm (){
     const { onSubmit } = this.props
     const { wallet } = this.state
 
@@ -74,7 +75,7 @@ class LoginWithWallet extends Component {
   }
 
   render () {
-    const { handleSubmit, onSubmit, error } = this.props
+    const { handleSubmit, error, previousPage } = this.props
     const { isUploading, isUploaded, fileName } = this.state
 
     return (
@@ -158,7 +159,7 @@ class LoginWithWallet extends Component {
           { error ? <div styleName='error'>{error}</div> : null }
           <Translate value='LoginWithWallet.or' />
           <br />
-          <Link to='/login' href styleName='link'>
+          <Link onClick={previousPage} styleName='link'>
             <Translate value='LoginWithWallet.back' />
           </Link>
         </div>

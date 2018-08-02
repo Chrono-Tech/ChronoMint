@@ -9,15 +9,22 @@ import { connect } from 'react-redux'
 import { stopSubmit, SubmissionError } from 'redux-form/immutable'
 import { validateMnemonicForAccount } from '@chronobank/core/redux/persistAccount/utils'
 import {
-  FORM_RECOVER_ACCOUNT,
+  FORM_RECOVER_ACCOUNT, navigateBack,
 } from '../../redux/actions'
 import RecoverAccount from './RecoverAccount'
 
-export default class RecoverAccountContainer extends PureComponent {
+const mapDispatchToProps = (dispatch) => {
+  return {
+    navigateBack: () => dispatch(navigateBack()),
+  }
+}
+
+class RecoverAccountContainer extends PureComponent {
   static propTypes = {
     selectedWallet: PropTypes.object,
     navigateToSelectWallet: PropTypes.func,
     validateMnemonicForAccount: PropTypes.func,
+    navigateBack: PropTypes.func,
   }
 
   async handleSubmit (values) {
@@ -61,7 +68,10 @@ export default class RecoverAccountContainer extends PureComponent {
         onSubmit={this.handleSubmit.bind(this)}
         onSubmitSuccess={this.handleSubmitSuccess.bind(this)}
         onSubmitFail={this.handleSubmitFail.bind(this)}
+        previousPage={this.props.navigateBack}
       />
     )
   }
 }
+
+export default connect(null, mapDispatchToProps)(RecoverAccountContainer)

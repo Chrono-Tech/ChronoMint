@@ -15,6 +15,9 @@ import ConfirmMnemonic from './ConfirmMnemonic'
 export default class ConfirmMnemonicContainer extends Component {
   static propTypes = {
     mnemonic: PropTypes.string,
+    previousPage: PropTypes.func,
+    onSubmit: PropTypes.func,
+    onSubmitSuccess: PropTypes.func,
   }
 
   static defaultProps = {
@@ -50,8 +53,8 @@ export default class ConfirmMnemonicContainer extends Component {
         onSubmit={this.handleSubmit.bind(this)}
         onSubmitSuccess={this.handleSubmitSuccess.bind(this)}
         onSubmitFail={this.handleSubmitFail.bind(this)}
+        previousPage={this.props.previousPage}
       />
     )
   }
 }
-

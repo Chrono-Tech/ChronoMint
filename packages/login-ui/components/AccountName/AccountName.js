@@ -16,11 +16,15 @@ import {
 } from '../../redux/actions'
 import validate from './validate'
 import './AccountName.scss'
+import PropTypes from "prop-types";
 
 class AccountName extends PureComponent {
+  static propTypes = {
+    previousPage: PropTypes.func,
+  }
 
   render () {
-    const { handleSubmit, error, isLoading } = this.props
+    const { handleSubmit, error, isLoading, previousPage } = this.props
 
     return (
       <form styleName='form' name={FORM_ACCOUNT_NAME} onSubmit={handleSubmit}>
@@ -68,7 +72,7 @@ class AccountName extends PureComponent {
 
             <Translate value='AccountName.or' />
             <br />
-            <Link to='/login/upload-wallet' href styleName='link'>
+            <Link onClick={previousPage} styleName='link'>
               <Translate value='AccountName.back' />
             </Link>
           </div>

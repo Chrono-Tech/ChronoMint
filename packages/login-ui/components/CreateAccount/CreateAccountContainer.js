@@ -6,16 +6,25 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { stopSubmit } from 'redux-form/immutable'
+import { connect } from 'react-redux'
 import {
   FORM_CREATE_ACCOUNT,
+  navigateToSelectWallet,
 } from '../../redux/actions'
 import CreateAccount from './CreateAccount'
 
-export default class CreateAccountContainer extends PureComponent {
+const mapDispatchToProps = (dispatch) => {
+  return {
+    navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
+  }
+}
+
+class CreateAccountContainer extends PureComponent {
   static propTypes = {
     previousPage: PropTypes.func,
     onSubmit: PropTypes.func,
     onSubmitSuccess: PropTypes.func,
+    navigateToSelectWallet: PropTypes.func,
   }
 
   async handleSubmit (values) {
@@ -47,7 +56,10 @@ export default class CreateAccountContainer extends PureComponent {
         onSubmit={this.handleSubmit.bind(this)}
         onSubmitFail={this.handleSubmitFail.bind(this)}
         onSubmitSuccess={this.handleSubmitSuccess.bind(this)}
+        navigateToSelectWallet={this.props.navigateToSelectWallet}
       />
     )
   }
 }
+
+export default connect(null, mapDispatchToProps)(CreateAccountContainer)

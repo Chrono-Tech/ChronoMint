@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
@@ -17,8 +18,12 @@ import validate from './validate'
 import './CreateAccount.scss'
 
 class CreateAccount extends PureComponent {
+  static propTypes = {
+    navigateToSelectWallet: PropTypes.func,
+  }
+
   render () {
-    const { handleSubmit, error } = this.props
+    const { handleSubmit, error, navigateToSelectWallet } = this.props
 
     return (
       <form styleName='form' name={FORM_CREATE_ACCOUNT} onSubmit={handleSubmit}>
@@ -64,7 +69,7 @@ class CreateAccount extends PureComponent {
           {error && (<div styleName='form-error'>{error}</div>)}
           <Translate value='CreateAccount.or' />
           <br />
-          <Link to='/login/select-account' href styleName='link'>
+          <Link onClick={navigateToSelectWallet} styleName='link'>
             <Translate value='CreateAccount.useAccount' />
           </Link>
         </div>
