@@ -3,18 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import {
-  bccProvider,
-  btcProvider,
-  btgProvider,
-  ltcProvider,
-} from '@chronobank/login/network/BitcoinProvider'
-import {
-  BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_LITECOIN,
-} from '@chronobank/login/network/constants'
+import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/constants'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { change, formValueSelector } from 'redux-form/immutable'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
@@ -34,7 +24,7 @@ import AddressModel from '../../models/wallet/AddressModel'
 import AllowanceModel from '../../models/wallet/AllowanceModel'
 import { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
 import { addMarketToken } from '../market/actions'
-import { notify, notifyError } from '../notifier/actions'
+import { notify } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/actions'
 import { subscribeOnTokens } from '../tokens/actions'
 import { DUCK_TOKENS } from '../tokens/constants'
@@ -54,8 +44,8 @@ import { daoByType } from '../daos/selectors'
 import { WALLETS_SET_IS_TIME_REQUIRED, WALLETS_UPDATE_WALLET } from '../wallets/actions'
 import { getMainAddresses, getMainEthWallet, getMainWalletForBlockchain, getWallet } from '../wallets/selectors/models'
 import { getAccount } from '../session/selectors/models'
-import AllowanceCollection from '../../models/AllowanceCollection'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
+import { web3Selector } from '../ethereum/selectors'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
@@ -289,80 +279,6 @@ export const initMainWallet = () => async (dispatch) => {
   })
 }
 
-export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1, additionalOptions = {}) => async (dispatch) => {
-  try {
-    const tokenDAO = tokenService.getDAO(token.id())
-
-    await tokenDAO.transfer(
-      wallet.address,
-      recipient,
-      amount,
-      token,
-      feeMultiplier,
-      additionalOptions,
-    )
-  } catch (e) {
-    // eslint-disable-next-line
-    console.error('e', e)
-    dispatch(notifyError(e, 'mainTransfer'))
-  }
-}
-
-const updateAllowance = (allowance) => (dispatch, getState) => {
-  const wallet = getMainEthWallet(getState())
-  if (allowance) {
-    dispatch({
-      type: WALLETS_UPDATE_WALLET,
-      wallet: new WalletModel({
-        ...wallet,
-        allowances: new AllowanceCollection({
-          list: {
-            ...wallet.allowances.list,
-            [allowance.id()]: allowance,
-          },
-        }),
-      }),
-    })
-  }
-}
-
-export const mainApprove = (token: TokenModel, amount: Amount, spender: string, feeMultiplier: Number, additionalOptions = undefined) => async (dispatch, getState) => {
-  const wallet = getMainEthWallet(getState())
-  const allowance = wallet.allowances.list[`${spender}-${token.id()}`]
-  const { account } = getState().get(DUCK_SESSION)
-
-  try {
-    allowance && dispatch(updateAllowance(allowance.isFetching(true)))
-    const tokenDAO = tokenService.getDAO(token)
-    additionalOptions['from'] = account
-    await tokenDAO.approve(spender, amount, feeMultiplier, additionalOptions)
-  } catch (e) {
-    // eslint-disable-next-line
-    console.log('mainRevoke approve: ', e)
-    dispatch(notifyError(e, 'mainApprove'))
-    allowance && dispatch(updateAllowance(allowance.isFetching(false)))
-  }
-}
-
-export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Number = 1, additionalOptions = undefined) => async (dispatch, getState) => {
-  const wallet = getMainEthWallet(getState())
-  const allowance = wallet.allowances.list[`${spender}-${token.id()}`]
-  dispatch(updateAllowance(allowance.isFetching(true)))
-
-  const { account } = getState().get(DUCK_SESSION)
-  try {
-    dispatch({ type: WALLET_ALLOWANCE, allowance: allowance.isFetching(true) })
-    const tokenDAO = tokenService.getDAO(token)
-    additionalOptions['from'] = account
-    await tokenDAO.revoke(spender, token.symbol(), feeMultiplier, additionalOptions)
-  } catch (e) {
-    // eslint-disable-next-line
-    console.log('mainRevoke error: ', e)
-    dispatch(notifyError(e, 'mainRevoke'))
-    dispatch(updateAllowance(allowance.isFetching(false)))
-  }
-}
-
 export const updateIsTIMERequired = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   const wallet = getMainEthWallet(getState())
@@ -411,7 +327,7 @@ export const getSpendersAllowance = (tokenId: string, spender: string) => async 
 
 export const estimateGasForDeposit = (mode: string, params, callback, gasPriceMultiplier = 1) => async (dispatch, getState) => {
   let dao = null
-  const web3 = getState('web3')
+  const web3 = web3Selector()(getState())
   switch (mode) {
     case TX_APPROVE:
       dao = await tokenService.getDAO(TIME, web3)

@@ -156,8 +156,12 @@ export class EthereumDAO extends AbstractTokenDAO {
     return { gasLimit: gasLimitBN, gasFee: gasFeeBN, gasPrice: gasPriceBN }
   }
 
-  async transfer (from: string, to: string, amount: Amount, token, feeMultiplier: Number = 1, advancedParams): Promise {
-    this.submit(from, to, amount, token, feeMultiplier, advancedParams)
+  transfer (from: string, to: string, amount: Amount) {
+    return {
+      from,
+      to,
+      value: new BigNumber(amount),
+    }
   }
 
   accept (transfer: TxExecModel) {

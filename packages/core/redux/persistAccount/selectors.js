@@ -4,16 +4,33 @@
  */
 
 import { createSelector } from 'reselect'
+import { DUCK_PERSIST_ACCOUNT } from './actions'
+
+export const getPersistAccount = (state) => {
+  return state.get(DUCK_PERSIST_ACCOUNT)
+}
+
+export const getDecryptedWallet = (state) => {
+  const { decryptedWallet } = getPersistAccount(state)
+  return decryptedWallet
+}
 
 export const getSelectedNetwork = () => createSelector(
   (state) => state.get('network'),
   (network) => {
-    if (!network.selectedNetworkId){
+    if (!network.selectedNetworkId) {
       return null
     }
 
     return network.networks && network.networks.find(
-      (item) => item.id === network.selectedNetworkId
+      (item) => item.id === network.selectedNetworkId,
     )
+  },
+)
+
+export const getSigner = createSelector(
+  getDecryptedWallet,
+  (decryptedWallet) => {
+    return decryptedWallet
   },
 )

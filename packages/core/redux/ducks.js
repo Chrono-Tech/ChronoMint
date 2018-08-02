@@ -20,9 +20,8 @@ import * as voting from './voting'
 import * as wallet from './wallet'
 import * as watcher from './watcher'
 import * as persistAccount from './persistAccount'
-import * as web3 from './web3'
 import * as dao from './daos'
-import * as transactions from './transactions'
+import * as ethereum from './ethereum'
 import * as wallets from './wallets'
 
 export default {
@@ -43,8 +42,7 @@ export default {
   tokens,
   assetsHolder,
   persistAccount,
-  web3,
   dao,
-  transactions,
+  ethereum,
   wallets,
 }

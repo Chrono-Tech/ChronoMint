@@ -6,11 +6,7 @@
  */
 
 // #region imports
-import {
-  change,
-  stopSubmit,
-  SubmissionError,
-} from 'redux-form'
+import { change, stopSubmit, SubmissionError } from 'redux-form'
 import axios from 'axios'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import * as NetworkThunks from '@chronobank/login/redux/network/thunks'
@@ -20,14 +16,9 @@ import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 import networkService from '@chronobank/login/network/NetworkService'
 import profileService from '@chronobank/login/network/ProfileService'
-import {
-  getAddress,
-  createAccountEntry,
-} from '@chronobank/core/redux/persistAccount/utils'
-import {
-  // LOCAL_PRIVATE_KEYS,
-  isLocalNode,
-} from '@chronobank/login/network/settings'
+import { createAccountEntry, getAddress } from '@chronobank/core/redux/persistAccount/utils'
+import { SignerMemoryModel } from '@chronobank/core/models'
+import { isLocalNode } from '@chronobank/login/network/settings'
 import * as LoginUIActions from './actions'
 
 // #endregion
@@ -221,6 +212,8 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
   try {
     const wallet = await dispatch(PersistAccountActions.decryptAccount(selectedWallet.encrypted, password))
+    dispatch(PersistAccountActions.accountLoad(new SignerMemoryModel({ wallet })))
+
     const privateKey = wallet && wallet[0] && wallet[0].privateKey
 
     dispatch(NetworkThunks.getProfileSignature(wallet[0]))
@@ -527,12 +520,12 @@ export const onSubmitMnemonicLoginForm = (mnemonic) =>
     dispatch(NetworkActions.networkSetNewMnemonic(mnemonicValue))
   }
 
-  /*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to remove throws
- * TODO: to rework it
- */
+/*
+* Thunk dispatched by "" screen.
+* TODO: to add description
+* TODO: to remove throws
+* TODO: to rework it
+*/
 export const onSubmitRecoverAccountForm = (mnemonic) =>
   async (dispatch) => {
     const validForm = await dispatch(PersistAccountActions.validateMnemonicForAccount(mnemonic))

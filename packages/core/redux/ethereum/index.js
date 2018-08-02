@@ -3,8 +3,4 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import web3 from './reducer'
-
-export {
-  web3,
-}
+export { default as ethereum } from './reducer'

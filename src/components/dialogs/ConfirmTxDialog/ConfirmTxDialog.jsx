@@ -17,8 +17,8 @@ import { modalsClear, modalsClose } from 'redux/modals/actions'
 import { WATCHER_TX_SET } from '@chronobank/core/redux/watcher/actions'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenPrice from 'components/common/TokenPrice/TokenPrice'
-import { getDataForConfirm } from '@chronobank/core/redux/transactions/selectors/selectors'
-import TxExecModel from '../../../../packages/core/models/TxExecModel'
+import { getDataForConfirm } from '@chronobank/core/redux/ethereum/selectors'
+import TxExecModel from '@chronobank/core/models/TxExecModel'
 
 import './ConfirmTxDialog.scss'
 

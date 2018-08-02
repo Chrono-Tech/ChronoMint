@@ -8,7 +8,8 @@ import tokenService from '../../services/TokenService'
 import MainWalletModel from '../../models/wallet/MainWalletModel'
 import ExchangesCollection from '../../models/exchange/ExchangesCollection'
 import BigNumber from 'bignumber.js'
-import { mainTransfer, WALLET_ALLOWANCE } from '../mainWallet/actions'
+import { WALLET_ALLOWANCE } from '../mainWallet/actions'
+import { mainTransferc } from '../wallets/actions'
 import Immutable from 'immutable'
 import networkService from '@chronobank/login/network/NetworkService'
 import exchangeService from '../../services/ExchangeService'
@@ -24,10 +25,10 @@ import * as a from './actions'
 
 let store
 const mock = new Immutable.Map({
-  [ DUCK_SESSION ]: {
-    account: accounts[ 0 ],
+  [DUCK_SESSION]: {
+    account: accounts[0],
   },
-  [ a.DUCK_EXCHANGE ]: new ExchangeModel({ showFilter: false }),
+  [a.DUCK_EXCHANGE]: new ExchangeModel({ showFilter: false }),
 })
 
 describe('Exchange tests', () => {
@@ -59,9 +60,9 @@ describe('Exchange tests', () => {
     networkService.connectStore(tesstStore)
     await tesstStore.dispatch(a.getExchangesForOwner())
     const actions = tesstStore.getActions()
-    expect(actions[ 0 ].type).toEqual(a.EXCHANGE_GET_OWNERS_EXCHANGES_START)
-    expect(actions[ 1 ].type).toEqual(a.EXCHANGE_GET_OWNERS_EXCHANGES_FINISH)
-    expect(actions[ 1 ].exchanges.size()).toEqual(jasmine.any(Number))
+    expect(actions[0].type).toEqual(a.EXCHANGE_GET_OWNERS_EXCHANGES_START)
+    expect(actions[1].type).toEqual(a.EXCHANGE_GET_OWNERS_EXCHANGES_FINISH)
+    expect(actions[1].exchanges.size()).toEqual(jasmine.any(Number))
     done()
   })
 
@@ -71,7 +72,7 @@ describe('Exchange tests', () => {
       sellPrice: new BigNumber(1),
       symbol: 'TIME',
     })
-    exchangeService.subscribeToCreateExchange(accounts[ 0 ])
+    exchangeService.subscribeToCreateExchange(accounts[0])
     await exchangeService.on('ExchangeCreated', async (tx: Object) => {
       expect({
         symbol: tx.args.symbol,
@@ -90,8 +91,8 @@ describe('Exchange tests', () => {
     store.clearActions()
     await store.dispatch(a.getTokensAllowance(exchange))
     const actions = store.getActions()
-    expect(actions[ 0 ].type).toEqual(WALLET_ALLOWANCE)
-    expect(actions[ 0 ].allowance.id()).toEqual(`${exchange.address()}-${exchange.symbol()}`)
+    expect(actions[0].type).toEqual(WALLET_ALLOWANCE)
+    expect(actions[0].allowance.id()).toEqual(`${exchange.address()}-${exchange.symbol()}`)
     done()
   })
 
@@ -99,8 +100,8 @@ describe('Exchange tests', () => {
     store.clearActions()
     await store.dispatch(a.getExchangesCount())
     const actions = store.getActions()
-    expect(actions[ 0 ].type).toEqual(a.EXCHANGE_SET_PAGES_COUNT)
-    expect(actions[ 0 ].count).toEqual(jasmine.any(Number))
+    expect(actions[0].type).toEqual(a.EXCHANGE_SET_PAGES_COUNT)
+    expect(actions[0].count).toEqual(jasmine.any(Number))
     done()
   })
 
@@ -108,9 +109,9 @@ describe('Exchange tests', () => {
     store.clearActions()
     await store.dispatch(a.getNextPage())
     const actions = store.getActions()
-    expect(actions[ 0 ].type).toEqual(a.EXCHANGE_EXCHANGES_LIST_GETTING_START)
-    expect(actions[ 1 ].type).toEqual(a.EXCHANGE_EXCHANGES_LIST_GETTING_FINISH)
-    expect(actions[ 1 ].exchanges.size()).toEqual(jasmine.any(Number))
+    expect(actions[0].type).toEqual(a.EXCHANGE_EXCHANGES_LIST_GETTING_START)
+    expect(actions[1].type).toEqual(a.EXCHANGE_EXCHANGES_LIST_GETTING_FINISH)
+    expect(actions[1].exchanges.size()).toEqual(jasmine.any(Number))
     done()
   })
 
@@ -127,8 +128,8 @@ describe('Exchange tests', () => {
 
     await testStore.dispatch(a.updateExchange(exchange))
     const actions = testStore.getActions()
-    expect(actions[ 0 ].type).toEqual(a.EXCHANGE_UPDATE_FOR_OWNER)
-    expect(actions[ 1 ].type).toEqual(a.EXCHANGE_UPDATE)
+    expect(actions[0].type).toEqual(a.EXCHANGE_UPDATE_FOR_OWNER)
+    expect(actions[1].type).toEqual(a.EXCHANGE_UPDATE)
     done()
   })
 
@@ -145,7 +146,7 @@ describe('Exchange tests', () => {
     await store.dispatch(a.getExchangesForOwner())
 
     const wallet = new MainWalletModel({
-      address: accounts[ 0 ],
+      address: accounts[0],
       tokens: new Immutable.Map({ TIME: token }),
     })
     exchangeService.subscribeToExchange(address)

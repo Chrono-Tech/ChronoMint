@@ -19,8 +19,15 @@ import { updateEthMultisigWalletBalance } from '../multisigWallet/actions'
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import { EE_MS_WALLET_ADDED } from '../../dao/constants'
 import ethDAO from '../../dao/ETHDAO'
-import { getWallets } from './selectors/models'
+import { getMainEthWallet, getWallets } from './selectors/models'
 import MultisigEthWalletModel from '../../models/wallet/MultisigEthWalletModel'
+import { notifyError } from '../notifier/actions'
+import { DUCK_SESSION } from '../session/actions'
+import { AllowanceCollection } from '../../models'
+import { WALLET_ALLOWANCE } from '../mainWallet/actions'
+import { web3Selector } from '../ethereum/selectors'
+import { executeTransaction } from '../ethereum/actions'
+import { getSigner } from '../persistAccount/selectors'
 
 export const DUCK_WALLETS = 'wallets'
 export const WALLETS_SET = 'wallet/set'
@@ -186,5 +193,72 @@ export const unsubscribeWallet = ({ wallet, listener }) => async (/*dispatch, ge
       return listener
     default:
       return
+  }
+}
+
+const updateAllowance = (allowance) => (dispatch, getState) => {
+  const wallet = getMainEthWallet(getState())
+  if (allowance) {
+    dispatch({
+      type: WALLETS_UPDATE_WALLET,
+      wallet: new WalletModel({
+        ...wallet,
+        allowances: new AllowanceCollection({
+          list: {
+            ...wallet.allowances.list,
+            [allowance.id()]: allowance,
+          },
+        }),
+      }),
+    })
+  }
+}
+
+export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1, additionalOptions = {}) => async (dispatch, getState) => {
+  const state = getState()
+  const tokenDAO = tokenService.getDAO(token.id())
+  const web3 = web3Selector()(state)
+  const signer = getSigner(state)
+  const tx = tokenDAO.transfer(wallet.address, recipient, amount)
+
+  if (tx) {
+    await dispatch(executeTransaction({ tx, web3, signer, options: { feeMultiplier } }))
+  }
+}
+
+export const mainApprove = (token: TokenModel, amount: Amount, spender: string, feeMultiplier: Number, additionalOptions = undefined) => async (dispatch, getState) => {
+  const wallet = getMainEthWallet(getState())
+  const allowance = wallet.allowances.list[`${spender}-${token.id()}`]
+  const { account } = getState().get(DUCK_SESSION)
+
+  try {
+    allowance && dispatch(updateAllowance(allowance.isFetching(true)))
+    const tokenDAO = tokenService.getDAO(token)
+    additionalOptions['from'] = account
+    await tokenDAO.approve(spender, amount, feeMultiplier, additionalOptions)
+  } catch (e) {
+    // eslint-disable-next-line
+    console.log('mainRevoke approve: ', e)
+    dispatch(notifyError(e, 'mainApprove'))
+    allowance && dispatch(updateAllowance(allowance.isFetching(false)))
+  }
+}
+
+export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Number = 1, additionalOptions = undefined) => async (dispatch, getState) => {
+  const wallet = getMainEthWallet(getState())
+  const allowance = wallet.allowances.list[`${spender}-${token.id()}`]
+  dispatch(updateAllowance(allowance.isFetching(true)))
+
+  const { account } = getState().get(DUCK_SESSION)
+  try {
+    dispatch(updateAllowance(allowance.isFetching(true)))
+    const tokenDAO = tokenService.getDAO(token)
+    additionalOptions['from'] = account
+    await tokenDAO.revoke(spender, token.symbol(), feeMultiplier, additionalOptions)
+  } catch (e) {
+    // eslint-disable-next-line
+    console.log('mainRevoke error: ', e)
+    dispatch(notifyError(e, 'mainRevoke'))
+    dispatch(updateAllowance(allowance.isFetching(false)))
   }
 }
