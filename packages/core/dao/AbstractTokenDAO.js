@@ -3,9 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import Tx from 'ethereumjs-tx'
 import BigNumber from 'bignumber.js'
 import EventEmitter from 'events'
 import { address } from '../models/validator'
+import TxExecModel from '../models/TxExecModel'
 
 export default class AbstractTokenDAO extends EventEmitter {
   constructor (token) {
@@ -81,5 +83,18 @@ export default class AbstractTokenDAO extends EventEmitter {
 
   getAddressValidator () {
     return address
+  }
+
+  async createRawTx (tx: TxExecModel) {
+    const nonce = await this.web3.eth.getTransactionCount(tx.from)
+    return new Tx({
+      data: tx.data || '',
+      nonce: this.web3.utils.toHex(nonce),
+      gasLimit: this.web3.utils.toHex(tx.fee.gasLimit.toString()),
+      gasPrice: this.web3.utils.toHex(tx.fee.gasPrice.toString()),
+      to: tx.to,
+      from: tx.from,
+      value: this.web3.utils.toHex(tx.value.toString()),
+    })
   }
 }

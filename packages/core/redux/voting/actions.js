@@ -84,14 +84,6 @@ export const watchInitPolls = () => async (dispatch, getState) => {
     .on(EVENT_POLL_ENDED, callback)
     .on(EVENT_POLL_VOTED, callback)
 
-  votingManagerDAO.on('mained', (tx: TxExecModel) => {
-    console.log('votingManagerDAO.on: ', tx)
-    if (tx.func === 'createPoll') {
-      const stubPoll = tx.additionalOptions.stubPoll
-      dispatch(handlePollRemoved(stubPoll.id))
-    }
-  })
-
   return Promise.all([
     dispatch(updateVoteLimit()),
   ])

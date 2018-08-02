@@ -4,50 +4,50 @@
  */
 
 import BigNumber from 'bignumber.js'
-import TxExecModel from '../TxExecModelOld'
-import { abstractFetchingModel } from '../AbstractFetchingModel'
+import PropTypes from 'prop-types'
+import TxExecModel from '../TxExecModel'
+import AbstractModel from '../../models/AbstractModel'
 
-class MultisigWalletPendingTxModel extends abstractFetchingModel({
+const schemaFactory = () => ({
+  id: PropTypes.string,
+  initiator: PropTypes.string,
+  to: PropTypes.string,
+  value: PropTypes.instanceOf(BigNumber),
+  isConfirmed: PropTypes.bool,
+  decodedTx: PropTypes.instanceOf(TxExecModel), // decoded data
+})
+
+const defaultValues = {
   id: null, // operation hash
   initiator: null,
   to: null,
   value: new BigNumber(0),
   isConfirmed: false,
-  decodedTx: new TxExecModel(), // decoded data
-}) {
-  id () {
-    return this.get('id') || Math.random()
-  }
+  decodedTx: new TxExecModel({}), // decoded data
+}
 
-  to () {
-    return this.get('to')
-  }
-
-  value () {
-    return this.get('value')
-  }
-
-  isConfirmed (value: boolean) {
-    return this._getSet('isConfirmed', value)
-  }
-
-  decodedTx (value) {
-    return this._getSet('decodedTx', value)
+export default class MultisigWalletPendingTxModel extends AbstractModel {
+  constructor (props) {
+    props = {
+      ...defaultValues,
+      ...props,
+    }
+    super(props, schemaFactory())
+    Object.assign(this, props)
+    Object.freeze(this)
   }
 
   txRevokeSummary () {
     return {
-      transaction: this.id(),
+      transaction: this.id,
     }
   }
 
   title () {
-    return this.decodedTx().title()
+    return this.decodedTx.title()
   }
 
   details () {
-    return this.decodedTx().details()
+    return this.decodedTx.details()
   }
 }
-
-export default MultisigWalletPendingTxModel

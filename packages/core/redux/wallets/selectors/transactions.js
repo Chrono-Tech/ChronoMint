@@ -17,6 +17,6 @@ export const getTxListForWallet = (walletId: string) => createSelector(
     walletTransactions,
     ethMultisigWalletTransactions,
   ) => {
-    return Object.values(walletTransactions || ethMultisigWalletTransactions)
+    return Object.values(walletTransactions || ethMultisigWalletTransactions || {})
   },
 )

@@ -23,37 +23,63 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
     return this._isInit
   }
 
-  async init () {
-    // await Promise.all([
-    //   this.watchWalletCreate(),
-    //   this.watchWalletRemoved(),
-    // ])
-    // this._isInit = true
+  /**
+   * connect DAO to web3 and history contract
+   * @param web3
+   * @param options
+   */
+  connect (web3, options) {
+    super.connect(web3, options)
+
+    this.allEventsEmitter = this.history.events.allEvents({})
+      .on('data', this.handleAllEventsData)
   }
 
-  // ---------- watchers ---------
-
-  watchWalletCreate () {
-    return this._watch(
-      'WalletCreated',
-      async (result) => {
-        const walletDAO: MultisigWalletDAO = await multisigWalletService.createWalletDAO(result.args.wallet)
-        const is2FA = await walletDAO.use2FA()
-        return this._createWalletModel(result.args.wallet, is2FA, result.transactionHash)
-      },
-      { by: this.getAccount() },
-    )
+  /**
+   * handel data events
+   * @param data
+   */
+  handleAllEventsData = (data) => {
+    switch (data.event) {
+      case 'WalletCreated' :
+        this.handleWalletCreate(data)
+        break
+      case 'WalletRemoved':
+        this.handleWalletRemoved(data)
+        break
+    }
   }
 
-  watchWalletRemoved () {
-    return this._watch(
-      'WalletDeleted',
-      (result) => this.emit(EE_MS_WALLET_REMOVED, result.args.wallet),
-    )
+  //#region Handlers
+
+  /**
+   * handler for event "WalletCreated"
+   * @param data - Object from blockchain
+   * @returns {Promise<void>}
+   */
+  async handleWalletCreate (data) {
+    const walletDAO: MultisigWalletDAO = await multisigWalletService.createWalletDAO(data.returnValues.wallet, this.web3, this.history._address)
+    const is2FA = await walletDAO.use2FA()
+    await this._createWalletModel(data.returnValues.wallet, is2FA, data.transactionHash)
   }
 
-  // --------- actions ----------
+  /**
+   * handler for event "WalletRemoved"
+   * @param data - Object from blockchain
+   * @returns {Promise<void>}
+   */
+  handleWalletRemoved (data) {
+    this.emit(EE_MS_WALLET_REMOVED, `${BLOCKCHAIN_ETHEREUM}-${data.returnValues.wallet}`)
+  }
 
+  //#endregion
+
+  //#region Actions
+
+  /**
+   * fetch ethereum multisig wallets
+   * @returns {Promise<void>}
+   */
   async fetchWallets () {
     const res = await this.contract.methods.getWallets().call()
     const [addresses, is2FA] = Object.values(res)
@@ -61,12 +87,20 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
     this.emit(EE_MS_WALLETS_COUNT, validAddresses.length)
 
     validAddresses.forEach((address, i) => {
-      this._createWalletModel(address, is2FA[i])
+      this._createWalletModel(address.toLowerCase(), is2FA[i])
     })
   }
 
-  async _createWalletModel (address, is2FA, transactionHash) {
-    const walletDAO: MultisigWalletDAO = await multisigWalletService.createWalletDAO(address, this.web3)
+  /**
+   * Create wallet model
+   * @param address - string - wallet address
+   * @param is2FA - boolean
+   * @param transactionHash - string
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _createWalletModel (address: string, is2FA: boolean, transactionHash: string) {
+    const walletDAO: MultisigWalletDAO = await multisigWalletService.createWalletDAO(address, this.web3, this.history._address)
     const [owners, requiredSignatures, pendingTxList, releaseTime] = await Promise.all([
       walletDAO.getOwners(),
       walletDAO.getRequired(),
@@ -97,36 +131,51 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
     this.emit(EE_MS_WALLET_ADDED, wallet)
   }
 
+  /**
+   * create wallet tx
+   * @param wallet - MulMultisigEthWalletModel - wallet model from form
+   */
   createWallet (wallet: MultisigEthWalletModel) {
-    const owners = wallet.owners().items().map((item) => item.address())
     this._tx(
       'createWallet',
       [
-        owners,
-        wallet.requiredSignatures(),
-        Math.floor(wallet.releaseTime() / 1000),
+        wallet.owners,
+        wallet.requiredSignatures,
+        Math.floor(wallet.releaseTime / 1000),
       ],
       new BigNumber(0),
       new BigNumber(0),
       {
         fields: wallet.toCreateWalletTx(),
-        id: wallet.id(),
+        id: wallet.id,
       },
     )
   }
 
-  async create2FAWallet (wallet: MultisigEthWalletModel, feeMultiplier) {
-    const result = await this._tx(
+  /**
+   * create 2fa wallet tx
+   * @param wallet - MultisigEthWalletModel - wallet model from form
+   * @param feeMultiplier - number - gas price multiplier
+   * @returns {Promise<void>}
+   */
+  create2FAWallet (wallet: MultisigEthWalletModel, feeMultiplier) {
+    this._tx(
       'create2FAWallet',
       [Math.floor(wallet.releaseTime() / 1000)],
       wallet.toCreateWalletTx(),
       null,
       { feeMultiplier },
     )
-    return result.tx
   }
 
+  /**
+   * get oracle price for account
+   * @returns {Promise<any>}
+   */
   getOraclePrice () {
-    return this._call('getOraclePrice')
+    return this.contract.methods.getOraclePrice().call()
   }
+
+  //#endregion
+
 }

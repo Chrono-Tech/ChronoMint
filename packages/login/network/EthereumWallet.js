@@ -45,6 +45,11 @@ export default class EthereumWallet extends Wallet {
     return new EthereumWallet(null, pub, type)
   }
 
+  static fromFile (input, password, nonStrict) {
+    const wallet = Wallet.fromV3(input, password, nonStrict)
+    return new EthereumWallet(wallet.getPrivateKey(), null, 'memory')
+  }
+
   constructor (priv, pub, type) {
     super(priv, pub)
     this.type = type

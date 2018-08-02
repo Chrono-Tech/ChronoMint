@@ -3,16 +3,19 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import uuid from 'uuid/v1'
+import { create2FAWallet, createWallet } from '@chronobank/core/redux/multisigWallet/actions'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { change, formValueSelector } from 'redux-form/immutable'
 import { connect } from 'react-redux'
-import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
+import { change, formValueSelector } from 'redux-form/immutable'
+import { FORM_ADD_NEW_WALLET, goToWallets, resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
 import { BLOCKCHAIN_NEM } from '@chronobank/core/dao/NemDAO'
 import WidgetContainer from 'components/WidgetContainer/WidgetContainer'
-import { FORM_ADD_NEW_WALLET, resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
-
+import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/constants'
+import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
+import { FORM_2FA_STEPS, FORM_2FA_WALLET } from '@chronobank/core/redux/multisigWallet/constants'
 import './AddWalletWidget.scss'
 import SelectWalletType from './SelectWalletType/SelectWalletType'
 import SelectEthWallet from './SelectEthWallet/SelectEthWallet'
@@ -57,6 +60,67 @@ export default class AddWalletWidget extends PureComponent {
     this.props.reset()
   }
 
+  handleSubmitEthMultisig = (values, dispatch, props) => {
+    // owners
+    const owners = values.get('owners')
+    let ownersCollection = []
+    ownersCollection.push(props.account)
+    owners.forEach(({ address }) => {
+      ownersCollection.push(address)
+    })
+
+    // date
+    let releaseTime = new Date(0)
+    const isTimeLocked = values.get('isTimeLocked')
+    if (isTimeLocked) {
+      const date = values.get('timeLockDate')
+      const time = values.get('timeLockTime')
+      releaseTime = new Date(date.setHours(
+        time.getHours(),
+        time.getMinutes(),
+        time.getSeconds(),
+        time.getMilliseconds(),
+      ))
+    }
+
+    const wallet = new MultisigEthWalletModel({
+      ...props.initialValues.toJS(),
+      ...values.toJS(),
+      requiredSignatures: values.get('requiredSignatures').toString(),
+      releaseTime,
+      owners: ownersCollection,
+      address: uuid(),
+    })
+
+    dispatch(createWallet(wallet))
+    dispatch(goToWallets())
+    dispatch(resetWalletsForm())
+  }
+
+  handleSubmitEth2FA = (values, dispatch, props) => {
+    // owners
+    const owners = values.get('owners')
+    let ownersCollection = []
+    ownersCollection.push(props.account)
+    owners.forEach(({ address }) => {
+      ownersCollection.push(address)
+    })
+
+    // date
+    let releaseTime = new Date(0)
+
+    const wallet = new MultisigEthWalletModel({
+      ...props.initialValues.toJS(),
+      ...values.toJS(),
+      releaseTime,
+      is2FA: true,
+      owners: ownersCollection,
+    })
+
+    dispatch(create2FAWallet(wallet, values.get('feeMultiplier')))
+    dispatch(change(FORM_2FA_WALLET, 'step', FORM_2FA_STEPS[1]))
+  }
+
   onSelectWalletBlockchain = (blockchain: string) => {
     this.props.selectWalletBlockchain(blockchain)
   }
@@ -78,10 +142,12 @@ export default class AddWalletWidget extends PureComponent {
       case 'MS':
         title = `${prefix}.multisignatureWallet`
         Component = MultisigWalletForm
+        componentProps = { onSubmit: this.handleSubmitEthMultisig }
         break
       case 'TL':
         title = `${prefix}.timeLockedWallet`
         Component = TimeLockedWalletForm
+        componentProps = { onSubmit: this.handleSubmitEthMultisig }
         break
       case 'CW':
         title = `${prefix}.customWallet`
@@ -90,6 +156,7 @@ export default class AddWalletWidget extends PureComponent {
       case '2FA':
         title = `${prefix}.twoFA`
         Component = TwoFaWalletForm
+        componentProps = { onSubmit: this.handleSubmitEth2FA }
     }
 
     return (

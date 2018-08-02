@@ -8,13 +8,13 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
-import { Field, formPropTypes, reduxForm, formValueSelector } from 'redux-form/immutable'
+import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { confirm2FATransfer, updatePendingTx } from '@chronobank/core/redux/multisigWallet/actions'
 import PropTypes from 'prop-types'
-import MultisigWalletModel from '@chronobank/core/models/wallet/MultisigWalletModel'
 import MultisigWalletPendingTxModel from '@chronobank/core/models/wallet/MultisigWalletPendingTxModel'
 import Preloader from 'components/common/Preloader/Preloader'
 import { modalsClose } from 'redux/modals/actions'
+import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import { prefix } from './lang'
 import './TwoFaConfirmModal.scss'
 import validate from './validate'
@@ -42,7 +42,7 @@ function mapDispatchToProps (dispatch) {
 export default class TwoFaConfirmModal extends PureComponent {
   static propTypes = {
     confirm2FATransfer: PropTypes.func,
-    wallet: PropTypes.instanceOf(MultisigWalletModel),
+    wallet: PropTypes.instanceOf(MultisigEthWalletModel),
     handleUpdatePendingTx: PropTypes.func,
     tx: PropTypes.instanceOf(MultisigWalletPendingTxModel),
     ...formPropTypes,

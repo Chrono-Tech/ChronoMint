@@ -3,18 +3,17 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { isHave2FAWallets, getTwoFaChecked } from '@chronobank/core/redux/wallets/selectors'
+import { getTwoFaChecked, isHave2FAWallets } from '@chronobank/core/redux/wallets/selectors'
 import { WalletWidget } from 'components'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import MainWalletModel from '@chronobank/core/models/wallet/MainWalletModel'
-import MultisigWalletModel from '@chronobank/core/models/wallet/MultisigWalletModel'
 import TwoFAWarningWidget from 'components/wallet/TwoFAWarningWidget/TwoFAWarningWidget'
 import WalletWidgetMini from 'components/wallet/WalletWidgetMini/WalletWidgetMini'
-import { getBalance } from '@chronobank/core/redux/mainWallet/actions'
 import { DUCK_UI } from 'redux/ui/reducer'
 import { sectionsSelector } from '@chronobank/core/redux/wallets/selectors/wallets'
+import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import './WalletsContent.scss'
 
 const mapStateToProps = (state) => {
@@ -27,13 +26,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return {
-    getBalance: () => dispatch(getBalance()),
-  }
-}
-
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(mapStateToProps)
 export default class WalletsContent extends Component {
   static propTypes = {
     isCompactWalletView: PropTypes.bool,
@@ -45,11 +38,10 @@ export default class WalletsContent extends Component {
         address: PropTypes.string,
         wallet: PropTypes.oneOfType([
           PropTypes.instanceOf(MainWalletModel),
-          PropTypes.instanceOf(MultisigWalletModel),
+          PropTypes.instanceOf(MultisigEthWalletModel),
         ]),
       }),
     ),
-    getBalance: PropTypes.func,
   }
 
   render () {
@@ -59,14 +51,16 @@ export default class WalletsContent extends Component {
         {this.props.check2FAChecked === false && this.props.isHave2FAWallets && <TwoFAWarningWidget />}
         {this.props.walletsList.map((walletGroup) => (
           <div key={walletGroup.title}>
-            {walletGroup.data.map((wallet, i) => (
-              <Component
-                showGroupTitle={i === 0}
-                key={`${walletGroup.title}-${wallet.address}`}
-                blockchain={walletGroup.title}
-                address={wallet.address}
-              />
-            ))}
+            {walletGroup.data.map((wallet, i) => {
+              return (
+                <Component
+                  showGroupTitle={i === 0}
+                  key={`${walletGroup.title}-${wallet.address}`}
+                  blockchain={walletGroup.title}
+                  address={wallet.address}
+                />
+              )
+            })}
           </div>
         ))}
       </div>

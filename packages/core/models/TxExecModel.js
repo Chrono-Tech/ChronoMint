@@ -4,9 +4,9 @@
  */
 
 import PropTypes from 'prop-types'
+import { I18n } from '@chronobank/core-dependencies/i18n'
 import BigNumber from 'bignumber.js'
 import uuid from 'uuid/v1'
-import { I18n } from '../../core-dependencies/i18n/index'
 import AbstractModel from './AbstractModel'
 
 const schemaFactory = () => ({
@@ -56,6 +56,10 @@ export default class TxExecModel extends AbstractModel {
    * @returns {string}
    * @private
    */
+  funcName () {
+    return this.func
+  }
+
   _i18n () {
     return `tx.${this.contract}.`
   }

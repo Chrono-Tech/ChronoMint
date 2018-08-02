@@ -14,11 +14,12 @@ import { createNEMEngine } from './NemUtils'
 import { createWAVESEngine } from './WavesUtils'
 import NemWallet from './NemWallet'
 import WavesWallet from './WavesWallet'
+import EthereumWallet from './EthereumWallet'
 
 class WalletProvider {
   getProvider (walletJson, password, { url, network } = {}) {
     const networkCode = byEthereumNetwork(network)
-    const ethereumWallet = Wallet.fromV3(walletJson, password, true)
+    const ethereumWallet = EthereumWallet.fromFile(walletJson, password, true)
     const engine = new EthereumEngine(ethereumWallet, network, url)
     const btc = network && network.bitcoin && bitcoin.HDNode.fromSeedBuffer(ethereumWallet.privKey, bitcoin.networks[network.bitcoin])
     const bcc = network && network.bitcoinCash && bitcoin.HDNode.fromSeedBuffer(ethereumWallet.privKey, bitcoin.networks[network.bitcoinCash])

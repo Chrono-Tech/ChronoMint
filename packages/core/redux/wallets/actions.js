@@ -3,18 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import {
-  bccProvider,
-  btcProvider,
-  btgProvider,
-  ltcProvider,
-} from '@chronobank/login/network/BitcoinProvider'
-import {
-  BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_LITECOIN,
-} from '@chronobank/login/network/constants'
+import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/constants'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
@@ -28,9 +18,9 @@ import { getAccount } from '../session/selectors'
 import { updateEthMultisigWalletBalance } from '../multisigWallet/actions'
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import { EE_MS_WALLET_ADDED } from '../../dao/constants'
-import MultisigWalletModel from '../../models/wallet/MultisigWalletModel'
 import ethDAO from '../../dao/ETHDAO'
 import { getWallets } from './selectors/models'
+import MultisigEthWalletModel from '../../models/wallet/MultisigEthWalletModel'
 
 export const DUCK_WALLETS = 'wallets'
 export const WALLETS_SET = 'wallet/set'
@@ -126,7 +116,7 @@ export const initMultisigWallets = () => async (dispatch) => {
 
   walletsManagerDAO = await contractsManagerDAO.getWalletsManagerDAO()
   walletsManagerDAO
-    .on(EE_MS_WALLET_ADDED, async (walletModel: MultisigWalletModel) => {
+    .on(EE_MS_WALLET_ADDED, async (walletModel: MultisigEthWalletModel) => {
       const wallet = new WalletModel({
         address: walletModel.address(),
         blockchain: walletModel.blockchain(),
