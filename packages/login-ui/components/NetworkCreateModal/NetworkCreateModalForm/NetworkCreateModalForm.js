@@ -5,7 +5,6 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'

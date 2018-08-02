@@ -6,7 +6,6 @@
 import PropTypes from 'prop-types'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
-import { Link } from 'react-router'
 import Button from 'components/common/ui/Button/Button'
 import UserRow from 'components/common/ui/UserRow/UserRow'
 import {
@@ -93,9 +92,9 @@ export default class AccountSelector extends PureComponent {
             </Button>
             <Translate value='AccountSelector.or' />
             &nbsp;<br />
-            <Link onClick={navigateToCreateAccount} styleName='link'>
+            <button onClick={navigateToCreateAccount} styleName='link'>
               <Translate value='AccountSelector.createAccount' />
-            </Link>
+            </button>
           </div>
         </div>
 

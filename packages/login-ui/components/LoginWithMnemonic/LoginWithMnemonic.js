@@ -7,7 +7,6 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { reduxForm, Field } from 'redux-form/immutable'
-import { Link } from 'react-router'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
@@ -61,9 +60,9 @@ class LoginWithMnemonic extends PureComponent {
 
           <Translate value='LoginWithMnemonic.or' />
           <br />
-          <Link onClick={previousPage} styleName='link'>
+          <button onClick={previousPage} styleName='link'>
             <Translate value='LoginWithMnemonic.back' />
-          </Link>
+          </button>
         </div>
 
       </form>

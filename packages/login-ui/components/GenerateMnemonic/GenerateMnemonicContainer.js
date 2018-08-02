@@ -14,15 +14,11 @@ export default class GenerateMnemonicContainer extends Component {
     mnemonic: PropTypes.string,
   }
 
-  onProceed () {
-    this.props.onProceed()
-  }
-
   render () {
     return (
       <GenerateMnemonic
         mnemonic={this.props.mnemonic}
-        onProceed={this.onProceed.bind(this)}
+        onProceed={this.props.onProceed}
       />
     )
   }

@@ -9,12 +9,9 @@ import {
   TextField,
 } from '@material-ui/core'
 import {
-  Done,
-  Error,
   AttachFile,
   Close,
 } from '@material-ui/icons'
-import Button from 'components/common/ui/Button/Button'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -25,7 +22,6 @@ import Preloader from '../Preloader/Preloader'
 
 export default class AvatarSelect extends PureComponent {
   static propTypes = {
-    token: PropTypes.string.isRequired,
     value: PropTypes.string,
     mode: PropTypes.string,
     // eslint-disable-next-line
@@ -65,7 +61,6 @@ export default class AvatarSelect extends PureComponent {
   }
 
   async handleChange (e) {
-    const { token } = this.props
     let response
 
     if (!e.target.files.length) {
@@ -73,13 +68,13 @@ export default class AvatarSelect extends PureComponent {
     }
     const file = e.target.files[0]
 
-    if (token && file){
+    if (file){
       this.setState({
         isUploadingFile: true,
         uploadError: null,
       })
       try {
-        response = await ProfileService.avatarUpload(file, token)
+        response = await ProfileService.avatarUpload(file)
         this.handleUploadSuccess(response)
       } catch(e){
         this.handleUploadFail(response)
@@ -116,10 +111,9 @@ export default class AvatarSelect extends PureComponent {
   }
 
   async loadImage (imageId){
-    const { token } = this.props
 
     try {
-      const data = await ProfileService.avatarDownload(imageId, token)
+      const data = await ProfileService.avatarDownload(imageId)
 
       this.setState({
         fileName: this.getFileNameFromPath(data.url),

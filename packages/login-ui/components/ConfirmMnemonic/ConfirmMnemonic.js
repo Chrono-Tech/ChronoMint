@@ -8,7 +8,6 @@ import classnames from 'classnames'
 import { Translate } from 'react-redux-i18n'
 import { Field, reduxForm } from 'redux-form/immutable'
 import React, { Component } from 'react'
-import { Link } from 'react-router'
 import Button from 'components/common/ui/Button/Button'
 import {
   FORM_CONFIRM_MNEMONIC,
@@ -137,9 +136,9 @@ class ConfirmMnemonic extends Component {
               <Translate value='ConfirmMnemonic.done' />
             </Button>
 
-            <Link onClick={previousPage} href styleName='link'>
+            <button onClick={previousPage} href styleName='link'>
               <Translate value='ConfirmMnemonic.back' />
-            </Link>
+            </button>
           </div>
 
           <div styleName='progressBlock'>

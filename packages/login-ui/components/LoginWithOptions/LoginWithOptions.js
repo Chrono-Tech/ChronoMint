@@ -4,9 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
-// import { MuiThemeProvider } from '@material-ui/core/styles'
 import React, { PureComponent } from 'react'
-import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
@@ -32,7 +30,6 @@ import Key from 'assets/img/icons/key-white.svg'
 import Wallet from 'assets/img/icons/wallet-white.svg'
 import Uport from 'assets/img/icons/uport.svg'
 
-// import styles from 'layouts/Splash/styles'
 import './LoginWithOptions.scss'
 
 function mapDispatchToProps (dispatch) {
@@ -147,9 +144,9 @@ export default class ImportMethodsPage extends PureComponent {
         <div styleName='actions'>
           <Translate value='LoginWithOptions.or' />
           <br />
-          <Link styleName='link' onClick={this.handleCreateAccount}>
+          <button styleName='link' onClick={this.handleCreateAccount}>
             <Translate value='LoginWithOptions.createAccount' />
-          </Link>
+          </button>
         </div>
 
       </div>

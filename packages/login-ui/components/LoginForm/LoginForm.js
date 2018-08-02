@@ -8,7 +8,6 @@ import { withStyles } from '@material-ui/core/styles'
 import compose from 'recompose/compose'
 import spinner from 'assets/img/spinningwheel-1.gif'
 import React from 'react'
-import { Link } from 'react-router'
 import { Field, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
@@ -173,9 +172,9 @@ class LoginPage extends React.Component {
 
             {error ? (<div styleName='form-error'>{error}</div>) : null}
 
-            <Link onClick={navigateToRecoverAccountPage} styleName='link'>
+            <button onClick={navigateToRecoverAccountPage} styleName='link'>
               <Translate value='LoginForm.forgotPassword' />
-            </Link>
+            </button>
           </div>
         </div>
 

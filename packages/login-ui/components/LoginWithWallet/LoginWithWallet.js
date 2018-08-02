@@ -6,7 +6,6 @@
 import PropTypes from 'prop-types'
 import { reduxForm } from 'redux-form/immutable'
 import React, { Component } from 'react'
-import { Link } from 'react-router'
 import Button from 'components/common/ui/Button/Button'
 import { Translate } from 'react-redux-i18n'
 import FileIcon from 'assets/img/icons/file-white.svg'
@@ -159,9 +158,9 @@ class LoginWithWallet extends Component {
           { error ? <div styleName='error'>{error}</div> : null }
           <Translate value='LoginWithWallet.or' />
           <br />
-          <Link onClick={previousPage} styleName='link'>
+          <button onClick={previousPage} styleName='link'>
             <Translate value='LoginWithWallet.back' />
-          </Link>
+          </button>
         </div>
 
       </form>

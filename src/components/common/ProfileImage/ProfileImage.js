@@ -24,7 +24,6 @@ function mapStateToProps (state) {
 export default class ProfileImage extends PureComponent {
   static propTypes = {
     icon: PropTypes.object,
-    token: PropTypes.string,
     imageId: PropTypes.string,
     className: PropTypes.string,
   }
@@ -51,8 +50,6 @@ export default class ProfileImage extends PureComponent {
   }
 
   async loadImage (imageId) {
-    const { token } = this.props
-
     if (!imageId){
       this.setState({
         imageURL: null,
@@ -62,7 +59,7 @@ export default class ProfileImage extends PureComponent {
     }
 
     try {
-      const data = await ProfileService.avatarDownload(imageId, token)
+      const data = await ProfileService.avatarDownload(imageId)
 
       this.setState({
         imageURL: data.url,

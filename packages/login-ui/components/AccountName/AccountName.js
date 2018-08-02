@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
@@ -16,7 +16,6 @@ import {
 } from '../../redux/actions'
 import validate from './validate'
 import './AccountName.scss'
-import PropTypes from "prop-types";
 
 class AccountName extends PureComponent {
   static propTypes = {
@@ -72,9 +71,9 @@ class AccountName extends PureComponent {
 
             <Translate value='AccountName.or' />
             <br />
-            <Link onClick={previousPage} styleName='link'>
+            <button onClick={previousPage} styleName='link'>
               <Translate value='AccountName.back' />
-            </Link>
+            </button>
           </div>
         </div>
 

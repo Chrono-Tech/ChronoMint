@@ -6,7 +6,7 @@
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { stopSubmit, SubmissionError } from 'redux-form/immutable'
+import { stopSubmit } from 'redux-form/immutable'
 import {
   AccountEntryModel,
 } from '@chronobank/core/models/wallet/persistAccount'
@@ -17,20 +17,7 @@ import {
   FORM_RESET_PASSWORD,
   navigateToSelectWallet,
 } from '../../redux/actions'
-import {
-  onSubmitRecoverAccountForm,
-  onSubmitRecoverAccountFormSuccess,
-  onSubmitRecoverAccountFormFail,
-} from '../../redux/thunks'
-import * as PersistAccountActions from "../../../core/redux/persistAccount/actions";
 import ResetPassword from './ResetPassword'
-
-function mapStateToProps (state) {
-  const selectedWallet = state.get('persistAccount').selectedWallet
-  return {
-    selectedWallet: selectedWallet && new AccountEntryModel(selectedWallet),
-  }
-}
 
 function mapDispatchToProps (dispatch,) {
   return {
@@ -64,12 +51,9 @@ class ResetPasswordContainer extends PureComponent {
   }
 
   render () {
-    const { handleSubmit, selectedWallet, navigateToSelectWallet, error } = this.props
-
     return (
       <ResetPassword
-        selectedWallet={selectedWallet}
-        navigateToSelectWallet={navigateToSelectWallet}
+        selectedWallet={this.props.selectedWallet}
         onSubmit={this.handleSubmit.bind(this)}
         onSubmitSuccess={this.handleSubmitSuccess.bind(this)}
       />
@@ -77,4 +61,4 @@ class ResetPasswordContainer extends PureComponent {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ResetPasswordContainer)
+export default connect(null, mapDispatchToProps)(ResetPasswordContainer)

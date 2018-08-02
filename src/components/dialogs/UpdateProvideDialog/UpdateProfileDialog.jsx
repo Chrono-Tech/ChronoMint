@@ -111,7 +111,6 @@ export default class UpdateProfileDialog extends PureComponent {
                 name='avatar'
                 fullWidth
                 floatingLabelText={`${prefix}.fileTitle`}
-                token={token}
               />
               <Field
                 component={TextField}

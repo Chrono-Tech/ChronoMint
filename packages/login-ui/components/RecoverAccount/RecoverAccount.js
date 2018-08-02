@@ -5,7 +5,6 @@
 
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
@@ -76,9 +75,9 @@ class RecoverAccount extends PureComponent {
           { error && (<div styleName='form-error'>{error}</div>) }
           <Translate value='RecoverAccount.or' />
           <br />
-          <Link onClick={previousPage} styleName='link'>
+          <button onClick={previousPage} styleName='link'>
             <Translate value='RecoverAccount.back' />
-          </Link>
+          </button>
         </div>
 
       </form>

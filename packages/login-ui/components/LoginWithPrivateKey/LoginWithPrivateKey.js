@@ -5,7 +5,6 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
@@ -60,9 +59,9 @@ class LoginWithPrivateKey extends PureComponent {
 
           <Translate value='LoginWithPrivateKey.or' />
           <br />
-          <Link onClick={previousPage} href styleName='link'>
+          <button onClick={previousPage} href styleName='link'>
             <Translate value='LoginWithPrivateKey.back' />
-          </Link>
+          </button>
         </div>
 
       </form>
