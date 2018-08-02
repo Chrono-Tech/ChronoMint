@@ -168,10 +168,3 @@ export const updateUserProfile = (profile) => async (dispatch, getState) => {
     profile: newProfile,
   }))
 }
-
-export const uploadAvatar = (img) => (dispatch) => {
-  const avatar = profileService.avatarUpload(img)
-  console.log('avatar', avatar)
-
-  return img
-}

@@ -25,3 +25,7 @@ export function integerWithDelimiter (value: any, withFraction = false, fraction
   const sign = valueBN.lt(0) ? '-' : ''
   return sign + roundedValue.toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, '$1\u00a0')
 }
+
+export function getFileNameFromPath (path): string {
+  return path && path.replace(/^.*[\\\/]/, '') || ''
+}

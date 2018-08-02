@@ -55,9 +55,6 @@ function mapStateToProps (state) {
     selectedProvider: network.selectedProviderId,
     selectedWallet: selectedWallet,
     successMessage: formSelector(state, FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE),
-    initialValues: {
-      password: '1',
-    },
   }
 }
 

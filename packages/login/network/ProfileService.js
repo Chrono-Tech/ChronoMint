@@ -8,19 +8,11 @@ import axios from 'axios'
 import { store } from '@chronobank/core-dependencies/configureStore'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
 
-const PROFILE_BACKEND_REST_URL = 'https://backend.profile.tp.ntr1x.com'
+const PROFILE_BACKEND_REST_URL = 'https://localhost:3000/'
 const basePath = '/api/v1'
 const GET_PERSONS_REST = `${basePath}/security/persons/query`
 const GET_SIGNATURE_REST = `${basePath}/security/signin/signature`
 const UPDATE_PROFILE_COMBINE = `${basePath}/security/me/profile/combine/update`
-const UPDATE_LEVEL_1 = `${basePath}/security/me/profile/level1`
-const UPDATE_LEVEL_2 = `${basePath}/security/me/profile/level2`
-const UPDATE_LEVEL_3 = `${basePath}/security/me/profile/level3`
-const UPDATE_LEVEL_4 = `${basePath}/security/me/profile/level4`
-const CONFIRM_LEVEL_2 = `${basePath}/security/me/profile/level2/confirm`
-const VALIDATE_LEVEL_2_PHONE = `${basePath}/security/me/profile/level2/validate/phone`
-const VALIDATE_LEVEL_2_EMAIL = `${basePath}/security/me/profile/level2/validate/email`
-const PROFILE_NOTIFICATIONS = `${basePath}/security/me/profile/notifications`
 
 const MEDIA_IMAGE_UPLOAD = `${basePath}/media/image/upload`
 const MEDIA_IMAGE_DOWNLOAD = (imageId = '') => `${basePath}/media/image/${imageId}`

@@ -72,7 +72,6 @@ export default class AvatarSelect extends PureComponent {
       return
     }
     const file = e.target.files[0]
-    console.log('filename', file.name)
 
     if (token && file){
       this.setState({
