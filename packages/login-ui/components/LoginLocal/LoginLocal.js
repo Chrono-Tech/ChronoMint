@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import networkService from '@chronobank/login/network/NetworkService'
 import {
   isLocalNode,
 } from '@chronobank/login/network/settings'
@@ -27,12 +26,9 @@ import {
 } from '../../redux/thunks'
 import './LoginLocal.scss'
 
-export const FORM_LOGIN_TEST_RPC = 'FormLoginTestRPCPage'
-
 const mapDispatchToProps = (dispatch) => ({
   onSubmit: () => dispatch(onSubmitLoginTestRPC()),
   onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitLoginTestRPCFail(errors, submitErrors)),
-  selectAccount: (value) => networkService.selectAccount(value),
   initLoginLocal: () => dispatch(initLoginLocal()),
   navigateToLoginPage: () => dispatch(navigateToLoginPage()),
   handleLoginLocalAccountClick: (account) => dispatch(handleLoginLocalAccountClick(account)),
@@ -41,7 +37,6 @@ const mapDispatchToProps = (dispatch) => ({
 const mapStateToProps = (state) => {
   const network = state.get(DUCK_NETWORK)
   return {
-    isLoginSubmitting: network.isLoginSubmitting,
     accounts: network.accounts,
     isLocalNode: isLocalNode(network.selectedProviderId, network.selectedNetworkId),
   }
@@ -50,12 +45,10 @@ const mapStateToProps = (state) => {
 @connect(mapStateToProps, mapDispatchToProps)
 class LoginLocal extends PureComponent {
   static propTypes = {
-    onLogin: PropTypes.func,
-    selectAccount: PropTypes.func,
+    accounts: PropTypes.array,
     initLoginLocal: PropTypes.func,
     navigateToLoginPage: PropTypes.func,
     handleLoginLocalAccountClick: PropTypes.func,
-    isLoginSubmitting: PropTypes.bool,
     isLocalNode: PropTypes.bool,
   }
 

@@ -1,0 +1,83 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import "~styles/partials/variables";
+
+.root {
+  margin-top: 20px;
+}
+
+.hide {
+  display: none;
+}
+
+.attach {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.attachIcon {
+  width: 20px;
+  height: 11px;
+  color: $color-blue;
+}
+
+.attachCounter {
+  flex-grow: 1;
+  font-size: 10px;
+  color: $color-grey;
+}
+
+.attachStatus {
+  flex-grow: 0;
+  margin: 0 10px;
+  display: flex;
+}
+
+.attachAction {
+  flex-grow: 0;
+  :global {
+    button {
+      padding: 12px 0;
+    }
+  }
+}
+
+.files {
+  margin-bottom: 12px;
+}
+
+.error {
+  font-size: 12px;
+  color: $color-error;
+}
+
+.done {
+  font-size: 12px;
+  color: $color-success;
+}
+
+.wrapper {
+  display: flex;
+  position: relative;
+}
+
+.iconWrapper {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.icon {
+  margin-top: 12px;
+  margin-left: -35px;
+  position: absolute;
+}
+
+.spinner {
+  margin-left: -20px;
+  margin-top: 27px;
+  position: absolute;
+}

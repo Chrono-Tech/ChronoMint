@@ -8,7 +8,6 @@ import { withStyles } from '@material-ui/core/styles'
 import compose from 'recompose/compose'
 import spinner from 'assets/img/spinningwheel-1.gif'
 import React from 'react'
-import { Link } from 'react-router'
 import { Field, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
@@ -32,6 +31,7 @@ import {
   FORM_LOGIN_PAGE,
   FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
   navigateToSelectWallet,
+  navigateToRecoverAccountPage,
 } from '../../redux/actions'
 import {
   initLoginPage,
@@ -55,9 +55,6 @@ function mapStateToProps (state) {
     selectedProvider: network.selectedProviderId,
     selectedWallet: selectedWallet,
     successMessage: formSelector(state, FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE),
-    initialValues: {
-      password: '1',
-    },
   }
 }
 
@@ -71,6 +68,7 @@ function mapDispatchToProps (dispatch) {
     initLoginPage: async () => dispatch(initLoginPage()),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
     initAccountsSignature: () => dispatch(initAccountsSignature()),
+    navigateToRecoverAccountPage: () => dispatch(navigateToRecoverAccountPage()),
   }
 }
 
@@ -82,7 +80,6 @@ class LoginPage extends React.Component {
     isLocalNode: PropTypes.bool,
     isLoginSubmitting: PropTypes.bool,
     navigateToSelectWallet: PropTypes.func,
-    handleSubmit: PropTypes.func,
     selectedAccount: PropTypes.string,
     selectedWallet: PropTypes.object,
     successMessage: PropTypes.string,
@@ -90,10 +87,6 @@ class LoginPage extends React.Component {
 
   componentWillMount () {
     this.props.initLoginPage()
-  }
-
-  componentDidMount () {
-    // this.props.handleSubmit()
   }
 
   renderSuccessMessage () {
@@ -120,6 +113,7 @@ class LoginPage extends React.Component {
       isLocalNode,
       isLoginSubmitting,
       navigateToSelectWallet,
+      navigateToRecoverAccountPage,
       onSubmit,
       pristine,
       selectedWallet,
@@ -178,9 +172,9 @@ class LoginPage extends React.Component {
 
             {error ? (<div styleName='form-error'>{error}</div>) : null}
 
-            <Link to='/login/recover-account' href styleName='link'>
+            <button onClick={navigateToRecoverAccountPage} styleName='link'>
               <Translate value='LoginForm.forgotPassword' />
-            </Link>
+            </button>
           </div>
         </div>
 

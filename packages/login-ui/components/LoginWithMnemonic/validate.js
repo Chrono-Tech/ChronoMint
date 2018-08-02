@@ -14,6 +14,6 @@ export default (values) => {
   mnemonicErrors.add(validator.required(mnemonic))
 
   return {
-    pk: mnemonicErrors.getErrors(),
+    mnemonic: mnemonicErrors.getErrors(),
   }
 }

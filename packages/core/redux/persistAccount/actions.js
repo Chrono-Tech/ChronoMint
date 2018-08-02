@@ -25,15 +25,17 @@ import {
   getAccountAddress,
 } from './utils'
 
+export const DUCK_PERSIST_ACCOUNT = 'persistAccount'
+
 export const WALLETS_ADD = 'persistAccount/WALLETS_ADD'
 export const WALLETS_SELECT = 'persistAccount/WALLETS_SELECT'
+export const WALLETS_DESELECT = 'persistAccount/WALLETS_DESELECT'
 export const WALLETS_LOAD = 'persistAccount/WALLETS_LOAD'
 export const WALLETS_UPDATE_LIST = 'persistAccount/WALLETS_UPDATE_LIST'
 export const WALLETS_REMOVE = 'persistAccount/WALLETS_REMOVE'
 export const CUSTOM_NETWORKS_LIST_ADD = 'persistAccount/CUSTOM_NETWORKS_LIST_ADD'
 export const CUSTOM_NETWORKS_LIST_UPDATE = 'persistAccount/CUSTOM_NETWORKS_LIST_UPDATE'
 export const CUSTOM_NETWORKS_LIST_RESET = 'persistAccount/CUSTOM_NETWORKS_LIST_RESET'
-export const DUCK_PERSIST_ACCOUNT = 'persistAccount'
 
 export const accountAdd = (wallet) => (dispatch) => {
   dispatch({ type: WALLETS_ADD, wallet })
@@ -41,6 +43,10 @@ export const accountAdd = (wallet) => (dispatch) => {
 
 export const accountSelect = (wallet) => (dispatch) => {
   dispatch({ type: WALLETS_SELECT, wallet })
+}
+
+export const accountDeselect = (wallet) => (dispatch) => {
+  dispatch({ type: WALLETS_DESELECT, wallet })
 }
 
 export const accountLoad = (wallet) => (dispatch) => {
@@ -82,26 +88,6 @@ export const validateAccountName = (name) => (dispatch, getState) => {
   const { walletsList } = state.get(DUCK_PERSIST_ACCOUNT)
 
   return !walletsList.find((item) => item.name === name)
-}
-
-export const validateMnemonicForAccount = (mnemonic) => async (dispatch, getState) => {
-  const state = getState()
-  const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
-  const accounts = new Accounts()
-  accounts.wallet.clear()
-  const addressFromWallet = selectedWallet && getAccountAddress(selectedWallet, true)
-  const account = await accounts.privateKeyToAccount(
-    hdkey
-      .fromMasterSeed(
-        bip39.mnemonicToSeed(mnemonic)
-      )
-      .derivePath(WALLET_HD_PATH)
-      .getWallet()
-      .getPrivateKeyString()
-  )
-  const address = account && account.address && account.address.toLowerCase()
-
-  return addressFromWallet === address
 }
 
 export const resetPasswordAccount = (wallet, mnemonic, password) => async (dispatch) => {
@@ -149,7 +135,7 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
     profile: null,
   })
 
-  const newAccounts = await dispatch(setProfilesForAccounts([entry]))
+  const newAccounts = dispatch(setProfilesForAccounts([entry]))
 
   return newAccounts[0] || entry
 

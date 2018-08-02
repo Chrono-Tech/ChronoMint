@@ -5,65 +5,28 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
-import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
-import {
-  onSubmitAccountName,
-} from '@chronobank/login/redux/network/thunks'
 import styles from 'layouts/Splash/styles'
 import spinner from 'assets/img/spinningwheel-1.gif'
 import {
-  onSubmitAccountNameSuccess,
-  onSubmitAccountNameFail,
-  initAccountNamePage,
-} from '../../redux/thunks'
-import {
-  FORM_LOGIN_PAGE,
+  FORM_ACCOUNT_NAME,
 } from '../../redux/actions'
 import validate from './validate'
 import './AccountName.scss'
 
-function mapStateToProps (state) {
-  const selectedWallet = state.get('persistAccount').selectedWallet
-
-  return {
-    selectedWallet: selectedWallet,
-    isLoginSubmitting: state.get('network').isLoginSubmitting,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    onSubmit: async (values) => {
-      const accountName = values.get('accountName')
-
-      await dispatch(onSubmitAccountName(accountName))
-    },
-    onSubmitSuccess: () => dispatch(onSubmitAccountNameSuccess()),
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitAccountNameFail(errors, submitErrors)),
-    initAccountNamePage: () => dispatch(initAccountNamePage()),
-  }
-}
-
-class LoginPage extends PureComponent {
+class AccountName extends PureComponent {
   static propTypes = {
-    initAccountNamePage: PropTypes.func,
-    isLoginSubmitting: PropTypes.bool,
-  }
-
-  componentWillMount(){
-    this.props.initAccountNamePage()
+    previousPage: PropTypes.func,
   }
 
   render () {
-    const { handleSubmit, error, isLoginSubmitting } = this.props
+    const { handleSubmit, error, isLoading, previousPage } = this.props
 
     return (
-      <form styleName='form' name={FORM_LOGIN_PAGE} onSubmit={handleSubmit}>
+      <form styleName='form' name={FORM_ACCOUNT_NAME} onSubmit={handleSubmit}>
 
         <div styleName='page-title'>
           <Translate value='AccountName.title' />
@@ -92,7 +55,7 @@ class LoginPage extends PureComponent {
               styleName='button'
               buttonType='login'
               type='submit'
-              label={isLoginSubmitting
+              label={isLoading
                 ? <span styleName='spinner-wrapper'>
                   <img
                     src={spinner}
@@ -101,16 +64,16 @@ class LoginPage extends PureComponent {
                     height={24}
                   />
                 </span> : <Translate value='AccountName.submit' />}
-              disabled={isLoginSubmitting}
+              disabled={isLoading}
             />
 
             { error ? (<div styleName='form-error'>{error}</div>) : null }
 
             <Translate value='AccountName.or' />
             <br />
-            <Link to='/login/upload-wallet' href styleName='link'>
+            <button onClick={previousPage} styleName='link'>
               <Translate value='AccountName.back' />
-            </Link>
+            </button>
           </div>
         </div>
 
@@ -119,5 +82,4 @@ class LoginPage extends PureComponent {
   }
 }
 
-const form = reduxForm({ form: FORM_LOGIN_PAGE, validate })(LoginPage)
-export default connect(mapStateToProps, mapDispatchToProps)(form)
+export default reduxForm({ form: FORM_ACCOUNT_NAME, validate })(AccountName)

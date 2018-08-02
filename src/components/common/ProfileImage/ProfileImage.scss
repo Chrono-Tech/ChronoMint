@@ -1,0 +1,26 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+@import '~styles/partials/mixins';
+@import '~styles/partials/variables';
+
+.wrapper {
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  display: flex;
+}
+
+.default-icon {
+  font-size: 100%;
+  color: white;
+  background-color: $color-panel-bg-0;
+}
+
+.icon {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

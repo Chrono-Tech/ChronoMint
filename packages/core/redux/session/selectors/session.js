@@ -4,7 +4,7 @@
  */
 
 import { createSelector } from 'reselect'
-import { PROFILE_PANEL_TOKENS } from '../actions'
+import { PROFILE_PANEL_TOKENS, DUCK_SESSION } from '../actions'
 import { getMainWallets } from '../../wallets/selectors/models'
 import { getGasSliderCollection, getIsCBE } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
@@ -44,4 +44,34 @@ export const getBlockchainAddressesList = () => createSelector(
 export const isCBE = () => createSelector(
   [getIsCBE],
   (isCBE) => isCBE,
+)
+
+export const getProfileSignature = createSelector(
+  (state) => state.get(DUCK_SESSION),
+  (session) => {
+    const { profileSignature } = session
+
+    return profileSignature && profileSignature.profile
+  },
+)
+
+export const getAccountProfileSummary = createSelector(
+  getProfileSignature,
+  (profile) => {
+    if (profile){
+      const level1 = profile.level1.submitted
+      const level2 = profile.level2.submitted
+
+      return {
+        userName: level1 && level1.userName,
+        avatar: level1 && level1.avatar && level1.avatar.id,
+        phone: level2 && level2.phone,
+        email: level2 && level2.email,
+        company: level2 && level2.company,
+        website: level2 && level2.website,
+      }
+    }
+
+    return {}
+  }
 )

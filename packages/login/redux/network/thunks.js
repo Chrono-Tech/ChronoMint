@@ -338,13 +338,4 @@ export const handleDeleteNetwork = (network) => (dispatch) => {
   dispatch(PersistAccountActions.customNetworksDelete(network))
 }
 
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: do we really need this?
- */
-export const initLoginWithWallet = () => (dispatch) => {
-  dispatch(NetworkActions.setImportWalletFile())
-}
-
 // #endregion

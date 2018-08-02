@@ -8,6 +8,7 @@ import { getNetworkById, LOCAL_ID, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID } from '@c
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import { push, replace } from '@chronobank/core-dependencies/router'
 import ls from '@chronobank/core-dependencies/utils/LocalStorage'
+import profileService from '@chronobank/login/network/ProfileService'
 import { removeWatchersUserMonitor } from '@chronobank/core-dependencies/redux/ui/actions'
 import { daoByType } from '../../redux/daos/selectors'
 import web3Factory from '../../web3/index'
@@ -24,6 +25,7 @@ export const SESSION_DESTROY = 'session/DESTROY'
 
 export const SESSION_PROFILE = 'session/PROFILE'
 export const SESSION_PROFILE_UPDATE = 'session/PROFILE_UPDATE'
+export const SET_PROFILE_SIGNATURE = 'session/SET_PROFILE_SIGNATURE'
 
 export const DEFAULT_USER_URL = '/wallets'
 export const DEFAULT_CBE_URL = '/wallets'
@@ -131,25 +133,38 @@ export const bootstrap = (relogin = true) => async (dispatch, getState) => {
   }
 }
 
-export const updateUserProfile = (newProfile: ProfileModel) => async (dispatch, getState) => {
-  const { isSession, account, profile } = getState().get(DUCK_SESSION)
-  if (!isSession) {
-    // setup and check network first and create session
-    throw new Error('Session has not been created')
-  }
-
-  dispatch({ type: SESSION_PROFILE_UPDATE, profile: newProfile })
-  try {
-    const dao = daoByType('UserManager')(getState())
-    await dao.setMemberProfile(account, newProfile.version(CURRENT_PROFILE_VERSION))
-  } catch (e) {
-    // eslint-disable-next-line
-    console.error('update profile error', e.message)
-    dispatch({ type: SESSION_PROFILE_UPDATE, profile })
-  }
-}
-
 export const watchInitProfile = () => async (dispatch, getState) => {
   const userManagerDAO = daoByType('UserManager')(getState())
   return userManagerDAO.watchProfile((notice) => dispatch(notify(notice)))
+}
+
+export const setProfileSignature = (signature) => (dispatch) => {
+  dispatch({ type: SET_PROFILE_SIGNATURE, signature })
+}
+
+export const getProfileSignature = (wallet) => async (dispatch) => {
+  if (!wallet) {
+    return
+  }
+
+  let signDataString = profileService.getSignData()
+
+  let signData = wallet.sign(signDataString)
+
+  let profileSignature = await profileService.getProfile(signData.signature)
+
+  dispatch(setProfileSignature(profileSignature))
+
+  return profileSignature
+}
+
+export const updateUserProfile = (profile) => async (dispatch, getState) => {
+  const { profileSignature } = getState().get(DUCK_SESSION)
+
+  const newProfile = await profileService.updateUserProfile({ ...profile }, profileSignature.token)
+
+  dispatch(setProfileSignature({
+    ...profileSignature,
+    profile: newProfile,
+  }))
 }

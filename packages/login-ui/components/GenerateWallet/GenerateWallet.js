@@ -4,7 +4,6 @@
  */
 
 import PropTypes from 'prop-types'
-import { MuiThemeProvider } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import React, { Component } from 'react'
@@ -27,51 +26,49 @@ function mapDispatchToProps (dispatch) {
 export default class MnemonicPage extends Component {
   static propTypes = {
     downloadWallet: PropTypes.func,
-    navigateToLoginPage: PropTypes.func,
+    onContinue: PropTypes.func,
   }
 
   render () {
-    const { downloadWallet, navigateToLoginPage } = this.props
+    const { downloadWallet, onContinue } = this.props
 
     return (
-      <MuiThemeProvider>
-        <div styleName='wrapper'>
-          <div>
-            <div styleName='page-title'>
-              <Translate value='GenerateWallet.title' />
-            </div>
+      <div styleName='wrapper'>
+        <div>
+          <div styleName='page-title'>
+            <Translate value='GenerateWallet.title' />
+          </div>
 
-            <p styleName='description'>
-              <Translate value='GenerateWallet.description' />
-            </p>
+          <p styleName='description'>
+            <Translate value='GenerateWallet.description' />
+          </p>
 
-            <div styleName='actions'>
-              <Button
-                styleName='button'
-                onClick={downloadWallet}
-              >
-                <img src={Wallet} alt='' />
-                <br />
-                <Translate value='GenerateWallet.download' />
-              </Button>
+          <div styleName='actions'>
+            <Button
+              styleName='button'
+              onClick={downloadWallet}
+            >
+              <img src={Wallet} alt='' />
+              <br />
+              <Translate value='GenerateWallet.download' />
+            </Button>
 
-              <Button
-                styleName='submit'
-                buttonType='login'
-                onClick={navigateToLoginPage}
-              >
-                <Translate value='GenerateWallet.finish' />
-              </Button>
-            </div>
+            <Button
+              styleName='submit'
+              buttonType='login'
+              onClick={onContinue}
+            >
+              <Translate value='GenerateWallet.finish' />
+            </Button>
+          </div>
 
-            <div styleName='progress-block'>
-              <div styleName='progress-point' />
-              <div styleName='progress-point' />
-              <div styleName='progress-point' />
-            </div>
+          <div styleName='progress-block'>
+            <div styleName='progress-point' />
+            <div styleName='progress-point' />
+            <div styleName='progress-point' />
           </div>
         </div>
-      </MuiThemeProvider>
+      </div>
     )
   }
 }

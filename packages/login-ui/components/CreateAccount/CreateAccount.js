@@ -5,49 +5,24 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
-import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
 import {
-  onSubmitCreateAccountPage,
-  onSubmitCreateAccountPageSuccess,
-  onSubmitCreateAccountPageFail,
-} from '../../redux/thunks'
-import {
   FORM_CREATE_ACCOUNT,
 } from '../../redux/actions'
+
 import validate from './validate'
 import './CreateAccount.scss'
 
-function mapStateToProps (state) {
-  return {
-    isImportMode: state.get('network').importAccountMode,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    onSubmit: async (values) => {
-      const walletName = values.get('walletName')
-      const password = values.get('password')
-
-      await dispatch(onSubmitCreateAccountPage(walletName, password))
-    },
-    onSubmitSuccess: () => dispatch(onSubmitCreateAccountPageSuccess()),
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitCreateAccountPageFail(errors, submitErrors)),
-  }
-}
-
-class CreateAccountPage extends PureComponent {
+class CreateAccount extends PureComponent {
   static propTypes = {
-    isImportMode: PropTypes.bool,
+    navigateToSelectWallet: PropTypes.func,
   }
 
   render () {
-    const { handleSubmit, pristine, valid, initialValues, error, isImportMode } = this.props
+    const { handleSubmit, error, navigateToSelectWallet } = this.props
 
     return (
       <form styleName='form' name={FORM_CREATE_ACCOUNT} onSubmit={handleSubmit}>
@@ -93,9 +68,9 @@ class CreateAccountPage extends PureComponent {
           {error && (<div styleName='form-error'>{error}</div>)}
           <Translate value='CreateAccount.or' />
           <br />
-          <Link to='/login/select-account' href styleName='link'>
+          <button onClick={navigateToSelectWallet} styleName='link'>
             <Translate value='CreateAccount.useAccount' />
-          </Link>
+          </button>
         </div>
 
       </form>
@@ -104,6 +79,5 @@ class CreateAccountPage extends PureComponent {
   }
 }
 
-const form = reduxForm({ form: FORM_CREATE_ACCOUNT, validate })(CreateAccountPage)
-export default connect(mapStateToProps, mapDispatchToProps)(form)
+export default reduxForm({ form: FORM_CREATE_ACCOUNT, validate })(CreateAccount)
 
