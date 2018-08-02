@@ -136,7 +136,7 @@ class ConfirmMnemonic extends Component {
               <Translate value='ConfirmMnemonic.done' />
             </Button>
 
-            <button onClick={previousPage} href styleName='link'>
+            <button onClick={previousPage} styleName='link'>
               <Translate value='ConfirmMnemonic.back' />
             </button>
           </div>

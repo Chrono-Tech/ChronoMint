@@ -59,7 +59,7 @@ class LoginWithPrivateKey extends PureComponent {
 
           <Translate value='LoginWithPrivateKey.or' />
           <br />
-          <button onClick={previousPage} href styleName='link'>
+          <button onClick={previousPage} styleName='link'>
             <Translate value='LoginWithPrivateKey.back' />
           </button>
         </div>

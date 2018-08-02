@@ -16,6 +16,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import ProfileService from '@chronobank/login/network/ProfileService'
+import { getFileNameFromPath } from 'utils/common'
 
 import './AvatarSelect.scss'
 import Preloader from '../Preloader/Preloader'
@@ -89,7 +90,7 @@ export default class AvatarSelect extends PureComponent {
     if (response && response.url) {
       this.setState({
         uploadSuccess: response,
-        fileName: this.getFileNameFromPath(response.url),
+        fileName: getFileNameFromPath(response.url),
       })
       this.props.input.onChange (response.id)
     }
@@ -106,17 +107,13 @@ export default class AvatarSelect extends PureComponent {
     this.setState({ fileName: '' })
   }
 
-  getFileNameFromPath (path){
-    return path && path.replace(/^.*[\\\/]/, '') || ''
-  }
-
   async loadImage (imageId){
 
     try {
       const data = await ProfileService.avatarDownload(imageId)
 
       this.setState({
-        fileName: this.getFileNameFromPath(data.url),
+        fileName: getFileNameFromPath(data.url),
       })
     } catch (e) {
       // eslint-disable-next-line

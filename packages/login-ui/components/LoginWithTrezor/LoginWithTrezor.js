@@ -139,7 +139,7 @@ class LoginTrezor extends PureComponent {
         <div styleName='actions'>
           <Translate value='LoginWithMnemonic.or' />
           <br />
-          <button onClick={navigateBack} href styleName='link'>
+          <button onClick={navigateBack} styleName='link'>
             <Translate value='LoginWithMnemonic.back' />
           </button>
         </div>

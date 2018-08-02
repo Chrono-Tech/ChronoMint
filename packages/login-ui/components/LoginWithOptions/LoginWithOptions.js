@@ -14,7 +14,6 @@ import {
 } from '@chronobank/login/redux/network/actions'
 import {
   navigateToCreateAccount,
-  navigateToCreateAccountWithoutImport,
   navigateToLedgerImportMethod,
   navigateToMnemonicImportMethod,
   navigateToPluginImportMethod,
@@ -22,6 +21,9 @@ import {
   navigateToTrezorImportMethod,
   navigateToWalletUploadMethod,
 } from '@chronobank/login-ui/redux/actions'
+import {
+  navigateToCreateAccountWithoutImport,
+} from '@chronobank/login-ui/redux/thunks'
 import Trezor from 'assets/img/icons/trezor-white.svg'
 import Ledger from 'assets/img/icons/ledger-nano-white.svg'
 import Plugin from 'assets/img/icons/plugin-white.svg'
