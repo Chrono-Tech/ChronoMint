@@ -34,8 +34,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch,) {
   return {
-    onSubmitSuccess: () => dispatch(onSubmitRecoverAccountFormSuccess()),
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitRecoverAccountFormFail(errors, submitErrors)),
     initRecoverAccountPage: () => dispatch(initRecoverAccountPage()),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
   }
@@ -49,11 +47,10 @@ class ResetPasswordContainer extends PureComponent {
   }
 
   async handleSubmit (values) {
+    const { onSubmit } = this.props
     let password = values.get('password')
 
-    return {
-      password,
-    }
+    onSubmit && await onSubmit({ password })
   }
 
   handleSubmitSuccess (result) {
@@ -69,9 +66,13 @@ class ResetPasswordContainer extends PureComponent {
   render () {
     const { handleSubmit, selectedWallet, navigateToSelectWallet, error } = this.props
 
-
     return (
-      <ResetPassword />
+      <ResetPassword
+        selectedWallet={selectedWallet}
+        navigateToSelectWallet={navigateToSelectWallet}
+        onSubmit={this.handleSubmit.bind(this)}
+        onSubmitSuccess={this.handleSubmitSuccess.bind(this)}
+      />
     )
   }
 }

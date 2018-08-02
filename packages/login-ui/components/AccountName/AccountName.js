@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
@@ -19,10 +18,6 @@ import validate from './validate'
 import './AccountName.scss'
 
 class AccountName extends PureComponent {
-  static propTypes = {
-    initAccountNamePage: PropTypes.func,
-    isLoginSubmitting: PropTypes.bool,
-  }
 
   render () {
     const { handleSubmit, error, isLoading } = this.props

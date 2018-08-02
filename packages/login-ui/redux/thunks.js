@@ -15,8 +15,6 @@ import axios from 'axios'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import * as NetworkThunks from '@chronobank/login/redux/network/thunks'
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
-import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 import networkService from '@chronobank/login/network/NetworkService'
 import profileService from '@chronobank/login/network/ProfileService'
@@ -202,7 +200,6 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
       await dispatch(NetworkThunks.handleWalletLogin(selectedWallet.encrypted, password))
     }
   } catch (e) {
-    console.log('onSubmitLoginForm: ', e)
     throw new SubmissionError({ password: e && e.message })
   }
 }
@@ -532,23 +529,6 @@ export const onSubmitResetAccountPasswordSuccess = () => (dispatch) => {
     'Your password has been reset.',
   ))
 }
-
-  /*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to remove throws
- * TODO: to rework it
- */
-export const onSubmitRecoverAccountForm = (mnemonic) =>
-  async (dispatch) => {
-    const validForm = await dispatch(PersistAccountActions.validateMnemonicForAccount(mnemonic))
-
-    if (!validForm) {
-      throw new SubmissionError({ _error: 'Mnemonic incorrect for this wallet' })
-    }
-
-    dispatch(NetworkActions.networkSetNewMnemonic(mnemonic))
-  }
 
 /*
  * Thunk dispatched by "" screen.

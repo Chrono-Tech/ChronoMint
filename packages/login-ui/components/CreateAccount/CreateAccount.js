@@ -3,32 +3,22 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
 import {
-  onSubmitCreateAccountPage,
-  onSubmitCreateAccountPageSuccess,
-  onSubmitCreateAccountPageFail,
-} from '../../redux/thunks'
-import {
   FORM_CREATE_ACCOUNT,
 } from '../../redux/actions'
+
 import validate from './validate'
 import './CreateAccount.scss'
 
 class CreateAccount extends PureComponent {
-  static propTypes = {
-    isImportMode: PropTypes.bool,
-  }
-
   render () {
-    const { handleSubmit, pristine, valid, initialValues, error } = this.props
+    const { handleSubmit, error } = this.props
 
     return (
       <form styleName='form' name={FORM_CREATE_ACCOUNT} onSubmit={handleSubmit}>

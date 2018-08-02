@@ -5,57 +5,27 @@
 
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Field, reduxForm } from 'redux-form/immutable'
 import React, { Component } from 'react'
 import { Link } from 'react-router'
 import Button from 'components/common/ui/Button/Button'
 import {
-  navigateToConfirmMnemonicPage,
   FORM_CONFIRM_MNEMONIC,
 } from '@chronobank/login-ui/redux/actions'
-import {
-  initConfirmMnemonicPage,
-  onSubmitConfirmMnemonic,
-  onSubmitConfirmMnemonicFail,
-  onSubmitConfirmMnemonicSuccess,
-} from '@chronobank/login-ui/redux/thunks'
 
 import './ConfirmMnemonic.scss'
 
-function mapStateToProps (state) {
-
-  return {
-    mnemonic: state.get('network').newAccountMnemonic,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    navigateToConfirmPage: () => dispatch(navigateToConfirmMnemonicPage()),
-    initConfirmMnemonicPage: () => dispatch(initConfirmMnemonicPage()),
-    onSubmit: (values) => {
-      const confirmMnemonic = values.get('mnemonic')
-
-      dispatch(onSubmitConfirmMnemonic(confirmMnemonic))
-    },
-    onSubmitSuccess: () => dispatch(onSubmitConfirmMnemonicSuccess()),
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitConfirmMnemonicFail(errors, submitErrors)),
-  }
-}
-
-class ConfirmMnemonicPage extends Component {
+class ConfirmMnemonic extends Component {
   static propTypes = {
     mnemonic: PropTypes.string,
-    initConfirmMnemonicPage: PropTypes.func,
   }
 
   static defaultProps = {
     mnemonic: '',
   }
 
-  constructor (props){
+  constructor (props) {
     super(props)
 
     const wordsArray = props.mnemonic ?
@@ -69,22 +39,19 @@ class ConfirmMnemonicPage extends Component {
     }
   }
 
-  componentDidMount(){
-    this.props.initConfirmMnemonicPage()
-  }
-
-  getCurrentMnemonic (){
+  getCurrentMnemonic () {
     return this.state.confirmPhrase.map((item) => item.word).join(' ')
   }
 
-  getWordsButtons (){
+  getWordsButtons () {
     return this.state.currentWordsArray.map((item, index) => {
       const wordSelected = this.state.confirmPhrase.includes(item)
 
       return (
         <Button
+          key={index}
           onClick={this.onClickWord.bind(this, item)}
-          styleName={classnames('word')}
+          styleName='word'
           disabled={wordSelected}
         >
           { item.word }
@@ -93,7 +60,7 @@ class ConfirmMnemonicPage extends Component {
     )
   }
 
-  onClickWord (word, e){
+  onClickWord (word, e) {
     const { change } = this.props
 
     if (!this.state.confirmPhrase.includes(word)) {
@@ -104,7 +71,7 @@ class ConfirmMnemonicPage extends Component {
     }
   }
 
-  clearMnemonic (){
+  clearMnemonic () {
     const { change } = this.props
 
     this.setState(
@@ -113,7 +80,7 @@ class ConfirmMnemonicPage extends Component {
     )
   }
 
-  clearLastWord (){
+  clearLastWord () {
     const { dispatch, change } = this.props
 
     this.setState(
@@ -184,5 +151,4 @@ class ConfirmMnemonicPage extends Component {
   }
 }
 
-const form = reduxForm({ form: FORM_CONFIRM_MNEMONIC })(ConfirmMnemonicPage)
-export default connect(mapStateToProps, mapDispatchToProps)(form)
+export default reduxForm({ form: FORM_CONFIRM_MNEMONIC })(ConfirmMnemonic)

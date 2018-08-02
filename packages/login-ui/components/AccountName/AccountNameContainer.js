@@ -5,11 +5,6 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
-import { stopSubmit, SubmissionError } from 'redux-form'
-import {
-  FORM_ACCOUNT_NAME,
-} from '../../redux/actions'
 import AccountName from './AccountName'
 
 export default class LoginWithPrivateKeyContainer extends PureComponent {

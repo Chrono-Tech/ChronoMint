@@ -4,50 +4,25 @@
  */
 
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import { stopSubmit, SubmissionError } from 'redux-form/immutable'
-import {
-  AccountEntryModel,
-} from '@chronobank/core/models/wallet/persistAccount'
-import {
-  initRecoverAccountPage,
-} from '@chronobank/login/redux/network/thunks'
+import { validateMnemonicForAccount } from '@chronobank/core/redux/persistAccount/utils'
 import {
   FORM_RECOVER_ACCOUNT,
-  navigateToSelectWallet,
 } from '../../redux/actions'
-import {
-  onSubmitRecoverAccountForm,
-  onSubmitRecoverAccountFormSuccess,
-  onSubmitRecoverAccountFormFail,
-} from '../../redux/thunks'
-import * as PersistAccountActions from "../../../core/redux/persistAccount/actions";
+import RecoverAccount from './RecoverAccount'
 
-function mapStateToProps (state) {
-  const selectedWallet = state.get('persistAccount').selectedWallet
-  return {
-    selectedWallet: selectedWallet && new AccountEntryModel(selectedWallet),
-  }
-}
-
-function mapDispatchToProps (dispatch,) {
-  return {
-    onSubmitSuccess: () => dispatch(onSubmitRecoverAccountFormSuccess()),
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitRecoverAccountFormFail(errors, submitErrors)),
-    initRecoverAccountPage: () => dispatch(initRecoverAccountPage()),
-    navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
-  }
-}
-
-class RecoverAccountContainer extends PureComponent {
+export default class RecoverAccountContainer extends PureComponent {
   static propTypes = {
-    selectedWallet: PropTypes.instanceOf(AccountEntryModel),
-    initRecoverAccountPage: PropTypes.func,
+    selectedWallet: PropTypes.object,
     navigateToSelectWallet: PropTypes.func,
+    validateMnemonicForAccount: PropTypes.func,
   }
 
   async handleSubmit (values) {
+    const { selectedWallet } = this.props
+
     let words = [], mnemonic = ''
 
     for (let i = 1; i <= 12; i++) {
@@ -57,8 +32,7 @@ class RecoverAccountContainer extends PureComponent {
 
     mnemonic = words.join(' ')
 
-    // const validForm = await dispatch(PersistAccountActions.validateMnemonicForAccount(mnemonic))
-    const validForm = true
+    const validForm = validateMnemonicForAccount(mnemonic, selectedWallet)
 
     if (!validForm) {
       throw new SubmissionError({ _error: 'Mnemonic incorrect for this wallet' })
@@ -80,14 +54,14 @@ class RecoverAccountContainer extends PureComponent {
   }
 
   render () {
-    const { handleSubmit, selectedWallet, navigateToSelectWallet, error } = this.props
-
-    const wordsArray = new Array(12).fill()
-
     return (
-      <RecoverAccount />
+      <RecoverAccount
+        navigateToSelectWallet={this.props.navigateToSelectWallet}
+        selectedWallet={this.props.selectedWallet}
+        onSubmit={this.handleSubmit.bind(this)}
+        onSubmitSuccess={this.handleSubmitSuccess.bind(this)}
+        onSubmitFail={this.handleSubmitFail.bind(this)}
+      />
     )
   }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(RecoverAccountContainer)

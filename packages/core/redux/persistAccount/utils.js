@@ -11,6 +11,7 @@ import profileService from '@chronobank/login/network/ProfileService'
 import {
   profileImgJPG,
 } from '@chronobank/core-dependencies/assets'
+import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import {
   WALLET_HD_PATH,
 } from '@chronobank/login/network/constants'
@@ -139,3 +140,12 @@ export const createAccountEntry = (name, walletFileImportObject, profile = null)
     encrypted: [walletFileImportObject],
     profile,
   })
+
+export const validateMnemonicForAccount = (mnemonic, selectedWallet: AccountEntryModel) => {
+  const addressFromWallet = selectedWallet && getAccountAddress(selectedWallet, true)
+  const address = mnemonicProvider
+    .createEthereumWallet(mnemonic)
+    .getAddressString()
+
+  return addressFromWallet === address
+}

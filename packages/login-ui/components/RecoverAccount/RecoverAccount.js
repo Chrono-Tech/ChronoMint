@@ -4,15 +4,11 @@
  */
 
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
-import {
-  AccountEntryModel,
-} from '@chronobank/core/models/wallet/persistAccount'
 import {
   getAccountName,
   // getAccountAvatar,
@@ -36,47 +32,14 @@ import {
 } from '../../redux/thunks'
 import './RecoverAccount.scss'
 
-function mapStateToProps (state) {
-  const selectedWallet = state.get('persistAccount').selectedWallet
-  return {
-    selectedWallet: selectedWallet && new AccountEntryModel(selectedWallet),
-  }
-}
-
-function mapDispatchToProps (dispatch,) {
-  return {
-    onSubmit: async (values) => {
-      let words = [], mnemonic = ''
-
-      for (let i = 1; i <= 12; i++) {
-        const word = values.get(`word-${i}`)
-        word && words.push(word)
-      }
-
-      mnemonic = words.join(' ')
-
-      await dispatch(onSubmitRecoverAccountForm(mnemonic))
-    },
-    onSubmitSuccess: () => dispatch(onSubmitRecoverAccountFormSuccess()),
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitRecoverAccountFormFail(errors, submitErrors)),
-    initRecoverAccountPage: () => dispatch(initRecoverAccountPage()),
-    navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
-  }
-}
-
-class RecoverAccountPage extends PureComponent {
+class RecoverAccount extends PureComponent {
   static propTypes = {
-    selectedWallet: PropTypes.instanceOf(AccountEntryModel),
-    initRecoverAccountPage: PropTypes.func,
+    selectedWallet: PropTypes.object,
     navigateToSelectWallet: PropTypes.func,
   }
 
-  componentWillMount () {
-    this.props.initRecoverAccountPage()
-  }
-
   render () {
-    const { handleSubmit, selectedWallet, navigateToSelectWallet, error } = this.props
+    const { handleSubmit, error, selectedWallet, navigateToSelectWallet } = this.props
 
     const wordsArray = new Array(12).fill()
 
@@ -132,5 +95,4 @@ class RecoverAccountPage extends PureComponent {
   }
 }
 
-const form = reduxForm({ form: FORM_RECOVER_ACCOUNT })(RecoverAccountPage)
-export default connect(mapStateToProps, mapDispatchToProps)(form)
+export default reduxForm({ form: FORM_RECOVER_ACCOUNT })(RecoverAccount)
