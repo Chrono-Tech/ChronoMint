@@ -17,7 +17,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-class MnemonicImportPage extends PureComponent {
+class AccountSelectorPage extends PureComponent {
   static propTypes = {
     onWalletSelect: PropTypes.func,
   }
@@ -30,4 +30,4 @@ class MnemonicImportPage extends PureComponent {
   }
 }
 
-export default connect(null, mapDispatchToProps)(MnemonicImportPage)
+export default connect(null, mapDispatchToProps)(AccountSelectorPage)

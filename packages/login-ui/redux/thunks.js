@@ -11,16 +11,13 @@ import {
   stopSubmit,
   SubmissionError,
 } from 'redux-form'
-import axios from 'axios'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import * as NetworkThunks from '@chronobank/login/redux/network/thunks'
 import * as SessionActions from '@chronobank/core/redux/session/actions'
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 import networkService from '@chronobank/login/network/NetworkService'
-import profileService from '@chronobank/login/network/ProfileService'
 import {
-  getAddress,
   createAccountEntry,
 } from '@chronobank/core/redux/persistAccount/utils'
 import {
@@ -29,67 +26,7 @@ import {
 } from '@chronobank/login/network/settings'
 import * as LoginUIActions from './actions'
 
-// #endregion
-
 // #region navigation
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to replace all onSubmitSubscribeNewsletterSuccess and delete this thunk
- */
-// eslint-disable-next-line no-unused-vars
-export const onSubmitSubscribeNewsletterSuccess = () => (dispatch) => {
-  // FIXME: empty thunk
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to replace all onSubmitMnemonicLoginFormSuccess and delete this thunk
- */
-export const onSubmitAccountNameSuccess = () => (dispatch) => {
-  dispatch(LoginUIActions.navigateToLoginPage())
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to replace all onSubmitAccountNameFail and delete this thunk
- */
-// eslint-disable-next-line no-unused-vars
-export const onSubmitAccountNameFail = (errors, submitErrors) => (dispatch) => {
-  // FIXME: empty thunk
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to replace all onSubmitMnemonicLoginFormSuccess and delete this thunk
- */
-// eslint-disable-next-line no-unused-vars
-export const onSubmitWalletUploadSuccess = () => (dispatch) => {
-  // FIXME: empty thunk
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to replace all onSubmitMnemonicLoginFormSuccess and delete this thunk
- */
-// eslint-disable-next-line no-unused-vars
-export const onSubmitCreateAccountPageSuccess = () => (dispatch) => {
-  // FIXME: empty thunk
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to replace all onSubmitRecoverAccountFormSuccess and delete this thunk
- */
-export const onSubmitRecoverAccountFormSuccess = () => (dispatch) => {
-  dispatch(LoginUIActions.navigateToResetPasswordPage())
-}
 
 /*
  * Thunk dispatched by "" screen.
@@ -107,19 +44,6 @@ export const navigateToCreateAccountFromHW = (address) => (dispatch) => {
 export const navigateToCreateAccountWithoutImport = () => (dispatch) => {
   dispatch(LoginUIActions.navigateToCreateAccount())
   dispatch(NetworkActions.networkResetImportAccountMode())
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
-export const initResetPasswordPage = () => (dispatch, getState) => {
-  const state = getState()
-  const { accountRecoveryMode } = state.get(NetworkActions.DUCK_NETWORK)
-
-  if (!accountRecoveryMode) {
-    dispatch(LoginUIActions.navigateToRecoverAccountPage())
-  }
 }
 
 // #endregion
@@ -152,34 +76,12 @@ export const initCommonNetworkSelector = () => (dispatch, getState) => {
 export const onSubmitSubscribeNewsletter = (email) => async () => {
   const publicBackendProvider = new PublicBackendProvider()
 
-  const subscriptionsService = await axios.create({
-    baseURL: publicBackendProvider.getPublicHost(),
-  })
-
   try {
-    await subscriptionsService.options('/api/v1/subscriptions')
-    await subscriptionsService.post('/api/v1/subscriptions', { email })
+    await publicBackendProvider.getSubscribe({ email })
   } catch (e) {
     throw new SubmissionError({ _error: e && e.message })
   }
 }
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to extract logic from here
- * TODO: to add I18n translation
- * TODO: to dispatch something, this is not a thunk or action. Really..
- */
-export const onSubmitConfirmMnemonic = (confirmMnemonic) => (dispatch, getState) => {
-  const state = getState()
-  const { newAccountMnemonic } = state.get(NetworkActions.DUCK_NETWORK)
-
-  if (confirmMnemonic !== newAccountMnemonic) {
-    throw new SubmissionError({ _error: 'Please enter correct mnemonic phrase' })
-  }
-}
-
 /*
  * Thunk dispatched by "" screen.
  * TODO: to add description
@@ -193,6 +95,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
   try {
     const wallet = await dispatch(PersistAccountActions.decryptAccount(selectedWallet.encrypted, password))
+    dispatch(PersistAccountActions.accountLoad(wallet))
     const privateKey = wallet && wallet[0] && wallet[0].privateKey
 
     dispatch(SessionActions.getProfileSignature(wallet[0]))
@@ -204,60 +107,6 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
     throw new SubmissionError({ password: e && e.message })
   }
 }
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to remove throws
- * TODO: to rework it
- */
-export const onSubmitCreateAccountPage = (walletName, walletPassword) =>
-  async (dispatch, getState) => {
-    const state = getState()
-
-    const {
-      importAccountMode,
-      newAccountMnemonic,
-      newAccountPrivateKey,
-      walletFileImportMode,
-    } = state.get(NetworkActions.DUCK_NETWORK)
-    const validateName = dispatch(PersistAccountActions.validateAccountName(walletName))
-
-    if (!validateName) {
-      throw new SubmissionError({ walletName: 'Wrong wallet name' })
-    }
-
-    dispatch(NetworkActions.setAccountCredentials(walletName, walletPassword))
-
-    if (importAccountMode) {
-      try {
-        let wallet = await dispatch(PersistAccountActions.createAccount({
-          name: walletName,
-          password: walletPassword,
-          mnemonic: newAccountMnemonic,
-          privateKey: newAccountPrivateKey,
-          numberOfAccounts: 0,
-        }))
-
-        dispatch(PersistAccountActions.accountAdd(wallet))
-        dispatch(PersistAccountActions.accountSelect(wallet))
-        dispatch(NetworkActions.networkResetImportAccountMode())
-
-        if (walletFileImportMode) {
-          dispatch(LoginUIActions.navigateToSelectWallet())
-        } else {
-          dispatch(LoginUIActions.navigateToDownloadWalletPage())
-        }
-      } catch (e) {
-        throw new SubmissionError({ _error: e && e.message })
-      }
-
-      return // FIXME: Excuse me, what?
-    }
-
-    dispatch(NetworkActions.generateNewMnemonic())
-    dispatch(LoginUIActions.navigateToGenerateMnemonicPage())
-  }
 
 /*
  * Thunk dispatched by "" screen.
@@ -376,53 +225,6 @@ export const onSubmitCreateHWAccountPageFail = (errors, submitErrors) => {
 /*
  * Thunk dispatched by "" screen.
  * TODO: to add description
- * TODO: to remove throws
- * TODO: to rework it
- * TODO: to move logic to utils
- */
-export const onSubmitWalletUpload = (walletString) =>
-  async (dispatch) => {
-    let restoredWalletJSON
-
-    try {
-      restoredWalletJSON = JSON.parse(walletString)
-
-      if ('Crypto' in restoredWalletJSON) {
-        restoredWalletJSON.crypto = restoredWalletJSON.Crypto
-        delete restoredWalletJSON.Crypto
-      }
-    } catch (e) {
-      throw new SubmissionError({ _error: 'Broken wallet file' })
-    }
-
-    if (!restoredWalletJSON.address) {
-      throw new SubmissionError({ _error: 'Wrong wallet address' })
-    }
-
-    let response
-
-    try {
-      response = await profileService.getPersonInfo([getAddress(restoredWalletJSON.address, true)])
-    } catch (e) {
-      throw new SubmissionError({ _error: 'Could not receive user profile' })
-    }
-
-    if (response && response.data && response.data[0] && response.data[0].userName) {
-      const profile = response.data[0]
-      const account = createAccountEntry(profile.userName, restoredWalletJSON, profile)
-
-      dispatch(PersistAccountActions.accountAdd(account))
-      dispatch(PersistAccountActions.accountSelect(account))
-      dispatch(LoginUIActions.navigateToLoginPage())
-    } else {
-      dispatch(NetworkActions.setImportedWalletFile(restoredWalletJSON))
-      dispatch(LoginUIActions.navigateToAccountName())
-    }
-  }
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
  * TODO: to move logic to utils
 */
 export const onCreateWalletFromJSON = (name, walletJSON, profile) => (dispatch) => {
@@ -430,56 +232,6 @@ export const onCreateWalletFromJSON = (name, walletJSON, profile) => (dispatch) 
 
   dispatch(PersistAccountActions.accountAdd(account))
 
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to rework it
- */
-export const initLoginLocal = () =>
-  async (dispatch, getState) => {
-    const state = getState()
-    const {
-      selectedNetworkId,
-      selectedProviderId,
-    } = state.get(NetworkActions.DUCK_NETWORK)
-
-    if (isLocalNode(selectedProviderId, selectedNetworkId)) {
-      await networkService.loadAccounts()
-    } else {
-      dispatch(LoginUIActions.navigateToLoginPage())
-    }
-  }
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
-export const initConfirmMnemonicPage = () => (dispatch, getState) => {
-  const state = getState()
-  const { newAccountMnemonic } = state.get(NetworkActions.DUCK_NETWORK)
-
-  if (!newAccountMnemonic) {
-    dispatch(LoginUIActions.navigateToCreateAccount())
-  }
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
-export const initMnemonicPage = () => (dispatch, getState) => {
-  const state = getState()
-  const {
-    newAccountName,
-    newAccountPassword,
-  } = state.get(NetworkActions.DUCK_NETWORK)
-  const emptyAccountCredentials = !newAccountName || !newAccountPassword
-
-  if (emptyAccountCredentials) {
-    dispatch(LoginUIActions.navigateToCreateAccount())
-  }
 }
 
 /*
@@ -504,15 +256,6 @@ export const initLoginPage = () =>
       dispatch(LoginUIActions.navigateToSelectWallet())
     }
   }
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
-export const onSubmitConfirmMnemonicSuccess = () => (dispatch) => {
-  dispatch(NetworkActions.onSubmitConfirmMnemonicSuccess())
-  dispatch(LoginUIActions.navigateToDownloadWalletPage())
-}
 
 /*
  * Thunk dispatched by "" screen.
@@ -574,54 +317,9 @@ export const onSubmitSubscribeNewsletterFail = (errors, submitErrors) =>
  * TODO: to add description
  * TODO: to rework it, merge into one action onSubmitPageFail
  */
-export const onSubmitCreateAccountPageFail = (errors, submitErrors) => (dispatch) => {
-  dispatch(stopSubmit(LoginUIActions.FORM_CREATE_ACCOUNT, submitErrors && submitErrors.errors))
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to rework it, merge into one action onSubmitPageFail
- */
-export const onSubmitConfirmMnemonicFail = (errors, submitErrors) => (dispatch) => {
-  dispatch(stopSubmit(LoginUIActions.FORM_CONFIRM_MNEMONIC, submitErrors && submitErrors.errors))
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to rework it, merge into one action onSubmitPageFail
- */
 export const onSubmitLoginFormFail = (errors, submitErrors) => (dispatch) => {
   dispatch(stopSubmit(LoginUIActions.FORM_LOGIN_PAGE, submitErrors && submitErrors.errors))
   dispatch(NetworkActions.networkResetLoginSubmitting())
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to rework it, merge into one action onSubmitPageFail
- */
-export const onSubmitRecoverAccountFormFail = (errors, submitErrors) => (dispatch) => {
-  dispatch(stopSubmit(LoginUIActions.FORM_RECOVER_ACCOUNT, submitErrors && submitErrors.errors))
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to rework it, merge into one action onSubmitPageFail
- */
-export const onSubmitResetAccountPasswordFail = (errors, submitErrors) => (dispatch) => {
-  dispatch(stopSubmit(LoginUIActions.FORM_RESET_PASSWORD, submitErrors && submitErrors.errors))
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to rework it, merge into one action onSubmitPageFail
- */
-export const onSubmitWalletUploadFail = (errors, submitErrors) => (dispatch) => {
-  dispatch(stopSubmit(LoginUIActions.FORM_WALLET_UPLOAD, submitErrors && submitErrors.errors))
 }
 
 /*

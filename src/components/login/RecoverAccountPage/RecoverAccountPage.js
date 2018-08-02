@@ -108,7 +108,6 @@ class RecoverAccountPage extends PureComponent {
   }
 
   onWalletSelect (selectedWallet) {
-    console.log('selected', selectedWallet)
     this.setState({
       selectedWallet,
       page: RecoverAccountPage.PAGES.RECOVER_ACCOUNT_FORM,

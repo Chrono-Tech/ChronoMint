@@ -55,22 +55,6 @@ export const navigateToCreateAccount = () => (dispatch) => {
  * Thunk dispatched by "" screen.
  * TODO: to add description
  */
-export const navigateToConfirmMnemonicPage = () => (dispatch) => {
-  dispatch(push('/login/confirm-mnemonic'))
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
-export const navigateToDownloadWalletPage = () => (dispatch) => {
-  dispatch(push('/login/download-wallet'))
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
 export const navigateToCreateHWAccount = () => (dispatch) => {
   dispatch(push('/login/create-hw-account'))
 }
@@ -143,24 +127,8 @@ export const navigateToLoginPage = () => (dispatch) => {
  * Thunk dispatched by "" screen.
  * TODO: to add description
  */
-export const navigateToResetPasswordPage = () => (dispatch) => {
-  dispatch(push('/login/reset-password'))
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
 export const navigateToRecoverAccountPage = () => (dispatch) => {
   dispatch(push('/login/recover-account'))
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
-export const navigateToGenerateMnemonicPage = () => (dispatch) => {
-  dispatch(push('/login/mnemonic'))
 }
 
 /*
@@ -177,14 +145,6 @@ export const navigateToWalletUploadMethod = () => (dispatch) => {
  */
 export const navigateToLoginLocal = () => (dispatch) => {
   dispatch(push('/login/local-login'))
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
-export const navigateToAccountName = () => (dispatch) => {
-  dispatch(push('/login/account-name'))
 }
 
 // #endregion
