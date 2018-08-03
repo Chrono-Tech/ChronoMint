@@ -107,6 +107,8 @@ export default class AvatarSelect extends PureComponent {
     }
   }
 
+  refInput = (input) => this.input = input
+
   renderSingle () {
     const { meta } = this.props
     const { uploadError, fileName } = this.state
@@ -161,7 +163,7 @@ export default class AvatarSelect extends PureComponent {
         { this.renderSingle() }
 
         <input
-          ref={(input) => this.input = input}
+          ref={this.refInput}
           type='file'
           onChange={this.handleChange}
           styleName='hide'
