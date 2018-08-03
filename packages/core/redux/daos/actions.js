@@ -7,8 +7,11 @@ import ContractDAOModel from '../../models/contracts/ContractDAOModel'
 import {
   ASSET_HOLDER_LIBRARY,
   ASSET_DONATOR_LIBRARY,
-  // ASSETS_MANAGER_LIBRARY,
+  ASSETS_MANAGER_LIBRARY,
   PLATFORMS_MANAGER_LIBRARY,
+  // PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER_LIBRARY,
+  CHRONOBANK_PLATFORM_LIBRARY,
+  CHRONOBANK_ASSET_LIBRARY,
   CONTRACTS_MANAGER,
   ERC20_MANAGER,
   USER_MANAGER_LIBRARY,
@@ -43,10 +46,13 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
   const historyAddress = await contractManagerDAO.getContractAddressByType(MULTI_EVENTS_HISTORY.type)
 
   const contracts = [
-    // ASSETS_MANAGER_LIBRARY,
+    ASSETS_MANAGER_LIBRARY,
     ASSET_HOLDER_LIBRARY,
     ASSET_DONATOR_LIBRARY,
     PLATFORMS_MANAGER_LIBRARY,
+    // PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER_LIBRARY,
+    CHRONOBANK_PLATFORM_LIBRARY,
+    CHRONOBANK_ASSET_LIBRARY,
     TOKEN_MANAGMENT_EXTENSION_LIBRARY,
     USER_MANAGER_LIBRARY,
     ERC20_MANAGER,
@@ -86,7 +92,7 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
   // post registration setup
   for (const model of models) {
     if (typeof model.dao.postStoreDispatchSetup === 'function') {
-      model.dao.postStoreDispatchSetup(state, web3, history, subscribeToFlow)
+      model.dao.postStoreDispatchSetup(state, web3, historyAddress, subscribeToFlow)
     }
   }
 

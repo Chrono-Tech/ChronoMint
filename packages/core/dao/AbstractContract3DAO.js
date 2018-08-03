@@ -43,7 +43,7 @@ export default class AbstractContractDAO extends EventEmitter {
 
     this.contract = new web3.eth.Contract(this.abi.abi, this.address, options)
     // eslint-disable-next-line no-console
-    console.log(`%c Contract [${this.constructor.name}] connected`, 'background: grey;', this.address, this.history)
+    console.log(`%c Contract [${this.constructor.name}] connected`, 'background: grey;', this.contract, this.address, this.history, )
 
     this.history = this.history != null
       ? new web3.eth.Contract(this.abi.abi, this.history, options)
@@ -151,8 +151,11 @@ export default class AbstractContractDAO extends EventEmitter {
     if (!from) {
       from = AbstractContractDAO.getAccount()
     }
+    console.log('gasLimit, gasFee, gasPrice before: ', func, args, value, from)
 
     const { gasLimit, gasFee, gasPrice } = await this.estimateGas(func, args, value, from, { feeMultiplier: feeMultiplier || 1 })
+
+    console.log('gasLimit, gasFee, gasPrice: ', gasLimit, gasFee, gasPrice)
 
     setImmediate(async () => {
       console.log('submit Tx: setImmediate tx: ', this, func, args, amount, value, options, additionalOptions)

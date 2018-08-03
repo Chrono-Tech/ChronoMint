@@ -3,8 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { MultiEventsHistoryABI, ChronoBankAssetABI } from './abi'
-import AbstractContractDAO from './AbstractContractDAO'
+import AbstractContractDAO from './AbstractContract3DAO'
 
 export const TX_PAUSE = 'pause'
 export const TX_UNPAUSE = 'unpause'
@@ -20,12 +19,47 @@ export const TX_UNPAUSED = 'Unpaused'
 
 export default class ChronoBankAssetDAO extends AbstractContractDAO {
 
-  constructor (at = null) {
-    super(ChronoBankAssetABI, at, MultiEventsHistoryABI)
+  constructor ({ address, history, abi }) {
+    super({ address, history, abi })
+  }
+
+  connect (web3, options) {
+    super.connect(web3, options)
+
+    this.allEventsEmitter = this.history.events.allEvents({})
+      .on('data', this.handleEventsData.bind(this))
+      .on('changed', this.handleEventsChanged.bind(this))
+      .on('error', this.handleEventsError.bind(this))
+  }
+
+  disconnect () {
+    if (this.isConnected) {
+      this.allEventsEmitter.removeAllListeners()
+      this.contract = null
+      this.history = null
+      this.web3 = null
+    }
+  }
+
+  handleEventsData (data) {
+    if (!data.event) {
+      return
+    }
+    console.log('ChronoBankAssetDAO handleEventsData: ', data.event, data)
+    this.emit(data.event, data)
+  }
+
+  handleEventsChanged (data) {
+    console.log('ChronoBankAssetDAO handleEventsChanged: ', data.event, data)
+  }
+
+  handleEventsError (data) {
+    console.log('ChronoBankAssetDAO handleEventsError: ', data.event, data)
+    this.emit(data.event + '_error', data)
   }
 
   getPauseStatus () {
-    return this._call(CALL_PAUSED)
+    return this.contract.methods.paused().call()
   }
 
   pause () {
@@ -45,6 +79,6 @@ export default class ChronoBankAssetDAO extends AbstractContractDAO {
   }
 
   blacklist (address): boolean {
-    return this._call(CALL_BLACKLIST, [ address ])
+    return this.contract.methods.blacklist(address).call()
   }
 }

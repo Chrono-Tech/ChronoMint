@@ -82,7 +82,7 @@ export const watcher = ({ web3 }) => async (dispatch) => {
   dispatch(initMainWallet())
   dispatch(initWallets())
   dispatch(watchPlatformManager())
-  // dispatch(watchInitTokens())
+  dispatch(watchInitTokens())
   dispatch(watchInitMonitor())
   dispatch(watchInitUserMonitor())
   dispatch(watchInitMarket())
