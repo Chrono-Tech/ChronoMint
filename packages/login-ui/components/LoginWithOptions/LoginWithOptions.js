@@ -61,9 +61,6 @@ export default class ImportMethodsPage extends PureComponent {
     navigateToWalletUploadMethod: PropTypes.func,
   }
 
-  componentWillMount (){
-    this.props.initImportMethodsPage()
-  }
 
   handleTrezorLogin = () => this.props.navigateToTrezorImportMethod()
 

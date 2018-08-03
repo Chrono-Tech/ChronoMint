@@ -34,6 +34,7 @@ function mapStateToProps (state) {
   const selectedAccount = state.get('persistAccount').selectedWallet
   const accountProfileSummary = getAccountProfileSummary(state)
   const profileSignature = session.profileSignature
+  console.log('accountProfile', accountProfileSummary, selector(state, 'avatar'))
 
   return {
     selectedAccount: selectedAccount,

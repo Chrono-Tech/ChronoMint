@@ -43,6 +43,6 @@ export { default as CopyDialog } from './dialogs/CopyDialog/CopyDialog'
 
 export { default as WalletWidget } from './wallet/WalletWidget/WalletWidget'
 export { default as Button } from './common/ui/Button/Button'
-export { default as UserRow } from './common/ui/UserRow/UserRow'
+export { default as UserRow } from '../../packages/login-ui/components/UserRow/UserRow'
 export { default as TxConfirmations } from './common/TxConfirmations/TxConfirmations'
 export { default as TopButtons } from './common/TopButtons/TopButtons'

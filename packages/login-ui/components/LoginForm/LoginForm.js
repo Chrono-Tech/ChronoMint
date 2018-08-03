@@ -13,7 +13,7 @@ import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
-import UserRow from 'components/common/ui/UserRow/UserRow'
+import UserRow from '../UserRow/UserRow'
 import { isLocalNode } from '@chronobank/login/network/settings'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import {

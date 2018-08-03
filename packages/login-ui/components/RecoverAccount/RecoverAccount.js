@@ -15,7 +15,7 @@ import {
 } from '@chronobank/core/redux/persistAccount/utils'
 import styles from 'layouts/Splash/styles'
 import Button from 'components/common/ui/Button/Button'
-import UserRow from 'components/common/ui/UserRow/UserRow'
+import UserRow from '../UserRow/UserRow'
 import {
   FORM_RECOVER_ACCOUNT,
 } from '../../redux/constants'

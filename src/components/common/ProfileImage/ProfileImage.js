@@ -43,6 +43,10 @@ export default class ProfileImage extends PureComponent {
     this.loadImage(this.props.imageId)
   }
 
+  getDerivedStateFromProps (props, state) {
+    console.log('derived', props)
+  }
+
   componentWillReceiveProps (newProps) {
     if (newProps.imageId !== this.props.imageId) {
       this.loadImage(newProps.imageId)

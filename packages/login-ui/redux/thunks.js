@@ -118,7 +118,6 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
   try {
     const wallet = await dispatch(PersistAccountActions.decryptAccount(selectedWallet.encrypted, password))
-    dispatch(PersistAccountActions.accountLoad(wallet))
     const privateKey = wallet && wallet[0] && wallet[0].privateKey
 
     dispatch(SessionActions.getProfileSignature(wallet[0]))

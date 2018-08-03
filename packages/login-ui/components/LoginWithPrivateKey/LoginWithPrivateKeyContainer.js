@@ -8,6 +8,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import { stopSubmit, SubmissionError } from 'redux-form'
+import AccountProfileModel from '@chronobank/core/models/wallet/persistAccount/AccountProfileModel'
 import {
   navigateBack,
 } from '../../redux/actions'

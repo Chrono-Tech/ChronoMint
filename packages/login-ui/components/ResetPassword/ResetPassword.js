@@ -17,7 +17,7 @@ import {
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import Button from 'components/common/ui/Button/Button'
-import UserRow from 'components/common/ui/UserRow/UserRow'
+import UserRow from '../UserRow/UserRow'
 import styles from 'layouts/Splash/styles'
 import {
   FORM_RESET_PASSWORD,

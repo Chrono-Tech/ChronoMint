@@ -40,8 +40,6 @@ class WalletImportPage extends PureComponent {
   }
 
   static propTypes = {
-    previousPage: PropTypes.func.isRequired,
-    nextPage: PropTypes.func.isRequired,
     navigateToSelectWallet: PropTypes.func,
     navigateToSelectImportMethod: PropTypes.func,
     navigateToLoginPage: PropTypes.func,

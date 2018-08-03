@@ -9,6 +9,7 @@ import { reduxForm, Field } from 'redux-form/immutable'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import Button from 'components/common/ui/Button/Button'
+import AccountProfileModel from '@chronobank/core/models/wallet/persistAccount/AccountProfileModel'
 import {
   FORM_PRIVATE_KEY_LOGIN_PAGE,
 } from '../../redux/constants'

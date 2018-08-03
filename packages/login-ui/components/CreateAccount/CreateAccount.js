@@ -5,10 +5,13 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
+import classnames from 'classnames'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
+import AccountProfileModel from '@chronobank/core/models/wallet/persistAccount/AccountProfileModel'
+import UserRow from '../UserRow/UserRow'
 import {
   FORM_CREATE_ACCOUNT,
 } from '../../redux/constants'
@@ -18,10 +21,25 @@ import './CreateAccount.scss'
 class CreateAccount extends PureComponent {
   static propTypes = {
     navigateToSelectWallet: PropTypes.func,
+    accountProfile: PropTypes.instanceOf(AccountProfileModel),
+  }
+
+  renderAccountNameField () {
+    const { accountProfile } = this.props
+
+    return accountProfile ? (
+      <div>
+        <UserRow
+          title={accountProfile.userName}
+          avatar={accountProfile.avatar}
+          subtitle={accountProfile.address}
+        />
+      </div>
+    ) : null
   }
 
   render () {
-    const { handleSubmit, error, navigateToSelectWallet } = this.props
+    const { handleSubmit, error, navigateToSelectWallet, accountProfile } = this.props
 
     return (
       <form styleName='form' name={FORM_CREATE_ACCOUNT} onSubmit={handleSubmit}>
@@ -34,8 +52,13 @@ class CreateAccount extends PureComponent {
         </div>
 
         <div styleName='fields-block'>
+          { this.renderAccountNameField() }
+
           <Field
             component={TextField}
+            styleName={classnames({
+              'hidden-field': accountProfile,
+            })}
             name='walletName'
             label={<Translate value='CreateAccount.walletName' />}
             fullWidth

@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
 import Button from 'components/common/ui/Button/Button'
-import UserRow from 'components/common/ui/UserRow/UserRow'
+import UserRow from '../UserRow/UserRow'
 import {
   getAccountAddress,
   getAccountAvatarImg,

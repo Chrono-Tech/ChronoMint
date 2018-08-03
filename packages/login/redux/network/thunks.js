@@ -178,11 +178,13 @@ export const handleWalletLogin = (wallet, password) => async (dispatch, getState
   const isPassed = await networkService.checkNetwork()
 
   if (isPassed) {
+    console.log('isPassed')
     networkService.createNetworkSession(
       selectedAccount,
       selectedProviderId,
       selectedNetworkId,
     )
+    console.log('login')
     dispatch(login(selectedAccount))
   }
 

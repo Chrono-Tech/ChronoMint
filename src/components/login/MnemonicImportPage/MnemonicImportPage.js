@@ -6,10 +6,10 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
+import AccountProfileModel from '@chronobank/core/models/wallet/persistAccount/AccountProfileModel'
 import {
-  downloadWallet,
-  accountDeselect,
-} from '@chronobank/core/redux/persistAccount/actions'
+  getAddressByMnemonic,
+} from '@chronobank/core/redux/persistAccount/utils'
 import {
   onSubmitCreateAccountImportMnemonic,
 } from '@chronobank/login-ui/redux/thunks'
@@ -22,6 +22,7 @@ import {
   CreateAccountContainer,
   GenerateWalletContainer,
 } from '@chronobank/login-ui/components'
+import ProfileService from '@chronobank/login/network/ProfileService'
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -36,11 +37,10 @@ class MnemonicImportPage extends PureComponent {
     MNEMONIC_FORM: 1,
     CREATE_ACCOUNT_FORM: 2,
     DOWNLOAD_WALLET_PAGE: 3,
+    CREATE_ACCOUNT_LOADED_PROFILE: 4,
   }
 
   static propTypes = {
-    previousPage: PropTypes.func.isRequired,
-    nextPage: PropTypes.func.isRequired,
     navigateToSelectWallet: PropTypes.func,
     navigateToSelectImportMethod: PropTypes.func,
     onSubmitCreateAccountImportMnemonic: PropTypes.func,
@@ -52,6 +52,7 @@ class MnemonicImportPage extends PureComponent {
     this.state = {
       page: MnemonicImportPage.PAGES.MNEMONIC_FORM,
       mnemonic: null,
+      accountProfile: null,
     }
   }
 
@@ -69,6 +70,7 @@ class MnemonicImportPage extends PureComponent {
         return (
           <CreateAccountContainer
             mnemonic={this.state.mnemonic}
+            accountProfile={this.state.accountProfile}
             previousPage={this.previousPage.bind(this)}
             onSubmit={this.onSubmitCreateAccount.bind(this)}
             onSubmitSuccess={this.onSubmitCreateAccountSuccess.bind(this)}
@@ -90,9 +92,17 @@ class MnemonicImportPage extends PureComponent {
     }
   }
 
-  onSubmitMnemonic ({ mnemonic }) {
-    this.setState({ mnemonic })
-    this.nextPage()
+  async onSubmitMnemonic ({ mnemonic }) {
+    const address = getAddressByMnemonic(mnemonic)
+    const { data } = await ProfileService.getPersonInfo([address])
+
+    const profile = data[0]
+
+    this.setState({
+      mnemonic,
+      accountProfile: profile && profile.userName ? new AccountProfileModel(profile): null,
+      page: MnemonicImportPage.PAGES.CREATE_ACCOUNT_FORM,
+    })
   }
 
   async onSubmitCreateAccount ({ walletName, password }) {
@@ -102,7 +112,9 @@ class MnemonicImportPage extends PureComponent {
   }
 
   onSubmitCreateAccountSuccess () {
-    this.props.navigateToSelectWallet()
+    this.setState({
+      page: MnemonicImportPage.PAGES.DOWNLOAD_WALLET_PAGE,
+    })
   }
 
   nextPage () {

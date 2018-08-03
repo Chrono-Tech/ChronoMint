@@ -22,6 +22,11 @@ import {
   CreateAccountContainer,
   GenerateWalletContainer,
 } from '@chronobank/login-ui/components'
+import ProfileService from '@chronobank/login/network/ProfileService'
+import AccountProfileModel from '@chronobank/core/models/wallet/persistAccount/AccountProfileModel'
+import {
+  getAddressByPrivateKey,
+} from '@chronobank/core/redux/persistAccount/utils'
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -54,6 +59,7 @@ class PrivateKeyImportPage extends PureComponent {
     this.state = {
       page: PrivateKeyImportPage.PAGES.PRIVATE_KEY_FORM,
       privateKey: null,
+      accountProfile: null,
     }
   }
 
@@ -71,6 +77,7 @@ class PrivateKeyImportPage extends PureComponent {
         return (
           <CreateAccountContainer
             privateKey={this.state.privateKey}
+            accountProfile={this.state.accountProfile}
             previousPage={this.previousPage.bind(this)}
             onSubmit={this.onSubmitCreateAccount.bind(this)}
             onSubmitSuccess={this.nextPage.bind(this)}
@@ -92,9 +99,18 @@ class PrivateKeyImportPage extends PureComponent {
     }
   }
 
-  onSubmitPrivateKey ({ privateKey }) {
-    this.setState({ privateKey })
-    this.nextPage()
+  async onSubmitPrivateKey ({ privateKey }) {
+    const address = getAddressByPrivateKey(privateKey)
+
+    const { data } = await ProfileService.getPersonInfo([address])
+
+    const profile = data[0]
+
+    this.setState({
+      privateKey,
+      accountProfile: profile && profile.userName ? new AccountProfileModel(profile): null,
+      page: PrivateKeyImportPage.PAGES.CREATE_ACCOUNT_FORM,
+    })
   }
 
   async onSubmitCreateAccount ({ walletName, password }) {

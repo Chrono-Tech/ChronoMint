@@ -112,6 +112,7 @@ export default class AvatarSelect extends PureComponent {
     try {
       const data = await ProfileService.avatarDownload(imageId)
 
+      console.log('loadImage', data, imageId, getFileNameFromPath(data.url))
       this.setState({
         fileName: getFileNameFromPath(data.url),
       })

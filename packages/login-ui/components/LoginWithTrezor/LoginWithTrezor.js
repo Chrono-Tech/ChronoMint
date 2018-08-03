@@ -66,7 +66,7 @@ class LoginTrezor extends PureComponent {
     navigateToCreateAccountFromHW: PropTypes.func,
   }
 
-  static getDerivedStateFromProps (props, state) {
+  componentWillReceiveProps (props, state) {
     if (!props.trezor.isFetched && !props.trezor.isFetching) {
       props.startTrezorSync()
       props.fetchAccount()
