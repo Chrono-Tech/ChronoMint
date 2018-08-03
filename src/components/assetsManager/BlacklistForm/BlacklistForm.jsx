@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import OwnerCollection from '@chronobank/core/models/wallet/OwnerCollection'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -34,7 +33,6 @@ function mapStateToProps (state) {
 export default class BlacklistForm extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
-    managers: PropTypes.instanceOf(OwnerCollection),
     onRemoveFromBlacklist: PropTypes.func,
     blacklist: PropTypes.instanceOf(BlacklistModel),
     ...formPropTypes,

@@ -11,9 +11,11 @@ import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { reissueAsset } from '@chronobank/core/redux/assetsManager/actions'
+import {
+  FORM_REISSUE_FORM,
+} from 'components/constants'
 import { DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/constants'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
-import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import validate from './validate'
 
 import './ReissueAssetForm.scss'
@@ -21,8 +23,6 @@ import './ReissueAssetForm.scss'
 function prefix (token) {
   return `Assets.ReissueAssetForm.${token}`
 }
-
-const FORM_REISSUE_FORM = 'reissueForm'
 
 function mapStateToProps (state) {
   const assetsManager = state.get(DUCK_ASSETS_MANAGER)
@@ -42,9 +42,7 @@ const onSubmit = (values, dispatch, props) => {
 @reduxForm({ form: FORM_REISSUE_FORM, validate, onSubmit })
 export default class ReissueAssetForm extends PureComponent {
   static propTypes = {
-    tokens: PropTypes.instanceOf(TokensCollection),
     handleSubmit: PropTypes.func,
-    selectedToken: PropTypes.string,
   }
 
   render () {

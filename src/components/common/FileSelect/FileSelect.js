@@ -37,21 +37,16 @@ const DEFAULT_MAX_FILES = 10
 
 class FileSelect extends PureComponent {
   static propTypes = {
-    value: PropTypes.string,
-    mode: PropTypes.string,
-    // eslint-disable-next-line
-    meta: PropTypes.object,
+    meta: PropTypes.shape(PropTypes.any),
     label: PropTypes.string,
-    // eslint-disable-next-line
-    accept: PropTypes.array,
+    accept: PropTypes.arrayOf(PropTypes.any),
     multiple: PropTypes.bool,
     maxFileSize: PropTypes.number,
-    // eslint-disable-next-line
-    input: PropTypes.object,
+    input: PropTypes.shape(PropTypes.any),
     aspectRatio: PropTypes.number,
-    maxFiles: PropTypes.number, returnCollection: PropTypes.bool,
+    maxFiles: PropTypes.number,
+    returnCollection: PropTypes.bool,
     floatingLabelText: PropTypes.node,
-    handleChange: PropTypes.func,
   }
 
   static defaultProps = {
@@ -196,7 +191,7 @@ class FileSelect extends PureComponent {
   }
 
   renderMultiple () {
-    const { config, fileCollection } = this.state
+    const { fileCollection } = this.state
     const { meta } = this.props
 
     return (

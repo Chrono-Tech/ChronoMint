@@ -4,7 +4,6 @@
  */
 
 import {
-  CircularProgress,
   IconButton,
   TextField,
 } from '@material-ui/core'
@@ -23,19 +22,8 @@ import Preloader from '../Preloader/Preloader'
 
 export default class AvatarSelect extends PureComponent {
   static propTypes = {
-    value: PropTypes.string,
-    mode: PropTypes.string,
-    // eslint-disable-next-line
-    meta: PropTypes.object,
-    label: PropTypes.string,
-    // eslint-disable-next-line
-    accept: PropTypes.array,
-    multiple: PropTypes.bool,
-    maxFileSize: PropTypes.number,
-    // eslint-disable-next-line
-    input: PropTypes.object,
-    aspectRatio: PropTypes.number,
-    maxFiles: PropTypes.number, returnCollection: PropTypes.bool,
+    meta: PropTypes.shape(PropTypes.any),
+    input: PropTypes.shape(PropTypes.any),
     floatingLabelText: PropTypes.node,
   }
 
@@ -44,7 +32,6 @@ export default class AvatarSelect extends PureComponent {
 
     this.state = {
       isUploadingFile: false,
-      uploadSuccess: null,
       uploadError: null,
       fileName: '',
     }
@@ -61,7 +48,7 @@ export default class AvatarSelect extends PureComponent {
     this.input.click()
   }
 
-  async handleChange (e) {
+  handleChange = async (e) => {
     let response
 
     if (!e.target.files.length) {
@@ -89,7 +76,6 @@ export default class AvatarSelect extends PureComponent {
   handleUploadSuccess (response){
     if (response && response.url) {
       this.setState({
-        uploadSuccess: response,
         fileName: getFileNameFromPath(response.url),
       })
       this.props.input.onChange (response.id)
@@ -102,7 +88,7 @@ export default class AvatarSelect extends PureComponent {
     }
   }
 
-  handleReset () {
+  handleReset = () => {
     this.props.input.onChange('')
     this.setState({ fileName: '' })
   }
@@ -120,6 +106,8 @@ export default class AvatarSelect extends PureComponent {
       console.log('Failed to load image', imageId)
     }
   }
+
+  refInput = (input) => this.input = input
 
   renderSingle () {
     const { meta } = this.props
@@ -147,7 +135,7 @@ export default class AvatarSelect extends PureComponent {
   }
 
   renderIcon () {
-    const { isUploadingFile, uploadSuccess, fileName } = this.state
+    const { isUploadingFile, fileName } = this.state
     return (
       <div styleName='iconWrapper'>
         {isUploadingFile
@@ -159,7 +147,7 @@ export default class AvatarSelect extends PureComponent {
           : (
             <div styleName='icon'>
               <IconButton
-                onClick={fileName ? this.handleReset.bind(this) : this.handleOpenFileDialog}
+                onClick={fileName ? this.handleReset : this.handleOpenFileDialog}
               >
                 {fileName ? <Close /> : <AttachFile />}
               </IconButton>
@@ -175,9 +163,9 @@ export default class AvatarSelect extends PureComponent {
         { this.renderSingle() }
 
         <input
-          ref={(input) => this.input = input}
+          ref={this.refInput}
           type='file'
-          onChange={(e) => this.handleChange(e)}
+          onChange={this.handleChange}
           styleName='hide'
         />
       </div>

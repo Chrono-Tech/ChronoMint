@@ -10,8 +10,8 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { createNewChildAddress, goToWallets, resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
-import './SelectEthWallet.scss'
 import { prefix } from '../lang'
+import './SelectEthWallet.scss'
 
 function mapStateToProps () {
   return {}

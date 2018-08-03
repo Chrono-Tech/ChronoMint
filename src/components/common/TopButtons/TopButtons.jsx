@@ -29,7 +29,6 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 class TopButtons extends PureComponent {
   static propTypes = {
-    version: PropTypes.string,
     handleAction: PropTypes.func,
     location: PropTypes.shape({
       action: PropTypes.string,
