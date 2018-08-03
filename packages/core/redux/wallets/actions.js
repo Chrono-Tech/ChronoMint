@@ -32,7 +32,7 @@ import ethDAO from '../../dao/ETHDAO'
 import { getMainEthWallet, getWallets } from './selectors/models'
 import MultisigEthWalletModel from '../../models/wallet/MultisigEthWalletModel'
 import { notifyError } from '../notifier/actions'
-import { DUCK_SESSION } from '../session/actions'
+import { DUCK_SESSION } from '../session/constants'
 import { AllowanceCollection } from '../../models'
 import { web3Selector } from '../ethereum/selectors'
 import { executeTransaction } from '../ethereum/actions'
@@ -41,6 +41,7 @@ import {
   WALLETS_SET,
   WALLETS_UPDATE_BALANCE,
   WALLETS_TWO_FA_CONFIRMED,
+  WALLETS_UPDATE_WALLET,
 } from './constants'
 
 let walletsManagerDAO

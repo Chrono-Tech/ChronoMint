@@ -39,7 +39,7 @@ import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import WalletModel from '../../models/wallet/WalletModel'
 import { daoByType } from '../daos/selectors'
 import { web3Selector } from '../ethereum/selectors'
-import { executeTransaction } from '../ethereum/actions'
+import { estimateGas, executeTransaction } from '../ethereum/actions'
 import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from '../../dao/constants/AssetHolderDAO'
 import { TX_APPROVE } from '../../dao/constants/ERC20DAO'
 import { DUCK_ETH_MULTISIG_WALLET, ETH_MULTISIG_BALANCE, ETH_MULTISIG_FETCHED } from '../multisigWallet/constants'
@@ -331,22 +331,21 @@ export const getSpendersAllowance = (tokenId: string, spender: string) => async 
 }
 
 export const estimateGasForDeposit = (mode: string, params, callback, gasPriceMultiplier = 1) => async (dispatch, getState) => {
-  let dao = null
-  const web3 = web3Selector()(getState())
+  let dao
+  let tx
   switch (mode) {
     case TX_APPROVE:
-      dao = await tokenService.getDAO(TIME, web3)
+      dao = await tokenService.getDAO(TIME)
+      tx = dao[TX_APPROVE](...params)
       break
     case TX_DEPOSIT:
     case TX_WITHDRAW_SHARES:
       dao = daoByType('TimeHolder')(getState())
+      tx = dao[mode](...params)
       break
   }
   try {
-    if (!dao) {
-      throw new Error('Dao is undefined')
-    }
-    const { gasLimit, gasFee, gasPrice } = await dao.estimateGas(...params)
+    const { gasLimit, gasFee, gasPrice } = await dispatch(estimateGas(tx))
     callback(null, {
       gasLimit,
       gasFee: new Amount(gasFee.mul(gasPriceMultiplier), ETH),

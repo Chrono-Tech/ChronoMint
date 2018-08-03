@@ -211,3 +211,22 @@ const rejectTransaction = (entry) => (dispatch) => {
   })
 }
 
+export const estimateGas = (tx, feeMultiplier) => async (dispatch, getState) => {
+
+  const web3 = web3Selector()(getState())
+  const nonce = await dispatch(nextNonce({ web3, address: tx.from }))
+  const gasPrice = new BigNumber(await web3.eth.getGasPrice()).mul(feeMultiplier || 1)
+  const chainId = await web3.eth.net.getId()
+  const gasLimit = await web3.eth.estimateGas({
+    from: tx.from,
+    to: tx.to,
+    gasPrice,
+    value: tx.value,
+    data: tx.data,
+    nonce,
+    chainId,
+  })
+
+  return { gasLimit, gasFee: gasPrice.mul(gasLimit), gasPrice }
+
+}
