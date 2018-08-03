@@ -5,24 +5,43 @@
  * @flow
  */
 
-// #region imports
-
-import { change, stopSubmit, SubmissionError } from 'redux-form'
+import {
+  change,
+  stopSubmit,
+  SubmissionError,
+} from 'redux-form'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
-import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
+import {
+  DUCK_NETWORK,
+} from '@chronobank/login/redux/network/constants'
+import {
+  DUCK_PERSIST_ACCOUNT,
+} from '@chronobank/core/redux/persistAccount/constants'
 import * as NetworkThunks from '@chronobank/login/redux/network/thunks'
-import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
-import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import * as SessionActions from '@chronobank/core/redux/session/actions'
+import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 import networkService from '@chronobank/login/network/NetworkService'
 import { SignerMemoryModel } from '@chronobank/core/models'
-import { createAccountEntry } from '@chronobank/core/redux/persistAccount/utils'
-import { isLocalNode } from '@chronobank/login/network/settings'
+import {
+  createAccountEntry,
+} from '@chronobank/core/redux/persistAccount/utils'
+import {
+  isLocalNode,
+} from '@chronobank/login/network/settings'
 import * as LoginUIActions from './actions'
-import { FORM_FOOTER_EMAIL_SUBSCRIPTION, FORM_LOGIN_PAGE, FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE } from './constants'
-
-// #endregion
+import {
+  FORM_LOGIN_PAGE,
+  FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
+  FORM_CONFIRM_MNEMONIC,
+  FORM_RECOVER_ACCOUNT,
+  FORM_CREATE_ACCOUNT,
+  FORM_FOOTER_EMAIL_SUBSCRIPTION,
+  FORM_MNEMONIC_LOGIN_PAGE,
+  FORM_PRIVATE_KEY_LOGIN_PAGE,
+  FORM_RESET_PASSWORD,
+  FORM_WALLET_UPLOAD,
+} from './constants'
 
 /*
  * Thunk dispatched by "" screen.
