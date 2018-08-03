@@ -44,7 +44,8 @@ class FileSelect extends PureComponent {
     maxFileSize: PropTypes.number,
     input: PropTypes.shape(PropTypes.any),
     aspectRatio: PropTypes.number,
-    maxFiles: PropTypes.number, returnCollection: PropTypes.bool,
+    maxFiles: PropTypes.number,
+    returnCollection: PropTypes.bool,
     floatingLabelText: PropTypes.node,
   }
 
