@@ -18,7 +18,6 @@ import {
 import {
   onSubmitSubscribeNewsletter,
   onSubmitSubscribeNewsletterFail,
-  onSubmitSubscribeNewsletterSuccess,
 } from '@chronobank/login-ui/redux/thunks'
 
 import { Button } from 'components'
@@ -47,7 +46,6 @@ const mapDispatchToProps = (dispatch) => {
       await dispatch(onSubmitSubscribeNewsletter(email))
     },
     onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitSubscribeNewsletterFail(errors, submitErrors)),
-    onSubmitSuccess: () => dispatch(onSubmitSubscribeNewsletterSuccess),
   }
 }
 

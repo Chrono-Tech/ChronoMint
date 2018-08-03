@@ -5,31 +5,24 @@
  * @flow
  */
 
-// #region imports
-
 import {
   change,
   stopSubmit,
   SubmissionError,
 } from 'redux-form'
-import axios from 'axios'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import {
   DUCK_NETWORK,
 } from '@chronobank/login/redux/network/constants'
-import * as NetworkThunks from '@chronobank/login/redux/network/thunks'
-import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
+import * as NetworkThunks from '@chronobank/login/redux/network/thunks'
 import * as SessionActions from '@chronobank/core/redux/session/actions'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
-import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
+import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 import networkService from '@chronobank/login/network/NetworkService'
-import profileService from '@chronobank/login/network/ProfileService'
 import {
-  getAddress,
   createAccountEntry,
 } from '@chronobank/core/redux/persistAccount/utils'
 import {
@@ -48,8 +41,6 @@ import {
   FORM_RESET_PASSWORD,
   FORM_WALLET_UPLOAD,
 } from './constants'
-
-// #endregion
 
 /*
  * Thunk dispatched by "" screen.
