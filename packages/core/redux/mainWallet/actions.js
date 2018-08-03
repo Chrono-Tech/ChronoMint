@@ -6,12 +6,7 @@
 // FIXME: to rework all methods below to avoid complexity
 /* eslint-disable complexity */
 
-import {
-  bccProvider,
-  btcProvider,
-  btgProvider,
-  ltcProvider,
-} from '@chronobank/login/network/BitcoinProvider'
+import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { change, formValueSelector } from 'redux-form/immutable'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
@@ -29,7 +24,7 @@ import AddressModel from '../../models/wallet/AddressModel'
 import AllowanceModel from '../../models/wallet/AllowanceModel'
 import { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
 import { addMarketToken } from '../market/actions'
-import { notify, notifyError } from '../notifier/actions'
+import { notify } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { subscribeOnTokens } from '../tokens/actions'
 import { DUCK_TOKENS } from '../tokens/constants'
@@ -40,53 +35,35 @@ import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 import AddressesCollection from '../../models/wallet/AddressesCollection'
 import type TxModel from '../../models/TxModel'
 import { getMainAddresses, getMainEthWallet, getMainWalletForBlockchain, getWallet } from '../wallets/selectors/models'
-import { getAccount } from '../session/selectors/models'
-import AllowanceCollection from '../../models/AllowanceCollection'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import WalletModel from '../../models/wallet/WalletModel'
 import { daoByType } from '../daos/selectors'
-
-//#region CONSTANTS
-
+import { web3Selector } from '../ethereum/selectors'
+import { estimateGas, executeTransaction } from '../ethereum/actions'
+import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from '../../dao/constants/AssetHolderDAO'
+import { TX_APPROVE } from '../../dao/constants/ERC20DAO'
+import { DUCK_ETH_MULTISIG_WALLET, ETH_MULTISIG_BALANCE, ETH_MULTISIG_FETCHED } from '../multisigWallet/constants'
+import { WALLETS_SET_IS_TIME_REQUIRED, WALLETS_UPDATE_WALLET } from '../wallets/constants'
 import {
-  TX_DEPOSIT,
-  TX_WITHDRAW_SHARES,
-} from '../../dao/constants/AssetHolderDAO'
-import {
-  TX_APPROVE,
-} from '../../dao/constants/ERC20DAO'
-import {
-  DUCK_ETH_MULTISIG_WALLET,
-  ETH_MULTISIG_BALANCE,
-  ETH_MULTISIG_FETCHED,
-} from '../multisigWallet/constants'
-import {
-  WALLETS_SET_IS_TIME_REQUIRED,
-  WALLETS_UPDATE_WALLET,
-} from '../wallets/constants'
-import {
-  // Blockchains
+  BCC,
+  BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
-  // Tokens
-  BCC,
   BTC,
   BTG,
   ETH,
-  LTC,
-  TIME,
-  WAVES,
-  XEM,
-  // Events
   EVENT_APPROVAL_TRANSFER,
   EVENT_NEW_TRANSFER,
   EVENT_UPDATE_BALANCE,
   EVENT_UPDATE_TRANSACTION,
+  LTC,
+  TIME,
+  WAVES,
+  XEM,
 } from '../../dao/constants'
 import {
   FORM_ADD_NEW_WALLET,
@@ -98,6 +75,8 @@ import {
   WALLET_TRANSACTION,
   WALLET_TRANSACTION_UPDATED,
 } from './constants'
+
+//#region CONSTANTS
 
 //#endregion
 
@@ -299,80 +278,6 @@ export const initMainWallet = () => async (dispatch) => {
   })
 }
 
-export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1, additionalOptions = {}) => async (dispatch) => {
-  try {
-    const tokenDAO = tokenService.getDAO(token.id())
-
-    await tokenDAO.transfer(
-      wallet.address,
-      recipient,
-      amount,
-      token,
-      feeMultiplier,
-      additionalOptions,
-    )
-  } catch (e) {
-    // eslint-disable-next-line
-    console.error('e', e)
-    dispatch(notifyError(e, 'mainTransfer'))
-  }
-}
-
-const updateAllowance = (allowance) => (dispatch, getState) => {
-  const wallet = getMainEthWallet(getState())
-  if (allowance) {
-    dispatch({
-      type: WALLETS_UPDATE_WALLET,
-      wallet: new WalletModel({
-        ...wallet,
-        allowances: new AllowanceCollection({
-          list: {
-            ...wallet.allowances.list,
-            [allowance.id()]: allowance,
-          },
-        }),
-      }),
-    })
-  }
-}
-
-export const mainApprove = (token: TokenModel, amount: Amount, spender: string, feeMultiplier: Number, additionalOptions = undefined) => async (dispatch, getState) => {
-  const wallet = getMainEthWallet(getState())
-  const allowance = wallet.allowances.list[`${spender}-${token.id()}`]
-  const { account } = getState().get(DUCK_SESSION)
-
-  try {
-    allowance && dispatch(updateAllowance(allowance.isFetching(true)))
-    const tokenDAO = tokenService.getDAO(token)
-    additionalOptions['from'] = account
-    await tokenDAO.approve(spender, amount, feeMultiplier, additionalOptions)
-  } catch (e) {
-    // eslint-disable-next-line
-    console.log('mainRevoke approve: ', e)
-    dispatch(notifyError(e, 'mainApprove'))
-    allowance && dispatch(updateAllowance(allowance.isFetching(false)))
-  }
-}
-
-export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Number = 1, additionalOptions = undefined) => async (dispatch, getState) => {
-  const wallet = getMainEthWallet(getState())
-  const allowance = wallet.allowances.list[`${spender}-${token.id()}`]
-  dispatch(updateAllowance(allowance.isFetching(true)))
-
-  const { account } = getState().get(DUCK_SESSION)
-  try {
-    dispatch({ type: WALLET_ALLOWANCE, allowance: allowance.isFetching(true) })
-    const tokenDAO = tokenService.getDAO(token)
-    additionalOptions['from'] = account
-    await tokenDAO.revoke(spender, token.symbol(), feeMultiplier, additionalOptions)
-  } catch (e) {
-    // eslint-disable-next-line
-    console.log('mainRevoke error: ', e)
-    dispatch(notifyError(e, 'mainRevoke'))
-    dispatch(updateAllowance(allowance.isFetching(false)))
-  }
-}
-
 export const updateIsTIMERequired = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   const wallet = getMainEthWallet(getState())
@@ -392,9 +297,15 @@ export const updateIsTIMERequired = () => async (dispatch, getState) => {
 
 export const requireTIME = () => async (dispatch, getState) => {
   try {
-    const account = getAccount(getState())
-    const assetDonatorDAO = daoByType('AssetDonator')(getState())
-    await assetDonatorDAO.requireTIME(account)
+    const state = getState()
+    const assetDonatorDAO = daoByType('AssetDonator')(state)
+
+    const web3 = web3Selector()(state)
+    const tx = await assetDonatorDAO.requireTIME()
+
+    if (tx) {
+      await dispatch(executeTransaction({ tx, web3 }))
+    }
   } catch (e) {
     // eslint-disable-next-line
     console.error('require time error', e.message)
@@ -420,22 +331,21 @@ export const getSpendersAllowance = (tokenId: string, spender: string) => async 
 }
 
 export const estimateGasForDeposit = (mode: string, params, callback, gasPriceMultiplier = 1) => async (dispatch, getState) => {
-  let dao = null
-  const web3 = getState('web3')
+  let dao
+  let tx
   switch (mode) {
     case TX_APPROVE:
-      dao = await tokenService.getDAO(TIME, web3)
+      dao = await tokenService.getDAO(TIME)
+      tx = dao[TX_APPROVE](...params)
       break
     case TX_DEPOSIT:
     case TX_WITHDRAW_SHARES:
       dao = daoByType('TimeHolder')(getState())
+      tx = dao[mode](...params)
       break
   }
   try {
-    if (!dao) {
-      throw new Error('Dao is undefined')
-    }
-    const { gasLimit, gasFee, gasPrice } = await dao.estimateGas(...params)
+    const { gasLimit, gasFee, gasPrice } = await dispatch(estimateGas(tx))
     callback(null, {
       gasLimit,
       gasFee: new Amount(gasFee.mul(gasPriceMultiplier), ETH),

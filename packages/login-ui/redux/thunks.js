@@ -22,6 +22,7 @@ import * as SessionActions from '@chronobank/core/redux/session/actions'
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 import networkService from '@chronobank/login/network/NetworkService'
+import { SignerMemoryModel } from '@chronobank/core/models'
 import {
   createAccountEntry,
 } from '@chronobank/core/redux/persistAccount/utils'
@@ -109,7 +110,8 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
   try {
     const wallet = await dispatch(PersistAccountActions.decryptAccount(selectedWallet.encrypted, password))
-    dispatch(PersistAccountActions.accountLoad(wallet))
+    dispatch(PersistAccountActions.accountLoad(new SignerMemoryModel({ wallet })))
+
     const privateKey = wallet && wallet[0] && wallet[0].privateKey
 
     dispatch(SessionActions.getProfileSignature(wallet[0]))

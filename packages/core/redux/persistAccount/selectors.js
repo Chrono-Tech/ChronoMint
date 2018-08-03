@@ -5,17 +5,27 @@
 
 import { createSelector } from 'reselect'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
+import { DUCK_PERSIST_ACCOUNT } from './constants'
 
-// eslint-disable-next-line import/prefer-default-export
+
+export const getPersistAccount = (state) => {
+  return state.get(DUCK_PERSIST_ACCOUNT)
+}
+
+export const getSigner = (state) => {
+  const { decryptedWallet } = getPersistAccount(state)
+  return decryptedWallet
+}
+
 export const getSelectedNetwork = () => createSelector(
   (state) => state.get(DUCK_NETWORK),
   (network) => {
-    if (!network.selectedNetworkId){
+    if (!network.selectedNetworkId) {
       return null
     }
 
     return network.networks && network.networks.find(
-      (item) => item.id === network.selectedNetworkId
+      (item) => item.id === network.selectedNetworkId,
     )
   },
 )

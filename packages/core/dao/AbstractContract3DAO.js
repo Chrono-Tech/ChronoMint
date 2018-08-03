@@ -86,21 +86,22 @@ export default class AbstractContractDAO extends EventEmitter {
    * Send contract tx
    * @param func - string
    * @param args - Array<any>
-   * @param amount - Amount
-   * @param value - Amount
-   * @param options - Object<any>
-   * @param additionalOptions - Object<any>
+   * @param value - BigNumber | Amount
+   * @param from - string
    */
-  _tx (
-    func: string,
-    args: Array = [],
-    amount: BigNumber = new BigNumber(0),
-    value: BigNumber = new BigNumber(0),
-    options: Object = {},
-    additionalOptions: Object = {},
-  ): Promise {
-    console.log('Abstract _tx: ', func, args, amount, value, options, additionalOptions)
-    this.submit(func, args, amount, value, options, additionalOptions)
+  _tx (func: string, args: Array = [], value: BigNumber = new BigNumber(0), from: string): Promise {
+    const data = this.contract.methods[func](...args).encodeABI()
+
+    if (!from) {
+      from = AbstractContractDAO.getAccount()
+    }
+
+    return {
+      from,
+      to: this.contract._address,
+      value,
+      data,
+    }
   }
 
   /**

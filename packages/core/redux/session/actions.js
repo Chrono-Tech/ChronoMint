@@ -15,7 +15,7 @@ import web3Factory from '../../web3/index'
 import { cbeWatcher, watcher } from '../watcher/actions'
 import { watchStopMarket } from '../market/actions'
 import { notify } from '../notifier/actions'
-import { WEB3_SETUP } from '../web3/reducer'
+import { initEthereum } from '../ethereum/actions'
 import {
   DEFAULT_CBE_URL,
   DEFAULT_USER_URL,
@@ -68,7 +68,7 @@ export const login = (account) => async (dispatch, getState) => {
     ? web3Factory(network)
     : null
 
-  dispatch({ type: WEB3_SETUP, web3 })
+  dispatch(initEthereum({ web3 }))
 
   await dispatch(watcher({ web3 }))
 

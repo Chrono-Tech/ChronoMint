@@ -27,9 +27,10 @@ import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redu
 import { DUCK_ASSETS_HOLDER } from '@chronobank/core/redux/assetsHolder/constants'
 import { ETH, BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
-import { estimateGasForDeposit, mainApprove, mainRevoke, requireTIME } from '@chronobank/core/redux/mainWallet/actions'
+import { estimateGasForDeposit, requireTIME } from '@chronobank/core/redux/mainWallet/actions'
+import { mainApprove, mainRevoke } from '@chronobank/core/redux/wallets/actions'
 import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from '@chronobank/core/dao/constants/AssetHolderDAO'
-import { TX_APPROVE } from '@chronobank/core/dao/ERC20DAO'
+import { TX_APPROVE } from '@chronobank/core/dao/constants/ERC20DAO'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import AllowanceModel from '@chronobank/core/models/wallet/AllowanceModel'
@@ -189,7 +190,7 @@ export default class DepositTokensForm extends PureComponent {
     this.timeout = setTimeout(() => {
       this.props.dispatch(estimateGasForDeposit(
         action,
-        [action, [spender, new BigNumber(amount)]],
+        [spender, new BigNumber(amount), this.props.account],
         (error, r) => {
           const { gasFee, gasPrice } = r
           if (!error) {

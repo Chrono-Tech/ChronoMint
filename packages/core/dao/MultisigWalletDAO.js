@@ -16,6 +16,7 @@ import MultisigWalletPendingTxModel from '../models/wallet/MultisigWalletPending
 import OwnerModel from '../models/wallet/OwnerModel'
 import { WalletABI } from './abi'
 import MultisigEthWalletModel from '../models/wallet/MultisigEthWalletModel'
+import web3Converter from '../utils/Web3Converter'
 
 export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
@@ -238,9 +239,9 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   async _decodeArgs (func: string, args: Object) {
     switch (func) {
       case 'transfer': {
-        const symbol = this._c.bytesToString(args._symbol)
+        const symbol = web3Converter.bytesToString(args._symbol)
         return {
-          symbol: symbol,
+          symbol,
           value: new Amount(args._value, symbol),
           to: args._to,
         }
