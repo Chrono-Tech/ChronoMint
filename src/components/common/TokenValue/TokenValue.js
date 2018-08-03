@@ -11,7 +11,7 @@ import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { DUCK_MARKET } from '@chronobank/core/redux/market/actions'
+import { DUCK_MARKET } from '@chronobank/core/redux/market/constants'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import { integerWithDelimiter } from '@chronobank/core-dependencies/utils/formatter'
 

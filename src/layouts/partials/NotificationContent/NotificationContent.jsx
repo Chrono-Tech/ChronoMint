@@ -6,9 +6,9 @@
 import classnames from 'classnames'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
-import { DUCK_WATCHER } from '@chronobank/core/redux/watcher/actions'
-import { DUCK_NOTIFIER } from '@chronobank/core/redux/notifier/actions'
-import TxExecModel from '../../../../packages/core/models/TxExecModel'
+import { DUCK_WATCHER } from '@chronobank/core/redux/watcher/constants'
+import { DUCK_NOTIFIER } from '@chronobank/core/redux/notifier/constants'
+import TxExecModel from '@chronobank/core/models/TxExecModel'
 import TxModel from '@chronobank/core/models/TxModel'
 import CurrentTransactionNotificationModel from '@chronobank/core/models/CurrentTransactionNotificationModel'
 import { pendingTransactionsSelector } from '@chronobank/core/redux/mainWallet/selectors/tokens'
@@ -21,11 +21,9 @@ import AbstractNoticeModel from '@chronobank/core/models/notices/AbstractNoticeM
 import Moment from 'components/common/Moment'
 import { FULL_DATE } from '@chronobank/core/models/constants'
 import { IconButton } from '@material-ui/core'
-import { SIDES_CLOSE_ALL } from 'redux/sides/actions'
+import { SIDES_CLOSE_ALL } from 'redux/sides/constants'
 import { prefix } from './lang'
 import './NotificationContent.scss'
-
-export const NOTIFICATION_PANEL_KEY = 'NotificationContent_panelKey'
 
 function mapStateToProps (state) {
   const { pendingTxs } = state.get(DUCK_WATCHER)

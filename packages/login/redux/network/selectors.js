@@ -4,7 +4,7 @@
  */
 
 import { createSelector } from 'reselect'
-import { DUCK_NETWORK } from './actions'
+import { DUCK_NETWORK } from './constants'
 
 export const getProfileSignatureSelector = () => createSelector(
   (state) => state.get(DUCK_NETWORK),

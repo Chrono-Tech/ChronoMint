@@ -12,18 +12,18 @@ import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { ACCEPT_IMAGES } from '@chronobank/core/models/FileSelect/FileExtension'
-import { addToken, DUCK_SETTINGS_ERC20_TOKENS, formTokenLoadMetaData, getDataFromContract, modifyToken } from '@chronobank/core/redux/settings/erc20/tokens/actions'
+import { addToken, formTokenLoadMetaData, getDataFromContract, modifyToken } from '@chronobank/core/redux/settings/erc20/tokens/actions'
+import { DUCK_SETTINGS_ERC20_TOKENS } from '@chronobank/core/redux/settings/erc20/tokens/constants'
 import { modalsClose } from 'redux/modals/actions'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
+import { FORM_CBE_TOKEN } from 'components/constants'
 import validate from './validate'
 
 import '../FormDialog.scss'
-
-export const FORM_CBE_TOKEN = 'CBETokenDialog'
 
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_CBE_TOKEN)

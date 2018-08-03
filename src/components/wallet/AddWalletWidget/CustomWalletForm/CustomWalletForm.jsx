@@ -11,15 +11,14 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
-import { createNewChildAddress, ETH, goToWallets, resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
+import { createNewChildAddress, goToWallets, resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
 import { getChronobankTokens } from '@chronobank/core/redux/settings/erc20/tokens/selectors'
-import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
+import { BLOCKCHAIN_ETHEREUM, ETH } from '@chronobank/core/dao/constants'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
+import { FORM_CUSTOM_WALLET_ADD } from 'components/constants'
 import { prefix } from './lang'
 import './CusotmWalletForm.scss'
 import TokensList from './TokensList'
-
-export const FORM_CUSTOM_WALLET_ADD = 'CustomWalletForm'
 
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_CUSTOM_WALLET_ADD)

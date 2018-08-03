@@ -5,13 +5,18 @@
  * @flow
  */
 
-// #region imports
 import {
   change,
   stopSubmit,
   SubmissionError,
 } from 'redux-form'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
+import {
+  DUCK_NETWORK,
+} from '@chronobank/login/redux/network/constants'
+import {
+  DUCK_PERSIST_ACCOUNT,
+} from '@chronobank/core/redux/persistAccount/constants'
 import * as NetworkThunks from '@chronobank/login/redux/network/thunks'
 import * as SessionActions from '@chronobank/core/redux/session/actions'
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
@@ -21,12 +26,21 @@ import {
   createAccountEntry,
 } from '@chronobank/core/redux/persistAccount/utils'
 import {
-  // LOCAL_PRIVATE_KEYS,
   isLocalNode,
 } from '@chronobank/login/network/settings'
 import * as LoginUIActions from './actions'
-
-// #region navigation
+import {
+  FORM_LOGIN_PAGE,
+  FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
+  FORM_CONFIRM_MNEMONIC,
+  FORM_RECOVER_ACCOUNT,
+  FORM_CREATE_ACCOUNT,
+  FORM_FOOTER_EMAIL_SUBSCRIPTION,
+  FORM_MNEMONIC_LOGIN_PAGE,
+  FORM_PRIVATE_KEY_LOGIN_PAGE,
+  FORM_RESET_PASSWORD,
+  FORM_WALLET_UPLOAD,
+} from './constants'
 
 /*
  * Thunk dispatched by "" screen.
@@ -58,7 +72,7 @@ export const navigateToCreateAccountWithoutImport = () => (dispatch) => {
 export const initCommonNetworkSelector = () => (dispatch, getState) => {
   const state = getState()
 
-  const { isLocal } = state.get(NetworkActions.DUCK_NETWORK)
+  const { isLocal } = state.get(DUCK_NETWORK)
 
   networkService.autoSelect()
 
@@ -91,7 +105,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   dispatch(NetworkActions.networkSetLoginSubmitting)
 
   const state = getState()
-  const { selectedWallet } = state.get(PersistAccountActions.DUCK_PERSIST_ACCOUNT)
+  const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
 
   try {
     const wallet = await dispatch(PersistAccountActions.decryptAccount(selectedWallet.encrypted, password))
@@ -184,7 +198,7 @@ export const onSubmitCreateHWAccountPage = (walletName) =>
     const {
       importAccountMode,
       newAccountPrivateKey,
-    } = state.get(NetworkActions.DUCK_NETWORK)
+    } = state.get(DUCK_NETWORK)
 
     if (importAccountMode) {
       try {
@@ -246,7 +260,7 @@ export const initLoginPage = () =>
     const {
       selectedWallet,
       walletsList,
-    } = state.get(PersistAccountActions.DUCK_PERSIST_ACCOUNT)
+    } = state.get(DUCK_PERSIST_ACCOUNT)
 
     if (walletsList && !walletsList.length) {
       dispatch(LoginUIActions.navigateToCreateAccount())
@@ -268,8 +282,8 @@ export const onSubmitResetAccountPasswordSuccess = () => (dispatch) => {
   dispatch(NetworkActions.networkResetAccountRecoveryMode())
   dispatch(LoginUIActions.navigateToLoginPage())
   dispatch(change(
-    LoginUIActions.FORM_LOGIN_PAGE,
-    LoginUIActions.FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
+    FORM_LOGIN_PAGE,
+    FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
     'Your password has been reset.',
   ))
 }
@@ -290,7 +304,7 @@ export const onWalletSelect = (wallet) => (dispatch, getState) => {
   dispatch(PersistAccountActions.accountSelect(wallet))
 
   const state = getState()
-  const { accountRecoveryMode } = state.get(NetworkActions.DUCK_NETWORK)
+  const { accountRecoveryMode } = state.get(DUCK_NETWORK)
   if (accountRecoveryMode) {
     dispatch(LoginUIActions.navigateToRecoverAccountPage())
   }
@@ -309,7 +323,7 @@ export const onWalletSelect = (wallet) => (dispatch, getState) => {
  */
 export const onSubmitSubscribeNewsletterFail = (errors, submitErrors) =>
   (dispatch) => {
-    dispatch(stopSubmit(LoginUIActions.FORM_FOOTER_EMAIL_SUBSCRIPTION, submitErrors && submitErrors.errors))
+    dispatch(stopSubmit(FORM_FOOTER_EMAIL_SUBSCRIPTION, submitErrors && submitErrors.errors))
   }
 
 /*
@@ -318,7 +332,7 @@ export const onSubmitSubscribeNewsletterFail = (errors, submitErrors) =>
  * TODO: to rework it, merge into one action onSubmitPageFail
  */
 export const onSubmitLoginFormFail = (errors, submitErrors) => (dispatch) => {
-  dispatch(stopSubmit(LoginUIActions.FORM_LOGIN_PAGE, submitErrors && submitErrors.errors))
+  dispatch(stopSubmit(FORM_LOGIN_PAGE, submitErrors && submitErrors.errors))
   dispatch(NetworkActions.networkResetLoginSubmitting())
 }
 

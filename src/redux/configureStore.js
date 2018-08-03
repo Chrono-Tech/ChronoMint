@@ -4,21 +4,25 @@
  */
 
 import Immutable from 'immutable'
-// import { globalWatcher } from '@chronobank/core/redux/watcher/actions'
-import { SESSION_DESTROY } from '@chronobank/core/redux/session/actions'
+import { SESSION_DESTROY } from '@chronobank/core/redux/session/constants'
 import { combineReducers } from 'redux-immutable'
 import { applyMiddleware, compose, createStore } from 'redux'
 import { createLogger } from 'redux-logger'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { persistStore } from 'redux-persist-immutable'
 import { reducer as formReducer } from 'redux-form/immutable'
-import { DUCK_I18N, loadI18n } from 'redux/i18n/actions'
+import { loadI18n } from 'redux/i18n/actions'
 import { I18n, i18nReducer, loadTranslations, setLocale } from '@chronobank/core-dependencies/i18n'
 import moment from 'moment'
 import saveAccountMiddleWare from '@chronobank/core/redux/session/saveAccountMiddleWare'
 import thunk from 'redux-thunk'
 import ls from '@chronobank/core-dependencies/utils/LocalStorage'
-import * as ducks from './ducks'
+import coreReducers from '@chronobank/core/redux/ducks'
+import loginReducers from '@chronobank/login/redux/ducks'
+import { DUCK_I18N } from 'redux/i18n/constants'
+import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
+import { DUCK_WALLETS } from '@chronobank/core/redux/wallets/constants'
+import ducks from './ducks'
 import routingReducer from './routing'
 import transformer from './serialize'
 import createHistory, { historyMiddleware } from './browserHistoryStore'
@@ -27,41 +31,27 @@ import translations from '../i18n'
 // eslint-disable-next-line no-unused-vars
 let i18nJson // declaration of a global var for the i18n object for a standalone version
 
-const getNestedReducers = (ducks) => {
-  let reducers = {}
-  Object
-    .entries(ducks)
-    .forEach(([key, entry]) => {
-      reducers = {
-        ...reducers,
-        ...(typeof (entry) === 'function'
-          ? { [key]: entry }
-          : getNestedReducers(entry)
-        ),
-      }
-    })
-  return reducers
-}
-
 const configureStore = () => {
   const initialState = new Immutable.Map()
 
   const appReducer = combineReducers({
+    ...coreReducers,
+    ...ducks,
+    ...loginReducers,
     form: formReducer,
     i18n: i18nReducer,
     routing: routingReducer,
-    ...getNestedReducers(ducks),
   })
 
   const rootReducer = (state, action) => {
 
     if (action.type === SESSION_DESTROY) {
-      const i18nState = state.get('i18n')
-      const persistAccount = state.get('persistAccount')
+      const i18nState = state.get(DUCK_I18N)
+      const persistAccount = state.get(DUCK_PERSIST_ACCOUNT)
       state = new Immutable.Map()
       state = state
-        .set('i18n', i18nState)
-        .set('persistAccount', persistAccount)
+        .set(DUCK_I18N, i18nState)
+        .set(DUCK_PERSIST_ACCOUNT, persistAccount)
     }
     return appReducer(state, action)
   }
@@ -113,7 +103,7 @@ export const store = configureStore()
 
 const persistorConfig = {
   key: 'root',
-  whitelist: ['persistAccount', 'wallets'],
+  whitelist: [DUCK_PERSIST_ACCOUNT, DUCK_WALLETS],
   transforms: [transformer()],
 }
 

@@ -6,17 +6,19 @@
 import get from 'lodash/get'
 import axios from 'axios'
 import MarketSocket from '../../market/MarketSocket'
-
-export const DUCK_MARKET = 'market'
-
-export const MARKET_INIT = 'market/INIT'
-export const MARKET_ADD_TOKEN = 'market/ADD_TOKEN'
-export const MARKET_UPDATE_PRICES = 'market/UPDATE_PRICES'
-export const MARKET_UPDATE_RATES = 'market/UPDATE_RATES'
-export const LAST_MARKET_UPDATE = 'market/UPDATE_LAST_MARKET'
-export const SET_SELECTED_COIN = 'market/SET_SELECTED_COIN'
+import {
+  DUCK_MARKET,
+  LAST_MARKET_UPDATE,
+  MARKET_ADD_TOKEN,
+  MARKET_INIT,
+  MARKET_UPDATE_PRICES,
+  MARKET_UPDATE_RATES,
+} from './constants'
 
 const MARKET_REQUEST_DELAY = 30000
+
+// TODO: to check, why we need this mutable variable exported
+// eslint-disable-next-line import/no-mutable-exports
 export let timerId
 
 const watchMarket = (dispatch, getState) => async () => {

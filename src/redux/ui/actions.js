@@ -9,10 +9,10 @@ import ls from '@chronobank/core-dependencies/utils/LocalStorage'
 import ipfs from '@chronobank/core-dependencies/utils/IPFS'
 import userMonitorService from 'user/monitorService'
 import { modalsOpen } from 'redux/modals/actions'
-import { DUCK_WATCHER, WATCHER_TX_SET } from '@chronobank/core/redux/watcher/actions'
+import { DUCK_WATCHER, WATCHER_TX_SET } from '@chronobank/core/redux/watcher/constants'
 import ConfirmTxDialog from 'components/dialogs/ConfirmTxDialog/ConfirmTxDialog'
 import UserActiveDialog from 'components/dialogs/UserActiveDialog/UserActiveDialog'
-import { CHANGE_WALLET_VIEW } from './reducer'
+import { CHANGE_WALLET_VIEW, OPEN_BRAND_PARTIAL } from './constants'
 import ConfirmTransferDialog from '../../components/dialogs/ConfirmTransferDialog/ConfirmTransferDialog'
 
 export const removeWatchersUserMonitor = () => () => {
@@ -93,4 +93,11 @@ export const deleteCustomNetwork = (network) => (dispatch, getState) => {
   const state = getState()
 
 
+}
+
+export const openBrandPartial = (open) => (dispatch) => {
+  dispatch({
+    type: OPEN_BRAND_PARTIAL,
+    payload: { open },
+  })
 }

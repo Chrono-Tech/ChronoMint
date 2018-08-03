@@ -14,5 +14,4 @@ export default class FeeInterfaceDAO extends AbstractContractDAO {
   getFeePercent () {
     return this._call('feePercent')
   }
-
 }

@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { TRANSACTIONS_NEW, TRANSACTIONS_REMOVE } from './actions'
+import { TRANSACTIONS_NEW, TRANSACTIONS_REMOVE } from './constants'
 
 export const initialState = {
   tx: null,

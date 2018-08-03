@@ -4,7 +4,7 @@
  */
 
 import { abstractFetchingModel } from './AbstractFetchingModel'
-import { PENDING_ID_PREFIX } from '../dao/PendingManagerDAO'
+import { PENDING_ID_PREFIX } from '../dao/constants/PendingManagerDAO'
 import TxExecModel from './TxExecModel'
 
 class OperationModel extends abstractFetchingModel({

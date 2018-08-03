@@ -6,7 +6,7 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import ipfs from '@chronobank/core-dependencies/utils/IPFS'
-import PollNoticeModel, { IS_CREATED, IS_REMOVED, IS_UPDATED } from '../models/notices/PollNoticeModel'
+import PollNoticeModel from '../models/notices/PollNoticeModel'
 import PollModel from '../models/PollModel'
 import PollDetailsModel from '../models/PollDetailsModel'
 import FileModel from '../models/FileSelect/FileModel'
@@ -18,13 +18,23 @@ import PollInterfaceManagerDAO from './PollInterfaceManagerDAO'
 import web3Converter from '../utils/Web3Converter'
 import AbstractContractDAO from './AbstractContract3DAO'
 
-export const TX_CREATE_POLL = 'createPoll'
-export const TX_REMOVE_POLL = 'removePoll'
-export const TX_ACTIVATE_POLL = 'activatePoll'
+//#region CONSTANTS
 
-export const EVENT_POLL_CREATED = 'PollCreated'
-export const EVENT_POLL_UPDATED = 'PollUpdated'
-export const EVENT_POLL_REMOVED = 'PollRemoved'
+import {
+  IS_CREATED,
+  IS_REMOVED,
+  IS_UPDATED,
+} from '../models/constants/PollNoticeModel'
+import {
+  TX_CREATE_POLL,
+} from './constants/VotingManagerDAO'
+import {
+  EVENT_POLL_CREATED,
+  EVENT_POLL_REMOVED,
+  EVENT_POLL_UPDATED,
+} from './constants/PollEmitterDAO'
+
+//#endregion
 
 export default class VotingManagerDAO extends AbstractContractDAO {
 

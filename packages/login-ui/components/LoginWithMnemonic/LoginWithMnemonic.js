@@ -5,14 +5,13 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
 import {
   FORM_MNEMONIC_LOGIN_PAGE,
-} from '../../redux/actions'
+} from '../../redux/constants'
 import validate from './validate'
 import './LoginWithMnemonic.scss'
 

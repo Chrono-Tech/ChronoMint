@@ -5,8 +5,14 @@
 
 import VotingMainModel from '../../models/voting/VotingMainModel'
 import {
-  POLLS_CREATE, POLLS_LIST, POLLS_LOAD, POLLS_REMOVE, POLLS_SELECTED, POLLS_UPDATE, POLLS_VOTE_LIMIT,
-} from './actions'
+  POLLS_CREATE,
+  POLLS_LIST,
+  POLLS_LOAD,
+  POLLS_REMOVE,
+  POLLS_SELECTED,
+  POLLS_UPDATE,
+  POLLS_VOTE_LIMIT,
+} from './constants'
 
 const initialState = new VotingMainModel()
 

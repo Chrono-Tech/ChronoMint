@@ -3,18 +3,16 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Core from '@chronobank/core/redux/ducks'
-import Login from '@chronobank/login/redux/ducks'
-import * as drawer from './drawer'
-import * as modals from './modals'
-import * as sides from './sides'
-import * as ui from './ui'
+import drawer from './drawer/reducer'
+import modals from './modals/reducer'
+import sides from './sides/reducer'
+import ui from './ui/reducer'
 
-export default {
-  ...Core,
-  ...Login,
+const appReducers = {
   drawer,
   modals,
   sides,
   ui,
 }
+
+export default appReducers

@@ -9,9 +9,11 @@ import { connect } from 'react-redux'
 import { stopSubmit, SubmissionError } from 'redux-form/immutable'
 import { validateMnemonicForAccount } from '@chronobank/core/redux/persistAccount/utils'
 import {
-  FORM_RECOVER_ACCOUNT,
   navigateBack,
 } from '../../redux/actions'
+import {
+  FORM_RECOVER_ACCOUNT,
+} from '../../redux/constants'
 import RecoverAccount from './RecoverAccount'
 
 const mapDispatchToProps = (dispatch) => {

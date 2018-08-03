@@ -4,9 +4,8 @@
  */
 
 import trezorProvider from '../../network/TrezorProvider'
-import web3Provider from '../../network/Web3Provider'
 import networkService from '../../network/NetworkService'
-import { NETWORK_SET_ACCOUNTS } from '../../redux/network/actions'
+import { NETWORK_SET_ACCOUNTS } from '../../redux/network/constants'
 
 export const TREZOR_SET_U2F = 'trezor/SET_U2F'
 export const TREZOR_FETCHING = 'trezor/FETCHING'

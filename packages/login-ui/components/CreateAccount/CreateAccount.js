@@ -11,8 +11,7 @@ import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
 import {
   FORM_CREATE_ACCOUNT,
-} from '../../redux/actions'
-
+} from '../../redux/constants'
 import validate from './validate'
 import './CreateAccount.scss'
 

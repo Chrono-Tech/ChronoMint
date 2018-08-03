@@ -18,11 +18,12 @@ import Amount from '@chronobank/core/models/Amount'
 import { modalsClose } from 'redux/modals/actions'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
+import {
+  FORM_EXCHANGE_DEPOSIT_FORM,
+  FORM_EXCHANGE_WITHDRAWAL_FORM,
+} from 'components/constants'
 import ExchangeDepositForm from './ExchangeDepositForm'
 import './ExchangeTransferDialog.scss'
-
-export const FORM_EXCHANGE_DEPOSIT_FORM = 'ExchangeDepositForm'
-export const FORM_EXCHANGE_WITHDRAWAL_FORM = 'ExchangeWithdrawalForm'
 
 function prefix (token) {
   return `components.exchange.ExchangeTransferDialog.${token}`

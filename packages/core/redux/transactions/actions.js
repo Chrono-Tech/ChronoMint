@@ -4,14 +4,14 @@
  */
 
 import Tx from 'ethereumjs-tx'
-import { modalsOpenConfirmDialog } from '../../../core-dependencies/redux/modals/actions'
-import { ethereumProvider } from '../../../login/network/EthereumProvider'
-import { WATCHER_TX_SET } from '../watcher/actions'
+import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
+import { modalsOpenConfirmDialog } from '@chronobank/core-dependencies/redux/modals/actions'
+import { WATCHER_TX_SET } from '../watcher/constants'
 import CurrentTransactionNotificationModel from '../../models/CurrentTransactionNotificationModel'
-
-export const DUCK_TRANSACTIONS = 'transactions'
-export const TRANSACTIONS_NEW = 'transactions/new'
-export const TRANSACTIONS_REMOVE = 'transactions/remove'
+import {
+  TRANSACTIONS_NEW,
+  TRANSACTIONS_REMOVE,
+} from './constants'
 
 export const sendNewTx = (tx, acceptCallback) => async (dispatch) => {
   dispatch({ type: TRANSACTIONS_NEW, tx })

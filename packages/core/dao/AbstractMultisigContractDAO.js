@@ -10,9 +10,17 @@ import type PendingManagerDAO from './PendingManagerDAO'
 import type AbstractModel from '../models/AbstractModelOld'
 import TxError from '../models/TxError'
 import TxExecModel from '../models/TxExecModel'
-import { DEFAULT_TX_OPTIONS, TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 import AbstractContractDAO from './AbstractContract3DAO'
+
+//#region CONSTANTS
+
+import {
+  DEFAULT_TX_OPTIONS,
+  TX_FRONTEND_ERROR_CODES,
+} from './constants'
+
+//#endregion CONSTANTS
 
 export default class AbstractMultisigContractDAO extends AbstractContractDAO {
   constructor ({ address, history, abi }) {

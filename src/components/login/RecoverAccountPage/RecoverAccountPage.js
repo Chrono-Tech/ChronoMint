@@ -7,9 +7,11 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import {
-  DUCK_PERSIST_ACCOUNT,
   resetPasswordAccount,
 } from '@chronobank/core/redux/persistAccount/actions'
+import {
+  DUCK_PERSIST_ACCOUNT,
+} from '@chronobank/core/redux/persistAccount/constants'
 import {
   navigateToSelectWallet,
   navigateToLoginPage,

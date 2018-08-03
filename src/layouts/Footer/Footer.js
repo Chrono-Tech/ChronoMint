@@ -14,7 +14,7 @@ import { withStyles } from '@material-ui/core/styles'
 import compose from 'recompose/compose'
 import {
   FORM_FOOTER_EMAIL_SUBSCRIPTION,
-} from '@chronobank/login-ui/redux/actions'
+} from '@chronobank/login-ui/redux/constants'
 import {
   onSubmitSubscribeNewsletter,
   onSubmitSubscribeNewsletterFail,

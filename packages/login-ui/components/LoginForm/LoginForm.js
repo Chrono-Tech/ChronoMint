@@ -15,7 +15,7 @@ import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
 import UserRow from 'components/common/ui/UserRow/UserRow'
 import { isLocalNode } from '@chronobank/login/network/settings'
-import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/actions'
+import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import {
   getAccountAddress,
   getAccountAvatarImg,
@@ -23,16 +23,18 @@ import {
 } from '@chronobank/core/redux/persistAccount/utils'
 import {
   DUCK_NETWORK,
-} from '@chronobank/login/redux/network/actions'
+} from '@chronobank/login/redux/network/constants'
 import {
   initAccountsSignature,
 } from '@chronobank/login/redux/network/thunks'
 import {
-  FORM_LOGIN_PAGE,
-  FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
   navigateToSelectWallet,
   navigateToRecoverAccountPage,
 } from '../../redux/actions'
+import {
+  FORM_LOGIN_PAGE,
+  FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
+} from '../../redux/constants'
 import {
   initLoginPage,
   onSubmitLoginForm,
@@ -55,9 +57,12 @@ function mapStateToProps (state) {
     selectedProvider: network.selectedProviderId,
     selectedWallet: selectedWallet,
     successMessage: formSelector(state, FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE),
+    initialValues: {
+      password: 'QWEpoi123',
+    },
   }
 }
-
+//QWEpoi123
 function mapDispatchToProps (dispatch) {
   return {
     onSubmit: async (values) => {

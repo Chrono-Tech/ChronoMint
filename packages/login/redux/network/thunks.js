@@ -9,6 +9,12 @@
 
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
 import { login } from '@chronobank/core/redux/session/actions'
+import {
+  DUCK_PERSIST_ACCOUNT,
+} from '@chronobank/core/redux/persistAccount/constants'
+import {
+  DUCK_NETWORK,
+} from './constants'
 import * as NetworkActions from './actions'
 import privateKeyProvider from '../../network/privateKeyProvider'
 import networkService from '../../network/NetworkService'
@@ -47,7 +53,7 @@ export const updateSelectedAccount = () => (dispatch, getState) => {
   const {
     selectedWallet,
     walletsList,
-  } = state.get(PersistAccountActions.DUCK_PERSIST_ACCOUNT)
+  } = state.get(DUCK_PERSIST_ACCOUNT)
 
   const foundAccount = walletsList
     .find((account) =>
@@ -67,8 +73,8 @@ export const initAccountsSignature = () =>
   async (dispatch, getState) => {
     const state = getState()
 
-    const { loadingAccountSignatures } = state.get(NetworkActions.DUCK_NETWORK)
-    const { walletsList } = state.get(PersistAccountActions.DUCK_PERSIST_ACCOUNT)
+    const { loadingAccountSignatures } = state.get(DUCK_NETWORK)
+    const { walletsList } = state.get(DUCK_PERSIST_ACCOUNT)
 
     if (loadingAccountSignatures || !walletsList.length) {
       return
@@ -116,7 +122,7 @@ export const handleWalletLogin = (wallet, password) => async (dispatch, getState
     selectedAccount,
     selectedProviderId,
     selectedNetworkId,
-  } = state.get(NetworkActions.DUCK_NETWORK)
+  } = state.get(DUCK_NETWORK)
 
   dispatch(NetworkActions.clearErrors())
 
@@ -150,7 +156,7 @@ export const initRecoverAccountPage = () => (dispatch) => {
 export const handleLoginLocalAccountClick = (account = '') =>
   async (dispatch, getState) => {
     let state = getState()
-    const { accounts } = state.get(NetworkActions.DUCK_NETWORK)
+    const { accounts } = state.get(DUCK_NETWORK)
     const wallets = state.get('ethMultisigWallet') // FIXME: to use constant
 
     const index = Math.max(accounts.indexOf(account), 0)
@@ -167,7 +173,7 @@ export const handleLoginLocalAccountClick = (account = '') =>
       selectedAccount,
       selectedProviderId,
       selectedNetworkId,
-    } = state.get(NetworkActions.DUCK_NETWORK)
+    } = state.get(DUCK_NETWORK)
 
     dispatch(NetworkActions.clearErrors())
 

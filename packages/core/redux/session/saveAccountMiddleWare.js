@@ -4,7 +4,7 @@
  */
 
 import SessionStorage from '@chronobank/core-dependencies/utils/SessionStorage'
-import { SESSION_CREATE } from './actions'
+import { SESSION_CREATE } from './constants'
 
 const saveAccountMiddleWare = (/*store*/) => (next) => (action) => {
   if (SESSION_CREATE === action.type && action.account) {

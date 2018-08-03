@@ -9,10 +9,8 @@ import web3Utils from '@chronobank/login/network/Web3Utils'
 import {
   selectProviderWithNetwork,
 } from '@chronobank/login/redux/network/thunks'
-import {
-  DUCK_NETWORK,
-  clearErrors,
-} from '@chronobank/login/redux/network/actions'
+import { clearErrors } from '@chronobank/login/redux/network/actions'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { getNetworkWithProviderNames, getProviderById, isLocalNode, getNetworksSelectorGroup } from '@chronobank/login/network/settings'
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
 import { customNetworksListAdd } from '@chronobank/core/redux/persistAccount/actions'

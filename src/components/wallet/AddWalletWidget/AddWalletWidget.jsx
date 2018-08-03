@@ -9,13 +9,17 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { change, formValueSelector } from 'redux-form/immutable'
-import { FORM_ADD_NEW_WALLET, goToWallets, resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
-import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
-import { BLOCKCHAIN_NEM } from '@chronobank/core/dao/NemDAO'
+import { goToWallets, resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
+import { FORM_ADD_NEW_WALLET } from '@chronobank/core/redux/mainWallet/constants'
 import WidgetContainer from 'components/WidgetContainer/WidgetContainer'
-import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/constants'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import { FORM_2FA_STEPS, FORM_2FA_WALLET } from '@chronobank/core/redux/multisigWallet/constants'
+import {
+  BLOCKCHAIN_NEM,
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_ETHEREUM,
+} from '@chronobank/core/dao/constants'
 import './AddWalletWidget.scss'
 import SelectWalletType from './SelectWalletType/SelectWalletType'
 import SelectEthWallet from './SelectEthWallet/SelectEthWallet'

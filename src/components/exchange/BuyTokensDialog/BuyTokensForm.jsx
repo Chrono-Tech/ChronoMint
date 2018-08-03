@@ -22,14 +22,13 @@ import BalancesCollection from '@chronobank/core/models/tokens/BalancesCollectio
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import Amount from '@chronobank/core/models/Amount'
 import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
+import { FORM_EXCHANGE_BUY_TOKENS } from 'components/constants'
 import './BuyTokensDialog.scss'
 import validate from './validate'
 
 function prefix (token) {
   return `components.exchange.BuyTokensDialog.${token}`
 }
-
-export const FORM_EXCHANGE_BUY_TOKENS = 'ExchangeTokensForm'
 
 function mapStateToProps (state) {
   const tokens = state.get(DUCK_TOKENS)

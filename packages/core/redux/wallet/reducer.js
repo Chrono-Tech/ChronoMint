@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import * as a from './actions'
+import * as a from './constants'
 
 const initialState = {
   isMultisig: false,

@@ -95,7 +95,7 @@ export default class NetworkCreateModal extends PureComponent {
               styleName='button buttonYes'
               buttonType='login'
               onClick={this.handleDeleteNetwork.bind(this)}
-              label={<Translate value='NetworkDeleteModal.yes' /> }
+              label={<Translate value='NetworkDeleteModal.yes' />}
             />
           </div>
         </div>

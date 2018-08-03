@@ -4,26 +4,29 @@
  */
 
 import Immutable from 'immutable'
+import resultCodes from 'chronobank-smart-contracts/common/errors'
 import OperationNoticeModel from '../models/notices/OperationNoticeModel'
 import OperationModel from '../models/OperationModel'
 import type TxExecModel from '../models/TxExecModel'
-import resultCodes from 'chronobank-smart-contracts/common/errors'
 import { MultiEventsHistoryABI, PendingManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 
-// to distinguish equal operations between completed and pending lists
-export const PENDING_ID_PREFIX = 'P-'
+//#region CONSTANTS
 
-export const TX_CONFIRM = 'confirm'
-export const TX_REVOKE = 'revoke'
+import {
+  OPERATIONS_PER_PAGE,
+  PENDING_ID_PREFIX,
+  TX_CONFIRM,
+  TX_REVOKE,
+} from './constants/PendingManagerDAO'
+
+//#endregion CONSTANTS
 
 const EVENT_DONE = 'Done'
 const EVENT_CONFIRMATION = 'Confirmation'
 const EVENT_REVOKE = 'Revoke'
 const EVENT_CANCELLED = 'Cancelled'
-
-export const OPERATIONS_PER_PAGE = 10
 
 export default class PendingManagerDAO extends AbstractContractDAO {
   constructor (at) {
