@@ -49,10 +49,11 @@ export const executeTransaction = ({ web3, tx, options }) => async (dispatch) =>
 }
 
 export const prepareTransaction = ({ web3, tx, options }) => async (dispatch) => {
-  const { feeMultiplier } = options
+  const { feeMultiplier } = options || {}
   const nonce = await dispatch(nextNonce({ web3, address: tx.from }))
-  const gasPrice = new BigNumber(await web3.eth.getGasPrice()).mul(feeMultiplier)
+  const gasPrice = new BigNumber(await web3.eth.getGasPrice()).mul(feeMultiplier || 1)
   const chainId = await web3.eth.net.getId()
+
   const gasLimit = await web3.eth.estimateGas({
     from: tx.from,
     to: tx.to,

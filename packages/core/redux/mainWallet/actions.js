@@ -43,9 +43,9 @@ import WalletModel from '../../models/wallet/WalletModel'
 import { daoByType } from '../daos/selectors'
 import { WALLETS_SET_IS_TIME_REQUIRED, WALLETS_UPDATE_WALLET } from '../wallets/actions'
 import { getMainAddresses, getMainEthWallet, getMainWalletForBlockchain, getWallet } from '../wallets/selectors/models'
-import { getAccount } from '../session/selectors/models'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import { web3Selector } from '../ethereum/selectors'
+import { executeTransaction } from '../ethereum/actions'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
@@ -298,9 +298,15 @@ export const updateIsTIMERequired = () => async (dispatch, getState) => {
 
 export const requireTIME = () => async (dispatch, getState) => {
   try {
-    const account = getAccount(getState())
-    const assetDonatorDAO = daoByType('AssetDonator')(getState())
-    await assetDonatorDAO.requireTIME(account)
+    const state = getState()
+    const assetDonatorDAO = daoByType('AssetDonator')(state)
+
+    const web3 = web3Selector()(state)
+    const tx = await assetDonatorDAO.requireTIME()
+
+    if (tx) {
+      await dispatch(executeTransaction({ tx, web3 }))
+    }
   } catch (e) {
     // eslint-disable-next-line
     console.error('require time error', e.message)

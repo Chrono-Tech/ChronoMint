@@ -16,6 +16,8 @@ import { getWallet } from '../wallets/selectors/models'
 import { WALLETS_UPDATE_WALLET } from '../wallets/actions'
 import WalletModel from '../../models/wallet/WalletModel'
 import AllowanceCollection from '../../models/AllowanceCollection'
+import { web3Selector } from '../ethereum/selectors'
+import { executeTransaction } from '../ethereum/actions'
 
 export const DUCK_ASSETS_HOLDER = 'assetsHolder'
 
@@ -134,24 +136,34 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
   dispatch(subscribeOnTokens(handleToken))
 }
 
-export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: Number = 1, advancedOptions = undefined) => async (dispatch, getState) => {
+export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: Number = 1) => async (dispatch, getState) => {
   try {
-    const assetHolderDAO = daoByType('TimeHolder')(getState())
-    const { account } = getState().get(DUCK_SESSION)
-    advancedOptions['account'] = account
-    await assetHolderDAO.deposit(token, amount, feeMultiplier, advancedOptions)
+    const state = getState()
+    const assetHolderDAO = daoByType('TimeHolder')(state)
+    const { account } = state.get(DUCK_SESSION)
+    const tx = assetHolderDAO.deposit(token.address(), amount, account)
+    const web3 = web3Selector()(state)
+    if (tx) {
+      await dispatch(executeTransaction({ tx, web3, options: { feeMultiplier } }))
+    }
+
   } catch (e) {
+
     // eslint-disable-next-line
     console.error('deposit error', e)
   }
 }
 
-export const withdrawAsset = (amount: Amount, token: TokenModel, feeMultiplier: Number = 1, advancedOptions = undefined) => async (dispatch, getState) => {
+export const withdrawAsset = (amount: Amount, token: TokenModel, feeMultiplier: Number = 1) => async (dispatch, getState) => {
   try {
-    const assetHolderDAO = daoByType('TimeHolder')(getState())
-    const { account } = getState().get(DUCK_SESSION)
-    advancedOptions['account'] = account
-    const tx: TxExecModel = await assetHolderDAO.withdraw(token, amount, feeMultiplier, advancedOptions)
+    const state = getState()
+    const assetHolderDAO = daoByType('TimeHolder')(state)
+    const { account } = state.get(DUCK_SESSION)
+    const tx = assetHolderDAO.withdraw(token.address(), amount, account)
+    const web3 = web3Selector()(state)
+    if (tx) {
+      await dispatch(executeTransaction({ tx, web3, options: { feeMultiplier } }))
+    }
   } catch (e) {
     // eslint-disable-next-line
     console.error('withdraw error', e)

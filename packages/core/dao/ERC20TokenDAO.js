@@ -118,7 +118,7 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
 
   handleTransferChanged (event) {
     // eslint-disable-next-line no-console
-    console.warning('[ERC20TokenDAO] Transfer event changed', event)
+    console.warn('[ERC20TokenDAO] Transfer event changed', event)
   }
 
   handleTransferError (error) {
@@ -143,7 +143,7 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
 
   handleApprovalChanged (event) {
     // eslint-disable-next-line no-console
-    console.warning('[ERC20TokenDAO] Approval event changed', event)
+    console.warn('[ERC20TokenDAO] Approval event changed', event)
   }
 
   handleApprovalError (error) {
@@ -156,147 +156,44 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
    * @param from {string} - address from
    * @param to {string}  - address to
    * @param amount {Amount} - amount of tokens
-   * @param token {TokenModel} - token
-   * @param feeMultiplier {number} - multiplier for gas price
-   * @param advancedOptions {object} - other options, maybe useless
    * @returns {TxExecModel}
    */
-  transfer (from: string, to: string, amount: Amount, token, feeMultiplier: Number = 1, additionalOptions): Promise {
-    this.submit(from, to, amount, token, feeMultiplier, additionalOptions)
-  }
-
-  accept (transfer: TxExecModel) {
-    setImmediate(() => {
-      this.emit('accept', transfer)
-    })
-  }
-
-  reject (transfer: TxExecModel) {
-    setImmediate(() => {
-      this.emit('reject', transfer)
-    })
-  }
-
-  async submit (from, to, amount, token, feeMultiplier, advancedParams) {
-    const { gasLimit, gasFee, gasPrice } = await this.estimateGas('transfer', [to, amount], new BigNumber(0), from, { feeMultiplier })
+  transfer (from: string, to: string, amount: Amount): Promise {
     const data = this.contract.methods.transfer(to, amount).encodeABI()
-
-    setImmediate(async () => {
-      this.emit('submit', new TxExecModel({
-        contract: this.abi.contractName,
-        func: 'transfer',
-        blockchain: this.token.blockchain(),
-        symbol: this.token.symbol(),
-        from,
-        to: this.contract._address,
-        fields: {
-          to: {
-            value: to,
-            description: 'to',
-          },
-          amount: {
-            value: new Amount(amount, this.token.symbol()),
-            description: 'amount',
-          },
-        },
-        fee: {
-          gasLimit: new Amount(gasLimit, ETH),
-          gasFee: new Amount(gasFee, ETH),
-          gasPrice: new Amount(gasPrice, ETH),
-          feeMultiplier,
-        },
-        value: new Amount(0, ETH),
-        data,
-      }))
-    })
-  }
-
-  async immediateTransfer (tx: TxExecModel) {
-    try {
-      const rawTx = await this.createRawTx(tx)
-      ethereumProvider.transfer(rawTx, tx.from)
-    } catch (e) {
-      // eslint-disable-next-line
-      console.log('Transfer failed', e)
-      throw e
+    return {
+      from,
+      to: this.contract._address,
+      value: new BigNumber(0),
+      data,
     }
   }
 
-  async approve (spender: string, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined): Promise {
-
-    const {
-      from,
-    } = Object.assign({}, DEFAULT_TX_OPTIONS, advancedOptions)
-
-    const { gasLimit, gasFee, gasPrice } = await this.estimateGas('approve', [spender, amount], new BigNumber(0), from, { feeMultiplier })
+  /**
+   * Approve some tokens
+   * @param spender - string
+   * @param amount - Amount
+   * @param from - string
+   * @returns {{from: string, to: string, value: BigNumber, data: string}}
+   */
+  approve (spender: string, amount: Amount, from: string) {
     const data = this.contract.methods.approve(spender, amount).encodeABI()
-
-    setImmediate(async () => {
-      this.emit('submit', new TxExecModel({
-        contract: this.abi.contractName,
-        func: 'approve',
-        blockchain: this.token.blockchain(),
-        symbol: this.token.symbol(),
-        from,
-        to: this.contract._address.toLowerCase(),
-        fields: {
-          to: {
-            value: this.contract._address,
-            description: 'to',
-          },
-          amount: {
-            value: new Amount(amount, this.token.symbol()),
-            description: 'amount',
-          },
-        },
-        fee: {
-          gasLimit: new Amount(gasLimit, ETH),
-          gasFee: new Amount(gasFee, ETH),
-          gasPrice: new Amount(gasPrice, ETH),
-          feeMultiplier,
-        },
-        value: new Amount(0, ETH),
-        data,
-      }))
-    })
+    return {
+      from,
+      to: this.contract._address.toLowerCase(),
+      value: new BigNumber(0),
+      data,
+    }
   }
 
-  async revoke (spender: string, symbol: String, feeMultiplier: Number = 1, advancedOptions = undefined): Promise {
-    const {
-      from,
-    } = Object.assign({}, DEFAULT_TX_OPTIONS, advancedOptions)
-
-    const { gasLimit, gasFee, gasPrice } = await this.estimateGas('approve', [spender, 0], new BigNumber(0), from, { feeMultiplier })
+  revoke (spender: string, symbol: String, from) {
     const data = this.contract.methods.approve(spender, new Amount(0, symbol)).encodeABI()
 
-    setImmediate(async () => {
-      this.emit('submit', new TxExecModel({
-        contract: this.abi.contractName,
-        func: 'approve',
-        blockchain: this.token.blockchain(),
-        symbol: this.token.symbol(),
-        from,
-        to: this.contract._address.toLowerCase(),
-        fields: {
-          to: {
-            value: this.contract._address,
-            description: 'to',
-          },
-          amount: {
-            value: new Amount(0, this.token.symbol()),
-            description: 'amount',
-          },
-        },
-        fee: {
-          gasLimit: new Amount(gasLimit, ETH),
-          gasFee: new Amount(gasFee, ETH),
-          gasPrice: new Amount(gasPrice, ETH),
-          feeMultiplier,
-        },
-        value: new Amount(0, ETH),
-        data,
-      }))
-    })
+    return {
+      from,
+      to: this.contract._address.toLowerCase(),
+      value: new BigNumber(0),
+      data,
+    }
   }
 
   estimateGas = async (func, args, value, from, additionalOptions): Object => {

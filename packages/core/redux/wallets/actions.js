@@ -212,7 +212,7 @@ const updateAllowance = (allowance) => (dispatch, getState) => {
   }
 }
 
-export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1, additionalOptions = {}) => async (dispatch, getState) => {
+export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async (dispatch, getState) => {
   const state = getState()
   const tokenDAO = tokenService.getDAO(token.id())
   const web3 = web3Selector()(state)
@@ -223,16 +223,20 @@ export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amo
   }
 }
 
-export const mainApprove = (token: TokenModel, amount: Amount, spender: string, feeMultiplier: Number, additionalOptions = undefined) => async (dispatch, getState) => {
-  const wallet = getMainEthWallet(getState())
+export const mainApprove = (token: TokenModel, amount: Amount, spender: string, feeMultiplier: Number) => async (dispatch, getState) => {
+  const state = getState()
+  const wallet = getMainEthWallet(state)
   const allowance = wallet.allowances.list[`${spender}-${token.id()}`]
-  const { account } = getState().get(DUCK_SESSION)
+  const { account } = state.get(DUCK_SESSION)
 
   try {
     allowance && dispatch(updateAllowance(allowance.isFetching(true)))
     const tokenDAO = tokenService.getDAO(token)
-    additionalOptions['from'] = account
-    await tokenDAO.approve(spender, amount, feeMultiplier, additionalOptions)
+    const web3 = web3Selector()(state)
+    const tx = tokenDAO.approve(spender, amount, account)
+    if (tx) {
+      await dispatch(executeTransaction({ tx, web3, options: { feeMultiplier } }))
+    }
   } catch (e) {
     // eslint-disable-next-line
     console.log('mainRevoke approve: ', e)
@@ -241,17 +245,21 @@ export const mainApprove = (token: TokenModel, amount: Amount, spender: string, 
   }
 }
 
-export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Number = 1, additionalOptions = undefined) => async (dispatch, getState) => {
-  const wallet = getMainEthWallet(getState())
+export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Number = 1) => async (dispatch, getState) => {
+  const state = getState()
+  const wallet = getMainEthWallet(state)
   const allowance = wallet.allowances.list[`${spender}-${token.id()}`]
   dispatch(updateAllowance(allowance.isFetching(true)))
 
-  const { account } = getState().get(DUCK_SESSION)
+  const { account } = state.get(DUCK_SESSION)
   try {
     dispatch(updateAllowance(allowance.isFetching(true)))
+    const web3 = web3Selector()(state)
     const tokenDAO = tokenService.getDAO(token)
-    additionalOptions['from'] = account
-    await tokenDAO.revoke(spender, token.symbol(), feeMultiplier, additionalOptions)
+    const tx = tokenDAO.revoke(spender, token.symbol(), account)
+    if (tx) {
+      await dispatch(executeTransaction({ tx, web3, options: { feeMultiplier } }))
+    }
   } catch (e) {
     // eslint-disable-next-line
     console.log('mainRevoke error: ', e)

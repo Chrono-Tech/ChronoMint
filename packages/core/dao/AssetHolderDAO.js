@@ -43,47 +43,32 @@ export default class AssetHolderDAO extends AbstractContractDAO {
     return this.contract.methods.wallet().call()
   }
 
-  async deposit (token, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined) {
-    return this._tx(TX_DEPOSIT, [
-      token.address(),
-      new BigNumber(amount),
-    ], amount, new BigNumber(0), {
-      feeMultiplier,
-      advancedOptions,
-      from: advancedOptions && advancedOptions.account,
-      symbol: token.symbol(),
-      blockchain: token.blockchain(),
-      fields: {
-        amount: {
-          value: amount,
-          description: 'amount',
-        },
-      },
-    })
+  deposit (tokenAddress, amount: Amount, from) {
+    return this._tx(
+      TX_DEPOSIT,
+      [
+        tokenAddress,
+        new BigNumber(amount),
+      ],
+      new BigNumber(0),
+      from,
+    )
   }
 
   shareholdersCount (): Promise {
     return this.contract.methods.defaultShareholdersCount().call()
   }
 
-  async withdraw (token, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined) {
-    return this._tx(TX_WITHDRAW_SHARES, [
-      token.address(),
-      new BigNumber(amount),
-    ], amount, new BigNumber(0), {
-      feeMultiplier,
-      advancedOptions,
-      from: advancedOptions && advancedOptions.account,
-      symbol: token.symbol(),
-      blockchain: token.blockchain(),
-      fields: {
-        amount: {
-          value: amount,
-          description: 'withdraw',
-          mark: 'plus',
-        },
-      },
-    })
+  withdraw (tokenAddress, amount: Amount, from) {
+    return this._tx(
+      TX_WITHDRAW_SHARES,
+      [
+        tokenAddress,
+        new BigNumber(amount),
+      ],
+      new BigNumber(0),
+      from,
+    )
   }
 
   getDeposit (tokenAddress: String, account: String): Promise {

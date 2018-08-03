@@ -14,24 +14,8 @@ export default class AssetDonatorDAO extends AbstractContractDAO {
     super({ address, history, abi })
   }
 
-  requireTIME (from) {
-    return this._tx(
-      TX_REQUIRE_TIME,
-      [],
-      new BigNumber(0),
-      new BigNumber(0),
-      {
-        from: from,
-        symbol: 'TIME',
-        fields: {
-          amount: {
-            value: new Amount(1000000000, 'TIME'),
-            description: 'donation',
-            mark: 'plus',
-          },
-        },
-      },
-    )
+  requireTIME () {
+    return this._tx(TX_REQUIRE_TIME, [])
   }
 
   isTIMERequired (account): Promise {
