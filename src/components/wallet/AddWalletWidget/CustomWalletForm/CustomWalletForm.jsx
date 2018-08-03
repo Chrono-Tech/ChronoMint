@@ -15,11 +15,10 @@ import { createNewChildAddress, ETH, goToWallets, resetWalletsForm } from '@chro
 import { getChronobankTokens } from '@chronobank/core/redux/settings/erc20/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
+import { FORM_CUSTOM_WALLET_ADD } from 'components/constants'
 import { prefix } from './lang'
 import './CusotmWalletForm.scss'
 import TokensList from './TokensList'
-
-export const FORM_CUSTOM_WALLET_ADD = 'CustomWalletForm'
 
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_CUSTOM_WALLET_ADD)

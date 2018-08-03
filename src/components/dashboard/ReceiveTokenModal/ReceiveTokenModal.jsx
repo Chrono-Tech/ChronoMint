@@ -23,8 +23,8 @@ import KUCOIN_PNG from 'assets/img/marketsLogos/kucoin.png'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { getTokensForBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import { MenuItem } from '@material-ui/core'
+import { FORM_RECEIVE_TOKENS } from 'components/constants'
 import styles from '../styles'
-
 import './ReceiveTokenModal.scss'
 
 const marketsTIME = [
@@ -53,8 +53,6 @@ const marketsTIME = [
 function prefix (token) {
   return `components.ReceiveTokenModal.${token}`
 }
-
-export const FORM_RECEIVE_TOKENS = 'FormReceiveTokens'
 
 function mapStateToProps (state, ownProps) {
   const selector = formValueSelector(FORM_RECEIVE_TOKENS)

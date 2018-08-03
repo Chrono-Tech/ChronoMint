@@ -10,9 +10,21 @@ import Amount from '../models/Amount'
 import TokenModel from '../models/tokens/TokenModel'
 import TxExecModel from '../models/TxExecModel'
 import TxModel from '../models/TxModel'
-import AbstractContractDAO, { EVENT_NEW_BLOCK } from './AbstractContractDAO'
-import { EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from './constants'
+import AbstractContractDAO from './AbstractContractDAO'
 import AbstractTokenDAO from './AbstractTokenDAO'
+
+//#region CONSTANTS
+
+import {
+  BLOCKCHAIN_ETHEREUM,
+  EVENT_NEW_BLOCK,
+  EVENT_NEW_TRANSFER,
+} from './constants'
+import {
+  FETCH_NEW_BALANCE,
+} from './constants/EthereumDAO'
+
+//#endregion CONSTANTS
 
 const transferSignature = '0x940c4b3549ef0aaff95807dc27f62d88ca15532d1bf535d7d63800f40395d16c'
 const signatureDefinition = {
@@ -37,10 +49,6 @@ const signatureDefinition = {
   "name": "Transfer",
   "type": "event",
 }
-
-export const TX_TRANSFER = 'transfer'
-
-export const BLOCKCHAIN_ETHEREUM = 'Ethereum'
 
 export class EthereumDAO extends AbstractTokenDAO {
   constructor () {

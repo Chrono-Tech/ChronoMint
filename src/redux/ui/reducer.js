@@ -3,9 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export const DUCK_UI = 'ui'
-export const OPEN_BRAND_PARTIAL = 'ui/OPEN_BRAND_PARTIAL'
-export const CHANGE_WALLET_VIEW = 'ui/CHANGE_WALLET_VIEW'
+import {
+  OPEN_BRAND_PARTIAL,
+  CHANGE_WALLET_VIEW,
+} from './constants'
+
 const initialState = {
   open: false,
   isCompactWalletView: false,

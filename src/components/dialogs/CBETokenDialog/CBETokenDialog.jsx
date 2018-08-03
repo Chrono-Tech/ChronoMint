@@ -19,11 +19,10 @@ import ModalDialog from 'components/dialogs/ModalDialog'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
+import { FORM_CBE_TOKEN } from 'components/constants'
 import validate from './validate'
 
 import '../FormDialog.scss'
-
-export const FORM_CBE_TOKEN = 'CBETokenDialog'
 
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_CBE_TOKEN)

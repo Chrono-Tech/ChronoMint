@@ -7,21 +7,22 @@ import Amount from '../../models/Amount'
 import AssetModel from '../../models/assetHolder/AssetModel'
 import TokenModel from '../../models/tokens/TokenModel'
 import AllowanceModel from '../../models/wallet/AllowanceModel'
-import { DUCK_SESSION } from '../session/actions'
+import { DUCK_SESSION } from '../session/constants'
 import { subscribeOnTokens } from '../tokens/actions'
 import tokenService from '../../services/TokenService'
 import { daoByType } from '../daos/selectors'
 import TxExecModel from '../../models/TxExecModel'
 import { getWallet } from '../wallets/selectors/models'
-import { WALLETS_UPDATE_WALLET } from '../wallets/actions'
+import { WALLETS_UPDATE_WALLET } from '../wallets/constants'
 import WalletModel from '../../models/wallet/WalletModel'
 import AllowanceCollection from '../../models/AllowanceCollection'
 
-export const DUCK_ASSETS_HOLDER = 'assetsHolder'
-
-export const ASSET_HOLDER_INIT = 'assetHolder/INIT'
-export const ASSET_HOLDER_ADDRESS = 'assetHolder/timeHolderAddress'
-export const ASSET_HOLDER_ASSET_UPDATE = 'assetHolder/assetUpdate'
+import {
+  DUCK_ASSETS_HOLDER,
+  ASSET_HOLDER_INIT,
+  ASSET_HOLDER_ADDRESS,
+  ASSET_HOLDER_ASSET_UPDATE,
+} from './constants'
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const assetHolder = getState().get(DUCK_ASSETS_HOLDER)

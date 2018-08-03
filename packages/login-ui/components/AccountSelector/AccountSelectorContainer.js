@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
 import {
   DUCK_PERSIST_ACCOUNT,
-} from '@chronobank/core/redux/persistAccount/actions'
+} from '@chronobank/core/redux/persistAccount/constants'
 import {
   initAccountsSignature,
 } from '@chronobank/login/redux/network/thunks'

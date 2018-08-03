@@ -14,11 +14,10 @@ import { Translate } from 'react-redux-i18n'
 import { change, Field, FieldArray, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
+import { FORM_MULTISIG_WALLET_ADD } from 'components/constants'
 import { prefix } from './lang'
 import validate from './validate'
 import './MultisigWalletForm.scss'
-
-export const FORM_MULTISIG_WALLET_ADD = 'MultisigWalletForm'
 
 function mapStateToProps (state, ownProps) {
   const selector = formValueSelector(FORM_MULTISIG_WALLET_ADD)

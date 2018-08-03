@@ -25,8 +25,6 @@ import {
 
 import './LoginWithTrezor.scss'
 
-export const FORM_TREZOR_LOGIN_PAGE = 'FormTrezorLoginPage'
-
 const trezorStates = [ {
   flag: 'isFetched',
   successTitle: 'LoginWithTrezor.isConnected.successTitle',

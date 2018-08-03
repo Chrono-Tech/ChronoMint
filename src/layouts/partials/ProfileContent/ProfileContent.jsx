@@ -17,13 +17,10 @@ import { IPFSImage, UpdateProfileDialog } from 'components'
 import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
 import QRIcon from 'components/dashboard/MicroIcon/QRIcon'
 import PKIcon from 'components/dashboard/MicroIcon/PKIcon'
-
 import GasSlider from 'components/common/GasSlider/GasSlider'
 
 import './ProfileContent.scss'
 import { prefix } from './lang'
-
-export const PROFILE_SIDE_PANEL_KEY = 'ProfileSidePanelKey'
 
 function mapStateToProps (state) {
   const session = state.get('session')

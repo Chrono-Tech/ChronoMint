@@ -4,7 +4,6 @@
  */
 
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
-import { FlatButton } from '@material-ui/core'
 import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -16,10 +15,9 @@ import { setRequiredSignatures } from '@chronobank/core/redux/operations/actions
 import ErrorList from '@chronobank/core-dependencies/ErrorList'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import validator from '@chronobank/core/models/validator'
+import { FORM_OPERATION_SETTINGS } from 'components/constants'
 
 import './FormDialog.scss'
-
-export const FORM_OPERATION_SETTINGS = 'OperationSettingsDialog'
 
 function prefix (token) {
   return `components.dialogs.OperationsSettingsDialog.${token}`

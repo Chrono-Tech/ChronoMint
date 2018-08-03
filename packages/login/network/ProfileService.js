@@ -5,7 +5,6 @@
 
 import EventEmitter from 'events'
 import axios from 'axios'
-import { store } from '@chronobank/core-dependencies/configureStore'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
 
 const PROFILE_BACKEND_REST_URL = 'https://backend.profile.tp.ntr1x.com/'
@@ -20,8 +19,7 @@ const MEDIA_IMAGE_DOWNLOAD = (imageId = '') => `${basePath}/media/image/${imageI
 const PURPOSE_VALUE = 'exchange'
 
 class ProfileService extends EventEmitter {
-  constructor () {
-    super()
+  connectStore (store) {
     this._store = store
     this._dispatch = store.dispatch
   }

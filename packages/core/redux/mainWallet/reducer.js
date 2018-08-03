@@ -6,16 +6,17 @@
 import { REHYDRATE } from 'redux-persist'
 import MainWalletModel from '../../models/wallet/MainWalletModel'
 import TransactionsCollection from '../../models/wallet/TransactionsCollection'
-import * as a from './actions'
+import * as a from './constants'
 
 const initialState = new MainWalletModel()
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case REHYDRATE:
+    case REHYDRATE: {
       const incoming = action.payload.mainWallet
       if (incoming && incoming instanceof MainWalletModel) return state.names(incoming.names())
       return state
+    }
     case a.WALLET_INIT:
       return state.isInited(action.isInited)
     case a.WALLET_BALANCE: // TODO @ipavlenko: Odd code, remove WALLET_BALANCE

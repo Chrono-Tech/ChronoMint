@@ -5,7 +5,10 @@
 
 import AbstractContractDAO from './AbstractContract3DAO'
 
-const TX_ASSET_CREATED = 'AssetCreated'
+import {
+  TX_ASSET_CREATED,
+} from './constants/AssetsManagerDAO'
+
 export default class PlatformTokenExtensionGatewayManagerEmitterDAO extends AbstractContractDAO {
 
   constructor ({ address, history, abi }) {

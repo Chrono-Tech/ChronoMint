@@ -5,32 +5,10 @@
  * @flow
  */
 
-// #region imports
-
 import {
   goBack,
   push,
 } from 'react-router-redux'
-
-// #endregion
-
-// #region names of forms
-
-export const FORM_CONFIRM_MNEMONIC = 'ConfirmMnemonicForm'
-export const FORM_CREATE_ACCOUNT = 'CreateAccountForm'
-export const FORM_FOOTER_EMAIL_SUBSCRIPTION = 'FooterEmailSubscriptionForm'
-export const FORM_LOGIN_PAGE = 'FormLoginPage'
-export const FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE = 'LoginPageFieldSuccessMessage'
-export const FORM_MNEMONIC_LOGIN_PAGE = 'FormMnemonicLoginPage'
-export const FORM_NETWORK_CONFIRM_DELETE = 'FormNetworkConfirmDelete'
-export const FORM_NETWORK_CREATE = 'FormNetworkCreate'
-export const FORM_PRIVATE_KEY_LOGIN_PAGE = 'FormPrivateKeyLoginPage'
-export const FORM_RECOVER_ACCOUNT = 'RecoverAccountPage'
-export const FORM_RESET_PASSWORD = 'ResetPasswordPage'
-export const FORM_WALLET_UPLOAD = 'FormWalletUploadPage'
-export const FORM_ACCOUNT_NAME = 'FormAccountName'
-
-// #endregion
 
 // #region Navigation thunks
 

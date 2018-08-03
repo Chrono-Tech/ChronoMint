@@ -18,7 +18,7 @@ import Button from 'components/common/ui/Button/Button'
 import UserRow from 'components/common/ui/UserRow/UserRow'
 import {
   FORM_RECOVER_ACCOUNT,
-} from '../../redux/actions'
+} from '../../redux/constants'
 import './RecoverAccount.scss'
 
 class RecoverAccount extends PureComponent {

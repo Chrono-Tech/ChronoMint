@@ -3,11 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import EventEmitter from 'events'
 import tokenService from './TokenService'
 import TokenModel from '../models/tokens/TokenModel'
 import ExchangeManagerDAO from '../dao/ExchangeManagerDAO'
 import { ExchangeDAO } from '../dao/ExchangeDAO'
-import EventEmitter from 'events'
 import { EVENT_NEW_TRANSFER } from '../dao/constants'
 import TxModel from '../models/TxModel'
 

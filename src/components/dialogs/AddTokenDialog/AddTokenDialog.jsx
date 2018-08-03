@@ -5,7 +5,6 @@
 
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
-import { FlatButton } from '@material-ui/core'
 import Button from 'components/common/ui/Button/Button'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
@@ -21,12 +20,11 @@ import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import TokenIcon from 'components/common/HashedIcon/TokenIcon'
 import ProfileModel from '@chronobank/core/models/ProfileModel'
+import { FORM_ADD_TOKEN_DIALOG } from 'components/constants'
 import ModalDialog from '../ModalDialog'
 import validate, { normalizeSmallestUnit } from './validate'
 
 import './AddTokenDialog.scss'
-
-export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
 
 const asyncValidate = (values, dispatch, props) => {
   try {

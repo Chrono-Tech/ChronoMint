@@ -11,13 +11,22 @@ import CBENoticeModel from '../models/notices/CBENoticeModel'
 import ProfileModel from '../models/ProfileModel'
 import AdditionalActionModel from '../models/AdditionalActionModel'
 import ProfileNoticeModel from '../models/notices/ProfileNoticeModel'
-import AbstractContractDAO, { DEFAULT_TX_OPTIONS } from './AbstractContract3DAO'
+import AbstractContractDAO from './AbstractContract3DAO'
 
-export const TX_ADD_CBE = 'addCBE'
-export const TX_REVOKE_CBE = 'revokeCBE'
-export const TX_SET_REQUIRED_SIGNS = 'setRequired'
-export const TX_SET_OWN_HASH = 'setOwnHash'
-export const TX_SET_MEMBER_HASH = 'setMemberHash'
+//#region CONSTANTS
+
+import {
+  DEFAULT_TX_OPTIONS,
+} from './constants'
+import {
+  TX_ADD_CBE,
+  TX_REVOKE_CBE,
+  TX_SET_MEMBER_HASH,
+  TX_SET_OWN_HASH,
+  TX_SET_REQUIRED_SIGNS,
+} from './constants/UserManagerDAO'
+
+//#endregion CONSTANTS
 
 const EVENT_CBE_UPDATE = 'CBEUpdate'
 const EVENT_PROFILE_UPDATE = 'SetHash'

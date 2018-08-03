@@ -12,7 +12,13 @@ import { depositAsset, initAssetsHolder, withdrawAsset } from '@chronobank/core/
 import { modalsClose } from 'redux/modals/actions'
 import { mainApprove } from '@chronobank/core/redux/mainWallet/actions'
 import { ModalDialog } from 'components'
-import DepositTokensForm, { ACTION_APPROVE, ACTION_DEPOSIT, ACTION_WITHDRAW, FORM_DEPOSIT_TOKENS } from './DepositTokensForm'
+import {
+  ACTION_APPROVE,
+  ACTION_DEPOSIT,
+  ACTION_WITHDRAW,
+  FORM_DEPOSIT_TOKENS,
+} from 'components/constants'
+import DepositTokensForm from './DepositTokensForm'
 import './DepositTokensForm.scss'
 
 function mapDispatchToProps (dispatch) {

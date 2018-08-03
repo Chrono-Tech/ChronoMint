@@ -34,11 +34,10 @@ import PollDetailsModel from '@chronobank/core/models/PollDetailsModel'
 import FileModel from '@chronobank/core/models/FileSelect/FileModel'
 import { I18n } from '@chronobank/core-dependencies/i18n'
 import { Button } from 'components/index'
+import { FORM_EDIT_POLL } from 'components/constants'
 import './PollEditForm.scss'
 import validate from './validate'
 import { prefix } from './lang'
-
-export const FORM_EDIT_POLL = 'FormEditPoll'
 
 const createDeadlineDate = (deadline, deadlineTime) => {
   if (!deadline || !deadlineTime) {

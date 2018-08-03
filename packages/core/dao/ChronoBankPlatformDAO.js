@@ -3,16 +3,23 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import AbstractContractDAO from './AbstractContract3DAO'
+import { ChronoBankPlatformABI, MultiEventsHistoryABI } from './abi'
+import AbstractContractDAO from './AbstractContractDAO'
 
-export const TX_REISSUE_ASSET = 'reissueAsset'
-export const TX_REVOKE_ASSET = 'revokeAsset'
-export const TX_IS_REISSUABLE = 'isReissuable'
-export const TX_ADD_ASSET_PART_OWNER = 'addAssetPartOwner'
-export const TX_REMOVE_ASSET_PART_OWNER = 'removeAssetPartOwner'
-export const TX_ISSUE = 'Issue'
-export const TX_REVOKE = 'Revoke'
-export const TX_OWNERSHIP_CHANGE = 'OwnershipChange'
+//#region CONSTANTS
+
+import {
+  TX_ADD_ASSET_PART_OWNER,
+  TX_IS_REISSUABLE,
+  TX_ISSUE,
+  TX_OWNERSHIP_CHANGE,
+  TX_REISSUE_ASSET,
+  TX_REMOVE_ASSET_PART_OWNER,
+  TX_REVOKE_ASSET,
+  TX_REVOKE,
+} from './constants/ChronoBankPlatformDAO'
+
+//#endregion CONSTANTS
 
 export default class ChronoBankPlatformDAO extends AbstractContractDAO {
 

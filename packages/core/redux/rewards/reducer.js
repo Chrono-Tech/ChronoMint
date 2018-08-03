@@ -4,7 +4,7 @@
  */
 
 import RewardsCollection from '../../models/rewards/RewardsCollection'
-import * as a from './actions'
+import * as a from './constants'
 
 const initialState = new RewardsCollection()
 

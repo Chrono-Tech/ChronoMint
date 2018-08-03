@@ -4,14 +4,25 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
 import type MultisigWalletDAO from './MultisigWalletDAO'
 import AddressesCollection from '../models/wallet/AddressesCollection'
 import AddressModel from '../models/wallet/AddressModel'
 import MultisigEthWalletModel from '../models/wallet/MultisigEthWalletModel'
 import multisigWalletService from '../services/MultisigWalletService'
 import AbstractContractDAO from './AbstractContract3DAO'
-import { EE_MS_WALLET_ADDED, EE_MS_WALLET_REMOVED, EE_MS_WALLETS_COUNT } from './constants'
+
+//#region CONSTANTS
+
+import {
+  EE_MS_WALLET_ADDED,
+  EE_MS_WALLET_REMOVED,
+  EE_MS_WALLETS_COUNT,
+} from './constants/EthereumDAO'
+import {
+  BLOCKCHAIN_ETHEREUM,
+} from './constants'
+
+//#endregion CONSTANTS
 
 export default class WalletsManagerDAO extends AbstractContractDAO {
 

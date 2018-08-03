@@ -13,7 +13,7 @@ import compose from 'recompose/compose'
 import { withStyles } from '@material-ui/core/styles/index'
 import {
   FORM_NETWORK_CREATE,
-} from '../../../redux/actions'
+} from '../../../redux/constants'
 import validate from './validate'
 import styles from './styles'
 import scss from './NetworkCreateModalForm.scss'

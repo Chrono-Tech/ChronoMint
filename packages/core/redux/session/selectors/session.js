@@ -4,10 +4,11 @@
  */
 
 import { createSelector } from 'reselect'
-import { PROFILE_PANEL_TOKENS, DUCK_SESSION } from '../actions'
+import { PROFILE_PANEL_TOKENS } from '../constants'
 import { getMainWallets } from '../../wallets/selectors/models'
 import { getGasSliderCollection, getIsCBE } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
+import { DUCK_SESSION } from '../../session/constants'
 
 export const getGasPriceMultiplier = (blockchain) => createSelector([getGasSliderCollection],
   (gasSliderCollection) => {

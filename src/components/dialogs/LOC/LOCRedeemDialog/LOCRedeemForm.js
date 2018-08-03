@@ -14,7 +14,7 @@ import validate from './validate'
 
 import './LOCRedeemForm.scss'
 
-export const LOC_REDEEM_FORM_NAME = 'LOCRedeemForm'
+const LOC_REDEEM_FORM_NAME = 'LOCRedeemForm'
 
 const onSubmit = (values) => +values.get('amount')
 

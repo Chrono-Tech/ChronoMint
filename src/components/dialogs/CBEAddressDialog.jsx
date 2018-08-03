@@ -15,10 +15,9 @@ import { addCBE, formCBELoadName } from '@chronobank/core/redux/settings/user/cb
 import { modalsClose } from 'redux/modals/actions'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import validator from '@chronobank/core/models/validator'
+import { FORM_CBE_ADDRESS } from 'components/constants'
 
 import './FormDialog.scss'
-
-export const FORM_CBE_ADDRESS = 'CBEAddressDialog'
 
 function prefix (token) {
   return `components.dialogs.CBEAddressDialog.${token}`

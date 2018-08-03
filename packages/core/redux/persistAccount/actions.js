@@ -11,10 +11,6 @@ import profileService from '@chronobank/login/network/ProfileService'
 import {
   WALLET_HD_PATH,
 } from '@chronobank/login/network/constants'
-// import networkService from '@chronobank/login/network/NetworkService'
-// import web3Provider from '@chronobank/login/network/Web3Provider'
-// import web3Utils from '@chronobank/login/network/Web3Utils'
-// import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import {
   AccountEntryModel,
   AccountProfileModel,
@@ -24,18 +20,17 @@ import {
   getWalletsListAddresses,
   getAccountAddress,
 } from './utils'
-
-export const DUCK_PERSIST_ACCOUNT = 'persistAccount'
-
-export const WALLETS_ADD = 'persistAccount/WALLETS_ADD'
-export const WALLETS_SELECT = 'persistAccount/WALLETS_SELECT'
-export const WALLETS_DESELECT = 'persistAccount/WALLETS_DESELECT'
-export const WALLETS_LOAD = 'persistAccount/WALLETS_LOAD'
-export const WALLETS_UPDATE_LIST = 'persistAccount/WALLETS_UPDATE_LIST'
-export const WALLETS_REMOVE = 'persistAccount/WALLETS_REMOVE'
-export const CUSTOM_NETWORKS_LIST_ADD = 'persistAccount/CUSTOM_NETWORKS_LIST_ADD'
-export const CUSTOM_NETWORKS_LIST_UPDATE = 'persistAccount/CUSTOM_NETWORKS_LIST_UPDATE'
-export const CUSTOM_NETWORKS_LIST_RESET = 'persistAccount/CUSTOM_NETWORKS_LIST_RESET'
+import {
+  CUSTOM_NETWORKS_LIST_ADD,
+  CUSTOM_NETWORKS_LIST_RESET,
+  CUSTOM_NETWORKS_LIST_UPDATE,
+  DUCK_PERSIST_ACCOUNT,
+  WALLETS_ADD,
+  WALLETS_DESELECT,
+  WALLETS_SELECT,
+  WALLETS_UPDATE_LIST,
+  WALLETS_LOAD,
+} from './constants'
 
 export const accountAdd = (wallet) => (dispatch) => {
   dispatch({ type: WALLETS_ADD, wallet })

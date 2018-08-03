@@ -20,11 +20,11 @@ import PLAY_SVG from 'assets/img/play.svg'
 import WidgetContainer from 'components/WidgetContainer/WidgetContainer'
 import Preloader from 'components/common/Preloader/Preloader'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
+import { FORM_2FA_ENABLE } from 'components/constants'
 import { prefix } from './lang'
 import validate from './validate'
 import './TwoFaEnableForm.scss'
 
-export const FORM_2FA_ENABLE = 'Form2FAEnable'
 const STEPS = [
   'downloadStep',
   'enableStep',

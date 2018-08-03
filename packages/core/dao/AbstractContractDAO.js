@@ -15,33 +15,22 @@ import TxError from '../models/TxError'
 import TxExecModel from '../models/TxExecModel'
 import web3Converter from '../utils/Web3Converter'
 
-export const EVENT_NEW_BLOCK = 'TokenNewBlock'
-export const DEFAULT_GAS = 4700000
+//#region CONSTANTS
+
+import {
+  DEFAULT_TX_OPTIONS,
+  TX_FRONTEND_ERROR_CODES,
+  DEFAULT_GAS,
+} from './constants'
+
+//#endregion CONSTANTS
+
 const DEFAULT_OK_CODES = [resultCodes.OK, true]
 const FILTER_BLOCK_STEP = 100000 // 5 (5 sec./block) - 18 days (15 sec./block respectively) per request
-
-export const TX_FRONTEND_ERROR_CODES = {
-  FRONTEND_UNKNOWN: 'f0',
-  FRONTEND_OUT_OF_GAS: 'f1',
-  FRONTEND_CANCELLED: 'f2',
-  FRONTEND_WEB3_FILTER_FAILED: 'f3',
-  FRONTEND_RESULT_FALSE: 'f4',
-  FRONTEND_RESULT_TRUE: 'f5',
-  FRONTEND_INVALID_RESULT: 'f6',
-}
 
 const DEFAULT_ERROR_CODES = {
   ...resultCodes,
   ...TX_FRONTEND_ERROR_CODES,
-}
-
-export const DEFAULT_TX_OPTIONS = {
-  addDryRunFrom: null,
-  addDryRunOkCodes: [],
-  allowNoReturn: false,
-  useDefaultGasLimit: false,
-  additionalAction: null,
-  feeMultiplier: null,
 }
 
 export default class AbstractContractDAO extends EventEmitter {
@@ -195,7 +184,7 @@ export default class AbstractContractDAO extends EventEmitter {
   }
 
   // TODO @bshevchenko: MINT-313 isDeployed (checkCodeConsistency = true): bool {
-  async isDeployed (web3Provider = this._web3Provider): bool {
+  async isDeployed (web3Provider = this._web3Provider): boolean {
     try {
       await this._initContract(web3Provider.getWeb3instance())
       const code = await this.getCode(this.getInitAddress(), 'latest', web3Provider)

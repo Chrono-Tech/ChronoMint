@@ -9,14 +9,15 @@ import { Translate } from 'react-redux-i18n'
 import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED, SYNC_STATUS_SYNCING } from '@chronobank/login/network/MonitorService'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
-import { DUCK_MONITOR } from '@chronobank/login/redux/monitor/actions'
+import { DUCK_MONITOR } from '@chronobank/login/redux/monitor/constants'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { drawerHide, drawerToggle } from 'redux/drawer/actions'
 import { DUCK_SESSION, logout } from '@chronobank/core/redux/session/actions'
 import { getBlockchainAddressesList } from '@chronobank/core/redux/session/selectors'
-import { SIDES_CLOSE_ALL, sidesPush } from 'redux/sides/actions'
-import MenuTokenMoreInfo, { MENU_TOKEN_MORE_INFO_PANEL_KEY } from '../MenuTokenMoreInfo/MenuTokenMoreInfo'
+import { sidesCloseAll, sidesPush } from 'redux/sides/actions'
+import { MENU_TOKEN_MORE_INFO_PANEL_KEY } from 'redux/sides/constants'
+import MenuTokenMoreInfo from '../MenuTokenMoreInfo/MenuTokenMoreInfo'
 import { prefix } from './lang'
 
 import './MenuTokensList.scss'
@@ -48,7 +49,7 @@ function mapDispatchToProps (dispatch) {
       isOpened: false,
     })),
     handleTokenMoreInfo: (selectedToken, handleClose, isClose) => {
-      dispatch({ type: SIDES_CLOSE_ALL })
+      dispatch(sidesCloseAll())
       if (!isClose) {
         dispatch(sidesPush({
           component: MenuTokenMoreInfo,

@@ -5,11 +5,12 @@
 
 import { watchInitMonitor } from '@chronobank/login/redux/monitor/actions'
 import { showConfirmTxModal, watchInitUserMonitor } from '@chronobank/core-dependencies/redux/ui/actions'
-import AbstractContractDAO, { TX_FRONTEND_ERROR_CODES } from '../../dao/AbstractContractDAO'
+import AbstractContractDAO from '../../dao/AbstractContractDAO'
+import { TX_FRONTEND_ERROR_CODES } from '../../dao/constants'
 import TransactionErrorNoticeModel from '../../models/notices/TransactionErrorNoticeModel'
 import TxError from '../../models/TxError'
 import type TxExecModel from '../../models/TxExecModel'
-import { watchInitTokens, watchPlatformManager } from '../assetsManager/actions'
+import { watchPlatformManager } from '../assetsManager/actions'
 import { watchInitLOC } from '../locs/actions'
 import { initMainWallet } from '../mainWallet/actions'
 import { watchInitMarket } from '../market/actions'
@@ -22,15 +23,12 @@ import { watchInitPolls } from '../voting/actions'
 import { watchInitProfile } from '../session/actions'
 import { initMultisigWalletManager } from '../multisigWallet/actions'
 import { initWallets } from '../wallets/actions'
-
-export const DUCK_WATCHER = 'watcher'
-
-// next two actions represents start of the events watching
-export const WATCHER = 'watcher/USER'
-export const WATCHER_CBE = 'watcher/CBE'
-
-export const WATCHER_TX_SET = 'watcher/TX_SET'
-export const WATCHER_TX_END = 'watcher/TX_END'
+import {
+  WATCHER_CBE,
+  WATCHER_TX_SET,
+  WATCHER_TX_END,
+  WATCHER,
+} from './constants'
 
 export const txHandlingFlow = () => (dispatch) => {
   AbstractContractDAO.txStart = async (tx: TxExecModel, estimateGas, localFeeMultiplier) => {

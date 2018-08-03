@@ -8,33 +8,36 @@ import Immutable from 'immutable'
 import tokenService from '../../services/TokenService'
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import ExchangeOrderModel from '../../models/exchange/ExchangeOrderModel'
-import { DUCK_SESSION } from '../session/actions'
+import { DUCK_SESSION } from '../session/constants'
 import exchangeService from '../../services/ExchangeService'
-import { fetchTokenBalance, WALLET_ALLOWANCE } from '../mainWallet/actions'
+import { fetchTokenBalance } from '../mainWallet/actions'
+import { WALLET_ALLOWANCE } from '../mainWallet/constants'
 import TokenModel from '../../models/tokens/TokenModel'
 import { subscribeOnTokens } from '../tokens/actions'
 import { DUCK_TOKENS } from '../tokens/constants'
 import AllowanceModel from '../../models/wallet/AllowanceModel'
 import Amount from '../../models/Amount'
 
-export const DUCK_EXCHANGE = 'exchange'
+import {
+  DUCK_EXCHANGE,
+  EXCHANGE_EXCHANGES_LIST_GETTING_FINISH,
+  EXCHANGE_EXCHANGES_LIST_GETTING_FINISH_CONCAT,
+  EXCHANGE_EXCHANGES_LIST_GETTING_START,
+  EXCHANGE_GET_DATA_FINISH,
+  EXCHANGE_GET_DATA_START,
+  // EXCHANGE_GET_ORDERS_FINISH,
+  // EXCHANGE_GET_ORDERS_START,
+  EXCHANGE_GET_OWNERS_EXCHANGES_FINISH,
+  EXCHANGE_GET_OWNERS_EXCHANGES_START,
+  EXCHANGE_INIT,
+  EXCHANGE_MIDDLEWARE_DISCONNECTED,
+  EXCHANGE_REMOVE_FOR_OWNER,
+  EXCHANGE_SET_FILTER,
+  EXCHANGE_SET_PAGES_COUNT,
+  EXCHANGE_UPDATE,
+  EXCHANGE_UPDATE_FOR_OWNER,
+} from './constants'
 
-export const EXCHANGE_INIT = 'exchange/INIT'
-export const EXCHANGE_GET_ORDERS_START = 'exchange/GET_ORDERS_START'
-export const EXCHANGE_SET_PAGES_COUNT = 'exchange/EXCHANGE_SET_PAGES_COUNT'
-export const EXCHANGE_GET_ORDERS_FINISH = 'exchange/GET_ORDERS_FINISH'
-export const EXCHANGE_GET_DATA_START = 'exchange/GET_DATA_START'
-export const EXCHANGE_GET_DATA_FINISH = 'exchange/GET_DATA_FINISH'
-export const EXCHANGE_SET_FILTER = 'exchange/EXCHANGE_SET_FILTER'
-export const EXCHANGE_REMOVE_FOR_OWNER = 'exchange/EXCHANGE_REMOVE_FOR_OWNER'
-export const EXCHANGE_UPDATE = 'exchange/EXCHANGE_UPDATE'
-export const EXCHANGE_UPDATE_FOR_OWNER = 'exchange/EXCHANGE_UPDATE_FOR_OWNER'
-export const EXCHANGE_MIDDLEWARE_DISCONNECTED = 'exchange/EXCHANGE_MIDDLEWARE_DISCONNECTED'
-export const EXCHANGE_EXCHANGES_LIST_GETTING_START = 'exchange/EXCHANGE_EXCHANGES_LIST_GETTING_START'
-export const EXCHANGE_EXCHANGES_LIST_GETTING_FINISH = 'exchange/EXCHANGE_EXCHANGES_LIST_GETTING_FINISH'
-export const EXCHANGE_EXCHANGES_LIST_GETTING_FINISH_CONCAT = 'exchange/EXCHANGE_EXCHANGES_LIST_GETTING_FINISH_CONCAT0'
-export const EXCHANGE_GET_OWNERS_EXCHANGES_START = 'exchange/EXCHANGE_GET_OWNERS_EXCHANGES_START'
-export const EXCHANGE_GET_OWNERS_EXCHANGES_FINISH = 'exchange/EXCHANGE_GET_OWNERS_EXCHANGES_FINISH'
 const PAGE_SIZE = 20
 
 export const exchange = (isBuy: boolean, amount: BigNumber, exchange: ExchangeOrderModel) => async (dispatch, getState) => {

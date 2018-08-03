@@ -36,17 +36,16 @@ import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import { isBTCLikeBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import inversedTheme from 'styles/themes/inversed'
 import { getMarket } from '@chronobank/core/redux/market/selectors'
+import {
+  ACTION_APPROVE,
+  ACTION_TRANSFER,
+  FORM_SEND_TOKENS,
+  MODE_ADVANCED,
+  MODE_SIMPLE,
+} from 'components/constants'
 import { prefix } from './lang'
 import './SendTokensForm.scss'
 import validate from './validate'
-
-export const FORM_SEND_TOKENS = 'FormSendTokens'
-
-export const MODE_SIMPLE = 'simple'
-export const MODE_ADVANCED = 'advanced'
-
-export const ACTION_TRANSFER = 'action/transfer'
-export const ACTION_APPROVE = 'action/approve'
 
 function mapDispatchToProps (dispatch) {
   return {

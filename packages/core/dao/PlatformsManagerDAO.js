@@ -6,13 +6,19 @@
 import AbstractContractDAO from './AbstractContract3DAO'
 import TokenManagementExtensionManager from './TokenManagementExtensionManager'
 
-export const TX_CREATE_PLATFORM = 'createPlatform'
-export const TX_ATTACH_PLATFORM = 'attachPlatform'
-export const TX_DETACH_PLATFORM = 'detachPlatform'
-export const TX_REISSUE_ASSET = 'reissueAsset'
-export const TX_PLATFORM_REQUESTED = 'PlatformRequested'
-export const TX_PLATFORM_ATTACHED = 'PlatformAttached'
-export const TX_PLATFORM_DETACHED = 'PlatformDetached'
+//#region CONSTANTS
+
+import {
+  TX_ATTACH_PLATFORM,
+  TX_CREATE_PLATFORM,
+  TX_DETACH_PLATFORM,
+  TX_PLATFORM_ATTACHED,
+  TX_PLATFORM_DETACHED,
+  TX_PLATFORM_REQUESTED,
+  TX_REISSUE_ASSET,
+} from './constants/PlatformsManagerDAO'
+
+//#endregion CONSTANTS
 
 export default class PlatformsManagerDAO extends AbstractContractDAO {
   constructor ({ address, history, abi }) {

@@ -9,7 +9,7 @@ import { SPINNING_WHEEL } from 'assets'
 import PropTypes from 'prop-types'
 import './Button.scss'
 
-export const BUTTON_TYPE_PENDING = 'pending'
+const BUTTON_TYPE_PENDING = 'pending'
 
 export default class Button extends PureComponent {
   static propTypes = {

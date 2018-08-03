@@ -9,8 +9,11 @@ import { connect } from 'react-redux'
 import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import { stopSubmit, SubmissionError } from 'redux-form'
 import {
-  FORM_PRIVATE_KEY_LOGIN_PAGE, navigateBack,
+  navigateBack,
 } from '../../redux/actions'
+import {
+  FORM_PRIVATE_KEY_LOGIN_PAGE,
+} from '../../redux/constants'
 import LoginWithPrivateKey from './LoginWithPrivateKey'
 
 const mapDispatchToProps = (dispatch) => {

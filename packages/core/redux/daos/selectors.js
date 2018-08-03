@@ -4,7 +4,6 @@
  */
 
 import { createSelector } from 'reselect'
-// import { DUCK_DAO } from './actions'
 
 export const daosSelector = () => (state) => state.get('dao')
 

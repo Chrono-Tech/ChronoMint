@@ -36,15 +36,15 @@ import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
 import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
+import {
+  FORM_DEPOSIT_TOKENS,
+  ACTION_APPROVE,
+  ACTION_DEPOSIT,
+  ACTION_WITHDRAW,
+} from 'components/constants'
 import ReceiveTokenModal from '../ReceiveTokenModal/ReceiveTokenModal'
 import './DepositTokensForm.scss'
 import validate from './validate'
-
-export const FORM_DEPOSIT_TOKENS = 'FormDepositTokens'
-
-export const ACTION_APPROVE = 'deposit/approve'
-export const ACTION_DEPOSIT = 'deposit/deposit'
-export const ACTION_WITHDRAW = 'deposit/withdraw'
 
 const DEPOSIT_FIRST = 'depositFirst'
 const DEPOSIT_SECOND = 'depositSecond'

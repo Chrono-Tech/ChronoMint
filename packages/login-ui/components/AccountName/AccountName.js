@@ -13,7 +13,7 @@ import styles from 'layouts/Splash/styles'
 import spinner from 'assets/img/spinningwheel-1.gif'
 import {
   FORM_ACCOUNT_NAME,
-} from '../../redux/actions'
+} from '../../redux/constants'
 import validate from './validate'
 import './AccountName.scss'
 

@@ -4,9 +4,11 @@
  */
 
 import { createSelector } from 'reselect'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 
+// eslint-disable-next-line import/prefer-default-export
 export const getSelectedNetwork = () => createSelector(
-  (state) => state.get('network'),
+  (state) => state.get(DUCK_NETWORK),
   (network) => {
     if (!network.selectedNetworkId){
       return null

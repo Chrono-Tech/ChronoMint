@@ -10,9 +10,16 @@ import AbstractTokenDAO from './AbstractTokenDAO'
 import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'
 import TxExecModel from '../models/TxExecModel'
 import Amount from '../models/Amount'
-import { DEFAULT_TX_OPTIONS } from './AbstractContractDAO'
 
-const ETH = 'ETH'
+//#region CONSTANTS
+
+import {
+  DEFAULT_TX_OPTIONS,
+  ETH,
+} from './constants'
+
+//#endregion CONSTANTS
+
 export const DEFAULT_GAS = 4700000
 export default class ERC20TokenDAO extends AbstractTokenDAO {
   constructor (token: TokenModel, abi) {

@@ -4,8 +4,8 @@
  */
 
 import Immutable from 'immutable'
-import { OPERATIONS_PER_PAGE } from '../../dao/PendingManagerDAO'
-import * as a from './actions'
+import { OPERATIONS_PER_PAGE } from '../../dao/constants'
+import * as a from './constants'
 
 const initialState = {
   list: new Immutable.Map(),

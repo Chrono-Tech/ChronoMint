@@ -15,7 +15,7 @@ import CheckIcon from 'assets/img/icons/check-green.svg'
 import spinner from 'assets/img/spinningwheel-1.gif'
 import {
   FORM_WALLET_UPLOAD,
-} from '../../redux/actions'
+} from '../../redux/constants'
 import './LoginWithWallet.scss'
 
 class LoginWithWallet extends Component {
