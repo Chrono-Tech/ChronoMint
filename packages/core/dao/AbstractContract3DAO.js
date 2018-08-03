@@ -208,15 +208,13 @@ export default class AbstractContractDAO extends EventEmitter {
 
   estimateGas = async (func, args, value, from, additionalOptions): Object => {
     const feeMultiplier = additionalOptions && additionalOptions.feeMultiplier ? additionalOptions.feeMultiplier : 1
-    // eslint-disable-next-line no-console
-    const contract = await this.contract
-    if (!contract.methods.hasOwnProperty(func)) {
+    if (!this.contract.methods.hasOwnProperty(func)) {
       throw new Error('estimateGas func not found', func)
     }
 
     const [gasPrice, gasLimit] = await Promise.all([
       this.web3.eth.getGasPrice(),
-      contract.methods[func](...args).estimateGas({ from, value, gas: 47000000 }),
+      this.contract.methods[func](...args).estimateGas({ from, value, gas: DEFAULT_GAS }),
     ])
 
     const gasPriceBN = new BigNumber(gasPrice).mul(feeMultiplier)

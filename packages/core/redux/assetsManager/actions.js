@@ -169,11 +169,12 @@ export const createAsset = (token: TokenModel) => async (dispatch, getState) => 
 
     let txHash
     const platformsManagerDAO = daoByType('PlatformsManager')(getState())
+    const assetsManagerDAO = daoByType('AssetsManager')(getState())
+    const tokenExtensionAddress = await assetsManagerDAO.getTokenExtension(token.platform().address)
 
-    console.log('create Asset: ', platformsManagerDAO, platformsManagerDAO.tokenManagementExtensionManager)
     const tokenManagementExtension =
-      await platformsManagerDAO.tokenManagementExtensionManager.getTokenManagementExtensionDAO(token.platform().address)
-    console.log('tokenManagementExtension: ', tokenManagementExtension)
+      await platformsManagerDAO.tokenManagementExtensionManager.getTokenManagementExtensionDAO(tokenExtensionAddress)
+
     if (token.withFee()) {
       await tokenManagementExtension.createAssetWithFee(token)
     } else {

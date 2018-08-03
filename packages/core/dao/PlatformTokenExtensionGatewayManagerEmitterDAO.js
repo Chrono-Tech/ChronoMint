@@ -6,9 +6,11 @@
 import AbstractContractDAO from './AbstractContract3DAO'
 
 const TX_ASSET_CREATED = 'AssetCreated'
+
 export default class PlatformTokenExtensionGatewayManagerEmitterDAO extends AbstractContractDAO {
 
   constructor ({ address, history, abi }) {
+    console.log('PlatformTokenExtensionGatewayManagerEmitterDAO constructor: ')
     super({ address, history, abi })
   }
 
