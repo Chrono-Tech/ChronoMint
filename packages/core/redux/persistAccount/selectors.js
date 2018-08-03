@@ -10,7 +10,7 @@ export const getPersistAccount = (state) => {
   return state.get(DUCK_PERSIST_ACCOUNT)
 }
 
-export const getDecryptedWallet = (state) => {
+export const getSigner = (state) => {
   const { decryptedWallet } = getPersistAccount(state)
   return decryptedWallet
 }
@@ -25,12 +25,5 @@ export const getSelectedNetwork = () => createSelector(
     return network.networks && network.networks.find(
       (item) => item.id === network.selectedNetworkId,
     )
-  },
-)
-
-export const getSigner = createSelector(
-  getDecryptedWallet,
-  (decryptedWallet) => {
-    return decryptedWallet
   },
 )

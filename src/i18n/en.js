@@ -242,6 +242,8 @@ export default {
   },
   notices: require('./en-notices'),
   tx: {
+    from: 'From',
+    to: 'To',
     transactions: 'Transactions',
     blockNumber: 'Block Number',
     noTransactions: 'No transactions',

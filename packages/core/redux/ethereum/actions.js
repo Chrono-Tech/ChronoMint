@@ -7,9 +7,11 @@ import assert from 'assert'
 import uuid from 'uuid/v1'
 import BigNumber from 'bignumber.js'
 import { isNil, omitBy } from 'lodash'
+import { modalsOpenConfirmDialog } from '@chronobank/core-dependencies/redux/modals/actions'
 import { TxEntryModel, TxExecModel } from '../../models'
-import { pendingEntrySelector } from './selectors'
+import { pendingEntrySelector, web3Selector } from './selectors'
 import { DUCK_ETHEREUM, NONCE_UPDATE, TX_CREATE, TX_STATUS, WEB3_UPDATE } from './constants'
+import { getSigner } from '../persistAccount/selectors'
 
 export const initEthereum = ({ web3 }) => (dispatch) => {
   // eslint-disable-next-line
@@ -31,11 +33,7 @@ export const nextNonce = ({ web3, address }) => async (dispatch, getState) => {
   return nonce
 }
 
-export const broadcastTransaction = ({ web3, signed }) => async () => {
-  return web3.eth.sendSignedTransaction(signed)
-}
-
-export const executeTransaction = ({ web3, tx, signer, options }) => async (dispatch, getState) => {
+export const executeTransaction = ({ web3, tx, options }) => async (dispatch) => {
   const prepared = await dispatch(prepareTransaction({ web3, tx, options }))
   const entry = new TxEntryModel({
     key: uuid(),
@@ -47,11 +45,7 @@ export const executeTransaction = ({ web3, tx, signer, options }) => async (disp
 
   await dispatch({ type: TX_CREATE, entry })
 
-  return dispatch(processTransaction({
-    web3,
-    entry: pendingEntrySelector(entry.tx.from, entry.key)(getState()),
-    signer,
-  }))
+  dispatch(submitTransaction(entry))
 }
 
 export const prepareTransaction = ({ web3, tx, options }) => async (dispatch) => {
@@ -177,3 +171,42 @@ export const sendSignedTransaction = ({ web3, entry }) => async (dispatch, getSt
       })
   })
 }
+
+const submitTransaction = (entry) => async (dispatch) => {
+  dispatch(modalsOpenConfirmDialog({
+    props: {
+      entry,
+      accept: acceptTransaction,
+      reject: rejectTransaction,
+    },
+  }))
+}
+
+const acceptTransaction = (entry) => async (dispatch, getState) => {
+  dispatch({
+    type: TX_STATUS,
+    key: entry.key,
+    address: entry.tx.from,
+    props: {
+      isPending: true,
+    },
+  })
+  const state = getState()
+  return dispatch(processTransaction({
+    web3: web3Selector()(state),
+    entry: pendingEntrySelector(entry.tx.from, entry.key)(state),
+    signer: getSigner(state),
+  }))
+}
+
+const rejectTransaction = (entry) => (dispatch) => {
+  dispatch({
+    type: TX_STATUS,
+    key: entry.key,
+    address: entry.tx.from,
+    props: {
+      isRejected: true,
+    },
+  })
+}
+

@@ -24,10 +24,8 @@ import MultisigEthWalletModel from '../../models/wallet/MultisigEthWalletModel'
 import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/actions'
 import { AllowanceCollection } from '../../models'
-import { WALLET_ALLOWANCE } from '../mainWallet/actions'
 import { web3Selector } from '../ethereum/selectors'
 import { executeTransaction } from '../ethereum/actions'
-import { getSigner } from '../persistAccount/selectors'
 
 export const DUCK_WALLETS = 'wallets'
 export const WALLETS_SET = 'wallet/set'
@@ -218,11 +216,10 @@ export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amo
   const state = getState()
   const tokenDAO = tokenService.getDAO(token.id())
   const web3 = web3Selector()(state)
-  const signer = getSigner(state)
   const tx = tokenDAO.transfer(wallet.address, recipient, amount)
 
   if (tx) {
-    await dispatch(executeTransaction({ tx, web3, signer, options: { feeMultiplier } }))
+    await dispatch(executeTransaction({ tx, web3, options: { feeMultiplier } }))
   }
 }
 

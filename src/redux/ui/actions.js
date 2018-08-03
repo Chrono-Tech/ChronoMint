@@ -88,9 +88,3 @@ export const download = (hash, name) => async () => {
 export const changeWalletView = () => (dispatch) => {
   dispatch({ type: CHANGE_WALLET_VIEW })
 }
-
-export const deleteCustomNetwork = (network) => (dispatch, getState) => {
-  const state = getState()
-
-
-}

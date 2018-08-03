@@ -55,10 +55,11 @@ export const getDataForConfirm = (tx: TxExecModel) => createSelector(
         amountBalance.minus(tx.fields.amount.value)
     }
 
+    const gasFee = tx.gasPrice.mul(tx.gasLimit)
     if (mainSymbol === tx.symbol) {
-      feeBalanceAfter = amountBalanceAfter = amountBalanceAfter.minus(tx.fee.gasFee)
+      feeBalanceAfter = amountBalanceAfter = amountBalanceAfter.minus(gasFee)
     } else {
-      feeBalanceAfter = feeBalance.minus(tx.fee.gasFee)
+      feeBalanceAfter = feeBalance.minus(gasFee)
     }
 
     return {
