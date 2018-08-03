@@ -50,7 +50,7 @@ export default class AvatarSelect extends PureComponent {
     this.input.click()
   }
 
-  async handleChange (e) {
+  handleChange = async (e) => {
     let response
 
     if (!e.target.files.length) {
@@ -91,7 +91,7 @@ export default class AvatarSelect extends PureComponent {
     }
   }
 
-  handleReset () {
+  handleReset = () => {
     this.props.input.onChange('')
     this.setState({ fileName: '' })
   }
@@ -148,7 +148,7 @@ export default class AvatarSelect extends PureComponent {
           : (
             <div styleName='icon'>
               <IconButton
-                onClick={fileName ? this.handleReset.bind(this) : this.handleOpenFileDialog}
+                onClick={fileName ? this.handleReset : this.handleOpenFileDialog}
               >
                 {fileName ? <Close /> : <AttachFile />}
               </IconButton>
@@ -166,7 +166,7 @@ export default class AvatarSelect extends PureComponent {
         <input
           ref={(input) => this.input = input}
           type='file'
-          onChange={(e) => this.handleChange(e)}
+          onChange={this.handleChange}
           styleName='hide'
         />
       </div>

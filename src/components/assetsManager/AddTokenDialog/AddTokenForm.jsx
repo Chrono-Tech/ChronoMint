@@ -166,7 +166,7 @@ export default class AddTokenForm extends PureComponent {
     this.props.dispatch(change(FORM_ADD_TOKEN_DIALOG, 'tokenImg', file.hash()))
   }
 
-  async handleUploadFile (e) {
+  handleUploadFile = async (e) => {
     const file = e.target.files[0]
     if (!file) {
       return
@@ -240,7 +240,7 @@ export default class AddTokenForm extends PureComponent {
         }
 
         <input
-          onChange={(e) => this.handleUploadFile(e)}
+          onChange={this.handleUploadFile}
           ref={this.refWallet}
           type='file'
           styleName='hide'
