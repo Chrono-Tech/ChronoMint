@@ -36,7 +36,7 @@ export default class AvatarSelect extends PureComponent {
     input: PropTypes.object,
     aspectRatio: PropTypes.number,
     maxFiles: PropTypes.number, returnCollection: PropTypes.bool,
-    floatingLabelText: PropTypes.node,
+    label: PropTypes.node,
   }
 
   constructor (props, context, updater) {

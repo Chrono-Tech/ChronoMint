@@ -145,6 +145,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
       })
       pendingTxCollection[pendingTxModel.id] = pendingTxModel
     })
+
     return pendingTxCollection
   }
 
@@ -171,64 +172,40 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   // actions
-  async removeWallet (wallet, account: string) {
-    await this._tx('kill', [
-      account,
-    ], {
-      address: wallet.address(),
-      account,
-    })
+  removeWallet (wallet, account: string) {
+    return this._tx('kill', [account])
   }
 
-  async addOwner (wallet, ownerAddress) {
-    await this._tx('addOwner', [
-      ownerAddress,
-    ], {
-      wallet: wallet.address(),
-      ownerAddress,
-    })
+  addOwner (wallet, ownerAddress) {
+    return this._tx('addOwner', [ownerAddress])
   }
 
-  async removeOwner (wallet, ownerAddress) {
-    await this._tx('removeOwner', [
-      ownerAddress,
-    ], {
-      wallet: wallet.address(),
-      ownerAddress,
-    })
+  removeOwner (wallet, ownerAddress) {
+    return this._tx('removeOwner', [ownerAddress])
   }
 
-  async transfer (wallet: MultisigEthWalletModel, token: TokenModel, amount, to, feeMultiplier: Number = 1, value) {
-    await this._tx('transfer',
+  transfer (wallet: MultisigEthWalletModel, token: TokenModel, amount, to, value) {
+    return this._tx(
+      'transfer',
       [
         to,
         new BigNumber(amount),
         this.web3.utils.asciiToHex(token.symbol()),
       ],
-      new BigNumber(0),
-      new BigNumber(0),
-      {},
-      value)
+      value,
+    )
   }
 
-  async confirmPendingTx (tx) {
-    await this._tx('confirm', [
-      tx.id,
-    ])
+  confirmPendingTx (tx) {
+    return this._tx('confirm', [tx.id])
   }
 
-  async revokePendingTx (tx) {
-    await this._tx('revoke', [
-      tx.id,
-    ], tx.txRevokeSummary())
+  revokePendingTx (tx) {
+    return this._tx('revoke', [tx.id])
   }
 
-  async changeRequirement (newRequired: Number) {
-    await this._tx('changeRequirement', [
-      newRequired,
-    ], {
-      signatureRequirements: newRequired,
-    })
+  changeRequirement (newRequired: Number) {
+    return this._tx('changeRequirement', [newRequired])
   }
 
   // helpers

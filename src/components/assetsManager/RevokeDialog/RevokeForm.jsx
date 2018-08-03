@@ -57,7 +57,7 @@ export default class AddPlatformForm extends PureComponent {
             component={TextField}
             name='amount'
             fullWidth
-            floatingLabelText={<Translate value={prefix('amount')} />}
+            label={<Translate value={prefix('amount')} />}
           />
 
         </div>

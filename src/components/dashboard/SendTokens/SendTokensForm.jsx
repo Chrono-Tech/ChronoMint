@@ -43,6 +43,7 @@ import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import { isBTCLikeBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import inversedTheme from 'styles/themes/inversed'
 import { getMarket } from '@chronobank/core/redux/market/selectors'
+import { MultisigEthWalletModel } from '@chronobank/core/models'
 import {
   ACTION_APPROVE,
   ACTION_TRANSFER,
@@ -111,7 +112,7 @@ export default class SendTokensForm extends PureComponent {
   static propTypes = {
     selectedCurrency: PropTypes.string,
     account: PropTypes.string,
-    wallet: PropTypes.instanceOf(WalletModel),
+    wallet: PropTypes.oneOfType([PropTypes.instanceOf(WalletModel), PropTypes.instanceOf(MultisigEthWalletModel)]),
     recipient: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
     tokenInfo: PropTypes.shape({
@@ -517,7 +518,7 @@ export default class SendTokensForm extends PureComponent {
           <Field
             component={TextField}
             name='recipient'
-            floatingLabelText={<Translate value={`${prefix}.recipientAddress`} />}
+            label={<Translate value={`${prefix}.recipientAddress`} />}
             fullWidth
           />
           <Field
@@ -529,7 +530,7 @@ export default class SendTokensForm extends PureComponent {
           <Field
             component={TextField}
             name='amount'
-            floatingLabelText={<Translate value={`${prefix}.amount`} />}
+            label={<Translate value={`${prefix}.amount`} />}
             fullWidth
           />
         </div>
@@ -555,7 +556,7 @@ export default class SendTokensForm extends PureComponent {
               <Field
                 component={TextField}
                 name='satPerByte'
-                floatingLabelText={<Translate value='wallet.satPerByte' />}
+                label={<Translate value='wallet.satPerByte' />}
                 fullWidth
               />
             </div>
@@ -567,7 +568,7 @@ export default class SendTokensForm extends PureComponent {
               <Field
                 component={TextField}
                 name='gweiPerGas'
-                floatingLabelText={<Translate value='wallet.gweiPerGas' />}
+                label={<Translate value='wallet.gweiPerGas' />}
                 fullWidth
               />
             </div>
@@ -575,7 +576,7 @@ export default class SendTokensForm extends PureComponent {
               <Field
                 component={TextField}
                 name='gasLimit'
-                floatingLabelText={<Translate value='wallet.gasLimit' />}
+                label={<Translate value='wallet.gasLimit' />}
                 fullWidth
               />
             </div>
@@ -610,7 +611,7 @@ export default class SendTokensForm extends PureComponent {
         {/*<Field*/}
         {/*component={TextField}*/}
         {/*name='TemplateName'*/}
-        {/*floatingLabelText={<Translate value={'wallet.templateName'} />}*/}
+        {/*label={<Translate value={'wallet.templateName'} />}*/}
         {/*fullWidth*/}
         {/*/>*/}
         {/*</div>*/}

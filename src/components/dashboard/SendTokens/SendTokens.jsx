@@ -24,6 +24,7 @@ import { multisigTransfer } from '@chronobank/core/redux/multisigWallet/actions'
 import { estimateGas } from '@chronobank/core/redux/tokens/actions'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
+import { MultisigEthWalletModel } from '@chronobank/core/models'
 import {
   ACTION_APPROVE,
   ACTION_TRANSFER,
@@ -56,7 +57,7 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class SendTokens extends PureComponent {
   static propTypes = {
-    wallet: PropTypes.instanceOf(WalletModel),
+    wallet: PropTypes.oneOfType([PropTypes.instanceOf(WalletModel), PropTypes.instanceOf(MultisigEthWalletModel)]),
     isModal: PropTypes.bool,
     mainApprove: PropTypes.func,
     mainTransfer: PropTypes.func,

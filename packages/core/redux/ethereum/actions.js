@@ -33,7 +33,10 @@ export const nextNonce = ({ web3, address }) => async (dispatch, getState) => {
   return nonce
 }
 
-export const executeTransaction = ({ web3, tx, options }) => async (dispatch) => {
+export const executeTransaction = ({ web3, tx, options }) => async (dispatch, getState) => {
+  if (!web3) {
+    web3 = web3Selector()(getState())
+  }
   const prepared = await dispatch(prepareTransaction({ web3, tx, options }))
   const entry = new TxEntryModel({
     key: uuid(),

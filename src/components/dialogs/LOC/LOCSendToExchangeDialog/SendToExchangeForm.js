@@ -39,7 +39,7 @@ class SendToExchangeForm extends PureComponent {
         <Field
           component={TextField}
           name='sendAmount'
-          floatingLabelText='Amount to send'
+          label='Amount to send'
         />
 
         <div styleName='footer'>

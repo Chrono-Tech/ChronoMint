@@ -57,7 +57,7 @@ export default class ReissueAssetForm extends PureComponent {
               fullWidth
               name='amount'
               style={{ width: '100%' }}
-              floatingLabelText={<Translate value={prefix('reissueAmount')} />}
+              label={<Translate value={prefix('reissueAmount')} />}
             />
           </div>
           <Button
