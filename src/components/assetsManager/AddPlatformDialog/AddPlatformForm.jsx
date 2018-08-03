@@ -37,8 +37,8 @@ export default class AddPlatformForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
     onClose: PropTypes.func,
-    formValues: PropTypes.object,
-    formErrors: PropTypes.object,
+    formValues: PropTypes.shape(PropTypes.any),
+    formErrors: PropTypes.shape(PropTypes.any),
     onSubmitFunc: PropTypes.func,
     onSubmitSuccess: PropTypes.func,
   }

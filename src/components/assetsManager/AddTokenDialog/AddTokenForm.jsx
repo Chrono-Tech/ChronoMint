@@ -126,9 +126,9 @@ class Platform extends PureComponent {
 export default class AddTokenForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
-    formValues: PropTypes.object,
-    formErrors: PropTypes.object,
-    platformsList: PropTypes.array,
+    formValues: PropTypes.shape(),
+    formErrors: PropTypes.shape(),
+    platformsList: PropTypes.arrayOf(),
     createAsset: PropTypes.func,
     dispatch: PropTypes.func,
     onClose: PropTypes.func.isRequired,
@@ -136,7 +136,7 @@ export default class AddTokenForm extends PureComponent {
     maxFiles: PropTypes.number,
     aspectRatio: PropTypes.number,
     maxFileSize: PropTypes.number,
-    accept: PropTypes.array,
+    accept: PropTypes.arrayOf(PropTypes.any),
     ...formPropTypes,
   }
 
