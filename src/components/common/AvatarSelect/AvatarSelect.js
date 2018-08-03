@@ -23,16 +23,8 @@ import Preloader from '../Preloader/Preloader'
 
 export default class AvatarSelect extends PureComponent {
   static propTypes = {
-    value: PropTypes.string,
-    mode: PropTypes.string,
     meta: PropTypes.shape(PropTypes.any),
-    label: PropTypes.string,
-    accept: PropTypes.arrayOf(PropTypes.any),
-    multiple: PropTypes.bool,
-    maxFileSize: PropTypes.number,
     input: PropTypes.shape(PropTypes.any),
-    aspectRatio: PropTypes.number,
-    maxFiles: PropTypes.number, returnCollection: PropTypes.bool,
     floatingLabelText: PropTypes.node,
   }
 

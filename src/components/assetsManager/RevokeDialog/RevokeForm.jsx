@@ -13,7 +13,6 @@ import { Field, reduxForm } from 'redux-form/immutable'
 import {  revokeAsset } from '@chronobank/core/redux/assetsManager/actions'
 import { DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/constants'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
-import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import { FORM_NAME } from 'components/constants'
 import validate from './validate'
 import './RevokeForm.scss'
@@ -43,9 +42,6 @@ export default class AddPlatformForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
     formErrors: PropTypes.shape(PropTypes.any),
-    onSubmitSuccess: PropTypes.func,
-    selectedToken: PropTypes.string,
-    tokens: PropTypes.instanceOf(TokensCollection),
   }
 
   render () {

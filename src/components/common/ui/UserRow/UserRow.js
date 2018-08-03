@@ -11,12 +11,9 @@ import css from './UserRow.scss'
 export default class UserRow extends React.Component {
   static propTypes = {
     avatar: PropTypes.string,
-    name: PropTypes.string,
-    address: PropTypes.string,
     onClick: PropTypes.func,
     hideActionIcon: PropTypes.bool,
     actionIcon: PropTypes.string,
-    actionIconClass: PropTypes.string,
     linkTitle: PropTypes.string,
     reverseIcon: PropTypes.bool,
   }

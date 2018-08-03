@@ -13,7 +13,6 @@ import { connect } from 'react-redux'
 import { reissueAsset } from '@chronobank/core/redux/assetsManager/actions'
 import { DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/constants'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
-import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import validate from './validate'
 
 import './ReissueAssetForm.scss'
@@ -42,9 +41,7 @@ const onSubmit = (values, dispatch, props) => {
 @reduxForm({ form: FORM_REISSUE_FORM, validate, onSubmit })
 export default class ReissueAssetForm extends PureComponent {
   static propTypes = {
-    tokens: PropTypes.instanceOf(TokensCollection),
     handleSubmit: PropTypes.func,
-    selectedToken: PropTypes.string,
   }
 
   render () {

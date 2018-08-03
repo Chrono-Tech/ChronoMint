@@ -129,7 +129,6 @@ export default class AddTokenForm extends PureComponent {
     formValues: PropTypes.shape(),
     formErrors: PropTypes.shape(),
     platformsList: PropTypes.arrayOf(),
-    createAsset: PropTypes.func,
     dispatch: PropTypes.func,
     onClose: PropTypes.func.isRequired,
     handleAddPlatformDialog: PropTypes.func,
