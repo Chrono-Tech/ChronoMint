@@ -190,7 +190,7 @@ class FileSelect extends PureComponent {
   }
 
   renderMultiple () {
-    const { config, fileCollection } = this.state
+    const { fileCollection } = this.state
     const { meta } = this.props
 
     return (

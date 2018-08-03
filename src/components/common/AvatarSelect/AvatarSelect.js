@@ -4,7 +4,6 @@
  */
 
 import {
-  CircularProgress,
   IconButton,
   TextField,
 } from '@material-ui/core'
@@ -33,7 +32,6 @@ export default class AvatarSelect extends PureComponent {
 
     this.state = {
       isUploadingFile: false,
-      uploadSuccess: null,
       uploadError: null,
       fileName: '',
     }
@@ -78,7 +76,6 @@ export default class AvatarSelect extends PureComponent {
   handleUploadSuccess (response){
     if (response && response.url) {
       this.setState({
-        uploadSuccess: response,
         fileName: getFileNameFromPath(response.url),
       })
       this.props.input.onChange (response.id)
@@ -136,7 +133,7 @@ export default class AvatarSelect extends PureComponent {
   }
 
   renderIcon () {
-    const { isUploadingFile, uploadSuccess, fileName } = this.state
+    const { isUploadingFile, fileName } = this.state
     return (
       <div styleName='iconWrapper'>
         {isUploadingFile
