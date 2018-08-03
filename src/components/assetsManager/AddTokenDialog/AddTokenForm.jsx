@@ -42,8 +42,6 @@ export const prefix = (token) => {
 }
 
 const onSubmit = (values, dispatch) => {
-  console.log('onSubmitonSubmit: ', values.toJSON())
-
   dispatch(createAsset(new TokenModel({
     decimals: values.get('smallestUnit'),
     name: values.get('description'),
@@ -185,7 +183,6 @@ export default class AddTokenForm extends PureComponent {
   handleSubmitClick = () => {
     this.setState({ showPlatformError: !this.props.formErrors || !!this.props.formErrors.platform })
     this.props.submitForm()
-    console.log('this.props.submitForm: ')
   }
 
   handleWalletClick = () => {
