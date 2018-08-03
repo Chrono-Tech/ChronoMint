@@ -9,12 +9,13 @@ import type AbstractFetchingModel from '../../../../models/AbstractFetchingModel
 import type CBEModel from '../../../../models/CBEModel'
 import type CBENoticeModel from '../../../../models/notices/CBENoticeModel'
 import { notify } from '../../../notifier/actions'
-
-export const CBE_LIST = 'settings/CBE_LIST'
-export const CBE_FORM = 'settings/CBE_FORM'
-export const CBE_SET = 'settings/CBE_SET'
-export const CBE_LOADING = 'settings/CBE_LOADING'
-export const CBE_REMOVE = 'settings/CBE_REMOVE'
+import {
+  // CBE_FORM,
+  CBE_LIST,
+  CBE_LOADING,
+  CBE_REMOVE,
+  CBE_SET,
+} from './constants'
 
 export const setCBE = (cbe: CBEModel) => ({ type: CBE_SET, cbe })
 export const removeCBE = (cbe: CBEModel) => ({ type: CBE_REMOVE, cbe })

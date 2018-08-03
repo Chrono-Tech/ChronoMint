@@ -3,18 +3,24 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import tokenService from '../services/TokenService'
 import BigNumber from 'bignumber.js'
+import tokenService from '../services/TokenService'
 import Amount from '../models/Amount'
 import AbstractContractDAO from './AbstractContractDAO'
 import TokenModel from '../models/tokens/TokenModel'
 import ExchangeOrderModel from '../models/exchange/ExchangeOrderModel'
 import { ExchangeABI, MultiEventsHistoryABI } from './abi'
 
-export const TX_BUY = 'buy'
-export const TX_SELL = 'sell'
-export const TX_WITHDRAW_TOKENS = 'withdrawTokens'
-export const TX_WITHDRAW_ETH = 'withdrawEth'
+//#region CONSTANTS
+
+import {
+  TX_BUY,
+  TX_SELL,
+  TX_WITHDRAW_ETH,
+  TX_WITHDRAW_TOKENS,
+} from './constants/ExchangeDAO'
+
+//#endregion CONSTANTS
 
 export class ExchangeDAO extends AbstractContractDAO {
   constructor (at = null) {

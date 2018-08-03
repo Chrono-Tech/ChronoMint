@@ -25,8 +25,6 @@ import {
 
 import './LoginWithTrezor.scss'
 
-export const FORM_TREZOR_LOGIN_PAGE = 'FormTrezorLoginPage'
-
 const trezorStates = [ {
   flag: 'isFetched',
   successTitle: 'LoginWithTrezor.isConnected.successTitle',
@@ -82,19 +80,18 @@ class LoginTrezor extends PureComponent {
   renderStates () {
     const { trezor } = this.props
 
-    return trezorStates.map((item) => trezor[ item.flag ]
-      ? (
-        <div key={item.flag}>
-        </div>
-      )
-      : (
-        <div styleName='state' key={item.flag}>
-          <div styleName='titleContent'>
-            <div styleName='title'><Translate value={item.errorTitle} /></div>
-            <div styleName='subtitle'><Translate value={item.errorTip} /></div>
+    return trezorStates.map((item) =>
+      trezor[ item.flag ]
+        ? <div key={item.flag} />
+        : (
+          <div styleName='state' key={item.flag}>
+            <div styleName='titleContent'>
+              <div styleName='title'><Translate value={item.errorTitle} /></div>
+              <div styleName='subtitle'><Translate value={item.errorTip} /></div>
+            </div>
           </div>
-        </div>
-      ))
+        )
+    )
   }
 
   handleChange = (index, value) => {
@@ -105,9 +102,29 @@ class LoginTrezor extends PureComponent {
   _buildItem = (item, index) => {
     return (
       <div key={index}>
-        <ListItem button type='submit' name='address' value={item} component="button" disableGutters={true} style={{ margin: 0 }} onClick={() => this.props.navigateToCreateAccountFromHW(item)}>
-          <ListItemText style={{ paddingLeft:"10px" }} disableTypography
-            primary={<Typography type='body2' style={{ color: 'black', fontWeight: 'bold' }}>{item}</Typography>} secondary='eth 0' />
+        <ListItem
+          button
+          type='submit'
+          name='address'
+          value={item}
+          component='button'
+          disableGutters={true}
+          style={{ margin: 0 }}
+          onClick={() => this.props.navigateToCreateAccountFromHW(item)}
+        >
+          <ListItemText
+            style={{ paddingLeft:"10px" }}
+            disableTypography
+            primary={
+              <Typography
+                type='body2'
+                style={{ color: 'black', fontWeight: 'bold' }}
+              >
+                {item}
+              </Typography>
+            }
+            secondary='eth 0'
+          />
           <ChevronRight />
         </ListItem>
         <Divider light />

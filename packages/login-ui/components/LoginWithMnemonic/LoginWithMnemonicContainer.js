@@ -9,7 +9,7 @@ import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import { stopSubmit, SubmissionError } from 'redux-form'
 import {
   FORM_MNEMONIC_LOGIN_PAGE,
-} from '../../redux/actions'
+} from '../../redux/constants'
 import LoginWithMnemonic from './LoginWithMnemonic'
 
 export default class LoginWithMnemonicContainer extends PureComponent {

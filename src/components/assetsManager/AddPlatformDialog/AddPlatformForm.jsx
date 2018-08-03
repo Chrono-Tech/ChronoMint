@@ -11,14 +11,13 @@ import { I18n } from '@chronobank/core-dependencies/i18n'
 import { Checkbox, TextField } from 'redux-form-material-ui'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { createPlatform } from '@chronobank/core/redux/assetsManager/actions'
+import { FORM_ADD_PLATFORM_DIALOG } from 'components/constants'
 import './AddPlatformForm.scss'
 import validate from './validate'
 
 export const prefix = (token) => {
   return `Assets.AddPlatformForm.${token}`
 }
-
-export const FORM_ADD_PLATFORM_DIALOG = 'AddPlatformDialog'
 
 function mapStateToProps (state) {
   const form = state.get('form')

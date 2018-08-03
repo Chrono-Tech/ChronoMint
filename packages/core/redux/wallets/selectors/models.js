@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { DUCK_WALLETS } from '../actions'
-import { BLOCKCHAIN_ETHEREUM } from '../../../dao/EthereumDAO'
+import { DUCK_WALLETS } from '../constants'
+import { BLOCKCHAIN_ETHEREUM } from '../../../dao/constants'
 
 export const getWallet = (walletId) => (state) => {
   return state.get(DUCK_WALLETS).list[walletId]

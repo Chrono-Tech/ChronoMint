@@ -14,23 +14,38 @@ import OwnerCollection from '../models/wallet/OwnerCollection'
 import OwnerModel from '../models/wallet/OwnerModel'
 import BlacklistModel from '../models/tokens/BlacklistModel'
 import AbstractContractDAO from './AbstractContract3DAO'
-import ChronoBankPlatformDAO, { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from './ChronoBankPlatformDAO'
-import PlatformsManagerDAO, { TX_PLATFORM_ATTACHED, TX_PLATFORM_DETACHED, TX_PLATFORM_REQUESTED } from './PlatformsManagerDAO'
+import ChronoBankPlatformDAO from './ChronoBankPlatformDAO'
+import PlatformsManagerDAO from './PlatformsManagerDAO'
 import PlatformTokenExtensionGatewayManagerEmitterDAO from './PlatformTokenExtensionGatewayManagerEmitterDAO'
-import { TX_PAUSED, TX_RESTRICTED, TX_UNPAUSED, TX_UNRESTRICTED } from './ChronoBankAssetDAO'
-import { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
 import web3Converter from '../utils/Web3Converter'
 import { daoByType } from '../../core/redux/daos/selectors'
 
-export const TX_ASSET_CREATED = 'AssetCreated'
+//#region CONSTANTS
 
-export const MIDDLEWARE_EVENT_ISSUE = 'issue'
-export const MIDDLEWARE_EVENT_PLATFORM_REQUESTED = 'platformrequested'
-export const MIDDLEWARE_EVENT_REVOKE = 'revoke'
-export const MIDDLEWARE_EVENT_RESTRICTED = 'restricted'
-export const MIDDLEWARE_EVENT_UNRESTRICTED = 'unrestricted'
-export const MIDDLEWARE_EVENT_PAUSED = 'paused'
-export const MIDDLEWARE_EVENT_UNPAUSED = 'unpaused'
+import {
+  TX_ISSUE,
+  TX_OWNERSHIP_CHANGE,
+  TX_REVOKE,
+} from './constants/ChronoBankPlatformDAO'
+import {
+  TX_PLATFORM_ATTACHED,
+  TX_PLATFORM_DETACHED,
+  TX_PLATFORM_REQUESTED,
+} from './constants/PlatformsManagerDAO'
+import {
+  TX_PAUSED,
+  TX_RESTRICTED,
+  TX_UNPAUSED,
+  TX_UNRESTRICTED,
+} from './constants/ChronoBankAssetDAO'
+import {
+  BLOCKCHAIN_ETHEREUM,
+} from './constants'
+import {
+  TX_ASSET_CREATED,
+} from './constants/AssetsManagerDAO'
+
+//#endregion CONSTANTS
 
 export default class AssetsManagerDAO extends AbstractContractDAO {
 

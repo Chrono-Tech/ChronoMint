@@ -4,13 +4,24 @@
  */
 
 import { createSelector } from 'reselect'
-import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/constants'
-import { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
-import { BLOCKCHAIN_NEM } from '../../dao/NemDAO'
-import { BLOCKCHAIN_WAVES } from '../../dao/WavesDAO'
+import {
+  BCC,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_NEM,
+  BLOCKCHAIN_WAVES,
+  BTC,
+  BTG,
+  ETH,
+  LTC,
+  WAVES,
+  XEM,
+} from '../../dao/constants'
 
 import { DUCK_TOKENS } from './constants'
-import { BCC, BTC, BTG, ETH, LTC, XEM, WAVES } from '../mainWallet/actions'
 
 export const getTokens = (state) => {
   return state.get(DUCK_TOKENS)

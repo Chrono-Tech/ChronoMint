@@ -6,7 +6,7 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { DUCK_MODALS } from 'redux/modals/actions'
+import { DUCK_MODALS } from 'redux/modals/constants'
 
 import './ModalStack.scss'
 

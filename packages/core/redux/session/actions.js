@@ -5,43 +5,26 @@
 
 import networkService from '@chronobank/login/network/NetworkService'
 import { getNetworkById, LOCAL_ID, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID } from '@chronobank/login/network/settings'
-import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { push, replace } from '@chronobank/core-dependencies/router'
 import ls from '@chronobank/core-dependencies/utils/LocalStorage'
 import profileService from '@chronobank/login/network/ProfileService'
 import { removeWatchersUserMonitor } from '@chronobank/core-dependencies/redux/ui/actions'
 import { daoByType } from '../../redux/daos/selectors'
 import web3Factory from '../../web3/index'
-import ProfileModel from '../../models/ProfileModel'
 import { cbeWatcher, watcher } from '../watcher/actions'
 import { watchStopMarket } from '../market/actions'
 import { notify } from '../notifier/actions'
 import { WEB3_SETUP } from '../web3/reducer'
-
-export const DUCK_SESSION = 'session'
-
-export const SESSION_CREATE = 'session/CREATE'
-export const SESSION_DESTROY = 'session/DESTROY'
-
-export const SESSION_PROFILE = 'session/PROFILE'
-export const SESSION_PROFILE_UPDATE = 'session/PROFILE_UPDATE'
-export const SET_PROFILE_SIGNATURE = 'session/SET_PROFILE_SIGNATURE'
-
-export const DEFAULT_USER_URL = '/wallets'
-export const DEFAULT_CBE_URL = '/wallets'
-
-export const GAS_SLIDER_MULTIPLIER_CHANGE = 'session/GAS_SLIDER_MULTIPLIER_CHANGE'
-
-export const CURRENT_PROFILE_VERSION = 1
-export const PROFILE_PANEL_TOKENS = [
-  { symbol: 'BTC', blockchain: 'Bitcoin', title: 'BTC' },
-  { symbol: 'BCC', blockchain: 'Bitcoin Cash', title: 'BCC' },
-  { symbol: 'BTG', blockchain: 'Bitcoin Gold', title: 'BTG' },
-  { symbol: 'LTC', blockchain: 'Litecoin', title: 'LTC' },
-  { symbol: 'ETH', blockchain: 'Ethereum', title: 'ETH' },
-  { symbol: 'XEM', blockchain: 'NEM', title: 'NEM' },
-  { symbol: 'WAVES', blockchain: 'WAVES', title: 'WAVES' },
-]
+import {
+  DEFAULT_CBE_URL,
+  DEFAULT_USER_URL,
+  DUCK_SESSION,
+  SESSION_CREATE,
+  SESSION_DESTROY,
+  SESSION_PROFILE,
+  SET_PROFILE_SIGNATURE,
+} from './constants'
 
 export const createSession = ({ account, provider, network, dispatch }) => {
   ls.createSession(account, provider, network)

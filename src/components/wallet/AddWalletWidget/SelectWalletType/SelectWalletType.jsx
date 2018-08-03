@@ -10,11 +10,19 @@ import classnames from 'classnames'
 import { Translate } from 'react-redux-i18n'
 import { IPFSImage } from 'components'
 import { TOKEN_ICONS } from 'assets'
-import { BTC, createNewChildAddress, ETH, goToWallets, LTC, resetWalletsForm, XEM, WAVES } from '@chronobank/core/redux/mainWallet/actions'
-import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
-import { BLOCKCHAIN_NEM } from '@chronobank/core/dao/NemDAO'
-import { BLOCKCHAIN_WAVES } from '@chronobank/core/dao/WavesDAO'
-import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/constants'
+import { createNewChildAddress, goToWallets,resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_NEM,
+  BLOCKCHAIN_WAVES,
+  BTC,
+  ETH,
+  LTC,
+  WAVES,
+  XEM,
+} from '@chronobank/core/dao/constants'
 
 import './SelectWalletType.scss'
 import { prefix } from '../lang'

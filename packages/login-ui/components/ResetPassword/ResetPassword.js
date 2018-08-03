@@ -21,7 +21,7 @@ import UserRow from 'components/common/ui/UserRow/UserRow'
 import styles from 'layouts/Splash/styles'
 import {
   FORM_RESET_PASSWORD,
-} from '../../redux/actions'
+} from '../../redux/constants'
 import validate from './validate'
 import './ResetPassword.scss'
 

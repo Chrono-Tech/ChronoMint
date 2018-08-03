@@ -3,48 +3,57 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import * as assetsHolder from './assetsHolder'
-import * as assetsManager from './assetsManager'
-import * as exchange from './exchange'
-import * as locs from './locs'
-import * as mainWallet from './mainWallet'
-import * as market from './market'
-import * as ethMultisigWallet from './multisigWallet'
-import * as notifier from './notifier'
-import * as operations from './operations'
-import * as rewards from './rewards'
-import * as session from './session'
-import * as settings from './settings'
-import * as tokens from './tokens'
-import * as voting from './voting'
-import * as wallet from './wallet'
-import * as watcher from './watcher'
-import * as persistAccount from './persistAccount'
-import * as web3 from './web3'
-import * as dao from './daos'
-import * as transactions from './transactions'
-import * as wallets from './wallets'
+import { combineReducers } from 'redux-immutable'
 
-export default {
-  session,
-  locs,
-  voting,
-  wallet,
-  mainWallet,
+import assetsHolder from './assetsHolder/reducer'
+import assetsManager from './assetsManager/reducer'
+import dao from './daos/reducer'
+import ethMultisigWallet from './multisigWallet/reducer'
+import exchange from './exchange/reducer'
+import locs from './locs/reducer'
+import mainWallet from './mainWallet/reducer'
+import market from './market/reducer'
+import notifier from './notifier/reducer'
+import operations from './operations/reducer'
+import persistAccount from './persistAccount/reducer'
+import rewards from './rewards/reducer'
+import session from './session/reducer'
+import settingsErc20Tokens from './settings/erc20/tokens/reducer'
+import settingsUserCBE from './settings/user/cbe/reducer'
+import tokens from './tokens/reducer'
+import transactions from './transactions/reducer'
+import voting from './voting/reducer'
+import wallet from './wallet/reducer'
+import wallets from './wallets/reducer'
+import watcher from './watcher/reducer'
+import web3 from './web3/reducer'
+
+const coreReducers = {
+  assetsHolder,
+  assetsManager,
+  dao,
   ethMultisigWallet,
-  rewards,
   exchange,
-  settings,
+  locs,
+  mainWallet,
+  market,
   notifier,
   operations,
-  watcher,
-  market,
-  assetsManager,
-  tokens,
-  assetsHolder,
   persistAccount,
-  web3,
-  dao,
+  rewards,
+  session,
+  settingsErc20Tokens,
+  settingsUserCBE,
+  tokens,
   transactions,
+  voting,
+  wallet,
   wallets,
+  watcher,
+  web3,
 }
+
+export default coreReducers
+
+// for further development
+export const combinedCoreReducers = combineReducers(coreReducers)

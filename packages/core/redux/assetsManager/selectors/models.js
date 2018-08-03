@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { DUCK_ASSETS_MANAGER } from '../actions'
+import { DUCK_ASSETS_MANAGER } from '../constants'
 
 export const getSelectedTokenId = (state) => {
   return state.get(DUCK_ASSETS_MANAGER).selectedToken()

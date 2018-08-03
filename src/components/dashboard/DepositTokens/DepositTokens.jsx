@@ -8,8 +8,13 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { depositAsset, initAssetsHolder, withdrawAsset } from '@chronobank/core/redux/assetsHolder/actions'
+import {
+  ACTION_APPROVE,
+  ACTION_DEPOSIT,
+  ACTION_WITHDRAW,
+} from 'components/constants'
 import { mainApprove } from '@chronobank/core/redux/mainWallet/actions'
-import DepositTokensForm, { ACTION_APPROVE, ACTION_DEPOSIT, ACTION_WITHDRAW } from './DepositTokensForm'
+import DepositTokensForm from './DepositTokensForm'
 import './DepositTokensForm.scss'
 
 function mapDispatchToProps (dispatch) {

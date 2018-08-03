@@ -8,9 +8,11 @@ import React, { PureComponent } from 'react'
 import { stopSubmit } from 'redux-form/immutable'
 import { connect } from 'react-redux'
 import {
-  FORM_CREATE_ACCOUNT,
   navigateToSelectWallet,
 } from '../../redux/actions'
+import {
+  FORM_CREATE_ACCOUNT,
+} from '../../redux/constants'
 import CreateAccount from './CreateAccount'
 
 const mapDispatchToProps = (dispatch) => {

@@ -5,7 +5,7 @@
 
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import {CommonNetworkSelector} from '@chronobank/login-ui/components'
+import { CommonNetworkSelector } from '@chronobank/login-ui/components'
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 import { ModalStack } from 'components'
 import { MuiThemeProvider } from '@material-ui/core/styles'

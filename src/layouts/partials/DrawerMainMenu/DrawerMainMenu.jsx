@@ -13,19 +13,20 @@ import classnames from 'classnames'
 import { connect } from 'react-redux'
 import menu from 'menu'
 import { drawerHide } from 'redux/drawer/actions'
-import { DUCK_SESSION, logout } from '@chronobank/core/redux/session/actions'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
+import { logout } from '@chronobank/core/redux/session/actions'
 import chronWalletLogoSVG from 'assets/img/chronowallettext-white.svg'
 import ProfileModel from '@chronobank/core/models/ProfileModel'
 import ProfileImage from 'components/common/ProfileImage/ProfileImage'
 import exitSvg from 'assets/img/exit-white.svg'
-import { SIDES_CLOSE_ALL, sidesPush } from 'redux/sides/actions'
+import { sidesCloseAll, sidesPush } from 'redux/sides/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import UpdateProfileDialog from 'components/dialogs/UpdateProvideDialog/UpdateProfileDialog'
 import { getAccountAvatar, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
+import { MENU_TOKEN_MORE_INFO_PANEL_KEY } from 'redux/sides/constants'
 import { getWalletsLength } from '@chronobank/core/redux/wallets/selectors/wallets'
 import { getAccountProfileSummary } from '@chronobank/core/redux/session/selectors'
 import MenuAssetsManagerMoreInfo from './MenuAssetsManagerMoreInfo/MenuAssetsManagerMoreInfo'
-import { MENU_TOKEN_MORE_INFO_PANEL_KEY } from './MenuTokenMoreInfo/MenuTokenMoreInfo'
 import MenuTokensList from './MenuTokensList/MenuTokensList'
 import { prefix } from './lang'
 
@@ -54,7 +55,7 @@ function mapDispatchToProps (dispatch) {
     handleLogout: () => dispatch(logout()),
     handleProfileEdit: () => dispatch(modalsOpen({ component: UpdateProfileDialog })),
     handle: (handleClose) => {
-      dispatch({ type: SIDES_CLOSE_ALL })
+      dispatch(sidesCloseAll())
       dispatch(sidesPush({
         component: MenuAssetsManagerMoreInfo,
         panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY,
@@ -68,7 +69,7 @@ function mapDispatchToProps (dispatch) {
     },
 
     handleAssetsManagerMoreInfo: (handleClose) => {
-      dispatch({ type: SIDES_CLOSE_ALL })
+      dispatch(sidesCloseAll())
       dispatch(sidesPush({
         component: MenuAssetsManagerMoreInfo,
         panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY,

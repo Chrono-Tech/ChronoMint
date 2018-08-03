@@ -4,20 +4,28 @@
  */
 
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
-import { EE_REWARDS_ERROR, EE_REWARDS_PERIOD, EE_REWARDS_PERIOD_CLOSED } from '../../dao/RewardsDAO'
 import AssetModel from '../../models/assetHolder/AssetModel'
 import RewardsPeriodModel from '../../models/rewards/RewardsPeriodModel'
 import TokenModel from '../../models/tokens/TokenModel'
-import { DUCK_SESSION } from '../session/actions'
+import { DUCK_SESSION } from '../session/constants'
 import { subscribeOnTokens } from '../tokens/actions'
 
-export const DUCK_REWARDS = 'rewards'
+//#region CONSTANTS
+import {
+  EE_REWARDS_ERROR,
+  EE_REWARDS_PERIOD_CLOSED,
+  EE_REWARDS_PERIOD,
+} from '../../dao/constants/RewardsDAO'
+import {
+  DUCK_REWARDS,
+  REWARDS_ASSET,
+  REWARDS_BASE_INFO,
+  REWARDS_INIT,
+  REWARDS_PERIOD_COUNT,
+  REWARDS_PERIOD,
+} from './constants'
 
-export const REWARDS_INIT = 'rewards/init'
-export const REWARDS_ASSET = 'rewards/ASSET'
-export const REWARDS_BASE_INFO = 'rewards/baseInfo'
-export const REWARDS_PERIOD = 'rewards/period'
-export const REWARDS_PERIOD_COUNT = 'rewards/periodCount'
+//#endregion
 
 let rewardDAO = null
 

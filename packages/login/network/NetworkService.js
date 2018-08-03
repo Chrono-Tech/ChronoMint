@@ -6,21 +6,13 @@
 // #region imports
 
 import contractsManagerDAO from '@chronobank/core/dao/ContractsManagerDAO'
-import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/actions'
+import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
 import EventEmitter from 'events'
-// import Web3 from 'web3'
-import { store } from '@chronobank/core-dependencies/configureStore'
 import {
   addError,
   clearErrors,
-  DUCK_NETWORK,
   loading,
-  NETWORK_ADD_ERROR,
-  NETWORK_SELECT_ACCOUNT,
-  NETWORK_SET_ACCOUNTS,
-  NETWORK_SET_TEST_METAMASK,
-  // NETWORK_SET_TEST_RPC,
   networkSetNetwork,
   networkResetNetwork,
   networkSetProvider,
@@ -37,25 +29,30 @@ import {
   LOCAL_PRIVATE_KEYS,
   LOCAL_PROVIDER_ID,
   NETWORK_MAIN_ID,
-  // TESTRPC_URL,
 } from './settings'
 import uportProvider, { UPortAddress } from './uportProvider'
-import web3Provider/*, { Web3Provider }*/ from './Web3Provider'
+import web3Provider from './Web3Provider'
 import setup from './EngineUtils'
-// import web3Utils from './Web3Utils'
 
-// #endregion imports
+//#endregion imports
 
-// #region constants
+//#region CONSTANTS
+
+import {
+  DUCK_NETWORK,
+  NETWORK_ADD_ERROR,
+  NETWORK_SELECT_ACCOUNT,
+  NETWORK_SET_ACCOUNTS,
+  NETWORK_SET_TEST_METAMASK,
+} from '../redux/network/constants'
+
+//#endregion CONSTANTS
 
 // TODO: to ad I18n translation
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
-// #endregion constants
-
 class NetworkService extends EventEmitter {
-  constructor () {
-    super()
+  connectStore (store) {
     this._store = store
     this._dispatch = store.dispatch
   }

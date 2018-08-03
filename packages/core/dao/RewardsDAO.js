@@ -14,12 +14,17 @@ import tokenService from '../services/TokenService'
 import { MultiEventsHistoryABI, RewardsABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 
-export const TX_WITHDRAW_REWARD = 'withdrawReward'
-export const TX_CLOSE_PERIOD = 'closePeriod'
+//#region CONSTANTS
 
-export const EE_REWARDS_PERIOD = 'rewards/newPeriod'
-export const EE_REWARDS_PERIOD_CLOSED = 'rewards/periodClosed'
-export const EE_REWARDS_ERROR = 'rewards/error'
+import {
+  EE_REWARDS_ERROR,
+  EE_REWARDS_PERIOD,
+  EE_REWARDS_PERIOD_CLOSED,
+  TX_CLOSE_PERIOD,
+  TX_WITHDRAW_REWARD,
+} from './constants/RewardsDAO'
+
+//#endregion CONSTANTS
 
 export default class RewardsDAO extends AbstractContractDAO {
   constructor (at) {

@@ -11,12 +11,16 @@ import BigNumber from 'bignumber.js'
 import TxExecModel from '../models/TxExecModel'
 import web3Converter from '../utils/Web3Converter'
 import Amount from '../models/Amount'
-import { BLOCKCHAIN_ETHEREUM } from '../dao/EthereumDAO'
 
-export const DEFAULT_GAS = 4700000
-export const DEFAULT_TX_OPTIONS = {
-  feeMultiplier: null,
-}
+//#region CONSTANTS
+
+import {
+  BLOCKCHAIN_ETHEREUM,
+  DEFAULT_GAS,
+  DEFAULT_TX_OPTIONS,
+} from './constants'
+
+//#endregion CONSTANTS
 
 export default class AbstractContractDAO extends EventEmitter {
 

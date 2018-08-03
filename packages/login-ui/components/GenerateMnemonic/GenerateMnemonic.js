@@ -17,7 +17,6 @@ import './GenerateMnemonic.scss'
 export default class MnemonicPage extends Component {
   static propTypes = {
     mnemonic: PropTypes.string,
-    initMnemonicPage: PropTypes.func,
     navigateToConfirmPage: PropTypes.func,
   }
 

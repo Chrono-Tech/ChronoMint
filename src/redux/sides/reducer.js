@@ -3,17 +3,27 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { PROFILE_SIDE_PANEL_KEY } from 'components/common/SideStack/SideStack'
 import ProfileContent from 'layouts/partials/ProfileContent/ProfileContent'
-import NotificationContent, { NOTIFICATION_PANEL_KEY } from 'layouts/partials/NotificationContent/NotificationContent'
-import MenuAssetsManagerMoreInfo, { MENU_ASSETS_MANAGER_PANEL_KEY } from 'layouts/partials/DrawerMainMenu/MenuAssetsManagerMoreInfo/MenuAssetsManagerMoreInfo'
-import * as actions from './actions'
+import NotificationContent from 'layouts/partials/NotificationContent/NotificationContent'
+import MenuAssetsManagerMoreInfo from 'layouts/partials/DrawerMainMenu/MenuAssetsManagerMoreInfo/MenuAssetsManagerMoreInfo'
+
+import {
+  MENU_ASSETS_MANAGER_PANEL_KEY,
+  NOTIFICATION_PANEL_KEY,
+  PROFILE_SIDE_PANEL_KEY,
+  SIDES_CLEAR,
+  SIDES_CLOSE_ALL,
+  SIDES_POP,
+  SIDES_PUSH,
+  SIDES_TOGGLE_MAIN_MENU,
+  SIDES_TOGGLE,
+} from './constants'
 
 const initialState = {
   isProfilePanelOpen: false,
   mainMenuIsOpen: false,
   stack: {
-    [ PROFILE_SIDE_PANEL_KEY ]: {
+    [PROFILE_SIDE_PANEL_KEY]: {
       component: ProfileContent,
       panelKey: PROFILE_SIDE_PANEL_KEY,
       isOpened: false,
@@ -39,7 +49,7 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case actions.SIDES_PUSH:
+    case SIDES_PUSH:
       return {
         ...state,
         stack: {
@@ -56,7 +66,7 @@ export default (state = initialState, action) => {
           },
         },
       }
-    case actions.SIDES_TOGGLE:
+    case SIDES_TOGGLE:
       return {
         ...state,
         stack: {
@@ -67,7 +77,7 @@ export default (state = initialState, action) => {
           },
         },
       }
-    case actions.SIDES_CLOSE_ALL:
+    case SIDES_CLOSE_ALL:
       let newStackToClose = { ...state.stack }
       Object.keys(state.stack).map((key) => {
         newStackToClose[key].isOpened = false
@@ -78,7 +88,7 @@ export default (state = initialState, action) => {
           ...newStackToClose,
         },
       }
-    case actions.SIDES_POP:
+    case SIDES_POP:
       let newStack = { ...state.stack }
       delete newStack[action.panelKey]
 
@@ -86,12 +96,12 @@ export default (state = initialState, action) => {
         ...state,
         stack: { ...newStack },
       }
-    case actions.SIDES_CLEAR:
+    case SIDES_CLEAR:
       return {
         ...state,
         stack: [],
       }
-    case actions.SIDES_TOGGLE_MAIN_MENU:
+    case SIDES_TOGGLE_MAIN_MENU:
       return {
         ...state,
         mainMenuIsOpen: action.mainMenuIsOpen,

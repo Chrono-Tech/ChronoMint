@@ -9,7 +9,7 @@ import Amount from '../Amount'
 import TxHistoryModel from './TxHistoryModel'
 import AllowanceCollection from '../../models/AllowanceCollection'
 import MultisigWalletPendingTxModel from './MultisigWalletPendingTxModel'
-import { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
+import { BLOCKCHAIN_ETHEREUM } from '../../dao/constants'
 
 const schemaFactory = () => ({
   address: PropTypes.string,

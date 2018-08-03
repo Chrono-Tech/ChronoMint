@@ -5,7 +5,7 @@
 
 import Immutable from 'immutable'
 import TxExecModel from '../../models/TxExecModelOld'
-import * as a from './actions'
+import * as a from './constants'
 
 export const initialState = {
   pendingTxs: new Immutable.Map(),

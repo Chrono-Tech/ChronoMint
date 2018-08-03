@@ -3,42 +3,28 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import LOCModel from '../models/LOCModel'
 import LOCNoticeModel, { statuses } from '../models/notices/LOCNoticeModel'
 import type TokenModel from '../models/tokens/TokenModel'
 import tokenService from '../services/TokenService'
-import BigNumber from 'bignumber.js'
 import Amount from '../models/Amount'
 import { LOCManagerABI, MultiEventsHistoryABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
-import { LHT } from './LHTDAO'
 
-export const standardFuncs = {
-  GET_LOC_COUNT: 'getLOCCount',
-  GET_LOC_BY_NAME: 'getLOCByName',
-  GET_LOC_BY_ID: 'getLOCById',
-  ADD_LOC: 'addLOC',
-  SET_LOC: 'setLOC',
-  SET_STATUS: 'setStatus',
-}
+//#region CONSTANTS
 
-export const multisigFuncs = {
-  SEND_ASSET: 'sendAsset',
-  REISSUE_ASSET: 'reissueAsset',
-  REVOKE_ASSET: 'revokeAsset',
-  REMOVE_LOC: 'removeLOC',
-  SET_STATUS: 'setStatus',
-}
+import {
+  LHT,
+} from './constants'
+import {
+  events,
+  multisigFuncs,
+  standardFuncs,
+} from './constants/LOCManagerDAO'
 
-const events = {
-  NEW_LOC: 'NewLOC',
-  REMOVE_LOC: 'RemLOC',
-  UPDATE_LOC: 'UpdateLOC',
-  UPDATE_LOC_STATUS: 'UpdLOCStatus',
-  REISSUE: 'Reissue',
-  REVOKE: 'Revoke',
-}
+//#endregion CONSTANTS
 
 /** @namespace result.args.locName */
 /** @namespace result.args.newName */

@@ -4,7 +4,7 @@
  */
 
 import { Map } from 'immutable'
-import * as actions from './actions'
+import * as actions from './constants'
 
 export const initialState = {
   locs: new Map({}),

@@ -3,13 +3,24 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import PollNoticeModel, { IS_VOTED, IS_ACTIVATED, IS_ENDED } from '../models/notices/PollNoticeModel'
+import PollNoticeModel from '../models/notices/PollNoticeModel'
 import { MultiEventsHistoryABI, PollEmitterABI } from './abi'
 import AbstractContractDAO from './AbstractContract3DAO'
 
-export const EVENT_POLL_VOTED = 'PollVoted'
-export const EVENT_POLL_ACTIVATED = 'PollActivated'
-export const EVENT_POLL_ENDED = 'PollEnded'
+//#region CONSTANTS
+
+import {
+  IS_ACTIVATED,
+  IS_ENDED,
+  IS_VOTED,
+} from '../models/constants/PollNoticeModel'
+import {
+  EVENT_POLL_ACTIVATED,
+  EVENT_POLL_ENDED,
+  EVENT_POLL_VOTED,
+} from './constants/PollEmitterDAO'
+
+//#endregion CONSTANTS
 
 export default class PollEmitterDAO extends AbstractContractDAO {
   constructor (at) {

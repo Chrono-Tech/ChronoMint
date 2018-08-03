@@ -12,10 +12,9 @@ import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
 import { createNewChildAddress, goToWallets, resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
+import { FORM_CUSTOM_WALLET_ADD } from 'components/constants'
 import { prefix } from './lang'
 import './StandardWalletForm.scss'
-
-export const FORM_CUSTOM_WALLET_ADD = 'StandardWalletForm'
 
 function mapDispatchToProps (dispatch) {
   return {

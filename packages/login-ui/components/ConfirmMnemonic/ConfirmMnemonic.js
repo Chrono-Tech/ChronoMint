@@ -11,7 +11,7 @@ import React, { Component } from 'react'
 import Button from 'components/common/ui/Button/Button'
 import {
   FORM_CONFIRM_MNEMONIC,
-} from '@chronobank/login-ui/redux/actions'
+} from '@chronobank/login-ui/redux/constants'
 
 import './ConfirmMnemonic.scss'
 

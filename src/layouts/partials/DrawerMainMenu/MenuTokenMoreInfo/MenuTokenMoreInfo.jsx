@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { DUCK_MONITOR } from '@chronobank/login/redux/monitor/actions'
+import { DUCK_MONITOR } from '@chronobank/login/redux/monitor/constants'
 import { Link } from 'react-router'
 import { CopyIcon, IPFSImage, QRIcon } from 'components'
 import React, { PureComponent } from 'react'
@@ -21,13 +21,11 @@ import copySvg from 'assets/img/icons/copy.svg'
 import qrSvg from 'assets/img/icons/qr.svg'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
 import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED, SYNC_STATUS_SYNCING } from '@chronobank/login/network/MonitorService'
-import { SIDES_TOGGLE_MAIN_MENU } from 'redux/sides/actions'
-import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
+import { SIDES_TOGGLE_MAIN_MENU } from 'redux/sides/constants'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import './MenuTokenMoreInfo.scss'
 import { prefix } from './lang'
 import { getSelectedToken, getSelectedWalletAddress, getWalletCompactWalletsList } from './selectors'
-
-export const MENU_TOKEN_MORE_INFO_PANEL_KEY = 'MenuTokenMoreInfo_panelKey'
 
 const makeMapStateToProps = () => {
   const getTokenFromState = getSelectedToken()

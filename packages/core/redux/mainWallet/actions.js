@@ -3,27 +3,22 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+// FIXME: to rework all methods below to avoid complexity
+/* eslint-disable complexity */
+
 import {
   bccProvider,
   btcProvider,
   btgProvider,
   ltcProvider,
 } from '@chronobank/login/network/BitcoinProvider'
-import {
-  BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_LITECOIN,
-} from '@chronobank/login/network/constants'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { change, formValueSelector } from 'redux-form/immutable'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import { history } from '@chronobank/core-dependencies/configureStore'
 import { push } from '@chronobank/core-dependencies/router'
-import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, EVENT_UPDATE_TRANSACTION } from '../../dao/constants'
 import { getDeriveWalletsAddresses, getMultisigWallets } from '../wallet/selectors'
-import { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
 import Amount from '../../models/Amount'
 import ApprovalNoticeModel from '../../models/notices/ApprovalNoticeModel'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
@@ -35,61 +30,76 @@ import AllowanceModel from '../../models/wallet/AllowanceModel'
 import { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
 import { addMarketToken } from '../market/actions'
 import { notify, notifyError } from '../notifier/actions'
-import { DUCK_SESSION } from '../session/actions'
+import { DUCK_SESSION } from '../session/constants'
 import { subscribeOnTokens } from '../tokens/actions'
 import { DUCK_TOKENS } from '../tokens/constants'
 import tokenService from '../../services/TokenService'
-import type TxModel from '../../models/TxModel'
-import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from '../../dao/AssetHolderDAO'
-import { TX_APPROVE } from '../../dao/ERC20DAO'
 import OwnerCollection from '../../models/wallet/OwnerCollection'
 import OwnerModel from '../../models/wallet/OwnerModel'
-import { DUCK_ETH_MULTISIG_WALLET, ETH_MULTISIG_BALANCE, ETH_MULTISIG_FETCHED } from '../multisigWallet/constants'
 import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 import AddressesCollection from '../../models/wallet/AddressesCollection'
-import { BLOCKCHAIN_NEM } from '../../dao/NemDAO'
-import { BLOCKCHAIN_WAVES } from '../../dao/WavesDAO'
-import WalletModel from '../../models/wallet/WalletModel'
-import { daoByType } from '../daos/selectors'
-import { WALLETS_SET_IS_TIME_REQUIRED, WALLETS_UPDATE_WALLET } from '../wallets/actions'
+import type TxModel from '../../models/TxModel'
 import { getMainAddresses, getMainEthWallet, getMainWalletForBlockchain, getWallet } from '../wallets/selectors/models'
 import { getAccount } from '../session/selectors/models'
 import AllowanceCollection from '../../models/AllowanceCollection'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
+import WalletModel from '../../models/wallet/WalletModel'
+import { daoByType } from '../daos/selectors'
 
-export const DUCK_MAIN_WALLET = 'mainWallet'
-export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
+//#region CONSTANTS
 
-// TODO @ipavlenko: Odd code, remove WALLET_BALANCE
-export const WALLET_BALANCE = 'mainWallet/BALANCE'
-export const WALLET_ALLOWANCE = 'mainWallet/ALLOWANCE'
-export const WALLET_ADDRESS = 'mainWallet/WALLET_ADDRESS'
-export const WALLET_CURRENT_BLOCK_HEIGHT = 'mainWallet/WALLET_CURRENT_BLOCK_HEIGHT'
-export const WALLET_TRANSACTIONS_FETCH = 'mainWallet/TRANSACTIONS_FETCH'
-export const WALLET_TRANSACTION_UPDATED = 'mainWallet/TRANSACTION_UPDATED'
-export const WALLET_TRANSACTION = 'mainWallet/TRANSACTION'
-export const WALLET_TRANSACTIONS = 'mainWallet/TRANSACTIONS'
-export const WALLET_IS_TIME_REQUIRED = 'mainWallet/IS_TIME_REQUIRED'
-export const WALLET_TOKEN_BALANCE = 'mainWallet/TOKEN_BALANCE'
-export const WALLET_INIT = 'mainWallet/INIT'
-export const WALLET_SET_NAME = 'mainWallet/SET_NAME'
-export const WALLET_ESTIMATE_GAS_FOR_DEPOSIT = 'mainWallet/ESTIMATE_GAS_FOR_DEPOSIT'
+import {
+  TX_DEPOSIT,
+  TX_WITHDRAW_SHARES,
+} from '../../dao/constants/AssetHolderDAO'
+import {
+  TX_APPROVE,
+} from '../../dao/constants/ERC20DAO'
+import {
+  DUCK_ETH_MULTISIG_WALLET,
+  ETH_MULTISIG_BALANCE,
+  ETH_MULTISIG_FETCHED,
+} from '../multisigWallet/constants'
+import {
+  WALLETS_SET_IS_TIME_REQUIRED,
+  WALLETS_UPDATE_WALLET,
+} from '../wallets/constants'
+import {
+  // Blockchains
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_NEM,
+  BLOCKCHAIN_WAVES,
+  // Tokens
+  BCC,
+  BTC,
+  BTG,
+  ETH,
+  LTC,
+  TIME,
+  WAVES,
+  XEM,
+  // Events
+  EVENT_APPROVAL_TRANSFER,
+  EVENT_NEW_TRANSFER,
+  EVENT_UPDATE_BALANCE,
+  EVENT_UPDATE_TRANSACTION,
+} from '../../dao/constants'
+import {
+  FORM_ADD_NEW_WALLET,
+  WALLET_ADDRESS,
+  WALLET_ALLOWANCE,
+  WALLET_ESTIMATE_GAS_FOR_DEPOSIT,
+  WALLET_INIT,
+  WALLET_TOKEN_BALANCE,
+  WALLET_TRANSACTION,
+  WALLET_TRANSACTION_UPDATED,
+} from './constants'
 
-export const ETH = 'ETH'
-export const TIME = 'TIME'
-export const LHT = 'LHT'
-export const BTC = 'BTC'
-export const BCC = 'BCC'
-export const BTG = 'BTG'
-export const LTC = 'LTC'
-export const XEM = 'XEM'
-export const WAVES = 'WAVES'
-
-export const FEE_RATE_MULTIPLIER = {
-  min: 0.1,
-  max: 1.9,
-  step: 0.1,
-}
+//#endregion
 
 export const goToWallets = () => (dispatch) => dispatch(push('/wallets'))
 

@@ -5,7 +5,7 @@
 
 import EventEmitter from 'events'
 import PollInterfaceDAO from './PollInterfaceDAO'
-import { PollInterfaceABI } from './abi/index'
+import { PollInterfaceABI } from './abi'
 
 export default class PollInterfaceManagerDAO extends EventEmitter {
   constructor ({ web3, history, subscribeTxFlow }) {

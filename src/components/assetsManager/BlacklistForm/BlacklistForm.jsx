@@ -10,15 +10,14 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
-import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import UserIcon from 'components/common/HashedIcon/UserIcon'
 import BlacklistModel from '@chronobank/core/models/tokens/BlacklistModel'
 import { Button } from 'components'
+import { FORM_ASSET_MANAGER } from 'components/constants'
 import './BlacklistForm.scss'
 import validate from './validate'
 import { prefix } from './lang'
-
-export const FORM_ASSET_MANAGER = 'AssetManagerDialog'
 
 const onSubmit = (values) => {
   return values.get('userAddress')

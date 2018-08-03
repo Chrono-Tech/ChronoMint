@@ -14,11 +14,10 @@ import { withStyles } from '@material-ui/core/styles'
 import compose from 'recompose/compose'
 import {
   FORM_FOOTER_EMAIL_SUBSCRIPTION,
-} from '@chronobank/login-ui/redux/actions'
+} from '@chronobank/login-ui/redux/constants'
 import {
   onSubmitSubscribeNewsletter,
   onSubmitSubscribeNewsletterFail,
-  onSubmitSubscribeNewsletterSuccess,
 } from '@chronobank/login-ui/redux/thunks'
 
 import { Button } from 'components'
@@ -47,7 +46,6 @@ const mapDispatchToProps = (dispatch) => {
       await dispatch(onSubmitSubscribeNewsletter(email))
     },
     onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitSubscribeNewsletterFail(errors, submitErrors)),
-    onSubmitSuccess: () => dispatch(onSubmitSubscribeNewsletterSuccess),
   }
 }
 

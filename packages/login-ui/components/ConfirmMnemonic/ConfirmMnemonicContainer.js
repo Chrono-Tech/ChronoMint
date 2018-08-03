@@ -8,7 +8,7 @@ import { stopSubmit, SubmissionError } from 'redux-form/immutable'
 import React, { Component } from 'react'
 import {
   FORM_CONFIRM_MNEMONIC,
-} from '@chronobank/login-ui/redux/actions'
+} from '@chronobank/login-ui/redux/constants'
 
 import ConfirmMnemonic from './ConfirmMnemonic'
 
