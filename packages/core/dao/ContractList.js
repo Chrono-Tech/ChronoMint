@@ -35,6 +35,7 @@ import PlatformManagerDAO from './PlatformsManagerDAO'
 import TokenManagementExtensionDAO from './TokenManagementExtensionDAO'
 import ChronoBankPlatformDAO from './ChronoBankPlatformDAO'
 import ChronoBankAssetDAO from './ChronoBankAssetDAO'
+import PlatformTokenExtensionGatewayManagerEmitterDAO from './PlatformTokenExtensionGatewayManagerEmitterDAO'
 
 export const CONTRACTS_MANAGER = new ContractModel({
   type: 'ContractsManager',
