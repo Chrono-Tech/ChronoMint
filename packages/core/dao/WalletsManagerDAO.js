@@ -17,7 +17,7 @@ import {
   EE_MS_WALLET_ADDED,
   EE_MS_WALLET_REMOVED,
   EE_MS_WALLETS_COUNT,
-} from './constants/EthereumDAO'
+} from './constants/WalletsManagerDAO'
 import {
   BLOCKCHAIN_ETHEREUM,
 } from './constants'

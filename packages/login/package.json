@@ -11,7 +11,7 @@
     "bitcoinjs-lib": "github:chronobank/bitcoinjs-lib#opt-in-bitcoincash-sighash",
     "coinselect": "^3.1.11",
     "eth-crypto": "^1.2.0",
-    "ethereumjs-wallet": "^0.6.0",
+    "ethereumjs-wallet": "0.6.0",
     "immutable": ">=3",
     "keythereum": "^1.0.4",
     "ledger-wallet-provider": "github:mikefluff/ledger-wallet-provider",

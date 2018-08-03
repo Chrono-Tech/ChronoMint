@@ -4,7 +4,7 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { ethereumProvider } from '../../login/network/EthereumProvider'
+import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import TokenModel from '../models/tokens/TokenModel'
 import AbstractTokenDAO from './AbstractTokenDAO'
 import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'

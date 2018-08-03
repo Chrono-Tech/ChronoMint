@@ -8,8 +8,11 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { stopSubmit } from 'redux-form'
 import {
-  FORM_WALLET_UPLOAD, navigateBack,
+  navigateBack,
 } from '../../redux/actions'
+import {
+  FORM_WALLET_UPLOAD,
+} from '../../redux/constants'
 import LoginWithWallet from './LoginWithWallet'
 
 const mapDispatchToProps = (dispatch) => {

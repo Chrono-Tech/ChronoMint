@@ -16,6 +16,9 @@ import {
 } from './constants'
 
 const MARKET_REQUEST_DELAY = 30000
+
+// TODO: to check, why we need this mutable variable exported
+// eslint-disable-next-line import/no-mutable-exports
 export let timerId
 
 const watchMarket = (dispatch, getState) => async () => {

@@ -4,7 +4,7 @@
  */
 
 import { isTestingNetwork } from '@chronobank/login/network/settings'
-import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'

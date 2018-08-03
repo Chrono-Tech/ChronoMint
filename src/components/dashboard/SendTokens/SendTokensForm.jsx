@@ -4,13 +4,19 @@
  */
 
 import { Button, IPFSImage } from 'components'
-import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/constants'
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_ETHEREUM,
+  ETH,
+} from '@chronobank/core/dao/constants'
 import { TOKEN_ICONS } from 'assets'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import contractsManagerDAO from '@chronobank/core/dao/ContractsManagerDAO'
-import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
-import { TX_TRANSFER } from '@chronobank/core/dao/ERC20DAO'
+import { TX_TRANSFER } from '@chronobank/core/dao/constants/ERC20DAO'
 import web3Converter from '@chronobank/core/utils/Web3Converter'
 import Amount from '@chronobank/core/models/Amount'
 import Immutable from 'immutable'
@@ -27,8 +33,9 @@ import { TextField } from 'redux-form-material-ui'
 import Select from 'redux-form-material-ui/es/Select'
 import Slider from 'components/common/Slider'
 import { change, Field, formPropTypes, formValueSelector, getFormSyncErrors, getFormValues, reduxForm } from 'redux-form/immutable'
-import { ETH, FEE_RATE_MULTIPLIER, getSpendersAllowance } from '@chronobank/core/redux/mainWallet/actions'
-import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
+import { getSpendersAllowance } from '@chronobank/core/redux/mainWallet/actions'
+import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
 import { walletInfoSelector } from '@chronobank/core/redux/wallet/selectors/selectors'
 import { estimateBtcFee, estimateGas } from '@chronobank/core/redux/tokens/actions'

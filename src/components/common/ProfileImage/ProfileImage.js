@@ -6,7 +6,7 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import ProfileService from '@chronobank/login/network/ProfileService'
 
 import './ProfileImage.scss'

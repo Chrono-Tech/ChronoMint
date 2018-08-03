@@ -10,7 +10,8 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
-import { DUCK_SESSION, updateUserProfile } from '@chronobank/core/redux/session/actions'
+import { updateUserProfile } from '@chronobank/core/redux/session/actions'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { getAccountProfileSummary } from '@chronobank/core/redux/session/selectors'
 import {
   getAccountName,

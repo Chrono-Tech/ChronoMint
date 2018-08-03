@@ -14,9 +14,11 @@ import {
   initRecoverAccountPage,
 } from '@chronobank/login/redux/network/thunks'
 import {
-  FORM_RESET_PASSWORD,
   navigateToSelectWallet,
 } from '../../redux/actions'
+import {
+  FORM_RESET_PASSWORD,
+} from '../../redux/constants'
 import ResetPassword from './ResetPassword'
 
 function mapDispatchToProps (dispatch,) {

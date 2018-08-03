@@ -4,7 +4,7 @@
  */
 
 import Immutable from 'immutable'
-import { OPERATIONS_PER_PAGE } from '../../dao/constants'
+import { OPERATIONS_PER_PAGE } from '../../dao/constants/PendingManagerDAO'
 import * as a from './constants'
 
 const initialState = {

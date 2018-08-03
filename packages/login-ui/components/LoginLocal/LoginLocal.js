@@ -16,11 +16,11 @@ import { Translate } from 'react-redux-i18n'
 import {
   handleLoginLocalAccountClick,
 } from '@chronobank/login/redux/network/thunks'
+import networkService from '@chronobank/login/network/NetworkService'
 import {
   navigateToLoginPage,
 } from '../../redux/actions'
 import {
-  initLoginLocal,
   onSubmitLoginTestRPC,
   onSubmitLoginTestRPCFail,
 } from '../../redux/thunks'
@@ -29,7 +29,6 @@ import './LoginLocal.scss'
 const mapDispatchToProps = (dispatch) => ({
   onSubmit: () => dispatch(onSubmitLoginTestRPC()),
   onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitLoginTestRPCFail(errors, submitErrors)),
-  initLoginLocal: () => dispatch(initLoginLocal()),
   navigateToLoginPage: () => dispatch(navigateToLoginPage()),
   handleLoginLocalAccountClick: (account) => dispatch(handleLoginLocalAccountClick(account)),
 })
@@ -46,14 +45,17 @@ const mapStateToProps = (state) => {
 class LoginLocal extends PureComponent {
   static propTypes = {
     accounts: PropTypes.array,
-    initLoginLocal: PropTypes.func,
     navigateToLoginPage: PropTypes.func,
     handleLoginLocalAccountClick: PropTypes.func,
     isLocalNode: PropTypes.bool,
   }
 
-  componentWillMount (){
-    this.props.initLoginLocal()
+  async componentWillMount (){
+    if (this.props.isLocalNode) {
+      await networkService.loadAccounts()
+    } else {
+      this.props.navigateToLoginPage()
+    }
   }
 
   componentWillReceiveProps (nextProps){

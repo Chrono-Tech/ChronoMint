@@ -119,10 +119,10 @@ class LoginLedger extends PureComponent {
   }
 
   _buildItem(item, index) {
-    return <MenuItem value={index} key={index} primaryText={item}/>
+    return <MenuItem value={index} key={index} primaryText={item} />
   }
 
-  handleChange = (event, index, value) => {this.setState({value}); ledgerProvider.setWallet(this.props.account[index]); networkService.selectAccount(this.props.account[index]);}
+  handleChange = (event, index, value) => {this.setState({ value }); ledgerProvider.setWallet(this.props.account[index]); networkService.selectAccount(this.props.account[index]);}
 
   render () {
     const { isLoading, ledger, account } = this.props
@@ -140,13 +140,15 @@ class LoginLedger extends PureComponent {
 
         {ledger.isFetched && (
           <div styleName='account'>
-            <SelectField label="Select address"
-                         autoWidth={true}
-                         fullWidth={true}
-                         floatingLabelStyle={{ color: 'white' }}
-                         labelStyle={{ color: 'white' }}
-                         value={this.state.value}
-                         onChange={this.handleChange}>
+            <SelectField
+              label='Select address'
+              autoWidth={true}
+              fullWidth={true}
+              floatingLabelStyle={{ color: 'white' }}
+              labelStyle={{ color: 'white' }}
+              value={this.state.value}
+              onChange={this.handleChange}
+            >
               {this.props.account.map(this._buildItem)}
             </SelectField>
           </div>
