@@ -89,7 +89,7 @@ export default class AbstractContractDAO extends EventEmitter {
    * @param value - BigNumber | Amount
    * @param from - string
    */
-  _tx (func: string, args: Array = [], value: BigNumber = new BigNumber(0), from: string): Promise {
+  _tx (func: string, args: Array = [], value: BigNumber = new BigNumber(0), from: string) {
     const data = this.contract.methods[func](...args).encodeABI()
 
     if (!from) {
