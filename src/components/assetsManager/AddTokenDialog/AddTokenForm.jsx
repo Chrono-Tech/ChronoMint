@@ -277,16 +277,20 @@ export default class AddTokenForm extends PureComponent {
   }
 
   renderTokenInfo () {
-    const tokenSymbol = this.props.formValues && this.props.formValues.get('tokenSymbol')
-    const smallestUnit = this.props.formValues && this.props.formValues.get('smallestUnit')
-    const amount = this.props.formValues && this.props.formValues.get('amount')
-    const description = this.props.formValues && this.props.formValues.get('description')
-    const platform = this.props.formValues && this.props.formValues.get('platform')
-    const renderPlatform = (platform) => {
-      return platform.name
-        ? <span>{platform.name}&nbsp;(<small>{platform.address}</small>)</span>
-        : <span>{platform.address}</span>
+    const formValues = this.props.formValues || {}
+
+    const tokenSymbol = formValues.get('tokenSymbol')
+    const smallestUnit = formValues.get('smallestUnit')
+    const amount = formValues.get('amount')
+    const description = formValues.get('description')
+    const platform = formValues.get('platform')
+
+    const renderPlatform = ({ name, address }) => {
+      return name
+        ? <span>{name}&nbsp;(<small>{address}</small>)</span>
+        : <span>{address}</span>
     }
+
     return (
       <div styleName='tokenInfoRow'>
         {this.renderFileInput()}
