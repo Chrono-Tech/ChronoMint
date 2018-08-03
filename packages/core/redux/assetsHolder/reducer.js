@@ -4,7 +4,7 @@
  */
 
 import AssetHolderModel from '../../models/assetHolder/AssetHolderModel'
-import * as a from './actions'
+import * as a from './constants'
 
 const initialState = new AssetHolderModel()
 

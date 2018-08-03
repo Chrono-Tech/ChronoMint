@@ -5,58 +5,27 @@
 
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { MuiThemeProvider } from '@material-ui/core'
 import { Field, reduxForm } from 'redux-form/immutable'
 import React, { Component } from 'react'
-import { Link } from 'react-router'
 import Button from 'components/common/ui/Button/Button'
 import {
-  navigateToConfirmMnemonicPage,
   FORM_CONFIRM_MNEMONIC,
-} from '@chronobank/login-ui/redux/actions'
-import {
-  initConfirmMnemonicPage,
-  onSubmitConfirmMnemonic,
-  onSubmitConfirmMnemonicFail,
-  onSubmitConfirmMnemonicSuccess,
-} from '@chronobank/login-ui/redux/thunks'
+} from '@chronobank/login-ui/redux/constants'
 
 import './ConfirmMnemonic.scss'
 
-function mapStateToProps (state) {
-
-  return {
-    mnemonic: state.get('network').newAccountMnemonic,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    navigateToConfirmPage: () => dispatch(navigateToConfirmMnemonicPage()),
-    initConfirmMnemonicPage: () => dispatch(initConfirmMnemonicPage()),
-    onSubmit: (values) => {
-      const confirmMnemonic = values.get('mnemonic')
-
-      dispatch(onSubmitConfirmMnemonic(confirmMnemonic))
-    },
-    onSubmitSuccess: () => dispatch(onSubmitConfirmMnemonicSuccess()),
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitConfirmMnemonicFail(errors, submitErrors)),
-  }
-}
-
-class ConfirmMnemonicPage extends Component {
+class ConfirmMnemonic extends Component {
   static propTypes = {
     mnemonic: PropTypes.string,
-    initConfirmMnemonicPage: PropTypes.func,
+    previousPage: PropTypes.func,
   }
 
   static defaultProps = {
     mnemonic: '',
   }
 
-  constructor (props){
+  constructor (props) {
     super(props)
 
     const wordsArray = props.mnemonic ?
@@ -70,15 +39,11 @@ class ConfirmMnemonicPage extends Component {
     }
   }
 
-  componentDidMount(){
-    this.props.initConfirmMnemonicPage()
-  }
-
-  getCurrentMnemonic (){
+  getCurrentMnemonic () {
     return this.state.confirmPhrase.map((item) => item.word).join(' ')
   }
 
-  getWordsButtons (){
+  getWordsButtons () {
     return this.state.currentWordsArray.map((item, index) => {
       const wordSelected = this.state.confirmPhrase.includes(item)
 
@@ -86,7 +51,7 @@ class ConfirmMnemonicPage extends Component {
         <Button
           key={index}
           onClick={this.onClickWord.bind(this, item)}
-          styleName={classnames('word')}
+          styleName='word'
           disabled={wordSelected}
         >
           { item.word }
@@ -95,7 +60,7 @@ class ConfirmMnemonicPage extends Component {
     )
   }
 
-  onClickWord (word, e){
+  onClickWord (word) {
     const { change } = this.props
 
     if (!this.state.confirmPhrase.includes(word)) {
@@ -106,7 +71,7 @@ class ConfirmMnemonicPage extends Component {
     }
   }
 
-  clearMnemonic (){
+  clearMnemonic () {
     const { change } = this.props
 
     this.setState(
@@ -115,7 +80,7 @@ class ConfirmMnemonicPage extends Component {
     )
   }
 
-  clearLastWord (){
+  clearLastWord () {
     const { dispatch, change } = this.props
 
     this.setState(
@@ -125,68 +90,66 @@ class ConfirmMnemonicPage extends Component {
   }
 
   render () {
-    const { handleSubmit, error } = this.props
+    const { handleSubmit, error, previousPage } = this.props
+
     return (
-      <MuiThemeProvider>
-        <form styleName='form' name={FORM_CONFIRM_MNEMONIC} onSubmit={handleSubmit}>
-          <div>
-            <div styleName='page-title'>
-              <Translate value='ConfirmMnemonic.title' />
+      <form styleName='form' name={FORM_CONFIRM_MNEMONIC} onSubmit={handleSubmit}>
+        <div>
+          <div styleName='page-title'>
+            <Translate value='ConfirmMnemonic.title' />
+          </div>
+
+          <p styleName='description'>
+            <Translate value='ConfirmMnemonic.description' />
+          </p>
+
+          <div styleName='passPhraseWrapper'>
+            <div styleName='passPhrase'>{ this.getCurrentMnemonic() }</div>
+            <Field
+              component='input'
+              type='hidden'
+              name='mnemonic'
+              readOnly
+            />
+
+          </div>
+
+          <div styleName={classnames({ error: true,  visible: error })}>
+            {error}
+          </div>
+
+          <div styleName='wordsBlock'>
+            { this.getWordsButtons() }
+          </div>
+
+          <div styleName='controlsBlock'>
+            <div styleName='control' onClick={this.clearMnemonic.bind(this)}>
+              <Translate value='ConfirmMnemonic.startOver' />
             </div>
-
-            <p styleName='description'>
-              <Translate value='ConfirmMnemonic.description' />
-            </p>
-
-            <div styleName='passPhraseWrapper'>
-              <div styleName='passPhrase'>{ this.getCurrentMnemonic() }</div>
-              <Field
-                component='input'
-                type='hidden'
-                name='mnemonic'
-                readOnly
-              />
-
-            </div>
-
-            <div styleName={classnames({ error: true,  visible: error })}>
-              {error}
-            </div>
-
-            <div styleName='wordsBlock'>
-              { this.getWordsButtons() }
-            </div>
-
-            <div styleName='controlsBlock'>
-              <div styleName='control' onClick={this.clearMnemonic.bind(this)}>
-                <Translate value='ConfirmMnemonic.startOver' />
-              </div>
-              <div styleName='control' onClick={this.clearLastWord.bind(this)}>
-                <Translate value='ConfirmMnemonic.undo' />
-              </div>
-            </div>
-
-            <div styleName='actions'>
-              <Button styleName='submit' type='submit' buttonType='login'>
-                <Translate value='ConfirmMnemonic.done' />
-              </Button>
-
-              <Link to='/login/mnemonic' href styleName='link'>
-                <Translate value='ConfirmMnemonic.back' />
-              </Link>
-            </div>
-
-            <div styleName='progressBlock'>
-              <div styleName='progressPoint' />
-              <div styleName='progressPoint' />
-              <div styleName='progressPoint progressPointInactive' />
+            <div styleName='control' onClick={this.clearLastWord.bind(this)}>
+              <Translate value='ConfirmMnemonic.undo' />
             </div>
           </div>
-        </form>
-      </MuiThemeProvider>
+
+          <div styleName='actions'>
+            <Button styleName='submit' type='submit' buttonType='login'>
+              <Translate value='ConfirmMnemonic.done' />
+            </Button>
+
+            <button onClick={previousPage} styleName='link'>
+              <Translate value='ConfirmMnemonic.back' />
+            </button>
+          </div>
+
+          <div styleName='progressBlock'>
+            <div styleName='progressPoint' />
+            <div styleName='progressPoint' />
+            <div styleName='progressPoint progressPointInactive' />
+          </div>
+        </div>
+      </form>
     )
   }
 }
 
-const form = reduxForm({ form: FORM_CONFIRM_MNEMONIC })(ConfirmMnemonicPage)
-export default connect(mapStateToProps, mapDispatchToProps)(form)
+export default reduxForm({ form: FORM_CONFIRM_MNEMONIC })(ConfirmMnemonic)

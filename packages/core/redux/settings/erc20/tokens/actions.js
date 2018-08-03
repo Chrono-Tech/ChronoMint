@@ -12,7 +12,7 @@ import type AbstractFetchingModel from '../../../../models/AbstractFetchingModel
 import type TokenNoticeModel from '../../../../models/notices/TokenNoticeModel'
 import type TokenModel from '../../../../models/tokens/TokenModel'
 import { notify } from '../../../notifier/actions'
-import { DUCK_SESSION } from '../../../session/actions'
+import { DUCK_SESSION } from '../../../session/constants'
 import { TOKENS_FETCHED, TOKENS_REMOVE, TOKENS_UPDATE } from '../../../tokens/constants'
 import tokenService from '../../../../services/TokenService'
 import Amount from '../../../../models/Amount'
@@ -20,10 +20,9 @@ import contractsManagerDAO from '../../../../dao/ContractsManagerDAO'
 import ERC20DAO from '../../../../dao/ERC20DAO'
 import { daoByType } from '../../../daos/selectors'
 
-export const DUCK_SETTINGS_ERC20_TOKENS = 'settingsERC20Tokens'
-
-export const TOKENS_FORM = 'settings/TOKENS_FORM'
-export const TOKENS_FORM_FETCH = 'settings/TOKENS_FORM_FETCH'
+import {
+  TOKENS_FORM_FETCH,
+} from './constants'
 
 const setToken = (token: TokenModel) => ({ type: TOKENS_UPDATE, token })
 const removeToken = (token: TokenModel) => ({ type: TOKENS_REMOVE, token })

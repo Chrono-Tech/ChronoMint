@@ -87,11 +87,13 @@ export default class NetworkCreateModal extends PureComponent {
     const { network } = this.props
 
     return (
-      <ModalDialog title={
-        network ? (
-          <Translate value='NetworkCreateModal.titleEditMode' />
-        ) : (<Translate value='NetworkCreateModal.titleAddMode' />)
-      }>
+      <ModalDialog
+        title={
+          network
+            ? <Translate value='NetworkCreateModal.titleEditMode' />
+            : <Translate value='NetworkCreateModal.titleAddMode' />
+        }
+      >
         <NetworkCreateModalForm
           onSubmit={this.handleSubmit.bind(this)}
           onSubmitSuccess={this.handleSubmitSuccess.bind(this)}

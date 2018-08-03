@@ -109,7 +109,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   watchError (callback) {
     return this.on('Error', async (data) => {
-      callback(web3Converter.hexToDecimal(data.returnValues.errorCode))
+      callback(this._c.hexToDecimal(data.returnValues.errorCode))
     })
   }
 
@@ -238,13 +238,14 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   async _decodeArgs (func: string, args: Object) {
     switch (func) {
-      case 'transfer':
+      case 'transfer': {
         const symbol = web3Converter.bytesToString(args._symbol)
         return {
           symbol,
           value: new Amount(args._value, symbol),
           to: args._to,
         }
+      }
       case 'changeRequirement':
         return {
           requiredSignatures: args._newRequired.toNumber(),

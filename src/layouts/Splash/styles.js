@@ -34,7 +34,7 @@ export default createMuiTheme({
         height: 'auto',
       },
       inputMultiline: {
-        height: 62,
+        height: 'auto',
         marginTop: 0,
         padding: 6,
         textAlign: 'left',
@@ -65,9 +65,9 @@ export default createMuiTheme({
     MuiInputLabel: {
       root: {
         '&$shrink': {
-          color: variables.colorOrange,
+          color: variables.additionalDataColor,
         },
-        color: variables.colorOrange,
+        color: variables.additionalDataColor,
         margin: 'auto',
         right: 0,
         left: 0,
@@ -81,9 +81,6 @@ export default createMuiTheme({
       },
       formControl: {
         top: 7,
-      },
-      error: {
-        color: variables.colorOrange,
       },
     },
     MuiFormHelperText: {

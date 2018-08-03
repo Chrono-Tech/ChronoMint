@@ -83,7 +83,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
   /** @private */
   async _getDAO (daoType: string, account = null, isNew = false): Promise<AbstractContractDAO> {
     if (!daoMap.hasOwnProperty(daoType)) {
-      return
+      // return
       throw new Error(`invalid DAO type ${daoType}`)
     }
 

@@ -24,13 +24,15 @@ import { ACCEPT_ALL } from '@chronobank/core/models/FileSelect/FileExtension'
 import FileModel from '@chronobank/core/models/FileSelect/FileModel'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { I18n } from '@chronobank/core-dependencies/i18n'
-import { createAsset, DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/actions'
+import { createAsset } from '@chronobank/core/redux/assetsManager/actions'
+import { DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/constants'
 import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import ipfs from '@chronobank/core-dependencies/utils/IPFS'
 import FeeModel from '@chronobank/core/models/tokens/FeeModel'
 import ReissuableModel from '@chronobank/core/models/tokens/ReissuableModel'
+import { FORM_ADD_TOKEN_DIALOG } from 'components/constants'
 import validate, { normalizeSmallestUnit } from './validate'
 
 import './AddTokenForm.scss'
@@ -38,8 +40,6 @@ import './AddTokenForm.scss'
 export const prefix = (token) => {
   return `Assets.AddTokenForm.${token}`
 }
-
-export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
 
 const onSubmit = (values, dispatch) => {
   console.log('onSubmitonSubmit: ', values.toJSON())

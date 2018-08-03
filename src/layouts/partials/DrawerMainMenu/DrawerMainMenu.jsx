@@ -13,18 +13,20 @@ import classnames from 'classnames'
 import { connect } from 'react-redux'
 import menu from 'menu'
 import { drawerHide } from 'redux/drawer/actions'
-import { DUCK_SESSION, logout } from '@chronobank/core/redux/session/actions'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
+import { logout } from '@chronobank/core/redux/session/actions'
 import chronWalletLogoSVG from 'assets/img/chronowallettext-white.svg'
 import ProfileModel from '@chronobank/core/models/ProfileModel'
-import { IPFSImage } from 'components'
+import ProfileImage from 'components/common/ProfileImage/ProfileImage'
 import exitSvg from 'assets/img/exit-white.svg'
-import { SIDES_CLOSE_ALL, sidesPush } from 'redux/sides/actions'
+import { sidesCloseAll, sidesPush } from 'redux/sides/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import UpdateProfileDialog from 'components/dialogs/UpdateProvideDialog/UpdateProfileDialog'
 import { getAccountAvatar, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
+import { MENU_TOKEN_MORE_INFO_PANEL_KEY } from 'redux/sides/constants'
 import { getWalletsLength } from '@chronobank/core/redux/wallets/selectors/wallets'
+import { getAccountProfileSummary } from '@chronobank/core/redux/session/selectors'
 import MenuAssetsManagerMoreInfo from './MenuAssetsManagerMoreInfo/MenuAssetsManagerMoreInfo'
-import { MENU_TOKEN_MORE_INFO_PANEL_KEY } from './MenuTokenMoreInfo/MenuTokenMoreInfo'
 import MenuTokensList from './MenuTokensList/MenuTokensList'
 import { prefix } from './lang'
 
@@ -33,6 +35,7 @@ import './DrawerMainMenu.scss'
 function mapStateToProps (state) {
   const { isCBE, profile } = state.get(DUCK_SESSION)
   const selectedAccount = state.get('persistAccount').selectedWallet
+  const accountProfileSummary = getAccountProfileSummary(state)
 
   return {
     selectedAccount: selectedAccount,
@@ -41,6 +44,8 @@ function mapStateToProps (state) {
     profile,
     isDrawerOpen: state.get('drawer').isOpen,
     networkName: networkService.getName(),
+    avatar: accountProfileSummary.avatar,
+    userName: accountProfileSummary.userName,
   }
 }
 
@@ -50,7 +55,7 @@ function mapDispatchToProps (dispatch) {
     handleLogout: () => dispatch(logout()),
     handleProfileEdit: () => dispatch(modalsOpen({ component: UpdateProfileDialog })),
     handle: (handleClose) => {
-      dispatch({ type: SIDES_CLOSE_ALL })
+      dispatch(sidesCloseAll())
       dispatch(sidesPush({
         component: MenuAssetsManagerMoreInfo,
         panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY,
@@ -64,7 +69,7 @@ function mapDispatchToProps (dispatch) {
     },
 
     handleAssetsManagerMoreInfo: (handleClose) => {
-      dispatch({ type: SIDES_CLOSE_ALL })
+      dispatch(sidesCloseAll())
       dispatch(sidesPush({
         component: MenuAssetsManagerMoreInfo,
         panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY,
@@ -87,6 +92,7 @@ export default class DrawerMainMenu extends PureComponent {
     handleDrawerHide: PropTypes.func,
     profile: PropTypes.instanceOf(ProfileModel),
     networkName: PropTypes.string,
+    userName: PropTypes.string,
     handleLogout: PropTypes.func,
     walletsCount: PropTypes.number,
     handleAssetsManagerMoreInfo: PropTypes.func,
@@ -164,7 +170,7 @@ export default class DrawerMainMenu extends PureComponent {
   }
 
   render () {
-    const { selectedAccount } = this.props
+    const { selectedAccount, avatar, userName } = this.props
 
     return (
       <div styleName='root' className='root-open'>
@@ -182,16 +188,16 @@ export default class DrawerMainMenu extends PureComponent {
             <div styleName={classnames('account-info', 'item')}>
               <div styleName='account-info-avatar'>
                 <div styleName='avatar-icon' onClick={this.props.handleProfileEdit}>
-                  <IPFSImage
+                  <ProfileImage
                     styleName='avatar-icon-content'
-                    multihash={this.props.profile.icon()}
+                    imageId={avatar}
                     icon={<div styleName='emptyAvatar'><img styleName='avatar-image' src={getAccountAvatar(selectedAccount)} alt='avatar' /></div>}
                   />
                 </div>
               </div>
               <div styleName='account-info-name'>
                 <div styleName='account-name-text'>
-                  {getAccountName(selectedAccount) || 'Account name'}
+                  {userName || getAccountName(selectedAccount) || 'Account name'}
                 </div>
                 <div styleName='network-name-text'>
                   {this.props.networkName}

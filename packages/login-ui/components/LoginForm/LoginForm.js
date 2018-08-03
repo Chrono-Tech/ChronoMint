@@ -8,7 +8,6 @@ import { withStyles } from '@material-ui/core/styles'
 import compose from 'recompose/compose'
 import spinner from 'assets/img/spinningwheel-1.gif'
 import React from 'react'
-import { Link } from 'react-router'
 import { Field, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
@@ -16,7 +15,7 @@ import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
 import UserRow from 'components/common/ui/UserRow/UserRow'
 import { isLocalNode } from '@chronobank/login/network/settings'
-import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/actions'
+import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import {
   getAccountAddress,
   getAccountAvatarImg,
@@ -24,15 +23,18 @@ import {
 } from '@chronobank/core/redux/persistAccount/utils'
 import {
   DUCK_NETWORK,
-} from '@chronobank/login/redux/network/actions'
+} from '@chronobank/login/redux/network/constants'
 import {
   initAccountsSignature,
 } from '@chronobank/login/redux/network/thunks'
 import {
+  navigateToSelectWallet,
+  navigateToRecoverAccountPage,
+} from '../../redux/actions'
+import {
   FORM_LOGIN_PAGE,
   FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
-  navigateToSelectWallet,
-} from '../../redux/actions'
+} from '../../redux/constants'
 import {
   initLoginPage,
   onSubmitLoginForm,
@@ -56,11 +58,11 @@ function mapStateToProps (state) {
     selectedWallet: selectedWallet,
     successMessage: formSelector(state, FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE),
     initialValues: {
-      password: '1',
+      password: 'QWEpoi123',
     },
   }
 }
-
+//QWEpoi123
 function mapDispatchToProps (dispatch) {
   return {
     onSubmit: async (values) => {
@@ -71,6 +73,7 @@ function mapDispatchToProps (dispatch) {
     initLoginPage: async () => dispatch(initLoginPage()),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
     initAccountsSignature: () => dispatch(initAccountsSignature()),
+    navigateToRecoverAccountPage: () => dispatch(navigateToRecoverAccountPage()),
   }
 }
 
@@ -82,7 +85,6 @@ class LoginPage extends React.Component {
     isLocalNode: PropTypes.bool,
     isLoginSubmitting: PropTypes.bool,
     navigateToSelectWallet: PropTypes.func,
-    handleSubmit: PropTypes.func,
     selectedAccount: PropTypes.string,
     selectedWallet: PropTypes.object,
     successMessage: PropTypes.string,
@@ -90,10 +92,6 @@ class LoginPage extends React.Component {
 
   componentWillMount () {
     this.props.initLoginPage()
-  }
-
-  componentDidMount () {
-    // this.props.handleSubmit()
   }
 
   renderSuccessMessage () {
@@ -120,6 +118,7 @@ class LoginPage extends React.Component {
       isLocalNode,
       isLoginSubmitting,
       navigateToSelectWallet,
+      navigateToRecoverAccountPage,
       onSubmit,
       pristine,
       selectedWallet,
@@ -178,9 +177,9 @@ class LoginPage extends React.Component {
 
             {error ? (<div styleName='form-error'>{error}</div>) : null}
 
-            <Link to='/login/recover-account' href styleName='link'>
+            <button onClick={navigateToRecoverAccountPage} styleName='link'>
               <Translate value='LoginForm.forgotPassword' />
-            </Link>
+            </button>
           </div>
         </div>
 

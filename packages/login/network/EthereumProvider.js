@@ -4,16 +4,12 @@
  */
 
 import networkService from '@chronobank/login/network/NetworkService'
-// import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/actions'
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
 import web3Factory from '@chronobank/core/web3/index'
 import AbstractProvider from './AbstractProvider'
 import EthereumEngine from './EthereumEngine'
 import selectEthereumNode from './EthereumNode'
 import { getNetworkById } from './settings'
-// import {
-//   DUCK_NETWORK,
-// } from '../redux/network/actions'
 
 export class EthereumProvider extends AbstractProvider {
   constructor () {

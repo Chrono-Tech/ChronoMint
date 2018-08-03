@@ -4,8 +4,19 @@
  */
 
 import EventEmitter from 'events'
-import PollEmitter, { EVENT_POLL_ACTIVATED, EVENT_POLL_ENDED, EVENT_POLL_VOTED } from '../dao/PollEmitterDAO'
-import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED } from '../dao/VotingManagerDAO'
+import PollEmitter from '../dao/PollEmitterDAO'
+
+//#region CONSTANTS
+
+import {
+  EVENT_POLL_ACTIVATED,
+  EVENT_POLL_CREATED,
+  EVENT_POLL_ENDED,
+  EVENT_POLL_REMOVED,
+  EVENT_POLL_VOTED,
+} from '../dao/constants/PollEmitterDAO'
+
+//#endregion
 
 class VotingService extends EventEmitter {
 

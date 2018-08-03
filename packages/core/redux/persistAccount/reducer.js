@@ -5,7 +5,7 @@
 
 import { persistReducer, REHYDRATE } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
-import * as a from './actions'
+import * as a from './constants'
 import { removeWallet } from './utils'
 
 const persistConfig = {

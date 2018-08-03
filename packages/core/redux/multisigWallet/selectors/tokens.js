@@ -6,6 +6,7 @@
 import { createSelector } from 'reselect'
 import { tokensCountBalanceSelector } from './balances'
 
+// eslint-disable-next-line import/prefer-default-export
 export const multisigTokensCountSelector = (address: string) => createSelector(
   [
     tokensCountBalanceSelector(address),

@@ -4,45 +4,19 @@
  */
 
 import PropTypes from 'prop-types'
-// import { MuiThemeProvider } from '@material-ui/core'
-import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
-import { Link } from 'react-router'
 import Button from 'components/common/ui/Button/Button'
 import UserRow from 'components/common/ui/UserRow/UserRow'
 import {
-  initAccountsSignature,
-} from '@chronobank/login/redux/network/thunks'
-import { onWalletSelect } from '@chronobank/login-ui/redux/thunks'
-import {
   getAccountAddress,
-  // getAccountAvatar,
   getAccountAvatarImg,
   getAccountName,
 } from '@chronobank/core/redux/persistAccount/utils'
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 import arrow from 'assets/img/icons/prev-white.svg'
 import './AccountSelector.scss'
-import { navigateToSelectImportMethod } from '../../redux/actions'
 
-function mapDispatchToProps (dispatch) {
-  return {
-    navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
-    onWalletSelect: (wallet) => dispatch(onWalletSelect(wallet)),
-    initAccountsSignature: () => dispatch(initAccountsSignature()),
-  }
-}
-
-function mapStateToProps (state) {
-  return {
-    walletsList: state.get('persistAccount').walletsList.map(
-      (wallet) => new AccountEntryModel({ ...wallet }),
-    ),
-  }
-}
-
-@connect(mapStateToProps, mapDispatchToProps)
 export default class AccountSelector extends PureComponent {
   static propTypes = {
     onWalletSelect: PropTypes.func,
@@ -57,10 +31,6 @@ export default class AccountSelector extends PureComponent {
     onWalletSelect: () => {
     },
     walletsList: [],
-  }
-
-  componentDidMount () {
-    this.props.initAccountsSignature()
   }
 
   renderWalletsList () {
@@ -94,6 +64,8 @@ export default class AccountSelector extends PureComponent {
   }
 
   render () {
+    const { navigateToCreateAccount, navigateToSelectImportMethod } = this.props
+
     return (
       <div styleName='wrapper'>
 
@@ -114,15 +86,15 @@ export default class AccountSelector extends PureComponent {
             <Button
               styleName='button'
               buttonType='login'
-              onClick={this.props.navigateToSelectImportMethod}
+              onClick={navigateToSelectImportMethod}
             >
               <Translate value='AccountSelector.button' />
             </Button>
             <Translate value='AccountSelector.or' />
             &nbsp;<br />
-            <Link to='/login/create-account' href styleName='link'>
+            <button onClick={navigateToCreateAccount} styleName='link'>
               <Translate value='AccountSelector.createAccount' />
-            </Link>
+            </button>
           </div>
         </div>
 

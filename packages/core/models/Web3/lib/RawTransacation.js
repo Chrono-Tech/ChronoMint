@@ -1,6 +1,7 @@
 const Joi = require('joi')
 const AbstractModel = require('../../Core/lib/AbstractModel')
-const { HEX } = require('../../Core/lib/Constants')
+// THe value of this constant receved from Igor P.
+const HEX = /^0[xX][0-9A-Fa-f]*$/
 
 const schema = () => ({
   rawtx: Joi.string().required().regex(HEX)

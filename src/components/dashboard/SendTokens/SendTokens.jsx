@@ -9,7 +9,8 @@ import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_LITECOIN,
-} from '@chronobank/login/network/constants'
+  BLOCKCHAIN_ETHEREUM,
+} from '@chronobank/core/dao/constants'
 import Amount from '@chronobank/core/models/Amount'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
@@ -23,8 +24,14 @@ import { multisigTransfer } from '@chronobank/core/redux/multisigWallet/actions'
 import { estimateGas } from '@chronobank/core/redux/tokens/actions'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
-import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
-import SendTokensForm, { ACTION_APPROVE, ACTION_TRANSFER, FORM_SEND_TOKENS, MODE_ADVANCED, MODE_SIMPLE } from './SendTokensForm'
+import {
+  ACTION_APPROVE,
+  ACTION_TRANSFER,
+  FORM_SEND_TOKENS,
+  MODE_ADVANCED,
+  MODE_SIMPLE,
+} from 'components/constants'
+import SendTokensForm from './SendTokensForm'
 
 function mapStateToProps (state) {
   return {

@@ -5,7 +5,6 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
@@ -14,7 +13,7 @@ import compose from 'recompose/compose'
 import { withStyles } from '@material-ui/core/styles/index'
 import {
   FORM_NETWORK_CREATE,
-} from '../../../redux/actions'
+} from '../../../redux/constants'
 import validate from './validate'
 import styles from './styles'
 import scss from './NetworkCreateModalForm.scss'
@@ -81,11 +80,11 @@ class NetworkCreateModalForm extends PureComponent {
             styleName='button buttonAdd'
             buttonType='login'
             type='submit'
-            label={ network ? (
-              <Translate value='NetworkCreateModalForm.save' />
-            ) : (
-              <Translate value='NetworkCreateModalForm.add' />
-            ) }
+            label={
+              network
+                ? <Translate value='NetworkCreateModalForm.save' />
+                : <Translate value='NetworkCreateModalForm.add' />
+            }
           />
 
           { error ? (<div styleName='form-error'>{error}</div>) : null }

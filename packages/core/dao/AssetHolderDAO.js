@@ -10,10 +10,14 @@ import AbstractContractDAO from './AbstractContract3DAO'
 import type ERC20DAO from './ERC20DAO'
 import Amount from '../models/Amount'
 
-export const TX_DEPOSIT = 'deposit'
-export const TX_WITHDRAW_SHARES = 'withdrawShares'
+//#region CONSTANTS
 
-export const TIME = 'TIME'
+import {
+  TX_DEPOSIT,
+  TX_WITHDRAW_SHARES,
+} from './constants/AssetHolderDAO'
+
+//#endregion CONSTANTS
 
 export default class AssetHolderDAO extends AbstractContractDAO {
   constructor ({ address, history, abi }) {

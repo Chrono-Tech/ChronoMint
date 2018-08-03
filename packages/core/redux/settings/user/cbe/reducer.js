@@ -5,7 +5,7 @@
 
 import Immutable from 'immutable'
 import CBEModel from '../../../../models/CBEModel'
-import * as a from './actions'
+import * as a from './constants'
 
 const initialState = {
   list: new Immutable.Map(),

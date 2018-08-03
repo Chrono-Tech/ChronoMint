@@ -6,15 +6,23 @@
 import TokenNoticeModel from '../models/notices/TokenNoticeModel'
 import TokenModel from '../models/tokens/TokenModel'
 import AbstractContractDAO from './AbstractContract3DAO'
-import ethereumDAO, { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
+import ethereumDAO from './EthereumDAO'
 import web3Converter from '../utils/Web3Converter'
 
-export const TX_ADD_TOKEN = 'addToken'
-export const TX_MODIFY_TOKEN = 'setToken'
-export const TX_REMOVE_TOKEN = 'removeTokenByAddress'
+//#region CONSTANTS
 
-export const EVENT_NEW_ERC20_TOKEN = 'erc20/newToken'
-export const EVENT_ERC20_TOKENS_COUNT = 'erc20/count'
+import {
+  BLOCKCHAIN_ETHEREUM,
+} from './constants'
+import {
+  EVENT_ERC20_TOKENS_COUNT,
+  EVENT_NEW_ERC20_TOKEN,
+  TX_ADD_TOKEN,
+  TX_MODIFY_TOKEN,
+  TX_REMOVE_TOKEN,
+} from './constants/ERC20ManagerDAO'
+
+//#endregion CONSTANTS
 
 export default class ERC20ManagerDAO extends AbstractContractDAO {
   constructor ({ address, history, abi }) {

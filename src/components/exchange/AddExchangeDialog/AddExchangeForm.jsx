@@ -18,6 +18,7 @@ import Amount from '@chronobank/core/models/Amount'
 import { TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
+import { FORM_CREATE_EXCHANGE } from 'components/constants'
 import './AddExchangeForm.scss'
 import TokenListSelector from './TokenListSelector'
 import validate from './validate'
@@ -25,8 +26,6 @@ import validate from './validate'
 export const prefix = (text) => {
   return `components.exchange.AddExchangeForm.${text}`
 }
-
-export const FORM_CREATE_EXCHANGE = 'createExchangeForm'
 
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_CREATE_EXCHANGE)

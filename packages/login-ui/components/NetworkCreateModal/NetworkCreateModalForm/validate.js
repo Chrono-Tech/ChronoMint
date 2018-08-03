@@ -16,6 +16,7 @@ export default (values) => {
 
   let urlErrors = new ErrorList()
   urlErrors.add(validator.required(url))
+  urlErrors.add(validator.url(url))
 
   return {
     alias: aliasErrors.getErrors(),

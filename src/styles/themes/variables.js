@@ -4,6 +4,7 @@
  */
 
 export default {
+  colorPrimaryBlack: '#000',
   colorWhite: '#FFFFFF',
   colorPrimary0: '#00005f',
   // colorPrimary1: '#768fff',

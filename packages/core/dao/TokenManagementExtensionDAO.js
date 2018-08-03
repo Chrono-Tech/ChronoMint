@@ -5,6 +5,7 @@
 
 import TokenModel from '../models/tokens/TokenModel'
 import AbstractContractDAO from './AbstractContract3DAO'
+import web3Converter from '../utils/Web3Converter'
 
 export default class TokenManagementExtensionDAO extends AbstractContractDAO {
 
@@ -35,15 +36,15 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
     await this._tx(
       'createAssetWithFee',
       [
-        token.symbol(),
-        token.symbol(),
-        token.name(),
+        this.web3.utils.fromAscii(token.symbol()),
+        this.web3.utils.fromAscii(token.symbol()),
+        this.web3.utils.fromAscii(token.name()),
         token.addDecimals(token.totalSupply()),
         token.decimals(),
         token.isReissuable().value(),
         token.feeAddress(),
         fee.fee() * 100,
-        token.icon() ? this._c.ipfsHashToBytes32(token.icon()) : '',
+        token.icon() ? web3Converter.ipfsHashToBytes32(token.icon()) : this.web3.utils.fromAscii(''),
       ],
       token,
     )
@@ -53,13 +54,13 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
     await this._tx(
       'createAssetWithoutFee',
       [
-        token.symbol(),
-        token.symbol(),
-        token.name(),
+        this.web3.utils.fromAscii(token.symbol()),
+        this.web3.utils.fromAscii(token.symbol()),
+        this.web3.utils.fromAscii(token.name()),
         token.addDecimals(token.totalSupply()),
         token.decimals(),
         token.isReissuable().value(),
-        token.icon() ? this._c.ipfsHashToBytes32(token.icon()) : '',
+        token.icon() ? web3Converter.ipfsHashToBytes32(token.icon()) : this.web3.utils.fromAscii(''),
       ],
       token,
     )

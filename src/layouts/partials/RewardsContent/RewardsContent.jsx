@@ -12,9 +12,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Link } from 'react-router'
-import { DUCK_ASSETS_HOLDER } from '@chronobank/core/redux/assetsHolder/actions'
-import { closePeriod, DUCK_REWARDS, initRewards, withdrawRevenue } from '@chronobank/core/redux/rewards/actions'
-import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
+import { DUCK_ASSETS_HOLDER } from '@chronobank/core/redux/assetsHolder/constants'
+import { DUCK_REWARDS } from '@chronobank/core/redux/rewards/constants'
+import { closePeriod, initRewards, withdrawRevenue } from '@chronobank/core/redux/rewards/actions'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import './RewardsContent.scss'
 
 function prefix (token) {

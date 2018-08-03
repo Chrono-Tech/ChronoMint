@@ -3,10 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { DUCK_ASSETS_HOLDER } from '../actions'
+import { DUCK_ASSETS_HOLDER } from '../constants'
 
-//#region SIMPLE SELECTORS
+// eslint-disable-next-line import/prefer-default-export
 export const getAssetsHolderAssets = (state) => {
   return state.get(DUCK_ASSETS_HOLDER).assets()
 }
-//#endregion
+

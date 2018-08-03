@@ -7,7 +7,9 @@ import BigNumber from 'bignumber.js'
 import AbstractContractDAO from './AbstractContract3DAO'
 import Amount from '../models/Amount'
 
-export const TX_REQUIRE_TIME = 'sendTime'
+import {
+  TX_REQUIRE_TIME,
+} from './constants/AssetDonatorDAO'
 
 export default class AssetDonatorDAO extends AbstractContractDAO {
   constructor ({ address, history, abi }) {

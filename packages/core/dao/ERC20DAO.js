@@ -10,11 +10,19 @@ import TxModel from '../models/TxModel'
 import { TXS_PER_PAGE } from '../models/wallet/TransactionsCollection'
 import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'
 import AbstractTokenDAO from './AbstractTokenDAO'
-import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER } from './constants'
-import { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
 
-export const TX_TRANSFER = 'transfer'
-export const TX_APPROVE = 'approve'
+//#region CONSTANTS
+
+import {
+  TX_TRANSFER,
+} from './constants/ERC20DAO'
+import {
+  BLOCKCHAIN_ETHEREUM,
+  EVENT_APPROVAL_TRANSFER,
+  EVENT_NEW_TRANSFER,
+} from './constants'
+
+//#endregion CONSTANTS
 
 const EVENT_TRANSFER = 'Transfer'
 const EVENT_APPROVAL = 'Approval'

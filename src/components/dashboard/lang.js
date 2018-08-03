@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import * as Rewards from './Rewards/lang'
+import Rewards from './Rewards/lang'
 import TransactionsTable from './TransactionsTable/lang'
 
 export default {

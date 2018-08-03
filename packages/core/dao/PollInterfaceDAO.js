@@ -8,10 +8,16 @@ import BigNumber from 'bignumber.js'
 import Amount from '../models/Amount'
 import AbstractContractDAO from './AbstractContract3DAO'
 
-export const TX_ACTIVATE_POLL = 'activatePoll'
-export const TX_VOTE = 'vote'
-export const TX_REMOVE_POLL = 'killPoll'
-export const TX_END_POLL = 'endPoll'
+//#region CONSTANTS
+
+import {
+  TX_ACTIVATE_POLL,
+  TX_END_POLL,
+  TX_REMOVE_POLL,
+  TX_VOTE,
+} from './constants/PollInterfaceDAO'
+
+//#endregion CONSTANTS
 
 export default class PollInterfaceDAO extends AbstractContractDAO  {
   constructor ({ address, history, abi }) {

@@ -8,19 +8,11 @@ import { notify } from '../notifier/actions'
 import web3Converter from '../../utils/Web3Converter'
 import contractManager from '../../dao/ContractsManagerDAO'
 import ReissuableModel from '../../models/tokens/ReissuableModel'
+import uuid from 'uuid/v1'
 import TokenModel from '../../models/tokens/TokenModel'
 import OwnerCollection from '../../models/wallet/OwnerCollection'
 import OwnerModel from '../../models/wallet/OwnerModel'
-import {
-  MIDDLEWARE_EVENT_ISSUE,
-  MIDDLEWARE_EVENT_PLATFORM_REQUESTED,
-  MIDDLEWARE_EVENT_REVOKE,
-  MIDDLEWARE_EVENT_RESTRICTED,
-  MIDDLEWARE_EVENT_UNRESTRICTED,
-  MIDDLEWARE_EVENT_PAUSED,
-  MIDDLEWARE_EVENT_UNPAUSED,
-} from '../../dao/AssetsManagerDAO'
-import { DUCK_SESSION } from '../session/actions'
+import { DUCK_SESSION } from '../session/constants'
 import { DUCK_TOKENS, TOKENS_FETCHED, TOKENS_UPDATE } from '../tokens/constants'
 import AssetsManagerNoticeModel, {
   ASSET_PAUSED,
@@ -34,18 +26,25 @@ import PausedModel from '../../models/tokens/PausedModel'
 import BlacklistModel from '../../models/tokens/BlacklistModel'
 import { daoByType } from '../daos/selectors'
 
-export const DUCK_ASSETS_MANAGER = 'assetsManager'
-
-export const GET_PLATFORMS = 'AssetsManager/GET_PLATFORMS'
-export const SET_ASSETS = 'AssetsManager/SET_ASSETS'
-export const GET_ASSETS_MANAGER_COUNTS = 'AssetsManager/GET_ASSETS_MANAGER_COUNTS'
-export const GET_ASSETS_MANAGER_COUNTS_START = 'AssetsManager/GET_ASSETS_MANAGER_COUNTS_START'
-export const GET_ASSET_DATA = 'AssetsManager/GET_ASSET_DATA'
-export const SELECT_TOKEN = 'AssetsManager/SELECT_TOKEN'
-export const SELECT_PLATFORM = 'AssetsManager/SELECT_PLATFORM'
-export const GET_TRANSACTIONS_START = 'AssetsManager/GET_TRANSACTIONS_START'
-export const GET_TRANSACTIONS_DONE = 'AssetsManager/GET_TRANSACTIONS_DONE'
-export const SET_NEW_MANAGERS_LIST = 'AssetsManager/SET_NEW_MANAGERS_LIST'
+import {
+  DUCK_ASSETS_MANAGER,
+  GET_ASSET_DATA,
+  GET_ASSETS_MANAGER_COUNTS_START,
+  GET_ASSETS_MANAGER_COUNTS,
+  GET_PLATFORMS,
+  GET_TRANSACTIONS_DONE,
+  GET_TRANSACTIONS_START,
+  MIDDLEWARE_EVENT_ISSUE,
+  MIDDLEWARE_EVENT_PAUSED,
+  MIDDLEWARE_EVENT_PLATFORM_REQUESTED,
+  MIDDLEWARE_EVENT_RESTRICTED,
+  MIDDLEWARE_EVENT_REVOKE,
+  MIDDLEWARE_EVENT_UNPAUSED,
+  MIDDLEWARE_EVENT_UNRESTRICTED,
+  SELECT_PLATFORM,
+  SELECT_TOKEN,
+  SET_ASSETS,
+} from './constants'
 
 export const setTxFromMiddlewareForBlackList = (address, symbol) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
@@ -68,10 +67,14 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   const assetsManagerDao = daoByType('AssetsManager')(getState())
 
+  console.log('assetsManagerDao: ', assetsManagerDao)
+
   const platforms = await assetsManagerDao.getPlatformList(account)
   const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
   const managers = await assetsManagerDao.getManagers(Object.entries(assets).map((item) => item[1].symbol), [account])
   const usersPlatforms = platforms.filter((platform) => platform.by === account)
+
+  console.log('platforms: ', platforms, assets, managers, usersPlatforms)
 
   Object.values(assets).map((asset) => {
     const symbol = web3Converter.bytesToString(asset.symbol)
@@ -146,7 +149,6 @@ export const detachPlatform = (platform) => async (dispatch, getState) => {
 export const watchPlatformManager = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   const platformsManagerDAO = daoByType('PlatformsManager')(getState())
-  console.log('watchPlatformManager account: ', account, platformsManagerDAO)
 
   const callback = (tx) => {
     dispatch(setTx(tx))
@@ -161,17 +163,23 @@ export const watchPlatformManager = () => async (dispatch, getState) => {
  */
 export const createAsset = (token: TokenModel) => async (dispatch, getState) => {
   try {
-    console.log('createAsset: ', token.toJSON())
+    console.log('createAsset: ', token, token.toJSON())
+
     let txHash
     const platformsManagerDAO = daoByType('PlatformsManager')(getState())
+
+    console.log('create Asset: ', platformsManagerDAO, platformsManagerDAO.tokenManagementExtensionManager)
     const tokenManagementExtension =
       await platformsManagerDAO.tokenManagementExtensionManager.getTokenManagementExtensionDAO(token.platform().address)
+    console.log('tokenManagementExtension: ', tokenManagementExtension)
     if (token.withFee()) {
-      txHash = await tokenManagementExtension.createAssetWithFee(token)
+      await tokenManagementExtension.createAssetWithFee(token)
     } else {
-      txHash = await tokenManagementExtension.createAssetWithoutFee(token)
+      await tokenManagementExtension.createAssetWithoutFee(token)
     }
     let assets = getState().get(DUCK_ASSETS_MANAGER).assets()
+    // @todo remove uuid. Wait new tx flow and parse event for this
+    txHash = uuid()
     assets[txHash] = {
       address: txHash,
       platform: token.platform().address,
@@ -184,6 +192,7 @@ export const createAsset = (token: TokenModel) => async (dispatch, getState) => 
     })
     await dispatch({ type: SET_ASSETS, payload: { assets } })
   } catch (e) {
+    console.log('createAsset: ', e)
     // eslint-disable-next-line
     console.error(e.message)
   }
@@ -195,7 +204,7 @@ export const createAsset = (token: TokenModel) => async (dispatch, getState) => 
  * @param excludeAccounts
  * @returns {Promise<*>}
  */
-export const getManagersForAssetSymbol = async (symbol: string, excludeAccounts: Array<string> = []) => {
+export const getManagersForAssetSymbol = async (symbol: string, excludeAccounts: Array<string> = []) => async (dispatch, getState) => {
   const assetsManagerDAO = daoByType('AssetsManager')(getState())
   const managersList = await assetsManagerDAO.getManagersForAssetSymbol(symbol, excludeAccounts)
   return managersList.isFetched(true)
@@ -337,13 +346,11 @@ export const setManagers = (tx) => async (dispatch, getState) => {
 
 export const watchInitTokens = () => async (dispatch, getState) => {
   dispatch(getAssetsManagerData())
-  console.log('watchInitTokens: getAssetsManagerData: ')
   dispatch(getTransactions())
   const { account } = getState().get(DUCK_SESSION)
-  const [, chronoBankPlatformDAO, platformTokenExtensionGatewayManagerEmitterDAO] = await Promise.all([
-    contractManager.getAssetsManagerDAO(),
-    contractManager.getChronoBankPlatformDAO(),
-    contractManager.getPlatformTokenExtensionGatewayManagerEmitterDAO(),
+  const chronoBankPlatformDAO = daoByType('ChronoBankPlatform')(getState())
+  const platformTokenExtensionGatewayManagerEmitterDAO = daoByType('platformTokenExtensionGatewayManagerEmitter')(getState())
+  await Promise.all([
     dispatch(subscribeToBlockAssetEvents()),
     dispatch(subscribeToRestrictedEvents()),
     dispatch(subscribeToAssetEvents(account)),
@@ -409,7 +416,7 @@ export const selectToken = (token: TokenModel) => async (dispatch, getState) => 
   })
 
   const [managersList, isReissuable, fee, isPaused, blacklist] = await Promise.all([
-    getManagersForAssetSymbol(web3Converter.stringToBytesWithZeros(token.symbol()), [account]),
+    dispatch(getManagersForAssetSymbol(web3Converter.stringToBytesWithZeros(token.symbol()), [account])),
     checkIsReissuable(token, assets[token.address()]),
     getFee(token),
     getPauseStatus(token.address()),

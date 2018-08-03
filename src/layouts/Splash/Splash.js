@@ -5,7 +5,7 @@
 
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import {CommonNetworkSelector} from '@chronobank/login-ui/components'
+import { CommonNetworkSelector } from '@chronobank/login-ui/components'
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 import { ModalStack } from 'components'
 import { MuiThemeProvider } from '@material-ui/core/styles'
@@ -14,6 +14,7 @@ import WalletTitleBG from 'assets/img/wallet-title-bg.png'
 import StripesToCrop from 'assets/img/stripes-2-crop.jpg'
 import ChronoWalletLogoBright from 'assets/img/chronowalletlogobright.svg'
 import ChronoWalletTextBright from 'assets/img/chronowallettextbright.svg'
+import ChronoLogo from 'assets/img/logo-chrono-bank-full.svg'
 import BackIcon from 'assets/img/icons/back.svg'
 
 import Footer from '../Footer/Footer'
@@ -41,13 +42,16 @@ export default class Splash extends Component {
       <MuiThemeProvider theme={theme}>
         <div styleName='root'>
           <div styleName='header-container'>
+            <div styleName='header-logo'>
+              <img styleName='chrono-logo' src={ChronoLogo} alt='' />
+            </div>
             <div styleName='header-picture'>
               <img src={StripesToCrop} alt='' />
             </div>
             <div styleName='header-picture-crop'>
               <img src={WalletTitleBG} alt='' />
             </div>
-            <div styleName='header-logos'>
+            <div styleName='header-center'>
               <img styleName='chrono-wallet-logo-bright' src={ChronoWalletLogoBright} alt='' />
               <img styleName='chrono-wallet-text-bright' src={ChronoWalletTextBright} alt='' />
             </div>

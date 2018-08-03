@@ -3,8 +3,18 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
-import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/constants'
+import {
+  bccProvider,
+  btcProvider,
+  btgProvider,
+  ltcProvider,
+} from '@chronobank/login/network/BitcoinProvider'
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_LITECOIN,
+} from '@chronobank/login/network/constants'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
@@ -13,11 +23,11 @@ import { subscribeOnTokens } from '../tokens/actions'
 import TokenModel from '../../models/tokens/TokenModel'
 import tokenService from '../../services/TokenService'
 import Amount from '../../models/Amount'
-import { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
+import { BLOCKCHAIN_ETHEREUM } from '../../dao/constants'
+import { EE_MS_WALLET_ADDED } from '../../dao/constants/WalletsManagerDAO'
 import { getAccount } from '../session/selectors'
 import { updateEthMultisigWalletBalance } from '../multisigWallet/actions'
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
-import { EE_MS_WALLET_ADDED } from '../../dao/constants'
 import ethDAO from '../../dao/ETHDAO'
 import { getMainEthWallet, getWallets } from './selectors/models'
 import MultisigEthWalletModel from '../../models/wallet/MultisigEthWalletModel'
@@ -27,12 +37,11 @@ import { AllowanceCollection } from '../../models'
 import { web3Selector } from '../ethereum/selectors'
 import { executeTransaction } from '../ethereum/actions'
 
-export const DUCK_WALLETS = 'wallets'
-export const WALLETS_SET = 'wallet/set'
-export const WALLETS_UPDATE_BALANCE = 'wallet/updateBalance'
-export const WALLETS_TWO_FA_CONFIRMED = 'wallet/twoFaConfirmed'
-export const WALLETS_UPDATE_WALLET = 'wallet/updateWallet'
-export const WALLETS_SET_IS_TIME_REQUIRED = 'wallet/isTimeRequired'
+import {
+  WALLETS_SET,
+  WALLETS_UPDATE_BALANCE,
+  WALLETS_TWO_FA_CONFIRMED,
+} from './constants'
 
 let walletsManagerDAO
 const isOwner = (wallet, account) => {

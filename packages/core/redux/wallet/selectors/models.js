@@ -4,7 +4,7 @@
  */
 
 import { DUCK_ETH_MULTISIG_WALLET } from '../../multisigWallet/constants'
-import { DUCK_MARKET } from '../../market/actions'
+import { DUCK_MARKET } from '../../market/constants'
 import { DUCK_TOKENS } from '../../tokens/constants'
 
 /**
