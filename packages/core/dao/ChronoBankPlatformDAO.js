@@ -3,8 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { ChronoBankPlatformABI, MultiEventsHistoryABI } from './abi'
-import AbstractContractDAO from './AbstractContractDAO'
+import AbstractContractDAO from './AbstractContract3DAO'
 
 //#region CONSTANTS
 
