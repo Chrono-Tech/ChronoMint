@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 const bip39 = require('bip39')
 const Accounts = require('web3-eth-accounts')
 const SignerModel = require('./SignerModel')

@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import assert from 'assert'
 import uuid from 'uuid/v1'
 import BigNumber from 'bignumber.js'
 import { isNil, omitBy } from 'lodash'
@@ -14,8 +13,6 @@ import { DUCK_ETHEREUM, NONCE_UPDATE, TX_CREATE, TX_STATUS, WEB3_UPDATE } from '
 import { getSigner } from '../persistAccount/selectors'
 
 export const initEthereum = ({ web3 }) => (dispatch) => {
-  // eslint-disable-next-line
-  console.log('Init ethereum')
   dispatch({ type: WEB3_UPDATE, web3 })
 }
 
@@ -43,7 +40,7 @@ export const executeTransaction = ({ web3, tx, options }) => async (dispatch, ge
     tx: prepared,
     receipt: null,
     isSubmitted: true,
-    isAccepted: true,
+    isAccepted: false,
   })
 
   await dispatch({ type: TX_CREATE, entry })
@@ -84,7 +81,6 @@ export const prepareTransaction = ({ web3, tx, options }) => async (dispatch) =>
 }
 
 export const processTransaction = ({ web3, entry, signer }) => async (dispatch, getState) => {
-  assert.ok(entry instanceof TxEntryModel, '123')
   await dispatch(signTransaction({ entry, signer }))
   return dispatch(sendSignedTransaction({
     web3,
@@ -93,7 +89,6 @@ export const processTransaction = ({ web3, entry, signer }) => async (dispatch, 
 }
 
 export const signTransaction = ({ entry, signer }) => async (dispatch) => {
-  assert.ok(entry instanceof TxEntryModel)
   try {
     const signed = await signer.signTransaction(omitBy(entry.tx, isNil))
     const raw = signed.rawTransaction
@@ -123,7 +118,6 @@ export const signTransaction = ({ entry, signer }) => async (dispatch) => {
 }
 
 export const sendSignedTransaction = ({ web3, entry }) => async (dispatch, getState) => {
-  assert.ok(entry instanceof TxEntryModel)
   dispatch({
     type: TX_STATUS,
     key: entry.key,
@@ -192,6 +186,7 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
     key: entry.key,
     address: entry.tx.from,
     props: {
+      isAccepted: true,
       isPending: true,
     },
   })

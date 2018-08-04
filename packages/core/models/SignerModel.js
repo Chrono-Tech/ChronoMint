@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 module.exports = class SignerModel {
   getAddress () {
     throw new Error('Not implemented')

@@ -4,14 +4,7 @@
  */
 
 import { Button, IPFSImage } from 'components'
-import {
-  BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_LITECOIN,
-  BLOCKCHAIN_ETHEREUM,
-  ETH,
-} from '@chronobank/core/dao/constants'
+import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LITECOIN, ETH } from '@chronobank/core/dao/constants'
 import { TOKEN_ICONS } from 'assets'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
@@ -44,13 +37,8 @@ import { isBTCLikeBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import inversedTheme from 'styles/themes/inversed'
 import { getMarket } from '@chronobank/core/redux/market/selectors'
 import { MultisigEthWalletModel } from '@chronobank/core/models'
-import {
-  ACTION_APPROVE,
-  ACTION_TRANSFER,
-  FORM_SEND_TOKENS,
-  MODE_ADVANCED,
-  MODE_SIMPLE,
-} from 'components/constants'
+import { integerWithDelimiter } from '@chronobank/core-dependencies/utils/formatter'
+import { ACTION_APPROVE, ACTION_TRANSFER, FORM_SEND_TOKENS, MODE_ADVANCED, MODE_SIMPLE } from 'components/constants'
 import { prefix } from './lang'
 import './SendTokensForm.scss'
 import validate from './validate'
@@ -496,11 +484,11 @@ export default class SendTokensForm extends PureComponent {
 
         <div styleName='balance'>
           <div styleName='value-amount'>
-            {/*{tokenInfo.symbol} {integerWithDelimiter(tokenInfo.amount, true, null)}*/}
+            {tokenInfo.symbol} {integerWithDelimiter(tokenInfo.amount, true, null)}
           </div>
           <div styleName='value'>
             <span styleName='price-value'>
-              {/*≈{this.props.selectedCurrency} {integerWithDelimiter(tokenInfo.amountPrice.toFixed(2), true, null)}*/}
+              ≈{this.props.selectedCurrency} {integerWithDelimiter(tokenInfo.amountPrice.toFixed(2), true, null)}
             </span>
           </div>
         </div>

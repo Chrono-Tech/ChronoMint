@@ -121,45 +121,61 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   // getters
   async getPendings () {
-    let pendingTxCollection = {}
-    const res = await this.contract.methods.getPendings().call()
-    const [values, operations, isConfirmed] = Object.values(res)
+    try {
 
-    let verifiedOperationsPromises = []
-    let pendingDataPromises = []
-    operations.filter(this.isValidId).map((operation) => {
-      verifiedOperationsPromises.push(ethereumProvider.checkConfirm2FAtx(operation))
-      pendingDataPromises.push(this.getPendingData(operation))
-    })
-    const verifiedOperations = await Promise.all(verifiedOperationsPromises)
-    const pendingData = await Promise.all(pendingDataPromises)
+      let pendingTxCollection = {}
+      const res = await this.contract.methods.getPendings().call()
+      const [values, operations, isConfirmed] = Object.values(res)
 
-    operations.filter(this.isValidId).forEach((id, i) => {
-      let pendingTxModel
-      pendingTxModel = new MultisigWalletPendingTxModel({
-        id,
-        value: new BigNumber(values [i]),
-        isConfirmed: isConfirmed[i],
-        isPending: verifiedOperations[i] ? verifiedOperations[i].activated : false,
-        decodedTx: pendingData[i] ? pendingData[i] : null,
+      let verifiedOperationsPromises = []
+      let pendingDataPromises = []
+      operations.filter(this.isValidId).map((operation) => {
+        verifiedOperationsPromises.push(ethereumProvider.checkConfirm2FAtx(operation))
+        pendingDataPromises.push(this.getPendingData(operation))
       })
-      pendingTxCollection[pendingTxModel.id] = pendingTxModel
-    })
+      const verifiedOperations = await Promise.all(verifiedOperationsPromises)
+      const pendingData = await Promise.all(pendingDataPromises)
 
-    return pendingTxCollection
+      operations.filter(this.isValidId).forEach((id, i) => {
+        let pendingTxModel
+        pendingTxModel = new MultisigWalletPendingTxModel({
+          id,
+          value: new BigNumber(values [i]),
+          isConfirmed: isConfirmed[i],
+          isPending: verifiedOperations[i] ? verifiedOperations[i].activated : false,
+          decodedTx: pendingData[i] ? pendingData[i] : null,
+        })
+        pendingTxCollection[pendingTxModel.id] = pendingTxModel
+      })
+
+      return pendingTxCollection
+    } catch (e) {
+      console.warn(e)
+      return Promise.resolve({})
+    }
   }
 
   async getOwners () {
-    const counter = await this.contract.methods.m_numOwners().call()
-    let promises = []
-    for (let i = 0; i < counter; i++) {
-      promises.push(this.contract.methods.getOwner(i).call())
+    try {
+      const counter = await this.contract.methods.m_numOwners().call()
+      let promises = []
+      for (let i = 0; i < counter; i++) {
+        promises.push(this.contract.methods.getOwner(i).call())
+      }
+      return Promise.all(promises)
+    } catch (e) {
+      console.warn(e)
+      return Promise.resolve([])
     }
-    return Promise.all(promises)
   }
 
   getRequired () {
-    return this.contract.methods.m_required().call()
+    try {
+      return this.contract.methods.m_required().call()
+    } catch (e) {
+      console.warn(e)
+      return Promise.resolve(0)
+    }
   }
 
   async getPendingData (id: string): Promise<TxExecModel> {
@@ -168,11 +184,16 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   async getReleaseTime () {
-    return this.contract.methods.releaseTime().call()
+    try {
+      return this.contract.methods.releaseTime().call()
+    } catch (e) {
+      console.warn(e)
+      return Promise.resolve(0)
+    }
   }
 
   // actions
-  removeWallet (wallet, account: string) {
+  removeWallet (account: string) {
     return this._tx('kill', [account])
   }
 

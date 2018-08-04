@@ -15,7 +15,7 @@ import MultisigWalletPendingTxModel from '../../models/wallet/MultisigWalletPend
 import OwnerModel from '../../models/wallet/OwnerModel'
 import { notify, notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
-import { alternateTxHandlingFlow, subscribeOnTokens } from '../tokens/actions'
+import { subscribeOnTokens } from '../tokens/actions'
 import {
   EE_CONFIRMATION,
   EE_CONFIRMATION_NEEDED,
@@ -27,7 +27,7 @@ import {
   EE_SINGLE_TRANSACTION,
 } from '../../services/constants'
 import multisigWalletService from '../../services/MultisigWalletService'
-import { getTxList } from '../mainWallet/actions'
+import { getTxList, goToWallets } from '../mainWallet/actions'
 import { ETH } from '../../dao/constants'
 import { getMultisigWallets } from '../wallet/selectors/models'
 import { getEthMultisigWallet, getWallets } from './selectors/models'
@@ -37,13 +37,12 @@ import MultisigEthWalletModel from '../../models/wallet/MultisigEthWalletModel'
 import tokenService from '../../services/TokenService'
 import {
   ETH_MULTISIG_2_FA_CONFIRMED,
-  ETH_MULTISIG_REMOVE,
-  ETH_MULTISIG_SELECT,
   ETH_MULTISIG_BALANCE,
-  ETH_MULTISIG_UPDATE,
   ETH_MULTISIG_FETCHED,
   ETH_MULTISIG_FETCHING,
   ETH_MULTISIG_INIT,
+  ETH_MULTISIG_REMOVE,
+  ETH_MULTISIG_UPDATE,
   FORM_2FA_STEPS,
   FORM_2FA_WALLET,
 } from './constants'
@@ -53,7 +52,6 @@ import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import { executeTransaction } from '../ethereum/actions'
 
 const updateEthMultisigWallet = (wallet: MultisigEthWalletModel) => (dispatch) => dispatch({ type: ETH_MULTISIG_UPDATE, wallet })
-export const selectMultisigWallet = (id) => (dispatch) => dispatch({ type: ETH_MULTISIG_SELECT, id })
 
 export const watchMultisigWallet = (wallet: MultisigEthWalletModel): Promise => {
   try {
@@ -288,12 +286,17 @@ export const create2FAWallet = (wallet: MultisigEthWalletModel, feeMultiplier) =
 export const removeWallet = (wallet: MultisigEthWalletModel) => async (dispatch, getState) => {
   try {
     const { account } = getState().get(DUCK_SESSION)
-    // dispatch(updateEthMultisigWallet(wallet.isPending(true)))
+    dispatch(goToWallets())
+    dispatch({ type: ETH_MULTISIG_REMOVE, id: wallet.id })
     const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address)
-    await dao.removeWallet(wallet, account)
+    const tx = dao.removeWallet(account)
+    if (tx) {
+      dispatch(executeTransaction({ tx }))
+    }
   } catch (e) {
     // eslint-disable-next-line
     console.error('delete error', e.message)
+    dispatch(updateEthMultisigWallet(wallet))
   }
 }
 

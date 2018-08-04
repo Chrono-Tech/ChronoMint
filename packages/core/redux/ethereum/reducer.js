@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { omit } from 'lodash'
 import { HolderModel, TxEntryModel, TxExecModel } from '../../models'
 import { NONCE_UPDATE, TX_CREATE, TX_REMOVE, TX_STATUS, TX_UPDATE, WEB3_UPDATE } from './constants'
@@ -75,9 +80,9 @@ const mutations = {
           ...scope,
           [key]: new TxEntryModel({
             ...entry,
+            ...props,
             tx: new TxExecModel({
               ...entry.tx,
-              ...props,
             }),
           }),
         },

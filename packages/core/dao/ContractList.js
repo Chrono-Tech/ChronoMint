@@ -37,10 +37,6 @@ import ChronoBankPlatformDAO from './ChronoBankPlatformDAO'
 import PlatformTokenExtensionGatewayManagerEmitterDAO from './PlatformTokenExtensionGatewayManagerEmitterDAO'
 import ChronoBankAssetDAO from './ChronoBankAssetDAO'
 
-console.log('AssetsManagerDAO: ', AssetsManagerDAO)
-console.log('ChronoBankPlatformDAO: ', ChronoBankPlatformDAO)
-console.log('PlatformTokenExtensionGatewayManagerEmitterDAO: ', PlatformTokenExtensionGatewayManagerEmitterDAO)
-
 export const CONTRACTS_MANAGER = new ContractModel({
   type: 'ContractsManager',
   address: ContractsManagerABI.networks['4'].address, // @todo Add Network selection
