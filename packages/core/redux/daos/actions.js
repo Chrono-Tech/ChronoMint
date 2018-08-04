@@ -15,7 +15,6 @@ import {
   ASSET_DONATOR_LIBRARY,
   ASSETS_MANAGER_LIBRARY,
   PLATFORMS_MANAGER_LIBRARY,
-  // PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER_LIBRARY,
   CHRONOBANK_PLATFORM_LIBRARY,
   CHRONOBANK_ASSET_LIBRARY,
   CONTRACTS_MANAGER,
@@ -56,7 +55,6 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     ASSET_HOLDER_LIBRARY,
     ASSET_DONATOR_LIBRARY,
     PLATFORMS_MANAGER_LIBRARY,
-    // PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER_LIBRARY,
     CHRONOBANK_PLATFORM_LIBRARY,
     CHRONOBANK_ASSET_LIBRARY,
     TOKEN_MANAGMENT_EXTENSION_LIBRARY,
@@ -66,6 +64,8 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     WALLETS_MANAGER,
   ]
 
+  console.log('contracts: ', contracts)
+
   const subscribeToFlow = (dao) => {
     dispatch(alternateTxHandlingFlow(dao))
   }
@@ -74,6 +74,7 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     contracts.map(
       async (contract) => {
         const address = await contractManagerDAO.getContractAddressByType(contract.type)
+        console.log('getContractAddressByType: ', contract, address)
         const dao = contract.create(address.toLowerCase(), historyAddress)
         dao.connect(web3)
         subscribeToFlow(dao)

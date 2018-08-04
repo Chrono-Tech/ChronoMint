@@ -7,21 +7,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { Link } from 'react-router'
-
-import DEFAULT_AVATAR from 'assets/img/profile-photo-1.jpg'
 import actionIcon from 'assets/img/icons/list.svg'
-
-import css from './UserRow.scss'
+import './UserRow.scss'
 
 export default class UserRow extends React.Component {
   static propTypes = {
     avatar: PropTypes.string,
-    name: PropTypes.string,
-    address: PropTypes.string,
     onClick: PropTypes.func,
     hideActionIcon: PropTypes.bool,
     actionIcon: PropTypes.string,
-    actionIconClass: PropTypes.string,
     linkTitle: PropTypes.string,
     reverseIcon: PropTypes.bool,
   }
@@ -62,11 +56,6 @@ export default class UserRow extends React.Component {
 
   render () {
     const {
-      handleSubmit,
-      error,
-      pristine,
-      invalid,
-      avatar,
       actionIcon,
       hideActionIcon,
       title,

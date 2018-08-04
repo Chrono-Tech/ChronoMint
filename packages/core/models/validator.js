@@ -5,7 +5,7 @@
 
 import Immutable from 'immutable'
 import { isArray, isObject, isMap, isSet, isEmpty, isString, isNil } from 'lodash'
-import { I18n } from 'react-redux-i18n'
+import { I18n } from '@chronobank/core-dependencies/i18n'
 import wallet from 'ethereumjs-wallet'
 import Web3 from 'web3'
 

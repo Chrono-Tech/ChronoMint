@@ -23,9 +23,8 @@ import {
   WAVES,
   XEM,
 } from '@chronobank/core/dao/constants'
-
-import './SelectWalletType.scss'
 import { prefix } from '../lang'
+import './SelectWalletType.scss'
 
 function mapStateToProps () {
   return {}

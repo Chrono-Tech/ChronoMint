@@ -5,7 +5,6 @@
 
 import Button from 'components/common/ui/Button/Button'
 import { Map } from 'immutable'
-import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
@@ -30,7 +29,6 @@ function mapDispatchToProps (dispatch) {
 @reduxForm({ form: FORM_CUSTOM_WALLET_ADD })
 export default class StandardWalletForm extends PureComponent {
   static propTypes = {
-    onCreateWallet: PropTypes.func,
     ...formPropTypes,
   }
 

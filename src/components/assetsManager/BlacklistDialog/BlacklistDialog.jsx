@@ -12,8 +12,8 @@ import { Translate } from 'react-redux-i18n'
 import BlacklistForm from 'components/assetsManager/BlacklistForm/BlacklistForm'
 import { restrictUser, unrestrictUser } from '@chronobank/core/redux/assetsManager/actions'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
-import './BlacklistDialog.scss'
 import { prefix } from './lang'
+import './BlacklistDialog.scss'
 
 function mapDispatchToProps (dispatch) {
   return {
