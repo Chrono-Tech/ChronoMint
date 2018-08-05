@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { REHYDRATE } from 'redux-persist'
 import MultisigWalletCollection from '../../models/wallet/MultisigWalletCollection'
 import * as a from './constants'
 
@@ -11,11 +10,6 @@ const initialState = new MultisigWalletCollection()
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case REHYDRATE: {
-      const incoming = action.payload.multisigWallet
-      if (incoming && incoming instanceof MultisigWalletCollection) return incoming.twoFAConfirmed(null).isInited(false)
-      return state
-    }
     case a.ETH_MULTISIG_INIT:
       return state.isInited(action.isInited)
     case a.ETH_MULTISIG_FETCHING:

@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { REHYDRATE } from 'redux-persist'
 import * as a from './constants'
 import WalletModel from '../../models/wallet/WalletModel'
 
@@ -13,6 +14,11 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case REHYDRATE: {
+      const incoming = action.payload.wallets
+      if (incoming) return incoming
+      return state
+    }
     case a.WALLETS_SET:
       return {
         ...state,

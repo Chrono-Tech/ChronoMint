@@ -31,7 +31,7 @@ import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
 import { walletInfoSelector } from '@chronobank/core/redux/wallet/selectors/selectors'
-import { estimateBtcFee, estimateGas } from '@chronobank/core/redux/tokens/actions'
+import { estimateBtcFee, estimateGasTransfer } from '@chronobank/core/redux/tokens/actions'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import { isBTCLikeBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import inversedTheme from 'styles/themes/inversed'
@@ -45,7 +45,7 @@ import validate from './validate'
 
 function mapDispatchToProps (dispatch) {
   return {
-    estimateGas: (tokenId, params, callback, gasPriceMultiplier, address) => dispatch(estimateGas(tokenId, params, callback, gasPriceMultiplier, address)),
+    estimateGas: (tokenId, params, callback, gasPriceMultiplier, address) => dispatch(estimateGasTransfer(tokenId, params, callback, gasPriceMultiplier, address)),
     estimateFee: (params, callback) => dispatch(estimateBtcFee(params, callback)),
   }
 }

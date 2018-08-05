@@ -7,7 +7,7 @@ import uuid from 'uuid/v1'
 import BigNumber from 'bignumber.js'
 import { isNil, omitBy } from 'lodash'
 import { modalsOpenConfirmDialog } from '@chronobank/core-dependencies/redux/modals/actions'
-import { TxEntryModel, TxExecModel } from '../../models'
+import { SignerMemoryModel, TxEntryModel, TxExecModel } from '../../models'
 import { pendingEntrySelector, web3Selector } from './selectors'
 import { DUCK_ETHEREUM, NONCE_UPDATE, TX_CREATE, TX_STATUS, WEB3_UPDATE } from './constants'
 import { getSigner } from '../persistAccount/selectors'
@@ -41,6 +41,7 @@ export const executeTransaction = ({ web3, tx, options }) => async (dispatch, ge
     receipt: null,
     isSubmitted: true,
     isAccepted: false,
+    walletDerivedPath: options.walletDerivedPath,
   })
 
   await dispatch({ type: TX_CREATE, entry })
@@ -191,10 +192,15 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
     },
   })
   const state = getState()
+  let signer = getSigner(state)
+  if (entry.walletDerivedPath) {
+    signer = await SignerMemoryModel.fromDerivedPath({ seed: signer.privateKey, derivedPath: entry.walletDerivedPath })
+  }
+
   return dispatch(processTransaction({
     web3: web3Selector()(state),
     entry: pendingEntrySelector(entry.tx.from, entry.key)(state),
-    signer: getSigner(state),
+    signer,
   }))
 }
 
