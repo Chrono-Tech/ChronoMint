@@ -11,16 +11,17 @@ import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { getBlockExplorerUrl } from '@chronobank/login/network/settings'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
-import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import globalStyles from '../../../styles'
 import styles from './styles'
 
 const mapStateToProps = (state) => ({
   account: state.get(DUCK_SESSION).account,
-  selectedNetworkId: state.get('network').selectedNetworkId,
-  selectedProviderId: state.get('network').selectedProviderId,
+  selectedNetworkId: state.get(DUCK_NETWORK).selectedNetworkId,
+  selectedProviderId: state.get(DUCK_NETWORK).selectedProviderId,
   tokens: state.get(DUCK_TOKENS),
 })
 

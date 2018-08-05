@@ -13,7 +13,6 @@ import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
-import UserRow from '../UserRow/UserRow'
 import { isLocalNode } from '@chronobank/login/network/settings'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import {
@@ -40,6 +39,8 @@ import {
   onSubmitLoginForm,
   onSubmitLoginFormFail,
 } from '../../redux/thunks'
+import UserRow from '../UserRow/UserRow'
+
 import styles from './styles'
 import './LoginForm.scss'
 
@@ -57,12 +58,9 @@ function mapStateToProps (state) {
     selectedProvider: network.selectedProviderId,
     selectedWallet: selectedWallet,
     successMessage: formSelector(state, FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE),
-    initialValues: {
-      password: 'QWEpoi123',
-    },
   }
 }
-//QWEpoi123
+
 function mapDispatchToProps (dispatch) {
   return {
     onSubmit: async (values) => {

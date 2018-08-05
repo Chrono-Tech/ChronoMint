@@ -5,7 +5,7 @@
 
 import EventEmitter from 'events'
 import axios from 'axios'
-import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 
 const PROFILE_BACKEND_REST_URL = 'https://backend.profile.tp.ntr1x.com/'
 const basePath = '/api/v1'

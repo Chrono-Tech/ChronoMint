@@ -12,6 +12,9 @@ import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { updateUserProfile } from '@chronobank/core/redux/session/actions'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
+import {
+  DUCK_PERSIST_ACCOUNT,
+} from '@chronobank/core/redux/persistAccount/constants'
 import { getAccountProfileSummary } from '@chronobank/core/redux/session/selectors'
 import {
   getAccountName,
@@ -31,10 +34,9 @@ const FORM_UPDATE_PROFILE_DIALOG = 'UpdateProfileDialog'
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_UPDATE_PROFILE_DIALOG)
   const session = state.get(DUCK_SESSION)
-  const selectedAccount = state.get('persistAccount').selectedWallet
+  const selectedAccount = state.get(DUCK_PERSIST_ACCOUNT).selectedWallet
   const accountProfileSummary = getAccountProfileSummary(state)
   const profileSignature = session.profileSignature
-  console.log('accountProfile', accountProfileSummary, selector(state, 'avatar'))
 
   return {
     selectedAccount: selectedAccount,

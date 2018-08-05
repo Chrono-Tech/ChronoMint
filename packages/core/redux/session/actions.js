@@ -78,8 +78,6 @@ export const login = (account) => async (dispatch, getState) => {
     userManagerDAO.getMemberProfile(account, web3),
     userManagerDAO.getMemberId(account),
   ])
-  console.log('login:await promises')
-
 
   // @todo Need to refactor PendingManagerDAO
   // TODO @bshevchenko: PendingManagerDAO should receive member id from redux state
@@ -90,7 +88,6 @@ export const login = (account) => async (dispatch, getState) => {
 
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
   isCBE && dispatch(cbeWatcher())
-  console.log('login:watchers')
 
   dispatch(replace(ls.getLastURL() || defaultURL))
 }

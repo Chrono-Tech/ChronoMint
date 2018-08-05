@@ -263,6 +263,8 @@ export const onCreateWalletFromJSON = (name, walletJSON, profile) => (dispatch) 
 export const initLoginPage = () =>
   (dispatch, getState) => {
     dispatch(NetworkThunks.resetAllLoginFlags())
+    dispatch(NetworkActions.networkResetLoginSubmitting())
+    dispatch(NetworkThunks.initAccountsSignature())
 
     const state = getState()
     const {

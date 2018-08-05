@@ -4,6 +4,10 @@
  */
 
 import networkService from '@chronobank/login/network/NetworkService'
+import {
+  DUCK_PERSIST_ACCOUNT,
+} from '@chronobank/core/redux/persistAccount/constants'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
 import web3Factory from '@chronobank/core/web3/index'
 import AbstractProvider from './AbstractProvider'
@@ -60,8 +64,8 @@ export class EthereumProvider extends AbstractProvider {
   getProviderSettings = () => {
     const state = this._store.getState()
 
-    const { customNetworksList } = state.get('persistAccount')
-    const { selectedNetworkId, selectedProviderId, isLocal } = state.get('network')
+    const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
+    const { selectedNetworkId, selectedProviderId, isLocal } = state.get(DUCK_NETWORK)
     const network = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
 
     const { protocol, host } = network

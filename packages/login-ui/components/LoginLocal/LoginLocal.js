@@ -58,8 +58,8 @@ class LoginLocal extends PureComponent {
     }
   }
 
-  componentWillReceiveProps (props){
-    if (!props.isLocalNode){
+  componentDidUpdate (){
+    if (!this.props.isLocalNode){
       this.props.navigateToLoginPage()
     }
   }

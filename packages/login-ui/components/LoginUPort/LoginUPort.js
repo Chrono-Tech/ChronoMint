@@ -5,6 +5,7 @@
 
 import networkService from '@chronobank/login/network/NetworkService'
 import { addError } from '@chronobank/login/redux/network/actions'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { CircularProgress } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -15,7 +16,7 @@ import './LoginUPort.scss'
 import { Button } from '../../settings'
 
 const mapStateToProps = (state) => ({
-  isLoading: state.get('network').isLoading,
+  isLoading: state.get(DUCK_NETWORK).isLoading,
 })
 
 const mapDispatchToProps = (dispatch) => ({

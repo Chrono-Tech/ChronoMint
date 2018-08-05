@@ -10,6 +10,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { getBlockExplorerUrl } from '@chronobank/login/network/settings'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { connect } from 'react-redux'
 import { confirmOperation, listOperations, loadMoreCompletedOperations, revokeOperation, setupOperationsSettings } from '@chronobank/core/redux/operations/actions'
 import { modalsOpen } from 'redux/modals/actions'
@@ -186,7 +187,7 @@ export default class PendingOperations extends PureComponent {
 
 function mapStateToProps (state) {
   const operations = state.get('operations')
-  const network = state.get('network')
+  const network = state.get(DUCK_NETWORK)
   return {
     list: operations.list,
     isFetched: operations.isFetched,

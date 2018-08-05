@@ -99,17 +99,6 @@ export const initAccountsSignature = () =>
  * Thunk dispatched by "" screen.
  * TODO: to add description
  */
-export const initLoginPage = () =>
-  (dispatch) => {
-    dispatch(resetAllLoginFlags())
-    dispatch(NetworkActions.networkResetLoginSubmitting())
-    dispatch(initAccountsSignature())
-  }
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
 export const generateNewMnemonic = () => (dispatch) => {
   const mnemonic = mnemonicProvider.generateMnemonic()
   dispatch(NetworkActions.networkSetNewMnemonic(mnemonic))
@@ -140,22 +129,6 @@ export const onSubmitConfirmMnemonicSuccess = () =>
     dispatch(PersistAccountActions.accountSelect(wallet))
   }
 
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to extract profileService and other logic from here
- */
-export const getProfileSignature = (wallet) =>
-  async (dispatch) => {
-    if (wallet) {
-      const signDataString = profileService.getSignData()
-      const signData = wallet.sign(signDataString)
-      const profileSignature = await profileService.getProfile(signData.signature)
-
-      dispatch(NetworkActions.setProfileSignature(profileSignature))
-    }
-  }
-
 export const handleWalletLogin = (wallet, password) => async (dispatch, getState) => {
   dispatch(NetworkActions.loading())
   dispatch(NetworkActions.clearErrors())
@@ -178,13 +151,11 @@ export const handleWalletLogin = (wallet, password) => async (dispatch, getState
   const isPassed = await networkService.checkNetwork()
 
   if (isPassed) {
-    console.log('isPassed')
     networkService.createNetworkSession(
       selectedAccount,
       selectedProviderId,
       selectedNetworkId,
     )
-    console.log('login')
     dispatch(login(selectedAccount))
   }
 
