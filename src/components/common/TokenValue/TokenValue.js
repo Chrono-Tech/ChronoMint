@@ -34,7 +34,6 @@ class TokenValue extends PureComponent {
     precision: PropTypes.number,
     tokens: PropTypes.instanceOf(TokensCollection),
     symbol: PropTypes.string,
-    className: PropTypes.string,
     prefix: PropTypes.string,
     isInvert: PropTypes.bool,
     prices: PropTypes.object,
@@ -44,7 +43,6 @@ class TokenValue extends PureComponent {
     renderOnlyPrice: PropTypes.bool,
     onlyPriceValue: PropTypes.bool,
     noRenderSymbol: PropTypes.bool,
-    bold: PropTypes.bool,
     style: PropTypes.object,
   }
 

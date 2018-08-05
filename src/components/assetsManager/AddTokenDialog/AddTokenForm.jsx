@@ -42,8 +42,6 @@ export const prefix = (token) => {
 }
 
 const onSubmit = (values, dispatch) => {
-  console.log('onSubmitonSubmit: ', values.toJSON())
-
   dispatch(createAsset(new TokenModel({
     decimals: values.get('smallestUnit'),
     name: values.get('description'),
@@ -126,17 +124,16 @@ class Platform extends PureComponent {
 export default class AddTokenForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
-    formValues: PropTypes.object,
-    formErrors: PropTypes.object,
-    platformsList: PropTypes.array,
-    createAsset: PropTypes.func,
+    formValues: PropTypes.shape(),
+    formErrors: PropTypes.shape(),
+    platformsList: PropTypes.arrayOf(),
     dispatch: PropTypes.func,
     onClose: PropTypes.func.isRequired,
     handleAddPlatformDialog: PropTypes.func,
     maxFiles: PropTypes.number,
     aspectRatio: PropTypes.number,
     maxFileSize: PropTypes.number,
-    accept: PropTypes.array,
+    accept: PropTypes.arrayOf(PropTypes.any),
     ...formPropTypes,
   }
 
@@ -169,7 +166,7 @@ export default class AddTokenForm extends PureComponent {
     this.props.dispatch(change(FORM_ADD_TOKEN_DIALOG, 'tokenImg', file.hash()))
   }
 
-  async handleUploadFile (e) {
+  handleUploadFile = async (e) => {
     const file = e.target.files[0]
     if (!file) {
       return
@@ -186,7 +183,6 @@ export default class AddTokenForm extends PureComponent {
   handleSubmitClick = () => {
     this.setState({ showPlatformError: !this.props.formErrors || !!this.props.formErrors.platform })
     this.props.submitForm()
-    console.log('this.props.submitForm: ')
   }
 
   handleWalletClick = () => {
@@ -244,7 +240,7 @@ export default class AddTokenForm extends PureComponent {
         }
 
         <input
-          onChange={(e) => this.handleUploadFile(e)}
+          onChange={this.handleUploadFile}
           ref={this.refWallet}
           type='file'
           styleName='hide'
@@ -281,16 +277,20 @@ export default class AddTokenForm extends PureComponent {
   }
 
   renderTokenInfo () {
-    const tokenSymbol = this.props.formValues && this.props.formValues.get('tokenSymbol')
-    const smallestUnit = this.props.formValues && this.props.formValues.get('smallestUnit')
-    const amount = this.props.formValues && this.props.formValues.get('amount')
-    const description = this.props.formValues && this.props.formValues.get('description')
-    const platform = this.props.formValues && this.props.formValues.get('platform')
-    const renderPlatform = (platform) => {
-      return platform.name
-        ? <span>{platform.name}&nbsp;(<small>{platform.address}</small>)</span>
-        : <span>{platform.address}</span>
+    const formValues = this.props.formValues || {}
+
+    const tokenSymbol = formValues.get('tokenSymbol')
+    const smallestUnit = formValues.get('smallestUnit')
+    const amount = formValues.get('amount')
+    const description = formValues.get('description')
+    const platform = formValues.get('platform')
+
+    const renderPlatform = ({ name, address }) => {
+      return name
+        ? <span>{name}&nbsp;(<small>{address}</small>)</span>
+        : <span>{address}</span>
     }
+
     return (
       <div styleName='tokenInfoRow'>
         {this.renderFileInput()}

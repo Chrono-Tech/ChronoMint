@@ -124,7 +124,7 @@ export default class PlatformsList extends PureComponent {
     )
   }
 
-  renderPlatformsList = ({ selectedPlatform, platformsList, tokens, selectedToken, handleDetachPlatform, assets }) => {
+  renderPlatformsList = ({ selectedPlatform, platformsList, tokens, selectedToken, assets }) => {
     return (
       <div>
         {

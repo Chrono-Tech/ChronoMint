@@ -45,11 +45,9 @@ function mapDispatchToProps (dispatch, ownProps) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class GasSlider extends PureComponent {
   static propTypes = {
-    isLocal: PropTypes.bool,
     handleChange: PropTypes.func,
     value: PropTypes.number,
     token: PropTypes.instanceOf(TokenModel),
-    onDragStop: PropTypes.func,
     hideTitle: PropTypes.bool,
     disabled: PropTypes.bool,
     initialValue: PropTypes.number,

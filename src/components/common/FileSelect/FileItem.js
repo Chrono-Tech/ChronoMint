@@ -20,7 +20,6 @@ class FileItem extends PureComponent {
   static propTypes = {
     file: PropTypes.instanceOf(FileModel),
     onRemove: PropTypes.func.isRequired,
-    handleDownload: PropTypes.func,
   }
 
   renderErrors () {

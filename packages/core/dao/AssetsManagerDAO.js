@@ -258,7 +258,6 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   // TODO @Abdulov remove this how txHash will be arrive from Middleware
   async getTransactionsForBlockAsset (address, symbol, account) {
     const transactionsPromises = []
-    const chronoBankAssetDAO = await contractManager.getChronoBankAssetDAO(address)
 
     transactionsPromises.push(this.chronoBankAssetDAO._get(TX_PAUSED, 0, 'latest', { symbol }))
     transactionsPromises.push(this.chronoBankAssetDAO._get(TX_UNPAUSED, 0, 'latest', { symbol }))
