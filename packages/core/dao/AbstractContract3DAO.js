@@ -105,6 +105,15 @@ export default class AbstractContractDAO extends EventEmitter {
   }
 
   /**
+   * Just Stub to avoid an error. Need to implement events history
+   * @returns {Array}
+   * @private
+   */
+  _get () {
+    return []
+  }
+
+  /**
    * @param tx - TxExecModel
    */
   accept (tx: TxExecModel) {

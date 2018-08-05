@@ -62,7 +62,7 @@ function mapStateToProps (state) {
     },
   }
 }
-//QWEpoi123
+
 function mapDispatchToProps (dispatch) {
   return {
     onSubmit: async (values) => {

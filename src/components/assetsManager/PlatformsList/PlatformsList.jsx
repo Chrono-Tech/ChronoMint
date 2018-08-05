@@ -29,8 +29,10 @@ function prefix (token) {
 function mapStateToProps (state) {
   const assetsManager = state.get(DUCK_ASSETS_MANAGER)
   const tokens = state.get(DUCK_TOKENS)
+  const platformList = assetsManager.platformsList()
+
   return {
-    platformsList: assetsManager.platformsList(),
+    platformsList: platformList,
     tokens,
     assets: assetsManager.assets(),
     selectedToken: assetsManager.selectedToken(),

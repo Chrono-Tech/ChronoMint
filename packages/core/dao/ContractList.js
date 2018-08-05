@@ -62,11 +62,11 @@ export const ASSET_HOLDER_LIBRARY = new ContractModel({
   DAOClass: AssetHolderDAO,
 })
 
-// export const PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER_LIBRARY = new ContractModel({
-//   type: 'PlatformTokenExtensionGatewayManagerEmitterDAO',
-//   abi: PlatformTokenExtensionGatewayManagerEmitterABI,
-//   DAOClass: PlatformTokenExtensionGatewayManagerEmitterDAO,
-// })
+export const PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER_LIBRARY = new ContractModel({
+  type: 'PlatformTokenExtensionGatewayManagerEmitterDAO',
+  abi: PlatformTokenExtensionGatewayManagerEmitterABI,
+  DAOClass: PlatformTokenExtensionGatewayManagerEmitterDAO,
+})
 
 export const CHRONOBANK_PLATFORM_LIBRARY = new ContractModel({
   type: 'ChronoBankPlatform',
@@ -99,7 +99,7 @@ export const PLATFORMS_MANAGER_LIBRARY = new ContractModel({
 })
 
 export const TOKEN_MANAGMENT_EXTENSION_LIBRARY = new ContractModel({
-  type: 'TOKEN_MANAGMENT_EXTENSION',
+  type: 'TokenManagementInterface',
   abi: TokenManagementInterfaceABI,
   DAOClass: TokenManagementExtensionDAO,
 })

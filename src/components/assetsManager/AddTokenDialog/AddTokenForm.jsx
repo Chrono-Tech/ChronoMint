@@ -63,6 +63,7 @@ const onSubmit = (values, dispatch) => {
 function mapStateToProps (state) {
   const assetsManager = state.get(DUCK_ASSETS_MANAGER)
   const form = state.get('form')
+
   return {
     formValues: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('values'),
     formErrors: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('syncErrors'),
@@ -124,9 +125,9 @@ class Platform extends PureComponent {
 export default class AddTokenForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
-    formValues: PropTypes.shape(),
-    formErrors: PropTypes.shape(),
-    platformsList: PropTypes.arrayOf(),
+    formValues: PropTypes.shape(PropTypes.any),
+    formErrors: PropTypes.shape(PropTypes.any),
+    platformsList: PropTypes.arrayOf(PropTypes.object),
     dispatch: PropTypes.func,
     onClose: PropTypes.func.isRequired,
     handleAddPlatformDialog: PropTypes.func,
@@ -149,7 +150,6 @@ export default class AddTokenForm extends PureComponent {
         aspectRatio: props.aspectRatio || DEFAULT_ASPECT_RATIO,
         maxFiles: props.maxFiles || DEFAULT_MAX_FILES,
       },
-
     }
   }
 
@@ -277,20 +277,17 @@ export default class AddTokenForm extends PureComponent {
   }
 
   renderTokenInfo () {
-    const formValues = this.props.formValues || {}
-
-    const tokenSymbol = formValues.get('tokenSymbol')
-    const smallestUnit = formValues.get('smallestUnit')
-    const amount = formValues.get('amount')
-    const description = formValues.get('description')
-    const platform = formValues.get('platform')
-
-    const renderPlatform = ({ name, address }) => {
-      return name
-        ? <span>{name}&nbsp;(<small>{address}</small>)</span>
-        : <span>{address}</span>
+    const formValues = this.props.formValues
+    const tokenSymbol = formValues && formValues.get('tokenSymbol')
+    const smallestUnit = formValues && formValues.get('smallestUnit')
+    const amount = formValues && formValues.get('amount')
+    const description = formValues && formValues.get('description')
+    const platform = formValues && formValues.get('platform')
+    const renderPlatform = (platform) => {
+      return platform.name
+        ? <span>{platform.name}&nbsp;(<small>{platform.address}</small>)</span>
+        : <span>{platform.address}</span>
     }
-
     return (
       <div styleName='tokenInfoRow'>
         {this.renderFileInput()}

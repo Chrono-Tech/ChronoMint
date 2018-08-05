@@ -3,12 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import uuid from 'uuid/v1'
 import Immutable from 'immutable'
 import { notify } from '../notifier/actions'
 import web3Converter from '../../utils/Web3Converter'
 import contractManager from '../../dao/ContractsManagerDAO'
 import ReissuableModel from '../../models/tokens/ReissuableModel'
-import uuid from 'uuid/v1'
 import TokenModel from '../../models/tokens/TokenModel'
 import OwnerCollection from '../../models/wallet/OwnerCollection'
 import OwnerModel from '../../models/wallet/OwnerModel'
@@ -25,6 +25,12 @@ import AssetsManagerNoticeModel, {
 import PausedModel from '../../models/tokens/PausedModel'
 import BlacklistModel from '../../models/tokens/BlacklistModel'
 import { daoByType } from '../daos/selectors'
+import { web3Selector } from '../ethereum/selectors'
+import { executeTransaction } from '../ethereum/actions'
+
+import {
+  TX_PLATFORM_REQUESTED
+} from '../../dao/constants/PlatformsManagerDAO'
 
 import {
   DUCK_ASSETS_MANAGER,
@@ -66,8 +72,6 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
   dispatch({ type: GET_ASSETS_MANAGER_COUNTS_START })
   const { account } = getState().get(DUCK_SESSION)
   const assetsManagerDao = daoByType('AssetsManager')(getState())
-
-  console.log('assetsManagerDao: ', assetsManagerDao)
 
   const platforms = await assetsManagerDao.getPlatformList(account)
   const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
@@ -116,10 +120,16 @@ export const getPlatforms = () => async (dispatch, getState) => {
 export const createPlatform = (values) => async (dispatch, getState) => {
   try {
     const dao = daoByType('PlatformsManager')(getState())
+    let tx
     if (values.get('alreadyHave')) {
-      await dao.attachPlatform(values.get('platformAddress'))
+      tx = await dao.attachPlatform(values.get('platformAddress'))
     } else {
-      await dao.createPlatform()
+      tx = await dao.createPlatform()
+    }
+
+    const web3 = web3Selector()(getState())
+    if (tx) {
+      await dispatch(executeTransaction({ tx, web3, options: { feeMultiplier: 1 } }))
     }
   } catch (e) {
     console.log('createPlatform error: ', e)
@@ -153,6 +163,23 @@ export const watchPlatformManager = () => async (dispatch, getState) => {
   const callback = (tx) => {
     dispatch(setTx(tx))
   }
+
+  platformsManagerDAO.on(TX_PLATFORM_REQUESTED, (data) => {
+    if (data.returnValues.by.toLowerCase() !== account) {
+      return
+    }
+
+    const assetsManager = getState().get(DUCK_ASSETS_MANAGER)
+    let platforms = assetsManager.platformsList()
+    platforms.push({
+      address: data.returnValues.platform.toLowerCase(),
+      by: data.returnValues.by.toLowerCase(),
+      name: null,
+    })
+
+    const usersPlatforms = platforms.filter((platform) => platform.by === account)
+    dispatch({ type: GET_PLATFORMS, payload: { platforms, usersPlatforms } })
+  })
   platformsManagerDAO.watchCreatePlatform(callback, account)
 }
 
@@ -193,7 +220,7 @@ export const createAsset = (token: TokenModel) => async (dispatch, getState) => 
     })
     await dispatch({ type: SET_ASSETS, payload: { assets } })
   } catch (e) {
-    console.log('createAsset: ', e)
+    console.log('createAsset error: ', e)
     // eslint-disable-next-line
     console.error(e.message)
   }
@@ -350,11 +377,12 @@ export const watchInitTokens = () => async (dispatch, getState) => {
   dispatch(getTransactions())
   const { account } = getState().get(DUCK_SESSION)
   const chronoBankPlatformDAO = daoByType('ChronoBankPlatform')(getState())
-  const platformTokenExtensionGatewayManagerEmitterDAO = daoByType('platformTokenExtensionGatewayManagerEmitter')(getState())
+  const platformTokenExtensionGatewayManagerEmitterDAO = daoByType('PlatformTokenExtensionGatewayManagerEmitterDAO')(getState())
+
   await Promise.all([
     dispatch(subscribeToBlockAssetEvents()),
     dispatch(subscribeToRestrictedEvents()),
-    dispatch(subscribeToAssetEvents(account)),
+    // dispatch(subscribeToAssetEvents(account)),
   ])
 
   const issueCallback = async (tx) => dispatch(setTx(tx))

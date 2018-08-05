@@ -70,7 +70,6 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
    * @param subscribeTxFlow
    */
   postStoreDispatchSetup (state, web3, history, subscribeTxFlow) {
-    console.log('postStoreDispatchSetup: TokenManagementExtensionManager: ', history)
     const tokenManagementExtensionManager = new TokenManagementExtensionManager({ web3, history, subscribeTxFlow })
     this.setTokenManagementExtensionManager(tokenManagementExtensionManager)
   }
@@ -90,7 +89,7 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
    * @returns {Promise<void>}
    */
   async reissueAsset (symbol, amount) {
-    this._tx(TX_REISSUE_ASSET, [ symbol, amount ])
+    return this._tx(TX_REISSUE_ASSET, [ symbol, amount ])
   }
 
   /**
@@ -98,7 +97,7 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
    * @returns {Promise<void>}
    */
   async createPlatform () {
-    this._tx(TX_CREATE_PLATFORM)
+    return this._tx(TX_CREATE_PLATFORM)
   }
 
   /**
@@ -107,7 +106,7 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
    * @returns {Promise<void>}
    */
   async attachPlatform (address) {
-    await this._multisigTx(TX_ATTACH_PLATFORM, [ address ])
+    return this._tx(TX_ATTACH_PLATFORM, [ address ])
   }
 
   /**
@@ -116,7 +115,7 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
    * @returns {Promise<void>}
    */
   async detachPlatform (address) {
-    this._tx(TX_DETACH_PLATFORM, [ address ])
+    return this._tx(TX_DETACH_PLATFORM, [ address ])
   }
 
   /**
