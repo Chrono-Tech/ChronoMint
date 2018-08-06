@@ -29,7 +29,7 @@ import { web3Selector } from '../ethereum/selectors'
 import { executeTransaction } from '../ethereum/actions'
 
 import {
-  TX_PLATFORM_REQUESTED
+  TX_PLATFORM_REQUESTED,
 } from '../../dao/constants/PlatformsManagerDAO'
 
 import {
@@ -192,7 +192,7 @@ export const createAsset = (token: TokenModel) => async (dispatch, getState) => 
   try {
     console.log('createAsset: ', token, token.toJSON())
 
-    let txHash
+    let txHash, tx
     const platformsManagerDAO = daoByType('PlatformsManager')(getState())
     const assetsManagerDAO = daoByType('AssetsManager')(getState())
     const tokenExtensionAddress = await assetsManagerDAO.getTokenExtension(token.platform().address)
@@ -200,11 +200,23 @@ export const createAsset = (token: TokenModel) => async (dispatch, getState) => 
     const tokenManagementExtension =
       await platformsManagerDAO.tokenManagementExtensionManager.getTokenManagementExtensionDAO(tokenExtensionAddress)
 
+    console.log('createAsset: ', tokenManagementExtension)
+
     if (token.withFee()) {
-      await tokenManagementExtension.createAssetWithFee(token)
+      tx = await tokenManagementExtension.createAssetWithFee(token)
     } else {
-      await tokenManagementExtension.createAssetWithoutFee(token)
+      tx = await tokenManagementExtension.createAssetWithoutFee(token)
     }
+
+    console.log('createAsset: tx: ', tx)
+    const web3 = web3Selector()(getState())
+    if (tx) {
+      await dispatch(executeTransaction({ tx, web3, options: { feeMultiplier: 1 } }))
+    }
+
+    console.log('createAsset end: ')
+
+
     let assets = getState().get(DUCK_ASSETS_MANAGER).assets()
     // @todo remove uuid. Wait new tx flow and parse event for this
     txHash = uuid()
@@ -373,17 +385,23 @@ export const setManagers = (tx) => async (dispatch, getState) => {
 }
 
 export const watchInitTokens = () => async (dispatch, getState) => {
+  console.log('watchInitTokens started: ')
+
   dispatch(getAssetsManagerData())
   dispatch(getTransactions())
   const { account } = getState().get(DUCK_SESSION)
+  const dao = getState().get(dao)
+  console.log('watchInitTokens dao: ', dao, getState())
   const chronoBankPlatformDAO = daoByType('ChronoBankPlatform')(getState())
   const platformTokenExtensionGatewayManagerEmitterDAO = daoByType('PlatformTokenExtensionGatewayManagerEmitterDAO')(getState())
 
-  await Promise.all([
-    dispatch(subscribeToBlockAssetEvents()),
-    dispatch(subscribeToRestrictedEvents()),
-    // dispatch(subscribeToAssetEvents(account)),
-  ])
+  // await Promise.all([
+  //   dispatch(subscribeToBlockAssetEvents()),
+  //   dispatch(subscribeToRestrictedEvents()),
+  //   dispatch(subscribeToAssetEvents(account)),
+  // ])
+
+  console.log('watchInitTokens: after promise All: ', chronoBankPlatformDAO, platformTokenExtensionGatewayManagerEmitterDAO)
 
   const issueCallback = async (tx) => dispatch(setTx(tx))
   const managersCallback = (tx) => {
@@ -393,13 +411,20 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     }
     dispatch(setTx(tx))
   }
-  const assetCallback = async (tx) => {
+  const assetCallback = async (data) => {
+    console.log('assetCallback: ', data)
     const state = getState().get(DUCK_ASSETS_MANAGER)
     const assets = state.assets()
-    delete assets[tx.transactionHash]
-    dispatch({ type: SET_ASSETS, payload: { assets } })
-    dispatch(setTx(tx))
+
+    console.log('assetCallback assets: ', assets)
+
+    // delete assets[tx.transactionHash]
+    // dispatch({ type: SET_ASSETS, payload: { assets } })
+    // dispatch(setTx(tx))
   }
+
+  // 0x5454545433000000000000000000000000000000000000000000000000000000
+  console.log('watchInitTokens: ', platformTokenExtensionGatewayManagerEmitterDAO)
 
   return Promise.all([
     chronoBankPlatformDAO.watchIssue(issueCallback),

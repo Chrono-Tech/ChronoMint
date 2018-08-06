@@ -125,12 +125,14 @@ export default class VotingManagerDAO extends AbstractContractDAO {
     summary.voteLimitInTIME = new Amount(voteLimitInTIME, 'TIME')
     summary = { ...poll.txSummary(), blockchain: 'Ethereum' }
 
-    await this._tx(TX_CREATE_POLL, [
+    const tx = this._tx(TX_CREATE_POLL, [
       poll.options.length,
       web3Converter.ipfsHashToBytes32(hash),
       new BigNumber(voteLimitInTIME),
       poll.deadline.getTime(),
     ], new BigNumber(0), new BigNumber(0), summary, { stubPoll: options.stubPoll })
+
+    return tx
   }
 
   async getPollsDetails (pollsAddresses: Array<string>, account: string) {
