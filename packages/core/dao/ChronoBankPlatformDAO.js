@@ -4,6 +4,7 @@
  */
 
 import AbstractContractDAO from './AbstractContract3DAO'
+import { ChronoBankPlatformABI } from './abi'
 
 //#region CONSTANTS
 
@@ -22,8 +23,8 @@ import {
 
 export default class ChronoBankPlatformDAO extends AbstractContractDAO {
 
-  constructor ({ address, history, abi }) {
-    super({ address, history, abi })
+  constructor (address, history) {
+    super({ address, history, abi: ChronoBankPlatformABI })
   }
 
   connect (web3, options) {
@@ -96,16 +97,16 @@ export default class ChronoBankPlatformDAO extends AbstractContractDAO {
   }
 
   isReissuable (symbol) {
-    return this._call(TX_IS_REISSUABLE, [ symbol ])
+    return this._call(TX_IS_REISSUABLE, [symbol])
   }
 
   async addAssetPartOwner (symbol, address) {
-    const tx = await this._tx(TX_ADD_ASSET_PART_OWNER, [ symbol, address ])
+    const tx = await this._tx(TX_ADD_ASSET_PART_OWNER, [symbol, address])
     return tx.tx
   }
 
   async removeAssetPartOwner (symbol, address) {
-    const tx = await this._tx(TX_REMOVE_ASSET_PART_OWNER, [ symbol, address ])
+    const tx = await this._tx(TX_REMOVE_ASSET_PART_OWNER, [symbol, address])
     return tx.tx
   }
 

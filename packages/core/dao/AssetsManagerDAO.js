@@ -19,6 +19,7 @@ import PlatformsManagerDAO from './PlatformsManagerDAO'
 import PlatformTokenExtensionGatewayManagerEmitterDAO from './PlatformTokenExtensionGatewayManagerEmitterDAO'
 import web3Converter from '../utils/Web3Converter'
 import { daoByType } from '../../core/redux/daos/selectors'
+import assetsManagerService from '../services/AssetsManagerService'
 
 //#region CONSTANTS
 
@@ -156,6 +157,9 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
       console.warn(e)
     }
 
+    unionBy(minePlatforms, mineAssets, 'address')
+      .forEach((platform) => assetsManagerService.getChronoBankPlatformDAO(platform.address, this.web3, this.history._address))
+
     return unionBy(minePlatforms, mineAssets, 'address')
   }
 
@@ -229,10 +233,10 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     transactionsPromises.push(this.platformsManagerDAO._get(TX_PLATFORM_REQUESTED, 0, 'latest', { by: account }))
     transactionsPromises.push(this.platformsManagerDAO._get(TX_PLATFORM_ATTACHED, 0, 'latest', { by: account }))
     transactionsPromises.push(this.platformsManagerDAO._get(TX_PLATFORM_DETACHED, 0, 'latest', { by: account }))
-    transactionsPromises.push(this.chronobankPlatformDAO._get(TX_ISSUE, 0, 'latest', { by: account }))
-    transactionsPromises.push(this.chronobankPlatformDAO._get(TX_REVOKE, 0, 'latest', { by: account }))
-    transactionsPromises.push(this.chronobankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', { to: account }))
-    transactionsPromises.push(this.chronobankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', { from: account }))
+    // transactionsPromises.push(this.chronobankPlatformDAO._get(TX_ISSUE, 0, 'latest', { by: account }))
+    // transactionsPromises.push(this.chronobankPlatformDAO._get(TX_REVOKE, 0, 'latest', { by: account }))
+    // transactionsPromises.push(this.chronobankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', { to: account }))
+    // transactionsPromises.push(this.chronobankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', { from: account }))
     const transactionsLists = await Promise.all(transactionsPromises)
     const promises = []
     transactionsLists.map((transactionsList) => transactionsList.map((tx) => promises.push(this.getTxModel(tx, account))))

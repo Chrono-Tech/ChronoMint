@@ -288,7 +288,7 @@ export const addManager = (token: TokenModel, owner: string) => async (dispatch,
   try {
     const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
     const platform = token.platform() && token.platform().address || assets[token.address()].platform
-    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(platform)
+    const chronoBankPlatformDAO = assetsManagerService.getChronoBankPlatformDAO(platform)
     return await chronoBankPlatformDAO.addAssetPartOwner(token.symbol(), owner)
   }
   catch (e) {
@@ -301,7 +301,7 @@ export const reissueAsset = (token: TokenModel, amount: number) => async (dispat
   try {
     const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
     const platform = token.platform() && token.platform().address || assets[token.address()].platform
-    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(platform)
+    const chronoBankPlatformDAO = assetsManagerService.getChronoBankPlatformDAO(platform)
     await chronoBankPlatformDAO.reissueAsset(token, amount)
   }
   catch (e) {
@@ -314,7 +314,7 @@ export const revokeAsset = (token: TokenModel, amount: number) => async (dispatc
   try {
     const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
     const platform = token.platform() && token.platform().address || assets[token.address()].platform
-    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(platform)
+    const chronoBankPlatformDAO = assetsManagerService.getChronoBankPlatformDAO(platform)
     await chronoBankPlatformDAO.revokeAsset(token, amount)
   }
   catch (e) {
@@ -325,7 +325,7 @@ export const revokeAsset = (token: TokenModel, amount: number) => async (dispatc
 
 export const checkIsReissuable = async (token: TokenModel, asset) => {
   try {
-    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(asset.platform)
+    const chronoBankPlatformDAO = assetsManagerService.getChronoBankPlatformDAO(asset.platform)
     let isReissuable = await chronoBankPlatformDAO.isReissuable(token.symbol())
     return new ReissuableModel({ value: isReissuable }).isFetched(true)
   } catch (e) {
@@ -445,12 +445,12 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     dispatch({ type: SET_ASSETS, payload: { assets: assetsObj } })
   }
 
-  return Promise.all([
-    chronoBankPlatformDAO.watchIssue(issueCallback),
-    chronoBankPlatformDAO.watchRevoke(issueCallback),
-    chronoBankPlatformDAO.watchManagers(managersCallback),
-    platformTokenExtensionGatewayManagerEmitterDAO.watchAssetCreate(assetCallback, account),
-  ])
+  // return Promise.all([
+  //   chronoBankPlatformDAO.watchIssue(issueCallback),
+  //   chronoBankPlatformDAO.watchRevoke(issueCallback),
+  //   chronoBankPlatformDAO.watchManagers(managersCallback),
+  //   platformTokenExtensionGatewayManagerEmitterDAO.watchAssetCreate(assetCallback, account),
+  // ])
 }
 
 export const getFee = async (token: TokenModel) => {

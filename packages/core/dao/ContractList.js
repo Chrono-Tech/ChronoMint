@@ -6,20 +6,19 @@
 import ContractModel from '../models/contracts/ContractModel'
 
 import {
-  AssetsManagerABI,
-  AssetHolderABI,
   AssetDonatorABI,
-  UserManagerABI,
+  AssetHolderABI,
+  AssetsManagerABI,
+  ChronoBankAssetABI,
   ContractsManagerABI,
   ERC20ManagerABI,
   MultiEventsHistoryABI,
+  PlatformsManagerABI,
+  PlatformTokenExtensionGatewayManagerEmitterABI,
+  TokenManagementInterfaceABI,
+  UserManagerABI,
   VotingManagerABI,
   WalletsManagerABI,
-  PlatformsManagerABI,
-  TokenManagementInterfaceABI,
-  ChronoBankPlatformABI,
-  PlatformTokenExtensionGatewayManagerEmitterABI,
-  ChronoBankAssetABI,
 } from './abi/'
 
 import ContractsManagerDAO from './ContractsManagerDAO3'
@@ -33,7 +32,6 @@ import WalletsManagerDAO from './WalletsManagerDAO'
 import AssetsManagerDAO from './AssetsManagerDAO'
 import PlatformManagerDAO from './PlatformsManagerDAO'
 import TokenManagementExtensionDAO from './TokenManagementExtensionDAO'
-import ChronoBankPlatformDAO from './ChronoBankPlatformDAO'
 import ChronoBankAssetDAO from './ChronoBankAssetDAO'
 import PlatformTokenExtensionGatewayManagerEmitterDAO from './PlatformTokenExtensionGatewayManagerEmitterDAO'
 
@@ -66,12 +64,6 @@ export const PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER_LIBRARY = new Cont
   type: 'PlatformTokenExtensionGatewayManagerEmitterDAO',
   abi: PlatformTokenExtensionGatewayManagerEmitterABI,
   DAOClass: PlatformTokenExtensionGatewayManagerEmitterDAO,
-})
-
-export const CHRONOBANK_PLATFORM_LIBRARY = new ContractModel({
-  type: 'ChronoBankPlatform',
-  abi: ChronoBankPlatformABI,
-  DAOClass: ChronoBankPlatformDAO,
 })
 
 export const CHRONOBANK_ASSET_LIBRARY = new ContractModel({
