@@ -26,6 +26,7 @@ import BlacklistModel from '../../models/tokens/BlacklistModel'
 import { daoByType } from '../daos/selectors'
 import { web3Selector } from '../ethereum/selectors'
 import { executeTransaction } from '../ethereum/actions'
+import assetsManagerService from '../../services/AssetsManagerService'
 
 import {
   TX_PLATFORM_REQUESTED,
@@ -250,10 +251,16 @@ export const createAsset = (token: TokenModel) => async (dispatch, getState) => 
  * @param excludeAccounts
  * @returns {Promise<*>}
  */
-export const getManagersForAssetSymbol = async (symbol: string, excludeAccounts: Array<string> = []) => async (dispatch, getState) => {
-  const assetsManagerDAO = daoByType('AssetsManager')(getState())
-  const managersList = await assetsManagerDAO.getManagersForAssetSymbol(symbol, excludeAccounts)
-  return managersList.isFetched(true)
+export const getManagersForAssetSymbol = (symbol: string, excludeAccounts: Array<string> = []) => async (dispatch, getState) => {
+  try {
+    const assetsManagerDAO = daoByType('AssetsManager')(getState())
+    const managersList = await assetsManagerDAO.getManagersForAssetSymbol(symbol, excludeAccounts)
+    return managersList.isFetched(true)
+  } catch (e) {
+    // TODO @abdulov remove console.log
+    console.warn(e)
+    return new OwnerCollection()
+  }
 }
 
 /**
@@ -266,7 +273,7 @@ export const removeManager = (token: TokenModel, owner: string) => async (dispat
   try {
     const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
     const platform = token.platform() && token.platform().address || assets[token.address()].platform
-    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(platform)
+    const chronoBankPlatformDAO = await assetsManagerService.getChronoBankPlatformDAO(platform)
     return await chronoBankPlatformDAO.removeAssetPartOwner(token.symbol(), owner)
   }
   catch (e) {
@@ -321,16 +328,15 @@ export const revokeAsset = (token: TokenModel, amount: number) => async (dispatc
 }
 
 export const checkIsReissuable = async (token: TokenModel, asset) => {
-  let isReissuable = false
   try {
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(asset.platform)
-    isReissuable = await chronoBankPlatformDAO.isReissuable(token.symbol())
-  }
-  catch (e) {
+    let isReissuable = await chronoBankPlatformDAO.isReissuable(token.symbol())
+    return new ReissuableModel({ value: isReissuable }).isFetched(true)
+  } catch (e) {
     // eslint-disable-next-line
-    console.error(e.message)
+    console.warn(e.message)
+    return new ReissuableModel({ value: false }).isFetched(true)
   }
-  return new ReissuableModel({ value: isReissuable }).isFetched(true)
 }
 
 export const getTransactions = () => async (dispatch, getState) => {
@@ -455,10 +461,8 @@ export const getFee = async (token: TokenModel) => {
     tokenFee = tokenFee
       .fee(res / 100)
       .withFee(!!res.toNumber())
-
   } catch (e) {
-    // eslint-disable-next-line
-    console.log(e.message)
+    console.warn(e.message)
   }
   return tokenFee
 }
@@ -548,7 +552,6 @@ const getBlacklist = (symbol: string) => async (disptch, getState) => {
     // eslint-disable-next-line
     console.error(e.message)
   }
-
   return blacklist.isFetched(true)
 }
 

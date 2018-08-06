@@ -149,7 +149,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
             const pollAddress = pollsAddresses[i].toLowerCase()
 
             try {
-              votingService.subscribeToPoll(pollAddress, account, this.history._address)
+              votingService.subscribeToPoll(pollAddress, account, this.web3, this.history._address)
             } catch (e) {
               // eslint-disable-next-line
               console.error('watch error', e.message)

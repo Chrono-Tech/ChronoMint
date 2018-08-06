@@ -81,7 +81,12 @@ const configureStore = () => {
     ]
     const logger = createLogger({
       collapsed: true,
-      predicate: (getState, action) => WHITE_LIST.includes(action.type) || (!IGNORED_ACTIONS.includes(action.type) && DOMAINS.some((domain) => action.type.startsWith(domain))),
+      predicate: (getState, action) => WHITE_LIST.includes(action.type) || (!IGNORED_ACTIONS.includes(action.type) && DOMAINS.some((domain) => {
+        if (!action.type) {
+          console.error('%c action', 'background: red; color: #fff', action)
+        }
+        return action.type.startsWith(domain)
+      })),
     })
     // Note: logger must be the last middleware in chain, otherwise it will log thunk and promise, not actual actions
     middleware.push(logger)
