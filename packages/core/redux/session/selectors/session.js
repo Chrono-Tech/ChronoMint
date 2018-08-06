@@ -8,6 +8,9 @@ import {
   DUCK_SESSION,
   PROFILE_PANEL_TOKENS,
 } from '../constants'
+import {
+  DUCK_PERSIST_ACCOUNT,
+} from '../../persistAccount/constants'
 import { getMainWallets } from '../../wallets/selectors/models'
 import { getGasSliderCollection, getIsCBE } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
@@ -58,15 +61,27 @@ export const getProfileSignature = createSelector(
   },
 )
 
+export const getSelectedAccountName = createSelector(
+  (state) => state.get(DUCK_PERSIST_ACCOUNT),
+  (persistAccount) => {
+    const { selectedWallet } = persistAccount
+
+    return selectedWallet && selectedWallet.name
+  },
+)
+
 export const getAccountProfileSummary = createSelector(
-  getProfileSignature,
-  (profile) => {
+  [
+    getProfileSignature,
+    getSelectedAccountName
+  ],
+  (profile, selectedAccountName) => {
     if (profile){
       const level1 = profile.level1.submitted
       const level2 = profile.level2.submitted
 
       return {
-        userName: level1 && level1.userName,
+        userName: level1 && level1.userName || selectedAccountName,
         avatar: level1 && level1.avatar && level1.avatar.id,
         phone: level2 && level2.phone,
         email: level2 && level2.email,
