@@ -92,9 +92,9 @@ export default class VotingManagerDAO extends AbstractContractDAO {
     this.pollInterfaceManagerDAO = pollInterfaceDAO
   }
 
-  postStoreDispatchSetup (state, web3, history, subscribeTxFlow) {
+  postStoreDispatchSetup (state, web3, history) {
     const assetHolderDAO = daoByType('TimeHolder')(state)
-    const pollsInterfaceManagerDAO = new PollInterfaceManagerDAO({ web3, history, subscribeTxFlow })
+    const pollsInterfaceManagerDAO = new PollInterfaceManagerDAO({ web3, history })
     this.setPollInterfaceManagerDAO(pollsInterfaceManagerDAO)
     this.setAssetHolderDAO(assetHolderDAO)
   }
@@ -104,7 +104,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
     return this.getPollsDetails(addresses.filter((address) => !this.isEmptyAddress(address)), account)
   }
 
-  async createPoll (poll: PollModel, options) {
+  async createPoll (poll: PollModel) {
     // TODO @ipavlenko: It may be suitable to handle IPFS error and dispatch
     // a failure notice.
     let hash

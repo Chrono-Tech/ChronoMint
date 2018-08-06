@@ -436,11 +436,11 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     console.log('tokens: ', tokens)
     console.log('assets: ', assets)
 
-    const rToken = tokens.find((t) => {
-      console.log('rToken: ', t)
-      t.symbol === eventSymbol
-    })
-    console.log('rToken: ', rToken)
+    const updateToken = tokens.item(eventSymbol)
+    updateToken
+      .isFetching(false)
+      .isFetched(true)
+      .transactionHash(data.transactionHash)
 
     dispatch({ type: SET_ASSETS, payload: { assets: assetsObj } })
   }

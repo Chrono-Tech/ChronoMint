@@ -110,13 +110,12 @@ export const watchInitPolls = () => async (dispatch, getState) => {
 
 export const createPoll = (poll: PollDetailsModel) => async (dispatch, getState) => {
   const id = `stub_${--counter}`
-  const stub = poll.mutate({ id: id, isFetching: true })
   const votingDAO = daoByType('VotingManager')(getState())
 
   try {
     // dispatch(handlePollCreated(stub))
     dispatch(goToVoting())
-    const tx = await votingDAO.createPoll(poll.poll, { stubPoll: stub })
+    const tx = await votingDAO.createPoll(poll.poll)
     if (tx) {
       dispatch(executeTransaction({ tx }))
     }

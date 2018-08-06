@@ -69,8 +69,8 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
    * @param history
    * @param subscribeTxFlow
    */
-  postStoreDispatchSetup (state, web3, history, subscribeTxFlow) {
-    const tokenManagementExtensionManager = new TokenManagementExtensionManager({ web3, history, subscribeTxFlow })
+  postStoreDispatchSetup (state, web3, history) {
+    const tokenManagementExtensionManager = new TokenManagementExtensionManager({ web3, history })
     this.setTokenManagementExtensionManager(tokenManagementExtensionManager)
   }
 

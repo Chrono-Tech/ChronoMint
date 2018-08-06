@@ -4,7 +4,6 @@
  */
 
 import ContractDAOModel from '../../models/contracts/ContractDAOModel'
-import { alternateTxHandlingFlow } from '../tokens/actions'
 import { getAccount } from '../session/selectors/models'
 import AbstractContractDAO from '../../dao/AbstractContract3DAO'
 
@@ -61,17 +60,12 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     WALLETS_MANAGER,
   ]
 
-  const subscribeToFlow = (dao) => {
-    dispatch(alternateTxHandlingFlow(dao))
-  }
-
   const getDaoModel = async (contract, address: String) => {
     if (!address) {
       address = await contractManagerDAO.getContractAddressByType(contract.type)
     }
     const dao = contract.create(address.toLowerCase(), historyAddress)
     dao.connect(web3)
-    subscribeToFlow(dao)
     return new ContractDAOModel({
       contract,
       address,
@@ -101,7 +95,7 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
   // post registration setup
   for (const model of models) {
     if (typeof model.dao.postStoreDispatchSetup === 'function') {
-      model.dao.postStoreDispatchSetup(state, web3, historyAddress, subscribeToFlow)
+      model.dao.postStoreDispatchSetup(state, web3, historyAddress)
     }
   }
 
