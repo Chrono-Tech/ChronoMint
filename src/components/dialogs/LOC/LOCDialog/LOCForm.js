@@ -76,14 +76,14 @@ class LOCForm extends PureComponent {
               component={TextField}
               name='name'
               fullWidth
-              floatingLabelText={<Translate value='locs.title' />}
+              label={<Translate value='locs.title' />}
             />
             <Field
               component={TextField}
               name='website'
               hintText='http://...'
               fullWidth
-              floatingLabelText={<Translate value='terms.website' />}
+              label={<Translate value='terms.website' />}
             />
 
             <Field
@@ -91,7 +91,7 @@ class LOCForm extends PureComponent {
               name='expDate'
               fullWidth
               hintText={<Translate value='locs.expirationDate' />}
-              floatingLabelText={<Translate value='locs.expirationDate' />}
+              label={<Translate value='locs.expirationDate' />}
             />
           </div>
           <div styleName='col'>
@@ -101,7 +101,7 @@ class LOCForm extends PureComponent {
               name='issueLimit'
               type='number'
               fullWidth
-              floatingLabelText={(
+              label={(
                 <Translate
                   value='locs.forms.amountToBeS'
                   action={I18n.t('locs.forms.actions.issued')}

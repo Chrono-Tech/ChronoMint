@@ -10,6 +10,7 @@ export default {
     sendButton: 'SEND',
     receiveButton: 'RECEIVE',
     depositButton: 'DEPOSIT',
+    removeButton: 'REMOVE',
     walletTitle: '%{title} wallet',
     tokensTitle: '%{count} tokens',
     ownersTitle: '%{count} Owners',

@@ -143,9 +143,8 @@ export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: N
     const assetHolderDAO = daoByType('TimeHolder')(state)
     const { account } = state.get(DUCK_SESSION)
     const tx = assetHolderDAO.deposit(token.address(), amount, account)
-    const web3 = web3Selector()(state)
     if (tx) {
-      await dispatch(executeTransaction({ tx, web3, options: { feeMultiplier } }))
+      await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
     }
 
   } catch (e) {
@@ -161,9 +160,8 @@ export const withdrawAsset = (amount: Amount, token: TokenModel, feeMultiplier: 
     const assetHolderDAO = daoByType('TimeHolder')(state)
     const { account } = state.get(DUCK_SESSION)
     const tx = assetHolderDAO.withdraw(token.address(), amount, account)
-    const web3 = web3Selector()(state)
     if (tx) {
-      await dispatch(executeTransaction({ tx, web3, options: { feeMultiplier } }))
+      await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
     }
   } catch (e) {
     // eslint-disable-next-line

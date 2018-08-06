@@ -48,10 +48,12 @@ const configureStore = () => {
     if (action.type === SESSION_DESTROY) {
       const i18nState = state.get(DUCK_I18N)
       const persistAccount = state.get(DUCK_PERSIST_ACCOUNT)
+      const wallets = state.get(DUCK_WALLETS)
       state = new Immutable.Map()
       state = state
         .set(DUCK_I18N, i18nState)
         .set(DUCK_PERSIST_ACCOUNT, persistAccount)
+        .set(DUCK_WALLETS, wallets)
     }
     return appReducer(state, action)
   }

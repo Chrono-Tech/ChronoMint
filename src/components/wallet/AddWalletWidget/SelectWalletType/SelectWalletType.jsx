@@ -10,7 +10,8 @@ import classnames from 'classnames'
 import { Translate } from 'react-redux-i18n'
 import { IPFSImage } from 'components'
 import { TOKEN_ICONS } from 'assets'
-import { createNewChildAddress, goToWallets,resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
+import { goToWallets,resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
+import { createNewChildAddress } from '@chronobank/core/redux/wallets/actions'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_ETHEREUM,

@@ -112,6 +112,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
    */
   async _createWalletModel (address: string, is2FA: boolean, transactionHash: string) {
     const walletDAO: MultisigWalletDAO = await multisigWalletService.createWalletDAO(address, this.web3, this.history._address)
+
     const [owners, requiredSignatures, pendingTxList, releaseTime] = await Promise.all([
       walletDAO.getOwners(),
       walletDAO.getRequired(),
@@ -147,19 +148,13 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
    * @param wallet - MulMultisigEthWalletModel - wallet model from form
    */
   createWallet (wallet: MultisigEthWalletModel) {
-    this._tx(
+    return this._tx(
       'createWallet',
       [
         wallet.owners,
         wallet.requiredSignatures,
         Math.floor(wallet.releaseTime / 1000),
       ],
-      new BigNumber(0),
-      new BigNumber(0),
-      {
-        fields: wallet.toCreateWalletTx(),
-        id: wallet.id,
-      },
     )
   }
 
@@ -169,13 +164,10 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
    * @param feeMultiplier - number - gas price multiplier
    * @returns {Promise<void>}
    */
-  create2FAWallet (wallet: MultisigEthWalletModel, feeMultiplier) {
-    this._tx(
+  create2FAWallet (wallet: MultisigEthWalletModel) {
+    return this._tx(
       'create2FAWallet',
       [Math.floor(wallet.releaseTime() / 1000)],
-      wallet.toCreateWalletTx(),
-      null,
-      { feeMultiplier },
     )
   }
 

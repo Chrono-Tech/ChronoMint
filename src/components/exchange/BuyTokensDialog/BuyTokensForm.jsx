@@ -165,7 +165,7 @@ export default class BuyTokensForm extends React.PureComponent {
                       component={TextField}
                       name='buy'
                       fullWidth
-                      floatingLabelText={(
+                      label={(
                         <span><Translate value={prefix('amountIn')} />&nbsp;{exchangeToken.symbol()}</span>)}
                       onChange={this.handleSetPrice}
                     />
@@ -185,7 +185,7 @@ export default class BuyTokensForm extends React.PureComponent {
                       component={TextField}
                       name='sell'
                       fullWidth
-                      floatingLabelText={(
+                      label={(
                         <span><Translate value={prefix('amountIn')} />&nbsp;{ethToken.symbol()}</span>)}
                       onChange={this.handleSetPrice}
                     />

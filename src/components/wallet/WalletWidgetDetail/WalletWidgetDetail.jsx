@@ -22,6 +22,7 @@ import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog
 import Moment from 'components/common/Moment'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
+import { removeWallet } from '@chronobank/core/redux/multisigWallet/actions'
 import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
 import './WalletWidgetDetail.scss'
 import { prefix } from './lang'
@@ -52,6 +53,7 @@ function mapDispatchToProps (dispatch) {
         wallet,
       },
     })),
+    removeEthMultisig: (wallet) => dispatch(removeWallet(wallet)),
     deposit: (props) => dispatch(modalsOpen({ component: DepositTokensModal, props })),
     openEditManagersDialog: (wallet) => dispatch(modalsOpen({
       component: EditManagersDialog,
@@ -74,6 +76,7 @@ export default class WalletWidgetDetail extends PureComponent {
     deposit: PropTypes.func,
     openEditManagersDialog: PropTypes.func,
     openEditSignaturesDialog: PropTypes.func,
+    removeEthMultisig: PropTypes.func,
   }
 
   handleSend = (wallet) => () => {
@@ -86,6 +89,10 @@ export default class WalletWidgetDetail extends PureComponent {
 
   handleDeposit = () => {
     this.props.deposit()
+  }
+
+  handleRemoveEthMultisig = () => {
+    this.props.removeEthMultisig(this.props.wallet)
   }
 
   render () {
@@ -158,6 +165,15 @@ export default class WalletWidgetDetail extends PureComponent {
                       type='submit'
                       label={<Translate value={`${prefix}.depositButton`} />}
                       onClick={this.handleDeposit}
+                    />
+                  </div>
+                )*/}
+                {/*wallet.isMultisig && (
+                  <div styleName='action'>
+                    <Button
+                      type='submit'
+                      label={<Translate value={`${prefix}.removeButton`} />}
+                      onClick={this.handleRemoveEthMultisig}
                     />
                   </div>
                 )*/}
