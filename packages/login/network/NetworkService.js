@@ -104,15 +104,6 @@ class NetworkService extends EventEmitter {
       return false
     }
 
-    //const web3 = new Web3Legacy()
-    //web3Provider.reinit(web3, new Web3Legacy.providers.HttpProvider(providerURL || TESTRPC_URL))
-    //const accounts = await web3Provider.getAccounts()
-
-    // account must be valid
-    // if (!accounts.includes(account)) {
-    //   return false
-    // }
-
     // contacts and network must be valid
     const isDeployed = await this.checkNetwork()
     if (!isDeployed) {
@@ -264,18 +255,6 @@ class NetworkService extends EventEmitter {
   }
 
   async checkTestRPC (/*providerUrl*/) {
-    // const web3 = new Web3Legacy()
-    // web3.setProvider(new Web3Legacy.providers.HttpProvider(providerUrl || TESTRPC_URL))
-    // const web3Provider = new Web3Provider(web3)
-    //
-    // const isDeployed = await contractsManagerDAO.isDeployed(web3Provider)
-    // if (!isDeployed) {
-    //   return false
-    // }
-    //
-    // this._dispatch({ type: NETWORK_SET_TEST_RPC })
-    // return true
-
     return false
   }
 

@@ -5,7 +5,7 @@
 
 import EventEmitter from 'events'
 import TrezorWalletSubproviderFactory from 'ledger-wallet-provider'
-import Web3Legacy from 'web3legacy'
+import Web3 from 'web3'
 import ProviderEngine from 'web3-provider-engine'
 import FilterSubprovider from 'web3-provider-engine/subproviders/filters'
 import RpcSubprovider from 'web3-provider-engine/subproviders/rpc'
@@ -33,7 +33,7 @@ class TrezorProvider extends EventEmitter {
     }
     try {
       this._engine = new ProviderEngine()
-      this._web3 = new Web3Legacy(this._engine)
+      this._web3 = new Web3(this._engine)
       this._trezorSubprovider = await TrezorWalletSubproviderFactory(this._derivationPath, this._web3, 'trezor')
       this._trezor = this._trezorSubprovider.trezor
       this._isInited = true

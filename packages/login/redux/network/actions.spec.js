@@ -7,7 +7,7 @@ import AbstractContractDAO from '@chronobank/core/dao/AbstractContractDAO'
 import Immutable from 'immutable'
 import { createSession, destroySession, SESSION_CREATE, SESSION_DESTROY } from '@chronobank/core/redux/session/actions'
 import { accounts, mockStore, store } from 'specsInit'
-import Web3Legacy from 'web3legacy'
+import Web3 from 'web3'
 import metaMaskResolver from '../../network/metaMaskResolver'
 import { LOCAL_ID, providerMap } from '../../network/settings'
 import web3Provider from '../../network/Web3Provider'
@@ -36,7 +36,7 @@ describe('network actions', () => {
   })
 
   it('should check METAMASK is exists', () => {
-    window.web3 = new Web3Legacy()
+    window.web3 = new Web3()
     metaMaskResolver
       .on('resolve', (isMetaMask) => {
         try {
@@ -126,7 +126,7 @@ describe('network actions', () => {
   it('should restore local session', async () => {
     // setup web3
     const account = accounts[ 0 ]
-    const web3 = new Web3Legacy()
+    const web3 = new Web3()
     web3Provider.reinit(web3, new web3.providers.HttpProvider(LOCAL_HOST))
 
     await networkService.restoreLocalSession(account)

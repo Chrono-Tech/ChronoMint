@@ -6,7 +6,7 @@
 import networkService from '@chronobank/login/network/NetworkService'
 import { getNetworkById, LOCAL_ID, providerMap } from '@chronobank/login/network/settings'
 import web3Provider from '@chronobank/login/network/Web3Provider'
-import Web3Legacy from 'web3legacy'
+import Web3 from 'web3'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import EthereumEngine from '@chronobank/login/network/EthereumEngine'
 import { addError } from '@chronobank/login/redux/network/actions'
@@ -42,11 +42,11 @@ class LoginMetamask extends PureComponent {
   }
 
   componentWillMount () {
-    const web3 = new Web3Legacy(window.Web3Legacy.currentProvider)
-    web3Provider.reinit(web3, window.Web3Legacy.currentProvider)
-    const engine = new EthereumEngine(null,{ id: web3.version.network },null,window.Web3Legacy.currentProvider,null)
+    const web3 = new Web3(window.Web3.currentProvider)
+    web3Provider.reinit(web3, window.Web3.currentProvider)
+    const engine = new EthereumEngine(null,{ id: web3.version.network },null,window.Web3.currentProvider,null)
     ethereumProvider.setEngine(engine, null)
-    window.Web3Legacy.version.getNetwork((error, currentNetworkId) => {
+    window.Web3.version.getNetwork((error, currentNetworkId) => {
       if (error) {
         this.props.addError(<Translate value='LoginMetamask.wrongMetaMask' />)
       }

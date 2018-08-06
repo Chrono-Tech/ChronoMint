@@ -41,8 +41,7 @@ module.exports = config.buildConfig(
         favicon: faviconPath,
       }),
       new webpack.ProvidePlugin({
-        'Web3Legacy': 'web3legacy',
-        'Web3': 'web3_1beta',
+        'Web3': 'web3',
       }),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
