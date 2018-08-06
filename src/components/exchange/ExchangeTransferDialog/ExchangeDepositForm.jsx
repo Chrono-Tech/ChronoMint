@@ -45,7 +45,7 @@ export default class ExchangeDepositForm extends React.PureComponent {
               name='amount'
               fullWidth
               floatingLabelStyle={styles.TextField.floatingLabelStyle}
-              floatingLabelText={(
+              label={(
                 <span><Translate value={prefix('amountIn')} />&nbsp;{this.props.token.symbol()}</span>)}
               style={styles.TextField.style}
             />

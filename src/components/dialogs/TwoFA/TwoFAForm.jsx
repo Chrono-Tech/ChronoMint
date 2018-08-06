@@ -85,7 +85,7 @@ export default class TwoFAForm extends Component {
                   <div styleName='step3code'>
                     <TextField
                       placeholder='123456'
-                      floatingLabelText={<Translate value={`${prefix}.authCode`} />}
+                      label={<Translate value={`${prefix}.authCode`} />}
                       inputStyle={{
                         letterSpacing: 2.4,
                         fontSize: 24,

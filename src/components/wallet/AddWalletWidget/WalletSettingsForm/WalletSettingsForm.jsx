@@ -64,7 +64,7 @@ export default class WalletSettingsForm extends PureComponent {
                 component={TextField}
                 name='name'
                 fullWidth
-                floatingLabelText={<Translate value={`${prefix}.name`} />}
+                label={<Translate value={`${prefix}.name`} />}
               />
             </div>
           </div>

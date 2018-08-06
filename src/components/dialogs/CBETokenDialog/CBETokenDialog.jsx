@@ -78,7 +78,7 @@ export default class CBETokenDialog extends PureComponent {
               name='address'
               fullWidth
               disabled={this.props.isFetching}
-              floatingLabelText={<Translate value='common.ethAddress' />}
+              label={<Translate value='common.ethAddress' />}
               onBlur={this.props.handleDataFromContract}
             />
             {
@@ -89,27 +89,27 @@ export default class CBETokenDialog extends PureComponent {
                   name='name'
                   fullWidth
                   disabled={this.props.isFetching}
-                  floatingLabelText={<Translate value='common.name' />}
+                  label={<Translate value='common.name' />}
                 />
                 <Field
                   component={TextField}
                   name='symbol'
                   fullWidth
                   disabled={this.props.isFetching}
-                  floatingLabelText={<Translate value='settings.erc20.tokens.symbol' />}
+                  label={<Translate value='settings.erc20.tokens.symbol' />}
                 />
                 <Field
                   component={TextField}
                   name='decimals'
                   fullWidth
                   disabled={this.props.isFetching}
-                  floatingLabelText={<Translate value='settings.erc20.tokens.decimals' />}
+                  label={<Translate value='settings.erc20.tokens.decimals' />}
                 />
                 <Field
                   component={TextField}
                   name='url'
                   fullWidth
-                  floatingLabelText={<Translate value='settings.erc20.tokens.url' />}
+                  label={<Translate value='settings.erc20.tokens.url' />}
                 />
                 <Field
                   component={FileSelect}

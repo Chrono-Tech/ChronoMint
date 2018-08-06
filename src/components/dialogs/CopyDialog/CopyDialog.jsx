@@ -65,7 +65,7 @@ export default class CopyDialog extends PureComponent {
                 name='value'
                 value={this.props.copyValue}
                 fullWidth
-                floatingLabelText={this.props.controlTitle}
+                label={this.props.controlTitle}
               />
             </div>
             <div styleName='footer'>

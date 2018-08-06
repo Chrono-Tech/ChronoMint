@@ -42,7 +42,7 @@ class LOCRedeemForm extends PureComponent {
           component={TextField}
           name='amount'
           type='number'
-          floatingLabelText={<Translate value='locs.forms.amountToBeS' action={actionToken} />}
+          label={<Translate value='locs.forms.amountToBeS' action={actionToken} />}
         />
 
         <div styleName='footer'>

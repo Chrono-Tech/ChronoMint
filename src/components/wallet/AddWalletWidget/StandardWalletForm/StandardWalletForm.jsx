@@ -10,7 +10,8 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
-import { createNewChildAddress, goToWallets, resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
+import { goToWallets, resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
+import { createNewChildAddress } from '@chronobank/core/redux/wallets/actions'
 import { FORM_CUSTOM_WALLET_ADD } from 'components/constants'
 import { prefix } from './lang'
 import './StandardWalletForm.scss'
@@ -43,7 +44,7 @@ export default class StandardWalletForm extends PureComponent {
               component={TextField}
               name='name'
               fullWidth
-              floatingLabelText={<Translate value={`${prefix}.name`} />}
+              label={<Translate value={`${prefix}.name`} />}
             />
           </div>
         </div>

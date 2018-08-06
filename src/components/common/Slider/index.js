@@ -13,10 +13,14 @@ export default class Slider extends PureComponent {
     min: PropTypes.number,
     max: PropTypes.number,
     step: PropTypes.number,
+    toFixed: PropTypes.number,
   }
 
   handleChange = (e, v) => {
-    return this.props.input.onChange(v)
+    if (this.props.toFixed !== null && this.props.toFixed !== undefined) {
+      v = v.toFixed(this.props.toFixed)
+    }
+    return this.props.input.onChange(parseFloat(v))
   }
 
   render () {

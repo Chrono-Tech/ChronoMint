@@ -81,6 +81,7 @@
     "uglify-js": "github:mishoo/UglifyJS2#harmony",
     "url-loader": "0.5.8",
     "webpack": "2.5.1",
+    "webpack-compile-time-plugin": "^1.0.0",
     "webpack-dev-server": "2.9.4"
   },
   "dependencies": {

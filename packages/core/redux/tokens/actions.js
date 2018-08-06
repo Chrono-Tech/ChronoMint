@@ -28,6 +28,7 @@ import Amount from '../../models/Amount'
 import { daoByType } from '../daos/selectors'
 import TxExecModel from '../../models/TxExecModel'
 import { web3Selector } from '../ethereum/selectors'
+import { estimateGas } from '../ethereum/actions'
 
 //#region CONSTANTS
 
@@ -65,7 +66,7 @@ import {
   EVENT_NEW_BLOCK,
   EVENT_NEW_TOKEN,
   ETH,
-} from  '../../dao/constants'
+} from '../../dao/constants'
 import {
   WAVES_DECIMALS,
   WAVES_WAVES_NAME,
@@ -298,15 +299,16 @@ export const watchLatestBlock = () => async (dispatch) => {
 
 }
 
-export const estimateGas = (tokenId, params, callback, gasPriceMultiplier = 1, address) => async () => {
+export const estimateGasTransfer = (tokenId, params, callback, gasPriceMultiplier = 1, address) => async (dispatch) => {
   const tokenDao = tokenService.getDAO(tokenId)
-  const [to, amount, func] = params
+  const [to, amount] = params
+  const tx = tokenDao.transfer(address, to, amount)
   try {
-    const { gasLimit, gasFee, gasPrice } = await tokenDao.estimateGas(func, [to, new BigNumber(amount)], new BigNumber(0), address)
+    const { gasLimit, gasFee, gasPrice } = await dispatch(estimateGas(tx))
     callback(null, {
       gasLimit,
-      gasFee: new Amount(gasFee.mul(gasPriceMultiplier), ETH),
-      gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier), ETH),
+      gasFee: new Amount(gasFee.mul(gasPriceMultiplier).toString(), ETH),
+      gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier).toString(), ETH),
     })
   } catch (e) {
     callback(e)

@@ -4,14 +4,7 @@
  */
 
 import { Button, IPFSImage } from 'components'
-import {
-  BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_LITECOIN,
-  BLOCKCHAIN_ETHEREUM,
-  ETH,
-} from '@chronobank/core/dao/constants'
+import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LITECOIN, ETH } from '@chronobank/core/dao/constants'
 import { TOKEN_ICONS } from 'assets'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
@@ -38,25 +31,21 @@ import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
 import { walletInfoSelector } from '@chronobank/core/redux/wallet/selectors/selectors'
-import { estimateBtcFee, estimateGas } from '@chronobank/core/redux/tokens/actions'
+import { estimateBtcFee, estimateGasTransfer } from '@chronobank/core/redux/tokens/actions'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import { isBTCLikeBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import inversedTheme from 'styles/themes/inversed'
 import { getMarket } from '@chronobank/core/redux/market/selectors'
-import {
-  ACTION_APPROVE,
-  ACTION_TRANSFER,
-  FORM_SEND_TOKENS,
-  MODE_ADVANCED,
-  MODE_SIMPLE,
-} from 'components/constants'
+import { MultisigEthWalletModel } from '@chronobank/core/models'
+import { integerWithDelimiter } from '@chronobank/core-dependencies/utils/formatter'
+import { ACTION_APPROVE, ACTION_TRANSFER, FORM_SEND_TOKENS, MODE_ADVANCED, MODE_SIMPLE } from 'components/constants'
 import { prefix } from './lang'
 import './SendTokensForm.scss'
 import validate from './validate'
 
 function mapDispatchToProps (dispatch) {
   return {
-    estimateGas: (tokenId, params, callback, gasPriceMultiplier, address) => dispatch(estimateGas(tokenId, params, callback, gasPriceMultiplier, address)),
+    estimateGas: (tokenId, params, callback, gasPriceMultiplier, address) => dispatch(estimateGasTransfer(tokenId, params, callback, gasPriceMultiplier, address)),
     estimateFee: (params, callback) => dispatch(estimateBtcFee(params, callback)),
   }
 }
@@ -111,7 +100,7 @@ export default class SendTokensForm extends PureComponent {
   static propTypes = {
     selectedCurrency: PropTypes.string,
     account: PropTypes.string,
-    wallet: PropTypes.instanceOf(WalletModel),
+    wallet: PropTypes.oneOfType([PropTypes.instanceOf(WalletModel), PropTypes.instanceOf(MultisigEthWalletModel)]),
     recipient: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
     tokenInfo: PropTypes.shape({
@@ -495,11 +484,11 @@ export default class SendTokensForm extends PureComponent {
 
         <div styleName='balance'>
           <div styleName='value-amount'>
-            {/*{tokenInfo.symbol} {integerWithDelimiter(tokenInfo.amount, true, null)}*/}
+            {tokenInfo.symbol} {integerWithDelimiter(tokenInfo.amount, true, null)}
           </div>
           <div styleName='value'>
             <span styleName='price-value'>
-              {/*≈{this.props.selectedCurrency} {integerWithDelimiter(tokenInfo.amountPrice.toFixed(2), true, null)}*/}
+              ≈{this.props.selectedCurrency} {integerWithDelimiter(tokenInfo.amountPrice.toFixed(2), true, null)}
             </span>
           </div>
         </div>
@@ -517,7 +506,7 @@ export default class SendTokensForm extends PureComponent {
           <Field
             component={TextField}
             name='recipient'
-            floatingLabelText={<Translate value={`${prefix}.recipientAddress`} />}
+            label={<Translate value={`${prefix}.recipientAddress`} />}
             fullWidth
           />
           <Field
@@ -529,7 +518,7 @@ export default class SendTokensForm extends PureComponent {
           <Field
             component={TextField}
             name='amount'
-            floatingLabelText={<Translate value={`${prefix}.amount`} />}
+            label={<Translate value={`${prefix}.amount`} />}
             fullWidth
           />
         </div>
@@ -545,6 +534,7 @@ export default class SendTokensForm extends PureComponent {
                 component={Slider}
                 name='feeMultiplier'
                 {...FEE_RATE_MULTIPLIER}
+                toFixed={1}
               />
             </div>
           </div>
@@ -555,7 +545,7 @@ export default class SendTokensForm extends PureComponent {
               <Field
                 component={TextField}
                 name='satPerByte'
-                floatingLabelText={<Translate value='wallet.satPerByte' />}
+                label={<Translate value='wallet.satPerByte' />}
                 fullWidth
               />
             </div>
@@ -567,7 +557,7 @@ export default class SendTokensForm extends PureComponent {
               <Field
                 component={TextField}
                 name='gweiPerGas'
-                floatingLabelText={<Translate value='wallet.gweiPerGas' />}
+                label={<Translate value='wallet.gweiPerGas' />}
                 fullWidth
               />
             </div>
@@ -575,7 +565,7 @@ export default class SendTokensForm extends PureComponent {
               <Field
                 component={TextField}
                 name='gasLimit'
-                floatingLabelText={<Translate value='wallet.gasLimit' />}
+                label={<Translate value='wallet.gasLimit' />}
                 fullWidth
               />
             </div>
@@ -610,7 +600,7 @@ export default class SendTokensForm extends PureComponent {
         {/*<Field*/}
         {/*component={TextField}*/}
         {/*name='TemplateName'*/}
-        {/*floatingLabelText={<Translate value={'wallet.templateName'} />}*/}
+        {/*label={<Translate value={'wallet.templateName'} />}*/}
         {/*fullWidth*/}
         {/*/>*/}
         {/*</div>*/}
