@@ -22,8 +22,6 @@ import Preloader from '../Preloader/Preloader'
 
 export default class AvatarSelect extends PureComponent {
   static propTypes = {
-    meta: PropTypes.shape(PropTypes.any),
-    input: PropTypes.shape(PropTypes.any),
     floatingLabelText: PropTypes.node,
   }
 

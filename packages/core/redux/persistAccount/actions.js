@@ -67,14 +67,11 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
 
 }
 
-export const decryptAccount = (encrypted, password) => async () => {
+export const decryptAccount = (encrypted, password) => () => {
   const accounts = new Accounts()
-  await accounts.wallet.clear()
+  accounts.wallet.clear()
 
-  let wallet = await accounts.wallet.decrypt(encrypted, password)
-
-  return wallet
-
+  return accounts.wallet.decrypt(encrypted, password)
 }
 
 export const validateAccountName = (name) => (dispatch, getState) => {

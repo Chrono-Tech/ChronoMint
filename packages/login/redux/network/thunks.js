@@ -92,30 +92,6 @@ export const initAccountsSignature = () =>
     dispatch(NetworkActions.resetLoadingAccountsSignatures())
   }
 
-/*
- * Thunk dispatched by LoginForm screen.
- * Need to auth with imported account
- */
-export const onSubmitConfirmMnemonicSuccess = () =>
-  async (dispatch, getState) => {
-    const state = getState()
-    const {
-      newAccountMnemonic,
-      newAccountName,
-      newAccountPassword,
-    } = state.get(DUCK_NETWORK)
-
-    let wallet = await dispatch(PersistAccountActions.createAccount({
-      name: newAccountName,
-      password: newAccountPassword,
-      mnemonic: newAccountMnemonic,
-      numberOfAccounts: 0,
-    }))
-
-    dispatch(PersistAccountActions.accountAdd(wallet))
-    dispatch(PersistAccountActions.accountSelect(wallet))
-  }
-
 export const handleWalletLogin = (wallet, password) => async (dispatch, getState) => {
   dispatch(NetworkActions.loading())
   dispatch(NetworkActions.clearErrors())

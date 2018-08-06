@@ -102,7 +102,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
 
   try {
-    const wallet = await dispatch(PersistAccountActions.decryptAccount(selectedWallet.encrypted, password))
+    const wallet = dispatch(PersistAccountActions.decryptAccount(selectedWallet.encrypted, password))
     dispatch(PersistAccountActions.accountLoad(new SignerMemoryModel({ wallet })))
 
     const privateKey = wallet && wallet[0] && wallet[0].privateKey
@@ -296,16 +296,9 @@ export const selectProviderWithNetwork = (networkId, providerId) => (dispatch) =
   }
 }
 
-export const onWalletSelect = (wallet) => (dispatch, getState) => {
+export const onWalletSelect = (wallet) => (dispatch) => {
 
   dispatch(PersistAccountActions.accountSelect(wallet))
-
-  const state = getState()
-  const { accountRecoveryMode } = state.get(DUCK_NETWORK)
-  if (accountRecoveryMode) {
-    dispatch(LoginUIActions.navigateToRecoverAccountPage())
-  }
-
   dispatch(LoginUIActions.navigateToLoginPage())
 }
 
