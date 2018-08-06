@@ -31,7 +31,7 @@ class LoginWithWalletContainer extends PureComponent {
   async handleSubmit (walletString) {
     const { onSubmit } = this.props
 
-    onSubmit && await onSubmit(walletString)
+    return onSubmit && onSubmit(walletString)
   }
 
   handleSubmitSuccess (result) {

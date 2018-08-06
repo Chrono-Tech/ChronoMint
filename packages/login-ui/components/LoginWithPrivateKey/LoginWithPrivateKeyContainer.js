@@ -8,7 +8,6 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import { stopSubmit, SubmissionError } from 'redux-form'
-import AccountProfileModel from '@chronobank/core/models/wallet/persistAccount/AccountProfileModel'
 import {
   navigateBack,
 } from '../../redux/actions'
@@ -29,7 +28,9 @@ class LoginWithPrivateKeyContainer extends PureComponent {
     onSubmitSuccess: PropTypes.func,
   }
 
-  handleSubmit (values) {
+  async handleSubmit (values) {
+    const { onSubmit } = this.props
+
     let privateKey = values.get('pk')
 
     privateKey = (privateKey || '').trim()
@@ -42,9 +43,7 @@ class LoginWithPrivateKeyContainer extends PureComponent {
       privateKey = privateKey.slice(2)
     }
 
-    return {
-      privateKey,
-    }
+    await onSubmit({ privateKey })
   }
 
   handleSubmitSuccess (result) {

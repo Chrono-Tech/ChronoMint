@@ -68,7 +68,7 @@ function mapDispatchToProps (dispatch) {
       await dispatch(onSubmitLoginForm(password))
     },
     onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitLoginFormFail(errors, submitErrors)),
-    initLoginPage: async () => dispatch(initLoginPage()),
+    initLoginPage: () => dispatch(initLoginPage()),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
     initAccountsSignature: () => dispatch(initAccountsSignature()),
     navigateToRecoverAccountPage: () => dispatch(navigateToRecoverAccountPage()),
@@ -121,6 +121,7 @@ class LoginPage extends React.Component {
       pristine,
       selectedWallet,
       valid,
+      submitting,
     } = this.props
 
     return (
@@ -158,19 +159,8 @@ class LoginPage extends React.Component {
               styleName='button'
               buttonType='login'
               type='submit'
-              label={isLoginSubmitting
-                ? (
-                  <span styleName='spinner-wrapper'>
-                    <img
-                      src={spinner}
-                      alt=''
-                      width={24}
-                      height={24}
-                    />
-                  </span>
-                )
-                : <Translate value='LoginForm.submitButton' />}
-              disabled={isLoginSubmitting}
+              label={<Translate value='LoginForm.submitButton' />}
+              isLoading={submitting}
             />
 
             {error ? (<div styleName='form-error'>{error}</div>) : null}

@@ -28,6 +28,7 @@ import * as NetworkCreateModalForm from './components/NetworkCreateModal/Network
 import * as NetworkDeleteModal from './components/NetworkCreateModal/NetworkDeleteModal/lang'
 import * as Warning from './components/Warning/lang'
 import * as AccountName from './components/AccountName/lang'
+import * as NotFoundPage from './components/NotFoundPage/lang'
 
 export const en = {
   ConfirmMnemonic: ConfirmMnemonic.en,
@@ -55,4 +56,5 @@ export const en = {
   NetworkCreateModalForm: NetworkCreateModalForm.en,
   NetworkDeleteModal: NetworkDeleteModal.en,
   AccountName: AccountName.en,
+  NotFoundPage: NotFoundPage.en,
 }

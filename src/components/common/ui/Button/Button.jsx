@@ -25,12 +25,14 @@ export default class Button extends PureComponent {
     ]),
     className: PropTypes.string,
     type: PropTypes.string,
+    isLoading: PropTypes.bool,
   }
 
   static defaultProps = {
     buttonType: 'raised',
     type: 'button',
     disabled: false,
+    isLoading: false,
   }
 
   componentDidMount () {
@@ -62,8 +64,22 @@ export default class Button extends PureComponent {
     this.button = el
   }
 
+  renderButtonText () {
+    const { children, label, isLoading } = this.props
+
+    if (isLoading) {
+      return (
+        <span styleName='spinner-wrapper'>
+          <img src={SPINNING_WHEEL} width={24} height={24} alt='' />
+        </span>
+      )
+    }
+
+    return children ? children : <span>{label}</span>
+  }
+
   render () {
-    let { buttonType, flat } = this.props
+    let { buttonType, flat, isLoading } = this.props
     if (flat) {
       buttonType = 'flat'
     }
@@ -74,15 +90,12 @@ export default class Button extends PureComponent {
       <div styleName='root' className={classnames('Button_root', this.props.className)}>
         <button
           ref={this.setRef}
-          disabled={this.props.disabled}
+          disabled={this.props.disabled || isLoading}
           styleName={buttonClasses}
           type={this.props.type}
           onClick={this.handleTouchTap}
         >
-          {this.props.children
-            ? this.props.children
-            : <span>{this.props.label}</span>
-          }
+          { this.renderButtonText() }
         </button>
         { this.props.buttonType === BUTTON_TYPE_PENDING && <img
           styleName='spinning-image'

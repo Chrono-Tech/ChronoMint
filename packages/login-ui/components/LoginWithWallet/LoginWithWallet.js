@@ -74,7 +74,7 @@ class LoginWithWallet extends Component {
   }
 
   render () {
-    const { handleSubmit, error, previousPage } = this.props
+    const { handleSubmit, error, previousPage, submitting } = this.props
     const { isUploading, isUploaded, fileName } = this.state
 
     return (
@@ -142,18 +142,9 @@ class LoginWithWallet extends Component {
             styleName='submit'
             buttonType='login'
             type='submit'
-            disabled={!isUploaded}
-            label={isUploading ? (
-              <span styleName='spinner-wrapper'>
-                <img
-                  src={spinner}
-                  alt=''
-                  width={24}
-                  height={24}
-                />
-              </span> ) :
-              <Translate value='LoginWithWallet.login' />
-            }
+            isLoading={submitting}
+            disabled={!isUploaded || submitting}
+            label={<Translate value='LoginWithWallet.login' />}
           />
           { error ? <div styleName='error'>{error}</div> : null }
           <Translate value='LoginWithWallet.or' />

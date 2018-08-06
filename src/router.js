@@ -10,21 +10,11 @@ import { Route, Router, IndexRoute, Redirect } from 'react-router'
 import {
   NotFoundPage,
   LoginForm,
-  CreateAccount,
   CreateHWAccount,
-  AccountSelector,
-  RecoverAccount,
-  ResetPassword,
   LoginWithOptions,
-  ConfirmMnemonic,
-  GenerateMnemonic,
-  GenerateWallet,
-  LoginWithWallet,
   LoginWithTrezor,
   LoginWithLedger,
   LoginWithPlugin,
-  LoginWithPrivateKey,
-  AccountName,
   LoginLocal,
 } from '@chronobank/login-ui/components'
 import Splash from 'layouts/Splash/Splash'
@@ -117,7 +107,10 @@ const router = (
         <Route path='/login/private-key-login' component={PrivateKeyImportPage} />
         <Route path='/login/create-hw-account' component={CreateHWAccount} />
         <Route path='/login/local-login' component={LoginLocal} />
-        <Route path='*' component={NotFoundPage} />
+      </Route>
+
+      <Route path='*' component={Splash}>
+        <IndexRoute component={NotFoundPage} />
       </Route>
     </Router>
   </Provider>

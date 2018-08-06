@@ -18,3 +18,4 @@ export { default as GenerateWalletContainer } from './GenerateWallet/GenerateWal
 export { default as LoginWithWalletContainer } from './LoginWithWallet/LoginWithWalletContainer'
 export { default as AccountNameContainer } from './AccountName/AccountNameContainer'
 export { default as LoginLocal } from './LoginLocal/LoginLocal'
+export { default as NotFoundPage } from './NotFoundPage/NotFoundPage'

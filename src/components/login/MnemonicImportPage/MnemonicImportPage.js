@@ -16,6 +16,7 @@ import {
 import {
   navigateToSelectWallet,
   navigateToSelectImportMethod,
+  navigateBack,
 } from '@chronobank/login-ui/redux/actions'
 import {
   LoginWithMnemonicContainer,
@@ -28,7 +29,8 @@ function mapDispatchToProps (dispatch) {
   return {
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
     navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
-    onSubmitCreateAccountImportMnemonic: (name, password, mnemonic) => dispatch(onSubmitCreateAccountImportMnemonic(name, password, mnemonic)),
+    onSubmitCreateAccountImportMnemonic: async (name, password, mnemonic) => await dispatch(onSubmitCreateAccountImportMnemonic(name, password, mnemonic)),
+    navigateBack: () => dispatch(navigateBack()),
   }
 }
 
@@ -43,6 +45,7 @@ class MnemonicImportPage extends PureComponent {
   static propTypes = {
     navigateToSelectWallet: PropTypes.func,
     navigateToSelectImportMethod: PropTypes.func,
+    navigateBack: PropTypes.func,
     onSubmitCreateAccountImportMnemonic: PropTypes.func,
   }
 
@@ -62,7 +65,7 @@ class MnemonicImportPage extends PureComponent {
         return (
           <LoginWithMnemonicContainer
             previousPage={this.previousPage.bind(this)}
-            onSubmitSuccess={this.onSubmitMnemonic.bind(this)}
+            onSubmit={this.onSubmitMnemonic.bind(this)}
           />
         )
 
@@ -103,6 +106,7 @@ class MnemonicImportPage extends PureComponent {
       accountProfile: profile && profile.userName ? new AccountProfileModel(profile): null,
       page: MnemonicImportPage.PAGES.CREATE_ACCOUNT_FORM,
     })
+
   }
 
   async onSubmitCreateAccount ({ walletName, password }) {
@@ -117,13 +121,9 @@ class MnemonicImportPage extends PureComponent {
     })
   }
 
-  nextPage () {
-    this.setState ({ page: this.state.page + 1 })
-  }
-
   previousPage () {
     if (this.state.page === MnemonicImportPage.PAGES.MNEMONIC_FORM){
-      this.props.navigateToSelectImportMethod()
+      this.props.navigateBack()
     } else {
       this.setState ({ page: this.state.page - 1 })
     }

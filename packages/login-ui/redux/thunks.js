@@ -96,7 +96,7 @@ export const onSubmitSubscribeNewsletter = (email) => async () => {
  * TODO: to extract logic from here
  */
 export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
-  dispatch(NetworkActions.networkSetLoginSubmitting)
+  dispatch(NetworkActions.networkSetLoginSubmitting())
 
   const state = getState()
   const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
