@@ -45,13 +45,9 @@ function mapDispatchToProps (dispatch) {
 @reduxForm({ form: FORM_MULTISIG_WALLET_ADD, validate })
 export default class MultisigWalletForm extends PureComponent {
   static propTypes = {
-    isTimeLocked: PropTypes.bool,
-    is2FA: PropTypes.bool,
     ownersCount: PropTypes.number,
     changeSignatures: PropTypes.func,
     requiredSignatures: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    createWallet: PropTypes.func,
-    wallet: PropTypes.instanceOf(MultisigEthWalletModel),
     ...formPropTypes,
   }
 

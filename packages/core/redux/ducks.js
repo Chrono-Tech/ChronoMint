@@ -21,12 +21,11 @@ import session from './session/reducer'
 import settingsErc20Tokens from './settings/erc20/tokens/reducer'
 import settingsUserCBE from './settings/user/cbe/reducer'
 import tokens from './tokens/reducer'
-import transactions from './transactions/reducer'
 import voting from './voting/reducer'
 import wallet from './wallet/reducer'
 import wallets from './wallets/reducer'
 import watcher from './watcher/reducer'
-import web3 from './web3/reducer'
+import ethereum from './ethereum/reducer'
 
 const coreReducers = {
   assetsHolder,
@@ -45,12 +44,11 @@ const coreReducers = {
   settingsErc20Tokens,
   settingsUserCBE,
   tokens,
-  transactions,
   voting,
   wallet,
   wallets,
   watcher,
-  web3,
+  ethereum,
 }
 
 export default coreReducers

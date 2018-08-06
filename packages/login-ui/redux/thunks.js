@@ -5,31 +5,25 @@
  * @flow
  */
 
-// #region imports
-
 import {
   change,
   stopSubmit,
   SubmissionError,
 } from 'redux-form'
-import axios from 'axios'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import {
   DUCK_NETWORK,
 } from '@chronobank/login/redux/network/constants'
-import * as NetworkThunks from '@chronobank/login/redux/network/thunks'
-import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
+import * as NetworkThunks from '@chronobank/login/redux/network/thunks'
 import * as SessionActions from '@chronobank/core/redux/session/actions'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
-import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
+import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 import networkService from '@chronobank/login/network/NetworkService'
-import profileService from '@chronobank/login/network/ProfileService'
+import { SignerMemoryModel } from '@chronobank/core/models'
 import {
-  getAddress,
   createAccountEntry,
 } from '@chronobank/core/redux/persistAccount/utils'
 import {
@@ -39,17 +33,8 @@ import * as LoginUIActions from './actions'
 import {
   FORM_LOGIN_PAGE,
   FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
-  FORM_CONFIRM_MNEMONIC,
-  FORM_RECOVER_ACCOUNT,
-  FORM_CREATE_ACCOUNT,
   FORM_FOOTER_EMAIL_SUBSCRIPTION,
-  FORM_MNEMONIC_LOGIN_PAGE,
-  FORM_PRIVATE_KEY_LOGIN_PAGE,
-  FORM_RESET_PASSWORD,
-  FORM_WALLET_UPLOAD,
 } from './constants'
-
-// #endregion
 
 /*
  * Thunk dispatched by "" screen.
@@ -118,6 +103,8 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
   try {
     const wallet = await dispatch(PersistAccountActions.decryptAccount(selectedWallet.encrypted, password))
+    dispatch(PersistAccountActions.accountLoad(new SignerMemoryModel({ wallet })))
+
     const privateKey = wallet && wallet[0] && wallet[0].privateKey
 
     dispatch(SessionActions.getProfileSignature(wallet[0]))

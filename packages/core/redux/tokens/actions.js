@@ -27,6 +27,7 @@ import { notifyError } from '../notifier/actions'
 import Amount from '../../models/Amount'
 import { daoByType } from '../daos/selectors'
 import TxExecModel from '../../models/TxExecModel'
+import { web3Selector } from '../ethereum/selectors'
 
 //#region CONSTANTS
 
@@ -132,8 +133,9 @@ export const initTokens = () => async (dispatch, getState) => {
   if (getState().get(DUCK_TOKENS).isInited()) {
     return
   }
-  const web3 = getState().get('web3')
+  const web3 = web3Selector()(getState())
   ethereumDAO.connect(web3)
+
   dispatch(alternateTxHandlingFlow(ethereumDAO))
   dispatch({ type: TOKENS_INIT, isInited: true })
 

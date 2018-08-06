@@ -31,10 +31,6 @@ export const replaceWallet = (wallet, walletList) => {
   return copyWalletList
 }
 
-export const removeWallet = (walletsList, name) => {
-  return walletsList.filter((w) => w.name !== name)
-}
-
 export const getAddress = (address, hexFormat = false) => {
   return `${ hexFormat ? '0x' : ''}${address}`
 }

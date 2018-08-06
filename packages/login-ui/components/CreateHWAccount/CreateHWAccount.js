@@ -12,6 +12,7 @@ import { Translate } from 'react-redux-i18n'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import styles from 'layouts/Splash/styles'
 import Button from 'components/common/ui/Button/Button'
+import { FORM_CREATE_HW_ACCOUNT } from '../constants'
 import {
   onSubmitCreateHWAccountPage,
   onSubmitCreateHWAccountPageSuccess,
@@ -22,8 +23,6 @@ import validate from './validate'
 
 import fieldStyles from './styles'
 import './CreateHWAccount.scss'
-
-export const FORM_CREATE_HW_ACCOUNT = 'CreateAccountForm'
 
 function mapStateToProps (state) {
 

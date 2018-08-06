@@ -29,8 +29,10 @@ function prefix (token) {
 function mapStateToProps (state) {
   const assetsManager = state.get(DUCK_ASSETS_MANAGER)
   const tokens = state.get(DUCK_TOKENS)
+  const platformList = assetsManager.platformsList()
+
   return {
-    platformsList: assetsManager.platformsList(),
+    platformsList: platformList,
     tokens,
     assets: assetsManager.assets(),
     selectedToken: assetsManager.selectedToken(),
@@ -124,7 +126,7 @@ export default class PlatformsList extends PureComponent {
     )
   }
 
-  renderPlatformsList = ({ selectedPlatform, platformsList, tokens, selectedToken, handleDetachPlatform, assets }) => {
+  renderPlatformsList = ({ selectedPlatform, platformsList, tokens, selectedToken, assets }) => {
     return (
       <div>
         {

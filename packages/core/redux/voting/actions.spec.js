@@ -15,13 +15,13 @@ import PollNoticeModel, { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_VOT
 import ERC20ManagerDAO, { EVENT_NEW_ERC20_TOKEN } from '../../dao/ERC20ManagerDAO'
 import TokenModel from '../../models/tokens/TokenModel'
 import TokensCollection from '../../models/tokens/TokensCollection'
-import { DUCK_SESSION } from '../session/actions'
+import { DUCK_SESSION } from '../session/constants'
 import { DUCK_TOKENS } from '../tokens/constants'
+import { DUCK_VOTING } from './constants'
 import VotingMainModel from '../../models/voting/VotingMainModel'
 import {
   activatePoll,
   createPoll,
-  DUCK_VOTING,
   endPoll,
   listPolls,
   POLLS_CREATE,

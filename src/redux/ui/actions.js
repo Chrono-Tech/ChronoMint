@@ -89,12 +89,6 @@ export const changeWalletView = () => (dispatch) => {
   dispatch({ type: CHANGE_WALLET_VIEW })
 }
 
-export const deleteCustomNetwork = (network) => (dispatch, getState) => {
-  const state = getState()
-
-
-}
-
 export const openBrandPartial = (open) => (dispatch) => {
   dispatch({
     type: OPEN_BRAND_PARTIAL,

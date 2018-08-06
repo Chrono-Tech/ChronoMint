@@ -86,21 +86,31 @@ export default class AbstractContractDAO extends EventEmitter {
    * Send contract tx
    * @param func - string
    * @param args - Array<any>
-   * @param amount - Amount
-   * @param value - Amount
-   * @param options - Object<any>
-   * @param additionalOptions - Object<any>
+   * @param value - BigNumber | Amount
+   * @param from - string
    */
-  _tx (
-    func: string,
-    args: Array = [],
-    amount: BigNumber = new BigNumber(0),
-    value: BigNumber = new BigNumber(0),
-    options: Object = {},
-    additionalOptions: Object = {},
-  ): Promise {
-    console.log('Abstract _tx: ', func, args, amount, value, options, additionalOptions)
-    this.submit(func, args, amount, value, options, additionalOptions)
+  _tx (func: string, args: Array = [], value: BigNumber = new BigNumber(0), from: string) {
+    const data = this.contract.methods[func](...args).encodeABI()
+
+    if (!from) {
+      from = AbstractContractDAO.getAccount()
+    }
+
+    return {
+      from,
+      to: this.contract._address,
+      value,
+      data,
+    }
+  }
+
+  /**
+   * Just Stub to avoid an error. Need to implement events history
+   * @returns {Array}
+   * @private
+   */
+  _get () {
+    return []
   }
 
   /**
@@ -212,15 +222,13 @@ export default class AbstractContractDAO extends EventEmitter {
 
   estimateGas = async (func, args, value, from, additionalOptions): Object => {
     const feeMultiplier = additionalOptions && additionalOptions.feeMultiplier ? additionalOptions.feeMultiplier : 1
-    // eslint-disable-next-line no-console
-    const contract = await this.contract
-    if (!contract.methods.hasOwnProperty(func)) {
+    if (!this.contract.methods.hasOwnProperty(func)) {
       throw new Error('estimateGas func not found', func)
     }
 
     const [gasPrice, gasLimit] = await Promise.all([
       this.web3.eth.getGasPrice(),
-      contract.methods[func](...args).estimateGas({ from, value, gas: 47000000 }),
+      this.contract.methods[func](...args).estimateGas({ from, value, gas: DEFAULT_GAS }),
     ])
 
     const gasPriceBN = new BigNumber(gasPrice).mul(feeMultiplier)

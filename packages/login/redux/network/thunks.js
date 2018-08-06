@@ -16,7 +16,6 @@ import {
   DUCK_NETWORK,
 } from './constants'
 import * as NetworkActions from './actions'
-import mnemonicProvider from '../../network/mnemonicProvider'
 import privateKeyProvider from '../../network/privateKeyProvider'
 import networkService from '../../network/NetworkService'
 import {
@@ -94,18 +93,8 @@ export const initAccountsSignature = () =>
   }
 
 /*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
-export const generateNewMnemonic = () => (dispatch) => {
-  const mnemonic = mnemonicProvider.generateMnemonic()
-  dispatch(NetworkActions.networkSetNewMnemonic(mnemonic))
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to rework it
+ * Thunk dispatched by LoginForm screen.
+ * Need to auth with imported account
  */
 export const onSubmitConfirmMnemonicSuccess = () =>
   async (dispatch, getState) => {

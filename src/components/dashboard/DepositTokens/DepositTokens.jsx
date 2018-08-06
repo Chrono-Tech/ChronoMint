@@ -13,7 +13,7 @@ import {
   ACTION_DEPOSIT,
   ACTION_WITHDRAW,
 } from 'components/constants'
-import { mainApprove } from '@chronobank/core/redux/mainWallet/actions'
+import { mainApprove } from '@chronobank/core/redux/wallets/actions'
 import DepositTokensForm from './DepositTokensForm'
 import './DepositTokensForm.scss'
 

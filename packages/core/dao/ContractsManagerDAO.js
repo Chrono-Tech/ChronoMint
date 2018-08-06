@@ -145,10 +145,6 @@ class ContractsManagerDAO extends AbstractContractDAO {
     }
   }
 
-  getPlatformTokenExtensionGatewayManagerEmitterDAO (): Promise<PlatformTokenExtensionGatewayManagerEmitterDAO> {
-    return this._getDAO(DAO_PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER)
-  }
-
   getRewardsDAO (): Promise<RewardsDAO> {
     return this._getDAO(DAO_REWARDS)
   }

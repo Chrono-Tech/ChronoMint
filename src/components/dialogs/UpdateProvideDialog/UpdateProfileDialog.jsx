@@ -24,12 +24,11 @@ import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
 import AvatarSelect from 'components/common/AvatarSelect/AvatarSelect'
 import ProfileImage from 'components/common/ProfileImage/ProfileImage'
 import QRIcon from 'components/dashboard/MicroIcon/QRIcon'
+import { FORM_UPDATE_PROFILE_DIALOG } from 'components/constants'
 import ModalDialog from '../ModalDialog'
 import validate from './validate'
 import './UpdateProfileDialog.scss'
 import { prefix } from './lang'
-
-const FORM_UPDATE_PROFILE_DIALOG = 'UpdateProfileDialog'
 
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_UPDATE_PROFILE_DIALOG)

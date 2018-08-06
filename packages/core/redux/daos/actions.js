@@ -15,8 +15,8 @@ import {
   ASSET_DONATOR_LIBRARY,
   ASSETS_MANAGER_LIBRARY,
   PLATFORMS_MANAGER_LIBRARY,
-  // PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER_LIBRARY,
   CHRONOBANK_PLATFORM_LIBRARY,
+  PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER_LIBRARY,
   CHRONOBANK_ASSET_LIBRARY,
   CONTRACTS_MANAGER,
   ERC20_MANAGER,
@@ -56,7 +56,6 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     ASSET_HOLDER_LIBRARY,
     ASSET_DONATOR_LIBRARY,
     PLATFORMS_MANAGER_LIBRARY,
-    // PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER_LIBRARY,
     CHRONOBANK_PLATFORM_LIBRARY,
     CHRONOBANK_ASSET_LIBRARY,
     TOKEN_MANAGMENT_EXTENSION_LIBRARY,
@@ -70,22 +69,30 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     dispatch(alternateTxHandlingFlow(dao))
   }
 
+  const getDaoModel = async (contract, address: String) => {
+    if (!address) {
+      address = await contractManagerDAO.getContractAddressByType(contract.type)
+    }
+    const dao = contract.create(address.toLowerCase(), historyAddress)
+    dao.connect(web3)
+    subscribeToFlow(dao)
+    return new ContractDAOModel({
+      contract,
+      address,
+      history: historyAddress,
+      dao,
+    })
+  }
+
   const models = await Promise.all(
-    contracts.map(
-      async (contract) => {
-        const address = await contractManagerDAO.getContractAddressByType(contract.type)
-        const dao = contract.create(address.toLowerCase(), historyAddress)
-        dao.connect(web3)
-        subscribeToFlow(dao)
-        return new ContractDAOModel({
-          contract,
-          address,
-          history: historyAddress,
-          dao,
-        })
-      },
-    ),
+    contracts.map((contract) => getDaoModel(contract)),
   )
+
+  const tokenManagementInterfaceDAO = models.find((model) => {
+    return model.contract.type === 'TokenManagementInterface'
+  })
+  const platfromTokenExtension = await getDaoModel(PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER_LIBRARY, tokenManagementInterfaceDAO.address)
+  models.push(platfromTokenExtension)
 
   for (const model of models) {
     dispatch({

@@ -27,12 +27,9 @@ import AccountModel from '@chronobank/core/models/wallet/persistAccount/AccountM
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import TxHistoryModel from '@chronobank/core/models/wallet/TxHistoryModel'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
+import { SignerMemoryModel } from '@chronobank/core/models'
 
 function mark (data, type, transformMethod) {
-  if (typeof data[transformMethod] !== 'function') {
-    // TODO @abdulov remove console.log
-    console.log('%c mark', 'background: #222; color: #fff', data, type, transformMethod)
-  }
   return {
     data: transformMethod ? data[transformMethod]() : data,
     __serializedType__: type,
@@ -63,6 +60,7 @@ function serialize (Immutable, refs) {
   return {
     replacer: function (key, value) {
       if (value instanceof AccountModel) return null
+      if (value instanceof SignerMemoryModel) return null
       if (value instanceof Date) return mark(value, 'Date', 'toString')
       if (value instanceof WalletModel) return mark(value, 'WalletModel', 'transform')
       if (value instanceof MultisigEthWalletModel) return mark(value, 'MultisigEthWalletModel', 'transform')
@@ -145,6 +143,8 @@ function serialize (Immutable, refs) {
           case 'MainWalletModel':
             return new MainWalletModel(data)
           case 'AccountModel':
+            return null
+          case 'SignerMemoryModel':
             return null
 
           // Immutable types

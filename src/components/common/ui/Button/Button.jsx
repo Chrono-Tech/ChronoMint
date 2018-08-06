@@ -56,9 +56,6 @@ export default class Button extends PureComponent {
     if (typeof this.props.onClick === 'function') {
       return this.props.onClick(e)
     }
-    if (typeof this.props.onClick === 'function') {
-      return this.props.onClick(e)
-    }
   }
 
   setRef = (el) => {
