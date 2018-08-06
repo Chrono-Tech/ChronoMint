@@ -35,7 +35,6 @@ import { getMainAddresses, getMainEthWallet, getMainWalletForBlockchain, getWall
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import WalletModel from '../../models/wallet/WalletModel'
 import { daoByType } from '../daos/selectors'
-import { web3Selector } from '../ethereum/selectors'
 import { estimateGas, executeTransaction } from '../ethereum/actions'
 import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from '../../dao/constants/AssetHolderDAO'
 import { TX_APPROVE } from '../../dao/constants/ERC20DAO'
@@ -297,11 +296,10 @@ export const requireTIME = () => async (dispatch, getState) => {
     const state = getState()
     const assetDonatorDAO = daoByType('AssetDonator')(state)
 
-    const web3 = web3Selector()(state)
     const tx = await assetDonatorDAO.requireTIME()
 
     if (tx) {
-      await dispatch(executeTransaction({ tx, web3 }))
+      await dispatch(executeTransaction({ tx }))
     }
   } catch (e) {
     // eslint-disable-next-line

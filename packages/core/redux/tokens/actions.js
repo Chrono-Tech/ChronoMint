@@ -307,8 +307,8 @@ export const estimateGasTransfer = (tokenId, params, callback, gasPriceMultiplie
     const { gasLimit, gasFee, gasPrice } = await dispatch(estimateGas(tx))
     callback(null, {
       gasLimit,
-      gasFee: new Amount(gasFee.mul(gasPriceMultiplier), ETH),
-      gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier), ETH),
+      gasFee: new Amount(gasFee.mul(gasPriceMultiplier).toString(), ETH),
+      gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier).toString(), ETH),
     })
   } catch (e) {
     callback(e)

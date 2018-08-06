@@ -43,17 +43,9 @@ export const ethereumPendingFormatSelector = () => createSelector(
 )
 
 export const ethereumPendingCountSelector = () => createSelector(
-  ethereumSelector(),
-  (ethereum) => {
-    if (ethereum == null || ethereum.pending == null) {
-      return null
-    }
-
-    return Object.values(ethereum.pending)
-      .reduce((accumulator, txList) => {
-        return accumulator.concat(Object.values(txList)
-          .filter((tx) => tx.isAccepted && !tx.isMined))
-      }, []).length
+  ethereumPendingFormatSelector(),
+  (pendingList) => {
+    return pendingList ? pendingList.length : 0
   },
 )
 

@@ -534,6 +534,7 @@ export default class SendTokensForm extends PureComponent {
                 component={Slider}
                 name='feeMultiplier'
                 {...FEE_RATE_MULTIPLIER}
+                toFixed={1}
               />
             </div>
           </div>

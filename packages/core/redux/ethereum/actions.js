@@ -20,20 +20,16 @@ export const nextNonce = ({ web3, address }) => async (dispatch, getState) => {
   // eslint-disable-next-line no-param-reassign
   address = address.toLowerCase()
   const state = getState().get(DUCK_ETHEREUM)
-  const nonce = Math.max(
+  return Math.max(
     (address in state.nonces)
-      ? state.nonces[address] + 1
+      ? state.nonces[address]
       : 0,
     await web3.eth.getTransactionCount(address, 'pending'),
   )
-  dispatch({ type: NONCE_UPDATE, address, nonce })
-  return nonce
 }
 
-export const executeTransaction = ({ web3, tx, options }) => async (dispatch, getState) => {
-  if (!web3) {
-    web3 = web3Selector()(getState())
-  }
+export const executeTransaction = ({ tx, options }) => async (dispatch, getState) => {
+  const web3 = web3Selector()(getState())
   const prepared = await dispatch(prepareTransaction({ web3, tx, options }))
   const entry = new TxEntryModel({
     key: uuid(),
@@ -130,6 +126,7 @@ export const sendSignedTransaction = ({ web3, entry }) => async (dispatch, getSt
 
   // eslint-disable-next-line
   entry = pendingEntrySelector(entry.tx.from, entry.key)(getState())
+  dispatch({ type: NONCE_UPDATE, address: entry.tx.from, nonce: entry.tx.nonce })
 
   return new Promise((resolve, reject) => {
     web3.eth.sendSignedTransaction(entry.raw)

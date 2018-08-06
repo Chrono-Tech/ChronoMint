@@ -4,7 +4,16 @@
  */
 
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
-import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_LITECOIN, WALLET_HD_PATH } from '@chronobank/login/network/constants'
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_LITECOIN,
+  WALLET_HD_PATH,
+  BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_NEM,
+  BLOCKCHAIN_WAVES,
+} from '@chronobank/login/network/constants'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
@@ -13,7 +22,6 @@ import { subscribeOnTokens } from '../tokens/actions'
 import TokenModel from '../../models/tokens/TokenModel'
 import tokenService from '../../services/TokenService'
 import Amount from '../../models/Amount'
-import { BLOCKCHAIN_ETHEREUM } from '../../dao/constants'
 import { getAccount } from '../session/selectors'
 import { updateEthMultisigWalletBalance } from '../multisigWallet/actions'
 import ethDAO from '../../dao/ETHDAO'
@@ -21,7 +29,6 @@ import { getMainEthWallet, getWallets } from './selectors/models'
 import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { AllowanceCollection, SignerMemoryModel } from '../../models'
-import { web3Selector } from '../ethereum/selectors'
 import { executeTransaction } from '../ethereum/actions'
 import { WALLETS_SET, WALLETS_TWO_FA_CONFIRMED, WALLETS_UPDATE_BALANCE, WALLETS_UPDATE_WALLET } from './constants'
 import { getSigner } from '../persistAccount/selectors'
@@ -176,14 +183,12 @@ const updateAllowance = (allowance) => (dispatch, getState) => {
   }
 }
 
-export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async (dispatch, getState) => {
-  const state = getState()
+export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async (dispatch) => {
   const tokenDAO = tokenService.getDAO(token.id())
-  const web3 = web3Selector()(state)
   const tx = tokenDAO.transfer(wallet.address, recipient, amount)
 
   if (tx) {
-    await dispatch(executeTransaction({ tx, web3, options: { feeMultiplier, walletDerivedPath: wallet.derivedPath } }))
+    await dispatch(executeTransaction({ tx, options: { feeMultiplier, walletDerivedPath: wallet.derivedPath } }))
   }
 }
 
@@ -196,10 +201,9 @@ export const mainApprove = (token: TokenModel, amount: Amount, spender: string, 
   try {
     allowance && dispatch(updateAllowance(allowance.isFetching(true)))
     const tokenDAO = tokenService.getDAO(token)
-    const web3 = web3Selector()(state)
     const tx = tokenDAO.approve(spender, amount, account)
     if (tx) {
-      await dispatch(executeTransaction({ tx, web3, options: { feeMultiplier } }))
+      await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
     }
   } catch (e) {
     // eslint-disable-next-line
@@ -218,11 +222,10 @@ export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Nu
   const { account } = state.get(DUCK_SESSION)
   try {
     dispatch(updateAllowance(allowance.isFetching(true)))
-    const web3 = web3Selector()(state)
     const tokenDAO = tokenService.getDAO(token)
     const tx = tokenDAO.revoke(spender, token.symbol(), account)
     if (tx) {
-      await dispatch(executeTransaction({ tx, web3, options: { feeMultiplier } }))
+      await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
     }
   } catch (e) {
     // eslint-disable-next-line
@@ -282,9 +285,9 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
       address = newWallet.getAddress()
       ltcProvider.subscribeNewWallet(address)
       break
-    case 'Bitcoin Gold':
-    case 'NEM':
-    case 'WAVES':
+    case BLOCKCHAIN_BITCOIN_GOLD:
+    case BLOCKCHAIN_NEM:
+    case BLOCKCHAIN_WAVES:
     default:
       return null
   }
