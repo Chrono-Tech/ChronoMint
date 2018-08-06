@@ -115,24 +115,17 @@ export default class VotingManagerDAO extends AbstractContractDAO {
         files: poll.files,
         options: poll.options,
       })
+      const voteLimitInTIME = poll.voteLimitInTIME
+      return this._tx(TX_CREATE_POLL, [
+        poll.options.length,
+        web3Converter.ipfsHashToBytes32(hash),
+        new BigNumber(voteLimitInTIME),
+        poll.deadline.getTime(),
+      ])
     } catch (e) {
       // eslint-disable-next-line
       console.error(e.message)
     }
-
-    const voteLimitInTIME = poll.voteLimitInTIME
-    let summary = poll.txSummary()
-    summary.voteLimitInTIME = new Amount(voteLimitInTIME, 'TIME')
-    summary = { ...poll.txSummary(), blockchain: 'Ethereum' }
-
-    const tx = this._tx(TX_CREATE_POLL, [
-      poll.options.length,
-      web3Converter.ipfsHashToBytes32(hash),
-      new BigNumber(voteLimitInTIME),
-      poll.deadline.getTime(),
-    ], new BigNumber(0), new BigNumber(0), summary, { stubPoll: options.stubPoll })
-
-    return tx
   }
 
   async getPollsDetails (pollsAddresses: Array<string>, account: string) {
@@ -156,7 +149,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
             const pollAddress = pollsAddresses[i].toLowerCase()
 
             try {
-              votingService.subscribeToPoll(pollAddress, account)
+              votingService.subscribeToPoll(pollAddress, account, this.web3, this.history._address)
             } catch (e) {
               // eslint-disable-next-line
               console.error('watch error', e.message)
