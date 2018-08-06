@@ -17,7 +17,6 @@ class AssetsManagerService extends EventEmitter {
     if (!this._cache[address]) {
       const platformDAO = new ChronoBankPlatformDAO(address, history)
       platformDAO.connect(web3)
-      platformDAO.setVotingManagerDAO(this.getVotingManager())
       this._cache[address] = platformDAO
     }
     return this._cache[address]
