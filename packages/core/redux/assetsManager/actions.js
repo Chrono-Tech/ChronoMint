@@ -4,10 +4,8 @@
  */
 
 import uuid from 'uuid/v1'
-import Immutable from 'immutable'
 import { notify } from '../notifier/actions'
 import web3Converter from '../../utils/Web3Converter'
-import contractManager from '../../dao/ContractsManagerDAO'
 import ReissuableModel from '../../models/tokens/ReissuableModel'
 import TokenModel from '../../models/tokens/TokenModel'
 import OwnerCollection from '../../models/wallet/OwnerCollection'
@@ -28,23 +26,18 @@ import { web3Selector } from '../ethereum/selectors'
 import { executeTransaction } from '../ethereum/actions'
 import assetsManagerService from '../../services/AssetsManagerService'
 
-import {
-  TX_PLATFORM_REQUESTED,
-} from '../../dao/constants/PlatformsManagerDAO'
+import { TX_PLATFORM_REQUESTED } from '../../dao/constants/PlatformsManagerDAO'
 
 import {
   DUCK_ASSETS_MANAGER,
   GET_ASSET_DATA,
-  GET_ASSETS_MANAGER_COUNTS_START,
   GET_ASSETS_MANAGER_COUNTS,
+  GET_ASSETS_MANAGER_COUNTS_START,
   GET_PLATFORMS,
   GET_TRANSACTIONS_DONE,
   GET_TRANSACTIONS_START,
-  MIDDLEWARE_EVENT_ISSUE,
   MIDDLEWARE_EVENT_PAUSED,
-  MIDDLEWARE_EVENT_PLATFORM_REQUESTED,
   MIDDLEWARE_EVENT_RESTRICTED,
-  MIDDLEWARE_EVENT_REVOKE,
   MIDDLEWARE_EVENT_UNPAUSED,
   MIDDLEWARE_EVENT_UNRESTRICTED,
   SELECT_PLATFORM,
@@ -52,6 +45,7 @@ import {
   SET_ASSETS,
 } from './constants'
 import { getAccount } from '../session/selectors/models'
+import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from '../../dao/constants/ChronoBankPlatformDAO'
 
 export const setTxFromMiddlewareForBlackList = (address, symbol) => async (dispatch, getState) => {
   const state = getState()
@@ -214,9 +208,8 @@ export const createAsset = (token: TokenModel) => async (dispatch, getState) => 
     }
 
     console.log('createAsset: tx: ', tx)
-    const web3 = web3Selector()(getState())
     if (tx) {
-      await dispatch(executeTransaction({ tx, web3, options: { feeMultiplier: 1 } }))
+      await dispatch(executeTransaction({ tx, options: { feeMultiplier: 1 } }))
     }
 
     let assets = getState().get(DUCK_ASSETS_MANAGER).assets()
@@ -253,7 +246,6 @@ export const getManagersForAssetSymbol = (symbol: string, excludeAccounts: Array
     const managersList = await assetsManagerDAO.getManagersForAssetSymbol(symbol, excludeAccounts)
     return managersList.isFetched(true)
   } catch (e) {
-    // TODO @abdulov remove console.log
     console.warn(e)
     return new OwnerCollection()
   }
@@ -270,7 +262,10 @@ export const removeManager = (token: TokenModel, owner: string) => async (dispat
     const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
     const platform = token.platform() && token.platform().address || assets[token.address()].platform
     const chronoBankPlatformDAO = await assetsManagerService.getChronoBankPlatformDAO(platform)
-    return await chronoBankPlatformDAO.removeAssetPartOwner(token.symbol(), owner)
+    const tx = chronoBankPlatformDAO.removeAssetPartOwner(token.symbol(), owner)
+    if (tx) {
+      await dispatch(executeTransaction({ tx }))
+    }
   }
   catch (e) {
     // eslint-disable-next-line
@@ -289,7 +284,10 @@ export const addManager = (token: TokenModel, owner: string) => async (dispatch,
     const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
     const platform = token.platform() && token.platform().address || assets[token.address()].platform
     const chronoBankPlatformDAO = assetsManagerService.getChronoBankPlatformDAO(platform)
-    return await chronoBankPlatformDAO.addAssetPartOwner(token.symbol(), owner)
+    const tx = chronoBankPlatformDAO.addAssetPartOwner(token.symbol(), owner)
+    if (tx) {
+      await dispatch(executeTransaction({ tx }))
+    }
   }
   catch (e) {
     // eslint-disable-next-line
@@ -302,7 +300,11 @@ export const reissueAsset = (token: TokenModel, amount: number) => async (dispat
     const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
     const platform = token.platform() && token.platform().address || assets[token.address()].platform
     const chronoBankPlatformDAO = assetsManagerService.getChronoBankPlatformDAO(platform)
-    await chronoBankPlatformDAO.reissueAsset(token, amount)
+    const tx = chronoBankPlatformDAO.reissueAsset(token, amount)
+
+    if (tx) {
+      await dispatch(executeTransaction({ tx }))
+    }
   }
   catch (e) {
     // eslint-disable-next-line
@@ -315,7 +317,11 @@ export const revokeAsset = (token: TokenModel, amount: number) => async (dispatc
     const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
     const platform = token.platform() && token.platform().address || assets[token.address()].platform
     const chronoBankPlatformDAO = assetsManagerService.getChronoBankPlatformDAO(platform)
-    await chronoBankPlatformDAO.revokeAsset(token, amount)
+    const tx = chronoBankPlatformDAO.revokeAsset(token, amount)
+
+    if (tx) {
+      await dispatch(executeTransaction({ tx }))
+    }
   }
   catch (e) {
     // eslint-disable-next-line
@@ -351,27 +357,28 @@ export const setTx = (tx) => async (dispatch, getState) => {
   const account = getAccount(state)
   const assetsManagerDAO = daoByType('AssetsManager')(state)
   const txModel = await assetsManagerDAO.getTxModel(tx, account)
-  dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList: new Immutable.Map().set(txModel.id(), txModel) } })
+  //TODO convert tx to tx model
+  // dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList: new Immutable.Map().set(txModel.id, txModel) } })
 }
 
 export const setManagers = (tx) => async (dispatch, getState) => {
   try {
     const state = getState()
-    const symbol = web3Converter.bytesToString(tx.args.symbol)
+    const symbol = web3Converter.bytesToString(tx.returnValues.symbol)
     const account = getAccount(state)
 
     let selectedToken = state.get(DUCK_ASSETS_MANAGER).selectedToken()
     const tokens = state.get(DUCK_TOKENS)
     let token = tokens.getBySymbol(symbol)
 
-    if (tx.args.from === account) {
+    if (tx.returnValues.from === account) {
       if (selectedToken === symbol) {
         dispatch({ type: SELECT_TOKEN, payload: { selectedToken: null } })
       }
       dispatch(getAssetDataBySymbol(symbol))
     } else {
       let notice
-      const { from, to } = tx.args
+      const { from, to } = tx.returnValues
       const assetsManagerDAO = daoByType('AssetsManager')(state)
       if (token && token.managersList().isFetched()) {
         let managersList = token.managersList()
@@ -398,25 +405,20 @@ export const setManagers = (tx) => async (dispatch, getState) => {
 export const watchInitTokens = () => async (dispatch, getState) => {
   console.log('watchInitTokens started: ')
 
-  dispatch(getAssetsManagerData())
+  await dispatch(getAssetsManagerData())
   dispatch(getTransactions())
   const state = getState()
   const account = getAccount(state)
-  const dao = state.get(dao)
-  console.log('watchInitTokens dao: ', dao, state)
-  const chronoBankPlatformDAO = daoByType('ChronoBankPlatform')(state)
-  const platformTokenExtensionGatewayManagerEmitterDAO = daoByType('PlatformTokenExtensionGatewayManagerEmitterDAO')(state)
 
   await Promise.all([
     dispatch(subscribeToBlockAssetEvents()),
     dispatch(subscribeToRestrictedEvents()),
   ])
 
-
   const issueCallback = async (tx) => dispatch(setTx(tx))
   const managersCallback = (tx) => {
     dispatch(setManagers(tx))
-    if (tx.args.from !== account && tx.args.to !== account) {
+    if (tx.returnValues.from !== account && tx.returnValues.to !== account) {
       return
     }
     dispatch(setTx(tx))
@@ -445,6 +447,16 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     dispatch({ type: SET_ASSETS, payload: { assets: assetsObj } })
   }
 
+  const platforms = state.get(DUCK_ASSETS_MANAGER).get('usersPlatforms')
+  platforms.forEach(({ address }) => {
+    assetsManagerService
+      .subscribeToChronoBankPlatformDAO(address)
+
+    assetsManagerService
+      .on(TX_ISSUE, issueCallback)
+      .on(TX_REVOKE, issueCallback)
+      .on(TX_OWNERSHIP_CHANGE, managersCallback)
+  })
   // return Promise.all([
   //   chronoBankPlatformDAO.watchIssue(issueCallback),
   //   chronoBankPlatformDAO.watchRevoke(issueCallback),
@@ -530,13 +542,11 @@ export const changePauseStatus = (token: TokenModel, statusIsBlock: boolean) => 
     const assetsManagerDAO = daoByType('AssetsManager')(getState())
     const chronoBankAssetDAO = await assetsManagerDAO.getChronoBankAssetDAO(token.address())
     const tx = statusIsBlock
-      ? await chronoBankAssetDAO.pause() // status === true -> block
-      : await chronoBankAssetDAO.unpause() // status === false -> unblock
-    if (tx.tx) {
-      dispatch({
-        type: TOKENS_FETCHED,
-        token: token.isPaused(pause.isFetched(false).isFetching(true)),
-      })
+      ? chronoBankAssetDAO.pause() // status === true -> block
+      : chronoBankAssetDAO.unpause() // status === false -> unblock
+
+    if (tx) {
+      await dispatch(executeTransaction({ tx }))
     }
   } catch (e) { // if error
     // eslint-disable-next-line
@@ -564,24 +574,18 @@ const getBlacklist = (symbol: string) => async (disptch, getState) => {
 export const restrictUser = (token: TokenModel, address: string) => async (dispatch, getState): boolean => {
   const assetsManagerDAO = daoByType('AssetsManager')(getState())
   const chronoBankAssetDAO = await assetsManagerDAO.getChronoBankAssetDAO(token.address())
-  const tx = await chronoBankAssetDAO.restrict([address])
-  if (tx.tx) {
-    dispatch({
-      type: TOKENS_FETCHED,
-      token: token.blacklist(token.blacklist().add(address)),
-    })
+  const tx = chronoBankAssetDAO.restrict([address])
+  if (tx) {
+    await dispatch(executeTransaction({ tx }))
   }
 }
 
 export const unrestrictUser = (token: TokenModel, address: string) => async (dispatch, getState): boolean => {
   const assetsManagerDAO = daoByType('AssetsManager')(getState())
   const chronoBankAssetDAO = await assetsManagerDAO.getChronoBankAssetDAO(token.address())
-  const tx = await chronoBankAssetDAO.unrestrict([address])
-  if (tx.tx) {
-    dispatch({
-      type: TOKENS_FETCHED,
-      token: token.blacklist(token.blacklist().delete(address)),
-    })
+  const tx = chronoBankAssetDAO.unrestrict([address])
+  if (tx) {
+    await dispatch(executeTransaction({ tx }))
   }
 }
 

@@ -7,6 +7,11 @@ import EventEmitter from 'events'
 import ChronoBankPlatformDAO from '../dao/ChronoBankPlatformDAO'
 import FeeInterfaceDAO from '../dao/FeeInterfaceDAO'
 import ChronoBankAssetDAO from '../dao/ChronoBankAssetDAO'
+import {
+  TX_ISSUE,
+  TX_REVOKE,
+  TX_OWNERSHIP_CHANGE,
+} from '../dao/constants/ChronoBankPlatformDAO'
 
 class AssetsManagerService extends EventEmitter {
 
@@ -45,6 +50,27 @@ class AssetsManagerService extends EventEmitter {
     }
     return this._cache[daoId]
 
+  }
+
+  subscribeToChronoBankPlatformDAO (address): Promise {
+    const dao = this.getChronoBankPlatformDAO(address)
+
+    if (!dao) {
+      // eslint-disable-next-line
+      throw new Error('wallet not found with address:', address)
+    }
+
+    return Promise.all([
+      dao.watchIssue((tx) => {
+        this.emit(TX_ISSUE, tx)
+      }),
+      dao.watchRevoke((tx) => {
+        this.emit(TX_REVOKE, tx)
+      }),
+      dao.watchManagers((tx) => {
+        this.emit(TX_OWNERSHIP_CHANGE, tx)
+      }),
+    ])
   }
 }
 

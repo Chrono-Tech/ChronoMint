@@ -32,9 +32,11 @@ export default class ChronoBankPlatformDAO extends AbstractContractDAO {
     super.connect(web3, options)
 
     this.allEventsEmitter = this.history.events.allEvents({})
-      .on('data', this.handleEventsData.bind(this))
-      .on('changed', this.handleEventsChanged.bind(this))
-      .on('error', this.handleEventsError.bind(this))
+      .on('data', this.handleAllEventsData)
+  }
+
+  handleAllEventsData = (data) => {
+    this.emit(data.event, data)
   }
 
   disconnect () {
@@ -63,14 +65,14 @@ export default class ChronoBankPlatformDAO extends AbstractContractDAO {
     this.emit(data.event + '_error', data)
   }
 
-  async reissueAsset (token, value) {
+  reissueAsset (token, value) {
     const amount = token.addDecimals(value, token)
-    return this._tx(TX_REISSUE_ASSET, [token.symbol(), amount])
+    return this._tx(TX_REISSUE_ASSET, [web3Converter.stringToBytes(token.symbol()), amount])
   }
 
   revokeAsset (token, value) {
     const amount = token.addDecimals(value, token)
-    return this._tx(TX_REVOKE_ASSET, [token.symbol(), amount])
+    return this._tx(TX_REVOKE_ASSET, [web3Converter.stringToBytes(token.symbol()), amount])
   }
 
   isReissuable (symbol) {
@@ -78,11 +80,11 @@ export default class ChronoBankPlatformDAO extends AbstractContractDAO {
   }
 
   addAssetPartOwner (symbol, address) {
-    return this._tx(TX_ADD_ASSET_PART_OWNER, [symbol, address])
+    return this._tx(TX_ADD_ASSET_PART_OWNER, [web3Converter.stringToBytes(symbol), address])
   }
 
   removeAssetPartOwner (symbol, address) {
-    return this._tx(TX_REMOVE_ASSET_PART_OWNER, [symbol, address])
+    return this._tx(TX_REMOVE_ASSET_PART_OWNER, [web3Converter.stringToBytes(symbol), address])
   }
 
   watchIssue (callback) {

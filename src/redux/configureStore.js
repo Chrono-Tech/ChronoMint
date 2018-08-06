@@ -76,7 +76,7 @@ const configureStore = () => {
     const IGNORED_ACTIONS = []
     // All actions like network/* (starts with network)
     const DOMAINS = [
-      'ethMultisigWallet/',
+      'AssetsManager/',
       '@@router/',
     ]
     const logger = createLogger({

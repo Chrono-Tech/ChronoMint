@@ -110,7 +110,7 @@ export default class PlatformsList extends PureComponent {
                 {showTitle(token, asset)}
                 <div styleName='tokenBalance'>
                   {
-                    token.isFetched() &&
+                    token.isFetched() && asset.totalSupply &&
                     <TokenValue
                       style={{ fontSize: '24px' }}
                       value={new Amount(token ? asset.totalSupply : asset.totalSupply, token.symbol())}
