@@ -8,7 +8,6 @@
 // #region imports
 
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
-import { createAccountEntry } from '@chronobank/core/redux/persistAccount/utils'
 import { login } from '@chronobank/core/redux/session/actions'
 import {
   DUCK_PERSIST_ACCOUNT,
@@ -19,7 +18,6 @@ import {
 import * as NetworkActions from './actions'
 import mnemonicProvider from '../../network/mnemonicProvider'
 import privateKeyProvider from '../../network/privateKeyProvider'
-import profileService from '../../network/ProfileService'
 import networkService from '../../network/NetworkService'
 import {
   LOCAL_PRIVATE_KEYS,
@@ -169,74 +167,6 @@ export const initRecoverAccountPage = () => (dispatch) => {
   dispatch(NetworkActions.networkResetNewMnemonic())
   dispatch(NetworkActions.networkSetAccountRecoveryMode())
 }
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
-export const onSubmitResetAccountPasswordForm = (password) =>
-  async (dispatch, getState) => {
-    const state = getState()
-    const { newAccountMnemonic } = state.get(DUCK_NETWORK)
-    const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
-
-    dispatch(PersistAccountActions.resetPasswordAccount(selectedWallet, newAccountMnemonic, password))
-  }
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
-export const onSubmitAccountName = (name) => (dispatch, getState) => {
-  const state = getState()
-  const { walletFileImportObject } = state.get(DUCK_NETWORK)
-  const account = createAccountEntry(name, walletFileImportObject)
-
-  dispatch(PersistAccountActions.accountAdd(account))
-  dispatch(PersistAccountActions.accountSelect(account))
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to rework it
- */
-export const handlePrivateKeyLogin = (privateKey) =>
-  async (dispatch, getState) => {
-    dispatch(NetworkActions.loading())
-    dispatch(NetworkActions.clearErrors())
-
-    let state = getState()
-    const multisigWalletState = state.get('ethMultisigWallet')
-    const provider = privateKeyProvider.getPrivateKeyProvider(
-      privateKey.slice(2),
-      networkService.getProviderSettings(),
-      multisigWalletState,
-    )
-
-    networkService.selectAccount(provider.ethereum.getAddress())
-    await setup(provider)
-
-    state = getState()
-    const {
-      selectedAccount,
-      selectedProviderId,
-      selectedNetworkId,
-    } = state.get(DUCK_NETWORK)
-
-    dispatch(NetworkActions.clearErrors())
-
-    const isPassed = await networkService.checkNetwork()
-
-    if (isPassed) {
-      networkService.createNetworkSession(
-        selectedAccount,
-        selectedProviderId,
-        selectedNetworkId,
-      )
-      dispatch(login(selectedAccount))
-    }
-  }
 
 /*
  * Thunk dispatched by "" screen.
