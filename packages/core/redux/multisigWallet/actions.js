@@ -249,7 +249,6 @@ export const initMultisigWalletManager = () => async (dispatch, getState) => {
   dispatch(subscribeOnWalletManager())
   dispatch(subscribeOnMultisigWalletService())
 
-  dispatch(check2FAChecked())
   // all ready, start fetching
   walletsManagerDAO.fetchWallets()
 }

@@ -23,8 +23,8 @@ import {
 //#endregion CONSTANTS
 
 export default class PollEmitterDAO extends AbstractContractDAO {
-  constructor (at) {
-    super(PollEmitterABI, at, MultiEventsHistoryABI)
+  constructor (address, history) {
+    super({ address, history, abi: PollEmitterABI })
 
     this.votingManagerDAO = null
   }

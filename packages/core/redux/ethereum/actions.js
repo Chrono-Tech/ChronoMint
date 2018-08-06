@@ -37,7 +37,7 @@ export const executeTransaction = ({ tx, options }) => async (dispatch, getState
     receipt: null,
     isSubmitted: true,
     isAccepted: false,
-    walletDerivedPath: options.walletDerivedPath,
+    walletDerivedPath: options && options.walletDerivedPath,
   })
 
   await dispatch({ type: TX_CREATE, entry })
