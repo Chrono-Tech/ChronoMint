@@ -5,6 +5,8 @@
 
 import EventEmitter from 'events'
 import ChronoBankPlatformDAO from '../dao/ChronoBankPlatformDAO'
+import FeeInterfaceDAO from '../dao/FeeInterfaceDAO'
+import ChronoBankAssetDAO from '../dao/ChronoBankAssetDAO'
 
 class AssetsManagerService extends EventEmitter {
 
@@ -14,12 +16,34 @@ class AssetsManagerService extends EventEmitter {
   }
 
   getChronoBankPlatformDAO (address, web3, history) {
-    if (!this._cache[address]) {
+    const daoId = `platform_${address}`
+    if (!this._cache[daoId]) {
       const platformDAO = new ChronoBankPlatformDAO(address, history)
       platformDAO.connect(web3)
-      this._cache[address] = platformDAO
+      this._cache[daoId] = platformDAO
     }
-    return this._cache[address]
+    return this._cache[daoId]
+
+  }
+
+  getFeeInterfaceDAO (address, web3, history) {
+    const daoId = `fee_${address}`
+    if (!this._cache[daoId]) {
+      const feeInterfaceDAO = new FeeInterfaceDAO(address, history)
+      feeInterfaceDAO.connect(web3)
+      this._cache[daoId] = feeInterfaceDAO
+    }
+    return this._cache[daoId]
+  }
+
+  getChronoBankAssetDAO (address, web3, history) {
+    const daoId = `asset_${address}`
+    if (!this._cache[daoId]) {
+      const chronoBankAssetDAO = new ChronoBankAssetDAO(address, history)
+      chronoBankAssetDAO.connect(web3)
+      this._cache[daoId] = chronoBankAssetDAO
+    }
+    return this._cache[daoId]
 
   }
 }

@@ -453,20 +453,21 @@ export const watchInitTokens = () => async (dispatch, getState) => {
   // ])
 }
 
-export const getFee = async (token: TokenModel) => {
+export const getFee = (token: TokenModel) => async (dispatch, getState) => {
   let tokenFee = token.fee()
     .withFee(false)
     .isFetching(false)
     .isFetched(true)
 
   try {
-    const feeInterfaceDAO = await contractManager.getFeeInterfaceDAO(token.address())
+    const assetsManagerDAO = daoByType('AssetsManager')(getState())
+    const feeInterfaceDAO = await assetsManagerDAO.getFeeInterfaceDAO(token.address())
     const res = await feeInterfaceDAO.getFeePercent()
     tokenFee = tokenFee
       .fee(res / 100)
       .withFee(!!res.toNumber())
   } catch (e) {
-    console.warn(e.message)
+    console.log(e.message)
   }
   return tokenFee
 }
@@ -490,9 +491,9 @@ export const selectToken = (token: TokenModel) => async (dispatch, getState) => 
   const [managersList, isReissuable, fee, isPaused, blacklist] = await Promise.all([
     dispatch(getManagersForAssetSymbol(web3Converter.stringToBytesWithZeros(token.symbol()), [account])),
     checkIsReissuable(token, assets[token.address()]),
-    getFee(token),
-    getPauseStatus(token.address()),
-    getBlacklist(token.symbol()),
+    dispatch(getFee(token)),
+    dispatch(getPauseStatus(token.address())),
+    dispatch(getBlacklist(token.symbol())),
   ])
 
   dispatch({
@@ -506,27 +507,28 @@ export const selectToken = (token: TokenModel) => async (dispatch, getState) => 
   })
 }
 
-const getPauseStatus = async (address: string) => {
+const getPauseStatus = (address: string) => async (dispatch, getState) => {
   let isPaused = false
   try {
-    const chronoBankAssetDAO = await contractManager.getChronoBankAssetDAO(address)
+    const assetsManagerDAO = daoByType('AssetsManager')(getState())
+    const chronoBankAssetDAO = await assetsManagerDAO.getChronoBankAssetDAO(address)
     isPaused = await chronoBankAssetDAO.getPauseStatus()
-  }
-  catch (e) {
+  } catch (e) {
     // eslint-disable-next-line
-    console.error(e.message)
+    console.log(e.message)
   }
   return new PausedModel({ value: isPaused }).isFetched(true)
 }
 
-export const changePauseStatus = (token: TokenModel, statusIsBlock: boolean) => async (dispatch) => {
+export const changePauseStatus = (token: TokenModel, statusIsBlock: boolean) => async (dispatch, getState) => {
   const pause = new PausedModel({ value: statusIsBlock })
   dispatch({
     type: TOKENS_FETCHED,
     token: token.isPaused(pause.isFetched(false).isFetching(true)),
   })
   try {
-    const chronoBankAssetDAO = await contractManager.getChronoBankAssetDAO(token.address())
+    const assetsManagerDAO = daoByType('AssetsManager')(getState())
+    const chronoBankAssetDAO = await assetsManagerDAO.getChronoBankAssetDAO(token.address())
     const tx = statusIsBlock
       ? await chronoBankAssetDAO.pause() // status === true -> block
       : await chronoBankAssetDAO.unpause() // status === false -> unblock
@@ -559,8 +561,9 @@ const getBlacklist = (symbol: string) => async (disptch, getState) => {
   return blacklist.isFetched(true)
 }
 
-export const restrictUser = (token: TokenModel, address: string) => async (dispatch): boolean => {
-  const chronoBankAssetDAO = await contractManager.getChronoBankAssetDAO(token.address())
+export const restrictUser = (token: TokenModel, address: string) => async (dispatch, getState): boolean => {
+  const assetsManagerDAO = daoByType('AssetsManager')(getState())
+  const chronoBankAssetDAO = await assetsManagerDAO.getChronoBankAssetDAO(token.address())
   const tx = await chronoBankAssetDAO.restrict([address])
   if (tx.tx) {
     dispatch({
@@ -570,8 +573,9 @@ export const restrictUser = (token: TokenModel, address: string) => async (dispa
   }
 }
 
-export const unrestrictUser = (token: TokenModel, address: string) => async (dispatch): boolean => {
-  const chronoBankAssetDAO = await contractManager.getChronoBankAssetDAO(token.address())
+export const unrestrictUser = (token: TokenModel, address: string) => async (dispatch, getState): boolean => {
+  const assetsManagerDAO = daoByType('AssetsManager')(getState())
+  const chronoBankAssetDAO = await assetsManagerDAO.getChronoBankAssetDAO(token.address())
   const tx = await chronoBankAssetDAO.unrestrict([address])
   if (tx.tx) {
     dispatch({
@@ -590,7 +594,7 @@ export const selectPlatform = (platformAddress) => async (dispatch, getState) =>
   let calledAssets = []
   Object.values(assets).map((asset) => {
     if (asset.platform === platformAddress) {
-      promises.push(getPauseStatus(asset.address))
+      promises.push(dispatch(getPauseStatus(asset.address)))
       calledAssets.push(asset)
     }
   })

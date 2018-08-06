@@ -264,8 +264,8 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   async getTransactionsForBlacklists (address, symbol, account) {
     const transactionsPromises = []
 
-    transactionsPromises.push(this.chronobankAssetDAO._get(TX_RESTRICTED, 0, 'latest', { symbol }))
-    transactionsPromises.push(this.chronobankAssetDAO._get(TX_UNRESTRICTED, 0, 'latest', { symbol }))
+    // transactionsPromises.push(this.chronobankAssetDAO._get(TX_RESTRICTED, 0, 'latest', { symbol }))
+    // transactionsPromises.push(this.chronobankAssetDAO._get(TX_UNRESTRICTED, 0, 'latest', { symbol }))
 
     const transactionsLists = await Promise.all(transactionsPromises)
     const promises = []
@@ -281,8 +281,8 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   async getTransactionsForBlockAsset (address, symbol, account) {
     const transactionsPromises = []
 
-    transactionsPromises.push(this.chronobankAssetDAO._get(TX_PAUSED, 0, 'latest', { symbol }))
-    transactionsPromises.push(this.chronobankAssetDAO._get(TX_UNPAUSED, 0, 'latest', { symbol }))
+    // transactionsPromises.push(this.chronobankAssetDAO._get(TX_PAUSED, 0, 'latest', { symbol }))
+    // transactionsPromises.push(this.chronobankAssetDAO._get(TX_UNPAUSED, 0, 'latest', { symbol }))
 
     const transactionsLists = await Promise.all(transactionsPromises)
     const promises = []
@@ -292,5 +292,13 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     let map = new Immutable.Map()
     transactions.map((tx) => map = map.set(tx.id(), tx))
     return map
+  }
+
+  getFeeInterfaceDAO (address) {
+    return assetsManagerService.getFeeInterfaceDAO(address, this.web3, this.history._address)
+  }
+
+  getChronoBankAssetDAO (address) {
+    return assetsManagerService.getChronoBankAssetDAO(address, this.web3, this.history._address)
   }
 }

@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import web3Converter from '../utils/Web3Converter'
 import AbstractContractDAO from './AbstractContract3DAO'
 import { ChronoBankPlatformABI } from './abi'
 
@@ -63,51 +64,25 @@ export default class ChronoBankPlatformDAO extends AbstractContractDAO {
   }
 
   async reissueAsset (token, value) {
-    try {
-      const amount = token.addDecimals(value, token)
-      const tx = await this._tx(
-        TX_REISSUE_ASSET,
-        [
-          token.symbol(),
-          amount,
-        ],
-        {
-          symbol: token.symbol(),
-          amount: value,
-        })
-      return tx.tx
-    } catch (e) {
-      // eslint-disable-next-line
-    }
+    const amount = token.addDecimals(value, token)
+    return this._tx(TX_REISSUE_ASSET, [token.symbol(), amount])
   }
 
-  async revokeAsset (token, value) {
+  revokeAsset (token, value) {
     const amount = token.addDecimals(value, token)
-    const tx = await this._tx(
-      TX_REVOKE_ASSET,
-      [
-        token.symbol(),
-        amount,
-      ],
-      {
-        symbol: token.symbol(),
-        amount: value,
-      })
-    return tx.tx
+    return this._tx(TX_REVOKE_ASSET, [token.symbol(), amount])
   }
 
   isReissuable (symbol) {
-    return this._call(TX_IS_REISSUABLE, [symbol])
+    return this.contract.methods[TX_IS_REISSUABLE](web3Converter.stringToBytes(symbol)).call()
   }
 
-  async addAssetPartOwner (symbol, address) {
-    const tx = await this._tx(TX_ADD_ASSET_PART_OWNER, [symbol, address])
-    return tx.tx
+  addAssetPartOwner (symbol, address) {
+    return this._tx(TX_ADD_ASSET_PART_OWNER, [symbol, address])
   }
 
-  async removeAssetPartOwner (symbol, address) {
-    const tx = await this._tx(TX_REMOVE_ASSET_PART_OWNER, [symbol, address])
-    return tx.tx
+  removeAssetPartOwner (symbol, address) {
+    return this._tx(TX_REMOVE_ASSET_PART_OWNER, [symbol, address])
   }
 
   watchIssue (callback) {
