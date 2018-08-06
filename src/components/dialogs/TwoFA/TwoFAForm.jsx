@@ -4,7 +4,7 @@
  */
 
 import Two2FImg from 'assets/img/2fa/2-fa.png'
-import { Checkbox, TextField } from 'material-ui'
+import { Checkbox, TextField } from '@material-ui/core'
 import { Button } from 'components'
 import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -85,7 +85,7 @@ export default class TwoFAForm extends Component {
                   <div styleName='step3code'>
                     <TextField
                       placeholder='123456'
-                      floatingLabelText={<Translate value={`${prefix}.authCode`} />}
+                      label={<Translate value={`${prefix}.authCode`} />}
                       inputStyle={{
                         letterSpacing: 2.4,
                         fontSize: 24,

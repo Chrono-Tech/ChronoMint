@@ -15,6 +15,6 @@ export const en = {
   infoContentPart3: 'Don\'t loose your back-up phrase (mnemonic key).',
   infoContentPart4: 'We do not store this information and Your account will be lost\n' +
   '                    together with all your funds and history.',
-  login: 'Proceed',
+  proceed: 'Proceed',
 
 }

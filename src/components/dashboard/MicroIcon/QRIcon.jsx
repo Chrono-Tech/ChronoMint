@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Popover } from 'material-ui'
+import { Popover } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import QRCode from 'qrcode'
 import React, { PureComponent } from 'react'

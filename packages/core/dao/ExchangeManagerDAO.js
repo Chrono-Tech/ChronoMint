@@ -3,10 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import BigNumber from 'bignumber.js'
 import exchangeProvider from '@chronobank/login/network/ExchangeProvider'
 import ExchangeOrderModel from '../models/exchange/ExchangeOrderModel'
 import ExchangesCollection from '../models/exchange/ExchangesCollection'
-import BigNumber from 'bignumber.js'
 import web3Converter from '../utils/Web3Converter'
 import { ExchangeManagerABI, MultiEventsHistoryABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'

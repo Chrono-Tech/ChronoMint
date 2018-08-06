@@ -5,21 +5,21 @@
 
 import { en as Login } from '@chronobank/login-ui/lang'
 import components from 'components/lang'
-import * as assetDonator from '@chronobank/core/dao/AssetDonatorDAO'
-import * as erc20 from '@chronobank/core/dao/ERC20DAO'
-import * as erc20Manager from '@chronobank/core/dao/ERC20ManagerDAO'
-import * as eth from '@chronobank/core/dao/EthereumDAO'
-import * as exchange from '@chronobank/core/dao/ExchangeDAO'
-import * as loc from '@chronobank/core/dao/LOCManagerDAO'
-import * as operations from '@chronobank/core/dao/PendingManagerDAO'
-import * as platformsManager from '@chronobank/core/dao/PlatformsManagerDAO'
-import * as pollInterface from '@chronobank/core/dao/PollInterfaceDAO'
-import * as rewards from '@chronobank/core/dao/RewardsDAO'
-import * as time from '@chronobank/core/dao/AssetHolderDAO'
-import * as user from '@chronobank/core/dao/UserManagerDAO'
+import * as assetDonator from '@chronobank/core/dao/constants/AssetDonatorDAO'
+import * as erc20 from '@chronobank/core/dao/constants/ERC20DAO'
+import * as erc20Manager from '@chronobank/core/dao/constants/ERC20ManagerDAO'
+import * as eth from '@chronobank/core/dao/constants/EthereumDAO'
+import * as exchange from '@chronobank/core/dao/constants/ExchangeDAO'
+import * as loc from '@chronobank/core/dao/constants/LOCManagerDAO'
+import * as operations from '@chronobank/core/dao/constants/PendingManagerDAO'
+import * as platformsManager from '@chronobank/core/dao/constants/PlatformsManagerDAO'
+import * as pollInterface from '@chronobank/core/dao/constants/PollInterfaceDAO'
+import * as rewards from '@chronobank/core/dao/constants/RewardsDAO'
+import * as time from '@chronobank/core/dao/constants/AssetHolderDAO'
+import * as user from '@chronobank/core/dao/constants/UserManagerDAO'
 import layouts from 'layouts/lang'
-import * as votingManager from '@chronobank/core/dao/VotingManagerDAO'
-import * as chronoBankAsset from '@chronobank/core/dao/ChronoBankAssetDAO'
+import * as votingManager from '@chronobank/core/dao/constants/VotingManagerDAO'
+import * as chronoBankAsset from '@chronobank/core/dao/constants/ChronoBankAssetDAO'
 
 export default {
   copyright: 'Copyright © 2018 LaborX Pty Ltd. All Rights Reserved.',
@@ -242,13 +242,16 @@ export default {
   },
   notices: require('./en-notices'),
   tx: {
+    from: 'From',
+    to: 'To',
     transactions: 'Transactions',
     blockNumber: 'Block Number',
     noTransactions: 'No transactions',
     confirm: 'Confirm Transaction',
     fee: 'Fee',
-    balanceAfter: 'Balance after',
+    balanceAfter: '%{symbol} balance after',
     feeLeft: 'Transaction fee left',
+    notEnough: 'Not enough %{symbol}',
     TokenManagementInterface: {
       createAssetWithoutFee: {
         title: 'Confirm create token',
@@ -308,6 +311,7 @@ export default {
     Ethereum: {
       [eth.TX_TRANSFER]: {
         title: 'Transfer ETH',
+        to: 'Address to',
       },
     },
     /* eslint-disable global-require */
@@ -371,6 +375,7 @@ export default {
     AssetDonator: {
       [assetDonator.TX_REQUIRE_TIME]: {
         title: 'Require TIME',
+        donation: 'Donation',
       },
     },
     PlatformsManager: {
@@ -449,6 +454,7 @@ export default {
         title: 'Transfer tokens',
         account: 'Account',
         amount: 'Amount',
+        to: 'Address to',
       },
     },
     ExchangeManager: {
@@ -473,6 +479,18 @@ export default {
     Wallet: {
       transfer: {
         title: 'Transfer',
+        value: 'Value',
+        to: 'To',
+        symbol: 'Symbol',
+      },
+      confirm: {
+        title: 'Confirm tx',
+        value: 'Value',
+        to: 'To',
+        symbol: 'Symbol',
+      },
+      revoke: {
+        title: 'Revoke tx',
         value: 'Value',
         to: 'To',
         symbol: 'Symbol',
@@ -530,6 +548,10 @@ export default {
     WalletsManager: {
       'createWallet': {
         title: 'Create multisignature wallet',
+        owners: 'Owners',
+        requiredSignatures: 'Required signatures',
+        releaseTime: 'Release time',
+        isTimeLocked: 'Is timeLocked',
       },
       'create2FAWallet': {
         title: 'Create 2FA wallet',
@@ -846,18 +868,6 @@ export default {
         cancel: 'Cancel',
         addAddress: 'Add Address',
       },
-      AddCurrencyDialog: {
-        addToken: 'Add Token',
-        howToAddYourToken: 'How to add your token? It\'s easy!',
-        youCanConnectToYourPersonalWallet: 'You can connect to your personal wallet one of the already added tokens or add any other ERC20 token.',
-        clickOnThePlusButtonAbove: 'Click on the + plus button above.',
-        fillTheForm: 'Fill the form, check values and press SAVE.',
-        waitUntilYourToken: 'Wait until your token will be added (mined), select it in the list on the left and press SAVE.',
-        allTokens: 'All tokens',
-        save: 'Save',
-        close: 'Close',
-        tokens: 'Tokens',
-      },
       AddTokenDialog: {
         tokenContractAddress: 'Token contract address',
         tokenName: 'Token name',
@@ -893,5 +903,6 @@ export default {
     publish: 'Publish',
     endPoll: 'End poll',
     addToken: 'Add a token',
+    voteHistory: 'Changes History',
   },
 }

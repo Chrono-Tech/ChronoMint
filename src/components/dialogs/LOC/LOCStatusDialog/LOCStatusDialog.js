@@ -9,9 +9,9 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { modalsClose } from 'redux/modals/actions'
-import LOCStatusForm from './LOCStatusForm'
-import ModalDialogBase from '../../ModalDialogBase/ModalDialogBase'
 import { updateStatus } from '@chronobank/core/redux/locs/actions'
+import LOCStatusForm from './LOCStatusForm'
+// import ModalDialogBase from '../../ModalDialogBase/ModalDialogBase'
 
 const mapDispatchToProps = (dispatch) => ({
   updateStatus: (status, loc) => dispatch(updateStatus(status, loc)),

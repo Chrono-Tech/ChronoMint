@@ -4,7 +4,7 @@
  */
 
 import Immutable from 'immutable'
-import * as types from './actions'
+import * as types from './constants'
 import ProfileModel from '../../models/ProfileModel'
 
 const initialState = {
@@ -13,6 +13,7 @@ const initialState = {
   profile: new ProfileModel(),
   isCBE: false,
   gasPriceMultiplier: new Immutable.Map(),
+  profileSignature: null,
 }
 
 export default (state = initialState, action) => {
@@ -43,6 +44,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         gasPriceMultiplier: state.gasPriceMultiplier.set(action.id, action.value),
+      }
+    case types.SET_PROFILE_SIGNATURE:
+      return {
+        ...state,
+        profileSignature: action.signature,
       }
     default:
       return state

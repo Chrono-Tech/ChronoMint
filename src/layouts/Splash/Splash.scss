@@ -46,9 +46,13 @@ $copyRightPadding: 200px;
   display: flex;
   justify-content: center;
   height: 340px;
-  overflow: hidden;
-  margin-bottom: 20px;
+  width: 920px;
+  margin: 0 auto 20px;
   position: relative;
+
+  @include md-only {
+    width: 100%;
+  }
 
 }
 
@@ -106,7 +110,7 @@ $copyRightPadding: 200px;
   flex: 1;
 }
 
-.header-logos {
+.header-center {
   z-index: 100;
   display: flex;
   position: relative;
@@ -115,6 +119,21 @@ $copyRightPadding: 200px;
   top: 90px;
   width: 300px;
   height: 200px;
+}
+
+.header-logo {
+  position: absolute;
+  top: 33px;
+  left: 10px;
+  z-index: 1;
+
+  @include md-only {
+    display: none;
+  }
+}
+
+.chrono-logo {
+  height: 32px;
 }
 
 .chrono-wallet-logo-bright {
@@ -214,9 +233,9 @@ $copyRightPadding: 200px;
 
 .selectors {
   position: absolute;
-  top: 30px;
+  top: 28px;
+  right: 0;
   display: flex;
-  margin-left: 360px;
 
   @include md-only {
     margin: 0;

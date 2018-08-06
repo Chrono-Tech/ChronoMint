@@ -3,9 +3,20 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import PollEmitter, { EVENT_POLL_ACTIVATED, EVENT_POLL_ENDED, EVENT_POLL_VOTED } from '../dao/PollEmitterDAO'
 import EventEmitter from 'events'
-import VotingManagerDAO, { EVENT_POLL_CREATED, EVENT_POLL_REMOVED } from '../dao/VotingManagerDAO'
+import PollEmitter from '../dao/PollEmitterDAO'
+
+//#region CONSTANTS
+
+import {
+  EVENT_POLL_ACTIVATED,
+  EVENT_POLL_CREATED,
+  EVENT_POLL_ENDED,
+  EVENT_POLL_REMOVED,
+  EVENT_POLL_VOTED,
+} from '../dao/constants/PollEmitterDAO'
+
+//#endregion
 
 class VotingService extends EventEmitter {
 
@@ -14,23 +25,33 @@ class VotingService extends EventEmitter {
     this._cache = {}
   }
 
-  getPollEmitterDAO (address) {
-    if (!this._cache[ address ]) {
-      this._cache[ address ] = new PollEmitter(address)
+  getPollEmitterDAO (address, web3, history) {
+    if (!this._cache[address]) {
+      const pollEmitter = new PollEmitter(address, history)
+      pollEmitter.connect(web3)
+      pollEmitter.setVotingManagerDAO(this.getVotingManager())
+      this._cache[address] = pollEmitter
     }
-    return this._cache[ address ]
+    return this._cache[address]
+  }
+
+  setVotingManager (VotingManagerDAO) {
+    this._cache['VotingManager'] = VotingManagerDAO
   }
 
   getVotingManager () {
-    if (!this._cache[ 'VotingManager' ]) {
-      this._cache[ 'VotingManager' ] = new VotingManagerDAO()
+    if (!this._cache['VotingManager']) {
+      throw Error('VotingManagerDAO is not found')
     }
-    return this._cache[ 'VotingManager' ]
+    return this._cache['VotingManager']
   }
 
-  subscribeToPoll (address, account) {
-    if (this._cache[ address ]) return null
-    const dao = this.getPollEmitterDAO(address)
+  subscribeToPoll (address, account, web3, history) {
+    if (this._cache[address]) {
+      return null
+    }
+
+    const dao = this.getPollEmitterDAO(address, web3, history)
 
     return Promise.all([
       dao.watchVoted((result) => {
@@ -63,7 +84,6 @@ class VotingService extends EventEmitter {
       }),
     ])
   }
-
 }
 
 export default new VotingService()

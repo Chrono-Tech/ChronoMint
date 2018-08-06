@@ -9,7 +9,7 @@ import { SPINNING_WHEEL } from 'assets'
 import PropTypes from 'prop-types'
 import './Button.scss'
 
-export const BUTTON_TYPE_PENDING = 'pending'
+const BUTTON_TYPE_PENDING = 'pending'
 
 export default class Button extends PureComponent {
   static propTypes = {
@@ -52,9 +52,6 @@ export default class Button extends PureComponent {
   handleTouchTap = (e) => {
     if (this.props.disabled) {
       return
-    }
-    if (typeof this.props.onClick === 'function') {
-      return this.props.onClick(e)
     }
     if (typeof this.props.onClick === 'function') {
       return this.props.onClick(e)

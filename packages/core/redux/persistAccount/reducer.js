@@ -5,8 +5,7 @@
 
 import { persistReducer, REHYDRATE } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
-import * as a from './actions'
-import { removeWallet } from './utils'
+import * as a from './constants'
 
 const persistConfig = {
   key: 'account',
@@ -19,6 +18,7 @@ const initialState = {
   selectedWallet: null,
   decryptedWallet: null,
   rehydrated: false,
+  customNetworksList: [],
 }
 
 const persistAccount = (state = initialState, action) => {
@@ -56,10 +56,25 @@ const persistAccount = (state = initialState, action) => {
         walletsList: action.walletsList,
       }
 
-    case a.WALLETS_REMOVE :
+    case a.CUSTOM_NETWORKS_LIST_ADD :
       return {
         ...state,
-        walletsList: removeWallet(state.walletsList, action.name),
+        customNetworksList: [
+          ...state.customNetworksList,
+          action.network,
+        ],
+      }
+
+    case a.CUSTOM_NETWORKS_LIST_UPDATE :
+      return {
+        ...state,
+        customNetworksList: action.list,
+      }
+
+    case a.CUSTOM_NETWORKS_LIST_RESET :
+      return {
+        ...state,
+        customNetworksList: [],
       }
 
     default:

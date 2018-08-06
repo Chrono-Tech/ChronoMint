@@ -27,11 +27,15 @@ export default class NemMiddlewareNode extends NemAbstractNode {
         this._openSubscription(`${this._socket.channels.balance}.${address}`, (data) => {
           this.trace('Address Balance', data)
           const { balance, mosaics } = data
-          this.emit('balance', new NemBalance({
-            address,
-            balance: readXemBalance(balance),
-            mosaics: readMosaicsBalances(mosaics),
-          }))
+          // eslint-disable-next-line
+          console.log('balance && mosaics', balance && mosaics)
+          if (balance && mosaics) {
+            this.emit('balance', new NemBalance({
+              address,
+              balance: readXemBalance(balance),
+              mosaics: readMosaicsBalances(mosaics),
+            }))
+          }
         })
         this._openSubscription(`${this._socket.channels.transaction}.${address}`, (data) => {
           this.trace('NEM Tx', data)
@@ -78,8 +82,8 @@ export default class NemMiddlewareNode extends NemAbstractNode {
       const { balance, mosaics } = data
       return new NemBalance({
         address,
-        balance: readXemBalance(balance),
-        mosaics: readMosaicsBalances(mosaics),
+        balance: balance && readXemBalance(balance),
+        mosaics: mosaics && readMosaicsBalances(mosaics),
       })
     } catch (e) {
       this.trace(`NemMiddlewareNode getAddressInfo ${address} failed`, e)

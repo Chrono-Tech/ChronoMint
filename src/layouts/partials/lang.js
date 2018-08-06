@@ -18,6 +18,7 @@ import WalletsContent from 'layouts/partials/WalletsContent/lang'
 import WalletContent from 'layouts/partials/WalletContent/lang'
 import AddWalletContent from 'layouts/partials/AddWalletContent/lang'
 import PollContent from 'layouts/partials/PollContent/lang'
+import VoteHistoryContent from 'layouts/partials/VoteHistoryContent/lang'
 
 export default {
   en: {
@@ -36,5 +37,6 @@ export default {
     WalletsContent: WalletsContent.en,
     AddWalletContent: AddWalletContent.en,
     PollContent: PollContent.en,
+    VoteHistoryContent: VoteHistoryContent.en,
   },
 }

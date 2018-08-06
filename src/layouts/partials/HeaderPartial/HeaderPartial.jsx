@@ -10,9 +10,11 @@ import Immutable from 'immutable'
 import { Button, TopButtons } from 'components'
 import { sidesPush } from 'redux/sides/actions'
 import { pendingTransactionsSelector } from '@chronobank/core/redux/mainWallet/selectors/tokens'
-import { DUCK_WATCHER } from '@chronobank/core/redux/watcher/actions'
+import { DUCK_WATCHER } from '@chronobank/core/redux/watcher/constants'
+import { ethereumPendingCountSelector } from '@chronobank/core/redux/ethereum/selectors'
 
-import NotificationContent, { NOTIFICATION_PANEL_KEY } from 'layouts/partials/NotificationContent/NotificationContent'
+import NotificationContent from 'layouts/partials/NotificationContent/NotificationContent'
+import { NOTIFICATION_PANEL_KEY } from 'redux/sides/constants'
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 
 import './HeaderPartial.scss'
@@ -22,6 +24,7 @@ function mapStateToProps (state) {
 
   return {
     ethPendingTransactions: pendingTxs,
+    ethereumPendingTxCount: ethereumPendingCountSelector()(state),
     btcPendingTransactions: pendingTransactionsSelector()(state),
   }
 }
@@ -33,7 +36,12 @@ function mapDispatchToProps (dispatch) {
         component: NotificationContent,
         panelKey: NOTIFICATION_PANEL_KEY,
         isOpened: true,
-        direction: 'right',
+        className: 'notifications',
+        drawerProps: {
+          variant: 'temporary',
+          anchor: 'right',
+          width: 300,
+        },
       }))
     },
   }
@@ -43,6 +51,7 @@ function mapDispatchToProps (dispatch) {
 export default class HeaderPartial extends Component {
   static propTypes = {
     handleNotificationTap: PropTypes.func,
+    ethereumPendingTxCount: PropTypes.number,
     btcPendingTransactions: PropTypes.arrayOf(PropTypes.object),
     ethPendingTransactions: PropTypes.instanceOf(Immutable.Map),
     location: PropTypes.shape({
@@ -57,7 +66,11 @@ export default class HeaderPartial extends Component {
   }
 
   getNotificationButtonClass = () => {
-    return this.props.btcPendingTransactions.length || this.props.ethPendingTransactions.size > 0 ? 'pending' : 'raised'
+    return this.props.btcPendingTransactions.length
+    || this.props.ethPendingTransactions.size > 0
+    || this.props.ethereumPendingTxCount > 0
+      ? 'pending'
+      : 'raised'
   }
 
   render () {

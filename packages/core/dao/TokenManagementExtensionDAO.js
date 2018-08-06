@@ -4,21 +4,39 @@
  */
 
 import TokenModel from '../models/tokens/TokenModel'
-import { MultiEventsHistoryABI, TokenManagementInterfaceABI } from './abi'
-import AbstractContractDAO from './AbstractContractDAO'
+import AbstractContractDAO from './AbstractContract3DAO'
+import web3Converter from '../utils/Web3Converter'
 
 export default class TokenManagementExtensionDAO extends AbstractContractDAO {
 
-  constructor (at = null) {
-    super(TokenManagementInterfaceABI, at, MultiEventsHistoryABI)
+  constructor ({ address, history, abi }) {
+    super({ address, history, abi })
+  }
+
+  connect (web3, options) {
+    super.connect(web3, options)
+
+    this.allEventsEmitter = this.history.events.allEvents({})
+      .on('data', this.handleEventsData)
+      .on('changed', this.handleEventsChanged)
+      .on('error', this.handleEventsError)
+  }
+
+  handleEventsData = (data) => {
+    if (!data.event) {
+      return
+    }
+
+    console.log('TokenManagementExtensionDAO handleEventsData: ', data.event, data)
+    this.emit(data.event, data)
   }
 
   async createAssetWithFee (token: TokenModel) {
     const fee = token.fee()
-    const tx = await this._tx(
+    const tx = this._tx(
       'createAssetWithFee',
       [
-        token.symbol(),
+        this.web3.utils.fromAscii(token.symbol()),
         token.symbol(),
         token.name(),
         token.addDecimals(token.totalSupply()),
@@ -26,27 +44,29 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
         token.isReissuable().value(),
         token.feeAddress(),
         fee.fee() * 100,
-        token.icon() ? this._c.ipfsHashToBytes32(token.icon()) : '',
+        token.icon() ? web3Converter.ipfsHashToBytes32(token.icon()) : this.web3.utils.fromAscii(''),
       ],
-      token,
     )
-    return tx.tx
+
+    return tx
   }
 
   async createAssetWithoutFee (token: TokenModel) {
-    const tx = await this._tx(
+    const tx = this._tx(
       'createAssetWithoutFee',
       [
-        token.symbol(),
+        this.web3.utils.fromAscii(token.symbol()),
         token.symbol(),
         token.name(),
         token.addDecimals(token.totalSupply()),
-        token.decimals(),
+        +token.decimals(),
         token.isReissuable().value(),
-        token.icon() ? this._c.ipfsHashToBytes32(token.icon()) : '',
+        token.icon() ? web3Converter.ipfsHashToBytes32(token.icon()) : this.web3.utils.fromAscii(''),
       ],
-      token,
     )
-    return tx.tx
+
+    console.log('createAssetWithoutFee Tx: ', tx)
+
+    return tx
   }
 }

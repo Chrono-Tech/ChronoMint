@@ -4,7 +4,7 @@
  */
 
 import classnames from 'classnames'
-import { CircularProgress } from 'material-ui'
+import { CircularProgress } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -20,7 +20,6 @@ class FileItem extends PureComponent {
   static propTypes = {
     file: PropTypes.instanceOf(FileModel),
     onRemove: PropTypes.func.isRequired,
-    handleDownload: PropTypes.func,
   }
 
   renderErrors () {

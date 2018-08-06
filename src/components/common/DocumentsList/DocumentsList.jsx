@@ -27,7 +27,7 @@ export default class DocumentsList extends PureComponent {
   render () {
     const documents = this.props.documents
       ? this.props.documents.toArray()
-      : null
+      : []
 
     return (
       <div styleName='root'>

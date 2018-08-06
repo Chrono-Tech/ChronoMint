@@ -6,10 +6,11 @@
 import { ModalDialog } from 'components'
 import {
   BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_LITECOIN,
-} from '@chronobank/login/network/BitcoinProvider'
-import SendTokensForm, { ACTION_APPROVE, ACTION_TRANSFER, FORM_SEND_TOKENS, MODE_ADVANCED, MODE_SIMPLE } from 'components/dashboard/SendTokens/SendTokensForm'
+  BLOCKCHAIN_ETHEREUM,
+} from '@chronobank/core/dao/constants'
 import Amount from '@chronobank/core/models/Amount'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
@@ -18,20 +19,33 @@ import web3Converter from '@chronobank/core/utils/Web3Converter'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { change, untouch } from 'redux-form'
-import { mainApprove, mainTransfer } from '@chronobank/core/redux/mainWallet/actions'
+import { mainApprove, mainTransfer } from '@chronobank/core/redux/wallets/actions'
 import { multisigTransfer } from '@chronobank/core/redux/multisigWallet/actions'
-import { DUCK_TOKENS, estimateGas } from '@chronobank/core/redux/tokens/actions'
-import MainWalletModel from '@chronobank/core/models/wallet/MainWalletModel'
-import MultisigWalletModel from '@chronobank/core/models/wallet/MultisigWalletModel'
-import DerivedWalletModel from '@chronobank/core/models/wallet/DerivedWalletModel'
-import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
+import { estimateGasTransfer } from '@chronobank/core/redux/tokens/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
+import WalletModel from '@chronobank/core/models/wallet/WalletModel'
+import { MultisigEthWalletModel } from '@chronobank/core/models'
+import {
+  ACTION_APPROVE,
+  ACTION_TRANSFER,
+  FORM_SEND_TOKENS,
+  MODE_ADVANCED,
+  MODE_SIMPLE,
+} from 'components/constants'
+import SendTokensForm from './SendTokensForm'
+
+function mapStateToProps (state) {
+  return {
+    tokens: state.get(DUCK_TOKENS),
+  }
+}
 
 function mapDispatchToProps (dispatch) {
   return {
     multisigTransfer: (wallet, token, amount, recipient, feeMultiplier) => dispatch(multisigTransfer(wallet, token, amount, recipient, feeMultiplier)),
     mainApprove: (token, amount, spender, feeMultiplier) => dispatch(mainApprove(token, amount, spender, feeMultiplier)),
     mainTransfer: (wallet, token, amount, recipient, feeMultiplier, advancedModeParams) => dispatch(mainTransfer(wallet, token, amount, recipient, feeMultiplier, advancedModeParams)),
-    estimateGas: (tokenId, params, callback, gasPriceMultiplier) => dispatch(estimateGas(tokenId, params, callback, gasPriceMultiplier)),
+    estimateGas: (tokenId, params, callback, gasPriceMultiplier) => dispatch(estimateGasTransfer(tokenId, params, callback, gasPriceMultiplier)),
     resetForm: () => {
       dispatch(change(FORM_SEND_TOKENS, 'recipient', ''))
       dispatch(change(FORM_SEND_TOKENS, 'amount', ''))
@@ -40,20 +54,10 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-function mapStateToProps (state) {
-  return {
-    tokens: state.get(DUCK_TOKENS),
-  }
-}
-
 @connect(mapStateToProps, mapDispatchToProps)
 export default class SendTokens extends PureComponent {
   static propTypes = {
-    wallet: PropTypes.oneOfType([
-      PropTypes.instanceOf(MainWalletModel),
-      PropTypes.instanceOf(MultisigWalletModel),
-      PropTypes.instanceOf(DerivedWalletModel),
-    ]),
+    wallet: PropTypes.oneOfType([PropTypes.instanceOf(WalletModel), PropTypes.instanceOf(MultisigEthWalletModel)]),
     isModal: PropTypes.bool,
     mainApprove: PropTypes.func,
     mainTransfer: PropTypes.func,
@@ -96,10 +100,10 @@ export default class SendTokens extends PureComponent {
 
     switch (action) {
       case ACTION_APPROVE:
-        !wallet.isMultisig() && this.props.mainApprove(token, value, recipient, feeMultiplier)
+        !wallet.isMultisig && this.props.mainApprove(token, value, recipient, feeMultiplier)
         break
       case ACTION_TRANSFER:
-        wallet.isMultisig()
+        wallet.isMultisig
           ? this.props.multisigTransfer(wallet, token, value, recipient, feeMultiplier, advancedModeParams)
           : this.props.mainTransfer(wallet, token, value, recipient, feeMultiplier, advancedModeParams)
     }
@@ -134,8 +138,7 @@ export default class SendTokens extends PureComponent {
             onSubmit={this.handleSubmit}
             onSubmitSuccess={this.handleSubmitSuccess}
             token={this.props.token}
-            blockchain={this.props.blockchain}
-            address={this.props.address}
+            wallet={this.props.wallet}
           />
         </ModalDialog>
       )
@@ -147,8 +150,7 @@ export default class SendTokens extends PureComponent {
         onSubmit={this.handleSubmit}
         onSubmitSuccess={this.handleSubmitSuccess}
         token={this.props.token}
-        blockchain={this.props.blockchain}
-        address={this.props.address}
+        wallet={this.props.wallet}
       />
     )
   }

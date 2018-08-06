@@ -3,11 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import networkService from './NetworkService'
+import networkService from '@chronobank/login/network/NetworkService'
+import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
+import web3Factory from '@chronobank/core/web3/index'
 import AbstractProvider from './AbstractProvider'
 import EthereumEngine from './EthereumEngine'
 import selectEthereumNode from './EthereumNode'
-import web3Provider from './Web3Provider'
+import { getNetworkById } from './settings'
 
 export class EthereumProvider extends AbstractProvider {
   constructor () {
@@ -55,8 +57,46 @@ export class EthereumProvider extends AbstractProvider {
     return node.getTransactionsList(address, this._id, skip, offset)
   }
 
-  getPrivateKey () {
-    return this._engine ? this._engine.getPrivateKey() : null
+  getProviderSettings = () => {
+    const state = this._store.getState()
+
+    const { customNetworksList } = state.get('persistAccount')
+    const { selectedNetworkId, selectedProviderId, isLocal } = state.get('network')
+    const network = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
+
+    const { protocol, host } = network
+
+    if (!host) {
+
+      const customNetwork: AccountCustomNetwork = customNetworksList.find((network) => network.id === selectedNetworkId)
+
+      return {
+        network: customNetwork,
+        url: customNetwork && customNetwork.url,
+      }
+    }
+
+    return {
+      network,
+      url: protocol ? `${protocol}://${host}` : `//${host}`,
+    }
+  }
+
+  getPrivateKey (address) {
+    if (address) {
+      let pk = null
+      this._engine
+        // eslint-disable-next-line no-underscore-dangle
+        ? this._engine._engine.wallets.map((wallet) => {
+          if (wallet.getAddressString() === address) {
+            pk = wallet.privKey
+          }
+        })
+        : null
+      return pk
+    } else {
+      return this._engine ? this._engine.getPrivateKey() : null
+    }
   }
 
   getPublicKey () {
@@ -83,6 +123,7 @@ export class EthereumProvider extends AbstractProvider {
   }
 
   getWallet () {
+    // eslint-disable-next-line no-underscore-dangle
     return this._engine ? this._engine._wallet : null
   }
 
@@ -91,13 +132,13 @@ export class EthereumProvider extends AbstractProvider {
   }
 
   addNewEthWallet (num_addresses) {
-    const { network, url } = networkService.getProviderSettings()
+    const { network, url } = this.getProviderSettings()
     const wallet = this.getWallet()
     const newEngine = new EthereumEngine(wallet, network, url, null, num_addresses)
 
     this.setEngine(newEngine, ethereumProvider.getNemEngine())
 
-    web3Provider.pushWallet(num_addresses)
+    // web3Provider.pushWallet(num_addresses)
   }
 
   get2FAEncodedKey (callback) {
@@ -118,6 +159,27 @@ export class EthereumProvider extends AbstractProvider {
   checkConfirm2FAtx (txAddress, callback) {
     const node = this._selectNode(this._engine)
     return node.checkConfirm2FAtx(txAddress, callback)
+  }
+
+  getEngine () {
+    return this._engine
+  }
+
+  async transfer (rawTx, from) {
+    const engine = this.getEngine()
+    const { signedTx, walletType } = engine.signTx(rawTx, from)
+    if (walletType === 'memory' || walletType === 'plugin') {
+      this.sendSignedTransaction(signedTx)
+    }
+  }
+
+  sendSignedTransaction (signedTx) {
+    const currentNetworkId = networkService.getCurrentNetwork()
+    const currentProviderId = networkService.getCurrentProvider()
+    const network = getNetworkById(currentNetworkId, currentProviderId)
+    const web3 = web3Factory(network)
+    const serializedTx = signedTx.serialize().toString('hex')
+    web3.eth.sendSignedTransaction('0x' + serializedTx)
   }
 }
 

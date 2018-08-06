@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { DUCK_VOTING } from '../actions'
+import { DUCK_VOTING } from '../constants'
 
 /**
  * SIMPLE SELECTORS

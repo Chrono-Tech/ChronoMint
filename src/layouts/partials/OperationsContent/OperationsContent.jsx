@@ -4,7 +4,7 @@
  */
 
 import { Operations } from 'components'
-import { Paper } from 'material-ui'
+import { Paper } from '@material-ui/core'
 import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
 

@@ -4,63 +4,57 @@
  */
 
 import { Button, IPFSImage } from 'components'
-import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
+import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LITECOIN, ETH } from '@chronobank/core/dao/constants'
 import { TOKEN_ICONS } from 'assets'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import contractsManagerDAO from '@chronobank/core/dao/ContractsManagerDAO'
-import MainWalletModel from '@chronobank/core/models/wallet/MainWalletModel'
-import MultisigWalletModel from '@chronobank/core/models/wallet/MultisigWalletModel'
-import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
-import { TX_TRANSFER } from '@chronobank/core/dao/ERC20DAO'
+import { TX_TRANSFER } from '@chronobank/core/dao/constants/ERC20DAO'
 import web3Converter from '@chronobank/core/utils/Web3Converter'
 import Amount from '@chronobank/core/models/Amount'
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
 import * as validators from '@chronobank/core/models/validator'
-import { CircularProgress, MenuItem, MuiThemeProvider, Paper } from 'material-ui'
+import { CircularProgress, MenuItem, MuiThemeProvider, Paper } from '@material-ui/core'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import PropTypes from 'prop-types'
-import { integerWithDelimiter } from '@chronobank/core-dependencies/utils/formatter'
+import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { SelectField, Slider, TextField } from 'redux-form-material-ui'
+import { TextField } from 'redux-form-material-ui'
+import Select from 'redux-form-material-ui/es/Select'
+import Slider from 'components/common/Slider'
 import { change, Field, formPropTypes, formValueSelector, getFormSyncErrors, getFormValues, reduxForm } from 'redux-form/immutable'
-import { ETH, FEE_RATE_MULTIPLIER, getSpendersAllowance } from '@chronobank/core/redux/mainWallet/actions'
-import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
+import { getSpendersAllowance } from '@chronobank/core/redux/mainWallet/actions'
+import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
-import { walletDetailSelector, walletInfoSelector } from '@chronobank/core/redux/wallet/selectors'
-import { DUCK_TOKENS, estimateBtcFee, estimateGas } from '@chronobank/core/redux/tokens/actions'
+import { walletInfoSelector } from '@chronobank/core/redux/wallet/selectors/selectors'
+import { estimateBtcFee, estimateGasTransfer } from '@chronobank/core/redux/tokens/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import { isBTCLikeBlockchain } from '@chronobank/core/redux/tokens/selectors'
-import DerivedWalletModel from '@chronobank/core/models/wallet/DerivedWalletModel'
 import inversedTheme from 'styles/themes/inversed'
 import { getMarket } from '@chronobank/core/redux/market/selectors'
-import styles from '../styles'
+import { MultisigEthWalletModel } from '@chronobank/core/models'
+import { integerWithDelimiter } from '@chronobank/core-dependencies/utils/formatter'
+import { ACTION_APPROVE, ACTION_TRANSFER, FORM_SEND_TOKENS, MODE_ADVANCED, MODE_SIMPLE } from 'components/constants'
 import { prefix } from './lang'
 import './SendTokensForm.scss'
 import validate from './validate'
 
-export const FORM_SEND_TOKENS = 'FormSendTokens'
-
-export const MODE_SIMPLE = 'simple'
-export const MODE_ADVANCED = 'advanced'
-
-export const ACTION_TRANSFER = 'action/transfer'
-export const ACTION_APPROVE = 'action/approve'
-
 function mapDispatchToProps (dispatch) {
   return {
-    estimateGas: (tokenId, params, callback, gasPriceMultiplier, address) => dispatch(estimateGas(tokenId, params, callback, gasPriceMultiplier, address)),
+    estimateGas: (tokenId, params, callback, gasPriceMultiplier, address) => dispatch(estimateGasTransfer(tokenId, params, callback, gasPriceMultiplier, address)),
     estimateFee: (params, callback) => dispatch(estimateBtcFee(params, callback)),
   }
 }
 
 function mapStateToProps (state, ownProps) {
 
+  //region selectors
+  const walletInfo = walletInfoSelector(ownProps.wallet, true, state)
   const { selectedCurrency } = getMarket(state)
-  const wallet = walletDetailSelector(ownProps.blockchain, ownProps.address)(state)
-  const walletInfo = walletInfoSelector(wallet, ownProps.blockchain, ownProps.address, true, state)
   const selector = formValueSelector(FORM_SEND_TOKENS)
   const formValues = getFormValues(FORM_SEND_TOKENS)
   const symbol = selector(state, 'symbol')
@@ -76,10 +70,10 @@ function mapStateToProps (state, ownProps) {
   const formErrors = getFormSyncErrors(FORM_SEND_TOKENS)(state)
   const token = state.get(DUCK_TOKENS).item(tokenId)
   const isMultiToken = walletInfo.tokens.length > 1
+  //endregion
 
   return {
     selectedCurrency,
-    wallet,
     tokens: state.get(DUCK_TOKENS),
     account: state.get(DUCK_SESSION).account,
     amount,
@@ -105,14 +99,8 @@ function mapStateToProps (state, ownProps) {
 export default class SendTokensForm extends PureComponent {
   static propTypes = {
     selectedCurrency: PropTypes.string,
-    blockchain: PropTypes.string.isRequired,
-    address: PropTypes.string.isRequired,
     account: PropTypes.string,
-    wallet: PropTypes.oneOfType([
-      PropTypes.instanceOf(MainWalletModel),
-      PropTypes.instanceOf(MultisigWalletModel),
-      PropTypes.instanceOf(DerivedWalletModel),
-    ]),
+    wallet: PropTypes.oneOfType([PropTypes.instanceOf(WalletModel), PropTypes.instanceOf(MultisigEthWalletModel)]),
     recipient: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
     tokenInfo: PropTypes.shape({
@@ -130,7 +118,7 @@ export default class SendTokensForm extends PureComponent {
     onTransfer: PropTypes.func,
     onApprove: PropTypes.func,
     gasPriceMultiplier: PropTypes.number,
-    formErrors: PropTypes.object,
+    formErrors: PropTypes.shape(PropTypes.any),
     ...formPropTypes,
   }
 
@@ -161,8 +149,10 @@ export default class SendTokensForm extends PureComponent {
       const { token, recipient, amount, feeMultiplier, wallet } = newProps
       try {
         const value = new Amount(token.addDecimals(amount), newProps.symbol)
-        this.handleEstimateGas(token.symbol(), [recipient, value, TX_TRANSFER], feeMultiplier, wallet.address())
+        this.handleEstimateGas(token.symbol(), [recipient, value, TX_TRANSFER], feeMultiplier, wallet.address)
       } catch (error) {
+        // eslint-disable-next-line
+        console.error(error)
       }
     }
 
@@ -179,6 +169,8 @@ export default class SendTokensForm extends PureComponent {
           newProps.token.blockchain(),
         )
       } catch (error) {
+        // eslint-disable-next-line
+        console.error(error)
       }
     }
 
@@ -458,24 +450,18 @@ export default class SendTokensForm extends PureComponent {
                 ? <Preloader />
                 : (
                   <Field
-                    component={SelectField}
+                    component={Select}
                     name='symbol'
-                    fullWidth
-                    {...styles}
+                    styleName='symbolSelector'
+                    menu-symbol='symbolSelectorMenu'
                   >
                     {walletInfo.tokens
                       .map((tokenData) => {
                         const token: TokenModel = this.props.tokens.item(tokenData.symbol)
                         if (token.isLocked()) {
-                          return
+                          return null
                         }
-                        return (
-                          <MenuItem
-                            key={token.id()}
-                            value={token.id()}
-                            primaryText={token.symbol()}
-                          />
-                        )
+                        return (<MenuItem key={token.id()} value={token.id()}>{token.symbol()} </MenuItem>)
                       })}
                   </Field>
                 )
@@ -491,7 +477,7 @@ export default class SendTokensForm extends PureComponent {
           </div>
           <div styleName='wallet-value'>
             <span styleName='wallet-value'>
-              {wallet.addresses().item(token.blockchain()).address()}
+              {wallet.address}
             </span>
           </div>
         </div>
@@ -512,7 +498,7 @@ export default class SendTokensForm extends PureComponent {
 
   renderBody () {
     const { invalid, mode, pristine, token, handleSubmit, feeMultiplier, wallet } = this.props
-    const isTimeLocked = wallet.isTimeLocked()
+    const isTimeLocked = wallet.isTimeLocked
 
     return (
       <div styleName='form-container'>
@@ -520,7 +506,7 @@ export default class SendTokensForm extends PureComponent {
           <Field
             component={TextField}
             name='recipient'
-            floatingLabelText={<Translate value={`${prefix}.recipientAddress`} />}
+            label={<Translate value={`${prefix}.recipientAddress`} />}
             fullWidth
           />
           <Field
@@ -532,7 +518,7 @@ export default class SendTokensForm extends PureComponent {
           <Field
             component={TextField}
             name='amount'
-            floatingLabelText={<Translate value={`${prefix}.amount`} />}
+            label={<Translate value={`${prefix}.amount`} />}
             fullWidth
           />
         </div>
@@ -546,9 +532,9 @@ export default class SendTokensForm extends PureComponent {
 
               <Field
                 component={Slider}
-                sliderStyle={{ marginBottom: 0, marginTop: 5 }}
                 name='feeMultiplier'
                 {...FEE_RATE_MULTIPLIER}
+                toFixed={1}
               />
             </div>
           </div>
@@ -559,7 +545,7 @@ export default class SendTokensForm extends PureComponent {
               <Field
                 component={TextField}
                 name='satPerByte'
-                floatingLabelText={<Translate value='wallet.satPerByte' />}
+                label={<Translate value='wallet.satPerByte' />}
                 fullWidth
               />
             </div>
@@ -571,7 +557,7 @@ export default class SendTokensForm extends PureComponent {
               <Field
                 component={TextField}
                 name='gweiPerGas'
-                floatingLabelText={<Translate value='wallet.gweiPerGas' />}
+                label={<Translate value='wallet.gweiPerGas' />}
                 fullWidth
               />
             </div>
@@ -579,7 +565,7 @@ export default class SendTokensForm extends PureComponent {
               <Field
                 component={TextField}
                 name='gasLimit'
-                floatingLabelText={<Translate value='wallet.gasLimit' />}
+                label={<Translate value='wallet.gasLimit' />}
                 fullWidth
               />
             </div>
@@ -614,7 +600,7 @@ export default class SendTokensForm extends PureComponent {
         {/*<Field*/}
         {/*component={TextField}*/}
         {/*name='TemplateName'*/}
-        {/*floatingLabelText={<Translate value={'wallet.templateName'} />}*/}
+        {/*label={<Translate value={'wallet.templateName'} />}*/}
         {/*fullWidth*/}
         {/*/>*/}
         {/*</div>*/}

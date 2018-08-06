@@ -11,19 +11,20 @@ import { Translate } from 'react-redux-i18n'
 import { Checkbox, TextField } from 'redux-form-material-ui'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { goToWallets } from '@chronobank/core/redux/mainWallet/actions'
-import { confirm2FASecret, get2FAEncodedKey, MULTISIG_2_FA_CONFIRMED } from '@chronobank/core/redux/multisigWallet/actions'
+import { confirm2FASecret, get2FAEncodedKey } from '@chronobank/core/redux/multisigWallet/actions'
+import { ETH_MULTISIG_2_FA_CONFIRMED } from '@chronobank/core/redux/multisigWallet/constants'
 import PropTypes from 'prop-types'
 import TWO_FA_LOGO_PNG from 'assets/img/2fa/2-fa.png'
 import APPSTORE_SVG from 'assets/img/appstore.svg'
 import PLAY_SVG from 'assets/img/play.svg'
 import WidgetContainer from 'components/WidgetContainer/WidgetContainer'
 import Preloader from 'components/common/Preloader/Preloader'
-import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
+import { FORM_2FA_ENABLE } from 'components/constants'
 import { prefix } from './lang'
 import validate from './validate'
 import './TwoFaEnableForm.scss'
 
-export const FORM_2FA_ENABLE = 'Form2FAEnable'
 const STEPS = [
   'downloadStep',
   'enableStep',
@@ -58,7 +59,7 @@ function mapDispatchToProps (dispatch) {
     confirm2FASecret: (account, confirmToken, callback) => {
       dispatch(confirm2FASecret(account, confirmToken, callback))
     },
-    handleSetTwoFAConfirmed: (twoFAConfirmed) => dispatch({ type: MULTISIG_2_FA_CONFIRMED, twoFAConfirmed }),
+    handleSetTwoFAConfirmed: (twoFAConfirmed) => dispatch({ type: ETH_MULTISIG_2_FA_CONFIRMED, twoFAConfirmed }),
     handleGoToWallets: () => dispatch(goToWallets()),
   }
 }
@@ -169,7 +170,7 @@ export default class TwoFaEnableForm extends PureComponent {
                 <Field
                   component={TextField}
                   name='confirmToken'
-                  floatingLabelText={<Translate value={`${prefix}.authCode`} />}
+                  label={<Translate value={`${prefix}.authCode`} />}
                 />
                 {success === false && <div styleName='wrongCode'><Translate value={`${prefix}.confirmCodeWrong`} /></div>}
               </div>

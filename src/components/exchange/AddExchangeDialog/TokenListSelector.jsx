@@ -6,7 +6,7 @@
 import iconTokenDefaultSVG from 'assets/img/avaToken.svg'
 import classnames from 'classnames'
 import { Button, IPFSImage } from 'components'
-import { MenuItem, TextField } from 'material-ui'
+import { MenuItem, TextField } from '@material-ui/core'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import PropTypes from 'prop-types'
@@ -103,7 +103,7 @@ export default class TokenListSelector extends PureComponent {
             name='token'
             styleName='tokenMobileSelector'
             floatingLabelFixed
-            floatingLabelText={<Translate value={prefix('chooseToken')} />}
+            label={<Translate value={prefix('chooseToken')} />}
             input={this.props.input}
             meta={this.props.meta}
           >

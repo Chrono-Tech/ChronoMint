@@ -5,11 +5,11 @@
 
 import ExchangeModel from '../../models/exchange/ExchangeModel'
 import ExchangesCollection from '../../models/exchange/ExchangesCollection'
-import * as a from './actions'
+import * as a from './constants'
 
 export const initialState = new ExchangeModel()
 
-const reducer = (state = initialState, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
     case a.EXCHANGE_INIT:
       return state.isInited(action.isInited)
@@ -59,5 +59,3 @@ const reducer = (state = initialState, action) => {
       return state
   }
 }
-
-export default reducer

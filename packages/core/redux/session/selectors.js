@@ -4,4 +4,10 @@
  */
 
 export { getAccount, getProfile, getGasSliderCollection } from './selectors/models'
-export { getGasPriceMultiplier, getAddressesList, getBlockchainAddressesList, isCBE } from './selectors/session'
+export {
+  getGasPriceMultiplier,
+  getAddressesList,
+  getBlockchainAddressesList,
+  isCBE,
+  getAccountProfileSummary,
+} from './selectors/session'

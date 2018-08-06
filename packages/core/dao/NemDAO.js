@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { TXS_PER_PAGE } from '../models/wallet/TransactionsCollection'
 import BigNumber from 'bignumber.js'
 import EventEmitter from 'events'
 import TokenModel from '../models/tokens/TokenModel'
@@ -11,12 +10,19 @@ import TxModel from '../models/TxModel'
 import TransferExecModel from '../models/TransferExecModel'
 import Amount from '../models/Amount'
 import { nemAddress } from '../models/validator'
-import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from './AbstractTokenDAO'
 
-export const BLOCKCHAIN_NEM = 'NEM'
-export const NEM_XEM_SYMBOL = 'XEM'
-export const NEM_XEM_NAME = 'XEM'
-export const NEM_DECIMALS = 6
+//#region CONSTANTS
+
+import {
+  BLOCKCHAIN_NEM,
+  EVENT_NEW_TRANSFER,
+  EVENT_UPDATE_BALANCE,
+} from './constants'
+import {
+  NEM_XEM_SYMBOL,
+} from './constants/NemDAO'
+
+//#endregion CONSTANTS
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
@@ -75,19 +81,22 @@ export default class NemDAO extends EventEmitter {
   }
 
   async getAccountBalances () {
-    const { confirmed, unconfirmed, vested } = await this._nemProvider.getAccountBalances(this._namespace)
-    return {
-      confirmed,
-      unconfirmed: unconfirmed != null
-        ? unconfirmed
-        : confirmed,
-      vested,
+    const balance = await this._nemProvider.getAccountBalances(this._namespace)
+    if (balance) {
+      const { confirmed, unconfirmed, vested } = balance
+      return {
+        confirmed,
+        unconfirmed: unconfirmed != null
+          ? unconfirmed
+          : confirmed,
+        vested,
+      }
     }
   }
 
   async getAccountBalance () {
-    const { unconfirmed } = await this.getAccountBalances()
-    return unconfirmed
+    const balance = await this.getAccountBalances()
+    return balance ? balance.unconfirmed : null
   }
 
   accept (transfer: TransferExecModel) {

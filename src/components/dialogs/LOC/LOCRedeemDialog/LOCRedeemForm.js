@@ -14,7 +14,7 @@ import validate from './validate'
 
 import './LOCRedeemForm.scss'
 
-export const LOC_REDEEM_FORM_NAME = 'LOCRedeemForm'
+const LOC_REDEEM_FORM_NAME = 'LOCRedeemForm'
 
 const onSubmit = (values) => +values.get('amount')
 
@@ -42,7 +42,7 @@ class LOCRedeemForm extends PureComponent {
           component={TextField}
           name='amount'
           type='number'
-          floatingLabelText={<Translate value='locs.forms.amountToBeS' action={actionToken} />}
+          label={<Translate value='locs.forms.amountToBeS' action={actionToken} />}
         />
 
         <div styleName='footer'>

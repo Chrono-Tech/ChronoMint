@@ -18,6 +18,7 @@ import AddWalletPage from './AddWalletPage'
 import DepositPage from './DepositPage'
 import TwoFAPage from './TwoFAPage'
 import NewPollPage from './NewPollPage'
+import VoteHistoryPage from './VoteHistoryPage'
 
 export {
   ExchangePage,
@@ -35,6 +36,7 @@ export {
   AddWalletPage,
   TwoFAPage,
   NewPollPage,
+  VoteHistoryPage,
 }
 
 export default {
@@ -53,4 +55,5 @@ export default {
   AddWalletPage,
   TwoFAPage,
   NewPollPage,
+  VoteHistoryPage,
 }

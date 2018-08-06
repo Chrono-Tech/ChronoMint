@@ -5,7 +5,7 @@
 
 import { Button } from 'components'
 import Immutable from 'immutable'
-import { CircularProgress, FlatButton, FontIcon } from 'material-ui'
+import { CircularProgress } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -14,7 +14,7 @@ import { connect } from 'react-redux'
 import { confirmOperation, listOperations, loadMoreCompletedOperations, revokeOperation, setupOperationsSettings } from '@chronobank/core/redux/operations/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import OperationsSettingsDialog from 'components/dialogs/OperationsSettingsDialog'
-import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
+import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import Value from 'components/common/Value/Value'
 import './Operations.scss'
 

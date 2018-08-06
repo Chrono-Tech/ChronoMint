@@ -6,7 +6,7 @@
 import classnames from 'classnames'
 import { Button, TxConfirmations } from 'components'
 import { getBlockExplorerUrl } from '@chronobank/login/network/settings'
-import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import Moment from 'components/common/Moment/index'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import moment from 'moment'
@@ -14,13 +14,12 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { DUCK_I18N } from 'redux/i18n/actions'
+import { DUCK_I18N } from 'redux/i18n/constants'
 import Preloader from 'components/common/Preloader/Preloader'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
-import TransactionsCollection from '@chronobank/core/models/wallet/TransactionsCollection'
-import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import './TransactionsTable.scss'
 import { prefix } from './lang'
 
@@ -41,7 +40,7 @@ export default class TransactionsTable extends PureComponent {
   static propTypes = {
     blockchain: PropTypes.string,
     walletAddress: PropTypes.string,
-    transactions: PropTypes.instanceOf(TransactionsCollection),
+    transactions: PropTypes.instanceOf(Array),
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
     locale: PropTypes.string,
@@ -88,9 +87,9 @@ export default class TransactionsTable extends PureComponent {
 
   render () {
     const { transactions, locale } = this.props
-    const size = transactions.size()
-    const endOfList = transactions.endOfList()
-    const isFetching = transactions.isFetching()
+    const size = transactions.length
+    const endOfList = false //transactions.endOfList() //TODO
+    const isFetching = false //transactions.isFetching() //TODO
     const data = buildTableData(transactions, locale)
 
     return (
@@ -151,7 +150,6 @@ export default class TransactionsTable extends PureComponent {
 function buildTableData (transactions, locale) {
   moment.locale(locale)
   const groups = transactions
-    .items()
     .filter((tx) => tx.value().gt(0))
     .reduce((data, trx) => {
       const groupBy = trx.date('YYYY-MM-DD')

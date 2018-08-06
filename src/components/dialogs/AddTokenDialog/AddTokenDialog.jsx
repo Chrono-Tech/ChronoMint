@@ -5,7 +5,6 @@
 
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
-import { FlatButton } from 'material-ui'
 import Button from 'components/common/ui/Button/Button'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
@@ -14,19 +13,18 @@ import { connect } from 'react-redux'
 import { ACCEPT_IMAGES } from '@chronobank/core/models/FileSelect/FileExtension'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { addToken, formTokenLoadMetaData } from '@chronobank/core/redux/settings/erc20/tokens/actions'
-import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { modalsClose } from 'redux/modals/actions'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import TokenIcon from 'components/common/HashedIcon/TokenIcon'
 import ProfileModel from '@chronobank/core/models/ProfileModel'
+import { FORM_ADD_TOKEN_DIALOG } from 'components/constants'
 import ModalDialog from '../ModalDialog'
 import validate, { normalizeSmallestUnit } from './validate'
 
 import './AddTokenDialog.scss'
-
-export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
 
 const asyncValidate = (values, dispatch, props) => {
   try {
@@ -113,39 +111,39 @@ export default class AddTokenDialog extends PureComponent {
               component={TextField}
               name='address'
               fullWidth
-              floatingLabelText={<Translate value={prefix('tokenContractAddress')} />}
+              label={<Translate value={prefix('tokenContractAddress')} />}
             />
             <Field
               component={TextField}
               name='name'
               fullWidth
-              floatingLabelText={<Translate value={prefix('tokenName')} />}
+              label={<Translate value={prefix('tokenName')} />}
             />
             <Field
               component={TextField}
               name='symbol'
               fullWidth
-              floatingLabelText={<Translate value={prefix('tokenSymbol')} />}
+              label={<Translate value={prefix('tokenSymbol')} />}
             />
             <Field
               component={TextField}
               name='decimals'
               fullWidth
-              floatingLabelText={<Translate value={prefix('decimalsPlacesOfSmallestUnit')} />}
+              label={<Translate value={prefix('decimalsPlacesOfSmallestUnit')} />}
               normalize={normalizeSmallestUnit}
             />
             <Field
               component={TextField}
               name='url'
               fullWidth
-              floatingLabelText={<Translate value={prefix('projectURL')} />}
+              label={<Translate value={prefix('projectURL')} />}
             />
             <Field
               component={FileSelect}
               name='icon'
               fullWidth
               label='wallet.selectTokenIcon'
-              floatingLabelText='Token icon'
+              label='Token icon'
               accept={ACCEPT_IMAGES}
             />
           </div>

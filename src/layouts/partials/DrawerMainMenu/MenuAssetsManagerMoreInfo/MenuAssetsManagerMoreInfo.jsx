@@ -13,13 +13,11 @@ import { Translate } from 'react-redux-i18n'
 import iconSvg from 'assets/img/icons/portfolio-white.svg'
 import { getUserTokens } from '@chronobank/core/redux/assetsManager/selectors'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
-import { IconButton } from 'material-ui'
+import { IconButton } from '@material-ui/core'
 import { IPFSImage } from 'components'
-import { SIDES_TOGGLE_MAIN_MENU } from 'redux/sides/actions'
+import { SIDES_TOGGLE_MAIN_MENU } from 'redux/sides/constants'
 import './MenuAssetsManagerMoreInfo.scss'
 import { prefix } from './lang'
-
-export const MENU_ASSETS_MANAGER_PANEL_KEY = 'menuAssetsManagerPanelKey'
 
 function mapStateToProps (state, ownProps) {
   return {

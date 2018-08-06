@@ -4,15 +4,27 @@
  */
 
 import { FeeInterfaceABI } from './abi'
-import AbstractContractDAO from './AbstractContractDAO'
+import AbstractContractDAO from './AbstractContract3DAO'
 
 export default class FeeInterfaceDAO extends AbstractContractDAO {
-  constructor (at = null) {
-    super(FeeInterfaceABI, at)
+  constructor (address, history) {
+    super({ address, history, abi: FeeInterfaceABI })
+  }
+
+  connect (web3, options) {
+    super.connect(web3, options)
+  }
+
+  disconnect () {
+    if (this.isConnected) {
+      this.allEventsEmitter.removeAllListeners()
+      this.contract = null
+      this.history = null
+      this.web3 = null
+    }
   }
 
   getFeePercent () {
-    return this._call('feePercent')
+    return this.contract.methods.feePercent().call()
   }
-
 }

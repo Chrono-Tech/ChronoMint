@@ -24,17 +24,17 @@ Enzyme.configure({ adapter: new Adapter() })
 // we need enough time to test contract watch functionality
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000
 
+// @todo Check tests using new Web3
 const web3 = new Web3()
-
 web3provider.reinit(web3, new web3.providers.HttpProvider('http://localhost:8545'))
 web3provider.resolve()
 export const accounts = web3.eth.accounts
 
-AbstractContractDAO.setup(accounts[ 0 ], [ resultCodes.OK, true ], resultCodes)
+AbstractContractDAO.setup(accounts[0], [resultCodes.OK, true], resultCodes)
 
 const reverter = new Reverter(web3provider.getWeb3instance())
 
-export const mockStore = configureMockStore([ thunk ])
+export const mockStore = configureMockStore([thunk])
 export let store = null
 
 beforeAll((done) => {
@@ -53,7 +53,7 @@ afterAll((done) => {
 
 beforeEach(() => {
   // NOTE: session is always as CBE
-  ls.createSession(accounts[ 0 ], LOCAL_ID, LOCAL_ID)
+  ls.createSession(accounts[0], LOCAL_ID, LOCAL_ID)
   store = mockStore()
   networkService.connectStore(store)
 })

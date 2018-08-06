@@ -6,7 +6,7 @@
 import ErrorList from '@chronobank/core-dependencies/ErrorList'
 import * as validator from '@chronobank/core/models/validator'
 import tokenService from '@chronobank/core/services/TokenService'
-import { MODE_ADVANCED } from './SendTokensForm'
+import { MODE_ADVANCED } from 'components/constants'
 
 export default (values, props) => {
   const { token, wallet, tokenInfo } = props
@@ -57,7 +57,7 @@ export default (values, props) => {
     recipient: new ErrorList()
       .add(validator.required(recipient))
       .add(addressValidator(recipient, true, token.blockchain()))
-      .add(recipient === wallet.address() ? 'errors.cantSentToYourself' : null)
+      .add(recipient === wallet.address ? 'errors.cantSentToYourself' : null)
       .getErrors(),
     amount: amountErrors.getErrors(),
     satPerByte: satPerByteErrors.getErrors(),

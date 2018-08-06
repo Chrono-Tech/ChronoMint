@@ -9,12 +9,13 @@ import type AbstractFetchingModel from '../../models/AbstractFetchingModel'
 import OperationModel from '../../models/OperationModel'
 import OperationNoticeModel from '../../models/notices/OperationNoticeModel'
 import { notify } from '../notifier/actions'
-
-export const OPERATIONS_FETCH = 'operations/FETCH'
-export const OPERATIONS_LIST = 'operations/LIST'
-export const OPERATIONS_SET = 'operations/SET'
-export const OPERATIONS_SIGNS_REQUIRED = 'operations/SIGNS_REQUIRED'
-export const OPERATIONS_ADMIN_COUNT = 'operations/ADMIN_COUNT'
+import {
+  OPERATIONS_ADMIN_COUNT,
+  OPERATIONS_FETCH,
+  OPERATIONS_LIST,
+  OPERATIONS_SET,
+  OPERATIONS_SIGNS_REQUIRED,
+} from './constants'
 
 const setOperation = (operation: OperationModel) => ({ type: OPERATIONS_SET, operation })
 const operationsFetch = () => ({ type: OPERATIONS_FETCH })

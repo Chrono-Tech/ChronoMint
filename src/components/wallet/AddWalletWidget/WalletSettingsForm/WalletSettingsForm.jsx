@@ -15,10 +15,9 @@ import { setMultisigWalletName } from '@chronobank/core/redux/multisigWallet/act
 import { modalsClose } from 'redux/modals/actions'
 import { WALLET_SET_NAME } from '@chronobank/core/redux/mainWallet/actions'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
+import { FORM_WALLET_SETTINGS } from 'components/constants'
 import { prefix } from './lang'
 import './WalletSettingsForm.scss'
-
-export const FORM_WALLET_SETTINGS = 'WalletSettingsForm'
 
 function mapStateToProps (state, ownProps) {
   return {
@@ -65,7 +64,7 @@ export default class WalletSettingsForm extends PureComponent {
                 component={TextField}
                 name='name'
                 fullWidth
-                floatingLabelText={<Translate value={`${prefix}.name`} />}
+                label={<Translate value={`${prefix}.name`} />}
               />
             </div>
           </div>

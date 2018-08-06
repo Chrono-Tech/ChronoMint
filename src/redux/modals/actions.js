@@ -3,12 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export const MODALS_PUSH = 'modals/PUSH'
-export const MODALS_REPLACE = 'modals/REPLACE'
-export const MODALS_POP = 'modals/POP'
-export const MODALS_CLEAR = 'modals/CLEAR'
-
-export const DUCK_MODALS = 'modals'
+import ConfirmTxDialog from '../../components/dialogs/ConfirmTxDialog/ConfirmTxDialog'
+import {
+  MODALS_PUSH,
+  MODALS_REPLACE,
+  MODALS_POP,
+  MODALS_CLEAR,
+} from './constants'
 
 export const modalsPush = ({ component, props }) => (dispatch) => dispatch({ type: MODALS_PUSH, component, props })
 
@@ -21,3 +22,5 @@ export const modalsClear = () => (dispatch) => dispatch({ type: MODALS_CLEAR })
 export const modalsClose = modalsPop
 export const modalsOpen = modalsPush
 export const modalsShow = modalsPush
+
+export const modalsOpenConfirmDialog = ({ props }) => (dispatch) => dispatch({ type: MODALS_PUSH, component: ConfirmTxDialog, props })

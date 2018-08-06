@@ -3,11 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { FontIcon, IconButton } from 'material-ui'
+import { IconButton } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
+import { openBrandPartial } from 'redux/ui/actions'
 import Rates from 'components/common/Rates/index'
 import styles from '../styles'
 
@@ -19,6 +19,10 @@ export default class BrandPartial extends PureComponent {
     handleChangeLocale: PropTypes.func,
     toggleBrandPartial: PropTypes.func,
     open: PropTypes.bool,
+  }
+
+  handleToggle () {
+    this.props.toggleBrandPartial(!this.props.open)
   }
 
   render () {
@@ -44,15 +48,11 @@ export default class BrandPartial extends PureComponent {
             iconStyle={styles.brand.toggle.iconStyle}
             onClick={() => this.handleToggle()}
           >
-            <FontIcon className='material-icons'>{open ? 'arrow_upward' : 'arrow_downward'}</FontIcon>
+            <i className='material-icons'>{open ? 'arrow_upward' : 'arrow_downward'}</i>
           </IconButton>
         </div>
       </div>
     )
-  }
-
-  handleToggle () {
-    this.props.toggleBrandPartial(!this.props.open)
   }
 }
 
@@ -64,7 +64,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    toggleBrandPartial: (open) => dispatch({ type: OPEN_BRAND_PARTIAL, payload: { open } }),
+    toggleBrandPartial: (open) => dispatch(openBrandPartial(open)),
   }
 }
 

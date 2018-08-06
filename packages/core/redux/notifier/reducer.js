@@ -4,7 +4,7 @@
  */
 
 import Immutable from 'immutable'
-import * as a from './actions'
+import * as a from './constants'
 
 const initialState = {
   notice: null,

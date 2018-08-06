@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Menu, MenuItem, Popover } from 'material-ui'
+import { Menu, MenuItem, Popover } from '@material-ui/core'
 import Amount from '@chronobank/core/models/Amount'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import PropTypes from 'prop-types'
@@ -11,7 +11,7 @@ import React, { PureComponent } from 'react'
 import { PTPoll } from '@chronobank/core/redux/voting/types'
 import { Translate } from 'react-redux-i18n'
 import { prefix } from './lang'
-import './PollActionMenu.scss'
+import styles from './PollActionMenu.scss'
 
 export default class PollActionMenu extends PureComponent {
   static propTypes = {
@@ -67,42 +67,51 @@ export default class PollActionMenu extends PureComponent {
         <button styleName='menuButton' onClick={this.handleClick}>
           <i styleName='icon' className='chronobank-icon'>more</i>
         </button>
-
         <Popover
           open={this.state.open}
           anchorEl={this.state.anchorEl}
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-          onRequestClose={this.handleRequestClose}
+          onClose={this.handleRequestClose}
         >
-          <Menu styleName='menuDropDown'>
+          <Menu
+            classes={{
+              paper: styles.menuDropDown,
+            }}
+            anchorEl={this.state.anchorEl}
+            styleName='menuDropDown'
+            open={this.state.open}
+            onClose={this.handleRequestClose}
+          >
             {showRemove
               ? (
                 <MenuItem
-                  primaryText={<Translate value={`${prefix}.remove`} />}
                   disabled={poll.isFetching}
                   onClick={this.handleItemClick(this.props.handlePollRemove)}
-                />
+                >
+                  <Translate value={`${prefix}.remove`} />
+                </MenuItem>
               )
               : null
             }
             {showEnd
               ? (
                 <MenuItem
-                  primaryText={<Translate value={`${prefix}.endPoll`} />}
                   disabled={poll.isFetching}
                   onClick={this.handleItemClick(this.props.handlePollEnd)}
-                />
+                >
+                  <Translate value={`${prefix}.endPoll`} />
+                </MenuItem>
               )
               : null
             }
             {showActivate
               ? (
                 <MenuItem
-                  primaryText={<Translate value={`${prefix}.activate`} />}
                   disabled={poll.isFetching}
                   onClick={this.handleItemClick(this.props.handlePollActivate)}
-                />
+                >
+                  <Translate value={`${prefix}.activate`} />
+                </MenuItem>
               )
               : null
             }

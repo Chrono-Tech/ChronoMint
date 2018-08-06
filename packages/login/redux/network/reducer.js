@@ -4,7 +4,7 @@
  */
 
 import { getNetworksByProvider, providerMap } from '../../network/settings'
-import * as actions from './actions'
+import * as actions from './constants'
 
 const initialState = {
   isLoading: false,
@@ -22,8 +22,8 @@ const initialState = {
     providerMap.giveth,
   ],
   priority: [
-    providerMap.chronoBank.id,
     providerMap.infura.id,
+    providerMap.chronoBank.id,
     providerMap.mew.id,
     providerMap.giveth.id,
   ],
@@ -38,12 +38,13 @@ const initialState = {
   isLoginSubmitting: false,
   accountRecoveryMode: false,
   walletFileImportMode: false,
+  walletFileImportObject: null,
   accountSignaturesLoading: false,
   accountSignaturesData: null,
   accountSignaturesError: null,
-  profileSignature: null,
 }
 
+// eslint-disable-next-line complexity
 export default (state = initialState, action) => {
   switch (action.type) {
     case actions.NETWORK_LOADING:
@@ -62,7 +63,15 @@ export default (state = initialState, action) => {
         isMetamask: true,
       }
     case actions.NETWORK_SET_NETWORK:
-      return { ...state, selectedNetworkId: action.selectedNetworkId }
+      return {
+        ...state,
+        selectedNetworkId: action.selectedNetworkId,
+      }
+    case actions.NETWORK_RESET_NETWORK:
+      return {
+        ...state,
+        selectedNetworkId:  null,
+      }
     case actions.NETWORK_SET_PROVIDER:
       return {
         ...state,
@@ -167,12 +176,17 @@ export default (state = initialState, action) => {
         ...state,
         loadingAccountSignatures: false,
       }
-    case actions.NETWORK_SET_PROFILE_SIGNATURE:
+
+    case actions.NETWORK_SET_WALLET_FILE_IMPORTED:
       return {
         ...state,
-        profileSignature: action.signature,
+        walletFileImportObject: action.wallet,
       }
-
+    case actions.NETWORK_RESET_WALLET_FILE_IMPORTED:
+      return {
+        ...state,
+        walletFileImportObject: null,
+      }
     default:
       return state
   }

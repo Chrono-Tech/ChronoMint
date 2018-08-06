@@ -105,7 +105,7 @@
 .balance {
   margin-top: 20px;
   padding-left: 30px;
-  padding-bottom: 50px;
+  padding-bottom: 30px;
   text-shadow: $text-shadow-title;
 
   .label {
@@ -378,4 +378,15 @@
   font-size: 14px;
   margin-top: 8px;
   text-align: right;
+}
+
+.symbolSelector {
+  width: 50% !important;
+  margin: 0 30px;
+}
+
+:global {
+  #menu-symbol {
+    z-index: 9999;
+  }
 }

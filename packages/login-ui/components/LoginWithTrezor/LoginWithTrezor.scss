@@ -4,9 +4,76 @@
  */
 
 @import "~styles/partials/variables";
+@import "~styles/partials/mixins";
 
-.root {
-  margin-top: 24px;
+.state {
+  background: #b45a55; 
+  color: white;
+  padding: 30px;
+}
+
+.actions {
+  text-align: center;
+  margin-bottom: 45px;
+  color: #fff;
+  line-height: 30px;
+}
+
+.link {
+  color: $border-color;
+  margin:  0 auto 45px;
+  text-decoration: none;
+  font: 700 16px $font-proxima;
+
+  &:hover {
+    color: #FFB54E;
+  }
+
+  @include md-only {
+    margin: 0 0 10px;
+  }
+}
+
+.title {
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.subtitle {
+}
+
+.list {
+ width: 380px;
+ margin: 0;
+}
+
+.form {
+  margin:0 auto;
+  width: 380px;
+
+  @include xs-only {
+    width: 100%;
+    padding: 0 20px;
+  }
+}
+
+.page-title {
+  color: $color-white;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 42px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.description {
+  font-weight: 400;
+  color: $color-description;
+  font-size: 16px;
+  line-height: 22px;
+  margin-bottom: 10px;
+  text-align: center;
+  max-width: 520px;
 }
 
 .states {
@@ -41,28 +108,9 @@
   flex-grow: 1;
 }
 
-.title {
-}
-
-.subtitle {
-  opacity: 0.6;
-}
-
-.actions {
-  margin-top: 24px;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.action {
-  width: 50%;
-  display: flex;
-  justify-content: flex-end;
-}
-
 .account {
-  background-color: rgba($color-white, 0.1);
-  padding: 16px;
+  background-color: white;
+  padding: 0px;
   margin-top: 24px;
   border-radius: $border-radius;
 }

@@ -8,13 +8,6 @@ import { Icons } from '@chronobank/core-dependencies/icons'
 import type PollDetailsModel from '../PollDetailsModel'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
-export const IS_CREATED = 'isCreated'
-export const IS_ACTIVATED = 'isActivated'
-export const IS_ENDED = 'isEnded'
-export const IS_UPDATED = 'isUpdated'
-export const IS_REMOVED = 'isRemoved'
-export const IS_VOTED = 'isVoted'
-
 export default class PollNoticeModel extends abstractNoticeModel({
   pollId: null,
   poll: null,

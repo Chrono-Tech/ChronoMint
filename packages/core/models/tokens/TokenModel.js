@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import OwnerCollection from '../wallet/OwnerCollection'
 import BigNumber from 'bignumber.js'
+import OwnerCollection from '../wallet/OwnerCollection'
 import type AbstractTokenDAO from '../../dao/AbstractTokenDAO'
 import type ERC20DAO from '../../dao/ERC20DAO'
 import Amount from '../Amount'

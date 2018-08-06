@@ -4,32 +4,9 @@
  */
 
 import { createSelector } from 'reselect'
-import { filteredBalancesAndTokens, tokensCountBalanceSelector } from './balances'
+import { tokensCountBalanceSelector } from './balances'
 
-export const multisigTokensAndAmountsSelector = (address: string, symbol: string) => createSelector(
-  [
-    filteredBalancesAndTokens(address, symbol),
-  ],
-  (
-    balancesInfo,
-  ) => {
-
-    return balancesInfo
-      .map((info) => {
-        const symbol = info.balance.symbol()
-        return {
-          [symbol]: info.token.removeDecimals(info.balance.amount()).toNumber(),
-        }
-      })
-      .sort((a, b) => {
-        const oA = Object.keys(a)[0]
-        const oB = Object.keys(b)[0]
-        return (oA > oB) - (oA < oB)
-      })
-      .toArray()
-  },
-)
-
+// eslint-disable-next-line import/prefer-default-export
 export const multisigTokensCountSelector = (address: string) => createSelector(
   [
     tokensCountBalanceSelector(address),

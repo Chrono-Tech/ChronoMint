@@ -3,22 +3,21 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export const SIDES_PUSH = 'sides/PUSH'
-export const SIDES_POP = 'sides/POP'
-export const SIDES_CLEAR = 'sides/CLEAR'
-export const SIDES_TOGGLE = 'sides/TOGGLE'
-export const SIDES_CLOSE_ALL = 'sides/CLOSE_ALL'
-export const SIDES_TOGGLE_MAIN_MENU = 'sides/TOGGLE_MAIN_MENU'
+import {
+  SIDES_CLEAR,
+  SIDES_CLOSE_ALL,
+  SIDES_POP,
+  SIDES_PUSH,
+} from './constants'
 
-export const DUCK_SIDES = 'sides'
-
-export const sidesPush = ({ component, panelKey, isOpened, componentProps, direction, drawerProps, preCloseAction }) => (dispatch) => dispatch({
+export const sidesPush = ({ component, panelKey, isOpened, className, componentProps, anchor, drawerProps, preCloseAction }) => (dispatch) => dispatch({
   type: SIDES_PUSH,
   component,
   panelKey,
+  className,
   isOpened,
   componentProps,
-  direction,
+  anchor,
   drawerProps,
   preCloseAction,
 })
@@ -26,6 +25,7 @@ export const sidesPush = ({ component, panelKey, isOpened, componentProps, direc
 export const sidesPop = (key) => (dispatch) => dispatch({ type: SIDES_POP, key })
 
 export const sidesClear = () => (dispatch) => dispatch({ type: SIDES_CLEAR })
+export const sidesCloseAll = () => (dispatch) => dispatch({ type: SIDES_CLOSE_ALL })
 
 export const sidesClose = sidesPop
 export const sidesOpen = sidesPush

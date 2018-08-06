@@ -26,6 +26,7 @@ import TwoFAContent from './TwoFAContent/TwoFAContent'
 import PersistWrapper from './PersistWrapper/PersistWrapper'
 import NewPollContent from './NewPollContent/NewPollContent'
 import PollContent from './PollContent/PollContent'
+import VoteHistoryContent from './VoteHistoryContent/VoteHistoryContent'
 
 export {
   HeaderPartial,
@@ -51,6 +52,7 @@ export {
   PersistWrapper,
   NewPollContent,
   PollContent,
+  VoteHistoryContent,
 }
 
 export default {
@@ -77,4 +79,5 @@ export default {
   PersistWrapper,
   NewPollContent,
   PollContent,
+  VoteHistoryContent,
 }

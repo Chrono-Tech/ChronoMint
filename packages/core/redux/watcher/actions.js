@@ -4,8 +4,9 @@
  */
 
 import { watchInitMonitor } from '@chronobank/login/redux/monitor/actions'
-import { showConfirmTxModal, watchInitUserMonitor } from '../ui/actions'
-import AbstractContractDAO, { TX_FRONTEND_ERROR_CODES } from '../../dao/AbstractContractDAO'
+import { showConfirmTxModal, watchInitUserMonitor } from '@chronobank/core-dependencies/redux/ui/actions'
+import AbstractContractDAO from '../../dao/AbstractContractDAO'
+import { TX_FRONTEND_ERROR_CODES } from '../../dao/constants'
 import TransactionErrorNoticeModel from '../../models/notices/TransactionErrorNoticeModel'
 import TxError from '../../models/TxError'
 import type TxExecModel from '../../models/TxExecModel'
@@ -15,21 +16,19 @@ import { initMainWallet } from '../mainWallet/actions'
 import { watchInitMarket } from '../market/actions'
 import { notify } from '../notifier/actions'
 import { watchInitOperations } from '../operations/actions'
-import { watchInitERC20Tokens } from '../settings/erc20/tokens/actions'
 import { watchInitCBE } from '../settings/user/cbe/actions'
 import { initTokens } from '../tokens/actions'
+import { initDAOs } from '../daos/actions'
 import { watchInitPolls } from '../voting/actions'
 import { watchInitProfile } from '../session/actions'
 import { initMultisigWalletManager } from '../multisigWallet/actions'
-
-export const DUCK_WATCHER = 'watcher'
-
-// next two actions represents start of the events watching
-export const WATCHER = 'watcher/USER'
-export const WATCHER_CBE = 'watcher/CBE'
-
-export const WATCHER_TX_SET = 'watcher/TX_SET'
-export const WATCHER_TX_END = 'watcher/TX_END'
+import { initWallets } from '../wallets/actions'
+import {
+  WATCHER_CBE,
+  WATCHER_TX_SET,
+  WATCHER_TX_END,
+  WATCHER,
+} from './constants'
 
 export const txHandlingFlow = () => (dispatch) => {
   AbstractContractDAO.txStart = async (tx: TxExecModel, estimateGas, localFeeMultiplier) => {
@@ -73,17 +72,20 @@ export const globalWatcher = () => async (dispatch) => {
 }
 
 // for all logged in users
-export const watcher = () => async (dispatch) => {
+export const watcher = ({ web3 }) => async (dispatch) => {
+  await dispatch(initDAOs({ web3 }))
   dispatch(initMultisigWalletManager())
   dispatch(watchInitProfile())
   dispatch(initTokens())
   dispatch(initMainWallet())
+  dispatch(initWallets())
   dispatch(watchPlatformManager())
   dispatch(watchInitTokens())
   dispatch(watchInitMonitor())
   dispatch(watchInitUserMonitor())
   dispatch(watchInitMarket())
-  dispatch(watchInitERC20Tokens())
+  // TODO @Abdulov fix it
+  // dispatch(watchInitERC20Tokens())
   dispatch(watchInitPolls())
   dispatch(txHandlingFlow())
   dispatch({ type: WATCHER })

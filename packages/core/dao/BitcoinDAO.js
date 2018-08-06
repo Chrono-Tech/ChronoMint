@@ -5,10 +5,6 @@
 
 import {
   bccProvider,
-  BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_LITECOIN,
   btcProvider,
   btgProvider,
   ltcProvider,
@@ -20,7 +16,21 @@ import TokenModel from '../models/tokens/TokenModel'
 import TxModel from '../models/TxModel'
 import TransferExecModel from '../models/TransferExecModel'
 import { bitcoinAddress } from '../models/validator'
-import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, EVENT_UPDATE_LAST_BLOCK, EVENT_UPDATE_TRANSACTION } from './AbstractTokenDAO'
+
+//#region CONSTANTS
+
+import {
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_LITECOIN,
+  EVENT_NEW_TRANSFER,
+  EVENT_UPDATE_BALANCE,
+  EVENT_UPDATE_LAST_BLOCK,
+  EVENT_UPDATE_TRANSACTION,
+} from './constants'
+
+//#endregion CONSTANTS
 
 const EVENT_TX = 'tx'
 const EVENT_TRANSACTION_MAINED = 'transaction'
@@ -34,6 +44,10 @@ export default class BitcoinDAO extends EventEmitter {
     this._symbol = symbol
     this._bitcoinProvider = bitcoinProvider
     this._decimals = 8
+  }
+
+  getBlockchain () {
+    return this._name
   }
 
   getAddressValidator () {
@@ -172,7 +186,7 @@ export default class BitcoinDAO extends EventEmitter {
           address,
           bitcoin,
           symbol,
-        }
+        },
       )
     })
   }

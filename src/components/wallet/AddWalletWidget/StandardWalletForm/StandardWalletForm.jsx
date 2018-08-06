@@ -5,17 +5,16 @@
 
 import Button from 'components/common/ui/Button/Button'
 import { Map } from 'immutable'
-import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
-import { createNewChildAddress, goToWallets, resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
+import { goToWallets, resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
+import { createNewChildAddress } from '@chronobank/core/redux/wallets/actions'
+import { FORM_CUSTOM_WALLET_ADD } from 'components/constants'
 import { prefix } from './lang'
 import './StandardWalletForm.scss'
-
-export const FORM_CUSTOM_WALLET_ADD = 'StandardWalletForm'
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -31,7 +30,6 @@ function mapDispatchToProps (dispatch) {
 @reduxForm({ form: FORM_CUSTOM_WALLET_ADD })
 export default class StandardWalletForm extends PureComponent {
   static propTypes = {
-    onCreateWallet: PropTypes.func,
     ...formPropTypes,
   }
 
@@ -46,7 +44,7 @@ export default class StandardWalletForm extends PureComponent {
               component={TextField}
               name='name'
               fullWidth
-              floatingLabelText={<Translate value={`${prefix}.name`} />}
+              label={<Translate value={`${prefix}.name`} />}
             />
           </div>
         </div>

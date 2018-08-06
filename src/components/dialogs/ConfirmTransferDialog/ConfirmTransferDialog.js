@@ -19,7 +19,8 @@ import NemDAO from '@chronobank/core/dao/NemDAO'
 import WavesDAO from '@chronobank/core/dao/WavesDAO'
 
 import { modalsClear, modalsClose } from 'redux/modals/actions'
-import { getMainWalletBalance, getWalletBalanceForSymbol } from '@chronobank/core/redux/wallet/selectors'
+import { getWalletBalanceForSymbol } from '@chronobank/core/redux/wallet/selectors'
+import { getWallet } from '@chronobank/core/redux/wallets/selectors/models'
 
 import Value from 'components/common/Value/Value'
 import TokenValue from 'components/common/TokenValue/TokenValue'
@@ -30,9 +31,10 @@ import './ConfirmTransferDialog.scss'
 
 const mapStateToProps = (state, ownProps) => {
   const { tx } = ownProps
+  const wallet = getWallet(`${tx.blockchain}-${tx.from}`)(state)
   return ({
     amountBalance: getWalletBalanceForSymbol(tx.from(), tx.amountToken().blockchain(), tx.amountToken().symbol())(state),
-    feeBalance: getMainWalletBalance(tx.feeToken().symbol())(state),
+    feeBalance: wallet.balances[tx.feeToken().symbol()],
   })
 }
 

@@ -15,25 +15,32 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { DatePicker, Slider, TextField, TimePicker } from 'redux-form-material-ui'
-import { DUCK_I18N } from 'redux/i18n/actions'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
+import { TextField } from 'redux-form-material-ui'
+import Slider from 'components/common/Slider'
+import DatePicker from 'components/common/DatePicker'
+import TimePicker from 'components/common/TimePicker'
+import { DUCK_I18N } from 'redux/i18n/constants'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
+import { daoByType } from '@chronobank/core/redux/daos/selectors'
+import VotingManagerDAO from '@chronobank/core/dao/VotingManagerDAO'
+import { TX_CREATE_POLL } from '@chronobank/core/dao/constants/VotingManagerDAO'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
+import { createPoll } from '@chronobank/core/redux/voting/actions'
+import { DUCK_VOTING } from '@chronobank/core/redux/voting/constants'
 import { modalsClose } from 'redux/modals/actions'
-import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
-import { createPoll, DUCK_VOTING, estimateGasForVoting } from '@chronobank/core/redux/voting/actions'
 import Amount from '@chronobank/core/models/Amount'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
-import { FEE_RATE_MULTIPLIER, TIME } from '@chronobank/core/redux/mainWallet/actions'
+import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
+import { TIME } from '@chronobank/core/dao/constants'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import PollDetailsModel from '@chronobank/core/models/PollDetailsModel'
 import FileModel from '@chronobank/core/models/FileSelect/FileModel'
+import { I18n } from '@chronobank/core-dependencies/i18n'
 import { Button } from 'components/index'
-import { TX_CREATE_POLL } from '@chronobank/core/dao/VotingManagerDAO'
+import { FORM_EDIT_POLL } from 'components/constants'
 import './PollEditForm.scss'
 import validate from './validate'
 import { prefix } from './lang'
-
-export const FORM_EDIT_POLL = 'FormEditPoll'
 
 const createDeadlineDate = (deadline, deadlineTime) => {
   if (!deadline || !deadlineTime) {
@@ -45,9 +52,11 @@ const createDeadlineDate = (deadline, deadlineTime) => {
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_EDIT_POLL)
   const formErrors = getFormSyncErrors(FORM_EDIT_POLL)(state)
+  const votingDao = daoByType('VotingManager')(state)
 
   return {
     formErrors,
+    votingDao,
     feeMultiplier: selector(state, 'feeMultiplier'),
     deadline: selector(state, 'deadline'),
     deadlineTime: selector(state, 'deadlineTime'),
@@ -85,7 +94,7 @@ function mapDispatchToProps (dispatch) {
         deadline,
         files: filesCollection && filesCollection.hash(),
         voteLimitInTIME: new Amount(limitInTIME, TIME),
-        options: new Immutable.List(values.get('options').toArray().filter((option) => option.length > 0)),
+        options: values.get('options').toArray().filter((option) => option.length > 0),
         owner: props.account,
       })
 
@@ -108,6 +117,7 @@ export default class PollEditForm extends Component {
   static propTypes = {
     isModify: PropTypes.bool,
     account: PropTypes.string,
+    votingDao: PropTypes.instanceOf(VotingManagerDAO),
     voteLimit: PropTypes.objectOf(BigNumber),
     timeToken: PropTypes.instanceOf(TokenModel),
     maxVoteLimitInTIME: PropTypes.instanceOf(BigNumber),
@@ -135,18 +145,20 @@ export default class PollEditForm extends Component {
   }
 
   handleGetGasPrice = (action: string, optionsSize: number, voteLimitInTIME, newDeadline: Date, feeMultiplier: number) => {
+    const { account } = this.props
 
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
-      estimateGasForVoting(
+      this.props.votingDao.estimateGasForVoting(
         action,
-        [action, [optionsSize, 'hashStub', new BigNumber(voteLimitInTIME), newDeadline.getTime()], new BigNumber(0)],
-        (error, { gasFee, gasPrice }) => {
+        [action, [optionsSize, 'hashStub', new BigNumber(voteLimitInTIME), newDeadline.getTime()], new BigNumber(0), account],
+        (error, result) => {
           if (!error) {
+            const { gasFee, gasPrice } = result
             this.setState({ gasFee, gasPrice })
           } else {
             // eslint-disable-next-line
-            console.error(error)
+            console.error('estimateGasPrice: ', error)
           }
         },
         feeMultiplier,
@@ -161,6 +173,7 @@ export default class PollEditForm extends Component {
   render () {
     const { isModify, handleSubmit, pristine, invalid, voteLimitInTIME, maxVoteLimitInPercent, options, feeMultiplier, formErrors } = this.props
     const limitInTIME = this.props.maxVoteLimitInTIME.div(100).mul(voteLimitInTIME || 1)
+
     return (
       <div styleName='root'>
         <div styleName='header'>
@@ -173,14 +186,15 @@ export default class PollEditForm extends Component {
                 component={TextField}
                 name='title'
                 fullWidth
-                floatingLabelText={<Translate value={`${prefix}.pollTitle`} />}
+                placeholder={I18n.t(`${prefix}.pollTitle`)}
               />
               <Field
                 component={TextField}
                 name='description'
                 fullWidth
-                multiLine
-                floatingLabelText={<Translate value={`${prefix}.pollDescription`} />}
+                multiline
+                rowsMax='4'
+                placeholder={I18n.t(`${prefix}.pollDescription`)}
               />
 
               <Field
@@ -206,7 +220,7 @@ export default class PollEditForm extends Component {
                     component={TextField}
                     name={`options[${i}]`}
                     fullWidth
-                    floatingLabelText={<Translate value={`${prefix}.option`} />}
+                    placeholder={I18n.t(`${prefix}.option`)}
                   />
                 </div>
               ))}
@@ -235,6 +249,7 @@ export default class PollEditForm extends Component {
                 <Field
                   component={Slider}
                   name='voteLimitInTIME'
+                  toFixed={1}
                   sliderStyle={{ marginBottom: 0, marginTop: 10 }}
                   min={1}
                   max={maxVoteLimitInPercent.toNumber() || 10}
@@ -256,22 +271,22 @@ export default class PollEditForm extends Component {
                 <Field
                   component={DatePicker}
                   locale={this.props.locale}
-                  DateTimeFormat={Intl.DateTimeFormat}
+                  dateTimeFormat={Intl.DateTimeFormat}
                   cancelLabel={<Translate value='materialUi.DatePicker.cancelLabel' />}
                   okLabel={<Translate value='materialUi.DatePicker.okLabel' />}
                   name='deadline'
                   fullWidth
-                  floatingLabelText={<Translate value={`${prefix}.finishedDate`} />}
+                  placeholder={I18n.t(`${prefix}.finishedDate`)}
                   style={{ width: '165px' }}
                 />
                 <Field
                   component={TimePicker}
                   format={(value) => value === '' ? null : value}
-                  cancelLabel={<Translate value='materialUi.DatePicker.cancelLabel' />}
+                  cancelLabel={I18n.t('materialUi.DatePicker.cancelLabel')}
                   okLabel={<Translate value='materialUi.DatePicker.okLabel' />}
                   name='deadlineTime'
                   fullWidth
-                  floatingLabelText={<Translate value={`${prefix}.finishedTime`} />}
+                  placeholder={I18n.t(`${prefix}.finishedTime`)}
                   style={{ width: '165px', marginLeft: '40px' }}
                 />
               </div>

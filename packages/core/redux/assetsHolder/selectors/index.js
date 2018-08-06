@@ -7,7 +7,7 @@ import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
 import { getAssetsHolderAssets } from './models'
 import Amount from '../../../models/Amount'
 import { getTokens } from '../../tokens/selectors'
-import { TIME } from '../../../dao/AssetHolderDAO'
+import { TIME } from '../../../dao/constants'
 
 export { getAssetsHolderAssets }
 

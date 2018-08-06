@@ -10,12 +10,16 @@ import Amount from '@chronobank/core/models/Amount'
 import AbstractProvider from './AbstractProvider'
 import { selectBCCNode, selectBTCNode, selectBTGNode, selectLTCNode } from './BitcoinNode'
 import { BitcoinTx, BitcoinBalance } from './BitcoinAbstractNode'
-import { COIN_TYPE_BTC_MAINNET, COIN_TYPE_BTC_TESTNET, COIN_TYPE_LTC_MAINNET, COIN_TYPE_LTC_TESTNET } from './mnemonicProvider'
-
-export const BLOCKCHAIN_BITCOIN = 'Bitcoin'
-export const BLOCKCHAIN_BITCOIN_CASH = 'Bitcoin Cash'
-export const BLOCKCHAIN_BITCOIN_GOLD = 'Bitcoin Gold'
-export const BLOCKCHAIN_LITECOIN = 'Litecoin'
+import {
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_LITECOIN,
+  COIN_TYPE_BTC_MAINNET,
+  COIN_TYPE_BTC_TESTNET,
+  COIN_TYPE_LTC_MAINNET,
+  COIN_TYPE_LTC_TESTNET,
+} from './constants'
 
 export class BitcoinProvider extends AbstractProvider {
   constructor (selectNode, id) {

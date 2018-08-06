@@ -3,9 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-// TODO @ipavlenko: Implement a DrawerStack if there will be more than 1 drower
-export const DRAWER_TOGGLE = 'drawer/TOGGLE'
-export const DRAWER_HIDE = 'drawer/HIDE'
+import {
+  DRAWER_HIDE,
+  DRAWER_TOGGLE,
+} from './constants'
 
 export const drawerToggle = () => (dispatch) => {
   dispatch({ type: DRAWER_TOGGLE })

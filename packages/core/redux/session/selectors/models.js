@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { DUCK_SESSION } from '../actions'
+import { DUCK_SESSION } from '../constants'
 
 export const getAccount = (state) => {
   const { account } = state.get(DUCK_SESSION)

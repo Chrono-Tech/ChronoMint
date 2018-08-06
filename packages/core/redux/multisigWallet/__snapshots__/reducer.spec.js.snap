@@ -1,16 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Multisig Wallet reducer should handle MULTISIG_FETCHING 1`] = `
+exports[`Multisig Wallet reducer should handle ETH_MULTISIG_FETCHING 1`] = `
 0
 
 `;
 
-exports[`Multisig Wallet reducer should handle MULTISIG_SELECT 1`] = `
+exports[`Multisig Wallet reducer should handle ETH_MULTISIG_SELECT 1`] = `
 null
 
 `;
 
-exports[`Multisig Wallet reducer should handle MULTISIG_UPDATE (update existing wallet) 1`] = `
+exports[`Multisig Wallet reducer should handle ETH_MULTISIG_UPDATE (update existing wallet) 1`] = `
 {
   "emptyModel": null,
   "id": null,

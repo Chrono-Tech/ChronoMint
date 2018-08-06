@@ -19,7 +19,8 @@ export const abstractFetchingCollection = (defaultValues) => class AbstractFetch
   }
 
   add (item) {
-    return this.list(this.list().set(item.id(), item))
+    const id = typeof item.id === 'function' ? item.id() : item.id
+    return this.list(this.list().set(id, item))
   }
 
   merge (items) {
@@ -70,7 +71,7 @@ export const abstractFetchingCollection = (defaultValues) => class AbstractFetch
 
   itemFetched (item) {
     const leftToFetch = Math.max(this.leftToFetch() - 1, 0)
-    return this.add(item.isFetching(false).isFetched(true)).leftToFetch(leftToFetch)
+    return this.add(item).leftToFetch(leftToFetch)
   }
 
   selected (id) {

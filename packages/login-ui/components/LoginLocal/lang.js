@@ -4,5 +4,5 @@
  */
 
 export const en = {
-  title: 'Select a TestRPC Address',
+  title: 'Select a Local node Address',
 }

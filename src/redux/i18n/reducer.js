@@ -4,7 +4,7 @@
  */
 
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
-import * as a from './actions'
+import * as a from './constants'
 
 const initialState = new TokensCollection()
 

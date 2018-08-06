@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { accounts } from 'src/specsInit'
-import { LOCAL_ID, LOCAL_PROVIDER_ID } from 'packages/login/network/settings'
+import { accounts } from 'specsInit'
+import { LOCAL_ID, LOCAL_PROVIDER_ID } from '@chronobank/login/network/settings'
 import ls from './LocalStorage'
 
 describe('LocalStorage', () => {

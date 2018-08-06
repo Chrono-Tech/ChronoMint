@@ -12,19 +12,15 @@ import networkService from '@chronobank/login/network/NetworkService'
 import React, { PureComponent } from 'react'
 import { logout } from '@chronobank/core/redux/session/actions'
 import { getBlockchainAddressesList } from '@chronobank/core/redux/session/selectors'
-import { FontIcon } from 'material-ui'
 import { modalsOpen } from 'redux/modals/actions'
 import { IPFSImage, UpdateProfileDialog } from 'components'
 import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
 import QRIcon from 'components/dashboard/MicroIcon/QRIcon'
 import PKIcon from 'components/dashboard/MicroIcon/PKIcon'
-
 import GasSlider from 'components/common/GasSlider/GasSlider'
 
 import './ProfileContent.scss'
 import { prefix } from './lang'
-
-export const PROFILE_SIDE_PANEL_KEY = 'ProfileSidePanelKey'
 
 function mapStateToProps (state) {
   const session = state.get('session')
@@ -76,7 +72,7 @@ class ProfileContent extends PureComponent {
       <div styleName='profile'>
 
         <div styleName='close-icon' onClick={this.handleProfileClose}>
-          <FontIcon color='white' className='material-icons'>clear</FontIcon>
+          <i className='chronobank-icon'>close</i>
         </div>
 
         <div styleName='network-name'>
@@ -92,12 +88,12 @@ class ProfileContent extends PureComponent {
                 styleName='avatar-icon-content'
                 multihash={this.props.profile.icon()}
                 icon={
-                  <FontIcon
-                    style={{ fontSize: 60, cursor: 'default' }}
+                  <i
+                    styleName='default-icon'
                     color='white'
                     className='material-icons'
                   >account_circle
-                  </FontIcon>
+                  </i>
                 }
               />
             </div>
@@ -109,10 +105,10 @@ class ProfileContent extends PureComponent {
           </div>
           <div styleName='account-info-icons'>
             <div styleName='account-info-setting' onClick={this.props.handleProfileEdit}>
-              <FontIcon color='white' className='material-icons'>settings</FontIcon>
+              <i className='material-icons'>settings</i>
             </div>
             <div styleName='account-info-setting' onClick={this.props.handleLogout}>
-              <FontIcon color='white' className='material-icons'>power_settings_new</FontIcon>
+              <i className='material-icons'>power_settings_new</i>
             </div>
           </div>
         </div>
@@ -147,7 +143,7 @@ class ProfileContent extends PureComponent {
                   <div styleName='address-token'>
                     <IPFSImage
                       styleName='address-token-icon'
-                      fallback={TOKEN_ICONS[ token.symbol ]}
+                      fallback={TOKEN_ICONS[token.symbol]}
                     />
                   </div>
                   <div styleName='address-token-info'>

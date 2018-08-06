@@ -6,17 +6,20 @@
 import { Button } from 'components'
 import { change, Field, formValueSelector, reduxForm } from 'redux-form/immutable'
 import Preloader from 'components/common/Preloader/Preloader'
-import { MenuItem } from 'material-ui'
+import { MenuItem } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React from 'react'
 import Immutable from 'immutable'
 import SwipeableViews from 'react-swipeable-views'
-import { SelectField, TextField } from 'redux-form-material-ui'
+import { TextField } from 'redux-form-material-ui'
+import Select from 'redux-form-material-ui/es/Select'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { modalsOpen } from 'redux/modals/actions'
-import { DUCK_EXCHANGE, search } from '@chronobank/core/redux/exchange/actions'
+import { search } from '@chronobank/core/redux/exchange/actions'
+import { DUCK_EXCHANGE } from '@chronobank/core/redux/exchange/constants'
 import AddExchangeDialog from 'components/exchange/AddExchangeDialog/AddExchangeDialog'
+import { FORM_EXCHANGE } from 'components/constants'
 import validate from './validate'
 
 import './ExchangeWidget.scss'
@@ -26,8 +29,6 @@ const MODES = [
   { index: 1, name: 'SELL', title: <Translate value={prefix('sell')} /> },
 ]
 
-export const FORM_EXCHANGE = 'ExchangeForm'
-
 const mapStateToProps = (state) => {
   const exchange = state.get(DUCK_EXCHANGE)
   const selector = formValueSelector(FORM_EXCHANGE)
@@ -36,7 +37,7 @@ const mapStateToProps = (state) => {
     isFetched: exchange.isFetched(),
     assetSymbols: exchange.assetSymbols(),
     filterMode: selector(state, 'filterMode'),
-    initialValues: new Immutable.Map({ filterMode: MODES[ 0 ] }),
+    initialValues: new Immutable.Map({ filterMode: MODES[0] }),
     showFilter: exchange.showFilter(),
   }
 }
@@ -75,7 +76,7 @@ export default class ExchangeWidget extends React.Component {
   }
 
   handleChangeMode (value) {
-    this.props.dispatch(change(FORM_EXCHANGE, 'filterMode', MODES[ value ]))
+    this.props.dispatch(change(FORM_EXCHANGE, 'filterMode', MODES[value]))
   }
 
   render () {
@@ -121,16 +122,16 @@ export default class ExchangeWidget extends React.Component {
                         disabled={!this.props.isFetched || this.props.isFetching || !this.props.showFilter}
                         name='amount'
                         fullWidth
-                        floatingLabelText={<Translate value={prefix('amount')} />}
+                        label={<Translate value={prefix('amount')} />}
                       />
                     </div>
                     <div styleName='item'>
                       <Field
                         name='token'
                         disabled={!this.props.isFetched || this.props.isFetching || !this.props.showFilter}
-                        component={SelectField}
+                        component={Select}
                         fullWidth
-                        floatingLabelText={<Translate value={prefix('token')} />}
+                        label={<Translate value={prefix('token')} />}
                       >
                         {
                           this.props.assetSymbols.length > 0

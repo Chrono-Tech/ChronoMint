@@ -5,40 +5,75 @@
 
 import TokenNoticeModel from '../models/notices/TokenNoticeModel'
 import TokenModel from '../models/tokens/TokenModel'
-import { ERC20ManagerABI } from './abi'
-import AbstractContractDAO from './AbstractContractDAO'
-import ethereumDAO, { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
+import AbstractContractDAO from './AbstractContract3DAO'
+import ethereumDAO from './EthereumDAO'
+import web3Converter from '../utils/Web3Converter'
 
-export const TX_ADD_TOKEN = 'addToken'
-export const TX_MODIFY_TOKEN = 'setToken'
-export const TX_REMOVE_TOKEN = 'removeTokenByAddress'
+//#region CONSTANTS
 
-export const EVENT_NEW_ERC20_TOKEN = 'erc20/newToken'
-export const EVENT_ERC20_TOKENS_COUNT = 'erc20/count'
+import {
+  BLOCKCHAIN_ETHEREUM,
+} from './constants'
+import {
+  EVENT_ERC20_TOKENS_COUNT,
+  EVENT_NEW_ERC20_TOKEN,
+  TX_ADD_TOKEN,
+  TX_MODIFY_TOKEN,
+  TX_REMOVE_TOKEN,
+} from './constants/ERC20ManagerDAO'
+
+//#endregion CONSTANTS
 
 export default class ERC20ManagerDAO extends AbstractContractDAO {
-  constructor (at = null) {
-    super(ERC20ManagerABI, at)
+  constructor ({ address, history, abi }) {
+    super({ address, history, abi })
   }
 
+  // watchAdd (callback) {
+  //   return this._watch('LogAddToken', this._watchCallback(callback))
+  // }
+  //
+  // watchModify (callback, account) {
+  //   return this._watch('LogTokenChange', this._watchCallback(callback, false, false), { from: account })
+  // }
+  //
+  // watchRemove (callback, account) {
+  //   return this._watch('LogRemoveToken', this._watchCallback(callback, true), { from: account })
+  // }
+
+  addWatchers = (callback) => {
+    // need to add filter for events { from: account } probably. Research about it
+    this.logsEmitter = this.contract.events.LogAddToken({})
+      .on('data', () => this._watchCallback(callback))
+      .on('changed', () => this._watchCallback(callback, false, false))
+      .on('error', () => this._watchCallback(callback, true))
+  }
+
+  /**
+   * Tokens fetching and emmit token
+   * @param tokenAddresses
+   * @returns {Promise<void>}
+   */
   async fetchTokens (tokenAddresses = []) {
-    const [addresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._call('getTokens', [tokenAddresses])
+    const res = await this.contract.methods.getTokens(tokenAddresses).call()
+    const [addresses, names, symbols, urls, decimalsArr, ipfsHashes] = Object.values(res)
+
     this.emit(EVENT_ERC20_TOKENS_COUNT, addresses.length)
     const feeRate = await ethereumDAO.getGasPrice()
 
     addresses.forEach((address, i) => {
-      const symbol = this._c.bytesToString(symbols[i]).toUpperCase()
+      const symbol = web3Converter.bytesToString(symbols[i]).toUpperCase()
       const model = new TokenModel({
-        address,
-        name: this._c.bytesToString(names[i]),
+        address: address.toLowerCase(),
+        name: web3Converter.bytesToString(names[i]),
         symbol,
-        url: this._c.bytesToString(urls[i]),
-        decimals: decimalsArr[i].toNumber(),
-        icon: this._c.bytes32ToIPFSHash(ipfsHashes[i]),
+        url: web3Converter.bytesToString(urls[i]),
+        decimals: parseInt(decimalsArr[i]),
+        icon: web3Converter.bytes32ToIPFSHash(ipfsHashes[i]),
         isFetched: true,
         blockchain: BLOCKCHAIN_ETHEREUM,
         isERC20: true,
-        feeRate: this._c.toWei(this._c.fromWei(feeRate), 'gwei'), // gas price in gwei
+        feeRate: web3Converter.toWei(web3Converter.fromWei(feeRate), 'gwei'), // gas price in gwei
       })
 
       this.emit(EVENT_NEW_ERC20_TOKEN, model)
@@ -61,7 +96,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       token.symbol(),
       token.url() || '',
       token.decimals(),
-      token.icon() ? this._c.ipfsHashToBytes32(token.icon()) : null,
+      token.icon() ? web3Converter.ipfsHashToBytes32(token.icon()) : null,
       '', // swarm hash
     ]
   }
@@ -103,15 +138,15 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
   /** @private */
   _watchCallback = (callback, isRemoved = false, isAdded = true) => async (result, block, time) => {
-    const symbol = this._c.bytesToString(result.args.symbol).toUpperCase()
+    const symbol = web3Converter.bytesToString(result.args.symbol).toUpperCase()
     callback(new TokenNoticeModel(
       new TokenModel({
         address: result.args.token,
-        name: this._c.bytesToString(result.args.name),
+        name: web3Converter.bytesToString(result.args.name),
         symbol,
-        url: this._c.bytesToString(result.args.url),
+        url: web3Converter.bytesToString(result.args.url),
         decimals: result.args.decimals.toNumber(),
-        icon: this._c.bytes32ToIPFSHash(result.args.ipfsHash),
+        icon: web3Converter.bytes32ToIPFSHash(result.args.ipfsHash),
         blockchain: BLOCKCHAIN_ETHEREUM,
         isERC20: true,
         isFetched: true,
@@ -120,15 +155,4 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     ))
   }
 
-  watchAdd (callback) {
-    return this._watch('LogAddToken', this._watchCallback(callback))
-  }
-
-  watchModify (callback, account) {
-    return this._watch('LogTokenChange', this._watchCallback(callback, false, false), { from: account })
-  }
-
-  watchRemove (callback, account) {
-    return this._watch('LogRemoveToken', this._watchCallback(callback, true), { from: account })
-  }
 }

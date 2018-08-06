@@ -4,40 +4,118 @@
  */
 
 import Immutable from 'immutable'
-import web3Converter from '../utils/Web3Converter'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import BigNumber from 'bignumber.js'
-import contractManager from './ContractsManagerDAO'
-import TxModel from '../models/TxModel'
 import { unionBy } from 'lodash'
+import TxModel from '../models/TxModel'
 import OwnerCollection from '../models/wallet/OwnerCollection'
 import OwnerModel from '../models/wallet/OwnerModel'
 import BlacklistModel from '../models/tokens/BlacklistModel'
-import { AssetsManagerABI, MultiEventsHistoryABI } from './abi'
-import AbstractContractDAO from './AbstractContractDAO'
-import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from './ChronoBankPlatformDAO'
-import { TX_PLATFORM_ATTACHED, TX_PLATFORM_DETACHED, TX_PLATFORM_REQUESTED } from './PlatformsManagerDAO'
-import { TX_PAUSED, TX_RESTRICTED, TX_UNPAUSED, TX_UNRESTRICTED } from './ChronoBankAssetDAO'
-import { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
+import AbstractContractDAO from './AbstractContract3DAO'
+import ChronoBankPlatformDAO from './ChronoBankPlatformDAO'
+import ChronoBankAssetDAO from './ChronoBankAssetDAO'
+import PlatformsManagerDAO from './PlatformsManagerDAO'
+import PlatformTokenExtensionGatewayManagerEmitterDAO from './PlatformTokenExtensionGatewayManagerEmitterDAO'
+import web3Converter from '../utils/Web3Converter'
+import { daoByType } from '../../core/redux/daos/selectors'
+import assetsManagerService from '../services/AssetsManagerService'
 
-export const TX_ASSET_CREATED = 'AssetCreated'
+//#region CONSTANTS
 
-export const MIDDLEWARE_EVENT_ISSUE = 'issue'
-export const MIDDLEWARE_EVENT_PLATFORM_REQUESTED = 'platformrequested'
-export const MIDDLEWARE_EVENT_REVOKE = 'revoke'
-export const MIDDLEWARE_EVENT_RESTRICTED = 'restricted'
-export const MIDDLEWARE_EVENT_UNRESTRICTED = 'unrestricted'
-export const MIDDLEWARE_EVENT_PAUSED = 'paused'
-export const MIDDLEWARE_EVENT_UNPAUSED = 'unpaused'
+import {
+  TX_ISSUE,
+  TX_OWNERSHIP_CHANGE,
+  TX_REVOKE,
+} from './constants/ChronoBankPlatformDAO'
+import {
+  TX_PLATFORM_ATTACHED,
+  TX_PLATFORM_DETACHED,
+  TX_PLATFORM_REQUESTED,
+} from './constants/PlatformsManagerDAO'
+import {
+  TX_PAUSED,
+  TX_RESTRICTED,
+  TX_UNPAUSED,
+  TX_UNRESTRICTED,
+} from './constants/ChronoBankAssetDAO'
+import {
+  BLOCKCHAIN_ETHEREUM,
+} from './constants'
+import {
+  TX_ASSET_CREATED,
+} from './constants/AssetsManagerDAO'
+
+//#endregion CONSTANTS
 
 export default class AssetsManagerDAO extends AbstractContractDAO {
-  constructor (at = null) {
-    super(AssetsManagerABI, at, MultiEventsHistoryABI)
+
+  constructor ({ address, history, abi }) {
+    super({ address, history, abi })
+
+    this.chronobankPlatformDAO = null
+    this.platformTokenExtensionGatewayManagerEmitterDAO = null
+    this.platformsManagerDAO = null
+    this.chronobankAssetDAO = null
   }
 
+  /**
+   *
+   * @param state
+   * @param web3
+   * @param history
+   */
+  postStoreDispatchSetup (state) {
+    const platformsManagerDAO = daoByType('PlatformsManager')(state)
+    const chronobankPlatformDAO = daoByType('ChronoBankPlatform')(state)
+    const chronobankAsset = daoByType('ChronoBankAsset')(state)
+    const PlatformTokenExtensionGatewayManagerEmitterDAO = daoByType('PlatformTokenExtensionGatewayManagerEmitterDAO')(state)
+
+    this.setPlatformsManagerDAO(platformsManagerDAO)
+    this.setChronobankAssetDAO(chronobankAsset)
+    this.setChronobankPlatformDAO(chronobankPlatformDAO)
+    this.setPlatformTokenExtensionGatewayManagerEmitterDAO(PlatformTokenExtensionGatewayManagerEmitterDAO)
+  }
+
+  /**
+   * Adds PlatformTokenExtensionGatewayManagerEmitterDAO
+   * @param platformTokenExtensionGatewayManagerEmitterDAO
+   */
+  setPlatformTokenExtensionGatewayManagerEmitterDAO (platformTokenExtensionGatewayManagerEmitterDAO: PlatformTokenExtensionGatewayManagerEmitterDAO) {
+    this.platformTokenExtensionGatewayManagerEmitterDAO = platformTokenExtensionGatewayManagerEmitterDAO
+  }
+
+  /**
+   * Adds platformsManagerDAO
+   * @param platformsManagerDAO
+   */
+  setPlatformsManagerDAO (platformsManagerDAO: PlatformsManagerDAO) {
+    this.platformsManagerDAO = platformsManagerDAO
+  }
+
+  /**
+   * Adds chronobankPlatformDAO
+   * @param chronobankPlatformDAO
+   */
+  setChronobankPlatformDAO (chronobankPlatformDAO: ChronoBankPlatformDAO) {
+    this.chronobankPlatformDAO = chronobankPlatformDAO
+  }
+
+  /**
+   * Adds chronobankPlatformDAO
+   * @param chronobankPlatformDAO
+   */
+  setChronobankAssetDAO (chronobankAssetDAO: ChronoBankAssetDAO) {
+    this.chronobankAssetDAO = chronobankAssetDAO
+  }
+
+  /**
+   *
+   * @param platform
+   * @returns {Promise<any>}
+   */
   getTokenExtension (platform) {
-    return this._call('getTokenExtension', [platform])
+    return this.contract.methods.getTokenExtension(platform).call()
   }
 
   async getSystemAssetsForOwner (account: string) {
@@ -79,6 +157,9 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
       console.warn(e)
     }
 
+    unionBy(minePlatforms, mineAssets, 'address')
+      .forEach((platform) => assetsManagerService.getChronoBankPlatformDAO(platform.address, this.web3, this.history._address))
+
     return unionBy(minePlatforms, mineAssets, 'address')
   }
 
@@ -98,54 +179,64 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     return formatManagersList
   }
 
-  createTxModel (tx, account, block, time): TxModel {
-    const gasPrice = new BigNumber(tx.gasPrice || 0)
-    return new TxModel({
-      txHash: tx.transactionHash,
-      type: tx.event,
-      blockHash: tx.blockHash,
-      blockNumber: block,
-      transactionIndex: tx.transactionIndex,
-      from: tx.args.from,
-      by: tx.args.by,
-      to: tx.args.to,
-      value: tx.args.value,
-      gas: tx.gas,
-      gasPrice,
-      time,
-      symbol: tx.args.symbol && web3Converter.bytesToString(tx.args.symbol).toUpperCase(),
-      tokenAddress: tx.args.token,
-      args: tx.args,
-      blockchain: BLOCKCHAIN_ETHEREUM,
-    })
+  // createTxModel (tx, account, block, time): TxModel {
+  //   const gasPrice = new BigNumber(tx.gasPrice || 0)
+  //   return new TxModel({
+  //     txHash: tx.transactionHash,
+  //     type: tx.event,
+  //     blockHash: tx.blockHash,
+  //     blockNumber: block,
+  //     transactionIndex: tx.transactionIndex,
+  //     from: tx.args.from,
+  //     by: tx.args.by,
+  //     to: tx.args.to,
+  //     value: tx.args.value,
+  //     gas: tx.gas,
+  //     gasPrice,
+  //     time,
+  //     symbol: tx.args.symbol && web3Converter.bytesToString(tx.args.symbol).toUpperCase(),
+  //     tokenAddress: tx.args.token,
+  //     args: tx.args,
+  //     blockchain: BLOCKCHAIN_ETHEREUM,
+  //   })
+  // }
+  //
+  // async getTxModel (tx, account, block = null, time = null): Promise<?TxModel> {
+  //   const txDetails = await web3Provider.getTransaction(tx.transactionHash)
+  //   tx.gasPrice = txDetails.gasPrice
+  //   tx.gas = txDetails.gas
+  //
+  //   if (block && time) {
+  //     return this.createTxModel(tx, account, block, time)
+  //   }
+  //   block = await web3Provider.getBlock(tx.blockHash)
+  //   return this.createTxModel(tx, account, tx.blockNumber, block.timestamp)
+  // }
+
+  /**
+   * Implement for transactions list
+   * @returns {}
+   */
+  getTxModel () {
+    return {}
   }
 
-  async getTxModel (tx, account, block = null, time = null): Promise<?TxModel> {
-    const txDetails = await web3Provider.getTransaction(tx.transactionHash)
-    tx.gasPrice = txDetails.gasPrice
-    tx.gas = txDetails.gas
-
-    if (block && time) {
-      return this.createTxModel(tx, account, block, time)
-    }
-    block = await web3Provider.getBlock(tx.blockHash)
-    return this.createTxModel(tx, account, tx.blockNumber, block.timestamp)
-  }
-
+  /**
+   *
+   * @param account
+   * @returns {Promise<Immutable.Map>}
+   */
   async getTransactions (account) {
     const transactionsPromises = []
-    const platformManagerDao = await contractManager.getPlatformManagerDAO()
-    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO()
-    const platformTokenExtensionGatewayManagerDAO = await contractManager.getPlatformTokenExtensionGatewayManagerEmitterDAO()
 
-    transactionsPromises.push(platformTokenExtensionGatewayManagerDAO._get(TX_ASSET_CREATED, 0, 'latest', { by: account }))
-    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_REQUESTED, 0, 'latest', { by: account }))
-    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_ATTACHED, 0, 'latest', { by: account }))
-    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_DETACHED, 0, 'latest', { by: account }))
-    transactionsPromises.push(chronoBankPlatformDAO._get(TX_ISSUE, 0, 'latest', { by: account }))
-    transactionsPromises.push(chronoBankPlatformDAO._get(TX_REVOKE, 0, 'latest', { by: account }))
-    transactionsPromises.push(chronoBankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', { to: account }))
-    transactionsPromises.push(chronoBankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', { from: account }))
+    transactionsPromises.push(this.platformTokenExtensionGatewayManagerEmitterDAO._get(TX_ASSET_CREATED, 0, 'latest', { by: account }))
+    transactionsPromises.push(this.platformsManagerDAO._get(TX_PLATFORM_REQUESTED, 0, 'latest', { by: account }))
+    transactionsPromises.push(this.platformsManagerDAO._get(TX_PLATFORM_ATTACHED, 0, 'latest', { by: account }))
+    transactionsPromises.push(this.platformsManagerDAO._get(TX_PLATFORM_DETACHED, 0, 'latest', { by: account }))
+    // transactionsPromises.push(this.chronobankPlatformDAO._get(TX_ISSUE, 0, 'latest', { by: account }))
+    // transactionsPromises.push(this.chronobankPlatformDAO._get(TX_REVOKE, 0, 'latest', { by: account }))
+    // transactionsPromises.push(this.chronobankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', { to: account }))
+    // transactionsPromises.push(this.chronobankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', { from: account }))
     const transactionsLists = await Promise.all(transactionsPromises)
     const promises = []
     transactionsLists.map((transactionsList) => transactionsList.map((tx) => promises.push(this.getTxModel(tx, account))))
@@ -172,10 +263,9 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   // TODO @Abdulov remove this how txHash will be arrive from Middleware
   async getTransactionsForBlacklists (address, symbol, account) {
     const transactionsPromises = []
-    const chronoBankAssetDAO = await contractManager.getChronoBankAssetDAO(address)
 
-    transactionsPromises.push(chronoBankAssetDAO._get(TX_RESTRICTED, 0, 'latest', { symbol }))
-    transactionsPromises.push(chronoBankAssetDAO._get(TX_UNRESTRICTED, 0, 'latest', { symbol }))
+    // transactionsPromises.push(this.chronobankAssetDAO._get(TX_RESTRICTED, 0, 'latest', { symbol }))
+    // transactionsPromises.push(this.chronobankAssetDAO._get(TX_UNRESTRICTED, 0, 'latest', { symbol }))
 
     const transactionsLists = await Promise.all(transactionsPromises)
     const promises = []
@@ -190,10 +280,9 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   // TODO @Abdulov remove this how txHash will be arrive from Middleware
   async getTransactionsForBlockAsset (address, symbol, account) {
     const transactionsPromises = []
-    const chronoBankAssetDAO = await contractManager.getChronoBankAssetDAO(address)
 
-    transactionsPromises.push(chronoBankAssetDAO._get(TX_PAUSED, 0, 'latest', { symbol }))
-    transactionsPromises.push(chronoBankAssetDAO._get(TX_UNPAUSED, 0, 'latest', { symbol }))
+    // transactionsPromises.push(this.chronobankAssetDAO._get(TX_PAUSED, 0, 'latest', { symbol }))
+    // transactionsPromises.push(this.chronobankAssetDAO._get(TX_UNPAUSED, 0, 'latest', { symbol }))
 
     const transactionsLists = await Promise.all(transactionsPromises)
     const promises = []
@@ -203,5 +292,13 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     let map = new Immutable.Map()
     transactions.map((tx) => map = map.set(tx.id(), tx))
     return map
+  }
+
+  getFeeInterfaceDAO (address) {
+    return assetsManagerService.getFeeInterfaceDAO(address, this.web3, this.history._address)
+  }
+
+  getChronoBankAssetDAO (address) {
+    return assetsManagerService.getChronoBankAssetDAO(address, this.web3, this.history._address)
   }
 }

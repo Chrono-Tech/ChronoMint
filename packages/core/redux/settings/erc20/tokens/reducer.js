@@ -4,7 +4,7 @@
  */
 
 import TokenModel from '../../../../models/tokens/TokenModel'
-import * as a from './actions'
+import * as a from './constants'
 
 const initialState = {
   selected: new TokenModel(),

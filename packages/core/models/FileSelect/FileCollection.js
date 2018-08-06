@@ -4,7 +4,7 @@
  */
 
 import Immutable from 'immutable'
-import { abstractModel } from '../AbstractModel'
+import { abstractModel } from '../AbstractModelOld'
 import FileModel from './FileModel'
 
 class FileCollection extends abstractModel({

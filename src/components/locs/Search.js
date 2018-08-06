@@ -6,7 +6,7 @@
 // TODO MINT-266 New LOC
 /* eslint-disable */
 import React, { PureComponent } from 'react'
-import TextField from 'material-ui/TextField'
+import TextField from '@material-ui/core'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { updateLOCFilter } from '@chronobank/core/redux/locs/actions'
@@ -29,7 +29,7 @@ export default class Search extends PureComponent {
     return (
       <TextField
         onChange={this.handleChange}
-        floatingLabelText={<Translate value='terms.search' />}
+        label={<Translate value='terms.search' />}
         fullWidth
         value={this.props.filter}
       />

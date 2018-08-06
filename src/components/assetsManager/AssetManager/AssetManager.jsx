@@ -3,13 +3,14 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Paper } from 'material-ui'
+import { Paper } from '@material-ui/core'
 import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import { createPlatform, DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/actions'
+import { DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/constants'
+import { createPlatform } from '@chronobank/core/redux/assetsManager/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import AddTokenDialog from 'components/assetsManager/AddTokenDialog/AddTokenDialog'
@@ -184,9 +185,11 @@ export default class AssetManager extends PureComponent {
             {this.renderBody()}
           </Paper>
           <div styleName='delimiter' />
+          {/*
+          // TODO repair table
           <Paper>
             {this.renderTable()}
-          </Paper>
+          </Paper>*/}
         </div>
       </div>
     )

@@ -4,11 +4,12 @@
  */
 
 import EventEmitter from 'events'
-import ERC20DAO from '../dao/ERC20DAO'
 import TokenModel from '../models/tokens/TokenModel'
+import ERC20TokenDAO from '../dao/ERC20TokenDAO'
 
-export const EVENT_NEW_TOKEN = 'newToken'
-export const EVENT_TOKENS_FETCHED = 'tokensFetched'
+import {
+  EVENT_NEW_TOKEN,
+} from '../dao/constants'
 
 class TokenService extends EventEmitter {
   constructor () {
@@ -17,22 +18,24 @@ class TokenService extends EventEmitter {
   }
 
   getDAO (token: TokenModel | string) {
-    return this._cache[ token instanceof TokenModel ? token.id() : token ]
+    return this._cache[token instanceof TokenModel ? token.id() : token]
   }
 
-  createDAO (token) {
+  createDAO (token, web3) {
     // TODO @dkchv: unsubscribe if exists
     if (!token.isERC20()) {
       return
     }
-    const dao = new ERC20DAO(token)
-    this._cache [ token.id() ] = dao
+    const dao = new ERC20TokenDAO(token)
+    dao.connect(web3)
+    this._cache [token.id()] = dao
     this.emit(EVENT_NEW_TOKEN, token, dao)
+    return dao
   }
 
   // TODO @ipavlenko: TokenService should not handle state, redux should. Move DAOs collection to redux
   registerDAO (token, dao) {
-    this._cache [ token.id() ] = dao
+    this._cache [token.id()] = dao
     this.emit(EVENT_NEW_TOKEN, token, dao)
   }
 }

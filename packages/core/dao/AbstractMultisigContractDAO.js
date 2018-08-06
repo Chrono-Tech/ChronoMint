@@ -5,20 +5,29 @@
 
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-import type PendingManagerDAO from './PendingManagerDAO'
 import ethABI from 'ethereumjs-abi'
-import type AbstractModel from '../models/AbstractModel'
+import type PendingManagerDAO from './PendingManagerDAO'
+import type AbstractModel from '../models/AbstractModelOld'
 import TxError from '../models/TxError'
 import TxExecModel from '../models/TxExecModel'
-import AbstractContractDAO, { DEFAULT_TX_OPTIONS, TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
+import AbstractContractDAO from './AbstractContract3DAO'
+
+//#region CONSTANTS
+
+import {
+  DEFAULT_TX_OPTIONS,
+  TX_FRONTEND_ERROR_CODES,
+} from './constants'
+
+//#endregion CONSTANTS
 
 export default class AbstractMultisigContractDAO extends AbstractContractDAO {
-  constructor (json, at = null, eventsJSON) {
+  constructor ({ address, history, abi }) {
+    super({ address, history, abi })
     if (new.target === AbstractMultisigContractDAO) {
       throw new TypeError('Cannot construct AbstractMultisigContractDAO instance directly')
     }
-    super(json, at, eventsJSON)
 
     this._okCodes = [resultCodes.OK, resultCodes.MULTISIG_ADDED]
   }
@@ -73,8 +82,9 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
     const dataBuf = Buffer.from(data.replace(/^0x/, ''), 'hex')
     const methodId = dataBuf.slice(0, 4).toString('hex')
     const inputsBuf = dataBuf.slice(4)
+    let args = {}
 
-    const tx = await this._json.abi.reduce((acc, obj) => {
+    const tx = await this.abi.abi.reduce((acc, obj) => {
       if (!obj.hasOwnProperty('inputs')) {
         return acc
       }
@@ -113,7 +123,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
           }
         }
       }
-      const args = {}
+
       for (const i in obj.inputs) {
         if (obj.inputs.hasOwnProperty(i)) {
           args[obj.inputs[i].name] = inputs[i]
@@ -122,7 +132,6 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
       return new TxExecModel({
         contract: this.getContractName(),
         func: name,
-        args,
       })
     }, null)
 
@@ -130,8 +139,20 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
       return null
     }
 
-    const args = await this._decodeArgs(tx.funcName(), tx.args())
+    args = await this._decodeArgs(tx.funcName(), args)
 
-    return tx.set('args', args)
+    let fields = {}
+    Object.entries(args).map(([key, value]) => {
+      fields[key] = {
+        value,
+        description: key,
+      }
+    })
+
+    return new TxExecModel({
+      ...tx,
+      fields,
+      contract: this.getContractName(),
+    })
   }
 }

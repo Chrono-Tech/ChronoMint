@@ -4,7 +4,7 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { abstractModel } from '../AbstractModel'
+import { abstractModel } from '../AbstractModelOld'
 
 class MultisigTransactionModel extends abstractModel({
   id: null, // operation hash

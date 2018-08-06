@@ -11,6 +11,7 @@ import {
   NotFoundPage,
   LoginForm,
   CreateAccount,
+  CreateHWAccount,
   AccountSelector,
   RecoverAccount,
   ResetPassword,
@@ -19,8 +20,11 @@ import {
   GenerateMnemonic,
   GenerateWallet,
   LoginWithWallet,
-  LoginWithMnemonic,
+  LoginWithTrezor,
+  LoginWithLedger,
+  LoginWithPlugin,
   LoginWithPrivateKey,
+  AccountName,
   LoginLocal,
 } from '@chronobank/login-ui/components'
 import Splash from 'layouts/Splash/Splash'
@@ -40,7 +44,14 @@ import {
   AddWalletPage,
   TwoFAPage,
   NewPollPage,
+  VoteHistoryPage,
 } from 'pages/lib'
+import MnemonicImportPage from 'components/login/MnemonicImportPage/MnemonicImportPage'
+import PrivateKeyImportPage from 'components/login/PrivateKeyImportPage/PrivateKeyImportPage'
+import WalletImportPage from 'components/login/WalletImportPage/WalletImportPage'
+import RecoverAccountPage from 'components/login/RecoverAccountPage/RecoverAccountPage'
+import AccountSelectorPage from 'components/login/AccountSelectorPage/AccountSelectorPage'
+import CreateAccountPage from 'components/login/CreateAccountPage/CreateAccountPage'
 import { store, history } from './redux/configureStore'
 import ls from '@chronobank/core-dependencies/utils/LocalStorage'
 import './styles/themes/default.scss'
@@ -70,7 +81,7 @@ function hashLinkScroll () {
 const router = (
   <Provider store={store}>
     <Router history={history} onUpdate={hashLinkScroll}>
-      <Redirect from='/' to='/login/select-account' />
+      <Redirect from='/' to='/login' />
       <Route component={Markup} onEnter={requireAuth}>
         <Route path='2fa' component={TwoFAPage} />
         <Route path='wallets' component={WalletsPage} />
@@ -83,6 +94,7 @@ const router = (
         <Route path='voting' component={VotingPage} />
         <Route path='poll' component={PollPage} />
         <Route path='new-poll' component={NewPollPage} />
+        <Route path='vote-history' component={VoteHistoryPage} />
         <Route path='assets' component={AssetsPage} />
         <Route path='cbe'>
           <Route path='locs' component={LOCPage} />
@@ -93,17 +105,17 @@ const router = (
 
       <Route path='/login' component={Splash}>
         <IndexRoute component={LoginForm} />
-        <Route path='/login/create-account' component={CreateAccount} />
-        <Route path='/login/select-account' component={AccountSelector} />
-        <Route path='/login/recover-account' component={RecoverAccount} />
-        <Route path='/login/reset-password' component={ResetPassword} />
+        <Route path='/login/create-account' component={CreateAccountPage} />
+        <Route path='/login/select-account' component={AccountSelectorPage} />
+        <Route path='/login/recover-account' component={RecoverAccountPage} />
         <Route path='/login/import-methods' component={LoginWithOptions} />
-        <Route path='/login/confirm-mnemonic' component={ConfirmMnemonic} />
-        <Route path='/login/mnemonic' component={GenerateMnemonic} />
-        <Route path='/login/download-wallet' component={GenerateWallet} />
-        <Route path='/login/upload-wallet' component={LoginWithWallet} />
-        <Route path='/login/mnemonic-login' component={LoginWithMnemonic} />
-        <Route path='/login/private-key-login' component={LoginWithPrivateKey} />
+        <Route path='/login/upload-wallet' component={WalletImportPage} />
+        <Route path='/login/trezor-login' component={LoginWithTrezor} />
+        <Route path='/login/ledger-login' component={LoginWithLedger} />
+        <Route path='/login/plugin-login' component={LoginWithPlugin} />
+        <Route path='/login/mnemonic-login' component={MnemonicImportPage} />
+        <Route path='/login/private-key-login' component={PrivateKeyImportPage} />
+        <Route path='/login/create-hw-account' component={CreateHWAccount} />
         <Route path='/login/local-login' component={LoginLocal} />
         <Route path='*' component={NotFoundPage} />
       </Route>

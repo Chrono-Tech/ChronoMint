@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import * as actions from './actions'
+import * as actions from './constants'
 
 const initialState = {
   stack: [],

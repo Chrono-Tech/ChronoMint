@@ -13,6 +13,7 @@ export default {
     percent: '(%{num}%)',
     castYourVoteBelow: 'Cast your vote below',
     daysLeft: '%{count} days left',
+    descriptionHistory: 'Description History',
   },
 }
 

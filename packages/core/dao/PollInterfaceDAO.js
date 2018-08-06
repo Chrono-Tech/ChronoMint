@@ -6,70 +6,69 @@
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
 import Amount from '../models/Amount'
-import { TIME } from '../redux/mainWallet/actions'
-import { MultiEventsHistoryABI, PollInterfaceABI } from './abi'
-import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
+import AbstractContractDAO from './AbstractContract3DAO'
 
-export const TX_ACTIVATE_POLL = 'activatePoll'
-export const TX_VOTE = 'vote'
-export const TX_REMOVE_POLL = 'killPoll'
-export const TX_END_POLL = 'endPoll'
+//#region CONSTANTS
 
-export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
-  constructor (at) {
-    super(PollInterfaceABI, at, MultiEventsHistoryABI)
+import {
+  TX_ACTIVATE_POLL,
+  TX_END_POLL,
+  TX_REMOVE_POLL,
+  TX_VOTE,
+} from './constants/PollInterfaceDAO'
+
+//#endregion CONSTANTS
+
+export default class PollInterfaceDAO extends AbstractContractDAO {
+  constructor ({ address, history, abi }) {
+    super({ address, history, abi })
   }
 
   hasMember (address: string): boolean {
     if (!address) {
       return false
     }
-    return this._call('hasMember', [address])
+    return this.contract.methods.hasMember(address).call()
   }
 
   memberOption (address: string) {
     if (!address) {
       return false
     }
-    return this._call('memberOptions', [address])
+    return this.contract.methods.memberOptions(address).call()
   }
 
   getDetails () {
-    return this._call('getDetails')
+    return this.contract.methods.getDetails().call()
   }
 
   async getVotesBalances () {
-    const [options, values] = await this._call('getVotesBalances') // [Array(options), Array(values)]
+    const result = await this.contract.methods.getVotesBalances().call()
+    const [options, values] = [result[0], result[1]] // [Array(options), Array(values)]
     let votes = new Immutable.Map()
     options.map((option, i) => {
-      if (!values[i].isZero()) {
-        votes = votes.set(option.toString(), new Amount(values[i] || 0, TIME))
+      const value = new BigNumber(values[i])
+      if (!value.isZero()) {
+        votes = votes.set(option.toString(), new Amount(value || 0, 'TIME'))
       }
     })
     return votes
   }
 
   activatePoll () {
-    return this._multisigTx(TX_ACTIVATE_POLL, [], null, {
-      useDefaultGasLimit: true,
-    })
+    return this._tx(TX_ACTIVATE_POLL, [])
   }
 
-  vote (choice, choiceText) {
-    return this._tx(TX_VOTE, [choice + 1], { choice: choiceText.option }) // choice +1, because in SC, numbering starts from 1
+  vote (choice, choiceText, options) {
+    return this._tx(TX_VOTE, [choice + 1], new BigNumber(0), new BigNumber(0), { choice: choiceText.option, ...options }) // choice +1, because in SC, numbering starts from 1
   }
 
   removePoll () {
-    return this._tx(TX_REMOVE_POLL, [], null, new BigNumber(0), {
-      allowNoReturn: true,
-      useDefaultGasLimit: true,
-    }) // allow no return (since there would be a selfdestruct call)
+    return this._tx(TX_REMOVE_POLL, [])
   }
 
   endPoll () {
-    return this._multisigTx(TX_END_POLL, [], null, {
-      useDefaultGasLimit: true,
-    })
+    return this._tx(TX_END_POLL, [])
   }
 
 }

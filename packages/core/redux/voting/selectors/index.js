@@ -14,10 +14,12 @@ const getPollsDetailsFromDuck = createSelector(
     getPolls,
   ],
   (polls: VotingCollection) => {
-    return polls
+    const pollsArray = polls
       .list()
       .map((poll: PollDetailsModel) => poll.details())
       .toArray()
+    console.log('getPollsDetailsFromDuck: ', polls.toJSON(), pollsArray)
+    return pollsArray
   },
 )
 

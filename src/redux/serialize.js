@@ -6,6 +6,7 @@
 import Immutable from 'immutable'
 import { createTransform } from 'redux-persist'
 import jsan from 'jsan'
+import BigNumber from 'bignumber.js'
 import Amount from '@chronobank/core/models/Amount'
 import BalanceModel from '@chronobank/core/models/tokens/BalanceModel'
 import BalancesCollection from '@chronobank/core/models/tokens/BalancesCollection'
@@ -15,16 +16,18 @@ import OwnerModel from '@chronobank/core/models/wallet/OwnerModel'
 import OwnerCollection from '@chronobank/core/models/wallet/OwnerCollection'
 import MultisigWalletPendingTxModel from '@chronobank/core/models/wallet/MultisigWalletPendingTxModel'
 import TxExecModel from '@chronobank/core/models/TxExecModel'
-import MultisigWalletPendingTxCollection from '@chronobank/core/models/wallet/MultisigWalletPendingTxCollection'
 import AddressModel from '@chronobank/core/models/wallet/AddressModel'
 import AddressesCollection from '@chronobank/core/models/wallet/AddressesCollection'
-import MultisigWalletModel from '@chronobank/core/models/wallet/MultisigWalletModel'
 import MultisigWalletCollection from '@chronobank/core/models/wallet/MultisigWalletCollection'
 import DerivedWalletModel from '@chronobank/core/models/wallet/DerivedWalletModel'
 import AllowanceCollection from '@chronobank/core/models/wallet/AllowanceCollection'
 import AllowanceModel from '@chronobank/core/models/wallet/AllowanceModel'
 import MainWalletModel from '@chronobank/core/models/wallet/MainWalletModel'
 import AccountModel from '@chronobank/core/models/wallet/persistAccount/AccountModel'
+import WalletModel from '@chronobank/core/models/wallet/WalletModel'
+import TxHistoryModel from '@chronobank/core/models/wallet/TxHistoryModel'
+import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
+import { SignerMemoryModel } from '@chronobank/core/models'
 
 function mark (data, type, transformMethod) {
   return {
@@ -57,8 +60,13 @@ function serialize (Immutable, refs) {
   return {
     replacer: function (key, value) {
       if (value instanceof AccountModel) return null
+      if (value instanceof SignerMemoryModel) return null
       if (value instanceof Date) return mark(value, 'Date', 'toString')
+      if (value instanceof WalletModel) return mark(value, 'WalletModel', 'transform')
+      if (value instanceof MultisigEthWalletModel) return mark(value, 'MultisigEthWalletModel', 'transform')
+      if (value instanceof TxHistoryModel) return mark(value, 'TxHistoryModel', 'transform')
       if (value instanceof Amount) return mark(value, 'Amount', 'transform')
+      if (value instanceof BigNumber) return mark(value, 'BigNumber', 'toString')
       if (value instanceof BalanceModel) return refer(value, 'BalanceModel', 'toObject', refs)
       if (value instanceof BalancesCollection) return refer(value, 'BalancesCollection', 'toObject', refs)
       if (value instanceof TxModel) return refer(value, 'TxModel', 'toObject', refs)
@@ -66,11 +74,9 @@ function serialize (Immutable, refs) {
       if (value instanceof OwnerModel) return refer(value, 'OwnerModel', 'toObject', refs)
       if (value instanceof OwnerCollection) return refer(value, 'OwnerCollection', 'toObject', refs)
       if (value instanceof TxExecModel) return refer(value, 'TxExecModel', 'toObject', refs)
-      if (value instanceof MultisigWalletPendingTxModel) return refer(value, 'MultisigWalletPendingTxModel', 'toObject', refs)
-      if (value instanceof MultisigWalletPendingTxCollection) return refer(value, 'MultisigWalletPendingTxCollection', 'toObject', refs)
+      if (value instanceof MultisigWalletPendingTxModel) return mark(value, 'MultisigWalletPendingTxModel', 'transform')
       if (value instanceof AddressModel) return refer(value, 'AddressModel', 'toObject', refs)
       if (value instanceof AddressesCollection) return refer(value, 'AddressesCollection', 'toObject', refs)
-      if (value instanceof MultisigWalletModel) return refer(value, 'MultisigWalletModel', 'toObject', refs)
       if (value instanceof DerivedWalletModel) return refer(value, 'DerivedWalletModel', 'toObject', refs)
       if (value instanceof MultisigWalletCollection) return refer(value, 'MultisigWalletCollection', 'toObject', refs)
       if (value instanceof AllowanceModel) return refer(value, 'AllowanceModel', 'toObject', refs)
@@ -98,6 +104,14 @@ function serialize (Immutable, refs) {
             return new Date(data)
           case 'Amount':
             return new Amount(data.value, data.symbol, data.isLoaded)
+          case 'BigNumber':
+            return new BigNumber(data)
+          case 'WalletModel':
+            return new WalletModel(data)
+          case 'MultisigEthWalletModel':
+            return new MultisigEthWalletModel(data)
+          case 'TxHistoryModel':
+            return new TxHistoryModel(data)
           case 'BalanceModel':
             return new BalanceModel(data)
           case 'BalancesCollection':
@@ -114,14 +128,10 @@ function serialize (Immutable, refs) {
             return new TxExecModel(data)
           case 'MultisigWalletPendingTxModel':
             return new MultisigWalletPendingTxModel(data)
-          case 'MultisigWalletPendingTxCollection':
-            return new MultisigWalletPendingTxCollection(data)
           case 'AddressModel':
             return new AddressModel(data)
           case 'AddressesCollection':
             return new AddressesCollection(data)
-          case 'MultisigWalletModel':
-            return new MultisigWalletModel(data)
           case 'DerivedWalletModel':
             return new DerivedWalletModel(data)
           case 'MultisigWalletCollection':
@@ -133,6 +143,8 @@ function serialize (Immutable, refs) {
           case 'MainWalletModel':
             return new MainWalletModel(data)
           case 'AccountModel':
+            return null
+          case 'SignerMemoryModel':
             return null
 
           // Immutable types

@@ -9,12 +9,12 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { TOKEN_ICONS } from 'assets'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import { integerWithDelimiter } from '@chronobank/core-dependencies/utils/formatter'
 import { getMarket } from '@chronobank/core/redux/market/selectors'
-import { mainWalletTokenBalanceSelector } from '@chronobank/core/redux/mainWallet/selectors'
-import { multisigWalletTokenBalanceSelector } from '@chronobank/core/redux/multisigWallet/selectors'
 import TokenPrice from 'components/common/TokenPrice/TokenPrice'
+import { walletTokensAmountSelector } from '@chronobank/core/redux/wallets/selectors/balances'
+import { getMainSymbolForBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import Amount from '@chronobank/core/models/Amount'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
@@ -23,17 +23,13 @@ import { prefix } from './lang'
 
 function makeMapStateToProps (state, props) {
   const { wallet } = props
-  let getAmount
-  if (wallet.isMain) {
-    getAmount = mainWalletTokenBalanceSelector(wallet.blockchain)
-  } else {
-    getAmount = multisigWalletTokenBalanceSelector(wallet.address)
-  }
+  let getAmount = walletTokensAmountSelector(wallet.id)
   const mapStateToProps = (ownState) => {
     const { selectedCurrency } = getMarket(state)
     return {
+      mainSymbol: getMainSymbolForBlockchain(wallet.blockchain),
       selectedCurrency,
-      tokensBalances: getAmount(ownState),
+      amount: getAmount(ownState),
       tokens: ownState.get(DUCK_TOKENS),
     }
   }
@@ -43,9 +39,10 @@ function makeMapStateToProps (state, props) {
 @connect(makeMapStateToProps)
 export default class WalletTokensList extends PureComponent {
   static propTypes = {
+    mainSymbol: PropTypes.string,
     selectedCurrency: PropTypes.string,
     tokens: PropTypes.instanceOf(TokensCollection),
-    tokensBalances: PropTypes.arrayOf(PropTypes.shape({
+    amount: PropTypes.arrayOf(PropTypes.shape({
       symbol: PropTypes.string,
       value: PropTypes.number,
     })),
@@ -67,7 +64,7 @@ export default class WalletTokensList extends PureComponent {
   }
 
   getTokensList = () => {
-    const tokens = this.props.tokensBalances.sort(({ amount: a }, { amount: b }) => (a > b) - (a < b))
+    const tokens = this.props.amount.sort(({ amount: a }, { amount: b }) => (a > b) - (a < b))
     return this.state.isShowAll ? tokens : tokens.slice(0, 2)
   }
 
@@ -76,21 +73,21 @@ export default class WalletTokensList extends PureComponent {
   }
 
   render () {
-    const { tokensBalances } = this.props
+    const { amount, mainSymbol } = this.props
 
     return (
       <div>
-        {tokensBalances.length >= 3 &&
-        <div styleName='amount-list-container'>
-          <div styleName='amount-list'>
-            <span styleName='amount-text'><Translate value={`${prefix}.tokensTitle`} count={tokensBalances.length} /></span>
+        {amount.length >= 3 && (
+          <div styleName='amount-list-container'>
+            <div styleName='amount-list'>
+              <span styleName='amount-text'><Translate value={`${prefix}.tokensTitle`} count={amount.length} /></span>
+            </div>
+            <div styleName='show-all'>
+              <span styleName='show-all-a' onClick={this.handleChangeShowAll}>{!this.state.isShowAll ? 'Show All' : 'Show less'}</span>
+            </div>
           </div>
-          <div styleName='show-all'>
-            <span styleName='show-all-a' onClick={this.handleChangeShowAll}>{!this.state.isShowAll ? 'Show All' : 'Show less'}</span>
-          </div>
-        </div>}
-
-        {this.getTokensList().length > 1 && (
+        )}
+        {this.getTokensList().length > 1 || (this.getTokensList()[0] && this.getTokensList()[0].symbol !== mainSymbol) ? (
           <div styleName='tokens-list'>
             <div styleName='tokens-list-table'>
               {this.getTokensList()
@@ -116,7 +113,7 @@ export default class WalletTokensList extends PureComponent {
                 })}
             </div>
           </div>
-        )}
+        ) : null}
 
         {this.isMySharedWallet() && this.getTokensList().length <= 0 && (<div styleName='separator' />)}
       </div>

@@ -7,7 +7,7 @@ export const en = {
   title: 'Mnemonic form',
   description: 'Type or copy your mnemonic key into the box below',
   mnemonic: 'Mnemonic',
-  login: 'Login',
+  submit: 'Submit',
   or: 'or',
   back: '',
 }

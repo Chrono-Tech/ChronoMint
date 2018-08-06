@@ -7,14 +7,14 @@ import classnames from 'classnames'
 import { Button, IPFSImage, TokenValue } from 'components'
 import Amount from '@chronobank/core/models/Amount'
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
-import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
 import RevokeDialog from 'components/assetsManager/RevokeDialog/RevokeDialog'
 import Preloader from 'components/common/Preloader/Preloader'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { DUCK_ASSETS_MANAGER, getFee, getManagersForAssetSymbol } from '@chronobank/core/redux/assetsManager/actions'
+import { getFee, getManagersForAssetSymbol } from '@chronobank/core/redux/assetsManager/actions'
+import { DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/constants'
 import { modalsOpen } from 'redux/modals/actions'
 import BlockAssetDialog from 'components/assetsManager/BlockAssetDialog/BlockAssetDialog'
 import ReissueAssetForm from 'components/assetsManager/ReissueAssetForm/ReissueAssetForm'
@@ -43,9 +43,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleCrowdsaleDialog: () => dispatch(modalsOpen({
-      component: CrowdsaleDialog,
-    })),
     handleAddManagerDialog: () => dispatch(modalsOpen({
       component: AssetManagerDialog,
     })),
@@ -74,13 +71,9 @@ export default class PlatformInfo extends PureComponent {
   static propTypes = {
     selectedToken: PropTypes.instanceOf(TokenModel),
     selectedPlatform: PropTypes.string,
-    handleCrowdsaleDialog: PropTypes.func,
     handleAddManagerDialog: PropTypes.func,
     openBlockAssetDialog: PropTypes.func,
-    getManagersForAssetSymbol: PropTypes.func,
-    reissueAsset: PropTypes.func,
     handleRevokeDialog: PropTypes.func,
-    getFee: PropTypes.func,
     platformsList: PropTypes.arrayOf(PropTypes.object),
     usersPlatforms: PropTypes.arrayOf(PropTypes.object),
     assets: PropTypes.objectOf(PropTypes.object),
@@ -241,10 +234,12 @@ export default class PlatformInfo extends PureComponent {
               <div styleName='balanceWrap'>
                 <div styleName='balance'>
                   <div styleName='title'><Translate value={prefix('issuedAmount')} />:</div>
-                  <TokenValue
-                    style={{ fontSize: '24px' }}
-                    value={new Amount(totalSupply, selectedToken.symbol())}
-                  />
+                  {totalSupply && (
+                    <TokenValue
+                      style={{ fontSize: '24px' }}
+                      value={new Amount(totalSupply, selectedToken.symbol())}
+                    />
+                  )}
                 </div>
                 {this.renderFee()}
               </div>

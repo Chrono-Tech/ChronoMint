@@ -15,7 +15,7 @@ import {
   SET_ASSETS,
   SET_NEW_MANAGERS_LIST,
   GET_ASSET_DATA,
-} from './actions'
+} from './constants'
 
 export const initialState = new MainAssetsManagerModel()
 

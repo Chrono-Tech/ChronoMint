@@ -5,6 +5,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router'
 import PropTypes from 'prop-types'
 import { getSelectedPoll, getVotingFlags } from '@chronobank/core/redux/voting/selectors'
 import { initAssetsHolder } from '@chronobank/core/redux/assetsHolder/actions'
@@ -190,8 +191,15 @@ export default class PollContent extends Component {
         </div>
         <div styleName='body'>
           <div styleName='description'>{poll.description}</div>
-          <div styleName='filesList'>
-            <DocumentsList documents={poll.files} />
+          <div styleName='wrapper'>
+            <div styleName='filesList'>
+              <DocumentsList documents={poll.files} />
+            </div>
+            <div styleName='historyLinkWrapper'>
+              <Link to='/vote-history'>
+                <Translate value={`${prefix}.descriptionHistory`} />
+              </Link>
+            </div>
           </div>
           <div styleName='cast'>
             <Translate value={`${prefix}.castYourVoteBelow`} />

@@ -6,8 +6,8 @@
 import classnames from 'classnames'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
-import { DUCK_WATCHER } from '@chronobank/core/redux/watcher/actions'
-import { DUCK_NOTIFIER } from '@chronobank/core/redux/notifier/actions'
+import { DUCK_WATCHER } from '@chronobank/core/redux/watcher/constants'
+import { DUCK_NOTIFIER } from '@chronobank/core/redux/notifier/constants'
 import TxExecModel from '@chronobank/core/models/TxExecModel'
 import TxModel from '@chronobank/core/models/TxModel'
 import CurrentTransactionNotificationModel from '@chronobank/core/models/CurrentTransactionNotificationModel'
@@ -20,22 +20,24 @@ import Value from 'components/common/Value/Value'
 import AbstractNoticeModel from '@chronobank/core/models/notices/AbstractNoticeModel'
 import Moment from 'components/common/Moment'
 import { FULL_DATE } from '@chronobank/core/models/constants'
-import { IconButton } from 'material-ui'
-import { SIDES_CLOSE_ALL } from 'redux/sides/actions'
+import { IconButton } from '@material-ui/core'
+import { ethereumPendingFormatSelector } from '@chronobank/core/redux/ethereum/selectors'
+import TxEntryModel from '@chronobank/core/models/TxEntryModel'
+import { SIDES_CLOSE_ALL } from 'redux/sides/constants'
 import { prefix } from './lang'
 import './NotificationContent.scss'
-
-export const NOTIFICATION_PANEL_KEY = 'NotificationContent_panelKey'
 
 function mapStateToProps (state) {
   const { pendingTxs } = state.get(DUCK_WATCHER)
   const { list } = state.get(DUCK_NOTIFIER)
   const btcTransactions = pendingTransactionsSelector()(state)
+  const ethereumTxList = ethereumPendingFormatSelector()(state)
 
   return {
     noticesList: list,
     ethTransactionsList: pendingTxs,
     btcTransactionsList: btcTransactions,
+    ethereumTxList,
   }
 }
 
@@ -59,9 +61,13 @@ class NotificationContent extends PureComponent {
   }
 
   getCurrentTransactionNotificationList = () => {
-    const { ethTransactionsList, btcTransactionsList } = this.props
+    const { ethTransactionsList, btcTransactionsList, ethereumTxList } = this.props
     const list = []
 
+    ethereumTxList
+      .map((item) => {
+        list.push(this.convertToCurrentTransactionNotification(item))
+      })
     ethTransactionsList.map((item) => {
       list.push(this.convertToCurrentTransactionNotification(item))
     })
@@ -77,10 +83,10 @@ class NotificationContent extends PureComponent {
       // Eth transactions
       case transaction instanceof TxExecModel:
         return new CurrentTransactionNotificationModel({
-          id: transaction.hash(),
-          hash: transaction.hash(),
+          id: transaction.id(),
+          hash: transaction.hash,
           title: transaction.title(),
-          date: transaction.time(),
+          date: transaction.time,
           details: transaction.details(),
         })
 
@@ -94,6 +100,21 @@ class NotificationContent extends PureComponent {
           details: transaction.details(),
         })
 
+      case transaction instanceof CurrentTransactionNotificationModel:
+        return transaction
+
+      case transaction instanceof TxEntryModel:
+        //TODO change to describer
+        return new CurrentTransactionNotificationModel({
+          id: transaction.key,
+          hash: transaction.hash || <Translate value={`${prefix}.pending`} />,
+          title: <Translate value={`${prefix}.newTx`} />,
+          date: transaction.tx.time,
+          details: [
+            { label: 'From', value: transaction.tx.from },
+            { label: 'To', value: transaction.tx.to },
+          ],
+        })
       default:
         break
     }
@@ -116,7 +137,10 @@ class NotificationContent extends PureComponent {
         <div styleName='itemInfo'>
           <div styleName='infoRow'>
             <div styleName='infoTitle'>{title}</div>
-            {hash && <div styleName='info-address'>{hash}</div>}
+          </div>
+          <div styleName='infoRow'>
+            <div styleName='infoLabel'><Translate value={`${prefix}.hash`} /></div>
+            {hash && <div styleName='infoValue'>{hash}</div>}
           </div>
           {details && details.map((item, index) => {
             return (

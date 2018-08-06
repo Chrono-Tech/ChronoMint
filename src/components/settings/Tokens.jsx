@@ -6,7 +6,6 @@
 import { Button } from 'components'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import CBETokenDialog from 'components/dialogs/CBETokenDialog/CBETokenDialog'
-import { FlatButton, FontIcon } from 'material-ui'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'

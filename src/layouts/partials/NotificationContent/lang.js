@@ -11,5 +11,8 @@ export default {
     systemNotifications: 'System notifications',
     noTransactions: 'No transactions',
     noNotices: 'No notifications',
+    newTx: 'New transaction',
+    pending: 'Pending...',
+    hash: 'Hash',
   },
 }

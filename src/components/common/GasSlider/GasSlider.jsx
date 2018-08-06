@@ -5,14 +5,14 @@
 
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { Slider } from 'material-ui'
+import Slider from '@material-ui/lab/Slider'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { GAS_SLIDER_MULTIPLIER_CHANGE } from '@chronobank/core/redux/session/actions'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
+import { GAS_SLIDER_MULTIPLIER_CHANGE } from '@chronobank/core/redux/session/constants'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
-import { ETH, FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/actions'
+import { ETH, FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
 import './GasSlider.scss'
 import { prefix } from './lang'
 
@@ -45,11 +45,9 @@ function mapDispatchToProps (dispatch, ownProps) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class GasSlider extends PureComponent {
   static propTypes = {
-    isLocal: PropTypes.bool,
     handleChange: PropTypes.func,
     value: PropTypes.number,
     token: PropTypes.instanceOf(TokenModel),
-    onDragStop: PropTypes.func,
     hideTitle: PropTypes.bool,
     disabled: PropTypes.bool,
     initialValue: PropTypes.number,
@@ -82,7 +80,6 @@ export default class GasSlider extends PureComponent {
         </div>
         <Slider
           disabled={this.props.disabled}
-          sliderStyle={{ marginBottom: 0, marginTop: 5 }}
           value={this.props.initialValue || this.props.value}
           {...FEE_RATE_MULTIPLIER}
           onChange={this.handleSliderMove}

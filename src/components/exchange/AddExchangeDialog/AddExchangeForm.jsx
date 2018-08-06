@@ -12,12 +12,13 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
-import { DUCK_MAIN_WALLET } from '@chronobank/core/redux/mainWallet/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import BalancesCollection from '@chronobank/core/models/tokens/BalancesCollection'
 import Amount from '@chronobank/core/models/Amount'
 import { TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
+import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
+import { FORM_CREATE_EXCHANGE } from 'components/constants'
 import './AddExchangeForm.scss'
 import TokenListSelector from './TokenListSelector'
 import validate from './validate'
@@ -26,11 +27,9 @@ export const prefix = (text) => {
   return `components.exchange.AddExchangeForm.${text}`
 }
 
-export const FORM_CREATE_EXCHANGE = 'createExchangeForm'
-
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_CREATE_EXCHANGE)
-  const balances = state.get(DUCK_MAIN_WALLET).balances()
+  const balances = getMainEthWallet(state).balances
   const tokens = state.get(DUCK_TOKENS)
   return {
     token: selector(state, 'token'),
@@ -90,12 +89,12 @@ export default class AddExchangeForm extends PureComponent {
               <Field
                 component={TextField}
                 name='sellPrice'
-                floatingLabelText={<Translate value={prefix('sellPrice')} />}
+                label={<Translate value={prefix('sellPrice')} />}
               />
               <Field
                 component={TextField}
                 name='buyPrice'
-                floatingLabelText={<Translate value={prefix('buyPrice')} />}
+                label={<Translate value={prefix('buyPrice')} />}
               />
             </div>
           </div>

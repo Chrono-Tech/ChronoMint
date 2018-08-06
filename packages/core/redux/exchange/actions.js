@@ -3,37 +3,41 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import tokenService from '../../services/TokenService'
 import BigNumber from 'bignumber.js'
-import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import Immutable from 'immutable'
+import tokenService from '../../services/TokenService'
+import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import ExchangeOrderModel from '../../models/exchange/ExchangeOrderModel'
-import { DUCK_SESSION } from '../session/actions'
+import { DUCK_SESSION } from '../session/constants'
 import exchangeService from '../../services/ExchangeService'
-import { fetchTokenBalance, WALLET_ALLOWANCE } from '../mainWallet/actions'
+import { fetchTokenBalance } from '../mainWallet/actions'
+import { WALLET_ALLOWANCE } from '../mainWallet/constants'
 import TokenModel from '../../models/tokens/TokenModel'
-import { DUCK_TOKENS, subscribeOnTokens } from '../tokens/actions'
+import { subscribeOnTokens } from '../tokens/actions'
+import { DUCK_TOKENS } from '../tokens/constants'
 import AllowanceModel from '../../models/wallet/AllowanceModel'
 import Amount from '../../models/Amount'
 
-export const DUCK_EXCHANGE = 'exchange'
+import {
+  DUCK_EXCHANGE,
+  EXCHANGE_EXCHANGES_LIST_GETTING_FINISH,
+  EXCHANGE_EXCHANGES_LIST_GETTING_FINISH_CONCAT,
+  EXCHANGE_EXCHANGES_LIST_GETTING_START,
+  EXCHANGE_GET_DATA_FINISH,
+  EXCHANGE_GET_DATA_START,
+  // EXCHANGE_GET_ORDERS_FINISH,
+  // EXCHANGE_GET_ORDERS_START,
+  EXCHANGE_GET_OWNERS_EXCHANGES_FINISH,
+  EXCHANGE_GET_OWNERS_EXCHANGES_START,
+  EXCHANGE_INIT,
+  EXCHANGE_MIDDLEWARE_DISCONNECTED,
+  EXCHANGE_REMOVE_FOR_OWNER,
+  EXCHANGE_SET_FILTER,
+  EXCHANGE_SET_PAGES_COUNT,
+  EXCHANGE_UPDATE,
+  EXCHANGE_UPDATE_FOR_OWNER,
+} from './constants'
 
-export const EXCHANGE_INIT = 'exchange/INIT'
-export const EXCHANGE_GET_ORDERS_START = 'exchange/GET_ORDERS_START'
-export const EXCHANGE_SET_PAGES_COUNT = 'exchange/EXCHANGE_SET_PAGES_COUNT'
-export const EXCHANGE_GET_ORDERS_FINISH = 'exchange/GET_ORDERS_FINISH'
-export const EXCHANGE_GET_DATA_START = 'exchange/GET_DATA_START'
-export const EXCHANGE_GET_DATA_FINISH = 'exchange/GET_DATA_FINISH'
-export const EXCHANGE_SET_FILTER = 'exchange/EXCHANGE_SET_FILTER'
-export const EXCHANGE_REMOVE_FOR_OWNER = 'exchange/EXCHANGE_REMOVE_FOR_OWNER'
-export const EXCHANGE_UPDATE = 'exchange/EXCHANGE_UPDATE'
-export const EXCHANGE_UPDATE_FOR_OWNER = 'exchange/EXCHANGE_UPDATE_FOR_OWNER'
-export const EXCHANGE_MIDDLEWARE_DISCONNECTED = 'exchange/EXCHANGE_MIDDLEWARE_DISCONNECTED'
-export const EXCHANGE_EXCHANGES_LIST_GETTING_START = 'exchange/EXCHANGE_EXCHANGES_LIST_GETTING_START'
-export const EXCHANGE_EXCHANGES_LIST_GETTING_FINISH = 'exchange/EXCHANGE_EXCHANGES_LIST_GETTING_FINISH'
-export const EXCHANGE_EXCHANGES_LIST_GETTING_FINISH_CONCAT = 'exchange/EXCHANGE_EXCHANGES_LIST_GETTING_FINISH_CONCAT0'
-export const EXCHANGE_GET_OWNERS_EXCHANGES_START = 'exchange/EXCHANGE_GET_OWNERS_EXCHANGES_START'
-export const EXCHANGE_GET_OWNERS_EXCHANGES_FINISH = 'exchange/EXCHANGE_GET_OWNERS_EXCHANGES_FINISH'
 const PAGE_SIZE = 20
 
 export const exchange = (isBuy: boolean, amount: BigNumber, exchange: ExchangeOrderModel) => async (dispatch, getState) => {
@@ -92,7 +96,6 @@ export const getTokensAllowance = (exchange: ExchangeOrderModel) => async (dispa
   const { account } = getState().get(DUCK_SESSION)
   const dao = tokenService.getDAO(token)
   const allowance = await dao.getAccountAllowance(account, exchange.address())
-  console.log('--actions#', 2)
   dispatch({
     type: WALLET_ALLOWANCE, allowance: new AllowanceModel({
       amount: new Amount(allowance, token.id()),
@@ -209,7 +212,7 @@ export const watchExchanges = () => async (dispatch, getState) => {
     if (account === tx.args.user) {
       const exchangeManageDAO = await contractsManagerDAO.getExchangeManagerDAO()
       const exchangeAddress = tx.args.exchange
-      const exchangeData = await exchangeManageDAO.getExchangeData([ exchangeAddress ], getState().get(DUCK_TOKENS))
+      const exchangeData = await exchangeManageDAO.getExchangeData([exchangeAddress], getState().get(DUCK_TOKENS))
       const exchange = exchangeData.item(exchangeAddress)
       dispatch(getAssetsSymbols())
       dispatch(subscribeOnTokens((token: TokenModel) => () => {
@@ -258,8 +261,9 @@ export const watchExchanges = () => async (dispatch, getState) => {
   exchangeService.on('Sell', async (tx) => {
     const state = getState().get(DUCK_EXCHANGE)
     const tokens = getState().get(DUCK_TOKENS)
+    const { account } = getState().get(DUCK_SESSION)
     const exchange = getExchangeFromState(state, tx.exchange)
-    dispatch(fetchTokenBalance(tokens.item('ETH')))
+    dispatch(fetchTokenBalance(tokens.item('ETH'), account))
     dispatch(updateExchange(exchange
       .ethBalance(exchange.ethBalance().minus(tx.ethAmount)),
     ))

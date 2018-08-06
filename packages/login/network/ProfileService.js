@@ -5,11 +5,18 @@
 
 import EventEmitter from 'events'
 import axios from 'axios'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 
-const PROFILE_BACKEND_REST_URL = 'https://backend.profile.tp.ntr1x.com'
-const GET_PERSONS_REST = '/api/v1/security/persons/query'
-const GET_SIGNATURE_REST = '/api/v1/security/signin/signature'
-const PURPOSE_VALUE = 'exchange-session'
+const PROFILE_BACKEND_REST_URL = 'https://backend.profile.tp.ntr1x.com/'
+const basePath = '/api/v1'
+const GET_PERSONS_REST = `${basePath}/security/persons/query`
+const GET_SIGNATURE_REST = `${basePath}/security/signin/signature`
+const UPDATE_PROFILE_COMBINE = `${basePath}/security/me/profile/combine/update`
+
+const MEDIA_IMAGE_UPLOAD = `${basePath}/media/image/upload`
+const MEDIA_IMAGE_DOWNLOAD = (imageId = '') => `${basePath}/media/image/${imageId}`
+
+const PURPOSE_VALUE = 'exchange'
 
 class ProfileService extends EventEmitter {
   connectStore (store) {
@@ -17,15 +24,15 @@ class ProfileService extends EventEmitter {
     this._dispatch = store.dispatch
   }
 
-  getProfileHost(){
+  getProfileHost () {
     return PROFILE_BACKEND_REST_URL
   }
 
-  getServerProvider(){
+  getServerProvider () {
     return axios.create({ baseURL: this.getProfileHost() })
   }
 
-  withAuthorization(authorization, config = {})  {
+  withAuthorization (authorization, config = {}) {
     return {
       ...config,
       headers: {
@@ -35,7 +42,7 @@ class ProfileService extends EventEmitter {
     }
   }
 
-  withAuthorizaionSignature(signature, config = {}) {
+  withAuthorizaionSignature (signature, config = {}) {
     return {
       ...config,
       headers: {
@@ -45,18 +52,18 @@ class ProfileService extends EventEmitter {
     }
   }
 
-  getPurposeData(){
-    return {'purpose': PURPOSE_VALUE}
+  getPurposeData () {
+    return { 'purpose': PURPOSE_VALUE }
   }
 
-  getSignData(){
+  getSignData () {
     return JSON.stringify({
       body: this.getPurposeData(),
       url: GET_SIGNATURE_REST,
     })
   }
 
-  async getProfile(signature){
+  async getProfile (signature) {
     const service = this.getServerProvider()
 
     const body = this.getPurposeData()
@@ -66,12 +73,72 @@ class ProfileService extends EventEmitter {
     return data
   }
 
-  async getPersonInfo(addresses = []){
+  async getPersonInfo (addresses = []) {
     const service = this.getServerProvider()
 
     const personInfo = await service.post(GET_PERSONS_REST, addresses)
 
     return personInfo
+  }
+
+  async updateUserProfile ({ avatar, userName = null, email = null, company = null, website = null, phone = null }){
+    const state = this._store.getState()
+
+    const { profileSignature } = state.get(DUCK_SESSION)
+    const token = profileSignature && profileSignature.token || ''
+
+    const service = this.getServerProvider()
+
+    const { data } = await service.post(UPDATE_PROFILE_COMBINE, {
+      avatar: avatar || null,
+      userName: userName || null,
+      company: company || null,
+      email: email || null,
+      website: website || null,
+      phone: phone || null,
+    }, this.withAuthorization(token))
+
+    return data
+  }
+
+  async avatarUpload (file) {
+    const state = this._store.getState()
+
+    const { profileSignature } = state.get(DUCK_SESSION)
+    const token = profileSignature && profileSignature.token || ''
+
+    const service = this.getServerProvider()
+
+    const formData = new FormData()
+    formData.append('image', file, file.name)
+
+    const { data } = await service.post(
+      MEDIA_IMAGE_UPLOAD,
+      formData,
+      this.withAuthorization(token, {
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      })
+    )
+
+    return data
+  }
+
+  async avatarDownload (imgId) {
+    const state = this._store.getState()
+
+    const { profileSignature } = state.get(DUCK_SESSION)
+    const token = profileSignature && profileSignature.token || ''
+
+    const service = this.getServerProvider()
+
+    const { data } = await service.get(
+      MEDIA_IMAGE_DOWNLOAD(imgId),
+      this.withAuthorization(token)
+    )
+
+    return data
   }
 
 }
