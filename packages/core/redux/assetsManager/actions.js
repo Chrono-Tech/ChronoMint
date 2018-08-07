@@ -535,6 +535,7 @@ const getPauseStatus = (address: string) => async (dispatch, getState) => {
     const chronoBankAssetDAO = await assetsManagerDAO.getChronoBankAssetDAO(address)
     isPaused = await chronoBankAssetDAO.getPauseStatus()
   } catch (e) {
+    console.log(e)
     // eslint-disable-next-line
     console.log(e.message)
   }
