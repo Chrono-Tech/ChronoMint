@@ -10,21 +10,8 @@ import Amount from '../models/Amount'
 import TokenModel from '../models/tokens/TokenModel'
 import TxExecModel from '../models/TxExecModel'
 import TxModel from '../models/TxModel'
-import AbstractContractDAO from './AbstractContractDAO'
 import AbstractTokenDAO from './AbstractTokenDAO'
-
-//#region CONSTANTS
-
-import {
-  BLOCKCHAIN_ETHEREUM,
-  EVENT_NEW_BLOCK,
-  EVENT_NEW_TRANSFER,
-} from './constants'
-import {
-  FETCH_NEW_BALANCE,
-} from './constants/EthereumDAO'
-
-//#endregion CONSTANTS
+import { BLOCKCHAIN_ETHEREUM, EVENT_NEW_BLOCK } from './constants'
 
 const transferSignature = '0x940c4b3549ef0aaff95807dc27f62d88ca15532d1bf535d7d63800f40395d16c'
 const signatureDefinition = {
@@ -83,11 +70,9 @@ export class EthereumDAO extends AbstractTokenDAO {
 
   handleBlockData = async (event) => {
     const block = await this.web3.eth.getBlock(event.hash, true)
-    // TODO @abdulov remove console.log
-    console.log('%c block', 'background: #222; color: #fff', block)
     setImmediate(() => {
-      this.emit(EVENT_NEW_BLOCK, { blockNumber: block.number })
       if (block && block.transactions) {
+        this.emit(EVENT_NEW_BLOCK, { blockNumber: block.number })
         for (const tx of block.transactions) {
           this.emit('tx', tx)
         }
@@ -124,7 +109,6 @@ export class EthereumDAO extends AbstractTokenDAO {
   }
 
   async getToken () {
-    const feeRate = await this.getGasPrice()
     return new TokenModel({
       name: 'Ethereum', // ???
       symbol: this._symbol,

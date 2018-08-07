@@ -75,35 +75,35 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
    *
    * @param symbol
    * @param amount
-   * @returns {Promise<void>}
+   * @returns {{from, to, value, data}}
    */
-  async reissueAsset (symbol, amount) {
+  reissueAsset (symbol, amount) {
     return this._tx(TX_REISSUE_ASSET, [symbol, amount])
   }
 
   /**
    *
-   * @returns {Promise<void>}
+   * @returns {{from, to, value, data}}
    */
-  async createPlatform () {
+  createPlatform () {
     return this._tx(TX_CREATE_PLATFORM)
   }
 
   /**
    *
    * @param address
-   * @returns {Promise<void>}
+   * @returns {{from, to, value, data}}
    */
-  async attachPlatform (address) {
+  attachPlatform (address) {
     return this._tx(TX_ATTACH_PLATFORM, [address])
   }
 
   /**
    *
    * @param address
-   * @returns {Promise<void>}
+   * @returns {{from, to, value, data}}
    */
-  async detachPlatform (address) {
+  detachPlatform (address) {
     return this._tx(TX_DETACH_PLATFORM, [address])
   }
 

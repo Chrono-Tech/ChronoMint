@@ -7,7 +7,6 @@ import BigNumber from 'bignumber.js'
 import TokenModel from '../models/tokens/TokenModel'
 import AbstractTokenDAO from './AbstractTokenDAO'
 import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'
-import TxExecModel from '../models/TxExecModel'
 import Amount from '../models/Amount'
 
 //#region CONSTANTS
@@ -105,7 +104,6 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
         this.handleApprovalData(data)
         break
     }
-    this.emit(data.event, data)
   }
 
   handleTransferChanged = (data) => {
@@ -145,10 +143,10 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
 
   /**
    * Create a tx execute model
-   * @param from {string} - address from
-   * @param to {string}  - address to
-   * @param amount {Amount} - amount of tokens
-   * @returns {TxExecModel}
+   * @param from
+   * @param to
+   * @param amount
+   * @returns {{from: string, to: *, value: BigNumber, data: string}}
    */
   transfer (from: string, to: string, amount: Amount): Promise {
     const data = this.contract.methods.transfer(to, amount).encodeABI()
