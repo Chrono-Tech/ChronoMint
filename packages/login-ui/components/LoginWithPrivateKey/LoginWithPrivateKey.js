@@ -22,7 +22,7 @@ class LoginWithPrivateKey extends PureComponent {
   }
 
   render () {
-    const { handleSubmit, error, previousPage } = this.props
+    const { handleSubmit, error, previousPage, submitting } = this.props
 
     return (
       <form styleName='form' name={FORM_PRIVATE_KEY_LOGIN_PAGE} onSubmit={handleSubmit}>
@@ -52,6 +52,7 @@ class LoginWithPrivateKey extends PureComponent {
             styleName='button'
             buttonType='login'
             type='submit'
+            isLoading={submitting}
           >
             <Translate value='LoginWithPrivateKey.submit' />
           </Button>
