@@ -32,11 +32,7 @@ export default class ChronoBankPlatformDAO extends AbstractContractDAO {
     super.connect(web3, options)
 
     this.allEventsEmitter = this.history.events.allEvents({})
-      .on('data', this.handleAllEventsData)
-  }
-
-  handleAllEventsData = (data) => {
-    this.emit(data.event, data)
+      .on('data', this.handleEventsData)
   }
 
   disconnect () {
@@ -52,17 +48,9 @@ export default class ChronoBankPlatformDAO extends AbstractContractDAO {
     if (!data.event) {
       return
     }
-    console.log('ChronoBankPlatformDAO handleEventsData: ', data.event, data)
+
+    console.log('ChronoBankPlatformDAO handleEventsData: ', data.event, this, data)
     this.emit(data.event, data)
-  }
-
-  handleEventsChanged (data) {
-    console.log('ChronoBankPlatformDAO handleEventsChanged: ', data.event, data)
-  }
-
-  handleEventsError (data) {
-    console.log('ChronoBankPlatformDAO handleEventsError: ', data.event, data)
-    this.emit(data.event + '_error', data)
   }
 
   reissueAsset (token, value) {
@@ -88,11 +76,11 @@ export default class ChronoBankPlatformDAO extends AbstractContractDAO {
   }
 
   watchIssue (callback) {
-    return this.on(TX_ISSUE, (tx) => callback(tx))
+    return this.on(TX_ISSUE, (data) => callback(data))
   }
 
   watchRevoke (callback) {
-    return this.on(TX_REVOKE, (tx) => callback(tx))
+    return this.on(TX_REVOKE, (data) => callback(data))
   }
 
   watchManagers (callback) {

@@ -61,14 +61,14 @@ class AssetsManagerService extends EventEmitter {
     }
 
     return Promise.all([
-      dao.watchIssue((tx) => {
-        this.emit(TX_ISSUE, tx)
+      dao.watchIssue((data) => {
+        this.emit(TX_ISSUE, data)
       }),
-      dao.watchRevoke((tx) => {
-        this.emit(TX_REVOKE, tx)
+      dao.watchRevoke((data) => {
+        this.emit(TX_REVOKE, data)
       }),
-      dao.watchManagers((tx) => {
-        this.emit(TX_OWNERSHIP_CHANGE, tx)
+      dao.watchManagers((data) => {
+        this.emit(TX_OWNERSHIP_CHANGE, data)
       }),
     ])
   }

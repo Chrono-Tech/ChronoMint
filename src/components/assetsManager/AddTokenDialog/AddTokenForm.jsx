@@ -66,7 +66,7 @@ function mapStateToProps (state) {
 
   return {
     formValues: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('values'),
-    formErrors: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('syncErrors'),
+    formErrors: (form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('syncErrors')) || {},
     platformsList: assetsManager.usersPlatforms(),
   }
 }
@@ -91,7 +91,14 @@ class Platform extends PureComponent {
   static propTypes = {
     platform: PropTypes.instanceOf(Object),
     selectedPlatform: PropTypes.instanceOf(Object),
+    formErrors: PropTypes.instanceOf(Object),
+    formValues: PropTypes.instanceOf(Object),
     onClick: PropTypes.func,
+  }
+
+  static defaultProps = {
+    formValues: null,
+    formErrors: {},
   }
 
   handleClick = () => this.props.onClick(this.props.platform)
