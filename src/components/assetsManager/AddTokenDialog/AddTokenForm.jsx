@@ -280,7 +280,7 @@ export default class AddTokenForm extends PureComponent {
     const formValues = this.props.formValues
     const tokenSymbol = formValues && formValues.get('tokenSymbol')
     const smallestUnit = formValues && formValues.get('smallestUnit')
-    const amount = formValues && formValues.get('amount')
+    const amount = formValues && +formValues.get('amount')
     const description = formValues && formValues.get('description')
     const platform = formValues && formValues.get('platform')
     const renderPlatform = (platform) => {

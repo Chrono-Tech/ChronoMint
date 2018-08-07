@@ -68,6 +68,10 @@ export default class TokenModel extends abstractFetchingModel({
     return this.set('symbol', v)
   }
 
+  setAddress (address) {
+    return this.set('address', address)
+  }
+
   managersList (value): Array {
     return this._getSet('managersList', value)
   }

@@ -68,8 +68,7 @@ export const login = (account) => async (dispatch, getState) => {
     ? web3Factory(network)
     : null
 
-  dispatch(initEthereum({ web3 }))
-
+  await dispatch(initEthereum({ web3 }))
   await dispatch(watcher({ web3 }))
 
   const userManagerDAO = daoByType('UserManager')(getState())
