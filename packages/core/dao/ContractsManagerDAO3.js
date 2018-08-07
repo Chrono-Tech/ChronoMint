@@ -34,13 +34,13 @@ export default class ContractsManagerDAO extends EventEmitter {
   }
 
   async getContractAddressByType (type: String) {
-    let dd
+    let address
     try {
-      dd = await this.contract.methods.getContractAddressByType(this.web3.utils.stringToHex(type)).call()
+      address = await this.contract.methods.getContractAddressByType(this.web3.utils.stringToHex(type)).call()
     } catch (e) {
       console.log('getContractAddressByType error: ', e)
     }
-    return dd
+    return address
   }
 
   async isExists (address: String) {

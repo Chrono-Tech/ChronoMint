@@ -18,7 +18,7 @@ import {
   UserManagerABI,
   VotingManagerABI,
   WalletsManagerABI,
-} from './abi/'
+} from './abi'
 
 import ContractsManagerDAO from './ContractsManagerDAO3'
 import AssetHolderDAO from './AssetHolderDAO'
@@ -35,7 +35,6 @@ import PlatformTokenExtensionGatewayManagerEmitterDAO from './PlatformTokenExten
 
 export const CONTRACTS_MANAGER = new ContractModel({
   type: 'ContractsManager',
-  address: ContractsManagerABI.networks['4'].address, // @todo Add Network selection
   abi: ContractsManagerABI,
   DAOClass: ContractsManagerDAO,
 })
