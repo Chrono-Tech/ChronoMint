@@ -31,7 +31,7 @@ class ResetPassword extends PureComponent {
   }
 
   render () {
-    const { handleSubmit, selectedWallet } = this.props
+    const { handleSubmit, selectedWallet, submitting } = this.props
 
     return (
       <form styleName='form' name={FORM_RESET_PASSWORD} onSubmit={handleSubmit}>
@@ -72,6 +72,7 @@ class ResetPassword extends PureComponent {
             styleName='button'
             buttonType='login'
             type='submit'
+            isLoading={submitting}
           >
             <Translate value='ResetPassword.reset' />
           </Button>
