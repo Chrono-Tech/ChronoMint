@@ -4,7 +4,6 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import TokenModel from '../models/tokens/TokenModel'
 import AbstractTokenDAO from './AbstractTokenDAO'
 import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'
@@ -12,11 +11,6 @@ import TxExecModel from '../models/TxExecModel'
 import Amount from '../models/Amount'
 
 //#region CONSTANTS
-
-import {
-  DEFAULT_TX_OPTIONS,
-  ETH,
-} from './constants'
 
 //#endregion CONSTANTS
 
@@ -35,14 +29,10 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
     this.contract = new web3.eth.Contract(this.abi.abi, this.token.address(), options)
     this.web3 = web3
 
-    this.transferEmitter = this.contract.events.Transfer({})
-      .on('data', this.handleTransferData.bind(this))
-      .on('changed', this.handleTransferChanged.bind(this))
-      .on('error', this.handleTransferError.bind(this))
-    this.approvalEmitter = this.contract.events.Approval({})
-      .on('data', this.handleApprovalData.bind(this))
-      .on('changed', this.handleApprovalChanged.bind(this))
-      .on('error', this.handleApprovalError.bind(this))
+    this.allEventsEmitter = this.contract.events.allEvents({})
+      .on('data', this.handleAllEventsData)
+      .on('changed', this.handleTransferChanged)
+      .on('error', this.handleTransferError)
   }
 
   disconnect () {
@@ -106,9 +96,26 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
     return tx
   }
 
+  handleAllEventsData = (data) => {
+    switch (data.event) {
+      case 'transfer':
+        this.handleTransferData(data)
+        break
+      case 'approval':
+        this.handleApprovalData(data)
+        break
+    }
+    this.emit(data.event, data)
+  }
+
+  handleTransferChanged = (data) => {
+  }
+
+  handleTransferError = (e) => {
+    console.log(e)
+  }
+
   handleTransferData (data) {
-    // eslint-disable-next-line no-console
-    console.log('[ERC20TokenDAO] Transfer occurred', data)
     const { returnValues } = data
     setImmediate(() => {
       this.emit('transfer', {
@@ -123,19 +130,7 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
     })
   }
 
-  handleTransferChanged (event) {
-    // eslint-disable-next-line no-console
-    console.warn('[ERC20TokenDAO] Transfer event changed', event)
-  }
-
-  handleTransferError (error) {
-    // eslint-disable-next-line no-console
-    console.error('[ERC20TokenDAO] Error in Transfer event subscription', error)
-  }
-
   handleApprovalData (data) {
-    // eslint-disable-next-line no-console
-    console.log('[ERC20TokenDAO] Approve occurred', data)
     const { returnValues } = data
     setImmediate(() => {
       this.emit('approval', {
@@ -146,16 +141,6 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
         value: new BigNumber(returnValues.value),
       })
     })
-  }
-
-  handleApprovalChanged (event) {
-    // eslint-disable-next-line no-console
-    console.warn('[ERC20TokenDAO] Approval event changed', event)
-  }
-
-  handleApprovalError (error) {
-    // eslint-disable-next-line no-console
-    console.error('[ERC20TokenDAO] Error in Approval event subscription', error)
   }
 
   /**

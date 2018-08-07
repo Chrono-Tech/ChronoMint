@@ -167,8 +167,7 @@ export const givethNetworkMap = [
 export const chronoBankMainnet = {
   ...MAINNET_BASE,
   host: 'mainnet-full-parity-rpc.chronobank.io/',
-  // ws: 'wss://mainnet-full-geth-ws.chronobank.io',
-  ws: 'wss://mainnet-full-parity-ws.chronobank.io',
+  ws: 'wss://mainnet-full-geth-ws.chronobank.io',
 }
 
 export const chronoBankTestnet = {

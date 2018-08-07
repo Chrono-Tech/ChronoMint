@@ -17,15 +17,14 @@ export default (state = initialState, action) => {
     case REHYDRATE: {
       const incoming = action.payload.wallets
       if (incoming) {
-        const list = {}
-        Object.entries(incoming.list)
-          .forEach(([key, wallet]) => {
-            if (wallet.isDerived) {
-              list[key] = wallet
-            }
-          })
         return {
-          list,
+          list: Object.entries(incoming.list)
+            .reduce((accumulator, [key, wallet]) => {
+              if (wallet.isDerived) {
+                accumulator[key] = wallet
+              }
+              return accumulator
+            }, {}),
         }
       }
       return state

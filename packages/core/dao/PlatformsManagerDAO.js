@@ -32,8 +32,6 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
 
     this.allEventsEmitter = this.history.events.allEvents({})
       .on('data', this.handleEventsData)
-      .on('changed', this.handleEventsChanged)
-      .on('error', this.handleEventsError)
   }
 
   disconnect () {
@@ -51,15 +49,6 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
     }
     console.log('PlatformsManagerDAO handleEventsData: ', data.event, data)
     this.emit(data.event, data)
-  }
-
-  handleEventsChanged = (data) => {
-    console.log('PlatformsManagerDAO handleEventsChanged: ', data.event, data)
-  }
-
-  handleEventsError = (data) => {
-    console.log('PlatformsManagerDAO handleEventsError: ', data.event, data)
-    this.emit(data.event + '_error', data)
   }
 
   /**
@@ -89,7 +78,7 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
    * @returns {Promise<void>}
    */
   async reissueAsset (symbol, amount) {
-    return this._tx(TX_REISSUE_ASSET, [ symbol, amount ])
+    return this._tx(TX_REISSUE_ASSET, [symbol, amount])
   }
 
   /**
@@ -106,7 +95,7 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
    * @returns {Promise<void>}
    */
   async attachPlatform (address) {
-    return this._tx(TX_ATTACH_PLATFORM, [ address ])
+    return this._tx(TX_ATTACH_PLATFORM, [address])
   }
 
   /**
@@ -115,7 +104,7 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
    * @returns {Promise<void>}
    */
   async detachPlatform (address) {
-    return this._tx(TX_DETACH_PLATFORM, [ address ])
+    return this._tx(TX_DETACH_PLATFORM, [address])
   }
 
   /**
@@ -133,7 +122,7 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
     switch (func) {
       case TX_ATTACH_PLATFORM:
         return {
-          platform: args[ '_platform' ],
+          platform: args['_platform'],
         }
       default:
         return args

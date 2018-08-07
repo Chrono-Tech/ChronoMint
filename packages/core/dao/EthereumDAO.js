@@ -66,8 +66,7 @@ export class EthereumDAO extends AbstractTokenDAO {
     this.web3 = web3
 
     this.logsEmitter = this.web3.eth.subscribe('newBlockHeaders')
-      .on('data', this.handleBlockData.bind(this))
-      .on('error', this.handleBlockError.bind(this))
+      .on('data', this.handleBlockData)
   }
 
   disconnect () {
@@ -82,21 +81,18 @@ export class EthereumDAO extends AbstractTokenDAO {
     return this.web3 != null // nil check
   }
 
-  async handleBlockData (data) {
-    const block = await this.web3.eth.getBlock(data.hash, true)
+  handleBlockData = async (event) => {
+    const block = await this.web3.eth.getBlock(event.hash, true)
+    // TODO @abdulov remove console.log
+    console.log('%c block', 'background: #222; color: #fff', block)
     setImmediate(() => {
-      this.emit(EVENT_NEW_BLOCK, { blockNumber: block.blockNumber || block.number })
+      this.emit(EVENT_NEW_BLOCK, { blockNumber: block.number })
       if (block && block.transactions) {
         for (const tx of block.transactions) {
           this.emit('tx', tx)
         }
       }
     })
-  }
-
-  handleBlockError (error) {
-    // eslint-disable-next-line no-console
-    console.error('[EthereumDao] Error in Transfer event subscription', error)
   }
 
   getGasPrice (): Promise {
@@ -136,7 +132,6 @@ export class EthereumDAO extends AbstractTokenDAO {
       blockchain: BLOCKCHAIN_ETHEREUM,
       decimals: this._decimals,
       isERC20: false,
-      feeRate: this.web3.utils.toWei(this.web3.utils.fromWei(feeRate), 'gwei'), // gas price in gwei
     })
   }
 
