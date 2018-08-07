@@ -14,6 +14,7 @@ import {
   navigateToSelectWallet,
   navigateToSelectImportMethod,
   navigateToLoginPage,
+  navigateBack,
 } from '@chronobank/login-ui/redux/actions'
 import {
   LoginWithWalletContainer,
@@ -22,7 +23,6 @@ import {
 import { SubmissionError } from 'redux-form'
 import profileService from '@chronobank/login/network/ProfileService'
 import { getAddress } from '@chronobank/core/redux/persistAccount/utils'
-import { navigateBack } from "../../../../packages/login-ui/redux/actions";
 
 function mapDispatchToProps (dispatch) {
   return {

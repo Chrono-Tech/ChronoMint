@@ -72,7 +72,7 @@ export default class QRIcon extends PureComponent {
           open={this.state.isQROpen}
           anchorEl={this.state.qrAnchorEl}
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          onClose={() => this.handleQRClose()}
+          onClose={this.handleQRClose.bind(this)}
           style={{ zIndex: 3000 }}
         >
           {this.renderQR()}
