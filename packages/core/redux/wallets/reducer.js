@@ -16,7 +16,18 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case REHYDRATE: {
       const incoming = action.payload.wallets
-      if (incoming) return incoming
+      if (incoming) {
+        const list = {}
+        Object.entries(incoming.list)
+          .forEach(([key, wallet]) => {
+            if (wallet.isDerived) {
+              list[key] = wallet
+            }
+          })
+        return {
+          list,
+        }
+      }
       return state
     }
     case a.WALLETS_SET:

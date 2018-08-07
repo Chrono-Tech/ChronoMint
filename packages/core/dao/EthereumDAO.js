@@ -64,10 +64,16 @@ export class EthereumDAO extends AbstractTokenDAO {
       this.disconnect()
     }
     this.web3 = web3
+
+    this.logsEmitter = this.web3.eth.subscribe('newBlockHeaders')
+      .on('data', this.handleBlockData.bind(this))
+      .on('error', this.handleBlockError.bind(this))
   }
 
   disconnect () {
     if (this.isConnected) {
+      this.logsEmitter.removeAllListeners()
+      this.logsEmitter = null
       this.web3 = null
     }
   }
@@ -76,10 +82,21 @@ export class EthereumDAO extends AbstractTokenDAO {
     return this.web3 != null // nil check
   }
 
-  watch (accounts: Array<string>): Promise {
-    return Promise.all([
-      this.watchTransfer(accounts),
-    ])
+  async handleBlockData (data) {
+    const block = await this.web3.eth.getBlock(data.hash, true)
+    setImmediate(() => {
+      this.emit(EVENT_NEW_BLOCK, { blockNumber: block.blockNumber || block.number })
+      if (block && block.transactions) {
+        for (const tx of block.transactions) {
+          this.emit('tx', tx)
+        }
+      }
+    })
+  }
+
+  handleBlockError (error) {
+    // eslint-disable-next-line no-console
+    console.error('[EthereumDao] Error in Transfer event subscription', error)
   }
 
   getGasPrice (): Promise {
@@ -227,41 +244,6 @@ export class EthereumDAO extends AbstractTokenDAO {
       console.log('Transfer failed', e)
       throw e
     }
-  }
-
-  async watchTransfer (accounts) {
-    const web3 = await this.web3.eth.getWeb3()
-    const filter = web3.eth.filter('latest')
-    const startTime = AbstractContractDAO._eventsWatchStartTime
-    this._addFilterEvent(filter)
-    filter.watch(async (e, r) => {
-      if (e) {
-        // eslint-disable-next-line
-        console.error('EthereumDAO watchTransfer', e)
-        return
-      }
-      const block = await this.web3.eth.getBlock(r, true)
-
-      this.emit(EVENT_NEW_BLOCK, { blockNumber: block.blockNumber || block.number })
-
-      const time = block.timestamp * 1000
-      if (time < startTime) {
-        return
-      }
-      const txs = block.transactions || []
-      txs.forEach((tx) => {
-        const condition = Array.isArray(accounts)
-          ? accounts.includes(tx.from) || accounts.includes(tx.to)
-          : accounts === tx.from || accounts === tx.to
-
-        if (condition) {
-          this.emit(FETCH_NEW_BALANCE)
-          if (tx.value.toNumber() > 0) {
-            this.emit(EVENT_NEW_TRANSFER, this._getTxModel(tx))
-          }
-        }
-      })
-    })
   }
 
   async getTransfer (id, account, skip, offset, tokens): Promise<TxModel> {

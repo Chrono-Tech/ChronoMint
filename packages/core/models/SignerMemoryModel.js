@@ -4,12 +4,11 @@
  */
 
 import hdKey from 'ethereumjs-wallet/hdkey'
+import bip39 from 'bip39'
+import Accounts from 'web3-eth-accounts'
+import SignerModel from './SignerModel'
 
-const bip39 = require('bip39')
-const Accounts = require('web3-eth-accounts')
-const SignerModel = require('./SignerModel')
-
-module.exports = class SignerMemoryModel extends SignerModel {
+export default class SignerMemoryModel extends SignerModel {
   constructor ({ wallet }) {
     super()
     this.wallet = wallet
