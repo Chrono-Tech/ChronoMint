@@ -6,7 +6,7 @@
 import BigNumber from 'bignumber.js'
 import { Checkbox, TextField } from 'redux-form-material-ui'
 import Select from 'redux-form-material-ui/es/Select'
-import { CircularProgress, MenuItem } from '@material-ui/core'
+import { CircularProgress, MenuItem, FormControlLabel } from '@material-ui/core'
 import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -279,8 +279,8 @@ export default class AddTokenForm extends PureComponent {
   renderTokenInfo () {
     const formValues = this.props.formValues
     const tokenSymbol = formValues && formValues.get('tokenSymbol')
-    const smallestUnit = formValues && formValues.get('smallestUnit')
-    const amount = formValues && formValues.get('amount')
+    const smallestUnit = (formValues && +formValues.get('smallestUnit')) || 0
+    const amount = (formValues && +formValues.get('amount')) || 0
     const description = formValues && formValues.get('description')
     const platform = formValues && formValues.get('platform')
     const renderPlatform = (platform) => {
@@ -302,7 +302,7 @@ export default class AddTokenForm extends PureComponent {
             })
           </div>
           <div>
-            <span styleName='layer'>{new BigNumber(amount || 0).toFixed(smallestUnit || 0)}</span>
+            <span styleName='layer'>{new BigNumber(amount).toFixed(smallestUnit)}</span>
             <span styleName='symbol'>{tokenSymbol || <Translate value={prefix('tokenSymbol')} />}</span>
           </div>
           <div styleName='platform'>
@@ -385,9 +385,13 @@ export default class AddTokenForm extends PureComponent {
             </div>
             <div className='row'>
               <div className='col-xs-12 col-sm-6'>
-                <Field
-                  component={Checkbox}
-                  name='reissuable'
+                <FormControlLabel
+                  control={
+                    <Field
+                      component={Checkbox}
+                      name='reissuable'
+                    />
+                  }
                   label={I18n.t(prefix('reissuable'))}
                 />
                 <Field
@@ -398,9 +402,13 @@ export default class AddTokenForm extends PureComponent {
                 />
               </div>
               <div className='col-xs-12 col-sm-6'>
-                <Field
-                  component={Checkbox}
-                  name='withFee'
+                <FormControlLabel
+                  control={
+                    <Field
+                      component={Checkbox}
+                      name='withFee'
+                    />
+                  }
                   label={I18n.t(prefix('withFee'))}
                 />
                 <Field

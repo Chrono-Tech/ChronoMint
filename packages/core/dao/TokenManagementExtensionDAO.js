@@ -65,8 +65,6 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
       ],
     )
 
-    console.log('createAssetWithoutFee Tx: ', tx)
-
     return tx
   }
 }
