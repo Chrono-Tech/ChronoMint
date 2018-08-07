@@ -8,6 +8,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { I18n } from '@chronobank/core-dependencies/i18n'
+import { FormControlLabel } from '@material-ui/core'
 import { Checkbox, TextField } from 'redux-form-material-ui'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { createPlatform } from '@chronobank/core/redux/assetsManager/actions'
@@ -46,14 +47,16 @@ export default class AddPlatformForm extends PureComponent {
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>
         <div styleName='dialogBody'>
-
-          <Field
-            styleName='checkboxField'
-            component={Checkbox}
-            name='alreadyHave'
+          <FormControlLabel
+            control={
+              <Field
+                styleName='checkboxField'
+                component={Checkbox}
+                name='alreadyHave'
+              />
+            }
             label={I18n.t(prefix('alreadyHave'))}
           />
-
           {
             alreadyHave
               ? <Field

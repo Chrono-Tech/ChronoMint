@@ -77,6 +77,7 @@ class AssetsManagerService extends EventEmitter {
 
   subscribeToAssets (assetCallback, account) {
     if (!this.platformTokenExtensionGatewayManagerEmitter) {
+      // eslint-disable-next-line
       console.warn('platformTokenExtensionGatewayManagerEmitter is empty and has to be imported into AssetManagerService')
       return
     }
