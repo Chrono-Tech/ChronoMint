@@ -52,7 +52,6 @@ class PollDetailsModel extends AbstractModel {
   }
 
   voteEntries () {
-    console.log('voteEntries: ', this.poll)
     const options = this.poll.options
     const votes = this.votes
 

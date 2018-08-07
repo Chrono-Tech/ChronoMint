@@ -44,7 +44,7 @@ export default class NetworkCreateModal extends PureComponent {
     network: null,
   }
 
-  handleDeleteNetwork(){
+  handleDeleteNetwork (){
     const { network, handleDeleteNetwork, handleCloseModal } = this.props
 
     if (network){
@@ -53,7 +53,7 @@ export default class NetworkCreateModal extends PureComponent {
     }
   }
 
-  renderNetworkAddress(){
+  renderNetworkAddress (){
     const { network } = this.props
 
     return (
@@ -61,6 +61,10 @@ export default class NetworkCreateModal extends PureComponent {
         <div>
           Address:<br />
           {network.url}
+        </div>
+        <div>
+          Socket:<br />
+          {network.ws}
         </div>
         <div>
           Name:<br />

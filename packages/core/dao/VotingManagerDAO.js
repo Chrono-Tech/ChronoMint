@@ -71,9 +71,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
     this.emit(data.event, data)
   }
 
-  handleEventsChanged = (data) => {
-    console.log('handleEventsChanged: ', data.event, data)
-  }
+  handleEventsChanged = (data) => {}
 
   handleEventsError = (data) => {
     console.log('handleEventsError: ', data.event, data)

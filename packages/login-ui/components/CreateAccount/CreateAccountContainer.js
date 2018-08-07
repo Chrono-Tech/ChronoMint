@@ -7,6 +7,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { stopSubmit } from 'redux-form/immutable'
 import { connect } from 'react-redux'
+import AccountProfileModel from '@chronobank/core/models/wallet/persistAccount/AccountProfileModel'
 import {
   navigateToSelectWallet,
 } from '../../redux/actions'
@@ -27,6 +28,7 @@ class CreateAccountContainer extends PureComponent {
     onSubmit: PropTypes.func,
     onSubmitSuccess: PropTypes.func,
     navigateToSelectWallet: PropTypes.func,
+    accountProfile: PropTypes.instanceOf(AccountProfileModel),
   }
 
   async handleSubmit (values) {
@@ -52,9 +54,14 @@ class CreateAccountContainer extends PureComponent {
   }
 
   render () {
+    const { accountProfile } = this.props
 
     return (
       <CreateAccount
+        accountProfile={accountProfile}
+        initialValues={{
+          walletName: accountProfile ? accountProfile.userName : '',
+        }}
         onSubmit={this.handleSubmit.bind(this)}
         onSubmitFail={this.handleSubmitFail.bind(this)}
         onSubmitSuccess={this.handleSubmitSuccess.bind(this)}

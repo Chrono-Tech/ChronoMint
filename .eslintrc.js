@@ -33,7 +33,6 @@ module.exports = {
     "eol-last": "warn",
     "import/prefer-default-export": "warn",
     "no-return-await": "warn",
-    "import-first": "warn",
     "react/forbid-prop-types": "warn",
     "global-require": "warn",
     "import/no-named-as-default-member": "warn",

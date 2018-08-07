@@ -16,10 +16,17 @@ export default (values) => {
 
   let urlErrors = new ErrorList()
   urlErrors.add(validator.required(url))
-  urlErrors.add(validator.url(url))
+  urlErrors.add(validator.urlAddress(url))
+
+  const ws = values.get('ws')
+
+  let wsErrors = new ErrorList()
+  wsErrors.add(validator.required(ws))
+  wsErrors.add(validator.urlAddress(ws))
 
   return {
     alias: aliasErrors.getErrors(),
     url: urlErrors.getErrors(),
+    ws: wsErrors.getErrors(),
   }
 }

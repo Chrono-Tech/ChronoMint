@@ -21,7 +21,7 @@ class LoginWithMnemonic extends PureComponent {
   }
 
   render () {
-    const { handleSubmit, error, previousPage } = this.props
+    const { handleSubmit, error, previousPage, submitting } = this.props
 
     return (
       <form styleName='form' name={FORM_MNEMONIC_LOGIN_PAGE} onSubmit={handleSubmit}>
@@ -51,6 +51,7 @@ class LoginWithMnemonic extends PureComponent {
             styleName='button'
             buttonType='login'
             type='submit'
+            isLoading={submitting}
           >
             <Translate value='LoginWithMnemonic.submit' />
           </Button>

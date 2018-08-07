@@ -399,8 +399,6 @@ export const setManagers = (tx) => async (dispatch, getState) => {
 }
 
 export const watchInitTokens = () => async (dispatch, getState) => {
-  console.log('watchInitTokens: ')
-
   await dispatch(getAssetsManagerData())
   dispatch(getTransactions())
   const state = getState()
