@@ -92,21 +92,6 @@ export const initAccountsSignature = () =>
     dispatch(NetworkActions.resetLoadingAccountsSignatures())
   }
 
-/*
- * Thunk dispatched by LoginForm screen.
- * TODO: to add description
- */
-export const initLoginPage = () =>
-  (dispatch) => {
-    dispatch(resetAllLoginFlags())
-    dispatch(NetworkActions.networkResetLoginSubmitting())
-    dispatch(initAccountsSignature())
-  }
-
-/*
- * Thunk dispatched by LoginForm screen.
- * Need to auth with imported account
- */
 export const handleWalletLogin = (wallet, password) => async (dispatch, getState) => {
   dispatch(NetworkActions.loading())
   dispatch(NetworkActions.clearErrors())
@@ -134,7 +119,7 @@ export const handleWalletLogin = (wallet, password) => async (dispatch, getState
       selectedProviderId,
       selectedNetworkId,
     )
-    dispatch(login(selectedAccount))
+    await dispatch(login(selectedAccount))
   }
 
 }
@@ -207,8 +192,8 @@ export const selectProviderWithNetwork = (networkId, providerId) => (dispatch) =
  * Thunk dispatched by "" screen.
  * TODO: to add description
  */
-export const handleSubmitCreateNetwork = (url, alias) => (dispatch) => {
-  dispatch(PersistAccountActions.customNetworkCreate(url, alias))
+export const handleSubmitCreateNetwork = (url, ws, alias) => (dispatch) => {
+  dispatch(PersistAccountActions.customNetworkCreate(url, ws, alias))
 }
 
 /*

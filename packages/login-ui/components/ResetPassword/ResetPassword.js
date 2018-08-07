@@ -17,7 +17,7 @@ import {
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import Button from 'components/common/ui/Button/Button'
-import UserRow from 'components/common/ui/UserRow/UserRow'
+import UserRow from '../UserRow/UserRow'
 import styles from 'layouts/Splash/styles'
 import {
   FORM_RESET_PASSWORD,
@@ -31,7 +31,7 @@ class ResetPassword extends PureComponent {
   }
 
   render () {
-    const { handleSubmit, selectedWallet } = this.props
+    const { handleSubmit, selectedWallet, submitting } = this.props
 
     return (
       <form styleName='form' name={FORM_RESET_PASSWORD} onSubmit={handleSubmit}>
@@ -72,6 +72,7 @@ class ResetPassword extends PureComponent {
             styleName='button'
             buttonType='login'
             type='submit'
+            isLoading={submitting}
           >
             <Translate value='ResetPassword.reset' />
           </Button>

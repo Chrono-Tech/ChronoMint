@@ -5,6 +5,7 @@
 
 import networkService from '@chronobank/login/network/NetworkService'
 import { clearErrors } from '@chronobank/login/redux/network/actions'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { MenuItem, SelectField } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -13,7 +14,7 @@ import { Translate } from 'react-redux-i18n'
 import styles from '../../components/stylesLoginPage'
 
 const mapStateToProps = (state) => {
-  const network = state.get('network')
+  const network = state.get(DUCK_NETWORK)
   return {
     selectedProviderId: network.selectedProviderId,
     providers: network.providers,

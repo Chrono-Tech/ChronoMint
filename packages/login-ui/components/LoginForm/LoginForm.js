@@ -13,7 +13,6 @@ import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
-import UserRow from 'components/common/ui/UserRow/UserRow'
 import { isLocalNode } from '@chronobank/login/network/settings'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import {
@@ -40,6 +39,8 @@ import {
   onSubmitLoginForm,
   onSubmitLoginFormFail,
 } from '../../redux/thunks'
+import UserRow from '../UserRow/UserRow'
+
 import styles from './styles'
 import './LoginForm.scss'
 
@@ -67,7 +68,7 @@ function mapDispatchToProps (dispatch) {
       await dispatch(onSubmitLoginForm(password))
     },
     onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitLoginFormFail(errors, submitErrors)),
-    initLoginPage: async () => dispatch(initLoginPage()),
+    initLoginPage: () => dispatch(initLoginPage()),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
     initAccountsSignature: () => dispatch(initAccountsSignature()),
     navigateToRecoverAccountPage: () => dispatch(navigateToRecoverAccountPage()),
@@ -120,6 +121,7 @@ class LoginPage extends React.Component {
       pristine,
       selectedWallet,
       valid,
+      submitting,
     } = this.props
 
     return (
@@ -157,19 +159,8 @@ class LoginPage extends React.Component {
               styleName='button'
               buttonType='login'
               type='submit'
-              label={isLoginSubmitting
-                ? (
-                  <span styleName='spinner-wrapper'>
-                    <img
-                      src={spinner}
-                      alt=''
-                      width={24}
-                      height={24}
-                    />
-                  </span>
-                )
-                : <Translate value='LoginForm.submitButton' />}
-              disabled={isLoginSubmitting}
+              label={<Translate value='LoginForm.submitButton' />}
+              isLoading={submitting}
             />
 
             {error ? (<div styleName='form-error'>{error}</div>) : null}

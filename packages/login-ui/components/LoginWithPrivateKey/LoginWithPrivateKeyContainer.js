@@ -28,7 +28,9 @@ class LoginWithPrivateKeyContainer extends PureComponent {
     onSubmitSuccess: PropTypes.func,
   }
 
-  handleSubmit (values) {
+  async handleSubmit (values) {
+    const { onSubmit } = this.props
+
     let privateKey = values.get('pk')
 
     privateKey = (privateKey || '').trim()
@@ -41,9 +43,7 @@ class LoginWithPrivateKeyContainer extends PureComponent {
       privateKey = privateKey.slice(2)
     }
 
-    return {
-      privateKey,
-    }
+    await onSubmit({ privateKey })
   }
 
   handleSubmitSuccess (result) {

@@ -1,0 +1,64 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.root {
+  text-align: center;
+  color: $color-white;
+  margin-top: -20px;
+}
+
+.title {
+  font-size: 300px;
+  font-weight: 700;
+  line-height: 270px;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 16px;
+  line-height: 22px;
+  margin-bottom: 52px;
+  color: $additionalData-color;
+}
+
+.link {
+  display: block;
+  color: $color-white;
+  text-decoration: none;
+  margin-top: 50px;
+  font-size: 24px;
+}
+
+.actions {
+  text-align: center;
+  margin-bottom: 62px;
+  line-height: 30px;
+  color: #fff;
+}
+
+.link {
+  color: $border-color;
+  margin:  0 auto 45px;
+  text-decoration: none;
+  font: 700 16px $font-proxima;
+  cursor: pointer;
+
+  &:hover {
+    color: #FFB54E;
+  }
+
+}
+
+.button {
+  text-align: center;
+  margin-bottom: 27px;
+
+  button {
+    padding: 0 30px;
+  }
+}

@@ -7,7 +7,6 @@ import PropTypes from 'prop-types'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
 import Button from 'components/common/ui/Button/Button'
-import UserRow from 'components/common/ui/UserRow/UserRow'
 import {
   getAccountAddress,
   getAccountAvatarImg,
@@ -15,6 +14,7 @@ import {
 } from '@chronobank/core/redux/persistAccount/utils'
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 import arrow from 'assets/img/icons/prev-white.svg'
+import UserRow from '../UserRow/UserRow'
 import './AccountSelector.scss'
 
 export default class AccountSelector extends PureComponent {

@@ -14,6 +14,9 @@ import { connect } from 'react-redux'
 import menu from 'menu'
 import { drawerHide } from 'redux/drawer/actions'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
+import {
+  DUCK_PERSIST_ACCOUNT,
+} from '@chronobank/core/redux/persistAccount/constants'
 import { logout } from '@chronobank/core/redux/session/actions'
 import chronWalletLogoSVG from 'assets/img/chronowallettext-white.svg'
 import ProfileModel from '@chronobank/core/models/ProfileModel'
@@ -34,7 +37,7 @@ import './DrawerMainMenu.scss'
 
 function mapStateToProps (state) {
   const { isCBE, profile } = state.get(DUCK_SESSION)
-  const selectedAccount = state.get('persistAccount').selectedWallet
+  const selectedAccount = state.get(DUCK_PERSIST_ACCOUNT).selectedWallet
   const accountProfileSummary = getAccountProfileSummary(state)
 
   return {

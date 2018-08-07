@@ -46,6 +46,19 @@ class NetworkCreateModalForm extends PureComponent {
 
         <Field
           component={TextField}
+          name='ws'
+          type='text'
+          label={
+            <Translate value='NetworkCreateModalForm.socket' />
+          }
+          fullWidth
+          inputProps={{ className: classes.inputStyle }}
+          InputLabelProps={{ className: classes.label }}
+          className={classes.style}
+        />
+
+        <Field
+          component={TextField}
           name='alias'
           type='text'
           styleName='field'

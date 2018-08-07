@@ -5,7 +5,11 @@
 
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { CommonNetworkSelector } from '@chronobank/login-ui/components'
+import {
+  navigateToLoginPage,
+} from '@chronobank/login-ui/redux/actions'
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 import { ModalStack } from 'components'
 import { MuiThemeProvider } from '@material-ui/core/styles'
@@ -23,7 +27,13 @@ import PersistWrapper from '../partials/PersistWrapper/PersistWrapper'
 import './Splash.scss'
 import theme from './styles'
 
-export default class Splash extends Component {
+const mapDispatchToProps = (dispatch) => {
+  return {
+    navigateToLoginPage: () => dispatch(navigateToLoginPage()),
+  }
+}
+
+class Splash extends Component {
   static propTypes = {
     children: PropTypes.node,
     goBack: PropTypes.func,
@@ -36,25 +46,25 @@ export default class Splash extends Component {
   }
 
   render () {
-    const { children, goBack, navigatorText } = this.props
+    const { children, goBack, navigatorText, navigateToLoginPage } = this.props
 
     return (
       <MuiThemeProvider theme={theme}>
         <div styleName='root'>
           <div styleName='header-container'>
-            <div styleName='header-logo'>
+            <a styleName='header-logo' href='https://chronobank.io/'>
               <img styleName='chrono-logo' src={ChronoLogo} alt='' />
-            </div>
+            </a>
             <div styleName='header-picture'>
               <img src={StripesToCrop} alt='' />
             </div>
             <div styleName='header-picture-crop'>
               <img src={WalletTitleBG} alt='' />
             </div>
-            <div styleName='header-center'>
+            <button onClick={navigateToLoginPage} styleName='header-center'>
               <img styleName='chrono-wallet-logo-bright' src={ChronoWalletLogoBright} alt='' />
               <img styleName='chrono-wallet-text-bright' src={ChronoWalletTextBright} alt='' />
-            </div>
+            </button>
             <div styleName='selectors'>
               <div styleName='network-selector'>
                 <CommonNetworkSelector />
@@ -91,3 +101,4 @@ export default class Splash extends Component {
   }
 }
 
+export default connect(null, mapDispatchToProps)(Splash)
