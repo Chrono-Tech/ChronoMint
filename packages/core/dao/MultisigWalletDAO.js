@@ -121,44 +121,61 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   // getters
   async getPendings () {
-    let pendingTxCollection = {}
-    const res = await this.contract.methods.getPendings().call()
-    const [values, operations, isConfirmed] = Object.values(res)
+    try {
 
-    let verifiedOperationsPromises = []
-    let pendingDataPromises = []
-    operations.filter(this.isValidId).map((operation) => {
-      verifiedOperationsPromises.push(ethereumProvider.checkConfirm2FAtx(operation))
-      pendingDataPromises.push(this.getPendingData(operation))
-    })
-    const verifiedOperations = await Promise.all(verifiedOperationsPromises)
-    const pendingData = await Promise.all(pendingDataPromises)
+      let pendingTxCollection = {}
+      const res = await this.contract.methods.getPendings().call()
+      const [values, operations, isConfirmed] = Object.values(res)
 
-    operations.filter(this.isValidId).forEach((id, i) => {
-      let pendingTxModel
-      pendingTxModel = new MultisigWalletPendingTxModel({
-        id,
-        value: new BigNumber(values [i]),
-        isConfirmed: isConfirmed[i],
-        isPending: verifiedOperations[i] ? verifiedOperations[i].activated : false,
-        decodedTx: pendingData[i] ? pendingData[i] : null,
+      let verifiedOperationsPromises = []
+      let pendingDataPromises = []
+      operations.filter(this.isValidId).map((operation) => {
+        verifiedOperationsPromises.push(ethereumProvider.checkConfirm2FAtx(operation))
+        pendingDataPromises.push(this.getPendingData(operation))
       })
-      pendingTxCollection[pendingTxModel.id] = pendingTxModel
-    })
-    return pendingTxCollection
+      const verifiedOperations = await Promise.all(verifiedOperationsPromises)
+      const pendingData = await Promise.all(pendingDataPromises)
+
+      operations.filter(this.isValidId).forEach((id, i) => {
+        let pendingTxModel
+        pendingTxModel = new MultisigWalletPendingTxModel({
+          id,
+          value: new BigNumber(values [i]),
+          isConfirmed: isConfirmed[i],
+          isPending: verifiedOperations[i] ? verifiedOperations[i].activated : false,
+          decodedTx: pendingData[i] ? pendingData[i] : null,
+        })
+        pendingTxCollection[pendingTxModel.id] = pendingTxModel
+      })
+
+      return pendingTxCollection
+    } catch (e) {
+      console.warn(e)
+      return Promise.resolve({})
+    }
   }
 
   async getOwners () {
-    const counter = await this.contract.methods.m_numOwners().call()
-    let promises = []
-    for (let i = 0; i < counter; i++) {
-      promises.push(this.contract.methods.getOwner(i).call())
+    try {
+      const counter = await this.contract.methods.m_numOwners().call()
+      let promises = []
+      for (let i = 0; i < counter; i++) {
+        promises.push(this.contract.methods.getOwner(i).call())
+      }
+      return Promise.all(promises)
+    } catch (e) {
+      console.warn(e)
+      return Promise.resolve([])
     }
-    return Promise.all(promises)
   }
 
   getRequired () {
-    return this.contract.methods.m_required().call()
+    try {
+      return this.contract.methods.m_required().call()
+    } catch (e) {
+      console.warn(e)
+      return Promise.resolve(0)
+    }
   }
 
   async getPendingData (id: string): Promise<TxExecModel> {
@@ -167,68 +184,49 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   async getReleaseTime () {
-    return this.contract.methods.releaseTime().call()
+    try {
+      return this.contract.methods.releaseTime().call()
+    } catch (e) {
+      console.warn(e)
+      return Promise.resolve(0)
+    }
   }
 
   // actions
-  async removeWallet (wallet, account: string) {
-    await this._tx('kill', [
-      account,
-    ], {
-      address: wallet.address(),
-      account,
-    })
+  removeWallet (account: string) {
+    return this._tx('kill', [account])
   }
 
-  async addOwner (wallet, ownerAddress) {
-    await this._tx('addOwner', [
-      ownerAddress,
-    ], {
-      wallet: wallet.address(),
-      ownerAddress,
-    })
+  addOwner (wallet, ownerAddress) {
+    return this._tx('addOwner', [ownerAddress])
   }
 
-  async removeOwner (wallet, ownerAddress) {
-    await this._tx('removeOwner', [
-      ownerAddress,
-    ], {
-      wallet: wallet.address(),
-      ownerAddress,
-    })
+  removeOwner (wallet, ownerAddress) {
+    return this._tx('removeOwner', [ownerAddress])
   }
 
-  async transfer (wallet: MultisigEthWalletModel, token: TokenModel, amount, to, feeMultiplier: Number = 1, value) {
-    await this._tx('transfer',
+  transfer (wallet: MultisigEthWalletModel, token: TokenModel, amount, to, value) {
+    return this._tx(
+      'transfer',
       [
         to,
         new BigNumber(amount),
         this.web3.utils.asciiToHex(token.symbol()),
       ],
-      new BigNumber(0),
-      new BigNumber(0),
-      {},
-      value)
+      value,
+    )
   }
 
-  async confirmPendingTx (tx) {
-    await this._tx('confirm', [
-      tx.id,
-    ])
+  confirmPendingTx (tx) {
+    return this._tx('confirm', [tx.id])
   }
 
-  async revokePendingTx (tx) {
-    await this._tx('revoke', [
-      tx.id,
-    ], tx.txRevokeSummary())
+  revokePendingTx (tx) {
+    return this._tx('revoke', [tx.id])
   }
 
-  async changeRequirement (newRequired: Number) {
-    await this._tx('changeRequirement', [
-      newRequired,
-    ], {
-      signatureRequirements: newRequired,
-    })
+  changeRequirement (newRequired: Number) {
+    return this._tx('changeRequirement', [newRequired])
   }
 
   // helpers

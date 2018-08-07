@@ -18,16 +18,6 @@ const schemaFactory = () => ({
   to: PropTypes.string,
   value: PropTypes.instanceOf(BigNumber),
   hash: PropTypes.string,
-  fields: PropTypes.objectOf(PropTypes.shape({
-    value: PropTypes.any,
-    description: PropTypes.string,
-  })),
-  fee: PropTypes.shape({
-    gasLimit: PropTypes.instanceOf(BigNumber),
-    gasPrice: PropTypes.instanceOf(BigNumber),
-    gasFee: PropTypes.instanceOf(BigNumber),
-    feeMultiplier: PropTypes.number,
-  }),
   data: PropTypes.string,
 })
 

@@ -11,21 +11,22 @@ import {
   CALL_BLACKLIST,
   CALL_PAUSED,
   TX_PAUSE,
-  // TX_PAUSED,
+  TX_PAUSED,
   TX_RESTRICT,
-  // TX_RESTRICTED,
+  TX_RESTRICTED,
   TX_UNPAUSE,
-  // TX_UNPAUSED,
+  TX_UNPAUSED,
   TX_UNRESTRICT,
-  // TX_UNRESTRICTED,
+  TX_UNRESTRICTED,
 } from './constants/ChronoBankAssetDAO'
+import { ChronoBankAssetABI } from './abi'
 
 //#endregion CONSTANTS
 
 export default class ChronoBankAssetDAO extends AbstractContractDAO {
 
-  constructor ({ address, history, abi }) {
-    super({ address, history, abi })
+  constructor (address, history) {
+    super({ address, history, abi: ChronoBankAssetABI })
   }
 
   connect (web3, options) {
@@ -76,11 +77,11 @@ export default class ChronoBankAssetDAO extends AbstractContractDAO {
   }
 
   restrict (address: Array<string>): boolean {
-    return this._tx(TX_RESTRICT, [ address ])
+    return this._tx(TX_RESTRICT, [address])
   }
 
   unrestrict (address: Array<string>): boolean {
-    return this._tx(TX_UNRESTRICT, [ address ])
+    return this._tx(TX_UNRESTRICT, [address])
   }
 
   blacklist (address): boolean {

@@ -170,7 +170,7 @@ export default class TwoFaEnableForm extends PureComponent {
                 <Field
                   component={TextField}
                   name='confirmToken'
-                  floatingLabelText={<Translate value={`${prefix}.authCode`} />}
+                  label={<Translate value={`${prefix}.authCode`} />}
                 />
                 {success === false && <div styleName='wrongCode'><Translate value={`${prefix}.confirmCodeWrong`} /></div>}
               </div>

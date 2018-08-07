@@ -78,7 +78,7 @@ export default class TwoFaConfirmModal extends PureComponent {
                 <Field
                   component={TextField}
                   name='confirmToken'
-                  floatingLabelText={<Translate value={`${prefix}.authCode`} />}
+                  label={<Translate value={`${prefix}.authCode`} />}
                 />
               ) : (
                 <div><Preloader /></div>

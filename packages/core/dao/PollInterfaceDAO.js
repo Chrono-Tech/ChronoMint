@@ -19,7 +19,7 @@ import {
 
 //#endregion CONSTANTS
 
-export default class PollInterfaceDAO extends AbstractContractDAO  {
+export default class PollInterfaceDAO extends AbstractContractDAO {
   constructor ({ address, history, abi }) {
     super({ address, history, abi })
   }
@@ -55,26 +55,20 @@ export default class PollInterfaceDAO extends AbstractContractDAO  {
     return votes
   }
 
-  async activatePoll (options) {
-    const txOptions = { useDefaultGasLimit: true, ...options }
-
-    await this._tx(TX_ACTIVATE_POLL, [], new BigNumber(0), new BigNumber(0), txOptions)
+  activatePoll () {
+    return this._tx(TX_ACTIVATE_POLL, [])
   }
 
   vote (choice, choiceText, options) {
     return this._tx(TX_VOTE, [choice + 1], new BigNumber(0), new BigNumber(0), { choice: choiceText.option, ...options }) // choice +1, because in SC, numbering starts from 1
   }
 
-  async removePoll (options) {
-    const txOptions = { allowNoReturn: true, useDefaultGasLimit: true, ...options }
-
-    await this._tx(TX_REMOVE_POLL, [], new BigNumber(0), new BigNumber(0), txOptions)
+  removePoll () {
+    return this._tx(TX_REMOVE_POLL, [])
   }
 
-  async endPoll (options) {
-    const txOptions = { useDefaultGasLimit: true, ...options }
-
-    await this._tx(TX_END_POLL, [], new BigNumber(0), new BigNumber(0), txOptions)
+  endPoll () {
+    return this._tx(TX_END_POLL, [])
   }
 
 }

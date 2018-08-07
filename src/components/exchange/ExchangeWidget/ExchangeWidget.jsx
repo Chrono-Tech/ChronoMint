@@ -122,7 +122,7 @@ export default class ExchangeWidget extends React.Component {
                         disabled={!this.props.isFetched || this.props.isFetching || !this.props.showFilter}
                         name='amount'
                         fullWidth
-                        floatingLabelText={<Translate value={prefix('amount')} />}
+                        label={<Translate value={prefix('amount')} />}
                       />
                     </div>
                     <div styleName='item'>
@@ -131,7 +131,7 @@ export default class ExchangeWidget extends React.Component {
                         disabled={!this.props.isFetched || this.props.isFetching || !this.props.showFilter}
                         component={Select}
                         fullWidth
-                        floatingLabelText={<Translate value={prefix('token')} />}
+                        label={<Translate value={prefix('token')} />}
                       >
                         {
                           this.props.assetSymbols.length > 0

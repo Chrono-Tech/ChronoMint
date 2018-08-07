@@ -1,6 +1,11 @@
-const SignerModel = require('./SignerModel')
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
 
-module.exports = class SignerDeviceModel extends SignerModel {
+import SignerModel from './SignerModel'
+
+export default class SignerDeviceModel extends SignerModel {
   constructor ({ device, path, address, publicKey }) {
     super()
     this.device = device
@@ -25,14 +30,14 @@ module.exports = class SignerDeviceModel extends SignerModel {
   async signTransaction (txData) { // tx object
     return this.device.signTransaction(
       this.path,
-      txData
+      txData,
     )
   }
 
   async signData (data) { // tx object
     return this.device.signData(
       this.path,
-      data
+      data,
     )
   }
 
@@ -41,7 +46,7 @@ module.exports = class SignerDeviceModel extends SignerModel {
       device: this.device.name,
       path: this.path,
       address: this.address,
-      publicKey: this.publicKey
+      publicKey: this.publicKey,
     }
   }
 

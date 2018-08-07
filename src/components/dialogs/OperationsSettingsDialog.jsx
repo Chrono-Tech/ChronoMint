@@ -56,7 +56,7 @@ export default class OperationsSettingsDialog extends PureComponent {
               component={TextField}
               name='requiredSigns'
               fullWidth
-              floatingLabelText={<Translate value='operations.requiredSigns' />}
+              label={<Translate value='operations.requiredSigns' />}
             />
           </div>
           <div styleName='footer'>

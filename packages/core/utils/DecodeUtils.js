@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { zipWith } from 'lodash'
 import Tx from 'ethereumjs-tx'
 import ethAbi from 'ethereumjs-abi'

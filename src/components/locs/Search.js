@@ -29,7 +29,7 @@ export default class Search extends PureComponent {
     return (
       <TextField
         onChange={this.handleChange}
-        floatingLabelText={<Translate value='terms.search' />}
+        label={<Translate value='terms.search' />}
         fullWidth
         value={this.props.filter}
       />

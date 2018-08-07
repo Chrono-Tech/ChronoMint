@@ -32,8 +32,6 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
 
     this.allEventsEmitter = this.history.events.allEvents({})
       .on('data', this.handleEventsData)
-      .on('changed', this.handleEventsChanged)
-      .on('error', this.handleEventsError)
   }
 
   disconnect () {
@@ -53,15 +51,6 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
     this.emit(data.event, data)
   }
 
-  handleEventsChanged = (data) => {
-    console.log('PlatformsManagerDAO handleEventsChanged: ', data.event, data)
-  }
-
-  handleEventsError = (data) => {
-    console.log('PlatformsManagerDAO handleEventsError: ', data.event, data)
-    this.emit(data.event + '_error', data)
-  }
-
   /**
    *
    * @param state
@@ -69,8 +58,8 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
    * @param history
    * @param subscribeTxFlow
    */
-  postStoreDispatchSetup (state, web3, history, subscribeTxFlow) {
-    const tokenManagementExtensionManager = new TokenManagementExtensionManager({ web3, history, subscribeTxFlow })
+  postStoreDispatchSetup (state, web3, history) {
+    const tokenManagementExtensionManager = new TokenManagementExtensionManager({ web3, history })
     this.setTokenManagementExtensionManager(tokenManagementExtensionManager)
   }
 
@@ -86,36 +75,36 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
    *
    * @param symbol
    * @param amount
-   * @returns {Promise<void>}
+   * @returns {{from, to, value, data}}
    */
-  async reissueAsset (symbol, amount) {
-    return this._tx(TX_REISSUE_ASSET, [ symbol, amount ])
+  reissueAsset (symbol, amount) {
+    return this._tx(TX_REISSUE_ASSET, [symbol, amount])
   }
 
   /**
    *
-   * @returns {Promise<void>}
+   * @returns {{from, to, value, data}}
    */
-  async createPlatform () {
+  createPlatform () {
     return this._tx(TX_CREATE_PLATFORM)
   }
 
   /**
    *
    * @param address
-   * @returns {Promise<void>}
+   * @returns {{from, to, value, data}}
    */
-  async attachPlatform (address) {
-    return this._tx(TX_ATTACH_PLATFORM, [ address ])
+  attachPlatform (address) {
+    return this._tx(TX_ATTACH_PLATFORM, [address])
   }
 
   /**
    *
    * @param address
-   * @returns {Promise<void>}
+   * @returns {{from, to, value, data}}
    */
-  async detachPlatform (address) {
-    return this._tx(TX_DETACH_PLATFORM, [ address ])
+  detachPlatform (address) {
+    return this._tx(TX_DETACH_PLATFORM, [address])
   }
 
   /**
@@ -133,7 +122,7 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
     switch (func) {
       case TX_ATTACH_PLATFORM:
         return {
-          platform: args[ '_platform' ],
+          platform: args['_platform'],
         }
       default:
         return args

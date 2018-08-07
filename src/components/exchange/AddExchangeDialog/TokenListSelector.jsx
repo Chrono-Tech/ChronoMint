@@ -103,7 +103,7 @@ export default class TokenListSelector extends PureComponent {
             name='token'
             styleName='tokenMobileSelector'
             floatingLabelFixed
-            floatingLabelText={<Translate value={prefix('chooseToken')} />}
+            label={<Translate value={prefix('chooseToken')} />}
             input={this.props.input}
             meta={this.props.meta}
           >

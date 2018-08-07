@@ -25,9 +25,10 @@ class VotingService extends EventEmitter {
     this._cache = {}
   }
 
-  getPollEmitterDAO (address) {
+  getPollEmitterDAO (address, web3, history) {
     if (!this._cache[address]) {
-      const pollEmitter = new PollEmitter(address)
+      const pollEmitter = new PollEmitter(address, history)
+      pollEmitter.connect(web3)
       pollEmitter.setVotingManagerDAO(this.getVotingManager())
       this._cache[address] = pollEmitter
     }
@@ -45,12 +46,12 @@ class VotingService extends EventEmitter {
     return this._cache['VotingManager']
   }
 
-  subscribeToPoll (address, account) {
+  subscribeToPoll (address, account, web3, history) {
     if (this._cache[address]) {
       return null
     }
 
-    const dao = this.getPollEmitterDAO(address)
+    const dao = this.getPollEmitterDAO(address, web3, history)
 
     return Promise.all([
       dao.watchVoted((result) => {

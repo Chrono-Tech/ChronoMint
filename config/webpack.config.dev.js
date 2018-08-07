@@ -3,17 +3,18 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-let path = require('path')
-let webpack = require('webpack')
-let babel = require('./babel.dev')
+const path = require('path')
+const webpack = require('webpack')
+const babel = require('./babel.dev')
+const CompileTimePlugin = require('webpack-compile-time-plugin');
 
-let config = require('./webpack.config.base.js')
+const config = require('./webpack.config.base.js')
 
-let HtmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 process.traceDeprecation = true
 
-let srcAppArg = process.argv.find((e) => e.startsWith('--src-app='))
+const srcAppArg = process.argv.find((e) => e.startsWith('--src-app='))
 const srcApp = srcAppArg ? srcAppArg.substr('--src-app='.length) : 'index'
 
 module.exports = config.buildConfig(
@@ -33,14 +34,14 @@ module.exports = config.buildConfig(
     },
     babel,
     plugins: [
+      new CompileTimePlugin(),
       new HtmlWebpackPlugin({
         inject: true,
         template: indexHtmlPath,
         favicon: faviconPath,
       }),
       new webpack.ProvidePlugin({
-        'Web3Legacy': 'web3legacy',
-        'Web3': 'web3_1beta',
+        'Web3': 'web3',
       }),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,

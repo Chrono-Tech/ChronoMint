@@ -89,12 +89,12 @@ export default class AddExchangeForm extends PureComponent {
               <Field
                 component={TextField}
                 name='sellPrice'
-                floatingLabelText={<Translate value={prefix('sellPrice')} />}
+                label={<Translate value={prefix('sellPrice')} />}
               />
               <Field
                 component={TextField}
                 name='buyPrice'
-                floatingLabelText={<Translate value={prefix('buyPrice')} />}
+                label={<Translate value={prefix('buyPrice')} />}
               />
             </div>
           </div>

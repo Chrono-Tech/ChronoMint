@@ -42,7 +42,7 @@ export default class EthereumEngine {
 
   getPrivateKey (address) {
     const wallet = this.getWallet(address)
-    return wallet && wallet.getPublicKey && Buffer.from(wallet.getPublicKey()).toString('hex')
+    return wallet && wallet.getPrivateKey && Buffer.from(wallet.getPrivateKey()).toString('hex')
   }
 
   getPublicKey () {
