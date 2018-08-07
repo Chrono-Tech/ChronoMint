@@ -31,7 +31,7 @@ import { modalsClose } from 'redux/modals/actions'
 import Amount from '@chronobank/core/models/Amount'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
-import {  TIME } from '@chronobank/core/dao/constants'
+import { TIME } from '@chronobank/core/dao/constants'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import PollDetailsModel from '@chronobank/core/models/PollDetailsModel'
 import FileModel from '@chronobank/core/models/FileSelect/FileModel'
@@ -249,6 +249,7 @@ export default class PollEditForm extends Component {
                 <Field
                   component={Slider}
                   name='voteLimitInTIME'
+                  toFixed={1}
                   sliderStyle={{ marginBottom: 0, marginTop: 10 }}
                   min={1}
                   max={maxVoteLimitInPercent.toNumber() || 10}

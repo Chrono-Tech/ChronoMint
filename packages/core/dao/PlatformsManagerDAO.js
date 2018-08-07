@@ -53,12 +53,9 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
     this.emit(data.event, data)
   }
 
-  handleEventsChanged = (data) => {
-    console.log('PlatformsManagerDAO handleEventsChanged: ', data.event, data)
-  }
+  handleEventsChanged = (data) => {}
 
   handleEventsError = (data) => {
-    console.log('PlatformsManagerDAO handleEventsError: ', data.event, data)
     this.emit(data.event + '_error', data)
   }
 
@@ -69,8 +66,8 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
    * @param history
    * @param subscribeTxFlow
    */
-  postStoreDispatchSetup (state, web3, history, subscribeTxFlow) {
-    const tokenManagementExtensionManager = new TokenManagementExtensionManager({ web3, history, subscribeTxFlow })
+  postStoreDispatchSetup (state, web3, history) {
+    const tokenManagementExtensionManager = new TokenManagementExtensionManager({ web3, history })
     this.setTokenManagementExtensionManager(tokenManagementExtensionManager)
   }
 

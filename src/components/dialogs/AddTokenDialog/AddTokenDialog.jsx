@@ -111,39 +111,39 @@ export default class AddTokenDialog extends PureComponent {
               component={TextField}
               name='address'
               fullWidth
-              floatingLabelText={<Translate value={prefix('tokenContractAddress')} />}
+              label={<Translate value={prefix('tokenContractAddress')} />}
             />
             <Field
               component={TextField}
               name='name'
               fullWidth
-              floatingLabelText={<Translate value={prefix('tokenName')} />}
+              label={<Translate value={prefix('tokenName')} />}
             />
             <Field
               component={TextField}
               name='symbol'
               fullWidth
-              floatingLabelText={<Translate value={prefix('tokenSymbol')} />}
+              label={<Translate value={prefix('tokenSymbol')} />}
             />
             <Field
               component={TextField}
               name='decimals'
               fullWidth
-              floatingLabelText={<Translate value={prefix('decimalsPlacesOfSmallestUnit')} />}
+              label={<Translate value={prefix('decimalsPlacesOfSmallestUnit')} />}
               normalize={normalizeSmallestUnit}
             />
             <Field
               component={TextField}
               name='url'
               fullWidth
-              floatingLabelText={<Translate value={prefix('projectURL')} />}
+              label={<Translate value={prefix('projectURL')} />}
             />
             <Field
               component={FileSelect}
               name='icon'
               fullWidth
               label='wallet.selectTokenIcon'
-              floatingLabelText='Token icon'
+              label='Token icon'
               accept={ACCEPT_IMAGES}
             />
           </div>

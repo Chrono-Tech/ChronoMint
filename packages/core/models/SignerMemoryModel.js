@@ -1,3 +1,10 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+import hdKey from 'ethereumjs-wallet/hdkey'
+
 const bip39 = require('bip39')
 const Accounts = require('web3-eth-accounts')
 const SignerModel = require('./SignerModel')
@@ -11,6 +18,10 @@ module.exports = class SignerMemoryModel extends SignerModel {
 
   get address () {
     return this.wallet[0].address
+  }
+
+  get privateKey () {
+    return this.wallet[0].privateKey
   }
 
   // this method is a part of base interface
@@ -31,7 +42,7 @@ module.exports = class SignerMemoryModel extends SignerModel {
     return this.wallet.encrypt(password)
   }
 
-  static async create ({ web3, seed, mnemonic, numbeOfAccounts }) {
+  static async create ({ seed, mnemonic, numbeOfAccounts }) {
     const accounts = new Accounts()
     const wallet = accounts.wallet.create(numbeOfAccounts)
     if (seed) {
@@ -42,13 +53,20 @@ module.exports = class SignerMemoryModel extends SignerModel {
       const account = await accounts.privateKeyToAccount(`0x${bip39.mnemonicToSeedHex(mnemonic)}`)
       await wallet.add(account)
     }
-    return new SignerMemoryModel({ web3, wallet })
+    return new SignerMemoryModel({ wallet })
   }
 
   // Should be synchronous by design
-  static decrypt ({ web3, entry, password }) {
+  static decrypt ({ entry, password }) {
     const accounts = new Accounts()
     const wallet = accounts.wallet.decrypt(entry.encrypted, password)
-    return new SignerMemoryModel({ web3, wallet })
+    return new SignerMemoryModel({ wallet })
+  }
+
+  static fromDerivedPath ({ seed, derivedPath }) {
+    const hdWallet = hdKey.fromMasterSeed(seed)
+    const wallet = hdWallet.derivePath(derivedPath).getWallet()
+    const newSeed = Buffer.from(wallet.getPrivateKey()).toString('hex')
+    return SignerMemoryModel.create({ seed: newSeed })
   }
 }

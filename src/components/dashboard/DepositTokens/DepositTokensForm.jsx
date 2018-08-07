@@ -327,8 +327,8 @@ export default class DepositTokensForm extends PureComponent {
           <Field
             component={TextField}
             fullWidth
-            hintText='0.00'
-            floatingLabelText={<Translate value={prefix('amount')} symbol='TIME' />}
+            placeholder='0.00'
+            label={<Translate value={prefix('amount')} symbol='TIME' />}
             name='amount'
           />
           <div styleName='amountInFiat'><TokenValue renderOnlyPrice value={new Amount(token.addDecimals(amount), token.symbol())} /></div>

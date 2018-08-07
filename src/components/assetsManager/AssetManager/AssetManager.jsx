@@ -185,9 +185,11 @@ export default class AssetManager extends PureComponent {
             {this.renderBody()}
           </Paper>
           <div styleName='delimiter' />
+          {/*
+          // TODO repair table
           <Paper>
             {this.renderTable()}
-          </Paper>
+          </Paper>*/}
         </div>
       </div>
     )

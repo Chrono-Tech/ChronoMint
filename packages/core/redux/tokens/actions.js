@@ -28,6 +28,7 @@ import Amount from '../../models/Amount'
 import { daoByType } from '../daos/selectors'
 import TxExecModel from '../../models/TxExecModel'
 import { web3Selector } from '../ethereum/selectors'
+import { estimateGas } from '../ethereum/actions'
 
 //#region CONSTANTS
 
@@ -65,7 +66,7 @@ import {
   EVENT_NEW_BLOCK,
   EVENT_NEW_TOKEN,
   ETH,
-} from  '../../dao/constants'
+} from '../../dao/constants'
 import {
   WAVES_DECIMALS,
   WAVES_WAVES_NAME,
@@ -76,9 +77,7 @@ import {
 
 const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
-    console.log('submitTxHandler: ', tx)
     if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
-      console.log('submitTxHandler BLOCKCHAIN_ETHEREUM: ', tx)
       dispatch(modalsOpenConfirmDialog({
         props: {
           tx,
@@ -97,8 +96,6 @@ const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExec
 
 const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
-    // eslint-disable-next-line
-    console.log('acceptTxHandler start: ', tx, dao)
     if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
       dispatch({ type: WATCHER_TX_SET, tx })
       await dao.immediateTransfer(tx)
@@ -298,15 +295,16 @@ export const watchLatestBlock = () => async (dispatch) => {
 
 }
 
-export const estimateGas = (tokenId, params, callback, gasPriceMultiplier = 1, address) => async () => {
+export const estimateGasTransfer = (tokenId, params, callback, gasPriceMultiplier = 1, address) => async (dispatch) => {
   const tokenDao = tokenService.getDAO(tokenId)
-  const [to, amount, func] = params
+  const [to, amount] = params
+  const tx = tokenDao.transfer(address, to, amount)
   try {
-    const { gasLimit, gasFee, gasPrice } = await tokenDao.estimateGas(func, [to, new BigNumber(amount)], new BigNumber(0), address)
+    const { gasLimit, gasFee, gasPrice } = await dispatch(estimateGas(tx))
     callback(null, {
       gasLimit,
-      gasFee: new Amount(gasFee.mul(gasPriceMultiplier), ETH),
-      gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier), ETH),
+      gasFee: new Amount(gasFee.mul(gasPriceMultiplier).toString(), ETH),
+      gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier).toString(), ETH),
     })
   } catch (e) {
     callback(e)

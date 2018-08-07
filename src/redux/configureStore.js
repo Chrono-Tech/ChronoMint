@@ -48,10 +48,12 @@ const configureStore = () => {
     if (action.type === SESSION_DESTROY) {
       const i18nState = state.get(DUCK_I18N)
       const persistAccount = state.get(DUCK_PERSIST_ACCOUNT)
+      const wallets = state.get(DUCK_WALLETS)
       state = new Immutable.Map()
       state = state
         .set(DUCK_I18N, i18nState)
         .set(DUCK_PERSIST_ACCOUNT, persistAccount)
+        .set(DUCK_WALLETS, wallets)
     }
     return appReducer(state, action)
   }
@@ -74,12 +76,17 @@ const configureStore = () => {
     const IGNORED_ACTIONS = []
     // All actions like network/* (starts with network)
     const DOMAINS = [
-      'ethMultisigWallet/',
+      'AssetsManager/',
       '@@router/',
     ]
     const logger = createLogger({
       collapsed: true,
-      predicate: (getState, action) => WHITE_LIST.includes(action.type) || (!IGNORED_ACTIONS.includes(action.type) && DOMAINS.some((domain) => action.type.startsWith(domain))),
+      predicate: (getState, action) => WHITE_LIST.includes(action.type) || (!IGNORED_ACTIONS.includes(action.type) && DOMAINS.some((domain) => {
+        if (!action.type) {
+          console.error('%c action', 'background: red; color: #fff', action)
+        }
+        return action.type.startsWith(domain)
+      })),
     })
     // Note: logger must be the last middleware in chain, otherwise it will log thunk and promise, not actual actions
     middleware.push(logger)

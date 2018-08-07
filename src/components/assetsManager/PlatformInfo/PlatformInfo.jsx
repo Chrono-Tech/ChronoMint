@@ -13,7 +13,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import {  getFee, getManagersForAssetSymbol } from '@chronobank/core/redux/assetsManager/actions'
+import { getFee, getManagersForAssetSymbol } from '@chronobank/core/redux/assetsManager/actions'
 import { DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/constants'
 import { modalsOpen } from 'redux/modals/actions'
 import BlockAssetDialog from 'components/assetsManager/BlockAssetDialog/BlockAssetDialog'
@@ -234,10 +234,12 @@ export default class PlatformInfo extends PureComponent {
               <div styleName='balanceWrap'>
                 <div styleName='balance'>
                   <div styleName='title'><Translate value={prefix('issuedAmount')} />:</div>
-                  <TokenValue
-                    style={{ fontSize: '24px' }}
-                    value={new Amount(totalSupply, selectedToken.symbol())}
-                  />
+                  {totalSupply && (
+                    <TokenValue
+                      style={{ fontSize: '24px' }}
+                      value={new Amount(totalSupply, selectedToken.symbol())}
+                    />
+                  )}
                 </div>
                 {this.renderFee()}
               </div>

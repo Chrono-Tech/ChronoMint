@@ -71,12 +71,9 @@ export default class VotingManagerDAO extends AbstractContractDAO {
     this.emit(data.event, data)
   }
 
-  handleEventsChanged (data) {
-    console.log('handleEventsChanged: ', data.event, data)
-  }
+  handleEventsChanged (data) {}
 
   handleEventsError (data) {
-    console.log('handleEventsError: ', data.event, data)
     this.emit(data.event + '_error', data)
   }
 
@@ -92,9 +89,9 @@ export default class VotingManagerDAO extends AbstractContractDAO {
     this.pollInterfaceManagerDAO = pollInterfaceDAO
   }
 
-  postStoreDispatchSetup (state, web3, history, subscribeTxFlow) {
+  postStoreDispatchSetup (state, web3, history) {
     const assetHolderDAO = daoByType('TimeHolder')(state)
-    const pollsInterfaceManagerDAO = new PollInterfaceManagerDAO({ web3, history, subscribeTxFlow })
+    const pollsInterfaceManagerDAO = new PollInterfaceManagerDAO({ web3, history })
     this.setPollInterfaceManagerDAO(pollsInterfaceManagerDAO)
     this.setAssetHolderDAO(assetHolderDAO)
   }
@@ -104,7 +101,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
     return this.getPollsDetails(addresses.filter((address) => !this.isEmptyAddress(address)), account)
   }
 
-  async createPoll (poll: PollModel, options) {
+  async createPoll (poll: PollModel) {
     // TODO @ipavlenko: It may be suitable to handle IPFS error and dispatch
     // a failure notice.
     let hash
@@ -115,22 +112,17 @@ export default class VotingManagerDAO extends AbstractContractDAO {
         files: poll.files,
         options: poll.options,
       })
+      const voteLimitInTIME = poll.voteLimitInTIME
+      return this._tx(TX_CREATE_POLL, [
+        poll.options.length,
+        web3Converter.ipfsHashToBytes32(hash),
+        new BigNumber(voteLimitInTIME),
+        poll.deadline.getTime(),
+      ])
     } catch (e) {
       // eslint-disable-next-line
       console.error(e.message)
     }
-
-    const voteLimitInTIME = poll.voteLimitInTIME
-    let summary = poll.txSummary()
-    summary.voteLimitInTIME = new Amount(voteLimitInTIME, 'TIME')
-    summary = { ...poll.txSummary(), blockchain: 'Ethereum' }
-
-    await this._tx(TX_CREATE_POLL, [
-      poll.options.length,
-      web3Converter.ipfsHashToBytes32(hash),
-      new BigNumber(voteLimitInTIME),
-      poll.deadline.getTime(),
-    ], new BigNumber(0), new BigNumber(0), summary, { stubPoll: options.stubPoll })
   }
 
   async getPollsDetails (pollsAddresses: Array<string>, account: string) {
@@ -154,7 +146,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
             const pollAddress = pollsAddresses[i].toLowerCase()
 
             try {
-              votingService.subscribeToPoll(pollAddress, account)
+              votingService.subscribeToPoll(pollAddress, account, this.web3, this.history._address)
             } catch (e) {
               // eslint-disable-next-line
               console.error('watch error', e.message)

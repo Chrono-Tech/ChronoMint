@@ -32,7 +32,7 @@ class LOCStatusForm extends PureComponent {
           component={Select}
           name='status'
           fullWidth
-          floatingLabelText={<Translate value='terms.status' />}
+          label={<Translate value='terms.status' />}
         >
           <MenuItem value={0} primaryText={<Translate value='locs.status.maintenance' />} />
           <MenuItem value={1} primaryText={<Translate value='locs.status.active' />} />

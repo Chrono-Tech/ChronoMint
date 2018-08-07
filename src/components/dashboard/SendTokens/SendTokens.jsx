@@ -21,9 +21,10 @@ import { connect } from 'react-redux'
 import { change, untouch } from 'redux-form'
 import { mainApprove, mainTransfer } from '@chronobank/core/redux/wallets/actions'
 import { multisigTransfer } from '@chronobank/core/redux/multisigWallet/actions'
-import { estimateGas } from '@chronobank/core/redux/tokens/actions'
+import { estimateGasTransfer } from '@chronobank/core/redux/tokens/actions'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
+import { MultisigEthWalletModel } from '@chronobank/core/models'
 import {
   ACTION_APPROVE,
   ACTION_TRANSFER,
@@ -44,7 +45,7 @@ function mapDispatchToProps (dispatch) {
     multisigTransfer: (wallet, token, amount, recipient, feeMultiplier) => dispatch(multisigTransfer(wallet, token, amount, recipient, feeMultiplier)),
     mainApprove: (token, amount, spender, feeMultiplier) => dispatch(mainApprove(token, amount, spender, feeMultiplier)),
     mainTransfer: (wallet, token, amount, recipient, feeMultiplier, advancedModeParams) => dispatch(mainTransfer(wallet, token, amount, recipient, feeMultiplier, advancedModeParams)),
-    estimateGas: (tokenId, params, callback, gasPriceMultiplier) => dispatch(estimateGas(tokenId, params, callback, gasPriceMultiplier)),
+    estimateGas: (tokenId, params, callback, gasPriceMultiplier) => dispatch(estimateGasTransfer(tokenId, params, callback, gasPriceMultiplier)),
     resetForm: () => {
       dispatch(change(FORM_SEND_TOKENS, 'recipient', ''))
       dispatch(change(FORM_SEND_TOKENS, 'amount', ''))
@@ -56,7 +57,7 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class SendTokens extends PureComponent {
   static propTypes = {
-    wallet: PropTypes.instanceOf(WalletModel),
+    wallet: PropTypes.oneOfType([PropTypes.instanceOf(WalletModel), PropTypes.instanceOf(MultisigEthWalletModel)]),
     isModal: PropTypes.bool,
     mainApprove: PropTypes.func,
     mainTransfer: PropTypes.func,

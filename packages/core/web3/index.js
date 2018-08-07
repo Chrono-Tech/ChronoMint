@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Web3 from 'web3_1'
+import Web3 from 'web3'
 import ethDAO from '../dao/ETHDAO'
 
 export default (network) => {
