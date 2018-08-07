@@ -72,7 +72,6 @@ export const initRewards = () => async (dispatch, getState) => {
   }
   dispatch({ type: REWARDS_INIT, isInited: true })
 
-
   // init base info
   rewardDAO = await contractsManagerDAO.getRewardsDAO()
   let [ assets, count, address ] = await Promise.all([

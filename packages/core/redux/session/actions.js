@@ -70,7 +70,6 @@ export const login = (account) => async (dispatch, getState) => {
 
   let network = getNetworkById(selectedNetworkId, selectedProviderId)
 
-
   if (!network.id) {
 
     network = customNetworksList.find((network) => network.id === selectedNetworkId)
