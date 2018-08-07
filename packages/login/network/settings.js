@@ -167,18 +167,19 @@ export const givethNetworkMap = [
 export const chronoBankMainnet = {
   ...MAINNET_BASE,
   host: 'mainnet-full-parity-rpc.chronobank.io/',
+  ws: 'wss://mainnet-full-geth-ws.chronobank.io',
 }
 
 export const chronoBankTestnet = {
   ...RINKEBY_BASE,
   host: 'rinkeby-full-geth-rpc.chronobank.io/',
+  ws: 'wss://rinkeby-full-geth-ws.chronobank.io',
 }
 
 export const chronoBankMap = [
   chronoBankMainnet,
   chronoBankTestnet,
 ]
-
 
 export const chronoBankPrivate = {
   id: 777,
@@ -386,14 +387,14 @@ export const isTestingNetwork = (networkId, providerId) => {
 export const getDeveloperNetworksGroup = (isLocal) => {
   let developerProviders = []
 
-  if (isLocal){
+  if (isLocal) {
     developerProviders.push({
       provider: providerMap.local,
       network: infuraLocalNetwork,
     })
   }
 
-  if (process.env['NODE_ENV'] === 'development'){
+  if (process.env['NODE_ENV'] === 'development') {
     developerProviders.push({
       provider: providerMap.chronoBank,
       network: chronoBankPrivate,
@@ -418,14 +419,14 @@ export const getNetworksSelectorGroup = (isLocal = false) => {
         provider: providerMap.infura,
         network: infuraMainnet,
       },
-      {
+      /*{ // does not support websocket
         provider: providerMap.mew,
         network: mewMainnet,
       },
       {
         provider: providerMap.giveth,
         network: givethMainnet,
-      },
+      },*/
     ],
   }
 

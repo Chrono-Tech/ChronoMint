@@ -90,8 +90,10 @@ export const login = (account) => async (dispatch, getState) => {
   dispatch(replace(ls.getLastURL() || defaultURL))
 }
 
-export const bootstrap = (relogin = true) => async (dispatch, getState) => {
-  networkService.checkMetaMask()
+export const bootstrap = (relogin = true, isMetaMaskRequired = true, isLocalAccountRequired = true) => async (dispatch, getState) => {
+  if (isMetaMaskRequired) {
+    networkService.checkMetaMask()
+  }
   if (networkService) {
     networkService
       .on('createSession', createSession)
@@ -100,19 +102,23 @@ export const bootstrap = (relogin = true) => async (dispatch, getState) => {
   }
 
   if (!relogin) {
-    return
+    return networkService
   }
 
-  const localAccount = ls.getLocalAccount()
-  const isPassed = await networkService.checkLocalSession(localAccount)
-  if (isPassed) {
-    await networkService.restoreLocalSession(localAccount, getState().get('ethMultisigWallet'))
-    networkService.createNetworkSession(localAccount, LOCAL_PROVIDER_ID, LOCAL_ID)
-    dispatch(login(localAccount))
-  } else {
-    // eslint-disable-next-line
-    console.warn('Can\'t restore local session')
+  if (isLocalAccountRequired) {
+    const localAccount = ls.getLocalAccount()
+    const isPassed = await networkService.checkLocalSession(localAccount)
+    if (isPassed) {
+      await networkService.restoreLocalSession(localAccount, getState().get('ethMultisigWallet'))
+      networkService.createNetworkSession(localAccount, LOCAL_PROVIDER_ID, LOCAL_ID)
+      dispatch(login(localAccount))
+    } else {
+      // eslint-disable-next-line
+      console.warn('Can\'t restore local session')
+    }
   }
+
+  return networkService
 }
 
 export const watchInitProfile = () => async (dispatch, getState) => {

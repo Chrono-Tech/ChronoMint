@@ -10,21 +10,8 @@ import Amount from '../models/Amount'
 import TokenModel from '../models/tokens/TokenModel'
 import TxExecModel from '../models/TxExecModel'
 import TxModel from '../models/TxModel'
-import AbstractContractDAO from './AbstractContractDAO'
 import AbstractTokenDAO from './AbstractTokenDAO'
-
-//#region CONSTANTS
-
-import {
-  BLOCKCHAIN_ETHEREUM,
-  EVENT_NEW_BLOCK,
-  EVENT_NEW_TRANSFER,
-} from './constants'
-import {
-  FETCH_NEW_BALANCE,
-} from './constants/EthereumDAO'
-
-//#endregion CONSTANTS
+import { BLOCKCHAIN_ETHEREUM, EVENT_NEW_BLOCK } from './constants'
 
 const transferSignature = '0x940c4b3549ef0aaff95807dc27f62d88ca15532d1bf535d7d63800f40395d16c'
 const signatureDefinition = {
@@ -64,10 +51,15 @@ export class EthereumDAO extends AbstractTokenDAO {
       this.disconnect()
     }
     this.web3 = web3
+
+    this.logsEmitter = this.web3.eth.subscribe('newBlockHeaders')
+      .on('data', this.handleBlockData)
   }
 
   disconnect () {
     if (this.isConnected) {
+      this.logsEmitter.removeAllListeners()
+      this.logsEmitter = null
       this.web3 = null
     }
   }
@@ -76,10 +68,16 @@ export class EthereumDAO extends AbstractTokenDAO {
     return this.web3 != null // nil check
   }
 
-  watch (accounts: Array<string>): Promise {
-    return Promise.all([
-      this.watchTransfer(accounts),
-    ])
+  handleBlockData = async (event) => {
+    const block = await this.web3.eth.getBlock(event.hash, true)
+    setImmediate(() => {
+      if (block && block.transactions) {
+        this.emit(EVENT_NEW_BLOCK, { blockNumber: block.number })
+        for (const tx of block.transactions) {
+          this.emit('tx', tx)
+        }
+      }
+    })
   }
 
   getGasPrice (): Promise {
@@ -111,7 +109,6 @@ export class EthereumDAO extends AbstractTokenDAO {
   }
 
   async getToken () {
-    const feeRate = await this.getGasPrice()
     return new TokenModel({
       name: 'Ethereum', // ???
       symbol: this._symbol,
@@ -119,7 +116,6 @@ export class EthereumDAO extends AbstractTokenDAO {
       blockchain: BLOCKCHAIN_ETHEREUM,
       decimals: this._decimals,
       isERC20: false,
-      feeRate: this.web3.utils.toWei(this.web3.utils.fromWei(feeRate), 'gwei'), // gas price in gwei
     })
   }
 
@@ -227,41 +223,6 @@ export class EthereumDAO extends AbstractTokenDAO {
       console.log('Transfer failed', e)
       throw e
     }
-  }
-
-  async watchTransfer (accounts) {
-    const web3 = await this.web3.eth.getWeb3()
-    const filter = web3.eth.filter('latest')
-    const startTime = AbstractContractDAO._eventsWatchStartTime
-    this._addFilterEvent(filter)
-    filter.watch(async (e, r) => {
-      if (e) {
-        // eslint-disable-next-line
-        console.error('EthereumDAO watchTransfer', e)
-        return
-      }
-      const block = await this.web3.eth.getBlock(r, true)
-
-      this.emit(EVENT_NEW_BLOCK, { blockNumber: block.blockNumber || block.number })
-
-      const time = block.timestamp * 1000
-      if (time < startTime) {
-        return
-      }
-      const txs = block.transactions || []
-      txs.forEach((tx) => {
-        const condition = Array.isArray(accounts)
-          ? accounts.includes(tx.from) || accounts.includes(tx.to)
-          : accounts === tx.from || accounts === tx.to
-
-        if (condition) {
-          this.emit(FETCH_NEW_BALANCE)
-          if (tx.value.toNumber() > 0) {
-            this.emit(EVENT_NEW_TRANSFER, this._getTxModel(tx))
-          }
-        }
-      })
-    })
   }
 
   async getTransfer (id, account, skip, offset, tokens): Promise<TxModel> {

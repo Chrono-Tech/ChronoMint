@@ -3,9 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import networkService from '@chronobank/login/network/NetworkService'
 import ContractDAOModel from '../../models/contracts/ContractDAOModel'
 import { getAccount } from '../session/selectors/models'
 import AbstractContractDAO from '../../dao/AbstractContract3DAO'
+import { ContractsManagerABI } from '../../dao/abi'
 
 //#region CONSTANTS
 
@@ -34,7 +36,9 @@ import {
 export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
   const account = getAccount(getState())
   AbstractContractDAO.setAccount(account)
-  const contractManagerDAO = CONTRACTS_MANAGER.create()
+  const currentNetworkId = networkService.getCurrentNetwork()
+  const contractManagerAddress = ContractsManagerABI.networks[currentNetworkId].address
+  const contractManagerDAO = CONTRACTS_MANAGER.create(contractManagerAddress)
   await contractManagerDAO.connect(web3)
 
   dispatch({

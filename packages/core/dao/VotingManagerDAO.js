@@ -49,9 +49,9 @@ export default class VotingManagerDAO extends AbstractContractDAO {
     super.connect(web3, options)
 
     this.allEventsEmitter = this.history.events.allEvents({})
-      .on('data', this.handleEventsData.bind(this))
-      .on('changed', this.handleEventsChanged.bind(this))
-      .on('error', this.handleEventsError.bind(this))
+      .on('data', this.handleEventsData)
+      .on('changed', this.handleEventsChanged)
+      .on('error', this.handleEventsError)
   }
 
   disconnect () {
@@ -63,7 +63,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
     }
   }
 
-  handleEventsData (data) {
+  handleEventsData = (data) => {
     if (!data.event) {
       return
     }
@@ -71,9 +71,10 @@ export default class VotingManagerDAO extends AbstractContractDAO {
     this.emit(data.event, data)
   }
 
-  handleEventsChanged (data) {}
+  handleEventsChanged = (data) => {}
 
-  handleEventsError (data) {
+  handleEventsError = (data) => {
+    console.log('handleEventsError: ', data.event, data)
     this.emit(data.event + '_error', data)
   }
 
