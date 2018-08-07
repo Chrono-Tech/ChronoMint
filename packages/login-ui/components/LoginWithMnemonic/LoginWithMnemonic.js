@@ -8,7 +8,6 @@ import React, { PureComponent } from 'react'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
-import spinner from 'assets/img/spinningwheel-1.gif'
 import Button from 'components/common/ui/Button/Button'
 import {
   FORM_MNEMONIC_LOGIN_PAGE,

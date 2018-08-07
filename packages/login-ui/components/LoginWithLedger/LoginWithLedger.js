@@ -83,10 +83,13 @@ class LoginLedger extends PureComponent {
   }
 
   componentDidUpdate (prevProps) {
-    if (!this.props.ledger.isFetched && !this.props.ledger.isFetching && this.props.ledger.isHttps && this.props.ledger.isU2F && this.props.ledger.isETHAppOpened) {
+    const ledger = this.props.ledger
+    if (!ledger.isFetched && !ledger.isFetching && ledger.isHttps && ledger.isU2F && ledger.isETHAppOpened) {
       this.props.fetchAccount()
     }
-    ledgerProvider.setWallet(prevProps.account[0]); networkService.selectAccount(prevProps.account[0]); networkService.setAccounts(prevProps.account)
+    ledgerProvider.setWallet(prevProps.account[0])
+    networkService.selectAccount(prevProps.account[0])
+    networkService.setAccounts(prevProps.account)
   }
 
   componentWillUnmount () {

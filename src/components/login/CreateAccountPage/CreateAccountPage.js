@@ -10,7 +10,6 @@ import {
   onSubmitCreateAccountImportMnemonic,
 } from '@chronobank/login-ui/redux/thunks'
 import {
-  navigateToSelectWallet,
   navigateToSelectImportMethod,
 } from '@chronobank/login-ui/redux/actions'
 import {
@@ -23,7 +22,6 @@ import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 
 function mapDispatchToProps (dispatch) {
   return {
-    navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
     navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
     onSubmitCreateAccountImportMnemonic: (name, password, mnemonic) => dispatch(onSubmitCreateAccountImportMnemonic(name, password, mnemonic)),
   }
