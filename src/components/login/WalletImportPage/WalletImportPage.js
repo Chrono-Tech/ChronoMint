@@ -22,6 +22,7 @@ import {
 import { SubmissionError } from 'redux-form'
 import profileService from '@chronobank/login/network/ProfileService'
 import { getAddress } from '@chronobank/core/redux/persistAccount/utils'
+import { navigateBack } from "../../../../packages/login-ui/redux/actions";
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -30,6 +31,7 @@ function mapDispatchToProps (dispatch) {
     navigateToLoginPage: () => dispatch(navigateToLoginPage()),
     onCreateWalletFromJSON: (name, walletJSON, profile) => dispatch(onCreateWalletFromJSON(name, walletJSON, profile)),
     onSubmitCreateAccountImportPrivateKey: (name, password, mnemonic) => dispatch(onSubmitCreateAccountImportPrivateKey(name, password, mnemonic)),
+    navigateBack: () => dispatch(navigateBack()),
   }
 }
 
@@ -40,20 +42,16 @@ class WalletImportPage extends PureComponent {
   }
 
   static propTypes = {
-    previousPage: PropTypes.func.isRequired,
-    nextPage: PropTypes.func.isRequired,
     navigateToSelectWallet: PropTypes.func,
     navigateToSelectImportMethod: PropTypes.func,
     navigateToLoginPage: PropTypes.func,
+    navigateBack: PropTypes.func,
     onSubmitCreateAccountImportPrivateKey: PropTypes.func,
     onCreateWalletFromJSON: PropTypes.func,
   }
 
   constructor (props) {
     super(props)
-
-    this.nextPage = this.nextPage.bind(this)
-    this.previousPage = this.previousPage.bind(this)
 
     this.state = {
       page: WalletImportPage.PAGES.WALLET_UPLOAD_FORM,
@@ -83,7 +81,7 @@ class WalletImportPage extends PureComponent {
         return (
           <LoginWithWalletContainer
             previousPage={this.previousPage.bind(this)}
-            onSubmitSuccess={this.onSubmitPrivateKey.bind(this)}
+            onSubmit={this.onSubmitWallet.bind(this)}
           />
         )
     }
@@ -127,11 +125,15 @@ class WalletImportPage extends PureComponent {
         this.props.onCreateWalletFromJSON(userName, walletJSON, profile)
         this.props.navigateToSelectWallet()
       } else {
-        this.nextPage()
+        this.setState({
+          page: WalletImportPage.PAGES.ACCOUNT_NAME_FORM,
+        })
       }
 
     } catch (e) {
-      this.nextPage()
+      this.setState({
+        page: WalletImportPage.PAGES.ACCOUNT_NAME_FORM,
+      })
     }
   }
 
@@ -142,13 +144,9 @@ class WalletImportPage extends PureComponent {
     navigateToSelectWallet()
   }
 
-  nextPage () {
-    this.setState ({ page: this.state.page + 1 })
-  }
-
   previousPage () {
     if (this.state.page === WalletImportPage.PAGES.WALLET_UPLOAD_FORM){
-      this.props.navigateToSelectImportMethod()
+      this.props.navigateBack()
     } else {
       this.setState ({ page: this.state.page - 1 })
     }

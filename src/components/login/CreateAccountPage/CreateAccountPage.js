@@ -38,8 +38,6 @@ class CreateAccountPage extends PureComponent {
   }
 
   static propTypes = {
-    previousPage: PropTypes.func.isRequired,
-    nextPage: PropTypes.func.isRequired,
     navigateToSelectWallet: PropTypes.func,
     navigateToSelectImportMethod: PropTypes.func,
     onSubmitCreateAccountImportMnemonic: PropTypes.func,

@@ -4,6 +4,7 @@
  */
 
 import ledgerProvider from '@chronobank/login/network/LedgerProvider'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { fetchAccount, startLedgerSync, stopLedgerSync } from '@chronobank/login/redux/ledger/actions'
 import { CircularProgress, RaisedButton } from 'material-ui'
 import networkService from '@chronobank/login/network/NetworkService'
@@ -41,7 +42,7 @@ const ledgerStates = [ {
 } ]
 
 const mapStateToProps = (state) => {
-  const network = state.get('network')
+  const network = state.get(DUCK_NETWORK)
   return {
     ledger: state.get('ledger'),
     isLoading: network.isLoading,
@@ -81,11 +82,11 @@ class LoginLedger extends PureComponent {
     this.props.startLedgerSync()
   }
 
-  componentWillReceiveProps ({ ledger }) {
-    if (!ledger.isFetched && !ledger.isFetching && ledger.isHttps && ledger.isU2F && ledger.isETHAppOpened) {
+  componentDidUpdate (prevProps) {
+    if (!this.props.ledger.isFetched && !this.props.ledger.isFetching && this.props.ledger.isHttps && this.props.ledger.isU2F && this.props.ledger.isETHAppOpened) {
       this.props.fetchAccount()
     }
-    ledgerProvider.setWallet(this.props.account[0]); networkService.selectAccount(this.props.account[0]); networkService.setAccounts(this.props.account)
+    ledgerProvider.setWallet(prevProps.account[0]); networkService.selectAccount(prevProps.account[0]); networkService.setAccounts(prevProps.account)
   }
 
   componentWillUnmount () {

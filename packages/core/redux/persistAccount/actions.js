@@ -67,14 +67,11 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
 
 }
 
-export const decryptAccount = (encrypted, password) => async () => {
+export const decryptAccount = (encrypted, password) => () => {
   const accounts = new Accounts()
-  await accounts.wallet.clear()
+  accounts.wallet.clear()
 
-  let wallet = await accounts.wallet.decrypt(encrypted, password)
-
-  return wallet
-
+  return accounts.wallet.decrypt(encrypted, password)
 }
 
 export const validateAccountName = (name) => (dispatch, getState) => {
@@ -220,11 +217,12 @@ export const logout = () => (dispatch) => {
   // Router.pushRoute('/')
 }
 
-export const customNetworkCreate = (url, alias) => (dispatch) => {
+export const customNetworkCreate = (url, ws, alias) => (dispatch) => {
   const network = new AccountCustomNetwork({
     id: uuid(),
     name: alias,
     url,
+    ws,
   })
 
   dispatch(customNetworksListAdd(network))

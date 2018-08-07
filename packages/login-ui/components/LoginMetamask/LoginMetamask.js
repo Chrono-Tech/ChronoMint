@@ -4,6 +4,7 @@
  */
 
 import networkService from '@chronobank/login/network/NetworkService'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { getNetworkById, LOCAL_ID, providerMap } from '@chronobank/login/network/settings'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import Web3 from 'web3'
@@ -20,8 +21,8 @@ import BackButton from '../../components/BackButton/BackButton'
 import styles from '../../components/stylesLoginPage'
 
 const mapStateToProps = (state) => ({
-  selectedNetworkId: state.get('network').selectedNetworkId,
-  providers: state.get('network').providers,
+  selectedNetworkId: state.get(DUCK_NETWORK).selectedNetworkId,
+  providers: state.get(DUCK_NETWORK).providers,
 })
 
 const mapDispatchToProps = (dispatch) => ({

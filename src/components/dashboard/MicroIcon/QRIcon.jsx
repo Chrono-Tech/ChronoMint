@@ -69,12 +69,11 @@ export default class QRIcon extends PureComponent {
 
         </span>
         <Popover
-          zDepth={3}
           open={this.state.isQROpen}
           anchorEl={this.state.qrAnchorEl}
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-          onRequestClose={() => this.handleQRClose()}
+          onClose={() => this.handleQRClose()}
+          style={{ zIndex: 3000 }}
         >
           {this.renderQR()}
         </Popover>

@@ -23,7 +23,7 @@ import NetworkDeleteModal from './NetworkDeleteModal/NetworkDeleteModal'
 function mapDispatchToProps (dispatch) {
   return {
     handleCloseModal: () => dispatch(modalsClose()),
-    handleSubmitCreateNetwork: (url, alias) => dispatch(handleSubmitCreateNetwork(url, alias)),
+    handleSubmitCreateNetwork: (url, ws, alias) => dispatch(handleSubmitCreateNetwork(url, ws, alias)),
     handleSubmitEditNetwork: (network) => dispatch(handleSubmitEditNetwork(network)),
     handleDeleteNetwork: (network) => dispatch(handleDeleteNetwork(network)),
     openConfirmDeleteModal: (network = null) => dispatch(modalsOpen({
@@ -56,6 +56,7 @@ export default class NetworkCreateModal extends PureComponent {
     const { handleSubmitCreateNetwork, handleSubmitEditNetwork, network } = this.props
 
     const url = values.get('url')
+    const ws = values.get('ws')
     const alias = values.get('alias')
 
     if (network){
@@ -63,12 +64,13 @@ export default class NetworkCreateModal extends PureComponent {
       const networkModel = new AccountCustomNetwork({
         ...network,
         url,
+        ws,
         name: alias,
       })
 
       handleSubmitEditNetwork(networkModel)
     } else {
-      handleSubmitCreateNetwork(url, alias)
+      handleSubmitCreateNetwork(url, ws, alias)
     }
   }
 
@@ -101,6 +103,7 @@ export default class NetworkCreateModal extends PureComponent {
           network={network}
           initialValues={{
             url: network && network.url,
+            ws: network && network.ws,
             alias: network && network.name,
           }}
           handleDeleteNetwork={this.handleDeleteNetwork.bind(this)}

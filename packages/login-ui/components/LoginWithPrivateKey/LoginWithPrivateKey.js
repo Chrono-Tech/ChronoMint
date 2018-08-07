@@ -9,6 +9,7 @@ import { reduxForm, Field } from 'redux-form/immutable'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import Button from 'components/common/ui/Button/Button'
+import AccountProfileModel from '@chronobank/core/models/wallet/persistAccount/AccountProfileModel'
 import {
   FORM_PRIVATE_KEY_LOGIN_PAGE,
 } from '../../redux/constants'
@@ -21,7 +22,7 @@ class LoginWithPrivateKey extends PureComponent {
   }
 
   render () {
-    const { handleSubmit, error, previousPage } = this.props
+    const { handleSubmit, error, previousPage, submitting } = this.props
 
     return (
       <form styleName='form' name={FORM_PRIVATE_KEY_LOGIN_PAGE} onSubmit={handleSubmit}>
@@ -51,6 +52,7 @@ class LoginWithPrivateKey extends PureComponent {
             styleName='button'
             buttonType='login'
             type='submit'
+            isLoading={submitting}
           >
             <Translate value='LoginWithPrivateKey.submit' />
           </Button>
