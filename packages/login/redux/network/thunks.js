@@ -119,7 +119,7 @@ export const handleWalletLogin = (wallet, password) => async (dispatch, getState
       selectedProviderId,
       selectedNetworkId,
     )
-    dispatch(login(selectedAccount))
+    await dispatch(login(selectedAccount))
   }
 
 }
@@ -192,8 +192,8 @@ export const selectProviderWithNetwork = (networkId, providerId) => (dispatch) =
  * Thunk dispatched by "" screen.
  * TODO: to add description
  */
-export const handleSubmitCreateNetwork = (url, alias) => (dispatch) => {
-  dispatch(PersistAccountActions.customNetworkCreate(url, alias))
+export const handleSubmitCreateNetwork = (url, ws, alias) => (dispatch) => {
+  dispatch(PersistAccountActions.customNetworkCreate(url, ws, alias))
 }
 
 /*

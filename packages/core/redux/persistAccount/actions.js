@@ -217,11 +217,12 @@ export const logout = () => (dispatch) => {
   // Router.pushRoute('/')
 }
 
-export const customNetworkCreate = (url, alias) => (dispatch) => {
+export const customNetworkCreate = (url, ws, alias) => (dispatch) => {
   const network = new AccountCustomNetwork({
     id: uuid(),
     name: alias,
     url,
+    ws,
   })
 
   dispatch(customNetworksListAdd(network))

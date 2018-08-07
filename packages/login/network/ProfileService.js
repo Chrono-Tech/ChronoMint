@@ -7,7 +7,7 @@ import EventEmitter from 'events'
 import axios from 'axios'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 
-const PROFILE_BACKEND_REST_URL = 'http://localhost:3000/'
+const PROFILE_BACKEND_REST_URL = 'https://backend.profile.tp.ntr1x.com/'
 const basePath = '/api/v1'
 const GET_PERSONS_REST = `${basePath}/security/persons/query`
 const GET_SIGNATURE_REST = `${basePath}/security/signin/signature`
@@ -90,12 +90,16 @@ class ProfileService extends EventEmitter {
     const service = this.getServerProvider()
 
     const { data } = await service.post(UPDATE_PROFILE_COMBINE, {
-      avatar: avatar || null,
-      userName: userName || null,
-      company: company || null,
-      email: email || null,
-      website: website || null,
-      phone: phone || null,
+      level1: {
+        avatar: avatar || null,
+        userName: userName || null,
+      },
+      level2: {
+        company: company || null,
+        email: email || null,
+        website: website || null,
+        phone: phone || null,
+      },
     }, this.withAuthorization(token))
 
     return data

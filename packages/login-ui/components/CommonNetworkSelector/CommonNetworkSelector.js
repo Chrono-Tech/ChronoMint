@@ -137,14 +137,12 @@ export default class CommonNetworkSelector extends PureComponent {
   handleClickDefaultNetwork (data) {
     this.props.clearErrors()
     this.props.selectProviderWithNetwork(data.network.id, data.provider.id)
-    this.resolveNetwork(this.props.getProviderURL())
     this.handleRequestClose()
   }
 
   handleClickCustomNetwork (data) {
     this.props.clearErrors()
     this.props.selectProviderWithNetwork(data.id, data.id)
-    this.resolveNetwork(data.url)
     this.handleRequestClose()
   }
 

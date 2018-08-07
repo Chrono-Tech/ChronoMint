@@ -5,6 +5,7 @@
 
 export const en = {
   address: 'IP address or domain name',
+  socket: 'Web socket',
   alias: 'Alias',
   cancel: 'Cancel',
   save: 'Save',

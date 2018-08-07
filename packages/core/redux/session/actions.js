@@ -17,6 +17,9 @@ import { watchStopMarket } from '../market/actions'
 import { notify } from '../notifier/actions'
 import { initEthereum } from '../ethereum/actions'
 import {
+  DUCK_PERSIST_ACCOUNT,
+} from '../persistAccount/constants'
+import {
   DEFAULT_CBE_URL,
   DEFAULT_USER_URL,
   DUCK_SESSION,
@@ -56,13 +59,23 @@ export const logout = () => async (dispatch, getState) => {
 }
 
 export const login = (account) => async (dispatch, getState) => {
-  const { selectedNetworkId, selectedProviderId } = getState().get(DUCK_NETWORK)
-  if (!getState().get(DUCK_SESSION).isSession) {
+  let state = getState()
+
+  const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
+  const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
+  if (!state.get(DUCK_SESSION).isSession) {
     // setup and check network first and create session
     throw new Error('Session has not been created')
   }
 
-  const network = getNetworkById(selectedNetworkId, selectedProviderId)
+  let network = getNetworkById(selectedNetworkId, selectedProviderId)
+
+
+  if (!network.id) {
+
+    network = customNetworksList.find((network) => network.id === selectedNetworkId)
+
+  }
 
   const web3 = typeof window !== 'undefined'
     ? web3Factory(network)
