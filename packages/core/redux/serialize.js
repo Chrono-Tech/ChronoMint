@@ -7,27 +7,7 @@ import Immutable from 'immutable'
 import { createTransform } from 'redux-persist'
 import jsan from 'jsan'
 import BigNumber from 'bignumber.js'
-import Amount from '../models/Amount'
-import BalanceModel from '../models/tokens/BalanceModel'
-import BalancesCollection from '../models/tokens/BalancesCollection'
-import TxModel from '../models/TxModel'
-import TransactionsCollection from '../models/wallet/TransactionsCollection'
-import OwnerModel from '../models/wallet/OwnerModel'
-import OwnerCollection from '../models/wallet/OwnerCollection'
-import MultisigWalletPendingTxModel from '../models/wallet/MultisigWalletPendingTxModel'
-import TxExecModel from '../models/TxExecModel'
-import AddressModel from '../models/wallet/AddressModel'
-import AddressesCollection from '../models/wallet/AddressesCollection'
-import MultisigWalletCollection from '../models/wallet/MultisigWalletCollection'
-import DerivedWalletModel from '../models/wallet/DerivedWalletModel'
-import AllowanceCollection from '../models/wallet/AllowanceCollection'
-import AllowanceModel from '../models/wallet/AllowanceModel'
-import MainWalletModel from '../models/wallet/MainWalletModel'
-import AccountModel from '../models/wallet/persistAccount/AccountModel'
-import WalletModel from '../models/wallet/WalletModel'
-import TxHistoryModel from '../models/wallet/TxHistoryModel'
-import MultisigEthWalletModel from '../models/wallet/MultisigEthWalletModel'
-import { SignerMemoryModel } from '../models'
+import * as models from '../models'
 
 function mark (data, type, transformMethod) {
   return {
@@ -59,29 +39,29 @@ function refer (data, type, isArray, refs) {
 function serialize (Immutable, refs) {
   return {
     replacer: function (key, value) {
-      if (value instanceof AccountModel) return null
-      if (value instanceof SignerMemoryModel) return null
+      if (value instanceof models.AccountModel) return null
+      if (value instanceof models.SignerMemoryModel) return null
       if (value instanceof Date) return mark(value, 'Date', 'toString')
-      if (value instanceof WalletModel) return mark(value, 'WalletModel', 'transform')
-      if (value instanceof MultisigEthWalletModel) return mark(value, 'MultisigEthWalletModel', 'transform')
-      if (value instanceof TxHistoryModel) return mark(value, 'TxHistoryModel', 'transform')
-      if (value instanceof Amount) return mark(value, 'Amount', 'transform')
+      if (value instanceof models.WalletModel) return mark(value, 'WalletModel', 'transform')
+      if (value instanceof models.MultisigEthWalletModel) return mark(value, 'MultisigEthWalletModel', 'transform')
+      if (value instanceof models.TxHistoryModel) return mark(value, 'TxHistoryModel', 'transform')
+      if (value instanceof models.Amount) return mark(value, 'Amount', 'transform')
       if (value instanceof BigNumber) return mark(value, 'BigNumber', 'toString')
-      if (value instanceof BalanceModel) return refer(value, 'BalanceModel', 'toObject', refs)
-      if (value instanceof BalancesCollection) return refer(value, 'BalancesCollection', 'toObject', refs)
-      if (value instanceof TxModel) return refer(value, 'TxModel', 'toObject', refs)
-      if (value instanceof TransactionsCollection) return refer(value, 'TransactionsCollection', 'toObject', refs)
-      if (value instanceof OwnerModel) return refer(value, 'OwnerModel', 'toObject', refs)
-      if (value instanceof OwnerCollection) return refer(value, 'OwnerCollection', 'toObject', refs)
-      if (value instanceof TxExecModel) return refer(value, 'TxExecModel', 'toObject', refs)
-      if (value instanceof MultisigWalletPendingTxModel) return mark(value, 'MultisigWalletPendingTxModel', 'transform')
-      if (value instanceof AddressModel) return refer(value, 'AddressModel', 'toObject', refs)
-      if (value instanceof AddressesCollection) return refer(value, 'AddressesCollection', 'toObject', refs)
-      if (value instanceof DerivedWalletModel) return refer(value, 'DerivedWalletModel', 'toObject', refs)
-      if (value instanceof MultisigWalletCollection) return refer(value, 'MultisigWalletCollection', 'toObject', refs)
-      if (value instanceof AllowanceModel) return refer(value, 'AllowanceModel', 'toObject', refs)
-      if (value instanceof AllowanceCollection) return refer(value, 'AllowanceCollection', 'toObject', refs)
-      if (value instanceof MainWalletModel) return refer(value, 'MainWalletModel', 'toObject', refs)
+      if (value instanceof models.BalanceModel) return refer(value, 'BalanceModel', 'toObject', refs)
+      if (value instanceof models.BalancesCollection) return refer(value, 'BalancesCollection', 'toObject', refs)
+      if (value instanceof models.TxModel) return refer(value, 'TxModel', 'toObject', refs)
+      if (value instanceof models.TransactionsCollection) return refer(value, 'TransactionsCollection', 'toObject', refs)
+      if (value instanceof models.OwnerModel) return refer(value, 'OwnerModel', 'toObject', refs)
+      if (value instanceof models.OwnerCollection) return refer(value, 'OwnerCollection', 'toObject', refs)
+      if (value instanceof models.TxExecModel) return refer(value, 'TxExecModel', 'toObject', refs)
+      if (value instanceof models.MultisigWalletPendingTxModel) return mark(value, 'MultisigWalletPendingTxModel', 'transform')
+      if (value instanceof models.AddressModel) return refer(value, 'AddressModel', 'toObject', refs)
+      if (value instanceof models.AddressesCollection) return refer(value, 'AddressesCollection', 'toObject', refs)
+      if (value instanceof models.DerivedWalletModel) return refer(value, 'DerivedWalletModel', 'toObject', refs)
+      if (value instanceof models.MultisigWalletCollection) return refer(value, 'MultisigWalletCollection', 'toObject', refs)
+      if (value instanceof models.AllowanceModel) return refer(value, 'AllowanceModel', 'toObject', refs)
+      if (value instanceof models.AllowanceCollection) return refer(value, 'AllowanceCollection', 'toObject', refs)
+      if (value instanceof models.MainWalletModel) return refer(value, 'MainWalletModel', 'toObject', refs)
 
       if (value instanceof Immutable.Record) return refer(value, 'ImmutableRecord', 'toObject', refs)
       if (value instanceof Immutable.Range) return extract(value, 'ImmutableRange')
@@ -103,45 +83,45 @@ function serialize (Immutable, refs) {
           case 'Date':
             return new Date(data)
           case 'Amount':
-            return new Amount(data.value, data.symbol, data.isLoaded)
+            return new models.Amount(data.value, data.symbol, data.isLoaded)
           case 'BigNumber':
             return new BigNumber(data)
           case 'WalletModel':
-            return new WalletModel(data)
+            return new models.WalletModel(data)
           case 'MultisigEthWalletModel':
-            return new MultisigEthWalletModel(data)
+            return new models.MultisigEthWalletModel(data)
           case 'TxHistoryModel':
-            return new TxHistoryModel(data)
+            return new models.TxHistoryModel(data)
           case 'BalanceModel':
-            return new BalanceModel(data)
+            return new models.BalanceModel(data)
           case 'BalancesCollection':
-            return new BalancesCollection(data)
+            return new models.BalancesCollection(data)
           case 'TxModel':
-            return new TxModel(data)
+            return new models.TxModel(data)
           case 'TransactionsCollection':
-            return new TransactionsCollection(data)
+            return new models.TransactionsCollection(data)
           case 'OwnerModel':
-            return new OwnerModel(data)
+            return new models.OwnerModel(data)
           case 'OwnerCollection':
-            return new OwnerCollection(data)
+            return new models.OwnerCollection(data)
           case 'TxExecModel':
-            return new TxExecModel(data)
+            return new models.TxExecModel(data)
           case 'MultisigWalletPendingTxModel':
-            return new MultisigWalletPendingTxModel(data)
+            return new models.MultisigWalletPendingTxModel(data)
           case 'AddressModel':
-            return new AddressModel(data)
+            return new models.AddressModel(data)
           case 'AddressesCollection':
-            return new AddressesCollection(data)
+            return new models.AddressesCollection(data)
           case 'DerivedWalletModel':
-            return new DerivedWalletModel(data)
+            return new models.DerivedWalletModel(data)
           case 'MultisigWalletCollection':
-            return new MultisigWalletCollection(data)
+            return new models.MultisigWalletCollection(data)
           case 'AllowanceModel':
-            return new AllowanceModel(data)
+            return new models.AllowanceModel(data)
           case 'AllowanceCollection':
-            return new AllowanceCollection(data)
+            return new models.AllowanceCollection(data)
           case 'MainWalletModel':
-            return new MainWalletModel(data)
+            return new models.MainWalletModel(data)
           case 'AccountModel':
             return null
           case 'SignerMemoryModel':
