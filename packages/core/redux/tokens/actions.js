@@ -3,16 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import {
-  bccProvider,
-  btcProvider,
-  btgProvider,
-  ltcProvider,
-} from '@chronobank/login/network/BitcoinProvider'
+import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import WavesDAO from '@chronobank/core/dao/WavesDAO'
-import BigNumber from 'bignumber.js'
 import { modalsOpenConfirmDialog } from '@chronobank/core-dependencies/redux/modals/actions'
 import { showConfirmTransferModal } from '@chronobank/core-dependencies/redux/ui/actions'
 import { bccDAO, btcDAO, btgDAO, ltcDAO } from '../../dao/BitcoinDAO'
@@ -29,51 +24,26 @@ import { daoByType } from '../daos/selectors'
 import TxExecModel from '../../models/TxExecModel'
 import { web3Selector } from '../ethereum/selectors'
 import { estimateGas } from '../ethereum/actions'
-
-//#region CONSTANTS
-
+import { TRANSFER_CANCELLED } from '../../models/constants/TransferError'
+import { WATCHER_TX_END, WATCHER_TX_SET } from '../watcher/constants'
+import { DUCK_TOKENS, TOKENS_FAILED, TOKENS_FETCHED, TOKENS_FETCHING, TOKENS_INIT, TOKENS_UPDATE_LATEST_BLOCK } from './constants'
+import { EVENT_ERC20_TOKENS_COUNT, EVENT_NEW_ERC20_TOKEN } from '../../dao/constants/ERC20ManagerDAO'
+import { NEM_DECIMALS, NEM_XEM_NAME, NEM_XEM_SYMBOL } from '../../dao/constants/NemDAO'
 import {
-  TRANSFER_CANCELLED,
-} from '../../models/constants/TransferError'
-import {
-  WATCHER_TX_END,
-  WATCHER_TX_SET,
-} from '../watcher/constants'
-import {
-  DUCK_TOKENS,
-  TOKENS_FAILED,
-  TOKENS_FETCHED,
-  TOKENS_FETCHING,
-  TOKENS_INIT,
-  TOKENS_UPDATE_LATEST_BLOCK,
-} from './constants'
-import {
-  EVENT_ERC20_TOKENS_COUNT,
-  EVENT_NEW_ERC20_TOKEN,
-} from '../../dao/constants/ERC20ManagerDAO'
-import {
-  NEM_DECIMALS,
-  NEM_XEM_NAME,
-  NEM_XEM_SYMBOL,
-} from '../../dao/constants/NemDAO'
-import {
+  BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_LITECOIN,
-  EVENT_UPDATE_LAST_BLOCK,
   BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_NEM,
+  BLOCKCHAIN_WAVES,
+  ETH,
   EVENT_NEW_BLOCK,
   EVENT_NEW_TOKEN,
-  ETH,
+  EVENT_UPDATE_LAST_BLOCK,
 } from '../../dao/constants'
-import {
-  WAVES_DECIMALS,
-  WAVES_WAVES_NAME,
-  WAVES_WAVES_SYMBOL,
-} from '../../dao/constants/WavesDAO'
-
-//#endregion CONSTANTS
+import { WAVES_DECIMALS, WAVES_WAVES_NAME, WAVES_WAVES_SYMBOL } from '../../dao/constants/WavesDAO'
+import { getMainSymbolForBlockchain, getTokens } from './selectors'
 
 const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
@@ -254,7 +224,7 @@ export const initWavesTokens = () => async (dispatch, getState) => {
 export const initWavesAssetTokens = (waves: TokenModel) => async (dispatch, getState) => {
   const assets = await wavesProvider.getAssets()
   const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
-  dispatch({ type: TOKENS_FETCHING, count: currentCount + assets.length })
+  dispatch({ type: TOKENS_FETCHING, count: currentCount + Object.keys(assets).length })
   // do not wait until initialized, it is ok to lazy load all the tokens
   return Promise.all(
     Object.keys(assets)
@@ -278,6 +248,22 @@ export const subscribeOnTokens = (callback) => (dispatch, getState) => {
   // fetch for existing tokens
   const tokens = getState().get(DUCK_TOKENS)
   tokens.list().forEach(handleToken)
+}
+
+export const subscribeOnTokensFetched = (callback) => (dispatch, getState) => {
+  const check = () => {
+    const tokens = getTokens(getState())
+    return tokens.leftToFetch() <= 0
+  }
+  if (check()) {
+    dispatch(callback())
+  } else {
+    tokenService.on(EVENT_NEW_TOKEN, () => {
+      if (check()) {
+        dispatch(callback())
+      }
+    })
+  }
 }
 
 export const watchLatestBlock = () => async (dispatch) => {
@@ -339,3 +325,38 @@ export const estimateBtcFee = (params, callback) => async () => {
   }
 }
 
+export const getWalletBalances = ({ wallet }) => {
+  const providersMap = {
+    [BLOCKCHAIN_ETHEREUM]: ethereumProvider,
+    [BLOCKCHAIN_BITCOIN]: btcProvider,
+    [BLOCKCHAIN_BITCOIN_CASH]: bccProvider,
+    [BLOCKCHAIN_BITCOIN_GOLD]: btgProvider,
+    [BLOCKCHAIN_LITECOIN]: ltcProvider,
+    [BLOCKCHAIN_WAVES]: wavesProvider,
+    [BLOCKCHAIN_NEM]: nemProvider,
+  }
+  return providersMap[wallet.blockchain].getAccountBalances(wallet.address)
+}
+
+export const mapBalancesToSymbols = ({ balancesResult, blockchain, tokens }) => {
+  const mainSymbol = getMainSymbolForBlockchain(blockchain)
+  if (balancesResult && balancesResult.tokens) {
+    const tokensBalances = Object.entries(balancesResult.tokens)
+      .reduce((accumulator, [tokenAddress, balance]) => {
+        const token = tokens.getByAddress(tokenAddress)
+        return {
+          ...accumulator,
+          [token.symbol()]: new Amount(balance, token.symbol()),
+        }
+      }, {})
+
+    return {
+      [mainSymbol]: new Amount(balancesResult.balance, mainSymbol),
+      ...tokensBalances,
+    }
+  } else {
+    return {
+      [mainSymbol]: new Amount(balancesResult, mainSymbol),
+    }
+  }
+}

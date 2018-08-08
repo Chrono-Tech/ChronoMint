@@ -3,13 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import networkService from '@chronobank/login/network/NetworkService'
-import {
-  DUCK_PERSIST_ACCOUNT,
-} from '@chronobank/core/redux/persistAccount/constants'
+import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
-import web3Factory from '@chronobank/core/web3/index'
 import AbstractProvider from './AbstractProvider'
 import EthereumEngine from './EthereumEngine'
 import selectEthereumNode from './EthereumNode'
@@ -135,16 +131,6 @@ export class EthereumProvider extends AbstractProvider {
     return this._nemEngine
   }
 
-  addNewEthWallet (num_addresses) {
-    const { network, url } = this.getProviderSettings()
-    const wallet = this.getWallet()
-    const newEngine = new EthereumEngine(wallet, network, url, null, num_addresses)
-
-    this.setEngine(newEngine, ethereumProvider.getNemEngine())
-
-    // web3Provider.pushWallet(num_addresses)
-  }
-
   get2FAEncodedKey (callback) {
     const node = this._selectNode(this._engine)
     return node.get2FAEncodedKey(this._engine, callback)
@@ -169,21 +155,13 @@ export class EthereumProvider extends AbstractProvider {
     return this._engine
   }
 
-  async transfer (rawTx, from) {
-    const engine = this.getEngine()
-    const { signedTx, walletType } = engine.signTx(rawTx, from)
-    if (walletType === 'memory' || walletType === 'plugin') {
-      this.sendSignedTransaction(signedTx)
+  async getAccountBalances (address) {
+    const node = this._selectNode(this._engine)
+    const data = await node.getAddressInfo(address || this._engine.getAddress())
+    return {
+      balance: data.balance,
+      tokens: data.erc20token,
     }
-  }
-
-  sendSignedTransaction (signedTx) {
-    const currentNetworkId = networkService.getCurrentNetwork()
-    const currentProviderId = networkService.getCurrentProvider()
-    const network = getNetworkById(currentNetworkId, currentProviderId)
-    const web3 = web3Factory(network)
-    const serializedTx = signedTx.serialize().toString('hex')
-    web3.eth.sendSignedTransaction('0x' + serializedTx)
   }
 }
 

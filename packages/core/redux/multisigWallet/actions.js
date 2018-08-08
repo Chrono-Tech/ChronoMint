@@ -15,7 +15,7 @@ import MultisigWalletPendingTxModel from '../../models/wallet/MultisigWalletPend
 import OwnerModel from '../../models/wallet/OwnerModel'
 import { notify, notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
-import { subscribeOnTokens } from '../tokens/actions'
+import { getWalletBalances, mapBalancesToSymbols, subscribeOnTokens, subscribeOnTokensFetched } from '../tokens/actions'
 import {
   EE_CONFIRMATION,
   EE_CONFIRMATION_NEEDED,
@@ -435,21 +435,37 @@ export const setMultisigWalletName = (address, name) => (dispatch, getState) => 
 }
 
 export const updateEthMultisigWalletBalance = ({ wallet }) => async (dispatch) => {
-  const updateBalance = (token: TokenModel) => async () => {
-    if (token.blockchain() === wallet.blockchain) {
-      const dao = tokenService.getDAO(token)
-      let balance = await dao.getAccountBalance(wallet.address)
-      if (balance) {
-        await dispatch({
-          type: ETH_MULTISIG_BALANCE,
-          walletId: wallet.id,
-          balance: new Amount(balance, token.symbol(), true),
-        })
+  getWalletBalances({ wallet })
+    .then((balancesResult) => {
+      const callback = () => async (dispatch, getState) => {
+        const tokens = getTokens(getState())
+        dispatch(updateEthMultisigWallet(new MultisigEthWalletModel({
+          ...wallet,
+          balances: {
+            ...wallet.balances,
+            ...mapBalancesToSymbols({ tokens, blockchain: wallet.blockchain, balancesResult }),
+          },
+        })))
       }
-    }
-  }
-
-  dispatch(subscribeOnTokens(updateBalance))
+      dispatch(subscribeOnTokensFetched(callback))
+    })
+    .catch((e) => {
+      console.log('call balances from middleware is failed', e)
+      const updateBalance = (token: TokenModel) => async () => {
+        if (token.blockchain() === wallet.blockchain) {
+          const dao = tokenService.getDAO(token)
+          let balance = await dao.getAccountBalance(wallet.address)
+          if (balance) {
+            dispatch({
+              type: ETH_MULTISIG_BALANCE,
+              walletId: wallet.id,
+              balance: new Amount(balance, token.symbol(), true),
+            })
+          }
+        }
+      }
+      dispatch(subscribeOnTokens(updateBalance))
+    })
 }
 
 export const getTransactionsForEthMultisigWallet = ({ wallet, forcedOffset }) => async (dispatch, getState) => {

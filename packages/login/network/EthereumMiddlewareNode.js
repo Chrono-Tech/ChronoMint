@@ -120,5 +120,9 @@ export default class EthereumMiddlewareNode extends AbstractNode {
       return typeof callback === 'function' ? callback(data) : data
     }
   }
-}
 
+  async getAddressInfo (address) {
+    const { data } = await this._api.get(`addr/${address}/balance`)
+    return data
+  }
+}
