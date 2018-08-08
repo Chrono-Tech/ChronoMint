@@ -159,7 +159,7 @@ function serialize (Immutable, refs) {
   }
 }
 
-const transformer = (Immutable, refs) => {
+function transformer (Immutable, refs) {
   return {
     stringify: function (data) {
       return jsan.stringify(data, serialize(Immutable, refs).replacer, null, true)
