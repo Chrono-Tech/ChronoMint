@@ -3,9 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import BigNumber from 'bignumber.js'
 import AbstractContractDAO from './AbstractContract3DAO'
-import Amount from '../models/Amount'
 
 import {
   TX_REQUIRE_TIME,

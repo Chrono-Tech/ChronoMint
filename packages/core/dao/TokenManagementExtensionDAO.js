@@ -27,7 +27,6 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
       return
     }
 
-    console.log('TokenManagementExtensionDAO handleEventsData: ', data.event, data)
     this.emit(data.event, data)
   }
 

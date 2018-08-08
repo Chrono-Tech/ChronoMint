@@ -11,14 +11,10 @@ import TransferExecModel from '../models/TransferExecModel'
 import Amount from '../models/Amount'
 import { wavesAddress } from '../models/validator'
 
-//#region CONSTANTS
-
 import {
   EVENT_NEW_TRANSFER,
   EVENT_UPDATE_BALANCE,
 } from './constants'
-
-//#endregion CONSTANTS
 
 export const BLOCKCHAIN_WAVES = 'WAVES'
 export const WAVES_WAVES_SYMBOL = 'WAVES'
@@ -80,11 +76,11 @@ export default class WavesDAO extends EventEmitter {
   }
 
   async getAccountBalances () {
-    return await this._wavesProvider.getAccountBalances(this._name)
+    return this._wavesProvider.getAccountBalances(this._name)
   }
 
   async getAccountBalance () {
-    return await this.getAccountBalances()
+    return this.getAccountBalances()
   }
 
   accept (transfer: TransferExecModel) {
@@ -120,7 +116,7 @@ export default class WavesDAO extends EventEmitter {
   }
 
   // TODO @ipavlenko: Rename to 'transfer' after all token DAOs will start using 'submit' method and 'trans'
-  async immediateTransfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
+  async immediateTransfer (from: string, to: string, amount: BigNumber, /*token: TokenModel, feeMultiplier: Number = 1*/) {
     try {
       return await this._wavesProvider.transfer(from, to, amount, this._asset)
     } catch (e) {

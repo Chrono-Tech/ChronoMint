@@ -54,7 +54,7 @@ export const logout = () => async (dispatch, getState) => {
     }
   } catch (e) {
     // eslint-disable-next-line
-    console.warn('logout error:', e)
+    console.error('logout error:', e)
   }
 }
 
@@ -69,11 +69,8 @@ export const login = (account) => async (dispatch, getState) => {
   }
 
   let network = getNetworkById(selectedNetworkId, selectedProviderId)
-
   if (!network.id) {
-
     network = customNetworksList.find((network) => network.id === selectedNetworkId)
-
   }
 
   const web3 = typeof window !== 'undefined'
@@ -84,7 +81,7 @@ export const login = (account) => async (dispatch, getState) => {
   await dispatch(watcher({ web3 }))
 
   const userManagerDAO = daoByType('UserManager')(getState())
-  const [isCBE, profile, memberId] = await Promise.all([
+  const [isCBE, profile /*memberId*/] = await Promise.all([
     userManagerDAO.isCBE(account),
     userManagerDAO.getMemberProfile(account, web3),
     userManagerDAO.getMemberId(account),
@@ -149,11 +146,8 @@ export const getProfileSignature = (wallet) => async (dispatch) => {
   }
 
   let signDataString = profileService.getSignData()
-
   let signData = wallet.sign(signDataString)
-
   let profileSignature = await profileService.getProfile(signData.signature)
-
   dispatch(setProfileSignature(profileSignature))
 
   return profileSignature
@@ -161,7 +155,6 @@ export const getProfileSignature = (wallet) => async (dispatch) => {
 
 export const updateUserProfile = (profile) => async (dispatch, getState) => {
   const { profileSignature } = getState().get(DUCK_SESSION)
-
   const newProfile = await profileService.updateUserProfile({ ...profile }, profileSignature.token)
 
   dispatch(setProfileSignature({

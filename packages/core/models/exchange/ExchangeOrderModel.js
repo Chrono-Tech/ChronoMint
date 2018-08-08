@@ -5,7 +5,6 @@
 
 import BigNumber from 'bignumber.js'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
-import Amount from '../Amount'
 
 export default class ExchangeOrderModel extends abstractFetchingModel({
   owner: null,

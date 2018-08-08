@@ -354,6 +354,7 @@ export const setTx = (tx) => async (dispatch, getState) => {
   const state = getState()
   const account = getAccount(state)
   const assetsManagerDAO = daoByType('AssetsManager')(state)
+  //eslint-disable-next-line
   const txModel = await assetsManagerDAO.getTxModel(tx, account)
   //TODO convert tx to tx model
   // dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList: new Immutable.Map().set(txModel.id, txModel) } })
@@ -415,7 +416,6 @@ export const watchInitTokens = () => async (dispatch, getState) => {
   ])
 
   const revokeCallback = async (data) => {
-    console.log('revokeCallback: ', data)
     const tokenSymbol = web3Converter.bytesToString(data.returnValues.symbol)
     const token = tokens.getBySymbol(tokenSymbol)
     const totalSupply = token.totalSupply() + token.removeDecimals(new Amount(data.returnValues.value, tokenSymbol))
@@ -430,7 +430,6 @@ export const watchInitTokens = () => async (dispatch, getState) => {
   }
 
   const issueCallback = async (data) => {
-    console.log('issueCallback: ', data)
     const tokenSymbol = web3Converter.bytesToString(data.returnValues.symbol)
     const token = tokens.getBySymbol(tokenSymbol)
     const totalSupply = token.totalSupply() - token.removeDecimals(new Amount(data.returnValues.value, tokenSymbol))
@@ -520,7 +519,8 @@ export const getFee = (token: TokenModel) => async (dispatch, getState) => {
       .fee(res / 100)
       .withFee(!!res.toNumber())
   } catch (e) {
-    console.log(e.message)
+    // eslint-disable-next-line
+    console.error(e.message)
   }
   return tokenFee
 }

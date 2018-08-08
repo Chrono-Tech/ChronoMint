@@ -31,7 +31,7 @@ import { getTxList, goToWallets } from '../mainWallet/actions'
 import { ETH } from '../../dao/constants'
 import { getMultisigWallets } from '../wallet/selectors/models'
 import { getEthMultisigWallet, getWallets } from './selectors/models'
-import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
+// import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 import { daoByType } from '../daos/selectors'
 import MultisigEthWalletModel from '../../models/wallet/MultisigEthWalletModel'
 import tokenService from '../../services/TokenService'
@@ -85,7 +85,8 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
         await dispatch(check2FAChecked())
         dispatch(change(FORM_2FA_WALLET, 'step', FORM_2FA_STEPS[2]))
       } catch (e) {
-        console.warn(e)
+        // eslint-disable-next-line
+        console.error(e)
       }
       const txHash = wallet.transactionHash
 
@@ -111,24 +112,24 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
     })
 
   const wallets = getWallets(getState())
-  wallets.items().map((wallet: DerivedWalletModel) => {
-    const { account } = getState().get(DUCK_SESSION)
-
-    const handleToken = (token: TokenModel) => async (dispatch) => {
-      if (token.blockchain() === wallet.blockchain()) {
-        // TODO fix this handle
-        // const dao = tokenService.getDAO(token)
-        // let balance = await dao.getAccountBalance(wallet.address())
-        // dispatch({
-        //   type: ETH_MULTISIG_BALANCE,
-        //   walletId: wallet.address(),
-        //   balance: new BalanceModel({
-        //     id: token.id(),
-        //     amount: new Amount(balance, token.symbol(), true),
-        //   }),
-        // })
-      }
-    }
+  wallets.items().map((/*wallet: DerivedWalletModel*/) => {
+    // const { account } = getState().get(DUCK_SESSION)
+    //
+    // const handleToken = (token: TokenModel) => async (dispatch) => {
+    //   if (token.blockchain() === wallet.blockchain()) {
+    //     TODO fix this handle
+    //     const dao = tokenService.getDAO(token)
+    //     let balance = await dao.getAccountBalance(wallet.address())
+    //     dispatch({
+    //       type: ETH_MULTISIG_BALANCE,
+    //       walletId: wallet.address(),
+    //       balance: new BalanceModel({
+    //         id: token.id(),
+    //         amount: new Amount(balance, token.symbol(), true),
+    //       }),
+    //     })
+    //   }
+    // }
 
     // if (isOwner(wallet, account)) {
     //   dispatch(subscribeOnTokens(handleToken))

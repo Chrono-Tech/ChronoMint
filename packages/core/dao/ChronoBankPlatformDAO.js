@@ -45,7 +45,6 @@ export default class ChronoBankPlatformDAO extends AbstractContractDAO {
       return
     }
 
-    console.log('ChronoBankPlatformDAO handleEventsData: ', data.event, this, data)
     this.emit(data.event, data)
   }
 
@@ -56,7 +55,6 @@ export default class ChronoBankPlatformDAO extends AbstractContractDAO {
 
   revokeAsset (token, value) {
     const amount = token.addDecimals(value, token)
-    console.log('revokeAsset Amount: ', amount, amount + '')
     return this._tx(TX_REVOKE_ASSET, [web3Converter.stringToBytes(token.symbol()), amount])
   }
 

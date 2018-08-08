@@ -39,7 +39,7 @@ export default class ChronoBankAssetDAO extends AbstractContractDAO {
     if (!data.event) {
       return
     }
-    console.log('ChronoBankAssetDAO handleEventsData: ', data.event, data)
+
     this.emit(data.event, data)
   }
 

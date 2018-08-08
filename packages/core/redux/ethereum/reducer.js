@@ -47,12 +47,10 @@ const mutations = {
   [TX_STATUS] (state, { key, address, props }) {
     const scope = state.pending[address]
     if (!scope) {
-      console.log('No address', address)
       return state
     }
     const entry = scope[key]
     if (!entry) {
-      console.log('No entry', entry)
       return state
     }
     return {

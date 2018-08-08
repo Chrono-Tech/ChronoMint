@@ -18,8 +18,6 @@ import PollInterfaceManagerDAO from './PollInterfaceManagerDAO'
 import web3Converter from '../utils/Web3Converter'
 import AbstractContractDAO from './AbstractContract3DAO'
 
-//#region CONSTANTS
-
 import {
   IS_CREATED,
   IS_REMOVED,
@@ -33,8 +31,6 @@ import {
   EVENT_POLL_REMOVED,
   EVENT_POLL_UPDATED,
 } from './constants/PollEmitterDAO'
-
-//#endregion
 
 export default class VotingManagerDAO extends AbstractContractDAO {
 
@@ -50,8 +46,6 @@ export default class VotingManagerDAO extends AbstractContractDAO {
 
     this.allEventsEmitter = this.history.events.allEvents({})
       .on('data', this.handleEventsData)
-      .on('changed', this.handleEventsChanged)
-      .on('error', this.handleEventsError)
   }
 
   disconnect () {
@@ -67,15 +61,8 @@ export default class VotingManagerDAO extends AbstractContractDAO {
     if (!data.event) {
       return
     }
-    console.log('VotingManagerDAO handleEventsData: ', data.event, data)
+
     this.emit(data.event, data)
-  }
-
-  handleEventsChanged = (data) => {}
-
-  handleEventsError = (data) => {
-    console.log('handleEventsError: ', data.event, data)
-    this.emit(data.event + '_error', data)
   }
 
   getVoteLimit (): Promise {

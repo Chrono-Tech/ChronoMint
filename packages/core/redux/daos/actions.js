@@ -9,8 +9,6 @@ import { getAccount } from '../session/selectors/models'
 import AbstractContractDAO from '../../dao/AbstractContract3DAO'
 import { ContractsManagerABI } from '../../dao/abi'
 
-//#region CONSTANTS
-
 import {
   ASSET_HOLDER_LIBRARY,
   ASSET_DONATOR_LIBRARY,
@@ -29,8 +27,6 @@ import {
   DAOS_REGISTER,
   DAOS_INITIALIZED,
 } from './constants'
-
-//#endregion
 
 // eslint-disable-next-line import/prefer-default-export
 export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
@@ -65,14 +61,15 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
   ]
 
   const getDaoModel = async (contract, address: String) => {
-    if (!address) {
-      address = await contractManagerDAO.getContractAddressByType(contract.type)
+    let contractAddress = address
+    if (!contractAddress) {
+      contractAddress = await contractManagerDAO.getContractAddressByType(contract.type)
     }
-    const dao = contract.create(address.toLowerCase(), historyAddress)
+    const dao = contract.create(contractAddress.toLowerCase(), historyAddress)
     dao.connect(web3)
     return new ContractDAOModel({
       contract,
-      address,
+      contractAddress,
       history: historyAddress,
       dao,
     })

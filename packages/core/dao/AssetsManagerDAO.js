@@ -4,11 +4,8 @@
  */
 
 import Immutable from 'immutable'
-import web3Provider from '@chronobank/login/network/Web3Provider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
-import BigNumber from 'bignumber.js'
 import { unionBy } from 'lodash'
-import TxModel from '../models/TxModel'
 import OwnerCollection from '../models/wallet/OwnerCollection'
 import OwnerModel from '../models/wallet/OwnerModel'
 import BlacklistModel from '../models/tokens/BlacklistModel'
@@ -21,32 +18,15 @@ import web3Converter from '../utils/Web3Converter'
 import { daoByType } from '../../core/redux/daos/selectors'
 import assetsManagerService from '../services/AssetsManagerService'
 
-//#region CONSTANTS
-
-import {
-  TX_ISSUE,
-  TX_OWNERSHIP_CHANGE,
-  TX_REVOKE,
-} from './constants/ChronoBankPlatformDAO'
 import {
   TX_PLATFORM_ATTACHED,
   TX_PLATFORM_DETACHED,
   TX_PLATFORM_REQUESTED,
 } from './constants/PlatformsManagerDAO'
-import {
-  TX_PAUSED,
-  TX_RESTRICTED,
-  TX_UNPAUSED,
-  TX_UNRESTRICTED,
-} from './constants/ChronoBankAssetDAO'
-import {
-  BLOCKCHAIN_ETHEREUM,
-} from './constants'
+
 import {
   TX_ASSET_CREATED,
 } from './constants/AssetsManagerDAO'
-
-//#endregion CONSTANTS
 
 export default class AssetsManagerDAO extends AbstractContractDAO {
 
@@ -68,8 +48,10 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   }
 
   handleAllEventsData = (data) => {
+    if (!data.event) {
+      return
+    }
 
-    console.log('PollEmitterDAO handleAllEventsData: ', data)
     this.emit(data.event, data)
   }
 

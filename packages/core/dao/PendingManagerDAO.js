@@ -12,16 +12,12 @@ import { MultiEventsHistoryABI, PendingManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 
-//#region CONSTANTS
-
 import {
   OPERATIONS_PER_PAGE,
   PENDING_ID_PREFIX,
   TX_CONFIRM,
   TX_REVOKE,
 } from './constants/PendingManagerDAO'
-
-//#endregion CONSTANTS
 
 const EVENT_DONE = 'Done'
 const EVENT_CONFIRMATION = 'Confirmation'
@@ -184,14 +180,15 @@ export default class PendingManagerDAO extends AbstractContractDAO {
    * @private
    */
   _isConfirmed (bmp) {
+    let bmpp = bmp
     if (!this._memberId) {
       throw new Error('_memberId is not defined')
     }
-    bmp = bmp.toNumber()
-    if (!bmp) {
+    bmpp = bmpp.toNumber()
+    if (!bmpp) {
       return null
     }
-    return (bmp & (2 ** this._memberId)) !== 0
+    return (bmpp & (2 ** this._memberId)) !== 0
   }
 
   /** @private */

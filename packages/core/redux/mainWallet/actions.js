@@ -72,10 +72,6 @@ import {
   WALLET_TRANSACTION_UPDATED,
 } from './constants'
 
-//#region CONSTANTS
-
-//#endregion
-
 export const goToWallets = () => (dispatch) => dispatch(push('/wallets'))
 
 export const goBackForAddWalletsForm = () => (dispatch, getState) => {
@@ -352,7 +348,7 @@ export const estimateGasForDeposit = (mode: string, params, callback, gasPriceMu
   dispatch({ type: WALLET_ESTIMATE_GAS_FOR_DEPOSIT })
 }
 
-export const getTokensBalancesAndWatch = (address, blockchain, customTokens: Array<string>) => (token) => async (dispatch) => {
+export const getTokensBalancesAndWatch = (address, blockchain, customTokens: Array<string>) => (token) => async (/*dispatch*/) => {
   if (blockchain !== token.blockchain() || (token.symbol() !== ETH && customTokens && !customTokens.includes(token.symbol()))) {
     return null
   }

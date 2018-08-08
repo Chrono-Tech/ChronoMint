@@ -66,11 +66,12 @@ const balanceCalculator = (address: string, symbol: string) => createSelector(
   ) => {
     return balances
       .reduce((accumulator, tokenBalance) => {
+        let accumulatorResult = null
         const symbol = Object.keys(tokenBalance)[0]
         const balance = Object.values(tokenBalance)[0]
         const tokenPrice = priceList[symbol] && priceList[symbol][selectedCurrency] || null
-        accumulator += ((balance || 0) * (tokenPrice || 0))
-        return accumulator
+        accumulatorResult = accumulator + ((balance || 0) * (tokenPrice || 0))
+        return accumulatorResult
       }, 0)
   },
 )
