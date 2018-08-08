@@ -11,3 +11,7 @@ docs/**
 *.svg
 git
 **/*.spec.js
+
+.
+
+!packages/core/*

@@ -423,7 +423,7 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     await dispatch({
       type: TOKENS_UPDATE,
       token: token
-        .totalSupply(totalSupply)
+        .totalSupply(totalSupply),
     })
 
     dispatch(setTx(data))
@@ -438,7 +438,7 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     await dispatch({
       type: TOKENS_UPDATE,
       token: token
-        .totalSupply(totalSupply)
+        .totalSupply(totalSupply),
     })
 
     dispatch(setTx(data))

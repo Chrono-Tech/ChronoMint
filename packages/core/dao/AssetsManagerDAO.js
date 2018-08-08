@@ -60,7 +60,6 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
 
   }
 
-
   connect (web3, options = {}) {
     super.connect(web3, options)
 
@@ -73,7 +72,6 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     console.log('PollEmitterDAO handleAllEventsData: ', data)
     this.emit(data.event, data)
   }
-
 
   /**
    *

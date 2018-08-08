@@ -147,7 +147,7 @@ class Footer extends Component {
 
             <div styleName='connect'>
               <div styleName='title-container'>
-                <span styleName='title'>{'Connect with us'}</span>
+                <span styleName='title'>Connect with us</span>
               </div>
               <div styleName='logos-container'>
                 <div styleName='logo-wrapper'>
@@ -240,7 +240,7 @@ class Footer extends Component {
         </div>
         <div styleName='copyright'>
           <span styleName='copyright-text'>
-            {<Translate value={'copyright'} />}
+            {<Translate value='copyright' />}
           </span>
         </div>
 

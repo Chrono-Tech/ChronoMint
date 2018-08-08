@@ -33,10 +33,8 @@ export default class LockedWallet extends PureComponent {
     token: PropTypes.instanceOf(TokenModel),
   }
 
-
   render () {
     const { token } = this.props
-
 
     return (
 
@@ -110,14 +108,14 @@ export default class LockedWallet extends PureComponent {
               <Button
                 disabled={false}
                 type='submit'
-                label={'SEND'}
+                label='SEND'
               />
             </div>
             <div styleName='action'>
               <Button
                 disabled={false}
                 type='submit'
-                label={'RECEIVE'}
+                label='RECEIVE'
               />
             </div>
             <div styleName='action'>
@@ -125,7 +123,7 @@ export default class LockedWallet extends PureComponent {
                 disabled={false}
                 flat
                 type='submit'
-                label={'DEPOSIT'}
+                label='DEPOSIT'
               />
             </div>
           </div>
