@@ -7,8 +7,6 @@ import web3Converter from '../utils/Web3Converter'
 import AbstractContractDAO from './AbstractContract3DAO'
 import { ChronoBankPlatformABI } from './abi'
 
-//#region CONSTANTS
-
 import {
   TX_ADD_ASSET_PART_OWNER,
   TX_IS_REISSUABLE,
@@ -20,15 +18,13 @@ import {
   TX_REVOKE,
 } from './constants/ChronoBankPlatformDAO'
 
-//#endregion CONSTANTS
-
 export default class ChronoBankPlatformDAO extends AbstractContractDAO {
 
   constructor (address, history) {
     super({ address, history, abi: ChronoBankPlatformABI })
   }
 
-  connect (web3, options) {
+  connect (web3, options = {}) {
     super.connect(web3, options)
 
     this.allEventsEmitter = this.history.events.allEvents({})
@@ -44,7 +40,7 @@ export default class ChronoBankPlatformDAO extends AbstractContractDAO {
     }
   }
 
-  handleEventsData (data) {
+  handleEventsData = (data) => {
     if (!data.event) {
       return
     }
@@ -60,6 +56,7 @@ export default class ChronoBankPlatformDAO extends AbstractContractDAO {
 
   revokeAsset (token, value) {
     const amount = token.addDecimals(value, token)
+    console.log('revokeAsset Amount: ', amount, amount + '')
     return this._tx(TX_REVOKE_ASSET, [web3Converter.stringToBytes(token.symbol()), amount])
   }
 
@@ -75,15 +72,15 @@ export default class ChronoBankPlatformDAO extends AbstractContractDAO {
     return this._tx(TX_REMOVE_ASSET_PART_OWNER, [web3Converter.stringToBytes(symbol), address])
   }
 
-  watchIssue (callback) {
-    return this.on(TX_ISSUE, (data) => callback(data))
+  watchIssue (callback, filter) {
+    return this.on(TX_ISSUE, (data) => callback(data), filter)
   }
 
-  watchRevoke (callback) {
-    return this.on(TX_REVOKE, (data) => callback(data))
+  watchRevoke (callback, filter) {
+    return this.on(TX_REVOKE, (data) => callback(data), filter)
   }
 
-  watchManagers (callback) {
-    return this.on(TX_OWNERSHIP_CHANGE, callback)
+  watchManagers (callback, filter) {
+    return this.on(TX_OWNERSHIP_CHANGE, callback, filter)
   }
 }

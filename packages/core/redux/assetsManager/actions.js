@@ -10,6 +10,7 @@ import ReissuableModel from '../../models/tokens/ReissuableModel'
 import TokenModel from '../../models/tokens/TokenModel'
 import OwnerCollection from '../../models/wallet/OwnerCollection'
 import OwnerModel from '../../models/wallet/OwnerModel'
+import Amount from '@chronobank/core/models/Amount'
 import { DUCK_TOKENS, TOKENS_FETCHED, TOKENS_UPDATE } from '../tokens/constants'
 import AssetsManagerNoticeModel, {
   ASSET_PAUSED,
@@ -242,6 +243,7 @@ export const getManagersForAssetSymbol = (symbol: string, excludeAccounts: Array
     const managersList = await assetsManagerDAO.getManagersForAssetSymbol(symbol, excludeAccounts)
     return managersList.isFetched(true)
   } catch (e) {
+    // eslint-disable-next-line
     console.warn(e)
     return new OwnerCollection()
   }
@@ -403,6 +405,8 @@ export const watchInitTokens = () => async (dispatch, getState) => {
   dispatch(getTransactions())
   const state = getState()
   const account = getAccount(state)
+  const tokens =  state.get(DUCK_TOKENS)
+
   assetsManagerService.setPlatformTokenExtensionGatewayManagerEmitterDAO(daoByType('PlatformTokenExtensionGatewayManagerEmitterDAO')(state))
 
   await Promise.all([
@@ -410,7 +414,32 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     dispatch(subscribeToRestrictedEvents()),
   ])
 
+  const revokeCallback = async (data) => {
+    console.log('revokeCallback: ', data)
+    const tokenSymbol = web3Converter.bytesToString(data.returnValues.symbol)
+    const token = tokens.getBySymbol(tokenSymbol)
+    const totalSupply = token.totalSupply() + token.removeDecimals(new Amount(data.returnValues.value, tokenSymbol))
+
+    await dispatch({
+      type: TOKENS_UPDATE,
+      token: token
+        .totalSupply(totalSupply)
+    })
+
+    dispatch(setTx(data))
+  }
+
   const issueCallback = async (data) => {
+    console.log('issueCallback: ', data)
+    const tokenSymbol = web3Converter.bytesToString(data.returnValues.symbol)
+    const token = tokens.getBySymbol(tokenSymbol)
+    const totalSupply = token.totalSupply() - token.removeDecimals(new Amount(data.returnValues.value, tokenSymbol))
+
+    await dispatch({
+      type: TOKENS_UPDATE,
+      token: token
+        .totalSupply(totalSupply)
+    })
 
     dispatch(setTx(data))
   }
@@ -471,7 +500,7 @@ export const watchInitTokens = () => async (dispatch, getState) => {
 
   assetsManagerService
     .on(TX_ISSUE, issueCallback)
-    .on(TX_REVOKE, issueCallback)
+    .on(TX_REVOKE, revokeCallback)
     .on(TX_OWNERSHIP_CHANGE, managersCallback)
 
   assetsManagerService.subscribeToAssets(assetCallback, account)

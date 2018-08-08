@@ -57,7 +57,23 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     this.platformTokenExtensionGatewayManagerEmitterDAO = null
     this.platformsManagerDAO = null
     this.chronobankAssetDAO = null
+
   }
+
+
+  connect (web3, options = {}) {
+    super.connect(web3, options)
+
+    this.allEventsEmitter = this.history.events.allEvents({})
+      .on('data', this.handleEventsData)
+  }
+
+  handleAllEventsData = (data) => {
+
+    console.log('PollEmitterDAO handleAllEventsData: ', data)
+    this.emit(data.event, data)
+  }
+
 
   /**
    *
