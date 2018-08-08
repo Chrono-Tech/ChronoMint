@@ -394,10 +394,10 @@ export default class AbstractContractDAO extends EventEmitter {
    */
   // eslint-disable-next-line complexity
   async _tx (func: string,
-             args: Array = [],
-             infoArgs: Object | AbstractModel = null,
-             value: BigNumber = new BigNumber(0),
-             options = DEFAULT_TX_OPTIONS): Object {
+    args: Array = [],
+    infoArgs: Object | AbstractModel = null,
+    value: BigNumber = new BigNumber(0),
+    options = DEFAULT_TX_OPTIONS): Object {
 
     const {
       from,

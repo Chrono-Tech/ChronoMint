@@ -7,5 +7,6 @@
  * Get file name from url and local path
  */
 export function getFileNameFromPath (path): string {
+  // eslint-disable-next-line no-useless-escape
   return path && path.replace(/^.*[\\\/]/, '') || ''
 }

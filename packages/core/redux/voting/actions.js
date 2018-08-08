@@ -14,8 +14,6 @@ import { getSelectedPollFromDuck, getVoting } from './selectors/models'
 import { daoByType } from '../daos/selectors'
 import PollModel from '../../models/PollModel'
 
-//#region CONSTANTS
-
 import {
   DUCK_SESSION,
 } from '../session/constants'
@@ -44,8 +42,6 @@ import {
   POLLS_VOTE_LIMIT,
 } from './constants'
 import { executeTransaction } from '../ethereum/actions'
-
-//#endregion
 
 const PAGE_SIZE = 20
 
@@ -142,6 +138,7 @@ export const removePoll = (pollObject: PTPoll) => async (dispatch, getState) => 
     }
 
   } catch (e) {
+    console.error('removePoll error: ', e)
     dispatch(handlePollCreated(poll))
     throw e
   }
@@ -161,6 +158,7 @@ export const vote = (choice: Number) => async (dispatch, getState) => {
       dispatch(executeTransaction({ tx }))
     }
   } catch (e) {
+    console.error('Vote poll error: ', e)
     dispatch(handlePollUpdated(poll))
     throw e
   }
@@ -184,6 +182,7 @@ export const activatePoll = (pollObject: PTPoll) => async (dispatch, getState) =
       dispatch(executeTransaction({ tx }))
     }
   } catch (e) {
+    console.error('Active poll error: ', e)
     dispatch(handlePollUpdated(poll))
   }
 }
@@ -210,6 +209,7 @@ export const endPoll = (pollObject: PTPoll) => async (dispatch, getState) => {
       dispatch(executeTransaction({ tx }))
     }
   } catch (e) {
+    console.error('End poll error: ', e)
     dispatch(handlePollUpdated(poll))
   }
 }

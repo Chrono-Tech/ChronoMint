@@ -73,7 +73,7 @@ export const getSelectedAccountName = createSelector(
 export const getAccountProfileSummary = createSelector(
   [
     getProfileSignature,
-    getSelectedAccountName
+    getSelectedAccountName,
   ],
   (profile, selectedAccountName) => {
     if (profile){
