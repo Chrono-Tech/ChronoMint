@@ -7,8 +7,6 @@ import bitcoin from 'bitcoinjs-lib'
 import nemSdk from 'nem-sdk'
 import * as WavesApi from '@waves/waves-api'
 import bigi from 'bigi'
-import wallet from 'ethereumjs-wallet'
-import hdKey from 'ethereumjs-wallet/hdkey'
 import { byEthereumNetwork } from './NetworkProvider'
 import { createBCCEngine, createBTCEngine, createBTGEngine, createLTCEngine } from './BitcoinUtils'
 import EthereumEngine from './EthereumEngine'
@@ -28,26 +26,16 @@ import {
 import EthereumWallet from './EthereumWallet'
 
 class PrivateKeyProvider {
-  getPrivateKeyProvider (privateKey, { url, network } = {}, wallets) {
+  getPrivateKeyProvider (privateKey, { url, network } = {}) {
     const networkCode = byEthereumNetwork(network)
     const ethereumWallet = this.createEthereumWallet(privateKey)
+    const engine = new EthereumEngine(ethereumWallet, network, url)
     const btc = network && network.bitcoin && this.createBitcoinWallet(privateKey, bitcoin.networks[network.bitcoin])
     const bcc = network && network.bitcoinCash && this.createBitcoinWallet(privateKey, bitcoin.networks[network.bitcoinCash])
     const btg = network && network.bitcoinGold && this.createBitcoinGoldWallet(privateKey, bitcoin.networks[network.bitcoinGold])
     const ltc = network && network.litecoin && this.createLitecoinWallet(privateKey, bitcoin.networks[network.litecoin])
     const nem = network && network.nem && NemWallet.fromPrivateKey(privateKey, nemSdk.model.network.data[network.nem])
     const waves = network && network.waves && WavesWallet.fromPrivateKey(privateKey, WavesApi[network.waves])
-
-    let lastDeriveNumbers = 0
-    const engine = new EthereumEngine(ethereumWallet, network, url, null, lastDeriveNumbers)
-
-    wallets && wallets
-      .items()
-      .map((wallet) => {
-        if (wallet.owners().items().filter((owner) => owner === ethereumWallet.getAddressString()).length > 0 && wallet.constructor.name === 'DerivedWalletModel') {
-          lastDeriveNumbers++
-        }
-      })
 
     return {
       networkCode,
