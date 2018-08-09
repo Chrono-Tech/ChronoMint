@@ -10,6 +10,7 @@ import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
 import AbstractProvider from './AbstractProvider'
 import EthereumEngine from './EthereumEngine'
+import selectEthereumNode from './EthereumNode'
 import { getNetworkById } from './settings'
 
 export class EthereumProvider extends AbstractProvider {
@@ -167,4 +168,5 @@ export class EthereumProvider extends AbstractProvider {
   }
 }
 
-export const ethereumProvider = new EthereumProvider()
+// TODO: constructor of EthereumProvider has no args. selectEthereumNode is using via ...arguments
+export const ethereumProvider = new EthereumProvider(selectEthereumNode)
