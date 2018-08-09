@@ -407,6 +407,8 @@ export const confirm2FATransfer = (txAddress, walletAddress, confirmToken, callb
   return ethereumProvider.confirm2FAtx(txAddress, walletAddress, confirmToken, callback)
 }
 
+export const setEthMultisig2FAConfirmed = (twoFAConfirmed) => (dispatch) => dispatch({ type: ETH_MULTISIG_2_FA_CONFIRMED, twoFAConfirmed })
+
 export const check2FAChecked = () => async (dispatch) => {
   const result = await dispatch(get2FAEncodedKey())
   let twoFAConfirmed
@@ -415,7 +417,7 @@ export const check2FAChecked = () => async (dispatch) => {
   } else {
     twoFAConfirmed = false
   }
-  dispatch({ type: ETH_MULTISIG_2_FA_CONFIRMED, twoFAConfirmed })
+  dispatch(setEthMultisig2FAConfirmed(twoFAConfirmed))
 }
 
 export const updatePendingTx = (walletAddress: string, tx: MultisigWalletPendingTxModel) => (dispatch, getState) => {
@@ -427,10 +429,13 @@ export const checkConfirm2FAtx = (txAddress, callback) => {
   return ethereumProvider.checkConfirm2FAtx(txAddress, callback)
 }
 
-export const setMultisigWalletName = (address, name) => (dispatch, getState) => {
-  const wallet = getMultisigWallets(getState()).item(address)
+export const setMultisigWalletName = (walletId, name) => (dispatch, getState) => {
+  const wallet = getMultisigWallets(getState()).item(walletId)
   if (wallet) {
-    dispatch({ type: ETH_MULTISIG_UPDATE, wallet: wallet.name(name) })
+    dispatch(updateEthMultisigWallet(new MultisigEthWalletModel({
+      ...wallet,
+      name,
+    })))
   }
 }
 

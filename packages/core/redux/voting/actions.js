@@ -40,6 +40,7 @@ import {
   POLLS_LIST,
   POLLS_LOAD,
   POLLS_REMOVE,
+  POLLS_SELECTED,
   POLLS_UPDATE,
   POLLS_VOTE_LIMIT,
 } from './constants'
@@ -51,6 +52,11 @@ const PAGE_SIZE = 20
 
 // used to create unique ID for fetching models
 let counter = 1
+
+export const selectPoll = (id) => (dispatch) => {
+  dispatch({ type: POLLS_SELECTED, id })
+  dispatch(push('/poll'))
+}
 
 export const goToVoting = () => (dispatch) => dispatch(push('/voting'))
 

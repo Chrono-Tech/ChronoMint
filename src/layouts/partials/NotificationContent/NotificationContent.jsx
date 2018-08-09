@@ -23,7 +23,7 @@ import { FULL_DATE } from '@chronobank/core/models/constants'
 import { IconButton } from '@material-ui/core'
 import { ethereumPendingFormatSelector } from '@chronobank/core/redux/ethereum/selectors'
 import TxEntryModel from '@chronobank/core/models/TxEntryModel'
-import { SIDES_CLOSE_ALL } from 'redux/sides/constants'
+import { sidesCloseAll } from 'redux/sides/actions'
 import { prefix } from './lang'
 import './NotificationContent.scss'
 
@@ -43,7 +43,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    onClose: () => dispatch({ type: SIDES_CLOSE_ALL }),
+    onClose: () => dispatch(sidesCloseAll()),
   }
 }
 

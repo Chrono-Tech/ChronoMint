@@ -64,7 +64,7 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     WALLETS_MANAGER,
   ]
 
-  const getDaoModel = async (contract, address: String) => {
+  const getDaoModel = async (contract, address: string) => {
     if (!address) {
       address = await contractManagerDAO.getContractAddressByType(contract.type)
     }

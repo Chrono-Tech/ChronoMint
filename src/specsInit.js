@@ -7,7 +7,7 @@ import resultCodes from 'chronobank-smart-contracts/common/errors'
 import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
 import customSerializer from '@chronobank/core-dependencies/utils/CustomSerializer'
 import Enzyme from 'enzyme'
-import Adapter from 'enzyme-adapter-react-15'
+import Adapter from 'enzyme-adapter-react-16'
 import 'jest-enzyme'
 import { BTC_TESTNET_NODE } from '@chronobank/login/network/BitcoinNode'
 import { LOCAL_ID } from '@chronobank/login/network/settings'
@@ -35,6 +35,7 @@ AbstractContractDAO.setup(accounts[0], [resultCodes.OK, true], resultCodes)
 const reverter = new Reverter(web3provider.getWeb3instance())
 
 export const mockStore = configureMockStore([thunk])
+// eslint-disable-next-line import/no-mutable-exports
 export let store = null
 
 beforeAll((done) => {

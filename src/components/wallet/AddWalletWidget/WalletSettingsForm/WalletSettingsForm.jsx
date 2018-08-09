@@ -13,8 +13,8 @@ import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import { setMultisigWalletName } from '@chronobank/core/redux/multisigWallet/actions'
 import { modalsClose } from 'redux/modals/actions'
-import { WALLET_SET_NAME } from '@chronobank/core/redux/mainWallet/actions'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
+import { setWalletName } from '@chronobank/core/redux/wallets/actions'
 import { FORM_WALLET_SETTINGS } from 'components/constants'
 import { prefix } from './lang'
 import './WalletSettingsForm.scss'
@@ -31,11 +31,11 @@ function mapDispatchToProps (dispatch, ownProps) {
   return {
     onSubmit: (values: Map) => {
       const name = values.get('name')
-      const { wallet, blockchain, address } = ownProps
+      const { wallet } = ownProps
       if (wallet.isMain) {
-        dispatch({ type: WALLET_SET_NAME, blockchain, address, name })
+        dispatch(setWalletName(wallet.id, name))
       } else {
-        dispatch(setMultisigWalletName(address, name))
+        dispatch(setMultisigWalletName(wallet.id, name))
       }
       dispatch(modalsClose())
     },

@@ -33,7 +33,7 @@ class PersistWrapper extends React.Component {
     this.store = context.store
   }
 
-  renderLoader(){
+  renderLoader () {
     return (
       <div styleName='loadingMessage'>
         <img src={spinner} width='24' height='24' alt='' />
@@ -43,7 +43,7 @@ class PersistWrapper extends React.Component {
 
   render () {
     const { rehydrated, children } = this.props
-    if (!rehydrated){
+    if (!rehydrated) {
       return this.renderLoader()
     }
 

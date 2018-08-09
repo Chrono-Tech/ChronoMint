@@ -49,10 +49,6 @@ class FileSelect extends PureComponent {
     floatingLabelText: PropTypes.node,
   }
 
-  static defaultProps = {
-    handleChange: () => {},
-  }
-
   constructor (props, context, updater) {
     super(props, context, updater)
 

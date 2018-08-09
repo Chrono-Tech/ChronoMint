@@ -15,12 +15,13 @@ import { closeNotifier } from '@chronobank/core/redux/notifier/actions'
 import { DUCK_NOTIFIER } from '@chronobank/core/redux/notifier/constants'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import theme from 'styles/themes/default'
-import { DUCK_SIDES, SIDES_TOGGLE_MAIN_MENU } from 'redux/sides/constants'
+import { DUCK_SIDES } from 'redux/sides/constants'
 import { DUCK_MODALS } from 'redux/modals/constants'
 import MuiThemeProvider from '@material-ui/core/es/styles/MuiThemeProvider'
 import IconButton from '@material-ui/core/es/IconButton/IconButton'
 import './Markup.scss'
 import { DrawerMainMenu, HeaderPartial } from './partials'
+import { toggleMainMenu } from '../redux/sides/actions'
 
 function mapStateToProps (state) {
   return {
@@ -34,7 +35,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     handleCloseNotifier: () => dispatch(closeNotifier()),
-    onToggleMainMenu: (mainMenuIsOpen) => dispatch({ type: SIDES_TOGGLE_MAIN_MENU, mainMenuIsOpen }),
+    onToggleMainMenu: (mainMenuIsOpen) => dispatch(toggleMainMenu(mainMenuIsOpen)),
   }
 }
 

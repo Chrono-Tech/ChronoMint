@@ -4,14 +4,12 @@
  */
 
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
-import { push } from 'react-router-redux'
 import Amount from '@chronobank/core/models/Amount'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { activatePoll, endPoll, removePoll } from '@chronobank/core/redux/voting/actions'
-import { POLLS_SELECTED } from '@chronobank/core/redux/voting/constants'
+import { activatePoll, endPoll, removePoll, selectPoll } from '@chronobank/core/redux/voting/actions'
 import { PTPoll } from '@chronobank/core/redux/voting/types'
 import BigNumber from 'bignumber.js'
 import { prefix } from './lang'
@@ -21,10 +19,7 @@ import PollStatus from '../PollStatus/PollStatus'
 
 function mapDispatchToProps (dispatch, props) {
   return {
-    handlePollDetails: async () => {
-      await dispatch({ type: POLLS_SELECTED, id: props.poll.id })
-      dispatch(push('/poll'))
-    },
+    handlePollDetails: () => dispatch(selectPoll(props.poll.id)),
     handlePollRemove: () => dispatch(removePoll(props.poll)),
     handlePollActivate: () => dispatch(activatePoll(props.poll)),
     handlePollEnd: () => dispatch(endPoll(props.poll)),
@@ -47,7 +42,7 @@ export default class Poll extends PureComponent {
   render () {
     const { poll, userAccount, isCBE } = this.props
 
-    if (!isCBE  && !poll.active && poll.owner !== userAccount) {
+    if (!isCBE && !poll.active && poll.owner !== userAccount) {
       return null
     }
     return (
