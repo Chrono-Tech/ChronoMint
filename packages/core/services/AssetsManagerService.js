@@ -66,20 +66,14 @@ class AssetsManagerService extends EventEmitter {
       dao.watchIssue((data) => {
         data.platformAddress = address
         this.emit(TX_ISSUE, data)
-      }, {
-        self: address,
       }),
       dao.watchRevoke((data) => {
         data.platformAddress = address
         this.emit(TX_REVOKE, data)
-      }, {
-        self: address,
       }),
       dao.watchManagers((data) => {
         data.platformAddress = address
         this.emit(TX_OWNERSHIP_CHANGE, data)
-      }, {
-        self: address,
       }),
     ])
   }
