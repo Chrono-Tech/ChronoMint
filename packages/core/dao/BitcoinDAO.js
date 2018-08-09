@@ -143,7 +143,7 @@ export default class BitcoinDAO extends EventEmitter {
   }
 
   async getTransfer (id, account, skip, offset): Array<TxModel> {
-    let txs = []
+    const txs = []
     try {
       const txsResult = await this._bitcoinProvider.getTransactionsList(account, skip, offset)
       for (const tx of txsResult) {

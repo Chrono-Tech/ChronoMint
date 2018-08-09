@@ -123,12 +123,12 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   async getPendings () {
     try {
 
-      let pendingTxCollection = {}
+      const pendingTxCollection = {}
       const res = await this.contract.methods.getPendings().call()
       const [values, operations, isConfirmed] = Object.values(res)
 
-      let verifiedOperationsPromises = []
-      let pendingDataPromises = []
+      const verifiedOperationsPromises = []
+      const pendingDataPromises = []
       operations.filter(this.isValidId).map((operation) => {
         verifiedOperationsPromises.push(ethereumProvider.checkConfirm2FAtx(operation))
         pendingDataPromises.push(this.getPendingData(operation))
@@ -159,7 +159,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   async getOwners () {
     try {
       const counter = await this.contract.methods.m_numOwners().call()
-      let promises = []
+      const promises = []
       for (let i = 0; i < counter; i++) {
         promises.push(this.contract.methods.getOwner(i).call())
       }

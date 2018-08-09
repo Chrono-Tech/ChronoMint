@@ -120,7 +120,7 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
   const updateBalance = (token: TokenModel) => async () => {
     if (token.blockchain() === wallet.blockchain) {
       const dao = tokenService.getDAO(token)
-      let balance = await dao.getAccountBalance(wallet.address)
+      const balance = await dao.getAccountBalance(wallet.address)
       if (balance) {
         await dispatch({
           type: WALLETS_UPDATE_BALANCE,
@@ -239,7 +239,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
   const account = getState().get(DUCK_SESSION).account
   const wallets = getWallets(state)
 
-  let lastDeriveNumbers = {}
+  const lastDeriveNumbers = {}
   Object.values(wallets)
     .map((wallet) => {
       if (wallet.derivedPath && isOwner(wallet, account)) {
@@ -249,7 +249,6 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
       }
     })
 
-  let wallet
   let newDeriveNumber = deriveNumber
   let derivedPath
   let newWallet
@@ -290,7 +289,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
       return null
   }
 
-  wallet = new WalletModel({
+  const wallet = new WalletModel({
     name,
     address,
     owners: [account],

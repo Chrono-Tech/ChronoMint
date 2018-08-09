@@ -14,7 +14,7 @@ export const getAllPendingTransactions = createSelector(
   (
     mainWallets,
   ) => {
-    let pendingTransactions = {}
+    const pendingTransactions = {}
 
     mainWallets.map((wallet: WalletModel) => {
       if (wallet.transactions.blocks && wallet.transactions.blocks['-1']) {

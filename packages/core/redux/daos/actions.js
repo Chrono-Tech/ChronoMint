@@ -21,8 +21,9 @@ import {
   MULTI_EVENTS_HISTORY,
   VOTING_MANAGER_LIBRARY,
   WALLETS_MANAGER,
-  TOKEN_MANAGMENT_EXTENSION_LIBRARY,
+  // TOKEN_MANAGMENT_EXTENSION_LIBRARY,
 } from '../../dao/ContractList'
+
 import {
   DAOS_REGISTER,
   DAOS_INITIALIZED,
@@ -53,7 +54,7 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     ASSET_HOLDER_LIBRARY,
     ASSET_DONATOR_LIBRARY,
     PLATFORMS_MANAGER_LIBRARY,
-    TOKEN_MANAGMENT_EXTENSION_LIBRARY,
+    // TOKEN_MANAGMENT_EXTENSION_LIBRARY,
     USER_MANAGER_LIBRARY,
     ERC20_MANAGER,
     VOTING_MANAGER_LIBRARY,
@@ -76,14 +77,18 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
   }
 
   const models = await Promise.all(
-    contracts.map((contract) => getDaoModel(contract)),
+    contracts.map((contract) => {
+      return getDaoModel(contract)
+    }),
   )
 
   const tokenManagementInterfaceDAO = models.find((model) => {
-    return model.contract.type === 'TokenManagementInterface'
+    return model && model.contract && model.contract.type === 'TokenManagementInterface'
   })
-  const platfromTokenExtension = await getDaoModel(PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER_LIBRARY, tokenManagementInterfaceDAO.address)
-  models.push(platfromTokenExtension)
+  if (tokenManagementInterfaceDAO) {
+    const platfromTokenExtension = await getDaoModel(PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER_LIBRARY, tokenManagementInterfaceDAO.address)
+    models.push(platfromTokenExtension)
+  }
 
   for (const model of models) {
     dispatch({
