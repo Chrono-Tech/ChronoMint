@@ -45,14 +45,6 @@ import { executeTransaction } from '../ethereum/actions'
 
 const PAGE_SIZE = 20
 
-// used to create unique ID for fetching models
-let counter = 1
-
-export const selectPoll = (id) => (dispatch) => {
-  dispatch({ type: POLLS_SELECTED, id })
-  dispatch(push('/poll'))
-}
-
 export const goToVoting = () => (dispatch) => dispatch(push('/voting'))
 
 export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
