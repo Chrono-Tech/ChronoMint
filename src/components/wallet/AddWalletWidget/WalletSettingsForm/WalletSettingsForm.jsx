@@ -31,7 +31,7 @@ function mapDispatchToProps (dispatch, ownProps) {
   return {
     onSubmit: (values: Map) => {
       const name = values.get('name')
-      const { wallet, address } = ownProps
+      const { wallet } = ownProps
       if (wallet.isMain) {
         dispatch(setWalletName(wallet.id, name))
       } else {

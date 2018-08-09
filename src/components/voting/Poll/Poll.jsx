@@ -19,7 +19,7 @@ import PollStatus from '../PollStatus/PollStatus'
 
 function mapDispatchToProps (dispatch, props) {
   return {
-    handlePollDetails: async () => dispatch(selectPoll(props.poll.id)),
+    handlePollDetails: () => dispatch(selectPoll(props.poll.id)),
     handlePollRemove: () => dispatch(removePoll(props.poll)),
     handlePollActivate: () => dispatch(activatePoll(props.poll)),
     handlePollEnd: () => dispatch(endPoll(props.poll)),

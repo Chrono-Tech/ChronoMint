@@ -31,7 +31,7 @@ export default class TransferExecModel extends abstractModel({
     })
   }
 
-  contract (): string {
+  contract (): ?string {
     return this.get('contract')
   }
 

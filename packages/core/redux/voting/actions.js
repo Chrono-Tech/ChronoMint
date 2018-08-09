@@ -40,6 +40,7 @@ import {
   POLLS_LIST,
   POLLS_LOAD,
   POLLS_REMOVE,
+  POLLS_SELECTED,
   POLLS_UPDATE,
   POLLS_VOTE_LIMIT,
 } from './constants'
@@ -172,7 +173,6 @@ export const vote = (choice: Number) => async (dispatch, getState) => {
 }
 
 export const activatePoll = (pollObject: PTPoll) => async (dispatch, getState) => {
-  console.log('activatePoll: ', pollObject)
 
   const state = getState()
   const votingDAO = daoByType('VotingManager')(getState())
