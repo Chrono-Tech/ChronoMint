@@ -17,7 +17,7 @@ import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
-import { logout } from '@chronobank/core/redux/session/actions'
+import { logout } from '@chronobank/core/redux/session/thunks'
 import chronWalletLogoSVG from 'assets/img/chronowallettext-white.svg'
 import ProfileModel from '@chronobank/core/models/ProfileModel'
 import ProfileImage from 'components/common/ProfileImage/ProfileImage'

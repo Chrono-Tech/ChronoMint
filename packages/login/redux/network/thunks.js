@@ -6,7 +6,7 @@
  */
 
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
-import { login } from '@chronobank/core/redux/session/actions'
+import { login } from '@chronobank/core/redux/session/thunks'
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
