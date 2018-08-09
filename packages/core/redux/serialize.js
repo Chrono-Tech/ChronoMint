@@ -24,10 +24,10 @@ function extract (data, type) {
 }
 
 function refer (data, type, isArray, refs) {
-  let r = mark(data, type, isArray)
+  const r = mark(data, type, isArray)
   if (!refs) return r
   for (let i = 0; i < refs.length; i++) {
-    let ref = refs[i]
+    const ref = refs[i]
     if (typeof ref === 'function' && data instanceof ref) {
       r.__serializedRef__ = i
       return r
@@ -60,9 +60,8 @@ function serialize (Immutable, refs) {
       if (value instanceof models.DerivedWalletModel) return refer(value, 'DerivedWalletModel', 'toObject', refs)
       if (value instanceof models.MultisigWalletCollection) return refer(value, 'MultisigWalletCollection', 'toObject', refs)
       if (value instanceof models.AllowanceModel) return refer(value, 'AllowanceModel', 'toObject', refs)
-      if (value instanceof models.AllowanceCollection) return refer(value, 'AllowanceCollection', 'toObject', refs)
+      if (value instanceof models.AllowanceCollection) return mark(value, 'AllowanceCollection', 'transform')
       if (value instanceof models.MainWalletModel) return refer(value, 'MainWalletModel', 'toObject', refs)
-
       if (value instanceof Immutable.Record) return refer(value, 'ImmutableRecord', 'toObject', refs)
       if (value instanceof Immutable.Range) return extract(value, 'ImmutableRange')
       if (value instanceof Immutable.Repeat) return extract(value, 'ImmutableRepeat')
@@ -78,7 +77,7 @@ function serialize (Immutable, refs) {
 
     reviver: function (key, value) {
       if (typeof value === 'object' && value !== null && '__serializedType__' in value) {
-        let data = value.data
+        const data = value.data
         switch (value.__serializedType__) {
           case 'Date':
             return new Date(data)

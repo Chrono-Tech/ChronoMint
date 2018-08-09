@@ -36,6 +36,7 @@ export const watchInitMarket = () => (dispatch, getState) => {
     MarketSocket.init()
     MarketSocket.on('update', (update) => {
       let updateData = update
+      //eslint-disable-next-line prefer-const
       let { rates, lastMarket } = getState().get(DUCK_MARKET)
       if (!lastMarket || !rates) {
         return

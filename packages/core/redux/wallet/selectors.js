@@ -19,7 +19,7 @@ export {
 }
 
 export const getDeriveWalletsAddresses = (state, blockchain) => {
-  let accounts = []
+  const accounts = []
   state.get(DUCK_ETH_MULTISIG_WALLET)
     .list()
     .map((wallet) => {

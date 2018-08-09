@@ -58,7 +58,7 @@ export const watchInitERC20Tokens = () => async (dispatch, getState) => {
 }
 
 export const formTokenLoadMetaData = async (token: TokenModel, dispatch, ownProps) => {
-  let errors = {}
+  const errors = {}
   dispatch({ type: TOKENS_FORM_FETCH })
   const managerDAO = await contractsManagerDAO.getERC20ManagerDAO()
   const symbolAddress = token.symbol() && await managerDAO.getTokenAddressBySymbol(token.symbol())

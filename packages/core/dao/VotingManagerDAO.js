@@ -127,7 +127,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
       const publishedDates = pollsDetails[6].map((l) => new BigNumber(l))
       const shareholdersCount = await this.assetHolderDAO.shareholdersCount()
 
-      let promises = []
+      const promises = []
       for (let i = 0; i < pollsAddresses.length; i++) {
         promises.push(new Promise(async (resolve) => {
           try {

@@ -119,7 +119,7 @@ export const removePoll = (pollObject: PTPoll) => async (dispatch, getState) => 
   const state = getState()
   const votingDAO = daoByType('VotingManager')(getState())
 
-  let poll = pollObject && pollObject.id
+  const poll = pollObject && pollObject.id
     ? getVoting(state).list().item(pollObject.id)
     : getSelectedPollFromDuck(state)
 
@@ -167,7 +167,7 @@ export const activatePoll = (pollObject: PTPoll) => async (dispatch, getState) =
   const state = getState()
   const votingDAO = daoByType('VotingManager')(getState())
 
-  let poll = pollObject && pollObject.id
+  const poll = pollObject && pollObject.id
     ? getVoting(state).list().item(pollObject.id)
     : getSelectedPollFromDuck(state)
 

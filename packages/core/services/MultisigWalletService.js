@@ -101,7 +101,7 @@ class MultisigWalletService extends EventEmitter {
 
   async unsubscribeAll () {
     const promises = []
-    for (let walletDAO in this._cache) {
+    for (const walletDAO in this._cache) {
       promises.push(walletDAO.stopWatching())
     }
     await Promise.all(promises)

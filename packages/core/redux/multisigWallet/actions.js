@@ -69,7 +69,7 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
       const wallets = getMultisigWallets(getState())
 
       const walletFromDuck = wallets.item(wallet.id)
-      let walletName = walletFromDuck && walletFromDuck.name ? walletFromDuck.name : ''
+      const walletName = walletFromDuck && walletFromDuck.name ? walletFromDuck.name : ''
 
       dispatch({
         type: ETH_MULTISIG_FETCHED,
@@ -419,7 +419,7 @@ export const updateEthMultisigWalletBalance = ({ wallet }) => async (dispatch) =
   const updateBalance = (token: TokenModel) => async () => {
     if (token.blockchain() === wallet.blockchain) {
       const dao = tokenService.getDAO(token)
-      let balance = await dao.getAccountBalance(wallet.address)
+      const balance = await dao.getAccountBalance(wallet.address)
       if (balance) {
         await dispatch({
           type: ETH_MULTISIG_BALANCE,

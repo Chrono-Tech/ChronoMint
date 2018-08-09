@@ -169,7 +169,7 @@ export const watchPlatformManager = () => async (dispatch, getState) => {
     }
 
     const assetsManager = getState().get(DUCK_ASSETS_MANAGER)
-    let platforms = assetsManager.platformsList()
+    const platforms = assetsManager.platformsList()
     platforms.push({
       address: data.returnValues.platform.toLowerCase(),
       by: data.returnValues.by.toLowerCase(),
@@ -190,7 +190,7 @@ export const watchPlatformManager = () => async (dispatch, getState) => {
 export const createAsset = (token: TokenModel) => async (dispatch, getState) => {
   try {
 
-    let txHash, tx
+    let tx
     const platformsManagerDAO = daoByType('PlatformsManager')(getState())
     const assetsManagerDAO = daoByType('AssetsManager')(getState())
     const tokenExtensionAddress = await assetsManagerDAO.getTokenExtension(token.platform().address)
@@ -208,9 +208,9 @@ export const createAsset = (token: TokenModel) => async (dispatch, getState) => 
       await dispatch(executeTransaction({ tx, options: { feeMultiplier: 1 } }))
     }
 
-    let assets = getState().get(DUCK_ASSETS_MANAGER).assets()
+    const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
     // @todo remove uuid. Wait new tx flow and parse event for this
-    txHash = uuid()
+    const txHash = uuid()
     assets[txHash] = {
       address: txHash,
       platform: token.platform().address,
@@ -330,7 +330,7 @@ export const revokeAsset = (token: TokenModel, amount: number) => async (dispatc
 export const checkIsReissuable = async (token: TokenModel, asset) => {
   try {
     const chronoBankPlatformDAO = assetsManagerService.getChronoBankPlatformDAO(asset.platform)
-    let isReissuable = await chronoBankPlatformDAO.isReissuable(token.symbol())
+    const isReissuable = await chronoBankPlatformDAO.isReissuable(token.symbol())
     return new ReissuableModel({ value: isReissuable }).isFetched(true)
   } catch (e) {
     // eslint-disable-next-line
@@ -366,9 +366,9 @@ export const setManagers = (tx) => async (dispatch, getState) => {
     const symbol = web3Converter.bytesToString(tx.returnValues.symbol)
     const account = getAccount(state)
 
-    let selectedToken = state.get(DUCK_ASSETS_MANAGER).selectedToken()
+    const selectedToken = state.get(DUCK_ASSETS_MANAGER).selectedToken()
     const tokens = state.get(DUCK_TOKENS)
-    let token = tokens.getBySymbol(symbol)
+    const token = tokens.getBySymbol(symbol)
 
     if (tx.returnValues.from === account) {
       if (selectedToken === symbol) {
@@ -450,7 +450,7 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     dispatch(setTx(tx))
   }
   const assetCallback = async (data) => {
-    let assetList = getState().get(DUCK_ASSETS_MANAGER).assets()
+    const assetList = getState().get(DUCK_ASSETS_MANAGER).assets()
     const tokens = getState().get(DUCK_TOKENS)
     const eventSymbol = web3Converter.bytesToString(data.returnValues.symbol)
 
@@ -635,8 +635,8 @@ export const selectPlatform = (platformAddress) => async (dispatch, getState) =>
   const tokens = getState().get(DUCK_TOKENS)
   dispatch({ type: SELECT_PLATFORM, payload: { platformAddress } })
 
-  let promises = []
-  let calledAssets = []
+  const promises = []
+  const calledAssets = []
   Object.values(assets).map((asset) => {
     if (asset.platform === platformAddress) {
       promises.push(dispatch(getPauseStatus(asset.address)))

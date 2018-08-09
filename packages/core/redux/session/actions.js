@@ -62,7 +62,7 @@ export const logout = () => async (dispatch, getState) => {
 }
 
 export const login = (account) => async (dispatch, getState) => {
-  let state = getState()
+  const state = getState()
 
   const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
   const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
@@ -148,9 +148,9 @@ export const getProfileSignature = (wallet) => async (dispatch) => {
     return
   }
 
-  let signDataString = profileService.getSignData()
-  let signData = wallet.sign(signDataString)
-  let profileSignature = await profileService.getProfile(signData.signature)
+  const signDataString = profileService.getSignData()
+  const signData = wallet.sign(signDataString)
+  const profileSignature = await profileService.getProfile(signData.signature)
   dispatch(setProfileSignature(profileSignature))
 
   return profileSignature

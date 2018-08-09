@@ -154,13 +154,8 @@ export default class AbstractContractDAO extends EventEmitter {
   async submit (func, args, amount, value, options, additionalOptions) {
     const data = this.contract.methods[func](...args).encodeABI()
 
-    let {
-      from,
-      feeMultiplier,
-      fields,
-      symbol,
-      id,
-    } = Object.assign({}, DEFAULT_TX_OPTIONS, options)
+    //eslint-disable-next-line prefer-const
+    let { from, feeMultiplier, fields, symbol, id } = Object.assign({}, DEFAULT_TX_OPTIONS, options)
 
     if (!from) {
       from = AbstractContractDAO.getAccount()

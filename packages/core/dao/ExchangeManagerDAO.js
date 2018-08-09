@@ -45,7 +45,7 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
   }
 
   async getAssetSymbols () {
-    let result = {}
+    const result = {}
     try {
       const assetSymbols = await exchangeProvider.getAssetSymbols()
       assetSymbols.map((exchange) => {
