@@ -136,10 +136,6 @@ export const watchInitProfile = () => async (dispatch, getState) => {
   return userManagerDAO.watchProfile((notice) => dispatch(notify(notice)))
 }
 
-export const setProfileSignature = (signature) => (dispatch) => {
-  dispatch(SessionActions.setProfileSignature(signature))
-}
-
 export const getProfileSignature = (wallet) => async (dispatch) => {
   if (!wallet) {
     return
@@ -148,7 +144,7 @@ export const getProfileSignature = (wallet) => async (dispatch) => {
   const signDataString = profileService.getSignData()
   const signData = wallet.sign(signDataString)
   const profileSignature = await profileService.getProfile(signData.signature)
-  dispatch(setProfileSignature(profileSignature))
+  dispatch(SessionActions.setProfileSignature(profileSignature))
 
   return profileSignature
 }
@@ -157,7 +153,7 @@ export const updateUserProfile = (profile) => async (dispatch, getState) => {
   const { profileSignature } = getState().get(DUCK_SESSION)
   const newProfile = await profileService.updateUserProfile({ ...profile }, profileSignature.token)
 
-  dispatch(setProfileSignature({
+  dispatch(SessionActions.setProfileSignature({
     ...profileSignature,
     profile: newProfile,
   }))
