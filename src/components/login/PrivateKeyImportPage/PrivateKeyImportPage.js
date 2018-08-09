@@ -16,12 +16,18 @@ import {
 import {
   navigateToSelectWallet,
   navigateToSelectImportMethod,
+  navigateBack,
 } from '@chronobank/login-ui/redux/actions'
 import {
   LoginWithPrivateKeyContainer,
   CreateAccountContainer,
   GenerateWalletContainer,
 } from '@chronobank/login-ui/components'
+import ProfileService from '@chronobank/login/network/ProfileService'
+import AccountProfileModel from '@chronobank/core/models/wallet/persistAccount/AccountProfileModel'
+import {
+  getAddressByPrivateKey,
+} from '@chronobank/core/redux/persistAccount/utils'
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -29,7 +35,8 @@ function mapDispatchToProps (dispatch) {
     accountDeselect: () => dispatch(accountDeselect()),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
     navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
-    onSubmitCreateAccountImportPrivateKey: (name, password, mnemonic) => dispatch(onSubmitCreateAccountImportPrivateKey(name, password, mnemonic)),
+    navigateBack: () => dispatch(navigateBack()),
+    onSubmitCreateAccountImportPrivateKey: async (name, password, mnemonic) => await dispatch(onSubmitCreateAccountImportPrivateKey(name, password, mnemonic)),
   }
 }
 
@@ -45,6 +52,7 @@ class PrivateKeyImportPage extends PureComponent {
     downloadWallet: PropTypes.func,
     navigateToSelectWallet: PropTypes.func,
     navigateToSelectImportMethod: PropTypes.func,
+    navigateBack: PropTypes.func,
     onSubmitCreateAccountImportPrivateKey: PropTypes.func,
   }
 
@@ -54,6 +62,7 @@ class PrivateKeyImportPage extends PureComponent {
     this.state = {
       page: PrivateKeyImportPage.PAGES.PRIVATE_KEY_FORM,
       privateKey: null,
+      accountProfile: null,
     }
   }
 
@@ -63,7 +72,7 @@ class PrivateKeyImportPage extends PureComponent {
         return (
           <LoginWithPrivateKeyContainer
             previousPage={this.previousPage.bind(this)}
-            onSubmitSuccess={this.onSubmitPrivateKey.bind(this)}
+            onSubmit={this.onSubmitPrivateKey.bind(this)}
           />
         )
 
@@ -71,9 +80,9 @@ class PrivateKeyImportPage extends PureComponent {
         return (
           <CreateAccountContainer
             privateKey={this.state.privateKey}
+            accountProfile={this.state.accountProfile}
             previousPage={this.previousPage.bind(this)}
             onSubmit={this.onSubmitCreateAccount.bind(this)}
-            onSubmitSuccess={this.nextPage.bind(this)}
           />
         )
 
@@ -92,24 +101,33 @@ class PrivateKeyImportPage extends PureComponent {
     }
   }
 
-  onSubmitPrivateKey ({ privateKey }) {
-    this.setState({ privateKey })
-    this.nextPage()
+  async onSubmitPrivateKey ({ privateKey }) {
+    const address = getAddressByPrivateKey(privateKey)
+
+    const { data } = await ProfileService.getPersonInfo([address])
+
+    const profile = data[0]
+
+    this.setState({
+      privateKey,
+      accountProfile: profile && profile.userName ? new AccountProfileModel(profile): null,
+      page: PrivateKeyImportPage.PAGES.CREATE_ACCOUNT_FORM,
+    })
   }
 
   async onSubmitCreateAccount ({ walletName, password }) {
     const { onSubmitCreateAccountImportPrivateKey } = this.props
 
-    return onSubmitCreateAccountImportPrivateKey(walletName, password, this.state.privateKey)
-  }
+    await onSubmitCreateAccountImportPrivateKey(walletName, password, this.state.privateKey)
 
-  nextPage () {
-    this.setState ({ page: this.state.page + 1 })
+    this.setState({
+      page: PrivateKeyImportPage.PAGES.DOWNLOAD_WALLET_PAGE,
+    })
   }
 
   previousPage () {
     if (this.state.page === PrivateKeyImportPage.PAGES.PRIVATE_KEY_FORM){
-      this.props.navigateToSelectImportMethod()
+      this.props.navigateBack()
     } else {
       this.setState ({ page: this.state.page - 1 })
     }

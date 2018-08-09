@@ -4,14 +4,11 @@
  */
 
 import Web3 from 'web3'
-import ethDAO from '../dao/ETHDAO'
 
 export default (network) => {
   if (!network.ws) {
     return null
   }
   const web3Provider = new Web3.providers.WebsocketProvider(network.ws)
-  const web3 = new Web3(web3Provider)
-  ethDAO.connect(web3)
-  return web3
+  return new Web3(web3Provider)
 }

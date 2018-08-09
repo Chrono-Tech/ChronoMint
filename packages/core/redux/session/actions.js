@@ -17,6 +17,9 @@ import { watchStopMarket } from '../market/actions'
 import { notify } from '../notifier/actions'
 import { initEthereum } from '../ethereum/actions'
 import {
+  DUCK_PERSIST_ACCOUNT,
+} from '../persistAccount/constants'
+import {
   DEFAULT_CBE_URL,
   DEFAULT_USER_URL,
   DUCK_SESSION,
@@ -56,20 +59,29 @@ export const logout = () => async (dispatch, getState) => {
 }
 
 export const login = (account) => async (dispatch, getState) => {
-  const { selectedNetworkId, selectedProviderId } = getState().get(DUCK_NETWORK)
-  if (!getState().get(DUCK_SESSION).isSession) {
+  let state = getState()
+
+  const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
+  const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
+  if (!state.get(DUCK_SESSION).isSession) {
     // setup and check network first and create session
     throw new Error('Session has not been created')
   }
 
-  const network = getNetworkById(selectedNetworkId, selectedProviderId)
+  let network = getNetworkById(selectedNetworkId, selectedProviderId)
+
+
+  if (!network.id) {
+
+    network = customNetworksList.find((network) => network.id === selectedNetworkId)
+
+  }
 
   const web3 = typeof window !== 'undefined'
     ? web3Factory(network)
     : null
 
-  dispatch(initEthereum({ web3 }))
-
+  await dispatch(initEthereum({ web3 }))
   await dispatch(watcher({ web3 }))
 
   const userManagerDAO = daoByType('UserManager')(getState())
@@ -88,11 +100,14 @@ export const login = (account) => async (dispatch, getState) => {
 
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
   isCBE && dispatch(cbeWatcher())
+
   dispatch(replace(ls.getLastURL() || defaultURL))
 }
 
-export const bootstrap = (relogin = true) => async (dispatch, getState) => {
-  networkService.checkMetaMask()
+export const bootstrap = (relogin = true, isMetaMaskRequired = true, isLocalAccountRequired = true) => async (dispatch, getState) => {
+  if (isMetaMaskRequired) {
+    networkService.checkMetaMask()
+  }
   if (networkService) {
     networkService
       .on('createSession', createSession)
@@ -101,19 +116,23 @@ export const bootstrap = (relogin = true) => async (dispatch, getState) => {
   }
 
   if (!relogin) {
-    return
+    return networkService
   }
 
-  const localAccount = ls.getLocalAccount()
-  const isPassed = await networkService.checkLocalSession(localAccount)
-  if (isPassed) {
-    await networkService.restoreLocalSession(localAccount, getState().get('ethMultisigWallet'))
-    networkService.createNetworkSession(localAccount, LOCAL_PROVIDER_ID, LOCAL_ID)
-    dispatch(login(localAccount))
-  } else {
-    // eslint-disable-next-line
-    console.warn('Can\'t restore local session')
+  if (isLocalAccountRequired) {
+    const localAccount = ls.getLocalAccount()
+    const isPassed = await networkService.checkLocalSession(localAccount)
+    if (isPassed) {
+      await networkService.restoreLocalSession(localAccount, getState().get('ethMultisigWallet'))
+      networkService.createNetworkSession(localAccount, LOCAL_PROVIDER_ID, LOCAL_ID)
+      dispatch(login(localAccount))
+    } else {
+      // eslint-disable-next-line
+      console.warn('Can\'t restore local session')
+    }
   }
+
+  return networkService
 }
 
 export const watchInitProfile = () => async (dispatch, getState) => {

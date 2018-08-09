@@ -33,14 +33,7 @@ import * as LoginUIActions from './actions'
 import {
   FORM_LOGIN_PAGE,
   FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
-  FORM_CONFIRM_MNEMONIC,
-  FORM_RECOVER_ACCOUNT,
-  FORM_CREATE_ACCOUNT,
   FORM_FOOTER_EMAIL_SUBSCRIPTION,
-  FORM_MNEMONIC_LOGIN_PAGE,
-  FORM_PRIVATE_KEY_LOGIN_PAGE,
-  FORM_RESET_PASSWORD,
-  FORM_WALLET_UPLOAD,
 } from './constants'
 
 /*
@@ -103,13 +96,13 @@ export const onSubmitSubscribeNewsletter = (email) => async () => {
  * TODO: to extract logic from here
  */
 export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
-  dispatch(NetworkActions.networkSetLoginSubmitting)
+  dispatch(NetworkActions.networkSetLoginSubmitting())
 
   const state = getState()
   const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
 
   try {
-    const wallet = await dispatch(PersistAccountActions.decryptAccount(selectedWallet.encrypted, password))
+    const wallet = dispatch(PersistAccountActions.decryptAccount(selectedWallet.encrypted, password))
     dispatch(PersistAccountActions.accountLoad(new SignerMemoryModel({ wallet })))
 
     const privateKey = wallet && wallet[0] && wallet[0].privateKey
@@ -257,6 +250,8 @@ export const onCreateWalletFromJSON = (name, walletJSON, profile) => (dispatch) 
 export const initLoginPage = () =>
   (dispatch, getState) => {
     dispatch(NetworkThunks.resetAllLoginFlags())
+    dispatch(NetworkActions.networkResetLoginSubmitting())
+    dispatch(NetworkThunks.initAccountsSignature())
 
     const state = getState()
     const {
@@ -301,16 +296,9 @@ export const selectProviderWithNetwork = (networkId, providerId) => (dispatch) =
   }
 }
 
-export const onWalletSelect = (wallet) => (dispatch, getState) => {
+export const onWalletSelect = (wallet) => (dispatch) => {
 
   dispatch(PersistAccountActions.accountSelect(wallet))
-
-  const state = getState()
-  const { accountRecoveryMode } = state.get(DUCK_NETWORK)
-  if (accountRecoveryMode) {
-    dispatch(LoginUIActions.navigateToRecoverAccountPage())
-  }
-
   dispatch(LoginUIActions.navigateToLoginPage())
 }
 

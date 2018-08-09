@@ -18,7 +18,9 @@ export default class LoginWithMnemonicContainer extends PureComponent {
     onSubmitSuccess: PropTypes.func,
   }
 
-  handleSubmit (values) {
+  async handleSubmit (values) {
+    const { onSubmit } = this.props
+
     const mnemonic = values.get('mnemonic')
 
     let mnemonicValue = (mnemonic || '').trim()
@@ -27,13 +29,12 @@ export default class LoginWithMnemonicContainer extends PureComponent {
       throw new SubmissionError({ mnemonic: 'Invalid mnemonic' })
     }
 
-    return {
-      mnemonic,
-    }
+    return onSubmit({ mnemonic })
   }
 
   handleSubmitSuccess (result) {
-    this.props.onSubmitSuccess(result)
+    const { onSubmitSuccess } = this.props
+    onSubmitSuccess && onSubmitSuccess(result)
   }
 
   handleSubmitFail (errors, dispatch, submitErrors) {

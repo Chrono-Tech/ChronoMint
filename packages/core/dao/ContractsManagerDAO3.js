@@ -16,10 +16,8 @@ export default class ContractsManagerDAO extends EventEmitter {
     if (this.isConnected) {
       this.disconnect()
     }
-    // eslint-disable-next-line no-console
-    console.log('[ContractsManager3DAO] Connect ', this)
+
     this.contract = new web3.eth.Contract(this.abi.abi, this.address, options)
-    console.log('[ContractsManager3DAO] Connect after: ', this)
 
     this.web3 = web3
   }
@@ -34,13 +32,13 @@ export default class ContractsManagerDAO extends EventEmitter {
   }
 
   async getContractAddressByType (type: String) {
-    let dd
+    let address
     try {
-      dd = await this.contract.methods.getContractAddressByType(this.web3.utils.stringToHex(type)).call()
+      address = await this.contract.methods.getContractAddressByType(this.web3.utils.stringToHex(type)).call()
     } catch (e) {
       console.log('getContractAddressByType error: ', e)
     }
-    return dd
+    return address
   }
 
   async isExists (address: String) {

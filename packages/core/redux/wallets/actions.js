@@ -24,7 +24,7 @@ import tokenService from '../../services/TokenService'
 import Amount from '../../models/Amount'
 import { getAccount } from '../session/selectors'
 import { updateEthMultisigWalletBalance } from '../multisigWallet/actions'
-import ethDAO from '../../dao/ETHDAO'
+import ethereumDAO from '../../dao/EthereumDAO'
 import { getMainEthWallet, getWallets } from './selectors/models'
 import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
@@ -147,7 +147,7 @@ export const subscribeWallet = ({ wallet }) => async (dispatch) => {
   }
   switch (wallet.blockchain) {
     case BLOCKCHAIN_ETHEREUM:
-      ethDAO.on('tx', listener)
+      ethereumDAO.on('tx', listener)
       return listener
     default:
       return
@@ -158,7 +158,7 @@ export const subscribeWallet = ({ wallet }) => async (dispatch) => {
 export const unsubscribeWallet = ({ wallet, listener }) => async (/*dispatch, getState*/) => {
   switch (wallet.blockchain) {
     case BLOCKCHAIN_ETHEREUM:
-      ethDAO.removeListener('tx', listener)
+      ethereumDAO.removeListener('tx', listener)
       return listener
     default:
       return
@@ -206,8 +206,6 @@ export const mainApprove = (token: TokenModel, amount: Amount, spender: string, 
       await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
     }
   } catch (e) {
-    // eslint-disable-next-line
-    console.log('mainRevoke approve: ', e)
     dispatch(notifyError(e, 'mainApprove'))
     allowance && dispatch(updateAllowance(allowance.isFetching(false)))
   }
@@ -228,8 +226,6 @@ export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Nu
       await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
     }
   } catch (e) {
-    // eslint-disable-next-line
-    console.log('mainRevoke error: ', e)
     dispatch(notifyError(e, 'mainRevoke'))
     dispatch(updateAllowance(allowance.isFetching(false)))
   }

@@ -3,9 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { MuiThemeProvider } from '@material-ui/core'
-import styles from 'layouts/Splash/styles'
 import { fetchAccount, startTrezorSync, stopTrezorSync } from '@chronobank/login/redux/trezor/actions'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
@@ -33,7 +32,7 @@ const trezorStates = [ {
 } ]
 
 const mapStateToProps = (state) => {
-  const network = state.get('network')
+  const network = state.get(DUCK_NETWORK)
   return {
     trezor: state.get('trezor'),
     isLoading: network.isLoading,
@@ -66,10 +65,10 @@ class LoginTrezor extends PureComponent {
     navigateToCreateAccountFromHW: PropTypes.func,
   }
 
-  static getDerivedStateFromProps (props, state) {
-    if (!props.trezor.isFetched && !props.trezor.isFetching) {
-      props.startTrezorSync()
-      props.fetchAccount()
+  componentDidUpdate (prevProps) {
+    if (!this.props.trezor.isFetched && !this.props.trezor.isFetching) {
+      this.props.startTrezorSync()
+      this.props.fetchAccount()
     }
   }
 

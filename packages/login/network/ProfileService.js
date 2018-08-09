@@ -90,12 +90,16 @@ class ProfileService extends EventEmitter {
     const service = this.getServerProvider()
 
     const { data } = await service.post(UPDATE_PROFILE_COMBINE, {
-      avatar: avatar || null,
-      userName: userName || null,
-      company: company || null,
-      email: email || null,
-      website: website || null,
-      phone: phone || null,
+      level1: {
+        avatar: avatar || null,
+        userName: userName || null,
+      },
+      level2: {
+        company: company || null,
+        email: email || null,
+        website: website || null,
+        phone: phone || null,
+      },
     }, this.withAuthorization(token))
 
     return data

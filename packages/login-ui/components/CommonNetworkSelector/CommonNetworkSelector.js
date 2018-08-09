@@ -11,6 +11,9 @@ import {
 } from '@chronobank/login/redux/network/thunks'
 import { clearErrors } from '@chronobank/login/redux/network/actions'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
+import {
+  DUCK_PERSIST_ACCOUNT,
+} from '@chronobank/core/redux/persistAccount/constants'
 import { getNetworkWithProviderNames, getProviderById, isLocalNode, getNetworksSelectorGroup } from '@chronobank/login/network/settings'
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
 import { customNetworksListAdd } from '@chronobank/core/redux/persistAccount/actions'
@@ -65,7 +68,7 @@ const MenuDefaultItem = ({ checked, children, ...props }) => (
 
 const mapStateToProps = (state) => {
   const network = state.get(DUCK_NETWORK)
-  const persistAccount = state.get('persistAccount')
+  const persistAccount = state.get(DUCK_PERSIST_ACCOUNT)
 
   return {
     providersList: getNetworksSelectorGroup(network.isLocal),
@@ -134,14 +137,12 @@ export default class CommonNetworkSelector extends PureComponent {
   handleClickDefaultNetwork (data) {
     this.props.clearErrors()
     this.props.selectProviderWithNetwork(data.network.id, data.provider.id)
-    this.resolveNetwork(this.props.getProviderURL())
     this.handleRequestClose()
   }
 
   handleClickCustomNetwork (data) {
     this.props.clearErrors()
     this.props.selectProviderWithNetwork(data.id, data.id)
-    this.resolveNetwork(data.url)
     this.handleRequestClose()
   }
 

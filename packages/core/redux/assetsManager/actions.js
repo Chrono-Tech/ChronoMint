@@ -76,8 +76,6 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
   const managers = await assetsManagerDAO.getManagers(Object.entries(assets).map((item) => item[1].symbol), [account])
   const usersPlatforms = platforms.filter((platform) => platform.by === account)
 
-  console.log('platforms: ', platforms, assets, managers, usersPlatforms)
-
   Object.values(assets).map((asset) => {
     const symbol = web3Converter.bytesToString(asset.symbol)
     dispatch(setTxFromMiddlewareForBlockAsset(asset.address, symbol))
@@ -132,7 +130,6 @@ export const createPlatform = (values) => async (dispatch, getState) => {
       await dispatch(executeTransaction({ tx, web3, options: { feeMultiplier: 1 } }))
     }
   } catch (e) {
-    console.log('createPlatform error: ', e)
     // eslint-disable-next-line
     console.error(e.message)
   }
@@ -191,7 +188,6 @@ export const watchPlatformManager = () => async (dispatch, getState) => {
  */
 export const createAsset = (token: TokenModel) => async (dispatch, getState) => {
   try {
-    console.log('createAsset: ', token, token.toJSON())
 
     let txHash, tx
     const platformsManagerDAO = daoByType('PlatformsManager')(getState())
@@ -207,7 +203,6 @@ export const createAsset = (token: TokenModel) => async (dispatch, getState) => 
       tx = await tokenManagementExtension.createAssetWithoutFee(token)
     }
 
-    console.log('createAsset: tx: ', tx)
     if (tx) {
       await dispatch(executeTransaction({ tx, options: { feeMultiplier: 1 } }))
     }
@@ -224,11 +219,12 @@ export const createAsset = (token: TokenModel) => async (dispatch, getState) => 
 
     await dispatch({
       type: TOKENS_UPDATE,
-      token: token.isPending(true).transactionHash(txHash),
+      token: token
+        .isPending(true)
+        .transactionHash(txHash),
     })
     await dispatch({ type: SET_ASSETS, payload: { assets } })
   } catch (e) {
-    console.log('createAsset error: ', e)
     // eslint-disable-next-line
     console.error(e.message)
   }
@@ -398,17 +394,16 @@ export const setManagers = (tx) => async (dispatch, getState) => {
     }
   } catch (e) {
     // eslint-disable-next-line
-    console.log(e)
+    console.log(e.message)
   }
 }
 
 export const watchInitTokens = () => async (dispatch, getState) => {
-  console.log('watchInitTokens started: ')
-
   await dispatch(getAssetsManagerData())
   dispatch(getTransactions())
   const state = getState()
   const account = getAccount(state)
+  assetsManagerService.setPlatformTokenExtensionGatewayManagerEmitterDAO(daoByType('PlatformTokenExtensionGatewayManagerEmitterDAO')(state))
 
   await Promise.all([
     dispatch(subscribeToBlockAssetEvents()),
@@ -424,27 +419,45 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     dispatch(setTx(tx))
   }
   const assetCallback = async (data) => {
-    let assets = getState().get(DUCK_ASSETS_MANAGER).assets()
+    let assetList = getState().get(DUCK_ASSETS_MANAGER).assets()
     const tokens = getState().get(DUCK_TOKENS)
     const eventSymbol = web3Converter.bytesToString(data.returnValues.symbol)
 
-    const assetsObj = {}
-    assets = Object.entries(assets).filter((key, asset) => {
-      return asset.symbol !== eventSymbol
-    }).map(([key, value]) => {
-      assetsObj[key] = value
+    const updateToken = tokens.list().find((t) => t.symbol() === eventSymbol)
+    await dispatch({
+      type: TOKENS_UPDATE,
+      token: updateToken
+        .isFetching(false)
+        .isFetched(true)
+        .isPending(false)
+        .setAddress(data.returnValues.self.toLowerCase())
+        .transactionHash(null),
     })
 
-    console.log('tokens: ', tokens)
-    console.log('assets: ', assets)
+    const assets = {}
+    Object.entries(assetList).filter(([key, asset]) => {
+      return asset.symbol !== eventSymbol
+    }).map(([key, value]) => {
+      assets[key] = value
+    })
 
-    const updateToken = tokens.item(eventSymbol)
-    updateToken
-      .isFetching(false)
-      .isFetched(true)
-      .transactionHash(data.transactionHash)
+    assets[data.returnValues.self.toLowerCase()] = {
+      self: data.returnValues.self.toLowerCase(),
+      by: data.returnValues.by.toLowerCase(),
+      event: data.event,
+      includedIn: {
+        blockNumber: data.blockNumber,
+        logIndex: data.logIndex,
+        txIndex: data.txIndex,
+      },
+      address: data.returnValues.self.toLowerCase(),
+      platform: data.returnValues.platform.toLowerCase(),
+      symbol: data.returnValues.symbol,
+      token: data.returnValues.token.toLowerCase(),
+      totalSupply: +updateToken.totalSupply(),
+    }
 
-    dispatch({ type: SET_ASSETS, payload: { assets: assetsObj } })
+    dispatch({ type: SET_ASSETS, payload: { assets } })
   }
 
   const platforms = state.get(DUCK_ASSETS_MANAGER).get('usersPlatforms')
@@ -457,12 +470,8 @@ export const watchInitTokens = () => async (dispatch, getState) => {
       .on(TX_REVOKE, issueCallback)
       .on(TX_OWNERSHIP_CHANGE, managersCallback)
   })
-  // return Promise.all([
-  //   chronoBankPlatformDAO.watchIssue(issueCallback),
-  //   chronoBankPlatformDAO.watchRevoke(issueCallback),
-  //   chronoBankPlatformDAO.watchManagers(managersCallback),
-  //   platformTokenExtensionGatewayManagerEmitterDAO.watchAssetCreate(assetCallback, account),
-  // ])
+
+  assetsManagerService.subscribeToAssets(assetCallback, account)
 }
 
 export const getFee = (token: TokenModel) => async (dispatch, getState) => {
@@ -526,6 +535,7 @@ const getPauseStatus = (address: string) => async (dispatch, getState) => {
     const chronoBankAssetDAO = await assetsManagerDAO.getChronoBankAssetDAO(address)
     isPaused = await chronoBankAssetDAO.getPauseStatus()
   } catch (e) {
+    console.log(e)
     // eslint-disable-next-line
     console.log(e.message)
   }

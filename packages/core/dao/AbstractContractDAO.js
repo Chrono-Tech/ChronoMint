@@ -551,7 +551,7 @@ export default class AbstractContractDAO extends EventEmitter {
   estimateGas = async (func: string, args = [], value = null, account): number | Object => {
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
-      throw this._error('estimateGas func not found', func)
+      throw this._error(`estimateGas func ${func} not found`)
     }
 
     const [gasPrice, estimatedGas] = await Promise.all([

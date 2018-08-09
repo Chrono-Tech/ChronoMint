@@ -20,6 +20,10 @@ class AssetsManagerService extends EventEmitter {
     this._cache = {}
   }
 
+  setPlatformTokenExtensionGatewayManagerEmitterDAO (platformTokenExtensionGatewayManagerEmitterDAO) {
+    this.platformTokenExtensionGatewayManagerEmitter = platformTokenExtensionGatewayManagerEmitterDAO
+  }
+
   getChronoBankPlatformDAO (address, web3, history) {
     const daoId = `platform_${address}`
     if (!this._cache[daoId]) {
@@ -28,7 +32,6 @@ class AssetsManagerService extends EventEmitter {
       this._cache[daoId] = platformDAO
     }
     return this._cache[daoId]
-
   }
 
   getFeeInterfaceDAO (address, web3, history) {
@@ -49,7 +52,6 @@ class AssetsManagerService extends EventEmitter {
       this._cache[daoId] = chronoBankAssetDAO
     }
     return this._cache[daoId]
-
   }
 
   subscribeToChronoBankPlatformDAO (address): Promise {
@@ -71,6 +73,15 @@ class AssetsManagerService extends EventEmitter {
         this.emit(TX_OWNERSHIP_CHANGE, tx)
       }),
     ])
+  }
+
+  subscribeToAssets (assetCallback, account) {
+    if (!this.platformTokenExtensionGatewayManagerEmitter) {
+      // eslint-disable-next-line
+      console.warn('platformTokenExtensionGatewayManagerEmitter is empty and has to be imported into AssetManagerService')
+      return
+    }
+    this.platformTokenExtensionGatewayManagerEmitter.watchAssetCreate(assetCallback, account)
   }
 }
 

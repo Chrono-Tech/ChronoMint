@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-module.exports = class SignerModel {
+export default class SignerModel {
   getAddress () {
     throw new Error('Not implemented')
   }

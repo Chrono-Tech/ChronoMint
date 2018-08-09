@@ -53,7 +53,7 @@ export default class PollEmitterDAO extends AbstractContractDAO {
     if (!data.event) {
       return null
     }
-    console.log('handleAllEventsData: ', data)
+    console.log('PollEmitterDAO handleAllEventsData: ', data)
     this.emit(data.event, data)
   }
 

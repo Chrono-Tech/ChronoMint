@@ -222,15 +222,34 @@ class NetworkService extends EventEmitter {
 
   getProviderURL = () => {
     const state = this._store.getState()
+    const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
     const { selectedNetworkId, selectedProviderId, isLocal } = state.get(DUCK_NETWORK)
     const { protocol, host } = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
+
+    if (!host) {
+
+      const customNetwork: AccountCustomNetwork = customNetworksList.find((network) => network.id === selectedNetworkId)
+
+      return customNetwork && customNetwork.url
+    }
     return protocol ? `${protocol}://${host}` : `//${host}`
   }
 
   getName = () => {
     const state = this._store.getState()
+    const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
     const { selectedNetworkId, selectedProviderId, isLocal } = state.get(DUCK_NETWORK)
-    const { name } = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
+    const network = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
+
+    const { name } = network
+
+    if (!network.host) {
+
+      const customNetwork: AccountCustomNetwork = customNetworksList.find((network) => network.id === selectedNetworkId)
+
+      return customNetwork && customNetwork.name
+    }
+
     return name
   }
 

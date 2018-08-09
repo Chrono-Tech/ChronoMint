@@ -6,13 +6,16 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
+import {
+  DUCK_PERSIST_ACCOUNT,
+} from '@chronobank/core/redux/persistAccount/constants'
 import spinner from 'assets/img/spinningwheel-1.gif'
 
 import './PersistWrapper.scss'
 
 const mapStateToProps = (state) => {
   return {
-    rehydrated: state.get('persistAccount').rehydrated,
+    rehydrated: state.get(DUCK_PERSIST_ACCOUNT).rehydrated,
   }
 }
 
