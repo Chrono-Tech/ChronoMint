@@ -30,11 +30,11 @@ import multisigWalletService from '../../services/MultisigWalletService'
 import { getTxList, goToWallets } from '../mainWallet/actions'
 import { ETH } from '../../dao/constants'
 import { getMultisigWallets } from '../wallet/selectors/models'
-import { getEthMultisigWallet, getWallets } from './selectors/models'
-// import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
+import { getEthMultisigWallet } from './selectors/models'
 import { daoByType } from '../daos/selectors'
 import MultisigEthWalletModel from '../../models/wallet/MultisigEthWalletModel'
 import tokenService from '../../services/TokenService'
+
 import {
   ETH_MULTISIG_2_FA_CONFIRMED,
   ETH_MULTISIG_BALANCE,
@@ -110,31 +110,6 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
     .on(EE_MS_WALLET_REMOVED, (walletId) => {
       dispatch({ type: ETH_MULTISIG_REMOVE, id: walletId })
     })
-
-  const wallets = getWallets(getState())
-  wallets.items().map((/*wallet: DerivedWalletModel*/) => {
-    // const { account } = getState().get(DUCK_SESSION)
-    //
-    // const handleToken = (token: TokenModel) => async (dispatch) => {
-    //   if (token.blockchain() === wallet.blockchain()) {
-    //     TODO fix this handle
-    //     const dao = tokenService.getDAO(token)
-    //     let balance = await dao.getAccountBalance(wallet.address())
-    //     dispatch({
-    //       type: ETH_MULTISIG_BALANCE,
-    //       walletId: wallet.address(),
-    //       balance: new BalanceModel({
-    //         id: token.id(),
-    //         amount: new Amount(balance, token.symbol(), true),
-    //       }),
-    //     })
-    //   }
-    // }
-
-    // if (isOwner(wallet, account)) {
-    //   dispatch(subscribeOnTokens(handleToken))
-    // }
-  })
 }
 
 const handleTransfer = (walletId, multisigTransactionModel) => async (dispatch, getState) => {

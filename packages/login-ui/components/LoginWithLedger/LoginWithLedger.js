@@ -126,7 +126,11 @@ class LoginLedger extends PureComponent {
     return <MenuItem value={index} key={index} primaryText={item} />
   }
 
-  handleChange = (event, index, value) => {this.setState({ value }); ledgerProvider.setWallet(this.props.account[index]); networkService.selectAccount(this.props.account[index])}
+  handleChange = (event, index, value) => {
+    this.setState({ value })
+    ledgerProvider.setWallet(this.props.account[index])
+    networkService.selectAccount(this.props.account[index])
+  }
 
   render () {
     const { isLoading, ledger, account } = this.props
