@@ -60,17 +60,18 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     WALLETS_MANAGER,
   ]
 
-  const getDaoModel = async (contract, address: string, isGetAddressFromContract: boolean = true) => {
-    let contractAddress = address
-    if (!contractAddress && isGetAddressFromContract) {
-      contractAddress = await contractManagerDAO.getContractAddressByType(contract.type)
-      contractAddress = contractAddress.toLowerCase()
+  const getDaoModel = async (contract, contractAddress: string, isGetAddressFromContract: boolean = true) => {
+    let address = contractAddress
+    if (!address && isGetAddressFromContract) {
+      address = await contractManagerDAO.getContractAddressByType(contract.type)
+      address = typeof address === 'string' ? address.toLowerCase() : null
     }
-    const dao = contract.create(contractAddress && contractAddress.toLowerCase(), historyAddress)
+
+    const dao = contract.create(address, historyAddress)
     dao.connect(web3)
     return new ContractDAOModel({
       contract,
-      address: contractAddress,
+      address: address,
       history: historyAddress,
       dao,
     })
