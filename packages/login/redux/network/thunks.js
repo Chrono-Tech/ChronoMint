@@ -5,8 +5,6 @@
  * @flow
  */
 
-// #region imports
-
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
 import { login } from '@chronobank/core/redux/session/actions'
 import {
@@ -23,10 +21,6 @@ import {
 } from '../../network/settings'
 import * as networkUtils from './utils'
 import setup from '../../network/EngineUtils'
-
-// #endregion
-
-// #region perform-like thunks
 
 /*
  * Thunk dispatched by "" screen.
@@ -96,13 +90,12 @@ export const handleWalletLogin = (wallet, password) => async (dispatch, getState
   dispatch(NetworkActions.loading())
   dispatch(NetworkActions.clearErrors())
 
-  let state = getState()
   const provider = networkUtils.getWalletProvider(wallet[0], password)
 
   networkService.selectAccount(provider.ethereum.getAddress())
   await setup(provider)
 
-  state = getState()
+  const state = getState()
   const {
     selectedAccount,
     selectedProviderId,
@@ -212,4 +205,3 @@ export const handleDeleteNetwork = (network) => (dispatch) => {
   dispatch(PersistAccountActions.customNetworksDelete(network))
 }
 
-// #endregion
