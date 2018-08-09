@@ -22,12 +22,14 @@ import {
 import {
   DEFAULT_CBE_URL,
   DEFAULT_USER_URL,
-  DUCK_SESSION,
+  DUCK_SESSION, GAS_SLIDER_MULTIPLIER_CHANGE,
   SESSION_CREATE,
   SESSION_DESTROY,
   SESSION_PROFILE,
   SET_PROFILE_SIGNATURE,
 } from './constants'
+
+export const changeGasSlideValue = (value, blockchain) => (dispatch) => dispatch({ type: GAS_SLIDER_MULTIPLIER_CHANGE, value, id: blockchain })
 
 export const createSession = ({ account, provider, network, dispatch }) => {
   ls.createSession(account, provider, network)

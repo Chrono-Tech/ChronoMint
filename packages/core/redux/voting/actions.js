@@ -16,13 +16,18 @@ import PollModel from '../../models/PollModel'
 import { DUCK_SESSION } from '../session/constants'
 import { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_UPDATED, IS_VOTED } from '../../models/constants/PollNoticeModel'
 import { EVENT_POLL_ACTIVATED, EVENT_POLL_CREATED, EVENT_POLL_ENDED, EVENT_POLL_REMOVED, EVENT_POLL_VOTED } from '../../dao/constants/PollEmitterDAO'
-import { DUCK_VOTING, POLLS_CREATE, POLLS_LIST, POLLS_LOAD, POLLS_REMOVE, POLLS_UPDATE, POLLS_VOTE_LIMIT } from './constants'
+import { DUCK_VOTING, POLLS_CREATE, POLLS_LIST, POLLS_LOAD, POLLS_REMOVE, POLLS_SELECTED, POLLS_UPDATE, POLLS_VOTE_LIMIT } from './constants'
 import { executeTransaction } from '../ethereum/actions'
 
 const PAGE_SIZE = 20
 
 // used to create unique ID for fetching models
 let counter = 1
+
+export const selectPoll = (id) => (dispatch) => {
+  dispatch({ type: POLLS_SELECTED, id })
+  dispatch(push('/poll'))
+}
 
 export const goToVoting = () => (dispatch) => dispatch(push('/voting'))
 
