@@ -56,12 +56,9 @@ export default class ChronoBankPlatformDAO extends AbstractContractDAO {
     this.emit(data.event, data)
   }
 
-  handleEventsChanged (data) {
-    console.log('ChronoBankPlatformDAO handleEventsChanged: ', data.event, data)
-  }
+  handleEventsChanged (data) {}
 
   handleEventsError (data) {
-    console.log('ChronoBankPlatformDAO handleEventsError: ', data.event, data)
     this.emit(data.event + '_error', data)
   }
 

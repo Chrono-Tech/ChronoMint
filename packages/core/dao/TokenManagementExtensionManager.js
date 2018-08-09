@@ -12,9 +12,6 @@ export default class TokenManagementExtensionManager extends EventEmitter {
     super()
     this.history = history
     this.web3 = web3
-
-    // eslint-disable-next-line no-console
-    console.log('[TokenManagementExtensionManager] Created')
   }
 
   /**

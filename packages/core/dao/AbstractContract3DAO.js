@@ -165,14 +165,10 @@ export default class AbstractContractDAO extends EventEmitter {
     if (!from) {
       from = AbstractContractDAO.getAccount()
     }
-    console.log('gasLimit, gasFee, gasPrice before: ', func, args, value, from)
 
     const { gasLimit, gasFee, gasPrice } = await this.estimateGas(func, args, value, from, { feeMultiplier: feeMultiplier || 1 })
 
-    console.log('gasLimit, gasFee, gasPrice: ', gasLimit, gasFee, gasPrice)
-
     setImmediate(async () => {
-      console.log('submit Tx: setImmediate tx: ', this, func, args, amount, value, options, additionalOptions)
       this.emit('submit', new TxExecModel({
         _id: id,
         contract: this.abi.contractName,
@@ -223,7 +219,7 @@ export default class AbstractContractDAO extends EventEmitter {
   estimateGas = async (func, args, value, from, additionalOptions): Object => {
     const feeMultiplier = additionalOptions && additionalOptions.feeMultiplier ? additionalOptions.feeMultiplier : 1
     if (!this.contract.methods.hasOwnProperty(func)) {
-      throw new Error('estimateGas func not found', func)
+      throw new Error(`estimateGas func [${func}] not found `)
     }
 
     const [gasPrice, gasLimit] = await Promise.all([

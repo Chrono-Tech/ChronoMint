@@ -191,7 +191,7 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
 
     const contract = await this.contract
     if (!contract.methods.hasOwnProperty(func)) {
-      throw this._error('estimateGas func not found', func)
+      throw this._error(`estimateGas func ${func} not found`)
     }
 
     const [gasPrice, gasLimit] = await Promise.all([

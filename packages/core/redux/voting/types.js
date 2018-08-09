@@ -4,9 +4,6 @@
  */
 
 import PropTypes from 'prop-types'
-import BigNumber from 'bignumber.js'
-import { List } from 'immutable'
-import Amount from '../../models/Amount'
 
 export const PTPoll = PropTypes.shape({
 

@@ -208,8 +208,6 @@ export const mainApprove = (token: TokenModel, amount: Amount, spender: string, 
       await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
     }
   } catch (e) {
-    // eslint-disable-next-line
-    console.log('mainRevoke approve: ', e)
     dispatch(notifyError(e, 'mainApprove'))
     allowance && dispatch(updateAllowance(allowance.isFetching(false)))
   }
@@ -230,8 +228,6 @@ export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Nu
       await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
     }
   } catch (e) {
-    // eslint-disable-next-line
-    console.log('mainRevoke error: ', e)
     dispatch(notifyError(e, 'mainRevoke'))
     dispatch(updateAllowance(allowance.isFetching(false)))
   }
