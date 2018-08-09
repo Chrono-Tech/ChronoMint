@@ -49,11 +49,6 @@ class NetworkService extends EventEmitter {
     this._dispatch = store.dispatch
   }
 
-  // connectStore (store) {
-  //   this._store = store
-  //   this._dispatch = store.dispatch
-  // }
-
   createNetworkSession = (account, provider, network) => {
     if (!this._account) {
       this._account = account
@@ -62,18 +57,7 @@ class NetworkService extends EventEmitter {
     if (!account || !provider || !network) {
       throw new Error(`Wrong session arguments: account: ${account}, provider: ${provider}, network: ${network}`)
     }
-    // const accounts = this._store.getState().get(DUCK_NETWORK).accounts || []
-    //if (!accounts.includes(account)) {
-    //  throw new Error('Account not registered')
-    //}
-    //console.log(account)
-    //console.log(provider)
 
-    //web3Provider.resolve()
-
-    // sync with session state
-    // this unlock login
-    // dispatch(createSession(account))
     this.emit('createSession', {
       account, provider, network, dispatch: this._dispatch,
     })
@@ -268,15 +252,9 @@ class NetworkService extends EventEmitter {
 
   async autoSelect () {
     const { priority, preferMainnet } = this._store.getState().get(DUCK_NETWORK)
-    const resolveNetwork = () => {
-      // const web3 = new Web3()
-      // web3Provider.reinit(web3, web3Utils.createStatusEngine(this.getProviderURL()))
-      // web3Provider.resolve()
-    }
     const selectAndResolve = (networkId, providerId) => {
       this.selectProvider(providerId)
       this.selectNetwork(networkId)
-      resolveNetwork()
     }
 
     this.checkerIndex = 0
@@ -334,15 +312,6 @@ class NetworkService extends EventEmitter {
     this.emit('login', { account: this._account, dispatch: this._dispatch })
   }
 
-  getCurrentNetwork () {
-    const { selectedNetworkId } = this._store.getState().get(DUCK_NETWORK)
-    return selectedNetworkId
-  }
-
-  getCurrentProvider () {
-    const { selectedProviderId } = this._store.getState().get(DUCK_NETWORK)
-    return selectedProviderId
-  }
 }
 
 export default new NetworkService()

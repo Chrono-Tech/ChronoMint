@@ -3,12 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import networkService from '@chronobank/login/network/NetworkService'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import ContractDAOModel from '../../models/contracts/ContractDAOModel'
 import { getAccount } from '../session/selectors/models'
 import AbstractContractDAO from '../../dao/AbstractContract3DAO'
 import { ContractsManagerABI } from '../../dao/abi'
-
 import {
   ASSET_HOLDER_LIBRARY,
   ASSET_DONATOR_LIBRARY,
@@ -31,9 +30,11 @@ import {
 
 // eslint-disable-next-line import/prefer-default-export
 export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
-  const account = getAccount(getState())
+  let state = getState()
+  const account = getAccount(state)
+  const currentNetwork = state.get(DUCK_NETWORK).selectedNetworkId
   AbstractContractDAO.setAccount(account)
-  const currentNetworkId = networkService.getCurrentNetwork()
+  const currentNetworkId = currentNetwork
   const contractManagerAddress = ContractsManagerABI.networks[currentNetworkId].address
   const contractManagerDAO = CONTRACTS_MANAGER.create(contractManagerAddress)
   await contractManagerDAO.connect(web3)
@@ -97,7 +98,7 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     })
   }
 
-  const state = getState()
+  state = getState()
   // post registration setup
   for (const model of models) {
     if (typeof model.dao.postStoreDispatchSetup === 'function') {

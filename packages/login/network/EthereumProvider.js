@@ -3,16 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import networkService from '@chronobank/login/network/NetworkService'
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
-import web3Factory from '@chronobank/core/web3/index'
 import AbstractProvider from './AbstractProvider'
 import EthereumEngine from './EthereumEngine'
-import selectEthereumNode from './EthereumNode'
 import { getNetworkById } from './settings'
 
 export class EthereumProvider extends AbstractProvider {
@@ -168,23 +165,6 @@ export class EthereumProvider extends AbstractProvider {
   getEngine () {
     return this._engine
   }
-
-  async transfer (rawTx, from) {
-    const engine = this.getEngine()
-    const { signedTx, walletType } = engine.signTx(rawTx, from)
-    if (walletType === 'memory' || walletType === 'plugin') {
-      this.sendSignedTransaction(signedTx)
-    }
-  }
-
-  sendSignedTransaction (signedTx) {
-    const currentNetworkId = networkService.getCurrentNetwork()
-    const currentProviderId = networkService.getCurrentProvider()
-    const network = getNetworkById(currentNetworkId, currentProviderId)
-    const web3 = web3Factory(network)
-    const serializedTx = signedTx.serialize().toString('hex')
-    web3.eth.sendSignedTransaction('0x' + serializedTx)
-  }
 }
 
-export const ethereumProvider = new EthereumProvider(selectEthereumNode)
+export const ethereumProvider = new EthereumProvider()
