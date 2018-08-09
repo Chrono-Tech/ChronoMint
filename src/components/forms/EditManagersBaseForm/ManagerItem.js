@@ -7,7 +7,6 @@ import OwnerModel from '@chronobank/core/models/wallet/OwnerModel'
 import UserIcon from 'components/common/HashedIcon/UserIcon'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import Button from 'components/common/ui/Button/Button'
 import './EditManagersBaseForm.scss'
 
 class ManagerItem extends PureComponent {
@@ -31,9 +30,9 @@ class ManagerItem extends PureComponent {
         </div>
         <div styleName='address'>{address}</div>
         {address !== account && (
-          <Button onClick={this.handleRemoveManager} styleName='action' role='button'>
+          <button onClick={this.handleRemoveManager} styleName='action'>
             <i className='material-icons'>delete</i>
-          </Button>
+          </button>
         )}
       </div>
     )

@@ -17,6 +17,7 @@ module.exports = {
     "monorepo/no-internal-import": "off",
     "monorepo/no-relative-import": "error",
     "no-unused-vars": "error",
+    "prefer-const": "warn",
     "no-underscore-dangle": "warn",
     "no-param-reassign": "warn",
     "complexity": "warn",
