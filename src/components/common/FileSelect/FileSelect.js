@@ -37,12 +37,12 @@ const DEFAULT_MAX_FILES = 10
 
 class FileSelect extends PureComponent {
   static propTypes = {
-    meta: PropTypes.shape(PropTypes.any),
+    meta: PropTypes.instanceOf(PropTypes.object),
     label: PropTypes.string,
     accept: PropTypes.arrayOf(PropTypes.any),
     multiple: PropTypes.bool,
     maxFileSize: PropTypes.number,
-    input: PropTypes.shape(PropTypes.any),
+    input: PropTypes.instanceOf(PropTypes.object),
     aspectRatio: PropTypes.number,
     maxFiles: PropTypes.number,
     returnCollection: PropTypes.bool,

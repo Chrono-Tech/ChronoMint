@@ -6,7 +6,7 @@
 const path = require('path')
 const webpack = require('webpack')
 const babel = require('./babel.dev')
-const CompileTimePlugin = require('webpack-compile-time-plugin');
+const CompileTimePlugin = require('webpack-compile-time-plugin')
 
 const config = require('./webpack.config.base.js')
 

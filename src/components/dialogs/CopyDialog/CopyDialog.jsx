@@ -60,8 +60,8 @@ export default class CopyDialog extends PureComponent {
               </div>
               <TextField
                 ref={(el) => {
-                this.inputElement = el
-              }}
+                  this.inputElement = el
+                }}
                 name='value'
                 value={this.props.copyValue}
                 fullWidth

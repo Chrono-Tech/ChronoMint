@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Amount from '../Amount'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 import AssetsCollection from './AssetsCollection'
 

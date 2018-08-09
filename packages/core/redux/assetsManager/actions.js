@@ -10,6 +10,7 @@ import ReissuableModel from '../../models/tokens/ReissuableModel'
 import TokenModel from '../../models/tokens/TokenModel'
 import OwnerCollection from '../../models/wallet/OwnerCollection'
 import OwnerModel from '../../models/wallet/OwnerModel'
+import Amount from '@chronobank/core/models/Amount'
 import { DUCK_TOKENS, TOKENS_FETCHED, TOKENS_UPDATE } from '../tokens/constants'
 import AssetsManagerNoticeModel, {
   ASSET_PAUSED,
@@ -242,6 +243,7 @@ export const getManagersForAssetSymbol = (symbol: string, excludeAccounts: Array
     const managersList = await assetsManagerDAO.getManagersForAssetSymbol(symbol, excludeAccounts)
     return managersList.isFetched(true)
   } catch (e) {
+    // eslint-disable-next-line
     console.warn(e)
     return new OwnerCollection()
   }
@@ -352,6 +354,7 @@ export const setTx = (tx) => async (dispatch, getState) => {
   const state = getState()
   const account = getAccount(state)
   const assetsManagerDAO = daoByType('AssetsManager')(state)
+  //eslint-disable-next-line
   const txModel = await assetsManagerDAO.getTxModel(tx, account)
   //TODO convert tx to tx model
   // dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList: new Immutable.Map().set(txModel.id, txModel) } })
@@ -403,6 +406,8 @@ export const watchInitTokens = () => async (dispatch, getState) => {
   dispatch(getTransactions())
   const state = getState()
   const account = getAccount(state)
+  const tokens =  state.get(DUCK_TOKENS)
+
   assetsManagerService.setPlatformTokenExtensionGatewayManagerEmitterDAO(daoByType('PlatformTokenExtensionGatewayManagerEmitterDAO')(state))
 
   await Promise.all([
@@ -410,7 +415,33 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     dispatch(subscribeToRestrictedEvents()),
   ])
 
-  const issueCallback = async (tx) => dispatch(setTx(tx))
+  const revokeCallback = async (data) => {
+    const tokenSymbol = web3Converter.bytesToString(data.returnValues.symbol)
+    const token = tokens.getBySymbol(tokenSymbol)
+    const totalSupply = token.totalSupply() + token.removeDecimals(new Amount(data.returnValues.value, tokenSymbol))
+
+    await dispatch({
+      type: TOKENS_UPDATE,
+      token: token
+        .totalSupply(totalSupply),
+    })
+
+    dispatch(setTx(data))
+  }
+
+  const issueCallback = async (data) => {
+    const tokenSymbol = web3Converter.bytesToString(data.returnValues.symbol)
+    const token = tokens.getBySymbol(tokenSymbol)
+    const totalSupply = token.totalSupply() - token.removeDecimals(new Amount(data.returnValues.value, tokenSymbol))
+
+    await dispatch({
+      type: TOKENS_UPDATE,
+      token: token
+        .totalSupply(totalSupply),
+    })
+
+    dispatch(setTx(data))
+  }
   const managersCallback = (tx) => {
     dispatch(setManagers(tx))
     if (tx.returnValues.from !== account && tx.returnValues.to !== account) {
@@ -435,7 +466,7 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     })
 
     const assets = {}
-    Object.entries(assetList).filter(([key, asset]) => {
+    Object.entries(assetList).filter(([, asset]) => {
       return asset.symbol !== eventSymbol
     }).map(([key, value]) => {
       assets[key] = value
@@ -464,12 +495,12 @@ export const watchInitTokens = () => async (dispatch, getState) => {
   platforms.forEach(({ address }) => {
     assetsManagerService
       .subscribeToChronoBankPlatformDAO(address)
-
-    assetsManagerService
-      .on(TX_ISSUE, issueCallback)
-      .on(TX_REVOKE, issueCallback)
-      .on(TX_OWNERSHIP_CHANGE, managersCallback)
   })
+
+  assetsManagerService
+    .on(TX_ISSUE, issueCallback)
+    .on(TX_REVOKE, revokeCallback)
+    .on(TX_OWNERSHIP_CHANGE, managersCallback)
 
   assetsManagerService.subscribeToAssets(assetCallback, account)
 }
@@ -488,7 +519,8 @@ export const getFee = (token: TokenModel) => async (dispatch, getState) => {
       .fee(res / 100)
       .withFee(!!res.toNumber())
   } catch (e) {
-    console.log(e.message)
+    // eslint-disable-next-line
+    console.error(e.message)
   }
   return tokenFee
 }
@@ -535,7 +567,6 @@ const getPauseStatus = (address: string) => async (dispatch, getState) => {
     const chronoBankAssetDAO = await assetsManagerDAO.getChronoBankAssetDAO(address)
     isPaused = await chronoBankAssetDAO.getPauseStatus()
   } catch (e) {
-    console.log(e)
     // eslint-disable-next-line
     console.log(e.message)
   }

@@ -40,8 +40,8 @@ function createWindow () {
     // eslint-disable-next-line
     console.log(err)
     // eslint-disable-next-line
-    console.log(data.toString());
-  });
+    console.log(data.toString())
+  })
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()

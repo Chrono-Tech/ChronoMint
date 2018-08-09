@@ -17,5 +17,5 @@ export default {
     website: 'Website',
     email: 'Email',
     button: 'Confirm Edits',
-  }
+  },
 }

@@ -12,7 +12,6 @@ import {
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import WavesDAO from '@chronobank/core/dao/WavesDAO'
-import BigNumber from 'bignumber.js'
 import { modalsOpenConfirmDialog } from '@chronobank/core-dependencies/redux/modals/actions'
 import { showConfirmTransferModal } from '@chronobank/core-dependencies/redux/ui/actions'
 import { bccDAO, btcDAO, btgDAO, ltcDAO } from '../../dao/BitcoinDAO'
@@ -30,13 +29,10 @@ import TxExecModel from '../../models/TxExecModel'
 import { web3Selector } from '../ethereum/selectors'
 import { estimateGas } from '../ethereum/actions'
 
-//#region CONSTANTS
-
 import {
   TRANSFER_CANCELLED,
 } from '../../models/constants/TransferError'
 import {
-  WATCHER_TX_END,
   WATCHER_TX_SET,
 } from '../watcher/constants'
 import {
@@ -72,8 +68,6 @@ import {
   WAVES_WAVES_NAME,
   WAVES_WAVES_SYMBOL,
 } from '../../dao/constants/WavesDAO'
-
-//#endregion CONSTANTS
 
 const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
@@ -111,12 +105,6 @@ const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExec
 const rejectTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   const e = new TransferError('Rejected', TRANSFER_CANCELLED)
   dispatch(notifyError(e, tx.funcTitle()))
-}
-
-const mainedTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
-  if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
-    dispatch({ type: WATCHER_TX_END, tx })
-  }
 }
 
 export const alternateTxHandlingFlow = (dao) => (dispatch) => {

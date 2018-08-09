@@ -51,11 +51,13 @@ export default class SignerDeviceModel extends SignerModel {
   }
 
   // Should be synchronous by design
+  //eslint-disable-next-line no-unused-vars
   static async create ({ web3, device, address, path, publicKey }) {
     return new SignerDeviceModel({ device, path, address, publicKey })
   }
 
   // Should be synchronous by design
+  //eslint-disable-next-line no-unused-vars
   static decrypt ({ web3, device, entry }) {
     const { path, address, publicKey } = entry.encrypted
     return new SignerDeviceModel({ device, path, address, publicKey })

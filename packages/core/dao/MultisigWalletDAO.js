@@ -150,6 +150,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
       return pendingTxCollection
     } catch (e) {
+      // eslint-disable-next-line
       console.warn(e)
       return Promise.resolve({})
     }
@@ -164,6 +165,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
       }
       return Promise.all(promises)
     } catch (e) {
+      // eslint-disable-next-line
       console.warn(e)
       return Promise.resolve([])
     }
@@ -173,6 +175,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     try {
       return this.contract.methods.m_required().call()
     } catch (e) {
+      // eslint-disable-next-line
       console.warn(e)
       return Promise.resolve(0)
     }
@@ -187,6 +190,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     try {
       return this.contract.methods.releaseTime().call()
     } catch (e) {
+      // eslint-disable-next-line
       console.warn(e)
       return Promise.resolve(0)
     }
@@ -261,6 +265,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
           to: args._to,
         }
       default:
+        // eslint-disable-next-line
         console.warn('warn: decoder not implemented for function: ', func)
         return args
     }

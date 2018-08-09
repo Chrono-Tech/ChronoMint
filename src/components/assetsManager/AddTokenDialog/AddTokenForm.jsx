@@ -62,11 +62,11 @@ const onSubmit = (values, dispatch) => {
 
 function mapStateToProps (state) {
   const assetsManager = state.get(DUCK_ASSETS_MANAGER)
-  const form = state.get('form')
+  const form = state.get('form').get(FORM_ADD_TOKEN_DIALOG)
 
   return {
-    formValues: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('values'),
-    formErrors: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('syncErrors'),
+    formValues: form && form.get('values'),
+    formErrors: (form && form.get('syncErrors')) || {},
     platformsList: assetsManager.usersPlatforms(),
   }
 }
@@ -92,6 +92,12 @@ class Platform extends PureComponent {
     platform: PropTypes.instanceOf(Object),
     selectedPlatform: PropTypes.instanceOf(Object),
     onClick: PropTypes.func,
+    ...formPropTypes
+  }
+
+  static defaultProps = {
+    formValues: null,
+    formErrors: {},
   }
 
   handleClick = () => this.props.onClick(this.props.platform)
@@ -125,8 +131,6 @@ class Platform extends PureComponent {
 export default class AddTokenForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
-    formValues: PropTypes.shape(PropTypes.any),
-    formErrors: PropTypes.shape(PropTypes.any),
     platformsList: PropTypes.arrayOf(PropTypes.object),
     dispatch: PropTypes.func,
     onClose: PropTypes.func.isRequired,

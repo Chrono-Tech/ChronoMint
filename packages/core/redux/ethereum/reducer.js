@@ -47,14 +47,10 @@ const mutations = {
   [TX_STATUS] (state, { key, address, props }) {
     const scope = state.pending[address]
     if (!scope) {
-      // eslint-disable-next-line no-console
-      console.log('No address', address)
       return state
     }
     const entry = scope[key]
     if (!entry) {
-      // eslint-disable-next-line no-console
-      console.log('No entry', entry)
       return state
     }
     return {
