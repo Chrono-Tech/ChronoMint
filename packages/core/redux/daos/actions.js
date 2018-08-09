@@ -20,7 +20,6 @@ import {
   MULTI_EVENTS_HISTORY,
   VOTING_MANAGER_LIBRARY,
   WALLETS_MANAGER,
-  // TOKEN_MANAGMENT_EXTENSION_LIBRARY,
 } from '../../dao/ContractList'
 
 import {
@@ -55,23 +54,24 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     ASSET_HOLDER_LIBRARY,
     ASSET_DONATOR_LIBRARY,
     PLATFORMS_MANAGER_LIBRARY,
-    // TOKEN_MANAGMENT_EXTENSION_LIBRARY,
     USER_MANAGER_LIBRARY,
     ERC20_MANAGER,
     VOTING_MANAGER_LIBRARY,
     WALLETS_MANAGER,
   ]
 
-  const getDaoModel = async (contract, address: String) => {
-    let contractAddress = address
-    if (!contractAddress) {
-      contractAddress = await contractManagerDAO.getContractAddressByType(contract.type)
+  const getDaoModel = async (contract, contractAddress: string, isGetAddressFromContract: boolean = true) => {
+    let address = contractAddress
+    if (!address && isGetAddressFromContract) {
+      address = await contractManagerDAO.getContractAddressByType(contract.type)
+      address = typeof address === 'string' ? address.toLowerCase() : null
     }
-    const dao = contract.create(contractAddress.toLowerCase(), historyAddress)
+
+    const dao = contract.create(address, historyAddress)
     dao.connect(web3)
     return new ContractDAOModel({
       contract,
-      contractAddress,
+      address,
       history: historyAddress,
       dao,
     })
@@ -83,13 +83,8 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     }),
   )
 
-  const tokenManagementInterfaceDAO = models.find((model) => {
-    return model && model.contract && model.contract.type === 'TokenManagementInterface'
-  })
-  if (tokenManagementInterfaceDAO) {
-    const platfromTokenExtension = await getDaoModel(PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER_LIBRARY, tokenManagementInterfaceDAO.address)
-    models.push(platfromTokenExtension)
-  }
+  const platformTokenExtensionGatewayManagerEmitter = await getDaoModel(PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER_LIBRARY, null, false)
+  models.push(platformTokenExtensionGatewayManagerEmitter)
 
   for (const model of models) {
     dispatch({

@@ -12,7 +12,7 @@ import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
 import { ETH, FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
-import { changeGasSlideValue } from '@chronobank/core/redux/session/actions'
+import { changeGasSlideValue } from '@chronobank/core/redux/session/thunks'
 import './GasSlider.scss'
 import { prefix } from './lang'
 
