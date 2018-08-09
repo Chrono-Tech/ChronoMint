@@ -60,7 +60,7 @@ function serialize (Immutable, refs) {
       if (value instanceof models.DerivedWalletModel) return refer(value, 'DerivedWalletModel', 'toObject', refs)
       if (value instanceof models.MultisigWalletCollection) return refer(value, 'MultisigWalletCollection', 'toObject', refs)
       if (value instanceof models.AllowanceModel) return refer(value, 'AllowanceModel', 'toObject', refs)
-      if (value instanceof models.AllowanceCollection) return refer(value, 'AllowanceCollection', 'toObject', refs)
+      if (value instanceof models.AllowanceCollection) return mark(value, 'AllowanceCollection', 'transform')
       if (value instanceof models.MainWalletModel) return refer(value, 'MainWalletModel', 'toObject', refs)
 
       if (value instanceof Immutable.Record) return refer(value, 'ImmutableRecord', 'toObject', refs)

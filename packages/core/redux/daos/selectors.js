@@ -27,3 +27,10 @@ export const isFrontendInitialized = () => createSelector(
   daosSelector(),
   (daos) => daos.isInitialized,
 )
+
+export const getAbiByAddress = (address) => createSelector(
+  daoByAddress(address),
+  (dao) => dao
+    ? dao.abi
+    : null,
+)

@@ -68,6 +68,8 @@ import {
   WAVES_WAVES_NAME,
   WAVES_WAVES_SYMBOL,
 } from '../../dao/constants/WavesDAO'
+import { DAOS_REGISTER } from '../daos/constants'
+import { ContractDAOModel, ContractModel } from '../../models'
 
 const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
@@ -143,6 +145,19 @@ export const initTokens = () => async (dispatch, getState) => {
     .on(EVENT_NEW_ERC20_TOKEN, (token: TokenModel) => {
       dispatch({ type: TOKENS_FETCHED, token })
       const dao = tokenService.createDAO(token, web3)
+
+      dispatch({
+        type: DAOS_REGISTER,
+        model: new ContractDAOModel({
+          contract: new ContractModel({
+            abi: dao.abi,
+            type: token.symbol(),
+          }),
+          address: token.address(),
+          dao,
+        }),
+      })
+
       dispatch(alternateTxHandlingFlow(dao))
     })
     .fetchTokens()

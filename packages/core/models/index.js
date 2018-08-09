@@ -92,3 +92,6 @@ export { default as VotingCollection } from './voting/VotingCollection'
 export { default as VotingMainModel } from './voting/VotingMainModel'
 export { default as WalletModel } from './wallet/WalletModel'
 export { default as WalletNoticeModel } from './notices/WalletNoticeModel'
+export { default as LogTxModel } from './describes/LogTxModel'
+export { default as LogEventModel } from './describes/LogEventModel'
+

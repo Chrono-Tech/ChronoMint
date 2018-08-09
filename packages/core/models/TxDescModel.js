@@ -4,6 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
+import { ETH } from '@chronobank/login/network/constants'
 import { Amount } from './'
 import AbstractModel from './AbstractModel'
 import { decodeTxData } from '../utils/DecodeUtils'
@@ -42,7 +43,7 @@ export default class TxDescModel extends AbstractModel {
 
   static fromWeb3 ({ account, tx, getAbi, getToken }) {
     const to = tx.to.toLowerCase()
-    const eth = getToken() // TokenModel {dao, token}
+    const eth = getToken(ETH) // TokenModel {dao, token}
     const token = getToken(to) // TokenModel {dao, token}
 
     const abi = getAbi(to) // JSON from dao
