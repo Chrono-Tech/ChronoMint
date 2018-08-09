@@ -71,7 +71,7 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     dao.connect(web3)
     return new ContractDAOModel({
       contract,
-      address: address,
+      address,
       history: historyAddress,
       dao,
     })
