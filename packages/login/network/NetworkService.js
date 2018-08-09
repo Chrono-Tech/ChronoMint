@@ -13,9 +13,12 @@ import {
   addError,
   clearErrors,
   loading,
-  networkSetNetwork,
   networkResetNetwork,
+  networkSetAccounts,
+  networkSetNetwork,
   networkSetProvider,
+  selectAccount,
+  setTestMetamask,
 } from '../redux/network/actions'
 import { utils as web3Converter } from '../settings'
 import metaMaskResolver from './metaMaskResolver'
@@ -33,20 +36,9 @@ import {
 import uportProvider, { UPortAddress } from './uportProvider'
 import web3Provider from './Web3Provider'
 import setup from './EngineUtils'
+import { DUCK_NETWORK } from '../redux/network/constants'
 
 //#endregion imports
-
-//#region CONSTANTS
-
-import {
-  DUCK_NETWORK,
-  NETWORK_ADD_ERROR,
-  NETWORK_SELECT_ACCOUNT,
-  NETWORK_SET_ACCOUNTS,
-  NETWORK_SET_TEST_METAMASK,
-} from '../redux/network/constants'
-
-//#endregion CONSTANTS
 
 // TODO: to ad I18n translation
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
@@ -119,10 +111,7 @@ class NetworkService extends EventEmitter {
     dispatch(loading())
     const isDeployed = await contractsManagerDAO.isDeployed()
     if (!isDeployed) {
-      dispatch({
-        type: NETWORK_ADD_ERROR,
-        error: 'Network is unavailable.',
-      })
+      dispatch(addError('Network is unavailable.'))
     }
     //return isDeployed
     return true
@@ -147,14 +136,14 @@ class NetworkService extends EventEmitter {
     const encodedAddress: string = await provider.requestAddress()
     const { network, address }: UPortAddress = uportProvider.decodeMNIDaddress(encodedAddress)
     dispatch(this.selectNetwork(web3Converter.hexToDecimal(network)))
-    dispatch({ type: NETWORK_SET_ACCOUNTS, accounts: [address] })
+    dispatch(networkSetAccounts([address]))
     this.selectAccount(address)
   }
 
   async loadAccounts () {
     const dispatch = this._dispatch
     dispatch(loading())
-    dispatch({ type: NETWORK_SET_ACCOUNTS, accounts: [] })
+    dispatch(networkSetAccounts([]))
     try {
       let accounts = this._accounts
       if (accounts == null) {
@@ -163,7 +152,7 @@ class NetworkService extends EventEmitter {
       if (!accounts || accounts.length === 0) {
         throw new Error(ERROR_NO_ACCOUNTS)
       }
-      dispatch({ type: NETWORK_SET_ACCOUNTS, accounts })
+      dispatch(networkSetAccounts(accounts))
       if (accounts.length === 1) {
         this.selectAccount(accounts[0])
       }
@@ -186,7 +175,7 @@ class NetworkService extends EventEmitter {
   }
 
   selectAccount = (selectedAccount) => {
-    this._dispatch({ type: NETWORK_SELECT_ACCOUNT, selectedAccount })
+    this._dispatch(selectAccount(selectedAccount))
   }
 
   setAccounts = (accounts) => {
@@ -258,7 +247,7 @@ class NetworkService extends EventEmitter {
       .on('resolve', (isMetaMask) => {
         try {
           if (isMetaMask) {
-            this._dispatch({ type: NETWORK_SET_TEST_METAMASK })
+            this._dispatch(setTestMetamask())
             this.isMetamask = true
           }
         } catch (e) {
