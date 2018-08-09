@@ -47,12 +47,6 @@ class FileSelect extends PureComponent {
     maxFiles: PropTypes.number,
     returnCollection: PropTypes.bool,
     floatingLabelText: PropTypes.node,
-    handleChange: PropTypes.func,
-  }
-
-  static defaultProps = {
-    handleChange: () => {
-    },
   }
 
   constructor (props, context, updater) {

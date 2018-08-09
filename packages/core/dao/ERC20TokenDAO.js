@@ -168,7 +168,7 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
     }
   }
 
-  revoke (spender: string, symbol: String, from) {
+  revoke (spender: string, symbol: string, from) {
     const data = this.contract.methods.approve(spender, new Amount(0, symbol)).encodeABI()
 
     return {

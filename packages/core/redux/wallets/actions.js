@@ -30,7 +30,7 @@ import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { AllowanceCollection, SignerMemoryModel } from '../../models'
 import { executeTransaction } from '../ethereum/actions'
-import { WALLETS_SET, WALLETS_TWO_FA_CONFIRMED, WALLETS_UPDATE_BALANCE, WALLETS_UPDATE_WALLET } from './constants'
+import { WALLETS_SET, WALLETS_SET_NAME, WALLETS_TWO_FA_CONFIRMED, WALLETS_UPDATE_BALANCE, WALLETS_UPDATE_WALLET } from './constants'
 import { getSigner } from '../persistAccount/selectors'
 
 const isOwner = (wallet, account) => {
@@ -40,6 +40,8 @@ const isOwner = (wallet, account) => {
 export const get2FAEncodedKey = (callback) => () => {
   return ethereumProvider.get2FAEncodedKey(callback)
 }
+
+export const setWalletName = (walletId, name) => (dispatch) => dispatch({ type: WALLETS_SET_NAME, walletId, name })
 
 export const check2FAChecked = () => async (dispatch) => {
   const result = await dispatch(get2FAEncodedKey())

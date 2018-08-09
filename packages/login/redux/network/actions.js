@@ -163,3 +163,12 @@ export const setImportWalletFile = () => ({
 export const initImportMethodsPage = () => ({
   type: NETWORK_SET_IMPORT_ACCOUNT_MODE,
 })
+
+export const setTestMetamask = () => ({
+  type: NETWORK_SET_TEST_METAMASK,
+})
+
+export const selectAccount = (selectedAccount) => ({
+  type: NETWORK_SELECT_ACCOUNT,
+  selectedAccount,
+})
