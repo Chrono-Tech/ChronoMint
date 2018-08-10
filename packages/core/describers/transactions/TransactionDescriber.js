@@ -76,17 +76,12 @@ export const findFunctionABI = (abi, name) => {
 
 // Helper functions
 
-export function ethFeeInfo ({ tx, receipt }, { address, getters }) {
-  const token = getters['tokens/getETHToken']
-  // const value = new BigNumber(tx.value)
-  const fee = new BigNumber(tx.gasPrice).multipliedBy(receipt.cumulativeGasUsed)
+export function ethFeeInfo ({ tx, receipt }, { address, symbol }) {
+  const fee = new BigNumber(tx.gasPrice).mul(receipt ? receipt.cumulativeGasUsed : tx.gasLimit)
 
   if (tx.from.toLowerCase() === address) {
     return {
-      amount: new Amount({
-        value: fee.multipliedBy(-1),
-        token,
-      }),
+      amount: new Amount(fee.mul(-1), symbol),
       amountTitle: 'Fee',
     }
   }

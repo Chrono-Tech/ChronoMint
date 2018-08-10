@@ -15,6 +15,10 @@ const schemaFactory = () => ({
   isAmountSigned: PropTypes.bool,
   amount: PropTypes.instanceOf(Amount),
   target: PropTypes.string,
+  fields: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.any,
+    description: PropTypes.string,
+  })),
 })
 
 export default class LogTxModel extends AbstractModel {

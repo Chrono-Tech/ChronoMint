@@ -11,11 +11,10 @@ import { SignerMemoryModel, TxEntryModel, TxExecModel } from '../../models'
 import { pendingEntrySelector, web3Selector } from './selectors'
 import { DUCK_ETHEREUM, NONCE_UPDATE, TX_CREATE, TX_STATUS, WEB3_UPDATE } from './constants'
 import { getSigner } from '../persistAccount/selectors'
-// import { describeTx } from '../../describers'
-// import { decodeTxData } from '../../utils/DecodeUtils'
-// import TxDescModel from '../../models/TxDescModel'
-// import { daoByAddress, getAbiByAddress } from '../daos/selectors'
-// import { getToken } from '../locs/selectors'
+import ethereumDAO from '../../dao/EthereumDAO'
+import { describeTx } from '../../describers'
+import { daoByAddress } from '../daos/selectors'
+import { getAccount } from '../session/selectors/models'
 
 export const initEthereum = ({ web3 }) => (dispatch) => {
   dispatch({ type: WEB3_UPDATE, web3 })
@@ -173,24 +172,20 @@ export const sendSignedTransaction = ({ web3, entry }) => async (dispatch, getSt
   })
 }
 
-const submitTransaction = (entry) => async (dispatch) => {
+const submitTransaction = (entry) => async (dispatch, getState) => {
 
-  /*
   const state = getState()
-  const desc = TxDescModel.fromWeb3({
-    account: entry.tx.from,
-    tx: entry.tx,
-    getAbi: () => getAbiByAddress(),
-    getToken: () => getToken(),
+  const account = getAccount(state)
+
+  const description = describeTx(entry, {
+    address: account,
+    dao: daoByAddress(entry.tx.to)(state) || ethereumDAO,
   })
 
-  // const desciption = describeTx(entry)
-  // // TODO @abdulov remove console.log
-  // console.log('%c desciption', 'background: red; color: #fff', desciption)
-  */
   dispatch(modalsOpenConfirmDialog({
     props: {
       entry,
+      description,
       accept: acceptTransaction,
       reject: rejectTransaction,
     },

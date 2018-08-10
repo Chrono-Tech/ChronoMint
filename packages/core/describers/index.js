@@ -1,8 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { LogTxModel, LogEventModel, Amount } from '../models'
-
+import Web3ABI from 'web3-eth-abi'
 import { EVENT_DESCRIBERS_BY_TOPIC, decodeLog } from './events'
-import { TRANSACTION_DESCRIBERS_BY_TOPIC, decodeParameters } from './transactions'
+import { TRANSACTION_DESCRIBERS_BY_TOPIC, decodeParameters, findFunctionABI } from './transactions'
+import { decodeTxData } from '../utils/DecodeUtils'
+import { ETH } from '../dao/constants'
 
 export const describeEvent = (data, context) => {
   const { log, block } = data
@@ -31,54 +33,98 @@ export const describeEvent = (data, context) => {
   })
 }
 
-export const describeTx = (data, context) => {
-  const { tx, receipt, block } = data
+const formatPengigTxData = ({ abi, tx }) => {
+  const data = abi != null && tx.data != null // nil check
+    ? decodeTxData(abi.abi, tx.data)
+    : (tx.data != null ? { name: 'Unknown contract' } : null)
+  if (data) {
+    const params = data.params.reduce((accumulator, entry) => ({ ...accumulator, [entry.name]: entry.value }), {})
+    return {
+      params,
+      inputs: data.inputs,
+      topic: Web3ABI.encodeFunctionSignature(findFunctionABI(abi, data.name)),
+    }
+  }
+  return {}
+}
 
-  const array = TRANSACTION_DESCRIBERS_BY_TOPIC[tx.input.substr(0, 10)]
+const defaultDescription = (entry, context) => {
+  const { tx, receipt, block } = entry
+  const { dao } = context
+  const address = context.address.toLowerCase()
+
+  const v = new BigNumber(tx.value)
+  const fee = new BigNumber(tx.gasPrice).mul(receipt ? receipt.cumulativeGasUsed : tx.gasLimit)
+
+  let value = null
+  let amountTitle = null
+  if (tx.from.toLowerCase() === address && tx.to.toLowerCase() === address) {
+    value = fee.mul(-1)
+    amountTitle = 'tx.fee'
+  } else if (tx.from.toLowerCase() === address) {
+    value = v.minus(fee)
+    amountTitle = v.eq(0) ? 'tx.fee' : 'tx.amountFee'
+  } else {
+    value = v
+    amountTitle = 'tx.amount'
+  }
+
+  const amount = new Amount(value, dao.token ? dao.token.symbol() : ETH)
+  const path = `tx`
+  return new LogTxModel({
+    key: block ? `${block.hash}/${tx.transactionIndex}` : null,
+    type: 'tx',
+    name: 'custom',
+    date: new Date(block ? (block.timestamp * 1000) : null),
+    icon: 'event',
+    title: `${path}.title`,
+    message: tx.to,
+    target: null,
+    amountTitle,
+    isAmountSigned: true,
+    amount,
+    fields: [
+      {
+        value: tx.from,
+        description: `${path}.from`,
+      },
+      {
+        value: tx.to,
+        description: `${path}.to`,
+      },
+      {
+        value: amount,
+        description: `${path}.amount`,
+      },
+    ],
+  })
+}
+
+export const describeTx = (entry, context) => {
+  const { tx, receipt } = entry
+  const { dao } = context
+  const abi = dao.abi
+
+  let info
+  if (!receipt) {
+    info = formatPengigTxData({ abi, tx })
+  } else {
+    info = {
+      topic: tx.input.substr(0, 10),
+      ...decodeParameters(abi, entry.tx),
+    }
+
+  }
+
+  const array = TRANSACTION_DESCRIBERS_BY_TOPIC[info.topic]
   if (array) {
     for (const describer of array) {
-      const { inputs, params } = decodeParameters(describer.abi, data.tx)
-      const desc = describer.describe(data, context, { abi: describer.abi, inputs, params })
+      const desc = describer.describe(entry, context, { abi: describer.abi, inputs: info.inputs, params: info.params })
       if (desc) {
         return desc
       }
     }
   }
 
-  const token = context.getters['tokens/getETHToken']
-
-  const address = context.address.toLowerCase()
-
-  const v = new BigNumber(tx.value)
-  const fee = new BigNumber(tx.gasPrice).multipliedBy(receipt.cumulativeGasUsed)
-
-  let value = null
-  let amountTitle = null
-  if (tx.from.toLowerCase() === address && tx.to.toLowerCase() === address) {
-    value = fee.multipliedBy(-1)
-    amountTitle = 'Fee'
-  } else if (tx.from.toLowerCase() === address) {
-    value = v.minus(fee)
-    amountTitle = v.isEqualTo(0) ? 'Fee' : 'Amount+Fee'
-  } else {
-    value = v
-    amountTitle = 'Amount'
-  }
-
-  return new LogTxModel({
-    key: `${block.hash}/${tx.transactionIndex}`,
-    type: 'tx',
-    name: 'custom',
-    date: new Date(block.timestamp * 1000),
-    icon: 'event',
-    title: 'Transaction',
-    message: tx.to,
-    target: null,
-    amountTitle,
-    isAmountSigned: true,
-    amount: new Amount({
-      token,
-      value,
-    }),
-  })
+  return defaultDescription(entry, context)
 }

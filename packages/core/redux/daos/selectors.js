@@ -30,7 +30,9 @@ export const isFrontendInitialized = () => createSelector(
 
 export const getAbiByAddress = (address) => createSelector(
   daoByAddress(address),
-  (dao) => dao
-    ? dao.abi
-    : null,
+  (dao) => {
+    return dao
+      ? dao.abi
+      : null
+  },
 )
