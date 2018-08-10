@@ -8,9 +8,10 @@ import { getNetworkById, LOCAL_ID, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID } from '@c
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { push, replace } from '@chronobank/core-dependencies/router'
 import ls from '@chronobank/core-dependencies/utils/LocalStorage'
-import profileService from '@chronobank/login/network/ProfileService'
 import { removeWatchersUserMonitor } from '@chronobank/core-dependencies/redux/ui/actions'
 import * as SessionActions from './actions'
+import * as ProfileThunks from '../profile/thunks'
+import ProfileService from '../profile/service'
 import { daoByType } from '../../redux/daos/selectors'
 import web3Factory from '../../web3/index'
 import { cbeWatcher, watcher } from '../watcher/actions'
@@ -140,18 +141,23 @@ export const getProfileSignature = (wallet) => async (dispatch) => {
   if (!wallet) {
     return
   }
+  try {
+    const signDataString = ProfileService.getSignData()
+    const signData = wallet.sign(signDataString)
+    const profileSignature = await dispatch(ProfileThunks.getUserProfile(signData.signature))
+    dispatch(SessionActions.setProfileSignature(profileSignature))
 
-  const signDataString = profileService.getSignData()
-  const signData = wallet.sign(signDataString)
-  const profileSignature = await profileService.getProfile(signData.signature)
-  dispatch(SessionActions.setProfileSignature(profileSignature))
-
-  return profileSignature
+    return profileSignature
+  } catch (error) {
+    // FIXME: to handle it in appropriate way
+    // eslint-disable-next-line no-console
+    console.log('Unhadled error at core/redux/session/thunks: getProfileSignature:', error)
+  }
 }
 
 export const updateUserProfile = (profile) => async (dispatch, getState) => {
   const { profileSignature } = getState().get(DUCK_SESSION)
-  const newProfile = await profileService.updateUserProfile({ ...profile }, profileSignature.token)
+  const newProfile = await dispatch(ProfileThunks.updateUserProfile(profile))
 
   dispatch(SessionActions.setProfileSignature({
     ...profileSignature,

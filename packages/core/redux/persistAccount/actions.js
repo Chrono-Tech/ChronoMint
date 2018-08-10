@@ -7,10 +7,10 @@ import uuid from 'uuid/v1'
 import hdkey from 'ethereumjs-wallet/hdkey'
 import bip39 from 'bip39'
 import Accounts from 'web3-eth-accounts'
-import profileService from '@chronobank/login/network/ProfileService'
 import {
   WALLET_HD_PATH,
 } from '@chronobank/login/network/constants'
+import * as ProfileThunks from '../profile/thunks'
 import {
   AccountEntryModel,
   AccountProfileModel,
@@ -127,7 +127,7 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
     profile: null,
   })
 
-  const newAccounts = dispatch(setProfilesForAccounts([entry]))
+  const newAccounts = await dispatch(setProfilesForAccounts([entry]))
 
   return newAccounts[0] || entry
 
@@ -184,10 +184,10 @@ export const downloadWallet = () => (dispatch, getState) => {
   }
 }
 
-export const setProfilesForAccounts = (walletsList) => async () => {
+export const setProfilesForAccounts = (walletsList) => async (dispatch) => {
 
   const addresses = getWalletsListAddresses(walletsList)
-  const { data } = await profileService.getPersonInfo(addresses)
+  const data = await dispatch(ProfileThunks.getUserInfo(addresses))
 
   if (Array.isArray(data)) {
     return data.reduce((prev, profile) => {

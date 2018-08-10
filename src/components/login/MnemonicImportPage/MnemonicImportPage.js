@@ -23,7 +23,7 @@ import {
   CreateAccountContainer,
   GenerateWalletContainer,
 } from '@chronobank/login-ui/components'
-import ProfileService from '@chronobank/login/network/ProfileService'
+import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -31,6 +31,7 @@ function mapDispatchToProps (dispatch) {
     navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
     onSubmitCreateAccountImportMnemonic: async (name, password, mnemonic) => await dispatch(onSubmitCreateAccountImportMnemonic(name, password, mnemonic)),
     navigateBack: () => dispatch(navigateBack()),
+    getUserInfo: (addresses: string[]) => dispatch(ProfileThunks.getUserInfo(addresses)),
   }
 }
 
@@ -97,7 +98,7 @@ class MnemonicImportPage extends PureComponent {
 
   async onSubmitMnemonic ({ mnemonic }) {
     const address = getAddressByMnemonic(mnemonic)
-    const { data } = await ProfileService.getPersonInfo([address])
+    const data = await this.props.getUserInfo([address])
 
     const profile = data[0]
 
