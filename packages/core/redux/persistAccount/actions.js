@@ -57,9 +57,9 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
 
   const { walletsList } = state.get(DUCK_PERSIST_ACCOUNT)
 
-  let index = walletsList.findIndex((item) => item.key === wallet.key)
+  const index = walletsList.findIndex((item) => item.key === wallet.key)
 
-  let copyWalletList = [...walletsList]
+  const copyWalletList = [...walletsList]
 
   copyWalletList.splice(index, 1, wallet)
 
@@ -88,7 +88,7 @@ export const resetPasswordAccount = (wallet, mnemonic, password) => async (dispa
 
   const newCopy = await dispatch(createAccount({ name: wallet.name, mnemonic, password }))
 
-  let newWallet = {
+  const newWallet = {
     ...wallet,
     encrypted: newCopy.encrypted,
   }
@@ -113,7 +113,7 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
 
   const accounts = new Accounts()
 
-  let wallet = await accounts.wallet.create(numberOfAccounts)
+  const wallet = await accounts.wallet.create(numberOfAccounts)
   const account = accounts.privateKeyToAccount(hex)
   wallet.add(account)
   // eslint-disable-next-line no-console
@@ -134,7 +134,7 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
 }
 
 export const createHWAccount = ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => async (dispatch) => {
-  let wallet, hex = ''
+  let hex = ''
 
   if (privateKey){
     hex = `0x${privateKey}`
@@ -148,7 +148,7 @@ export const createHWAccount = ({ name, password, privateKey, mnemonic, numberOf
   const accounts = new Accounts()
   accounts.wallet.clear()
 
-  wallet = await accounts.wallet.create(numberOfAccounts)
+  const wallet = await accounts.wallet.create(numberOfAccounts)
   const account = accounts.privateKeyToAccount(hex)
   wallet.add(account)
 
@@ -236,7 +236,7 @@ export const customNetworkEdit = (network: AccountCustomNetwork) => (dispatch, g
   const foundNetworkIndex = customNetworksList.findIndex((item) => network.id === item.id)
 
   if (foundNetworkIndex !== -1) {
-    let copyNetworksList = [...customNetworksList]
+    const copyNetworksList = [...customNetworksList]
 
     copyNetworksList.splice(foundNetworkIndex, 1, network)
 

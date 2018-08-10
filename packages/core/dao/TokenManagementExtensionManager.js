@@ -12,9 +12,6 @@ export default class TokenManagementExtensionManager extends EventEmitter {
     super()
     this.history = history
     this.web3 = web3
-
-    // eslint-disable-next-line no-console
-    console.log('[TokenManagementExtensionManager] Created')
   }
 
   /**
@@ -22,7 +19,7 @@ export default class TokenManagementExtensionManager extends EventEmitter {
    * @param address
    * @returns {Promise<TokenManagementExtensionDAO>}
    */
-  async getTokenManagementExtensionDAO (address: String) {
+  async getTokenManagementExtensionDAO (address: string) {
     const tokenManagementExtensionDao = new TokenManagementExtensionDAO({ abi: TokenManagementInterfaceABI, address, history: this.history })
     tokenManagementExtensionDao.connect(this.web3)
 

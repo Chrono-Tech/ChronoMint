@@ -3,6 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import {
+  DUCK_PERSIST_ACCOUNT,
+} from '@chronobank/core/redux/persistAccount/constants'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'

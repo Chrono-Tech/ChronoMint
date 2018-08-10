@@ -27,7 +27,6 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
       return
     }
 
-    console.log('TokenManagementExtensionDAO handleEventsData: ', data.event, data)
     this.emit(data.event, data)
   }
 
@@ -64,8 +63,6 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
         token.icon() ? web3Converter.ipfsHashToBytes32(token.icon()) : this.web3.utils.fromAscii(''),
       ],
     )
-
-    console.log('createAssetWithoutFee Tx: ', tx)
 
     return tx
   }

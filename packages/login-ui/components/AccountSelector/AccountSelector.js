@@ -54,7 +54,7 @@ export default class AccountSelector extends PureComponent {
               subtitle={getAccountAddress(w, true)}
               avatar={getAccountAvatarImg(w)}
               actionIcon={arrow}
-              reverseIcon={true}
+              reverseIcon
               onClick={() => onWalletSelect(w)}
             />
           )) : null

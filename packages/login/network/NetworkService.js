@@ -13,9 +13,12 @@ import {
   addError,
   clearErrors,
   loading,
-  networkSetNetwork,
   networkResetNetwork,
+  networkSetAccounts,
+  networkSetNetwork,
   networkSetProvider,
+  selectAccount,
+  setTestMetamask,
 } from '../redux/network/actions'
 import { utils as web3Converter } from '../settings'
 import metaMaskResolver from './metaMaskResolver'
@@ -33,20 +36,9 @@ import {
 import uportProvider, { UPortAddress } from './uportProvider'
 import web3Provider from './Web3Provider'
 import setup from './EngineUtils'
+import { DUCK_NETWORK } from '../redux/network/constants'
 
 //#endregion imports
-
-//#region CONSTANTS
-
-import {
-  DUCK_NETWORK,
-  NETWORK_ADD_ERROR,
-  NETWORK_SELECT_ACCOUNT,
-  NETWORK_SET_ACCOUNTS,
-  NETWORK_SET_TEST_METAMASK,
-} from '../redux/network/constants'
-
-//#endregion CONSTANTS
 
 // TODO: to ad I18n translation
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
@@ -57,11 +49,6 @@ class NetworkService extends EventEmitter {
     this._dispatch = store.dispatch
   }
 
-  // connectStore (store) {
-  //   this._store = store
-  //   this._dispatch = store.dispatch
-  // }
-
   createNetworkSession = (account, provider, network) => {
     if (!this._account) {
       this._account = account
@@ -70,18 +57,7 @@ class NetworkService extends EventEmitter {
     if (!account || !provider || !network) {
       throw new Error(`Wrong session arguments: account: ${account}, provider: ${provider}, network: ${network}`)
     }
-    // const accounts = this._store.getState().get(DUCK_NETWORK).accounts || []
-    //if (!accounts.includes(account)) {
-    //  throw new Error('Account not registered')
-    //}
-    //console.log(account)
-    //console.log(provider)
 
-    //web3Provider.resolve()
-
-    // sync with session state
-    // this unlock login
-    // dispatch(createSession(account))
     this.emit('createSession', {
       account, provider, network, dispatch: this._dispatch,
     })
@@ -119,10 +95,7 @@ class NetworkService extends EventEmitter {
     dispatch(loading())
     const isDeployed = await contractsManagerDAO.isDeployed()
     if (!isDeployed) {
-      dispatch({
-        type: NETWORK_ADD_ERROR,
-        error: 'Network is unavailable.',
-      })
+      dispatch(addError('Network is unavailable.'))
     }
     //return isDeployed
     return true
@@ -147,14 +120,14 @@ class NetworkService extends EventEmitter {
     const encodedAddress: string = await provider.requestAddress()
     const { network, address }: UPortAddress = uportProvider.decodeMNIDaddress(encodedAddress)
     dispatch(this.selectNetwork(web3Converter.hexToDecimal(network)))
-    dispatch({ type: NETWORK_SET_ACCOUNTS, accounts: [address] })
+    dispatch(networkSetAccounts([address]))
     this.selectAccount(address)
   }
 
   async loadAccounts () {
     const dispatch = this._dispatch
     dispatch(loading())
-    dispatch({ type: NETWORK_SET_ACCOUNTS, accounts: [] })
+    dispatch(networkSetAccounts([]))
     try {
       let accounts = this._accounts
       if (accounts == null) {
@@ -163,7 +136,7 @@ class NetworkService extends EventEmitter {
       if (!accounts || accounts.length === 0) {
         throw new Error(ERROR_NO_ACCOUNTS)
       }
-      dispatch({ type: NETWORK_SET_ACCOUNTS, accounts })
+      dispatch(networkSetAccounts(accounts))
       if (accounts.length === 1) {
         this.selectAccount(accounts[0])
       }
@@ -186,7 +159,7 @@ class NetworkService extends EventEmitter {
   }
 
   selectAccount = (selectedAccount) => {
-    this._dispatch({ type: NETWORK_SELECT_ACCOUNT, selectedAccount })
+    this._dispatch(selectAccount(selectedAccount))
   }
 
   setAccounts = (accounts) => {
@@ -258,7 +231,7 @@ class NetworkService extends EventEmitter {
       .on('resolve', (isMetaMask) => {
         try {
           if (isMetaMask) {
-            this._dispatch({ type: NETWORK_SET_TEST_METAMASK })
+            this._dispatch(setTestMetamask())
             this.isMetamask = true
           }
         } catch (e) {
@@ -279,15 +252,9 @@ class NetworkService extends EventEmitter {
 
   async autoSelect () {
     const { priority, preferMainnet } = this._store.getState().get(DUCK_NETWORK)
-    const resolveNetwork = () => {
-      // const web3 = new Web3()
-      // web3Provider.reinit(web3, web3Utils.createStatusEngine(this.getProviderURL()))
-      // web3Provider.resolve()
-    }
     const selectAndResolve = (networkId, providerId) => {
       this.selectProvider(providerId)
       this.selectNetwork(networkId)
-      resolveNetwork()
     }
 
     this.checkerIndex = 0
@@ -345,15 +312,6 @@ class NetworkService extends EventEmitter {
     this.emit('login', { account: this._account, dispatch: this._dispatch })
   }
 
-  getCurrentNetwork () {
-    const { selectedNetworkId } = this._store.getState().get(DUCK_NETWORK)
-    return selectedNetworkId
-  }
-
-  getCurrentProvider () {
-    const { selectedProviderId } = this._store.getState().get(DUCK_NETWORK)
-    return selectedProviderId
-  }
 }
 
 export default new NetworkService()

@@ -10,8 +10,6 @@ import MultisigEthWalletModel from '../models/wallet/MultisigEthWalletModel'
 import multisigWalletService from '../services/MultisigWalletService'
 import AbstractContractDAO from './AbstractContract3DAO'
 
-//#region CONSTANTS
-
 import {
   EE_MS_WALLET_ADDED,
   EE_MS_WALLET_REMOVED,
@@ -20,8 +18,6 @@ import {
 import {
   BLOCKCHAIN_ETHEREUM,
 } from './constants'
-
-//#endregion CONSTANTS
 
 export default class WalletsManagerDAO extends AbstractContractDAO {
 
@@ -60,8 +56,6 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
     }
   }
 
-  //#region Handlers
-
   /**
    * handler for event "WalletCreated"
    * @param data - Object from blockchain
@@ -81,10 +75,6 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   handleWalletRemoved (data) {
     this.emit(EE_MS_WALLET_REMOVED, `${BLOCKCHAIN_ETHEREUM}-${data.returnValues.wallet}`)
   }
-
-  //#endregion
-
-  //#region Actions
 
   /**
    * fetch ethereum multisig wallets

@@ -30,11 +30,11 @@ import multisigWalletService from '../../services/MultisigWalletService'
 import { getTxList, goToWallets } from '../mainWallet/actions'
 import { ETH } from '../../dao/constants'
 import { getMultisigWallets } from '../wallet/selectors/models'
-import { getEthMultisigWallet, getWallets } from './selectors/models'
-import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
+import { getEthMultisigWallet } from './selectors/models'
 import { daoByType } from '../daos/selectors'
 import MultisigEthWalletModel from '../../models/wallet/MultisigEthWalletModel'
 import tokenService from '../../services/TokenService'
+
 import {
   ETH_MULTISIG_2_FA_CONFIRMED,
   ETH_MULTISIG_BALANCE,
@@ -70,7 +70,7 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
       ethereumProvider.subscribeNewWallet(wallet.address)
 
       const walletFromDuck = wallets.item(wallet.id)
-      let walletName = walletFromDuck && walletFromDuck.name ? walletFromDuck.name : ''
+      const walletName = walletFromDuck && walletFromDuck.name ? walletFromDuck.name : ''
 
       dispatch({
         type: ETH_MULTISIG_FETCHED,
@@ -86,7 +86,8 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
         await dispatch(check2FAChecked())
         dispatch(change(FORM_2FA_WALLET, 'step', FORM_2FA_STEPS[2]))
       } catch (e) {
-        console.warn(e)
+        // eslint-disable-next-line
+        console.error(e)
       }
       const txHash = wallet.transactionHash
 
@@ -110,31 +111,6 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
     .on(EE_MS_WALLET_REMOVED, (walletId) => {
       dispatch({ type: ETH_MULTISIG_REMOVE, id: walletId })
     })
-
-  const wallets = getWallets(getState())
-  wallets.items().map((wallet: DerivedWalletModel) => {
-    const { account } = getState().get(DUCK_SESSION)
-
-    const handleToken = (token: TokenModel) => async (dispatch) => {
-      if (token.blockchain() === wallet.blockchain()) {
-        // TODO fix this handle
-        // const dao = tokenService.getDAO(token)
-        // let balance = await dao.getAccountBalance(wallet.address())
-        // dispatch({
-        //   type: ETH_MULTISIG_BALANCE,
-        //   walletId: wallet.address(),
-        //   balance: new BalanceModel({
-        //     id: token.id(),
-        //     amount: new Amount(balance, token.symbol(), true),
-        //   }),
-        // })
-      }
-    }
-
-    // if (isOwner(wallet, account)) {
-    //   dispatch(subscribeOnTokens(handleToken))
-    // }
-  })
 }
 
 const handleTransfer = (walletId, multisigTransactionModel) => async (dispatch, getState) => {
@@ -379,6 +355,8 @@ export const confirm2FATransfer = (txAddress, walletAddress, confirmToken, callb
   return ethereumProvider.confirm2FAtx(txAddress, walletAddress, confirmToken, callback)
 }
 
+export const setEthMultisig2FAConfirmed = (twoFAConfirmed) => (dispatch) => dispatch({ type: ETH_MULTISIG_2_FA_CONFIRMED, twoFAConfirmed })
+
 export const check2FAChecked = () => async (dispatch) => {
   const result = await dispatch(get2FAEncodedKey())
   let twoFAConfirmed
@@ -387,7 +365,7 @@ export const check2FAChecked = () => async (dispatch) => {
   } else {
     twoFAConfirmed = false
   }
-  dispatch({ type: ETH_MULTISIG_2_FA_CONFIRMED, twoFAConfirmed })
+  dispatch(setEthMultisig2FAConfirmed(twoFAConfirmed))
 }
 
 export const updatePendingTx = (walletAddress: string, tx: MultisigWalletPendingTxModel) => (dispatch, getState) => {
@@ -399,10 +377,13 @@ export const checkConfirm2FAtx = (txAddress, callback) => {
   return ethereumProvider.checkConfirm2FAtx(txAddress, callback)
 }
 
-export const setMultisigWalletName = (address, name) => (dispatch, getState) => {
-  const wallet = getMultisigWallets(getState()).item(address)
+export const setMultisigWalletName = (walletId, name) => (dispatch, getState) => {
+  const wallet = getMultisigWallets(getState()).item(walletId)
   if (wallet) {
-    dispatch({ type: ETH_MULTISIG_UPDATE, wallet: wallet.name(name) })
+    dispatch(updateEthMultisigWallet(new MultisigEthWalletModel({
+      ...wallet,
+      name,
+    })))
   }
 }
 

@@ -35,40 +35,39 @@ export const watchInitMarket = () => (dispatch, getState) => {
   try {
     MarketSocket.init()
     MarketSocket.on('update', (update) => {
+      let updateData = update
+      //eslint-disable-next-line prefer-const
       let { rates, lastMarket } = getState().get(DUCK_MARKET)
       if (!lastMarket || !rates) {
         return
       }
-      const symbol = update.symbol
+      const symbol = updateData.symbol
 
       // update last market for pare
-      if (update.LASTMARKET) {
+      if (updateData.LASTMARKET) {
         dispatch({
           type: LAST_MARKET_UPDATE,
           payload: {
-            symbol: update.symbol,
-            lastMarket: update.LASTMARKET,
+            symbol: updateData.symbol,
+            lastMarket: updateData.LASTMARKET,
           },
         })
       } else {
-        update.LASTMARKET = lastMarket[ symbol ]
+        updateData.LASTMARKET = lastMarket[ symbol ]
       }
 
-      lastMarket = update.LASTMARKET || get(lastMarket, symbol)
-      update = {
-        ...get(rates, `${symbol}.${lastMarket}`, undefined),
-        ...update,
-      }
+      lastMarket = updateData.LASTMARKET || get(lastMarket, symbol)
+      updateData = { ...get(rates, `${symbol}.${lastMarket}`, undefined), ...updateData }
 
-      const price = update.PRICE
-      const open24hour = update.OPEN24HOUR
+      const price = updateData.PRICE
+      const open24hour = updateData.OPEN24HOUR
 
       if (price && open24hour) {
-        update.CHANGE24H = price - open24hour
-        update.CHANGEPCT24H = update.CHANGE24H / open24hour * 100
+        updateData.CHANGE24H = price - open24hour
+        updateData.CHANGEPCT24H = updateData.CHANGE24H / open24hour * 100
       }
 
-      dispatch({ type: MARKET_UPDATE_RATES, payload: update })
+      dispatch({ type: MARKET_UPDATE_RATES, payload: updateData })
     })
     MarketSocket.start()
 

@@ -394,10 +394,10 @@ export default class AbstractContractDAO extends EventEmitter {
    */
   // eslint-disable-next-line complexity
   async _tx (func: string,
-             args: Array = [],
-             infoArgs: Object | AbstractModel = null,
-             value: BigNumber = new BigNumber(0),
-             options = DEFAULT_TX_OPTIONS): Object {
+    args: Array = [],
+    infoArgs: Object | AbstractModel = null,
+    value: BigNumber = new BigNumber(0),
+    options = DEFAULT_TX_OPTIONS): Object {
 
     const {
       from,
@@ -551,7 +551,7 @@ export default class AbstractContractDAO extends EventEmitter {
   estimateGas = async (func: string, args = [], value = null, account): number | Object => {
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
-      throw this._error('estimateGas func not found', func)
+      throw this._error(`estimateGas func ${func} not found`)
     }
 
     const [gasPrice, estimatedGas] = await Promise.all([

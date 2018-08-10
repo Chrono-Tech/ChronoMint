@@ -15,11 +15,11 @@ import { getUserTokens } from '@chronobank/core/redux/assetsManager/selectors'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { IconButton } from '@material-ui/core'
 import { IPFSImage } from 'components'
-import { SIDES_TOGGLE_MAIN_MENU } from 'redux/sides/constants'
+import { toggleMainMenu } from 'redux/sides/actions'
 import './MenuAssetsManagerMoreInfo.scss'
 import { prefix } from './lang'
 
-function mapStateToProps (state, ownProps) {
+function mapStateToProps (state) {
   return {
     assets: getUserTokens()(state),
   }
@@ -27,7 +27,7 @@ function mapStateToProps (state, ownProps) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    onMainMenuClose: () => dispatch({ type: SIDES_TOGGLE_MAIN_MENU, mainMenuIsOpen: false }),
+    onMainMenuClose: () => dispatch(toggleMainMenu(false)),
   }
 }
 
@@ -51,7 +51,7 @@ export default class MenuAssetsManagerMoreInfo extends PureComponent {
   }
 
   renderPlatform = (platformAddress, key) => {
-    const assetsList = this.props.assets[ platformAddress ]
+    const assetsList = this.props.assets[platformAddress]
     return (
       <div styleName='walletIrem' key={platformAddress}>
         <Link to='/assets' href styleName='walletTitle' onClick={this.handleSelectLink}>

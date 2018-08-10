@@ -14,8 +14,6 @@ import { getSelectedPollFromDuck, getVoting } from './selectors/models'
 import { daoByType } from '../daos/selectors'
 import PollModel from '../../models/PollModel'
 
-//#region CONSTANTS
-
 import {
   DUCK_SESSION,
 } from '../session/constants'
@@ -45,17 +43,11 @@ import {
 } from './constants'
 import { executeTransaction } from '../ethereum/actions'
 
-//#endregion
-
 const PAGE_SIZE = 20
-
-// used to create unique ID for fetching models
-let counter = 1
 
 export const goToVoting = () => (dispatch) => dispatch(push('/voting'))
 
 export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
-  console.log('watchPoll: ', notice)
   switch (notice.status()) {
     case IS_CREATED:
       dispatch(handlePollRemoved(notice.transactionHash()))
@@ -109,27 +101,25 @@ export const watchInitPolls = () => async (dispatch, getState) => {
 }
 
 export const createPoll = (poll: PollDetailsModel) => async (dispatch, getState) => {
-  const id = `stub_${--counter}`
   const votingDAO = daoByType('VotingManager')(getState())
 
   try {
-    // dispatch(handlePollCreated(stub))
     dispatch(goToVoting())
     const tx = await votingDAO.createPoll(poll.poll)
     if (tx) {
       dispatch(executeTransaction({ tx }))
     }
   } catch (e) {
-    // dispatch(handlePollRemoved(stub.id))
+    // eslint-disable-next-line
+    console.error('createPoll error: ', e)
   }
 }
 
 export const removePoll = (pollObject: PTPoll) => async (dispatch, getState) => {
-  console.log('removePoll: ', pollObject)
   const state = getState()
   const votingDAO = daoByType('VotingManager')(getState())
 
-  let poll = pollObject && pollObject.id
+  const poll = pollObject && pollObject.id
     ? getVoting(state).list().item(pollObject.id)
     : getSelectedPollFromDuck(state)
 
@@ -144,14 +134,14 @@ export const removePoll = (pollObject: PTPoll) => async (dispatch, getState) => 
     }
 
   } catch (e) {
-    console.log('removePoll error: ', e)
+    // eslint-disable-next-line
+    console.error('removePoll error: ', e)
     dispatch(handlePollCreated(poll))
     throw e
   }
 }
 
 export const vote = (choice: Number) => async (dispatch, getState) => {
-  console.log('vote: ', choice)
 
   const poll = getSelectedPollFromDuck(getState())
   const votingDAO = daoByType('VotingManager')(getState())
@@ -165,19 +155,19 @@ export const vote = (choice: Number) => async (dispatch, getState) => {
       dispatch(executeTransaction({ tx }))
     }
   } catch (e) {
-    console.log('Vote poll error: ', e)
+    // eslint-disable-next-line
+    console.error('Vote poll error: ', e)
     dispatch(handlePollUpdated(poll))
     throw e
   }
 }
 
 export const activatePoll = (pollObject: PTPoll) => async (dispatch, getState) => {
-  console.log('activatePoll: ', pollObject)
 
   const state = getState()
   const votingDAO = daoByType('VotingManager')(getState())
 
-  let poll = pollObject && pollObject.id
+  const poll = pollObject && pollObject.id
     ? getVoting(state).list().item(pollObject.id)
     : getSelectedPollFromDuck(state)
 
@@ -190,13 +180,13 @@ export const activatePoll = (pollObject: PTPoll) => async (dispatch, getState) =
       dispatch(executeTransaction({ tx }))
     }
   } catch (e) {
-    console.log('Active poll error: ', e)
+    // eslint-disable-next-line
+    console.error('Active poll error: ', e)
     dispatch(handlePollUpdated(poll))
   }
 }
 
 export const endPoll = (pollObject: PTPoll) => async (dispatch, getState) => {
-  console.log('endPoll: ', pollObject)
 
   const poll = getState().get(DUCK_VOTING).list().item(pollObject.id)
   const votingDAO = daoByType('VotingManager')(getState())
@@ -218,7 +208,8 @@ export const endPoll = (pollObject: PTPoll) => async (dispatch, getState) => {
       dispatch(executeTransaction({ tx }))
     }
   } catch (e) {
-    console.log('End poll error: ', e)
+    // eslint-disable-next-line
+    console.error('End poll error: ', e)
     dispatch(handlePollUpdated(poll))
   }
 }

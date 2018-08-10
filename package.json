@@ -138,6 +138,7 @@
     "lint:report": "bash -c \"node ./node_modules/eslint/bin/eslint --format node_modules/eslint-html-reporter/reporter-team-city.js --output-file ./report/eslint-report-`date +%F`.html --debug --ext .js,.jsx .\"",
     "lint:sort": "bash -c \"node ./scripts/importSort.js `git diff --name-status $(git merge-base origin/develop HEAD)..HEAD | grep -E '^[AM]' | awk ' {print $2} ' | grep -E 'jsx?$'`\"",
     "lint:test": "node ./node_modules/eslint/bin/eslint.js --ext .js,.jsx .",
+    "lint:errors": "node ./node_modules/eslint/bin/eslint.js --quiet .",
     "start": "node --max-old-space-size=4096 ./scripts/start.js",
     "start:eval": "SOURCE_MAP=eval node ./scripts/start.js",
     "start:http": "BASE_SCHEMA=http node ./scripts/start.js",
@@ -156,7 +157,9 @@
     "hs": "openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem && hs build -a localhost -o -S",
     "rei": "rm -rf ./node_modules && yarn install && yarn contracts:compile"
   },
-  "pre-commit": [],
+  "pre-commit": [
+    "lint:errors"
+  ],
   "jest": {
     "testURL": "http://localhost",
     "setupTestFrameworkScriptFile": "./src/specsInit.js",

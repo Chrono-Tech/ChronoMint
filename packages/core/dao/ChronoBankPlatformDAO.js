@@ -7,8 +7,6 @@ import web3Converter from '../utils/Web3Converter'
 import AbstractContractDAO from './AbstractContract3DAO'
 import { ChronoBankPlatformABI } from './abi'
 
-//#region CONSTANTS
-
 import {
   TX_ADD_ASSET_PART_OWNER,
   TX_IS_REISSUABLE,
@@ -20,23 +18,17 @@ import {
   TX_REVOKE,
 } from './constants/ChronoBankPlatformDAO'
 
-//#endregion CONSTANTS
-
 export default class ChronoBankPlatformDAO extends AbstractContractDAO {
 
   constructor (address, history) {
     super({ address, history, abi: ChronoBankPlatformABI })
   }
 
-  connect (web3, options) {
+  connect (web3, options = {}) {
     super.connect(web3, options)
 
     this.allEventsEmitter = this.history.events.allEvents({})
-      .on('data', this.handleAllEventsData)
-  }
-
-  handleAllEventsData = (data) => {
-    this.emit(data.event, data)
+      .on('data', this.handleEventsData)
   }
 
   disconnect () {
@@ -48,21 +40,12 @@ export default class ChronoBankPlatformDAO extends AbstractContractDAO {
     }
   }
 
-  handleEventsData (data) {
+  handleEventsData = (data) => {
     if (!data.event) {
       return
     }
-    console.log('ChronoBankPlatformDAO handleEventsData: ', data.event, data)
+
     this.emit(data.event, data)
-  }
-
-  handleEventsChanged (data) {
-    console.log('ChronoBankPlatformDAO handleEventsChanged: ', data.event, data)
-  }
-
-  handleEventsError (data) {
-    console.log('ChronoBankPlatformDAO handleEventsError: ', data.event, data)
-    this.emit(data.event + '_error', data)
   }
 
   reissueAsset (token, value) {
@@ -87,15 +70,15 @@ export default class ChronoBankPlatformDAO extends AbstractContractDAO {
     return this._tx(TX_REMOVE_ASSET_PART_OWNER, [web3Converter.stringToBytes(symbol), address])
   }
 
-  watchIssue (callback) {
-    return this.on(TX_ISSUE, (tx) => callback(tx))
+  watchIssue (callback, filter) {
+    return this.on(TX_ISSUE, (data) => callback(data), filter)
   }
 
-  watchRevoke (callback) {
-    return this.on(TX_REVOKE, (tx) => callback(tx))
+  watchRevoke (callback, filter) {
+    return this.on(TX_REVOKE, (data) => callback(data), filter)
   }
 
-  watchManagers (callback) {
-    return this.on(TX_OWNERSHIP_CHANGE, callback)
+  watchManagers (callback, filter) {
+    return this.on(TX_OWNERSHIP_CHANGE, callback, filter)
   }
 }

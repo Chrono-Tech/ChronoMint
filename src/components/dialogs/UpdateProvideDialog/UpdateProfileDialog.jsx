@@ -10,7 +10,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
-import { updateUserProfile } from '@chronobank/core/redux/session/actions'
+import { updateUserProfile } from '@chronobank/core/redux/session/thunks'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import {
   DUCK_PERSIST_ACCOUNT,

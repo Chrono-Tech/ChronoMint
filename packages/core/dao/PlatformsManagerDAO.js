@@ -6,8 +6,6 @@
 import AbstractContractDAO from './AbstractContract3DAO'
 import TokenManagementExtensionManager from './TokenManagementExtensionManager'
 
-//#region CONSTANTS
-
 import {
   TX_ATTACH_PLATFORM,
   TX_CREATE_PLATFORM,
@@ -17,8 +15,6 @@ import {
   TX_PLATFORM_REQUESTED,
   TX_REISSUE_ASSET,
 } from './constants/PlatformsManagerDAO'
-
-//#endregion CONSTANTS
 
 export default class PlatformsManagerDAO extends AbstractContractDAO {
   constructor ({ address, history, abi }) {
@@ -47,7 +43,7 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
     if (!data.event) {
       return
     }
-    console.log('PlatformsManagerDAO handleEventsData: ', data.event, data)
+
     this.emit(data.event, data)
   }
 

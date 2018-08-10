@@ -19,10 +19,10 @@ class ProfileModel extends abstractModel({
   wallets: new Immutable.Map(),
 }) {
   constructor (data = {}) {
-    data = data || {}
+    const newData = data || {}
     super({
-      ...data,
-      tokens: new Immutable.Set(data.tokens || undefined),
+      ...newData,
+      tokens: new Immutable.Set(newData.tokens || undefined),
     })
   }
 

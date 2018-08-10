@@ -75,6 +75,17 @@ export default (state = initialState, action) => {
           }),
         },
       }
+    case a.WALLETS_SET_NAME:
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.walletId]: new WalletModel({
+            ...state.list[action.walletId],
+            name: action.name,
+          }),
+        },
+      }
     default:
       return state
   }

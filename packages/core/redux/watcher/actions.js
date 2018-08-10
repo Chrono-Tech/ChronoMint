@@ -20,7 +20,7 @@ import { watchInitCBE } from '../settings/user/cbe/actions'
 import { initTokens } from '../tokens/actions'
 import { initDAOs } from '../daos/actions'
 import { watchInitPolls } from '../voting/actions'
-import { watchInitProfile } from '../session/actions'
+import { watchInitProfile } from '../session/thunks'
 import { initMultisigWalletManager } from '../multisigWallet/actions'
 import { initWallets } from '../wallets/actions'
 import {

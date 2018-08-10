@@ -1,9 +1,15 @@
 node_modules/**
-**/node_modules/**
 build/**
-.tmp/**
+config/**
 mocks/**
-docs/**
+nodes/**
+scripts/**
+src/**
+packages/core-dependencies/**
+packages/login/**
+packages/login-ui/**
+**/node_modules/**
+.tmp/**
 *.json
 *.md
 *.less
@@ -11,3 +17,7 @@ docs/**
 *.svg
 git
 **/*.spec.js
+
+
+
+!packages/core/*

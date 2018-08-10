@@ -18,7 +18,7 @@ export const getSelectedToken = () => createSelector(
 export const getUserTokens = () => createSelector(
   [getTokens, getPlatforms, getAssets],
   (tokens: TokensCollection, platforms, assets) => {
-    let result = {}
+    const result = {}
     platforms.forEach((platform) => result[platform.address] = {})
 
     Object.values(assets).forEach((asset) => {

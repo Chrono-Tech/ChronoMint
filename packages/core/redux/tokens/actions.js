@@ -24,8 +24,9 @@ import { daoByType } from '../daos/selectors'
 import TxExecModel from '../../models/TxExecModel'
 import { web3Selector } from '../ethereum/selectors'
 import { estimateGas } from '../ethereum/actions'
+
 import { TRANSFER_CANCELLED } from '../../models/constants/TransferError'
-import { WATCHER_TX_END, WATCHER_TX_SET } from '../watcher/constants'
+import { WATCHER_TX_SET } from '../watcher/constants'
 import { DUCK_TOKENS, TOKENS_FAILED, TOKENS_FETCHED, TOKENS_FETCHING, TOKENS_INIT, TOKENS_UPDATE_LATEST_BLOCK } from './constants'
 import { EVENT_ERC20_TOKENS_COUNT, EVENT_NEW_ERC20_TOKEN } from '../../dao/constants/ERC20ManagerDAO'
 import { NEM_DECIMALS, NEM_XEM_NAME, NEM_XEM_SYMBOL } from '../../dao/constants/NemDAO'
@@ -47,9 +48,7 @@ import { getMainSymbolForBlockchain, getTokens } from './selectors'
 
 const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
-    console.log('submitTxHandler: ', tx)
     if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
-      console.log('submitTxHandler BLOCKCHAIN_ETHEREUM: ', tx)
       dispatch(modalsOpenConfirmDialog({
         props: {
           tx,
@@ -68,8 +67,6 @@ const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExec
 
 const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
-    // eslint-disable-next-line
-    console.log('acceptTxHandler start: ', tx, dao)
     if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
       dispatch({ type: WATCHER_TX_SET, tx })
       await dao.immediateTransfer(tx)
@@ -85,12 +82,6 @@ const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExec
 const rejectTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   const e = new TransferError('Rejected', TRANSFER_CANCELLED)
   dispatch(notifyError(e, tx.funcTitle()))
-}
-
-const mainedTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
-  if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
-    dispatch({ type: WATCHER_TX_END, tx })
-  }
 }
 
 export const alternateTxHandlingFlow = (dao) => (dispatch) => {

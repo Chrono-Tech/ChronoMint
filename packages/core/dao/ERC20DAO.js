@@ -11,18 +11,15 @@ import { TXS_PER_PAGE } from '../models/wallet/TransactionsCollection'
 import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'
 import AbstractTokenDAO from './AbstractTokenDAO'
 
-//#region CONSTANTS
-
 import {
   TX_TRANSFER,
 } from './constants/ERC20DAO'
+
 import {
   BLOCKCHAIN_ETHEREUM,
   EVENT_APPROVAL_TRANSFER,
   EVENT_NEW_TRANSFER,
 } from './constants'
-
-//#endregion CONSTANTS
 
 const EVENT_TRANSFER = 'Transfer'
 const EVENT_APPROVAL = 'Approval'
@@ -43,8 +40,8 @@ export default class ERC20DAO extends AbstractTokenDAO {
     if (this.isConnected) {
       this.disconnect()
     }
-    this.contract = new web3.eth.Contract(this.abi.abi, this.getInitAddress(), options)
 
+    this.contract = new web3.eth.Contract(this.abi.abi, this.getInitAddress(), options)
   }
 
   disconnect () {
@@ -185,7 +182,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this._createTxModel(tx, accounts, tx.blockNumber, minedBlock.timestamp)
   }
 
-  watch (accounts: Array<string>): Promise {
+  watch (/*accounts: Array<string>*/): Promise {
     // return Promise.all([
     //   this.watchTransfer(accounts),
     //   this.watchApproval(accounts),

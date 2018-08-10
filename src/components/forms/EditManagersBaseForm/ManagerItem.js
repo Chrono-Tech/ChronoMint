@@ -30,9 +30,9 @@ class ManagerItem extends PureComponent {
         </div>
         <div styleName='address'>{address}</div>
         {address !== account && (
-          <div onClick={this.handleRemoveManager} styleName='action' role='button'>
+          <button onClick={this.handleRemoveManager} styleName='action'>
             <i className='material-icons'>delete</i>
-          </div>
+          </button>
         )}
       </div>
     )

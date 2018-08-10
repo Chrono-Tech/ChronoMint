@@ -45,9 +45,17 @@ export default class AbstractContractDAO extends EventEmitter {
     // eslint-disable-next-line no-console
     console.log(`%c [${this.constructor.name}] Connect`, 'background: grey', options)
 
-    this.contract = new web3.eth.Contract(this.abi.abi, this.address, options)
-    // eslint-disable-next-line no-console
-    console.log(`%c Contract [${this.constructor.name}] connected`, 'background: grey;', this.contract, this.address, this.history)
+    if (this.address) {
+      this.contract = new web3.eth.Contract(this.abi.abi, this.address, options)
+      // eslint-disable-next-line no-console
+      console.log(`%c Contract [${this.constructor.name}] created`, 'background: grey;', this.contract, this.address, this.history)
+    }
+
+    if (!this.history && !this.contract) {
+      // eslint-disable-next-line no-console
+      console.warn(`[${this.constructor.name}] history and contract is empty`)
+      return
+    }
 
     this.history = this.history != null
       ? new web3.eth.Contract(this.abi.abi, this.history, options)
@@ -144,7 +152,7 @@ export default class AbstractContractDAO extends EventEmitter {
   estimateGas = async (func, args, value, from, additionalOptions): Object => {
     const feeMultiplier = additionalOptions && additionalOptions.feeMultiplier ? additionalOptions.feeMultiplier : 1
     if (!this.contract.methods.hasOwnProperty(func)) {
-      throw new Error('estimateGas func not found', func)
+      throw new Error(`estimateGas func [${func}] not found `)
     }
 
     const [gasPrice, gasLimit] = await Promise.all([

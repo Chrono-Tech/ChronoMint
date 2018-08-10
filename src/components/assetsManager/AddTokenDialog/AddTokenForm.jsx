@@ -6,7 +6,7 @@
 import BigNumber from 'bignumber.js'
 import { Checkbox, TextField } from 'redux-form-material-ui'
 import Select from 'redux-form-material-ui/es/Select'
-import { CircularProgress, MenuItem } from '@material-ui/core'
+import { CircularProgress, MenuItem, FormControlLabel } from '@material-ui/core'
 import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -62,11 +62,11 @@ const onSubmit = (values, dispatch) => {
 
 function mapStateToProps (state) {
   const assetsManager = state.get(DUCK_ASSETS_MANAGER)
-  const form = state.get('form')
+  const form = state.get('form').get(FORM_ADD_TOKEN_DIALOG)
 
   return {
-    formValues: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('values'),
-    formErrors: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('syncErrors'),
+    formValues: form && form.get('values'),
+    formErrors: (form && form.get('syncErrors')) || {},
     platformsList: assetsManager.usersPlatforms(),
   }
 }
@@ -92,6 +92,12 @@ class Platform extends PureComponent {
     platform: PropTypes.instanceOf(Object),
     selectedPlatform: PropTypes.instanceOf(Object),
     onClick: PropTypes.func,
+    ...formPropTypes
+  }
+
+  static defaultProps = {
+    formValues: null,
+    formErrors: {},
   }
 
   handleClick = () => this.props.onClick(this.props.platform)
@@ -125,8 +131,6 @@ class Platform extends PureComponent {
 export default class AddTokenForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
-    formValues: PropTypes.shape(PropTypes.any),
-    formErrors: PropTypes.shape(PropTypes.any),
     platformsList: PropTypes.arrayOf(PropTypes.object),
     dispatch: PropTypes.func,
     onClose: PropTypes.func.isRequired,
@@ -279,8 +283,8 @@ export default class AddTokenForm extends PureComponent {
   renderTokenInfo () {
     const formValues = this.props.formValues
     const tokenSymbol = formValues && formValues.get('tokenSymbol')
-    const smallestUnit = formValues && formValues.get('smallestUnit')
-    const amount = formValues && formValues.get('amount')
+    const smallestUnit = (formValues && +formValues.get('smallestUnit')) || 0
+    const amount = (formValues && +formValues.get('amount')) || 0
     const description = formValues && formValues.get('description')
     const platform = formValues && formValues.get('platform')
     const renderPlatform = (platform) => {
@@ -302,7 +306,7 @@ export default class AddTokenForm extends PureComponent {
             })
           </div>
           <div>
-            <span styleName='layer'>{new BigNumber(amount || 0).toFixed(smallestUnit || 0)}</span>
+            <span styleName='layer'>{new BigNumber(amount).toFixed(smallestUnit)}</span>
             <span styleName='symbol'>{tokenSymbol || <Translate value={prefix('tokenSymbol')} />}</span>
           </div>
           <div styleName='platform'>
@@ -385,9 +389,13 @@ export default class AddTokenForm extends PureComponent {
             </div>
             <div className='row'>
               <div className='col-xs-12 col-sm-6'>
-                <Field
-                  component={Checkbox}
-                  name='reissuable'
+                <FormControlLabel
+                  control={
+                    <Field
+                      component={Checkbox}
+                      name='reissuable'
+                    />
+                  }
                   label={I18n.t(prefix('reissuable'))}
                 />
                 <Field
@@ -398,9 +406,13 @@ export default class AddTokenForm extends PureComponent {
                 />
               </div>
               <div className='col-xs-12 col-sm-6'>
-                <Field
-                  component={Checkbox}
-                  name='withFee'
+                <FormControlLabel
+                  control={
+                    <Field
+                      component={Checkbox}
+                      name='withFee'
+                    />
+                  }
                   label={I18n.t(prefix('withFee'))}
                 />
                 <Field

@@ -82,25 +82,26 @@ class ContractsManagerDAO extends AbstractContractDAO {
 
   /** @private */
   async _getDAO (daoType: string, account = null, isNew = false): Promise<AbstractContractDAO> {
+    let accountParam = account
     if (!daoMap.hasOwnProperty(daoType)) {
       // return
       throw new Error(`invalid DAO type ${daoType}`)
     }
 
-    account = account || await this.getContractAddressByType(daoType)
+    accountParam = accountParam || await this.getContractAddressByType(daoType)
 
-    const key = `${account}-${daoType}`
+    const key = `${accountParam}-${daoType}`
     if (this._contracts.hasOwnProperty(key)) {
       return this._contracts[key]
     }
 
     const DAOClass = daoMap[daoType]
-    const dao = new DAOClass(account)
+    const dao = new DAOClass(accountParam)
 
     if (isNew) {
       const isDeployed = await dao.isDeployed()
       if (!isDeployed) {
-        throw new Error(`Can't init ${DAOClass.name} at ${account}; ${isDeployed.message}`)
+        throw new Error(`Can't init ${DAOClass.name} at ${accountParam}; ${isDeployed.message}`)
       }
     }
 
@@ -124,11 +125,11 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return this._getDAO(DAO_CHRONOBANK_PLATFORM, platformAddress)
   }
 
-  getChronoBankAssetProxyDAO (token: String): Promise<ChronoBankAssetProxyDAO> {
+  getChronoBankAssetProxyDAO (token: string): Promise<ChronoBankAssetProxyDAO> {
     return this._getDAO(DAO_CHRONOBANK_ASSET_PROXY, token)
   }
 
-  async getFeeInterfaceDAO (address: String): Promise<FeeInterfaceDAO> {
+  async getFeeInterfaceDAO (address: string): Promise<FeeInterfaceDAO> {
     const chronoBankAssetProxyDAO = await this.getChronoBankAssetProxyDAO(address)
     const latestVersion = await chronoBankAssetProxyDAO.getLatestVersion()
     return this._getDAO(DAO_FEE_INTERFACE, latestVersion)

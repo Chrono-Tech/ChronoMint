@@ -107,7 +107,7 @@ class LoginTrezor extends PureComponent {
           name='address'
           value={item}
           component='button'
-          disableGutters={true}
+          disableGutters
           style={{ margin: 0 }}
           onClick={() => this.props.navigateToCreateAccountFromHW(item)}
         >

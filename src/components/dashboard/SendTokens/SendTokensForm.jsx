@@ -118,7 +118,6 @@ export default class SendTokensForm extends PureComponent {
     onTransfer: PropTypes.func,
     onApprove: PropTypes.func,
     gasPriceMultiplier: PropTypes.number,
-    formErrors: PropTypes.shape(PropTypes.any),
     ...formPropTypes,
   }
 

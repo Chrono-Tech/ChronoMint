@@ -30,7 +30,7 @@ import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { AllowanceCollection, SignerMemoryModel } from '../../models'
 import { executeTransaction } from '../ethereum/actions'
-import { WALLETS_SET, WALLETS_TWO_FA_CONFIRMED, WALLETS_UPDATE_BALANCE, WALLETS_UPDATE_WALLET } from './constants'
+import { WALLETS_SET, WALLETS_SET_NAME, WALLETS_TWO_FA_CONFIRMED, WALLETS_UPDATE_BALANCE, WALLETS_UPDATE_WALLET } from './constants'
 import { getSigner } from '../persistAccount/selectors'
 
 const isOwner = (wallet, account) => {
@@ -40,6 +40,8 @@ const isOwner = (wallet, account) => {
 export const get2FAEncodedKey = (callback) => () => {
   return ethereumProvider.get2FAEncodedKey(callback)
 }
+
+export const setWalletName = (walletId, name) => (dispatch) => dispatch({ type: WALLETS_SET_NAME, walletId, name })
 
 export const check2FAChecked = () => async (dispatch) => {
   const result = await dispatch(get2FAEncodedKey())
@@ -222,8 +224,6 @@ export const mainApprove = (token: TokenModel, amount: Amount, spender: string, 
       await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
     }
   } catch (e) {
-    // eslint-disable-next-line
-    console.log('mainRevoke approve: ', e)
     dispatch(notifyError(e, 'mainApprove'))
     allowance && dispatch(updateAllowance(allowance.isFetching(false)))
   }
@@ -244,8 +244,6 @@ export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Nu
       await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
     }
   } catch (e) {
-    // eslint-disable-next-line
-    console.log('mainRevoke error: ', e)
     dispatch(notifyError(e, 'mainRevoke'))
     dispatch(updateAllowance(allowance.isFetching(false)))
   }
@@ -257,7 +255,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
   const account = getState().get(DUCK_SESSION).account
   const wallets = getWallets(state)
 
-  let lastDeriveNumbers = {}
+  const lastDeriveNumbers = {}
   Object.values(wallets)
     .map((wallet) => {
       if (wallet.derivedPath && isOwner(wallet, account)) {
@@ -267,7 +265,6 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
       }
     })
 
-  let wallet
   let newDeriveNumber = deriveNumber
   let derivedPath
   let newWallet
@@ -308,7 +305,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
       return null
   }
 
-  wallet = new WalletModel({
+  const wallet = new WalletModel({
     name,
     address,
     owners: [account],

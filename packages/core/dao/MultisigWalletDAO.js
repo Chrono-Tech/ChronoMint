@@ -123,12 +123,12 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   async getPendings () {
     try {
 
-      let pendingTxCollection = {}
+      const pendingTxCollection = {}
       const res = await this.contract.methods.getPendings().call()
       const [values, operations, isConfirmed] = Object.values(res)
 
-      let verifiedOperationsPromises = []
-      let pendingDataPromises = []
+      const verifiedOperationsPromises = []
+      const pendingDataPromises = []
       operations.filter(this.isValidId).map((operation) => {
         verifiedOperationsPromises.push(ethereumProvider.checkConfirm2FAtx(operation))
         pendingDataPromises.push(this.getPendingData(operation))
@@ -150,6 +150,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
       return pendingTxCollection
     } catch (e) {
+      // eslint-disable-next-line
       console.warn(e)
       return Promise.resolve({})
     }
@@ -158,12 +159,13 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   async getOwners () {
     try {
       const counter = await this.contract.methods.m_numOwners().call()
-      let promises = []
+      const promises = []
       for (let i = 0; i < counter; i++) {
         promises.push(this.contract.methods.getOwner(i).call())
       }
       return Promise.all(promises)
     } catch (e) {
+      // eslint-disable-next-line
       console.warn(e)
       return Promise.resolve([])
     }
@@ -173,6 +175,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     try {
       return this.contract.methods.m_required().call()
     } catch (e) {
+      // eslint-disable-next-line
       console.warn(e)
       return Promise.resolve(0)
     }
@@ -187,6 +190,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     try {
       return this.contract.methods.releaseTime().call()
     } catch (e) {
+      // eslint-disable-next-line
       console.warn(e)
       return Promise.resolve(0)
     }
@@ -261,6 +265,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
           to: args._to,
         }
       default:
+        // eslint-disable-next-line
         console.warn('warn: decoder not implemented for function: ', func)
         return args
     }

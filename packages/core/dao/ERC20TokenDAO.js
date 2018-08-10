@@ -9,10 +9,6 @@ import AbstractTokenDAO from './AbstractTokenDAO'
 import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'
 import Amount from '../models/Amount'
 
-//#region CONSTANTS
-
-//#endregion CONSTANTS
-
 export const DEFAULT_GAS = 4700000
 export default class ERC20TokenDAO extends AbstractTokenDAO {
   constructor (token: TokenModel, abi) {
@@ -30,7 +26,6 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
 
     this.allEventsEmitter = this.contract.events.allEvents({})
       .on('data', this.handleAllEventsData)
-      .on('changed', this.handleTransferChanged)
       .on('error', this.handleTransferError)
   }
 
@@ -106,11 +101,9 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
     }
   }
 
-  handleTransferChanged = (data) => {
-  }
-
   handleTransferError = (e) => {
-    console.log(e)
+    // eslint-disable-next-line
+    console.log('Transfer event error: ', e)
   }
 
   handleTransferData (data) {
@@ -175,7 +168,7 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
     }
   }
 
-  revoke (spender: string, symbol: String, from) {
+  revoke (spender: string, symbol: string, from) {
     const data = this.contract.methods.approve(spender, new Amount(0, symbol)).encodeABI()
 
     return {
@@ -191,7 +184,7 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
 
     const contract = await this.contract
     if (!contract.methods.hasOwnProperty(func)) {
-      throw this._error('estimateGas func not found', func)
+      throw this._error(`estimateGas func ${func} not found`)
     }
 
     const [gasPrice, gasLimit] = await Promise.all([

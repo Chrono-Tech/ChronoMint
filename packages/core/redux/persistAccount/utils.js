@@ -22,9 +22,9 @@ import {
 } from '../../models/wallet/persistAccount'
 
 export const replaceWallet = (wallet, walletList) => {
-  let index = walletList.findIndex((item) => item.key === wallet.key)
+  const index = walletList.findIndex((item) => item.key === wallet.key)
 
-  let copyWalletList = [...walletList]
+  const copyWalletList = [...walletList]
 
   copyWalletList.splice(index, 1, wallet)
 
@@ -113,7 +113,7 @@ export const createAndSetAccount = async ({ name, password, privateKey, mnemonic
 
   const accounts = new Accounts()
 
-  let wallet = await accounts.wallet.create(numberOfAccounts)
+  const wallet = await accounts.wallet.create(numberOfAccounts)
   const account = accounts.privateKeyToAccount(hex)
   wallet.add(account)
 

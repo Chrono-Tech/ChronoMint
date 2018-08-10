@@ -79,7 +79,7 @@ export default class LocaleDropDown extends PureComponent {
     return (
       <div styleName='root'>
         <Button
-          styleName={newButtonStyle ? 'langButtonNewStyle' : 'langButton' }
+          styleName={newButtonStyle ? 'langButtonNewStyle' : 'langButton'}
           onClick={this.handleClick}
         >
           {locale}

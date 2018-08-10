@@ -173,13 +173,13 @@ export class EthereumDAO extends AbstractTokenDAO {
   }
 
   async getTransfer (id, account, skip, offset, tokens): Promise<TxModel> {
-    let tokensMap = {}
+    const tokensMap = {}
     tokens.items().map((token) => {
       if (token.address()) {
         tokensMap[token.address()] = token.symbol()
       }
     })
-    let txs = []
+    const txs = []
     try {
       const txsResult = await ethereumProvider.getTransactionsList(account, skip, offset)
       for (const tx of txsResult) {
@@ -196,7 +196,7 @@ export class EthereumDAO extends AbstractTokenDAO {
               txToken = tokensMap[log.address]
             }
             if (log.signature === transferSignature) {
-              let resultDecoded = new solidityEvent(null, signatureDefinition).decode(log)
+              const resultDecoded = new solidityEvent(null, signatureDefinition).decode(log)
               tx.from = resultDecoded.args.from
               tx.to = resultDecoded.args.to
               tx.value = resultDecoded.args.value

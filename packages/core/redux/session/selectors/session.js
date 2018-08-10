@@ -35,7 +35,7 @@ export const getAddressesList = () => createSelector(
 export const getBlockchainAddressesList = () => createSelector(
   [getAddressesList()],
   (addresses) => {
-    let result = []
+    const result = []
     PROFILE_PANEL_TOKENS
       .map((token) => {
         result.push({
@@ -73,7 +73,7 @@ export const getSelectedAccountName = createSelector(
 export const getAccountProfileSummary = createSelector(
   [
     getProfileSignature,
-    getSelectedAccountName
+    getSelectedAccountName,
   ],
   (profile, selectedAccountName) => {
     if (profile){

@@ -41,11 +41,11 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
 
   async getExchangesForOwner (owner: string) {
     const addresses = await this._call('getExchangesForOwner', [ owner ])
-    return await this.getExchangeData(addresses.filter((address) => !this.isEmptyAddress(address)))
+    return this.getExchangeData(addresses.filter((address) => !this.isEmptyAddress(address)))
   }
 
   async getAssetSymbols () {
-    let result = {}
+    const result = {}
     try {
       const assetSymbols = await exchangeProvider.getAssetSymbols()
       assetSymbols.map((exchange) => {
@@ -67,7 +67,7 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
     } else {
       addresses = await this._call('getExchanges', [ fromId, length ])
     }
-    return await this.getExchangeData(addresses.filter((address) => !this.isEmptyAddress(address)))
+    return this.getExchangeData(addresses.filter((address) => !this.isEmptyAddress(address)))
   }
 
   async getExchangeData (exchangesAddresses: Array<string>) {

@@ -15,7 +15,7 @@ export default class ModelBase {
     const defaults = this.constructor.DEFAULTS || ModelBase.DEFAULTS
     const data = Object.assign({}, defaults, origData)
 
-    for (let k in data) {
+    for (const k in data) {
       if (data.hasOwnProperty(k) && defaults[k] !== undefined) {
         this[ k ] = data[ k ]
       }
