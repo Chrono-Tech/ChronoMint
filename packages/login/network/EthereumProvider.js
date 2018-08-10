@@ -52,6 +52,11 @@ export class EthereumProvider extends AbstractProvider {
     return node
   }
 
+  subscribeNewWallet (address) {
+    const node = this._selectNode(this._engine)
+    node.subscribeNewWallet(address)
+  }
+
   getTransactionsList (address, skip, offset) {
     const node = this._selectNode(this._engine)
     return node.getTransactionsList(address, this._id, skip, offset)

@@ -18,7 +18,7 @@ import {
 } from '@chronobank/login/network/constants'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import WalletModel from '../../models/wallet/WalletModel'
-import { getWalletBalances, subscribeOnTokens, subscribeOnTokensFetched, mapBalancesToSymbols } from '../tokens/actions'
+import { formatBalances, getWalletBalances, subscribeOnTokens } from '../tokens/actions'
 import TokenModel from '../../models/tokens/TokenModel'
 import tokenService from '../../services/TokenService'
 import Amount from '../../models/Amount'
@@ -32,7 +32,6 @@ import { AllowanceCollection, SignerMemoryModel } from '../../models'
 import { executeTransaction } from '../ethereum/actions'
 import { WALLETS_SET, WALLETS_TWO_FA_CONFIRMED, WALLETS_UPDATE_BALANCE, WALLETS_UPDATE_WALLET } from './constants'
 import { getSigner } from '../persistAccount/selectors'
-import { getTokens } from '../tokens/selectors'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -118,24 +117,17 @@ const initDerivedWallets = () => async (dispatch, getState) => {
 const updateWalletBalance = ({ wallet }) => async (dispatch) => {
   getWalletBalances({ wallet })
     .then((balancesResult) => {
+      dispatch({
+        type: WALLETS_SET,
+        wallet: new WalletModel({
+          ...wallet,
+          balances: {
+            ...wallet.balances,
+            ...formatBalances({ blockchain: wallet.blockchain, balancesResult }),
+          },
+        }),
+      })
 
-      const callback = () => async (dispatch, getState) => {
-        const tokens = getTokens(getState())
-        const currentCount = tokens.leftToFetch()
-        if (currentCount === 0) {
-          dispatch({
-            type: WALLETS_SET,
-            wallet: new WalletModel({
-              ...wallet,
-              balances: {
-                ...wallet.balances,
-                ...mapBalancesToSymbols({ tokens, blockchain: wallet.blockchain, balancesResult }),
-              },
-            }),
-          })
-        }
-      }
-      dispatch(subscribeOnTokensFetched(callback))
     })
     .catch((e) => {
       console.log('call balances from middleware is failed', e)

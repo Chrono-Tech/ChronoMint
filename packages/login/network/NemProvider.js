@@ -57,14 +57,7 @@ export class NemProvider extends AbstractProvider {
     }
 
     if (balance) {
-      const { confirmed, unconfirmed, vested } = balance
-      return {
-        confirmed,
-        unconfirmed: unconfirmed != null
-          ? unconfirmed
-          : confirmed,
-        vested,
-      }
+      return balance ? balance.unconfirmed : null
     }
   }
 

@@ -15,7 +15,7 @@ import MultisigWalletPendingTxModel from '../../models/wallet/MultisigWalletPend
 import OwnerModel from '../../models/wallet/OwnerModel'
 import { notify, notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
-import { getWalletBalances, mapBalancesToSymbols, subscribeOnTokens, subscribeOnTokensFetched } from '../tokens/actions'
+import { formatBalances, getWalletBalances, subscribeOnTokens } from '../tokens/actions'
 import {
   EE_CONFIRMATION,
   EE_CONFIRMATION_NEEDED,
@@ -67,6 +67,7 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
   walletsManagerDAO
     .on(EE_MS_WALLET_ADDED, async (wallet: MultisigEthWalletModel) => {
       const wallets = getMultisigWallets(getState())
+      ethereumProvider.subscribeNewWallet(wallet.address)
 
       const walletFromDuck = wallets.item(wallet.id)
       let walletName = walletFromDuck && walletFromDuck.name ? walletFromDuck.name : ''
@@ -217,35 +218,6 @@ export const initMultisigWalletManager = () => async (dispatch, getState) => {
   }
   dispatch({ type: ETH_MULTISIG_INIT, isInited: true })
   const walletsManagerDAO = daoByType('WalletsManager')(getState())
-
-  /*let wallets = getState().get(DUCK_ETH_MULTISIG_WALLET)
-   wallets.items().map((wallet) => {
-     if (wallet.isDerived() && isOwner(wallet, account)) {
-       switch (wallet.blockchain()) {
-         case BLOCKCHAIN_BITCOIN:
-           btcProvider.createNewChildAddress(wallet.deriveNumber())
-           btcProvider.subscribeNewWallet(wallet.address)
-           break
-         case BLOCKCHAIN_BITCOIN_CASH:
-           bccProvider.createNewChildAddress(wallet.deriveNumber())
-           bccProvider.subscribeNewWallet(wallet.address)
-           break
-         case BLOCKCHAIN_BITCOIN_GOLD:
-           btgProvider.createNewChildAddress(wallet.deriveNumber())
-           btgProvider.subscribeNewWallet(wallet.address)
-           break
-         case BLOCKCHAIN_LITECOIN:
-           ltcProvider.createNewChildAddress(wallet.deriveNumber())
-           ltcProvider.subscribeNewWallet(wallet.address)
-           break
-         case BLOCKCHAIN_ETHEREUM:
-           dispatch(subscribeOnTokens(getTokensBalancesAndWatch(wallet.address, wallet.blockchain(), wallet.customTokens())))
-           break
-         default:
-       }
-     }
-   })*/
-
   dispatch(subscribeOnWalletManager())
   dispatch(subscribeOnMultisigWalletService())
 
@@ -437,17 +409,13 @@ export const setMultisigWalletName = (address, name) => (dispatch, getState) => 
 export const updateEthMultisigWalletBalance = ({ wallet }) => async (dispatch) => {
   getWalletBalances({ wallet })
     .then((balancesResult) => {
-      const callback = () => async (dispatch, getState) => {
-        const tokens = getTokens(getState())
-        dispatch(updateEthMultisigWallet(new MultisigEthWalletModel({
-          ...wallet,
-          balances: {
-            ...wallet.balances,
-            ...mapBalancesToSymbols({ tokens, blockchain: wallet.blockchain, balancesResult }),
-          },
-        })))
-      }
-      dispatch(subscribeOnTokensFetched(callback))
+      dispatch(updateEthMultisigWallet(new MultisigEthWalletModel({
+        ...wallet,
+        balances: {
+          ...wallet.balances,
+          ...formatBalances({ blockchain: wallet.blockchain, balancesResult }),
+        },
+      })))
     })
     .catch((e) => {
       console.log('call balances from middleware is failed', e)

@@ -338,15 +338,14 @@ export const getWalletBalances = ({ wallet }) => {
   return providersMap[wallet.blockchain].getAccountBalances(wallet.address)
 }
 
-export const mapBalancesToSymbols = ({ balancesResult, blockchain, tokens }) => {
+export const formatBalances = ({ balancesResult, blockchain }) => {
   const mainSymbol = getMainSymbolForBlockchain(blockchain)
   if (balancesResult && balancesResult.tokens) {
-    const tokensBalances = Object.entries(balancesResult.tokens)
-      .reduce((accumulator, [tokenAddress, balance]) => {
-        const token = tokens.getByAddress(tokenAddress)
+    const tokensBalances = balancesResult.tokens
+      .reduce((accumulator, { symbol, balance }) => {
         return {
           ...accumulator,
-          [token.symbol()]: new Amount(balance, token.symbol()),
+          [symbol]: new Amount(balance, symbol),
         }
       }, {})
 

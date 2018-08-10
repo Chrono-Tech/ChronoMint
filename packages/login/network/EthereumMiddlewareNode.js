@@ -25,6 +25,11 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     this.connect()
   }
 
+  subscribeNewWallet (ethAddress) {
+    this._handleSubscribe({ ethAddress })
+    this.addListener('unsubscribe', (address) => this._handleUnsubscribe(address))
+  }
+
   async _handleSubscribe ({ ethAddress, nemAddress, wavesAddress }) {
     if (!this._socket) {
       return
