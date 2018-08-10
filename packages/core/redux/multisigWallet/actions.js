@@ -399,11 +399,12 @@ export const updateEthMultisigWalletBalance = ({ wallet }) => async (dispatch) =
       })))
     })
     .catch((e) => {
+      // eslint-disable-next-line no-console
       console.log('call balances from middleware is failed', e)
       const updateBalance = (token: TokenModel) => async () => {
         if (token.blockchain() === wallet.blockchain) {
           const dao = tokenService.getDAO(token)
-          let balance = await dao.getAccountBalance(wallet.address)
+          const balance = await dao.getAccountBalance(wallet.address)
           if (balance) {
             dispatch({
               type: ETH_MULTISIG_BALANCE,

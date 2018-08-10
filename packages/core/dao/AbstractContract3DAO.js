@@ -3,24 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Tx from 'ethereumjs-tx'
 import EventEmitter from 'events'
 import ipfs from '@chronobank/core-dependencies/utils/IPFS'
-import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import BigNumber from 'bignumber.js'
 import TxExecModel from '../models/TxExecModel'
 import web3Converter from '../utils/Web3Converter'
-import Amount from '../models/Amount'
-
-//#region CONSTANTS
-
-import {
-  BLOCKCHAIN_ETHEREUM,
-  DEFAULT_GAS,
-  DEFAULT_TX_OPTIONS,
-} from './constants'
-
-//#endregion CONSTANTS
+import { DEFAULT_GAS } from './constants'
 
 export default class AbstractContractDAO extends EventEmitter {
 

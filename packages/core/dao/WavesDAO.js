@@ -116,7 +116,7 @@ export default class WavesDAO extends EventEmitter {
   }
 
   // TODO @ipavlenko: Rename to 'transfer' after all token DAOs will start using 'submit' method and 'trans'
-  async immediateTransfer (from: string, to: string, amount: BigNumber, /*token: TokenModel, feeMultiplier: Number = 1*/) {
+  async immediateTransfer (from: string, to: string, amount: BigNumber /*token: TokenModel, feeMultiplier: Number = 1*/) {
     try {
       return await this._wavesProvider.transfer(from, to, amount, this._asset)
     } catch (e) {
@@ -252,6 +252,5 @@ function readBalanceValue (symbol, balance, asset = null) {
   if (asset) {
     return balance.assets[asset]
   }
-  const b = balance.balance
-  return b
+  return balance.balance
 }

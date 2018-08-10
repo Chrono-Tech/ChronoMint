@@ -132,6 +132,7 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
 
     })
     .catch((e) => {
+      // eslint-disable-next-line no-console
       console.log('call balances from middleware is failed', e)
       const updateBalance = (token: TokenModel) => async () => {
         if (token.blockchain() === wallet.blockchain) {
