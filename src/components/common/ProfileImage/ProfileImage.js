@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
-import ProfileService from '@chronobank/login/network/ProfileService'
+import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
 
 import './ProfileImage.scss'
 
@@ -20,7 +20,13 @@ function mapStateToProps (state) {
   }
 }
 
-@connect(mapStateToProps, null)
+function mapDispatchToProps (dispatch) {
+  return {
+    downloadAvatar: (imageID: string) => dispatch(ProfileThunks.downloadAvatar(imageID)),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
 export default class ProfileImage extends PureComponent {
   static propTypes = {
     icon: PropTypes.object,
@@ -59,7 +65,7 @@ export default class ProfileImage extends PureComponent {
     }
 
     try {
-      const data = await ProfileService.avatarDownload(imageId)
+      const data = await this.props.downloadAvatar(imageId)
 
       this.setState({
         imageURL: data.url,

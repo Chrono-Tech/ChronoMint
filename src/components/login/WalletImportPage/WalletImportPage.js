@@ -7,13 +7,13 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import {
-  onSubmitCreateAccountImportPrivateKey,
+  // onSubmitCreateAccountImportPrivateKey,
   onCreateWalletFromJSON,
 } from '@chronobank/login-ui/redux/thunks'
 import {
   navigateToSelectWallet,
-  navigateToSelectImportMethod,
-  navigateToLoginPage,
+  // navigateToSelectImportMethod,
+  // navigateToLoginPage,
   navigateBack,
 } from '@chronobank/login-ui/redux/actions'
 import {
@@ -21,17 +21,18 @@ import {
   AccountNameContainer,
 } from '@chronobank/login-ui/components'
 import { SubmissionError } from 'redux-form'
-import profileService from '@chronobank/login/network/ProfileService'
+import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
 import { getAddress } from '@chronobank/core/redux/persistAccount/utils'
 
 function mapDispatchToProps (dispatch) {
   return {
-    navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
-    navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
-    navigateToLoginPage: () => dispatch(navigateToLoginPage()),
-    onCreateWalletFromJSON: (name, walletJSON, profile) => dispatch(onCreateWalletFromJSON(name, walletJSON, profile)),
-    onSubmitCreateAccountImportPrivateKey: (name, password, mnemonic) => dispatch(onSubmitCreateAccountImportPrivateKey(name, password, mnemonic)),
+    getUserInfo: (addresses: string[]) => dispatch(ProfileThunks.getUserInfo(addresses)),
     navigateBack: () => dispatch(navigateBack()),
+    // navigateToLoginPage: () => dispatch(navigateToLoginPage()),
+    // navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
+    navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
+    onCreateWalletFromJSON: (name, walletJSON, profile) => dispatch(onCreateWalletFromJSON(name, walletJSON, profile)),
+    // onSubmitCreateAccountImportPrivateKey: (name, password, mnemonic) => dispatch(onSubmitCreateAccountImportPrivateKey(name, password, mnemonic)),
   }
 }
 
@@ -42,12 +43,13 @@ class WalletImportPage extends PureComponent {
   }
 
   static propTypes = {
-    navigateToSelectWallet: PropTypes.func,
-    navigateToSelectImportMethod: PropTypes.func,
-    navigateToLoginPage: PropTypes.func,
+    getUserInfo: PropTypes.func,
     navigateBack: PropTypes.func,
-    onSubmitCreateAccountImportPrivateKey: PropTypes.func,
+    // navigateToLoginPage: PropTypes.func,
+    // navigateToSelectImportMethod: PropTypes.func,
+    navigateToSelectWallet: PropTypes.func,
     onCreateWalletFromJSON: PropTypes.func,
+    // onSubmitCreateAccountImportPrivateKey: PropTypes.func,
   }
 
   constructor (props) {
@@ -116,7 +118,7 @@ class WalletImportPage extends PureComponent {
 
     // If profile has been got && profile does exist && userName != null then create wallet
     try {
-      response = await profileService.getPersonInfo([getAddress(walletJSON.address, true)])
+      response = await this.props.getUserInfo([getAddress(walletJSON.address, true)])
 
       profile = response.data[0]
       userName = profile.userName
