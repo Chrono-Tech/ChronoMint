@@ -71,8 +71,8 @@ export default class AvatarSelect extends PureComponent {
       try {
         const response = await this.props.uploadAvatar(file)
         this.handleUploadSuccess(response)
-      } catch(e){
-        this.handleUploadFail(response)
+      } catch(error){
+        this.handleUploadFail(error)
       }
 
       this.setState({ isUploadingFile: false })
@@ -89,9 +89,9 @@ export default class AvatarSelect extends PureComponent {
     }
   }
 
-  handleUploadFail (response){
-    if (response && response.error){
-      this.setState({ uploadError: response.error })
+  handleUploadFail (error){
+    if (error){
+      this.setState({ uploadError: error })
     }
   }
 

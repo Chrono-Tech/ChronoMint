@@ -6,7 +6,6 @@
  */
 
 import type { Dispatch } from 'redux'
-import { DUCK_PROFILE } from './constants'
 import * as ProfileActions from './actions'
 import ProfileService from './service'
 import { DUCK_SESSION } from '../session/constants'
@@ -132,11 +131,13 @@ export const downloadAvatar = (imageID: string) => (dispatch: Dispatch<any>, get
 
 export const uploadAvatar = (imageFile: any) => (dispatch: Dispatch<any>, getState): Promise<*> => {
   const state = getState()
-  const { userAvatar } = state.get(DUCK_PROFILE)
 
-  if (userAvatar.status.isFetching) {
-    return Promise.resolve('IN_PROGRESS') // it is safe to silently ignore duplicated request
-  }
+  // TODO: kept this part commented for further investigation.
+  // Somethimes we need to repeat requests
+  // const { userAvatar } = state.get(DUCK_PROFILE)
+  // if (userAvatar.status.isFetching) {
+  //   return Promise.resolve('IN_PROGRESS') // it is safe to silently ignore duplicated request
+  // }
 
   const { profileSignature } = state.get(DUCK_SESSION)
   const token = profileSignature && profileSignature.token || ''

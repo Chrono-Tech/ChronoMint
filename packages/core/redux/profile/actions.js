@@ -1,8 +1,6 @@
 /**
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
- *
- * @flow
  */
 
 import * as ProfileActionTypes from './constants'
@@ -15,7 +13,7 @@ export const profileUserProfileFetchSuccess = () => ({
   type: ProfileActionTypes.PROFILE_USER_PROFILE_FETCH_SUCCESS,
 })
 
-export const profileUserProfileFetchFailure = (payload: any) => ({
+export const profileUserProfileFetchFailure = (payload) => ({
   type: ProfileActionTypes.PROFILE_USER_PROFILE_FETCH_FAILURE,
   payload,
 })
@@ -28,7 +26,7 @@ export const profileUserProfileUpdateSuccess = () => ({
   type: ProfileActionTypes.PROFILE_USER_PROFILE_UPDATE_SUCCESS,
 })
 
-export const profileUserProfileUpdateFailure = (payload: any) => ({
+export const profileUserProfileUpdateFailure = (payload) => ({
   type: ProfileActionTypes.PROFILE_USER_PROFILE_UPDATE_FAILURE,
   payload,
 })
@@ -41,7 +39,7 @@ export const profileUserInfoFetchSuccess = () => ({
   type: ProfileActionTypes.PROFILE_USER_INFO_FETCH_SUCCESS,
 })
 
-export const profileUserInfoFetchFailure = (payload: any) => ({
+export const profileUserInfoFetchFailure = (payload) => ({
   type: ProfileActionTypes.PROFILE_USER_INFO_FETCH_FAILURE,
   payload,
 })
@@ -54,7 +52,7 @@ export const profileUserAvatarUploadSuccess = () => ({
   type: ProfileActionTypes.PROFILE_USER_AVATAR_UPLOAD_SUCCESS,
 })
 
-export const profileUserAvatarUploadFailure = (payload: any) => ({
+export const profileUserAvatarUploadFailure = (payload) => ({
   type: ProfileActionTypes.PROFILE_USER_AVATAR_UPLOAD_FAILURE,
   payload,
 })
@@ -67,7 +65,7 @@ export const profileUserAvatarDownloadSuccess = () => ({
   type: ProfileActionTypes.PROFILE_USER_AVATAR_DOWNLOAD_SUCCESS,
 })
 
-export const profileUserAvatarDownloadFailure = (payload: any) => ({
+export const profileUserAvatarDownloadFailure = (payload) => ({
   type: ProfileActionTypes.PROFILE_USER_AVATAR_DOWNLOAD_FAILURE,
   payload,
 })
