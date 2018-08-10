@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { connect } from 'react-redux'
 import {
   IconButton,
   TextField,
@@ -14,15 +15,25 @@ import {
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
-import ProfileService from '@chronobank/login/network/ProfileService'
+import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
 import { getFileNameFromPath } from 'utils/common'
 
 import './AvatarSelect.scss'
 import Preloader from '../Preloader/Preloader'
 
+function mapDispatchToProps (dispatch) {
+  return {
+    downloadAvatar: (imageID: string) => dispatch(ProfileThunks.downloadAvatar(imageID)),
+    uploadAvatar: (imageFile: any) => dispatch(ProfileThunks.uploadAvatar(imageFile)),
+  }
+}
+
+@connect(null, mapDispatchToProps)
 export default class AvatarSelect extends PureComponent {
   static propTypes = {
     floatingLabelText: PropTypes.node,
+    downloadAvatar: PropTypes.func,
+    uploadAvatar: PropTypes.func,
   }
 
   constructor (props, context, updater) {
@@ -47,8 +58,6 @@ export default class AvatarSelect extends PureComponent {
   }
 
   handleChange = async (e) => {
-    let response
-
     if (!e.target.files.length) {
       return
     }
@@ -60,10 +69,10 @@ export default class AvatarSelect extends PureComponent {
         uploadError: null,
       })
       try {
-        response = await ProfileService.avatarUpload(file)
+        const response = await this.props.uploadAvatar(file)
         this.handleUploadSuccess(response)
-      } catch(e){
-        this.handleUploadFail(response)
+      } catch(error){
+        this.handleUploadFail(error)
       }
 
       this.setState({ isUploadingFile: false })
@@ -80,9 +89,9 @@ export default class AvatarSelect extends PureComponent {
     }
   }
 
-  handleUploadFail (response){
-    if (response && response.error){
-      this.setState({ uploadError: response.error })
+  handleUploadFail (error){
+    if (error){
+      this.setState({ uploadError: error })
     }
   }
 
@@ -93,7 +102,7 @@ export default class AvatarSelect extends PureComponent {
 
   async loadImage (imageId){
     try {
-      const data = await ProfileService.avatarDownload(imageId)
+      const data = await this.props.downloadAvatar(imageId)
 
       this.setState({
         fileName: getFileNameFromPath(data.url),

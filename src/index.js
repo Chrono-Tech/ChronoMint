@@ -6,10 +6,9 @@
 import 'flexboxgrid/css/flexboxgrid.css'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import networkService from '@chronobank/login/network/NetworkService'
-import profileService from '@chronobank/login/network/ProfileService'
 import React from 'react'
 import { render } from 'react-dom'
-import { bootstrap } from '@chronobank/core/redux/session/actions'
+import { bootstrap } from '@chronobank/core/redux/session/thunks'
 import { store } from './redux/configureStore'
 import router from './router'
 import themeDefault from './themeDefault'
@@ -22,7 +21,6 @@ HTMLCollection.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator]
 FileList.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator]
 
 networkService.connectStore(store)
-profileService.connectStore(store)
 store
   .dispatch(bootstrap())
   .then(() => {

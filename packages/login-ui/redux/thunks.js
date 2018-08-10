@@ -18,7 +18,7 @@ import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
 import * as NetworkThunks from '@chronobank/login/redux/network/thunks'
-import * as SessionActions from '@chronobank/core/redux/session/actions'
+import * as SessionThunks from '@chronobank/core/redux/session/thunks'
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 import networkService from '@chronobank/login/network/NetworkService'
@@ -107,7 +107,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
     const privateKey = wallet && wallet[0] && wallet[0].privateKey
 
-    dispatch(SessionActions.getProfileSignature(wallet[0]))
+    dispatch(SessionThunks.getProfileSignature(wallet[0]))
 
     if (privateKey) {
       await dispatch(NetworkThunks.handleWalletLogin(selectedWallet.encrypted, password))
