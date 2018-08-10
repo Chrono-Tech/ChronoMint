@@ -23,6 +23,7 @@ import TokensSVG from 'assets/img/assets2.svg'
 import ManagersSVG from 'assets/img/assets3.svg'
 import CrowdsaleSVG from 'assets/img/assets4.svg'
 import './AssetManager.scss'
+import {loadMoreEvents} from "../../../../packages/core/redux/events/actions";
 
 function prefix (token) {
   return `Assets.AssetManager.${token}`
@@ -42,7 +43,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    createPlatform: () => dispatch(createPlatform()),
+    createPlatform: () => dispatch(loadMoreEvents()),
     handleAddPlatformDialog: () => dispatch(modalsOpen({
       component: AddPlatformDialog,
     })),

@@ -1,0 +1,58 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+import PropTypes from 'prop-types'
+import AbstractModel from './AbstractModel'
+import LogTxModel from './LogTxModel'
+import LogEventModel from './LogEventModel'
+
+const schemaFactory = () => ({
+  isLoading: PropTypes.bool.isRequired,
+  isLoaded: PropTypes.bool.isRequired,
+  address: PropTypes.string.isRequired,
+  cursor: PropTypes.number,
+  entries: PropTypes.arrayOf(PropTypes.oneOfType([
+    LogEventModel,
+    LogTxModel,
+  ])),
+})
+
+export default class LogListModel extends AbstractModel {
+  constructor (data, options) {
+    super(Object.assign({
+      isLoading: false,
+      isLoaded: false,
+      address: null,
+      cursor: null,
+      entries: [],
+    }, data), schemaFactory(), options)
+    Object.freeze(this)
+  }
+
+  loading () {
+    return new LogListModel({
+      ...this,
+      isLoading: true,
+    })
+  }
+
+  loaded ({ cursor, entries }) {
+    return new LogListModel({
+      ...this,
+      isLoading: false,
+      isLoaded: true,
+      cursor,
+      entries,
+    })
+  }
+
+  updated ({ cursor, entries }) {
+    return new LogListModel({
+      ...this,
+      cursor,
+      entries,
+    })
+  }
+}

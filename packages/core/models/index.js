@@ -6,7 +6,6 @@
 export { default as AbstractAccountModel } from './wallet/persistAccount/AbstractAccountModel'
 export { default as AbstractFetchingCollection } from './AbstractFetchingCollection'
 export { default as AbstractFetchingModel } from './AbstractFetchingModel'
-export { default as AbstractJsModel } from './AbstractJsModel'
 export { default as AbstractModel } from './AbstractModel'
 export { default as AbstractModelOld } from './AbstractModelOld'
 export { default as AbstractNoticeModel } from './notices/AbstractNoticeModel'

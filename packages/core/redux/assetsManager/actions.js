@@ -4,13 +4,13 @@
  */
 
 import uuid from 'uuid/v1'
+import Amount from '@chronobank/core/models/Amount'
 import { notify } from '../notifier/actions'
 import web3Converter from '../../utils/Web3Converter'
 import ReissuableModel from '../../models/tokens/ReissuableModel'
 import TokenModel from '../../models/tokens/TokenModel'
 import OwnerCollection from '../../models/wallet/OwnerCollection'
 import OwnerModel from '../../models/wallet/OwnerModel'
-import Amount from '@chronobank/core/models/Amount'
 import { DUCK_TOKENS, TOKENS_FETCHED, TOKENS_UPDATE } from '../tokens/constants'
 import AssetsManagerNoticeModel, {
   ASSET_PAUSED,
@@ -26,6 +26,7 @@ import { daoByType } from '../daos/selectors'
 import { web3Selector } from '../ethereum/selectors'
 import { executeTransaction } from '../ethereum/actions'
 import assetsManagerService from '../../services/AssetsManagerService'
+import { loadMoreEvents } from '../events/actions'
 
 import { TX_PLATFORM_REQUESTED } from '../../dao/constants/PlatformsManagerDAO'
 
@@ -164,6 +165,7 @@ export const watchPlatformManager = () => async (dispatch, getState) => {
   }
 
   platformsManagerDAO.on(TX_PLATFORM_REQUESTED, (data) => {
+    console.log('TX_PLATFORM_REQUESTED: ', data)
     if (data.returnValues.by.toLowerCase() !== account) {
       return
     }
@@ -344,10 +346,11 @@ export const getTransactions = () => async (dispatch, getState) => {
   const state = getState()
   const account = getAccount(state)
   const tokens = state.get(DUCK_TOKENS)
-  const assetsManagerDAO = daoByType('AssetsManager')(state)
-  const transactionsList = await assetsManagerDAO.getTransactions(account, tokens)
+  // const assetsManagerDAO = daoByType('AssetsManager')(state)
+  // const transactionsList = await assetsManagerDAO.getTransactions(account, tokens)
+  await dispatch(loadMoreEvents(account))
 
-  dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList } })
+  dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList: [] } })
 }
 
 export const setTx = (tx) => async (dispatch, getState) => {
