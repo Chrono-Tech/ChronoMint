@@ -19,7 +19,7 @@ import {
 } from '@chronobank/core/redux/persistAccount/constants'
 import { logout } from '@chronobank/core/redux/session/actions'
 import chronWalletLogoSVG from 'assets/img/chronowallettext-white.svg'
-import ProfileModel from '@chronobank/core/models/ProfileModel'
+import { ProfileModel } from '@chronobank/core/models'
 import ProfileImage from 'components/common/ProfileImage/ProfileImage'
 import exitSvg from 'assets/img/exit-white.svg'
 import { sidesCloseAll, sidesPush } from 'redux/sides/actions'

@@ -10,10 +10,8 @@ import { Route, Router, IndexRoute, Redirect } from 'react-router'
 import {
   NotFoundPage,
   LoginForm,
-  CreateHWAccount,
   LoginWithOptions,
-  LoginWithTrezor,
-  LoginWithLedger,
+  CreateHWAccount,
   LoginWithPlugin,
   LoginLocal,
 } from '@chronobank/login-ui/components'
@@ -39,6 +37,8 @@ import {
 import MnemonicImportPage from 'components/login/MnemonicImportPage/MnemonicImportPage'
 import PrivateKeyImportPage from 'components/login/PrivateKeyImportPage/PrivateKeyImportPage'
 import WalletImportPage from 'components/login/WalletImportPage/WalletImportPage'
+import TrezorLoginPage from 'components/login/TrezorLoginPage/TrezorLoginPage'
+import LedgerLoginPage from 'components/login/LedgerLoginPage/LedgerLoginPage'
 import RecoverAccountPage from 'components/login/RecoverAccountPage/RecoverAccountPage'
 import AccountSelectorPage from 'components/login/AccountSelectorPage/AccountSelectorPage'
 import CreateAccountPage from 'components/login/CreateAccountPage/CreateAccountPage'
@@ -100,8 +100,8 @@ const router = (
         <Route path='/login/recover-account' component={RecoverAccountPage} />
         <Route path='/login/import-methods' component={LoginWithOptions} />
         <Route path='/login/upload-wallet' component={WalletImportPage} />
-        <Route path='/login/trezor-login' component={LoginWithTrezor} />
-        <Route path='/login/ledger-login' component={LoginWithLedger} />
+        <Route path='/login/trezor-login' component={TrezorLoginPage} />
+        <Route path='/login/ledger-login' component={LedgerLoginPage} />
         <Route path='/login/plugin-login' component={LoginWithPlugin} />
         <Route path='/login/mnemonic-login' component={MnemonicImportPage} />
         <Route path='/login/private-key-login' component={PrivateKeyImportPage} />

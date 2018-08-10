@@ -16,6 +16,8 @@ export { default as ConfirmMnemonicContainer } from './ConfirmMnemonic/ConfirmMn
 export { default as CommonNetworkSelector } from './CommonNetworkSelector/CommonNetworkSelector'
 export { default as GenerateWalletContainer } from './GenerateWallet/GenerateWalletContainer'
 export { default as LoginWithWalletContainer } from './LoginWithWallet/LoginWithWalletContainer'
+export { default as LoginWithTrezorContainer } from './LoginWithTrezor/LoginWithTrezorContainer'
+export { default as LoginWithLedgerContainer } from './LoginWithLedger/LoginWithLedgerContainer'
 export { default as AccountNameContainer } from './AccountName/AccountNameContainer'
 export { default as LoginLocal } from './LoginLocal/LoginLocal'
 export { default as NotFoundPage } from './NotFoundPage/NotFoundPage'

@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { fetchAccount, startTrezorSync, stopTrezorSync } from '@chronobank/login/redux/trezor/actions'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -24,17 +23,10 @@ import {
 
 import './LoginWithTrezor.scss'
 
-const trezorStates = [ {
-  flag: 'isFetched',
-  successTitle: 'LoginWithTrezor.isConnected.successTitle',
-  errorTitle: 'LoginWithTrezor.isConnected.errorTitle',
-  errorTip: 'LoginWithTrezor.isConnected.errorTip',
-} ]
-
 const mapStateToProps = (state) => {
   const network = state.get(DUCK_NETWORK)
   return {
-    trezor: state.get('trezor'),
+    trezor: state.get('devices'),
     isLoading: network.isLoading,
     account: network.accounts,
   }

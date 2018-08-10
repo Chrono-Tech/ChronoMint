@@ -7,7 +7,7 @@ import { Translate } from 'react-redux-i18n'
 import { connect } from "react-redux"
 import PropTypes from "prop-types"
 import { TOKEN_ICONS } from 'assets'
-import ProfileModel from '@chronobank/core/models/ProfileModel'
+import { ProfileModel } from '@chronobank/core/models'
 import networkService from '@chronobank/login/network/NetworkService'
 import React, { PureComponent } from 'react'
 import { logout } from '@chronobank/core/redux/session/actions'

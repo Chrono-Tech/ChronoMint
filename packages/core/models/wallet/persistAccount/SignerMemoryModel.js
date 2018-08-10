@@ -11,16 +11,16 @@ import SignerModel from './SignerModel'
 export default class SignerMemoryModel extends SignerModel {
   constructor ({ wallet }) {
     super()
-    this.wallet = wallet
+    this.wallet = wallet[0]
     Object.freeze(this)
   }
 
   get address () {
-    return this.wallet[0].address
+    return this.wallet.address
   }
 
   get privateKey () {
-    return this.wallet[0].privateKey
+    return this.wallet.privateKey
   }
 
   // this method is a part of base interface
@@ -29,11 +29,11 @@ export default class SignerMemoryModel extends SignerModel {
   }
 
   async signTransaction (tx) { // tx object
-    return this.wallet[0].signTransaction(tx)
+    return this.wallet.signTransaction(tx)
   }
 
   async signData (data) { // data object
-    return this.wallet[0].sign(data)
+    return this.wallet.sign(data)
   }
 
   // Should be synchronous by design
@@ -41,17 +41,27 @@ export default class SignerMemoryModel extends SignerModel {
     return this.wallet.encrypt(password)
   }
 
-  static async create ({ seed, mnemonic, numbeOfAccounts }) {
+  static async create ({ seed, privateKey, mnemonic, numbeOfAccounts }) {
     const accounts = new Accounts()
     const wallet = accounts.wallet.create(numbeOfAccounts)
+    if (privateKey) {
+      const account = await accounts.privateKeyToAccount(`0x${privateKey}`)
+      await wallet.add(account)
+    }
     if (seed) {
-      const account = await accounts.privateKeyToAccount(`0x${seed}`)
+      const hdWallet = hdKey.fromMasterSeed(seed)
+      const w = hdWallet.derivePath(`m/44'/60'/0'/0/0`).getWallet()
+      const account = await accounts.privateKeyToAccount(`0x${w.getPrivateKey().toString('hex')}`)
       await wallet.add(account)
     }
     if (mnemonic) {
-      const account = await accounts.privateKeyToAccount(`0x${bip39.mnemonicToSeedHex(mnemonic)}`)
+      const seed = bip39.mnemonicToSeed(mnemonic)
+      const hdWallet = hdKey.fromMasterSeed(seed)
+      const w = hdWallet.derivePath(`m/44'/60'/0'/0/0`).getWallet()
+      const account = await accounts.privateKeyToAccount(`0x${w.getPrivateKey().toString('hex')}`)
       await wallet.add(account)
-    }
+    } 
+    console.log(wallet)
     return new SignerMemoryModel({ wallet })
   }
 

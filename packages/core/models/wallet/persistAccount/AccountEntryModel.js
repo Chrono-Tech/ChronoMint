@@ -9,7 +9,7 @@ import AbstractAccountModel from './AbstractAccountModel'
 const schema = {
   key: PropTypes.string,
   name: PropTypes.string,
-  types: PropTypes.object,
+  type: PropTypes.string,
   encrypted: PropTypes.array,
   profile: PropTypes.object,
 }
@@ -20,11 +20,24 @@ class AccountEntryModel extends AbstractAccountModel {
     Object.assign(this, {
       key: '',
       name: '',
-      types: {},
+      type: '',
       encrypted: [],
       profile: null,
     }, props)
     Object.freeze(this)
+  }
+
+  get address () {
+    switch (this.type) {
+      case 'memory':
+        return `0x${this.encrypted[0].address}`
+      case 'device':
+        return this.encrypted.address
+    }
+  }
+
+  isMemoryWallet () {
+    return !this.type || this.type === 'memory'
   }
 }
 

@@ -190,6 +190,7 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
   })
   const state = getState()
   let signer = getSigner(state)
+  //TODO @mikefluff get rid of that shit
   if (entry.walletDerivedPath) {
     signer = await SignerMemoryModel.fromDerivedPath({ seed: signer.privateKey, derivedPath: entry.walletDerivedPath })
   }

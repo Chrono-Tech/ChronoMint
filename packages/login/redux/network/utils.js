@@ -17,10 +17,8 @@ import { nemProvider } from '../../network/NemProvider'
 import walletProvider from '../../network/walletProvider'
 import networkService from '../../network/NetworkService'
 
-export const getWalletProvider = (wallet, password: string) =>
+export const getWalletProvider = () =>
   walletProvider.getProvider(
-    wallet,
-    password,
     networkService.getProviderSettings(),
   )
 

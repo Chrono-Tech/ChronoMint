@@ -20,3 +20,4 @@ export default class SignerModel {
     throw new Error('Not implemented')
   }
 }
+

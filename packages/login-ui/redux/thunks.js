@@ -19,10 +19,12 @@ import {
 } from '@chronobank/core/redux/persistAccount/constants'
 import * as NetworkThunks from '@chronobank/login/redux/network/thunks'
 import * as SessionActions from '@chronobank/core/redux/session/actions'
+import { getSigner } from '@chronobank/core/redux/persistAccount/selectors'
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
+import { login } from '@chronobank/core/redux/session/actions'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 import networkService from '@chronobank/login/network/NetworkService'
-import { SignerMemoryModel } from '@chronobank/core/models'
+import { AccountEntryModel } from '@chronobank/core/models'
 import {
   createAccountEntry,
 } from '@chronobank/core/redux/persistAccount/utils'
@@ -100,22 +102,30 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
   const state = getState()
   const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
+  const wlt = new AccountEntryModel(selectedWallet)
+  switch (selectedWallet.type) {
+    case 'memory': {
+      try {
+        const wallet = await dispatch(PersistAccountActions.decryptAccount(wlt, password))
+	console.log(wallet)
+        dispatch(SessionActions.getProfileSignature(wallet.signer))
 
-  try {
-    const wallet = dispatch(PersistAccountActions.decryptAccount(selectedWallet.encrypted, password))
-    dispatch(PersistAccountActions.accountLoad(new SignerMemoryModel({ wallet })))
+        await dispatch(NetworkThunks.handleLogin(wallet.signer.address))
 
-    const privateKey = wallet && wallet[0] && wallet[0].privateKey
-
-    dispatch(SessionActions.getProfileSignature(wallet[0]))
-
-    if (privateKey) {
-      await dispatch(NetworkThunks.handleWalletLogin(selectedWallet.encrypted, password))
+      } catch (e) {
+        throw new SubmissionError({ password: e && e.message })
+      }
     }
-  } catch (e) {
-    throw new SubmissionError({ password: e && e.message })
+    case 'device': {
+      try {
+        
+      } catch (e) {
+
+      }
+    }
   }
 }
+
 
 /*
  * Thunk dispatched by "" screen.
@@ -157,12 +167,11 @@ export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKe
   async (dispatch) => {
 
     try {
-      let wallet = await dispatch(PersistAccountActions.createAccount({
+      let wallet = await dispatch(PersistAccountActions.createMemoryAccount({
         name,
         password,
         mnemonic,
         privateKey,
-        numberOfAccounts: 0,
       }))
 
       dispatch(PersistAccountActions.accountAdd(wallet))

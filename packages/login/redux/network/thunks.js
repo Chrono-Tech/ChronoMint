@@ -92,14 +92,14 @@ export const initAccountsSignature = () =>
     dispatch(NetworkActions.resetLoadingAccountsSignatures())
   }
 
-export const handleWalletLogin = (wallet, password) => async (dispatch, getState) => {
+export const handleLogin = (address) => async (dispatch, getState) => {
   dispatch(NetworkActions.loading())
   dispatch(NetworkActions.clearErrors())
 
   let state = getState()
-  const provider = networkUtils.getWalletProvider(wallet[0], password)
+  const provider = networkUtils.getWalletProvider()
 
-  networkService.selectAccount(provider.ethereum.getAddress())
+  networkService.selectAccount(address)
   await setup(provider)
 
   state = getState()

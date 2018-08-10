@@ -144,16 +144,19 @@ export const setProfileSignature = (signature) => (dispatch) => {
   dispatch({ type: SET_PROFILE_SIGNATURE, signature })
 }
 
-export const getProfileSignature = (wallet) => async (dispatch) => {
-  if (!wallet) {
+export const getProfileSignature = (signer) => async (dispatch) => {
+  if (!signer) {
     return
   }
 
   let signDataString = profileService.getSignData()
-
-  let signData = wallet.sign(signDataString)
+  console.log(signDataString)
+ 
+  let signData = await signer.signData(signDataString)
+  console.log(signData)
 
   let profileSignature = await profileService.getProfile(signData.signature)
+  console.log(profileSignature)
 
   dispatch(setProfileSignature(profileSignature))
 

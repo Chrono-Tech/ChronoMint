@@ -11,19 +11,23 @@ const persistConfig = {
   key: 'account',
   storage: storage,
   blacklist: ['decryptedWallet', 'rehydrated'],
+//  transforms: typeof window === 'undefined'
+//    ? []
+//    : [ decryptedAccountTransform() ],
 }
+
 
 const initialState = {
   walletsList: [],
   selectedWallet: null,
   decryptedWallet: null,
-  rehydrated: false,
   customNetworksList: [],
 }
 
 const persistAccount = (state = initialState, action) => {
   switch (action.type) {
     case REHYDRATE:
+      console.log('rehydrated')
       return {
         ...state,
         ...action.payload.persistAccount,
@@ -45,6 +49,8 @@ const persistAccount = (state = initialState, action) => {
       }
 
     case a.WALLETS_LOAD :
+      console.log('wallets load')
+      console.log(action.wallet)
       return {
         ...state,
         decryptedWallet: action.wallet,

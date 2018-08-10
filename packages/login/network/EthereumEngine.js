@@ -10,8 +10,7 @@ import Web3Utils from './Web3Utils'
 import { WALLET_HD_PATH } from './constants'
 
 export default class EthereumEngine {
-  constructor (wallet, network, url, engine, deriveNumber) {
-    this._wallet = wallet
+  constructor (network, url, engine, deriveNumber) {
     this._network = network
     const web3 = engine && new Web3(engine)
     try {
@@ -20,67 +19,23 @@ export default class EthereumEngine {
       // FIXME: what is that? Was merged as is long time ago.
       // dispatch(addError(e.message))
     }
-    this._engine = engine || Web3Utils.createEngine(wallet, url, deriveNumber)
+    this._engine = engine || Web3Utils.createEngine(url, deriveNumber)
+  }
+
+  getAddress () {
+    return
+  }
+
+  getPrivateKey () {
+    return 
   }
 
   getNetwork () {
     return this._network
   }
 
-  getAddress () {
-    return this._address || this._wallet.getAddressString()
-  }
-
   getProvider () {
     return this._engine
   }
 
-  getPrivateKeyBufer (address) {
-    const wallet = this.getWallet(address)
-    return wallet.getPrivateKey()
-  }
-
-  getPrivateKey (address) {
-    const wallet = this.getWallet(address)
-    return wallet && wallet.getPrivateKey && Buffer.from(wallet.getPrivateKey()).toString('hex')
-  }
-
-  getPublicKey () {
-    return this._wallet && this._wallet.getPublicKey && Buffer.from(this._wallet.getPublicKey()).toString('hex')
-  }
-
-  getWallet (address) {
-    if (address) {
-      let resultWallet = null
-      this._engine
-        // eslint-disable-next-line no-underscore-dangle
-        ? this._engine.wallets.some((wallet) => {
-          if (wallet.getAddressString() === address) {
-            resultWallet = wallet
-            return true
-          }
-        })
-        : null
-      return resultWallet
-    }
-    return this._wallet
-  }
-
-  createNewChildAddress (deriveNumber = 0) {
-    const hdWallet = hdKey.fromMasterSeed(this._wallet.getPrivateKey())
-    return hdWallet.derivePath(`${WALLET_HD_PATH}/${deriveNumber}`).getWallet()
-  }
-
-  signTx (tx: Tx, signerAddress) {
-    switch (this._wallet.type) {
-      case  'memory':
-        tx.sign(this.getPrivateKeyBufer(signerAddress))
-
-        const wallet = this.getWallet(signerAddress)
-        return {
-          walletType: wallet ? wallet.type : null,
-          signedTx: tx,
-        }
-    }
-  }
 }
