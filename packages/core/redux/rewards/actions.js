@@ -74,7 +74,7 @@ export const initRewards = () => async (dispatch, getState) => {
 
   // init base info
   rewardDAO = await contractsManagerDAO.getRewardsDAO()
-  let [ assets, count, address ] = await Promise.all([
+  const [ assets, count, address ] = await Promise.all([
     rewardDAO.getAssets(),
     rewardDAO.getLastPeriod(),
     rewardDAO.getAddress(),

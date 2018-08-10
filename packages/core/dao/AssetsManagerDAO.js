@@ -18,16 +18,6 @@ import web3Converter from '../utils/Web3Converter'
 import { daoByType } from '../../core/redux/daos/selectors'
 import assetsManagerService from '../services/AssetsManagerService'
 
-import {
-  TX_PLATFORM_ATTACHED,
-  TX_PLATFORM_DETACHED,
-  TX_PLATFORM_REQUESTED,
-} from './constants/PlatformsManagerDAO'
-
-import {
-  TX_ASSET_CREATED,
-} from './constants/AssetsManagerDAO'
-
 export default class AssetsManagerDAO extends AbstractContractDAO {
 
   constructor ({ address, history, abi }) {
@@ -225,10 +215,10 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   async getTransactions (account) {
     const transactionsPromises = []
 
-    transactionsPromises.push(this.platformTokenExtensionGatewayManagerEmitterDAO._get(TX_ASSET_CREATED, 0, 'latest', { by: account }))
-    transactionsPromises.push(this.platformsManagerDAO._get(TX_PLATFORM_REQUESTED, 0, 'latest', { by: account }))
-    transactionsPromises.push(this.platformsManagerDAO._get(TX_PLATFORM_ATTACHED, 0, 'latest', { by: account }))
-    transactionsPromises.push(this.platformsManagerDAO._get(TX_PLATFORM_DETACHED, 0, 'latest', { by: account }))
+    // transactionsPromises.push(this.platformTokenExtensionGatewayManagerEmitterDAO._get(TX_ASSET_CREATED, 0, 'latest', { by: account }))
+    // transactionsPromises.push(this.platformsManagerDAO._get(TX_PLATFORM_REQUESTED, 0, 'latest', { by: account }))
+    // transactionsPromises.push(this.platformsManagerDAO._get(TX_PLATFORM_ATTACHED, 0, 'latest', { by: account }))
+    // transactionsPromises.push(this.platformsManagerDAO._get(TX_PLATFORM_DETACHED, 0, 'latest', { by: account }))
     // transactionsPromises.push(this.chronobankPlatformDAO._get(TX_ISSUE, 0, 'latest', { by: account }))
     // transactionsPromises.push(this.chronobankPlatformDAO._get(TX_REVOKE, 0, 'latest', { by: account }))
     // transactionsPromises.push(this.chronobankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', { to: account }))

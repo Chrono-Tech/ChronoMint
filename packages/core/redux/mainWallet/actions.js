@@ -77,8 +77,8 @@ export const goToWallets = () => (dispatch) => dispatch(push('/wallets'))
 export const goBackForAddWalletsForm = () => (dispatch, getState) => {
   const selector = formValueSelector(FORM_ADD_NEW_WALLET)
   const state = getState()
-  let blockchain = selector(state, 'blockchain')
-  let ethWalletType = selector(state, 'ethWalletType')
+  const blockchain = selector(state, 'blockchain')
+  const ethWalletType = selector(state, 'ethWalletType')
 
   if (ethWalletType) {
     dispatch(change(FORM_ADD_NEW_WALLET, 'ethWalletType', null))
@@ -222,7 +222,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
 
   // loading transaction for Current transaction list
   if (token.blockchain() && !token.isERC20()) {
-    let wallet = getMainWalletForBlockchain(token.blockchain())(getState())
+    const wallet = getMainWalletForBlockchain(token.blockchain())(getState())
     if (wallet && wallet.address) {
       dispatch(getTransactionsForMainWallet({
         wallet,
@@ -390,7 +390,7 @@ export const getTransactionsForMainWallet = ({ wallet, forcedOffset }) => async 
 
 export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
 
-  let transactions: TxHistoryModel = new TxHistoryModel({ ...wallet.transactions }) || new TxHistoryModel()
+  const transactions: TxHistoryModel = new TxHistoryModel({ ...wallet.transactions }) || new TxHistoryModel()
   const offset = forcedOffset ? 0 : (transactions.transactions.length || 0)
   const newOffset = offset + TXS_PER_PAGE
 
@@ -421,14 +421,14 @@ export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
       break
   }
 
-  let blocks = transactions.blocks
+  const blocks = transactions.blocks
   let endOfList = false
   if (dao) {
     txList = await dao.getTransfer(wallet.address, wallet.address, offset, TXS_PER_PAGE, tokens)
 
     txList.sort((a, b) => b.get('time') - a.get('time'))
 
-    for (let tx: TxModel of txList) {
+    for (const tx: TxModel of txList) {
       if (!blocks[tx.blockNumber()]) {
         blocks[tx.blockNumber()] = { transactions: [] }
       }

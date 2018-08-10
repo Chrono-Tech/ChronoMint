@@ -123,7 +123,7 @@ export const getNextPage = () => async (dispatch, getState) => {
 
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
   const state = getState().get(DUCK_EXCHANGE)
-  let filter = {}
+  const filter = {}
   if (state.filter().get('token')) {
     filter.symbol = state.filter().get('token')
   }

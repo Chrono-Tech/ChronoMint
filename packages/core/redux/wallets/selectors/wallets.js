@@ -72,7 +72,7 @@ export const sectionsSelector = createSectionsSelector(
           }
         }
         sectionsObject[blockchain].data.push({
-          address: address,
+          address,
           blockchain,
         })
       })
