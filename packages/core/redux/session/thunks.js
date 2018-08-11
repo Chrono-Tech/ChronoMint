@@ -3,12 +3,14 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import networkService from '@chronobank/login/network/NetworkService'
 import { getNetworkById, LOCAL_ID, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
+import { restoreLocalSession, checkLocalSession, checkMetaMask } from '@chronobank/login/redux/network/thunks'
+import { networkSetAccounts } from '@chronobank/login/redux/network/actions'
 import { push, replace } from '@chronobank/core-dependencies/router'
-import ls from '@chronobank/core-dependencies/utils/LocalStorage'
+import LocalStorage from '@chronobank/core-dependencies/utils/LocalStorage'
 import { removeWatchersUserMonitor } from '@chronobank/core-dependencies/redux/ui/actions'
+import web3Provider from '@chronobank/login/network/Web3Provider'
 import * as SessionActions from './actions'
 import * as ProfileThunks from '../profile/thunks'
 import ProfileService from '../profile/service'
@@ -30,24 +32,40 @@ import {
 export const changeGasSlideValue = (value, blockchain) => (dispatch) =>
   dispatch(SessionActions.gasSliderMultiplierChange(value, blockchain))
 
-export const createSession = ({ account, provider, network, dispatch }) => {
-  ls.createSession(account, provider, network)
-  dispatch(SessionActions.sessionCreate(account))
+export const destroyNetworkSession = (lastURL, isReset = true) => (dispatch) => {
+  if (isReset) {
+    // for tests
+    web3Provider.beforeReset()
+    web3Provider.afterReset()
+  }
+
+  LocalStorage.setLastURL(lastURL)
+  LocalStorage.destroySession()
+  dispatch(SessionActions.sessionDestroy())
 }
 
-export const destroySession = ({ lastURL, dispatch }) => {
-  ls.setLastURL(lastURL)
-  ls.destroySession()
-  dispatch(SessionActions.sessionDestroy())
+export const createNetworkSession = (account, provider, network) => (dispatch) => {
+  // TODO: check it, maybe we do not need to set accounts here...
+  // if (!this._account) {
+  //   this._account = account
+  // }
+  dispatch(networkSetAccounts([account]))
+
+  if (!account || !provider || !network) {
+    throw new Error(`Wrong session arguments: account: ${account}, provider: ${provider}, network: ${network}`)
+  }
+
+  LocalStorage.createSession(account, provider, network)
+  dispatch(SessionActions.sessionCreate(account))
 }
 
 export const logout = () => async (dispatch, getState) => {
   try {
     const { selectedNetworkId } = getState().get(DUCK_NETWORK)
     dispatch(removeWatchersUserMonitor())
-    await dispatch(watchStopMarket())
-    await networkService.destroyNetworkSession(`${window.location.pathname}${window.location.search}`)
-    await dispatch(push('/'))
+    dispatch(watchStopMarket())
+    dispatch(destroyNetworkSession(`${window.location.pathname}${window.location.search}`))
+    dispatch(push('/'))
     if (selectedNetworkId === NETWORK_MAIN_ID) {
       location.reload()
     } else {
@@ -88,40 +106,29 @@ export const login = (account) => async (dispatch, getState) => {
     userManagerDAO.getMemberId(account),
   ])
 
-  // @todo Need to refactor PendingManagerDAO
-  // TODO @bshevchenko: PendingManagerDAO should receive member id from redux state
-  // const pmDAO = await contractsManagerDAO.getPendingManagerDAO()
-  // pmDAO.setMemberId(memberId)
-
   dispatch(SessionActions.sessionProfile(profile, isCBE))
 
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
   isCBE && dispatch(cbeWatcher())
 
-  dispatch(replace(ls.getLastURL() || defaultURL))
+  dispatch(replace(LocalStorage.getLastURL() || defaultURL))
 }
 
 export const bootstrap = (relogin = true, isMetaMaskRequired = true, isLocalAccountRequired = true) => async (dispatch, getState) => {
   if (isMetaMaskRequired) {
-    networkService.checkMetaMask()
-  }
-  if (networkService) {
-    networkService
-      .on('createSession', createSession)
-      .on('destroySession', destroySession)
-      .on('login', ({ account, dispatch }) => dispatch(login(account)))
+    dispatch(checkMetaMask())
   }
 
   if (!relogin) {
-    return networkService
+    return true
   }
 
   if (isLocalAccountRequired) {
-    const localAccount = ls.getLocalAccount()
-    const isPassed = await networkService.checkLocalSession(localAccount)
+    const localAccount = LocalStorage.getLocalAccount()
+    const isPassed = await dispatch(checkLocalSession(localAccount))
     if (isPassed) {
-      await networkService.restoreLocalSession(localAccount, getState().get('ethMultisigWallet'))
-      networkService.createNetworkSession(localAccount, LOCAL_PROVIDER_ID, LOCAL_ID)
+      await dispatch(restoreLocalSession(localAccount, getState().get('ethMultisigWallet')))
+      dispatch(createNetworkSession(localAccount, LOCAL_PROVIDER_ID, LOCAL_ID))
       dispatch(login(localAccount))
     } else {
       // eslint-disable-next-line
@@ -129,7 +136,7 @@ export const bootstrap = (relogin = true, isMetaMaskRequired = true, isLocalAcco
     }
   }
 
-  return networkService
+  return true
 }
 
 export const watchInitProfile = () => async (dispatch, getState) => {

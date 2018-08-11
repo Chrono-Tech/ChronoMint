@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import networkService from '@chronobank/login/network/NetworkService'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import web3Utils from '@chronobank/login/network/Web3Utils'
 import {
@@ -16,7 +15,7 @@ import {
 } from '@chronobank/core/redux/persistAccount/constants'
 import { getNetworkWithProviderNames, getProviderById, isLocalNode, getNetworksSelectorGroup } from '@chronobank/login/network/settings'
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
-import { customNetworksListAdd } from '@chronobank/core/redux/persistAccount/actions'
+import { autoSelect } from '@chronobank/login/redux/network/thunks'
 import { Popover } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -76,50 +75,32 @@ const mapStateToProps = (state) => {
     selectedNetworkId: network.selectedNetworkId,
     selectedProviderId: network.selectedProviderId,
     selectedProvider: network.selectedProviderId && getProviderById(network.selectedProviderId),
-    networks: network.networks,
-    isLoading: network.isLoading,
     customNetworksList: persistAccount.customNetworksList,
   }
 }
 
 const mapDispatchToProps = (dispatch) => ({
   selectProviderWithNetwork: (networkId, providerId) => dispatch(selectProviderWithNetwork(networkId, providerId)),
-  selectNetwork: (network) => networkService.selectNetwork(network),
-  selectProvider: (providerId) => networkService.selectProvider(providerId),
   clearErrors: () => dispatch(clearErrors()),
-  getProviderURL: () => networkService.getProviderURL(),
   initCommonNetworkSelector: () => dispatch(initCommonNetworkSelector()),
-  customNetworksListAdd: (network) => dispatch(customNetworksListAdd(network)),
   modalOpenAddNetwork: (network = null) => dispatch(modalsOpen({
     component: NetworkCreateModal,
     props: { network },
   })),
+  autoSelect: () => dispatch(autoSelect())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class CommonNetworkSelector extends PureComponent {
   static propTypes = {
+    autoSelect: PropTypes.func,
     clearErrors: PropTypes.func,
-    selectNetwork: PropTypes.func,
     initCommonNetworkSelector: PropTypes.func,
     selectProviderWithNetwork: PropTypes.func,
-    getProviderURL: PropTypes.func,
     selectedNetworkId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     selectedProviderId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    networks: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.number,
-      protocol: PropTypes.string,
-      name: PropTypes.string,
-      scanner: PropTypes.arrayOf(PropTypes.string),
-      bitcoin: PropTypes.string,
-      nem: PropTypes.string,
-    })),
-    onSelect: PropTypes.func,
-    isLoading: PropTypes.bool,
     customNetworksList: PropTypes.array,
     modalOpenAddNetwork: PropTypes.func,
-    customNetworksListAdd: PropTypes.func,
-    selectProvider: PropTypes.func,
   }
 
   constructor (props) {
@@ -182,7 +163,7 @@ export default class CommonNetworkSelector extends PureComponent {
     const baseNetworkNames = getNetworkWithProviderNames(selectedProviderId, selectedNetworkId)
 
     if (!baseNetworkNames) {
-      networkService.autoSelect()
+      this.props.autoSelect()
 
       return ''
     }

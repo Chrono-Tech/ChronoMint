@@ -4,8 +4,7 @@
  */
 
 import ledgerProvider from '../../network/LedgerProvider'
-import web3Provider from '../../network/Web3Provider'
-import networkService from '../../network/NetworkService'
+import { selectAccount } from '../network/actions'
 import { NETWORK_SET_ACCOUNTS } from '../../redux/network/constants'
 import {
   LEDGER_FETCHED,
@@ -35,7 +34,7 @@ export const stopLedgerSync = (isReset = false) => (dispatch) => {
   }
   // reset state if we do not intent to login
   dispatch({ type: NETWORK_SET_ACCOUNTS, accounts: [] })
-  networkService.selectAccount(null)
+  dispatch(selectAccount(null))
   dispatch({ type: LEDGER_FETCHED, isFetched: false })
 }
 

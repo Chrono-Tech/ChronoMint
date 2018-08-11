@@ -14,7 +14,7 @@ import { Translate } from 'react-redux-i18n'
 import {
   handleLoginLocalAccountClick,
 } from '@chronobank/login/redux/network/thunks'
-import networkService from '@chronobank/login/network/NetworkService'
+import { loadAccounts } from '@chronobank/login/redux/network/thunks'
 import {
   navigateToLoginPage,
 } from '../../redux/actions'
@@ -25,6 +25,7 @@ import {
 import './LoginLocal.scss'
 
 const mapDispatchToProps = (dispatch) => ({
+  loadAccounts: () => dispatch(loadAccounts()),
   onSubmit: () => dispatch(onSubmitLoginTestRPC()),
   onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitLoginTestRPCFail(errors, submitErrors)),
   navigateToLoginPage: () => dispatch(navigateToLoginPage()),
@@ -50,7 +51,7 @@ class LoginLocal extends PureComponent {
 
   async componentWillMount (){
     if (this.props.isLocalNode) {
-      await networkService.loadAccounts()
+      await this.props.loadAccounts()
     } else {
       this.props.navigateToLoginPage()
     }

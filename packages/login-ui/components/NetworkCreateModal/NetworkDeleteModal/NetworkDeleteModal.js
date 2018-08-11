@@ -10,10 +10,10 @@ import { Translate } from 'react-redux-i18n'
 import { modalsClose } from 'redux/modals/actions'
 import Button from 'components/common/ui/Button/Button'
 import {
-  handleSubmitCreateNetwork,
-  handleSubmitEditNetwork,
-  handleDeleteNetwork,
-} from '@chronobank/login/redux/network/thunks'
+  customNetworkEdit,
+  customNetworksDelete,
+  customNetworkCreate,
+} from '@chronobank/core/redux/persistAccount/actions'
 import {
   AccountCustomNetwork,
 } from '@chronobank/core/models/wallet/persistAccount'
@@ -24,9 +24,9 @@ import './NetworkDeleteModal.scss'
 function mapDispatchToProps (dispatch) {
   return {
     handleCloseModal: () => dispatch(modalsClose()),
-    handleSubmitCreateNetwork: (url, alias) => dispatch(handleSubmitCreateNetwork(url, alias)),
-    handleSubmitEditNetwork: (network) => dispatch(handleSubmitEditNetwork(network)),
-    handleDeleteNetwork: (network) => dispatch(handleDeleteNetwork(network)),
+    handleSubmitCreateNetwork: (url, alias) => dispatch(customNetworkCreate(url, alias)),
+    handleSubmitEditNetwork: (network) => dispatch(customNetworkEdit(network)),
+    handleDeleteNetwork: (network) => dispatch(customNetworksDelete(network)),
   }
 }
 
