@@ -4,13 +4,14 @@
  */
 
 import axios from 'axios'
-import networkService from './NetworkService'
+import { store } from '@chronobank/core-dependencies/configureStore'
+import { getProviderSettings } from '../redux/network/thunks'
 import { NETWORK_MAIN_ID, MIDDLEWARE_MAP, LOCAL_ID } from './settings'
 
 class ExchangeProvider {
 
   url () {
-    const { network } = networkService.getProviderSettings()
+    const { network } = store.dispatch(getProviderSettings())
 
     switch (network.id) {
       case NETWORK_MAIN_ID:

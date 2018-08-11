@@ -187,6 +187,8 @@ export default (state = initialState, action) => {
         ...state,
         walletFileImportObject: null,
       }
+    case actions.NETWORK_GET_ACCOUNTS:
+      return state
     default:
       return state
   }
