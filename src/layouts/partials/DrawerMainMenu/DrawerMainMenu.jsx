@@ -18,18 +18,16 @@ import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
 import { logout } from '@chronobank/core/redux/session/thunks'
-import chronWalletLogoSVG from 'assets/img/chronowallettext-white.svg'
+import chronoWalletLogoSVG from 'assets/img/chronowallettext-white.svg'
 import ProfileModel from '@chronobank/core/models/ProfileModel'
 import ProfileImage from 'components/common/ProfileImage/ProfileImage'
 import exitSvg from 'assets/img/exit-white.svg'
-import { sidesCloseAll, sidesPush } from 'redux/sides/actions'
+import { sidesCloseAll, sidesOpen } from 'redux/sides/actions'
 import { modalsOpen } from 'redux/modals/actions'
-import UpdateProfileDialog from 'components/dialogs/UpdateProvideDialog/UpdateProfileDialog'
 import { getAccountAvatar, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
 import { MENU_TOKEN_MORE_INFO_PANEL_KEY } from 'redux/sides/constants'
 import { getWalletsLength } from '@chronobank/core/redux/wallets/selectors/wallets'
 import { getAccountProfileSummary } from '@chronobank/core/redux/session/selectors'
-import MenuAssetsManagerMoreInfo from './MenuAssetsManagerMoreInfo/MenuAssetsManagerMoreInfo'
 import MenuTokensList from './MenuTokensList/MenuTokensList'
 import { prefix } from './lang'
 
@@ -56,11 +54,13 @@ function mapDispatchToProps (dispatch) {
   return {
     handleDrawerHide: () => dispatch(drawerHide()),
     handleLogout: () => dispatch(logout()),
-    handleProfileEdit: () => dispatch(modalsOpen({ component: UpdateProfileDialog })),
+    handleProfileEdit: () => dispatch(modalsOpen({
+      componentName: 'UpdateProfileDialog'
+    })),
     handle: (handleClose) => {
       dispatch(sidesCloseAll())
-      dispatch(sidesPush({
-        component: MenuAssetsManagerMoreInfo,
+      dispatch(sidesOpen({
+        componentName: 'MenuAssetsManagerMoreInfo',
         panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY,
         isOpened: true,
         anchor: 'left',
@@ -73,8 +73,8 @@ function mapDispatchToProps (dispatch) {
 
     handleAssetsManagerMoreInfo: (handleClose) => {
       dispatch(sidesCloseAll())
-      dispatch(sidesPush({
-        component: MenuAssetsManagerMoreInfo,
+      dispatch(sidesOpen({
+        componentName: 'MenuAssetsManagerMoreInfo',
         panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY,
         isOpened: true,
         anchor: 'left',
@@ -184,7 +184,7 @@ export default class DrawerMainMenu extends PureComponent {
             ref={this.setRef}
           >
             <div styleName='chronWalletLogo'>
-              <img src={chronWalletLogoSVG} alt='ChronoWallet logo' />
+              <img src={chronoWalletLogoSVG} alt='ChronoWallet logo' />
               <div styleName='subtitle'>{require('../../../../package.json').version}</div>
             </div>
 

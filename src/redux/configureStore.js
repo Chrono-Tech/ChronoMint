@@ -76,8 +76,10 @@ const configureStore = () => {
     const IGNORED_ACTIONS = []
     // All actions like network/* (starts with network)
     const DOMAINS = [
-      'AssetsManager/',
-      '@@router/',
+      // 'AssetsManager/',
+      // '@@router/',
+      'MODALS/',
+      'SIDES/'
       // 'PROFILE/',
     ]
     const logger = createLogger({

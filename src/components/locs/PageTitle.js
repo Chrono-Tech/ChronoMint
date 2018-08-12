@@ -3,15 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import lhtDAO from '@chronobank/core/dao/LHTDAO'
 import { modalsOpen } from 'redux/modals/actions'
-import LOCDialog from 'components/dialogs/LOC/LOCDialog/LOCDialog'
-import SendToExchangeDialog from 'components/dialogs/LOC/LOCSendToExchangeDialog/SendToExchangeDialog'
 import LOCModel from '@chronobank/core/models/LOCModel'
 import Amount from '@chronobank/core/models/Amount'
 import globalStyles from '../../styles'
@@ -19,14 +17,14 @@ import './styles.scss'
 
 const mapDispatchToProps = (dispatch) => ({
   showCreateLOCModal: (loc) => dispatch(modalsOpen({
-    component: LOCDialog,
+    componentName: 'LOCDialog',
     props: {
       loc,
     },
   })),
   showSendToExchangeModal: async () => {
     dispatch(modalsOpen({
-      component: SendToExchangeDialog,
+      componentName: 'SendToExchangeDialog',
       props: { allowed: new Amount(await lhtDAO.getAssetsManagerBalance(), 'LHT') },
     }))
   },

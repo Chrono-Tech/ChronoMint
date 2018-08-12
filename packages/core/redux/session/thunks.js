@@ -16,7 +16,6 @@ import { daoByType } from '../../redux/daos/selectors'
 import web3Factory from '../../web3/index'
 import { cbeWatcher, watcher } from '../watcher/actions'
 import { watchStopMarket } from '../market/actions'
-import { notify } from '../notifier/actions'
 import { initEthereum } from '../ethereum/actions'
 import {
   DUCK_PERSIST_ACCOUNT,
@@ -130,11 +129,6 @@ export const bootstrap = (relogin = true, isMetaMaskRequired = true, isLocalAcco
   }
 
   return networkService
-}
-
-export const watchInitProfile = () => async (dispatch, getState) => {
-  const userManagerDAO = daoByType('UserManager')(getState())
-  return userManagerDAO.watchProfile((notice) => dispatch(notify(notice)))
 }
 
 export const getProfileSignature = (wallet) => async (dispatch) => {

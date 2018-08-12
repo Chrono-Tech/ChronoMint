@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import { change, Field, formValueSelector, reduxForm } from 'redux-form/immutable'
 import Preloader from 'components/common/Preloader/Preloader'
 import { MenuItem } from '@material-ui/core'
@@ -18,7 +18,6 @@ import { connect } from 'react-redux'
 import { modalsOpen } from 'redux/modals/actions'
 import { search } from '@chronobank/core/redux/exchange/actions'
 import { DUCK_EXCHANGE } from '@chronobank/core/redux/exchange/constants'
-import AddExchangeDialog from 'components/exchange/AddExchangeDialog/AddExchangeDialog'
 import { FORM_EXCHANGE } from 'components/constants'
 import validate from './validate'
 
@@ -44,7 +43,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
   handleOpenAddExchangeDialog: () => dispatch(modalsOpen({
-    component: AddExchangeDialog,
+    componentName: 'AddExchangeDialog',
   })),
 })
 

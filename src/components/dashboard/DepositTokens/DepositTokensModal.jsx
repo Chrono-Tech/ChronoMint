@@ -11,7 +11,7 @@ import { change } from 'redux-form'
 import { depositAsset, initAssetsHolder, withdrawAsset } from '@chronobank/core/redux/assetsHolder/actions'
 import { modalsClose } from 'redux/modals/actions'
 import { mainApprove } from '@chronobank/core/redux/wallets/actions'
-import { ModalDialog } from 'components'
+import ModalDialog from 'components/dialogs/ModalDialog'
 import {
   ACTION_APPROVE,
   ACTION_DEPOSIT,

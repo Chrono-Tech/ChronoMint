@@ -3,7 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button, TokenValue } from 'components'
+import Button from 'components/common/ui/Button/Button'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 import BigNumber from 'bignumber.js'
 import classnames from 'classnames'
 import ExchangeOrderModel from '@chronobank/core/models/exchange/ExchangeOrderModel'

@@ -3,45 +3,56 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import * as actions from './constants'
+/**
+ * C - constants
+ * A - action
+ * S - state
+*/
+
+import * as C from './constants'
 
 const initialState = {
   stack: [],
   counter: 0,
 }
 
-export default (state = initialState, action) => {
-  switch (action.type) {
-    case actions.MODALS_PUSH:
+export default (S = initialState, A) => {
+  switch (A.type) {
+    case C.MODALS_OPEN:
       return {
-        ...state,
-        counter: state.counter + 1,
-        stack: [...state.stack, {
-          key: state.counter,
-          component: action.component,
-          props: action.props,
-        }],
+        ...S,
+        counter: S.counter + 1,
+        stack: [
+          ...S.stack, {
+            key: S.counter,
+            componentName: A.componentName,
+            props: A.props,
+          }
+        ],
       }
-    case actions.MODALS_POP:
+    case C.MODALS_CLOSE:
       return {
-        ...state,
-        stack: state.stack.slice(0, -1),
+        ...S,
+        stack: S.stack.slice(0, -1),
       }
-    case actions.MODALS_REPLACE:
+    case C.MODALS_REPLACE:
       return {
-        ...state,
-        stack: [...state.stack.slice(0, -1), {
-          key: state.counter,
-          component: action.component,
-          props: action.props,
-        }],
+        ...S,
+        stack: [
+          ...S.stack.slice(0, -1),
+          {
+            key: S.counter,
+            componentName: A.componentName,
+            props: A.props,
+          }
+        ],
       }
-    case actions.MODALS_CLEAR:
+    case C.MODALS_CLEAR:
       return {
-        ...state,
+        ...S,
         stack: [],
       }
     default:
-      return state
+      return S
   }
 }

@@ -25,7 +25,6 @@ import Button from 'components/common/ui/Button/Button'
 import { modalsOpen } from 'redux/modals/actions'
 import classnames from 'classnames'
 import Web3 from 'web3'
-import NetworkCreateModal from '../NetworkCreateModal/NetworkCreateModal'
 import {
   initCommonNetworkSelector,
 } from '../../redux/thunks'
@@ -91,7 +90,7 @@ const mapDispatchToProps = (dispatch) => ({
   initCommonNetworkSelector: () => dispatch(initCommonNetworkSelector()),
   customNetworksListAdd: (network) => dispatch(customNetworksListAdd(network)),
   modalOpenAddNetwork: (network = null) => dispatch(modalsOpen({
-    component: NetworkCreateModal,
+    componentName: 'NetworkCreateModal',
     props: { network },
   })),
 })

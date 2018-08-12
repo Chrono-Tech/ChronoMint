@@ -4,7 +4,7 @@
  */
 
 import { CircularProgress } from '@material-ui/core'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -12,7 +12,6 @@ import { connect } from 'react-redux'
 import CBEModel from '@chronobank/core/models/CBEModel'
 import { listCBE, revokeCBE } from '@chronobank/core/redux/settings/user/cbe/actions'
 import { modalsOpen } from 'redux/modals/actions'
-import CBEAddressDialog from 'components/dialogs/CBEAddressDialog'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 
 import './CBEAddresses.scss'
@@ -135,7 +134,7 @@ function mapDispatchToProps (dispatch) {
     getList: () => dispatch(listCBE()),
     revoke: (cbe) => dispatch(revokeCBE(cbe)),
     form: (cbe) => dispatch(modalsOpen({
-      component: CBEAddressDialog,
+      componentName: 'CBEAddressDialog',
       props: {
         initialValues: cbe || new CBEModel(),
       },

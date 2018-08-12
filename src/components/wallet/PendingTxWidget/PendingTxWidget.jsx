@@ -5,7 +5,8 @@
 
 import PropTypes from 'prop-types'
 import { Translate } from 'react-redux-i18n'
-import { Button, TokenValue } from 'components'
+import Button from 'components/common/ui/Button/Button'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 import React, { PureComponent } from 'react'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
@@ -17,7 +18,6 @@ import Amount from '@chronobank/core/models/Amount'
 import { confirmMultisigTx, revokeMultisigTx } from '@chronobank/core/redux/multisigWallet/actions'
 import { DUCK_I18N } from 'redux/i18n/constants'
 import { modalsOpen } from 'redux/modals/actions'
-import TwoFaConfirmModal from 'components/wallet/TwoFaConfirmModal/TwoFaConfirmModal'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 
@@ -37,7 +37,7 @@ function mapDispatchToProps (dispatch) {
     revoke: (wallet, tx) => dispatch(revokeMultisigTx(wallet, tx)),
     confirm: (wallet, tx) => dispatch(confirmMultisigTx(wallet, tx)),
     enterCode: (wallet, tx) => dispatch(modalsOpen({
-      component: TwoFaConfirmModal,
+      componentName: 'TwoFaConfirmModal',
       props: {
         wallet,
         tx,

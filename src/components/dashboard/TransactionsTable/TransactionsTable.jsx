@@ -4,7 +4,8 @@
  */
 
 import classnames from 'classnames'
-import { Button, TxConfirmations } from 'components'
+import Button from 'components/common/ui/Button/Button'
+import TxConfirmations from 'components/common/TxConfirmations/TxConfirmations'
 import { getBlockExplorerUrl } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import Moment from 'components/common/Moment/index'

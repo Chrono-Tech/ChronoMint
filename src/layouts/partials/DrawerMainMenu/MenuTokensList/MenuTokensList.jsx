@@ -16,9 +16,8 @@ import { drawerHide, drawerToggle } from 'redux/drawer/actions'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { logout } from '@chronobank/core/redux/session/thunks'
 import { getBlockchainAddressesList } from '@chronobank/core/redux/session/selectors'
-import { sidesCloseAll, sidesPush } from 'redux/sides/actions'
+import { sidesCloseAll, sidesOpen } from 'redux/sides/actions'
 import { MENU_TOKEN_MORE_INFO_PANEL_KEY } from 'redux/sides/constants'
-import MenuTokenMoreInfo from '../MenuTokenMoreInfo/MenuTokenMoreInfo'
 import { prefix } from './lang'
 
 import './MenuTokensList.scss'
@@ -44,16 +43,16 @@ function mapDispatchToProps (dispatch) {
     handleDrawerToggle: () => dispatch(drawerToggle()),
     handleDrawerHide: () => dispatch(drawerHide()),
     handleLogout: () => dispatch(logout()),
-    initTokenSide: (token) => dispatch(sidesPush({
-      component: MenuTokenMoreInfo,
+    initTokenSide: (token) => dispatch(sidesOpen({
+      componentName: 'MenuTokenMoreInfo',
       panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY + '_' + token.blockchain,
       isOpened: false,
     })),
     handleTokenMoreInfo: (selectedToken, handleClose, isClose) => {
       dispatch(sidesCloseAll())
       if (!isClose) {
-        dispatch(sidesPush({
-          component: MenuTokenMoreInfo,
+        dispatch(sidesOpen({
+          componentName: 'MenuTokenMoreInfo',
           panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY + '_' + selectedToken.blockchain,
           isOpened: true,
           anchor: 'left',

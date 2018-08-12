@@ -3,7 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button, IPFSImage } from 'components'
+import Button from 'components/common/ui/Button/Button'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import iconTokenDefaultSVG from 'assets/img/avaToken.svg'
 import BigNumber from 'bignumber.js'
 import TokenValue from 'components/common/TokenValue/TokenValue'

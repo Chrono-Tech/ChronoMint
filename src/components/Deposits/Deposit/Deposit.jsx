@@ -11,9 +11,10 @@ import { connect } from 'react-redux'
 import { TIME, BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { getDeposit } from '@chronobank/core/redux/mainWallet/selectors'
-import { Button, IPFSImage, TokenValue } from 'components'
+import Button from 'components/common/ui/Button/Button'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 import { modalsOpen } from 'redux/modals/actions'
-import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { TOKEN_ICONS } from 'assets'
@@ -45,7 +46,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    addDeposit: (props) => dispatch(modalsOpen({ component: DepositTokensModal, props })),
+    addDeposit: (props) => dispatch(modalsOpen({ componentName: 'DepositTokensModal', props })),
     getTransactions: (params) => dispatch(formatDataAndGetTransactionsForWallet(params)),
   }
 }

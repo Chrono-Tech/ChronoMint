@@ -4,7 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
-import { TransactionsTable } from 'components'
+import { TransactionsTable } from 'components/dashboard/TransactionsTable/TransactionsTable'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'

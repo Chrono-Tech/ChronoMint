@@ -3,24 +3,33 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import ConfirmTxDialog from '../../components/dialogs/ConfirmTxDialog/ConfirmTxDialog'
 import {
-  MODALS_PUSH,
+  MODALS_OPEN,
   MODALS_REPLACE,
-  MODALS_POP,
+  MODALS_CLOSE,
   MODALS_CLEAR,
 } from './constants'
 
-export const modalsPush = ({ component, props }) => (dispatch) => dispatch({ type: MODALS_PUSH, component, props })
+export const modalsOpen = ({ componentName, props }) => (dispatch) =>
+  dispatch({
+    type: MODALS_OPEN,
+    componentName,
+    props,
+  })
 
-export const modalsReplace = ({ component, props }) => (dispatch) => dispatch({ type: MODALS_REPLACE, component, props })
+export const modalsReplace = ({ componentName, props }) => (dispatch) =>
+  dispatch({
+    type: MODALS_REPLACE,
+    componentName,
+    props,
+  })
 
-export const modalsPop = () => (dispatch) => dispatch({ type: MODALS_POP })
+export const modalsClose = () => (dispatch) =>
+  dispatch({
+    type: MODALS_CLOSE,
+  })
 
-export const modalsClear = () => (dispatch) => dispatch({ type: MODALS_CLEAR })
-
-export const modalsClose = modalsPop
-export const modalsOpen = modalsPush
-export const modalsShow = modalsPush
-
-export const modalsOpenConfirmDialog = ({ props }) => (dispatch) => dispatch({ type: MODALS_PUSH, component: ConfirmTxDialog, props })
+export const modalsClear = () => (dispatch) =>
+  dispatch({
+    type: MODALS_CLEAR,
+  })

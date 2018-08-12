@@ -18,7 +18,6 @@ import {
 } from '@chronobank/core/models/wallet/persistAccount'
 import { ModalDialog } from 'components'
 import NetworkCreateModalForm from './NetworkCreateModalForm/NetworkCreateModalForm'
-import NetworkDeleteModal from './NetworkDeleteModal/NetworkDeleteModal'
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -27,7 +26,7 @@ function mapDispatchToProps (dispatch) {
     handleSubmitEditNetwork: (network) => dispatch(handleSubmitEditNetwork(network)),
     handleDeleteNetwork: (network) => dispatch(handleDeleteNetwork(network)),
     openConfirmDeleteModal: (network = null) => dispatch(modalsOpen({
-      component: NetworkDeleteModal,
+      componentName: 'NetworkDeleteModal',
       props: { network },
     })),
   }

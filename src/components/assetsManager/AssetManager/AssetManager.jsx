@@ -4,7 +4,7 @@
  */
 
 import { Paper } from '@material-ui/core'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -12,8 +12,6 @@ import { connect } from 'react-redux'
 import { DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/constants'
 import { createPlatform } from '@chronobank/core/redux/assetsManager/actions'
 import { modalsOpen } from 'redux/modals/actions'
-import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
-import AddTokenDialog from 'components/assetsManager/AddTokenDialog/AddTokenDialog'
 import HistoryTable from 'components/assetsManager/HistoryTable/HistoryTable'
 import PlatformInfo from 'components/assetsManager/PlatformInfo/PlatformInfo'
 import PlatformsList from 'components/assetsManager/PlatformsList/PlatformsList'
@@ -44,10 +42,10 @@ function mapDispatchToProps (dispatch) {
   return {
     createPlatform: () => dispatch(createPlatform()),
     handleAddPlatformDialog: () => dispatch(modalsOpen({
-      component: AddPlatformDialog,
+      componentName: 'AddPlatformDialog',
     })),
     handleAddTokenDialog: () => dispatch(modalsOpen({
-      component: AddTokenDialog,
+      componentName: 'AddTokenDialog',
     })),
   }
 }

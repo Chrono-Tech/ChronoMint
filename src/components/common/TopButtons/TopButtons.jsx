@@ -10,7 +10,7 @@ import { history } from 'redux/configureStore'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
 import { DUCK_SIDES } from 'redux/sides/constants'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import BUTTONS from './buttons'
 import './TopButtons.scss'
 

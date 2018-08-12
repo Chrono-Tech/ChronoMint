@@ -8,12 +8,11 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Immutable from 'immutable'
 import { Button, TopButtons } from 'components'
-import { sidesPush } from 'redux/sides/actions'
+import { sidesOpen } from 'redux/sides/actions'
 import { pendingTransactionsSelector } from '@chronobank/core/redux/mainWallet/selectors/tokens'
 import { DUCK_WATCHER } from '@chronobank/core/redux/watcher/constants'
 import { ethereumPendingCountSelector } from '@chronobank/core/redux/ethereum/selectors'
 
-import NotificationContent from 'layouts/partials/NotificationContent/NotificationContent'
 import { NOTIFICATION_PANEL_KEY } from 'redux/sides/constants'
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 
@@ -32,8 +31,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     handleNotificationTap: () => {
-      dispatch(sidesPush({
-        component: NotificationContent,
+      dispatch(sidesOpen({
+        componentName: 'NotificationContent',
         panelKey: NOTIFICATION_PANEL_KEY,
         isOpened: true,
         className: 'notifications',

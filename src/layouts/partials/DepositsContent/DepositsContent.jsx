@@ -12,9 +12,8 @@ import { initAssetsHolder } from '@chronobank/core/redux/assetsHolder/actions'
 import { getDeposit } from '@chronobank/core/redux/mainWallet/selectors'
 import Amount from '@chronobank/core/models/Amount'
 import DepositsList from 'components/Deposits/DepositsList/DepositsList'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import { modalsOpen } from 'redux/modals/actions'
-import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
 import DepositWarningWidget from 'components/Deposits/DepositWarningWidget/DepositWarningWidget'
 import { prefix } from './lang'
 import './DepositsContent.scss'
@@ -28,7 +27,10 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     initAssetsHolder: () => dispatch(initAssetsHolder()),
-    addDeposit: (props) => dispatch(modalsOpen({ component: DepositTokensModal, props })),
+    addDeposit: (props) => dispatch(modalsOpen({
+      componentName: 'DepositTokensModal',
+      props
+    })),
   }
 }
 

@@ -10,7 +10,6 @@ import { connect } from 'react-redux'
 import ArbitraryNoticeModel from '@chronobank/core/models/notices/ArbitraryNoticeModel'
 import { modalsOpen } from 'redux/modals/actions'
 import { notify } from '@chronobank/core/redux/notifier/actions'
-import CopyDialog from 'components/dialogs/CopyDialog/CopyDialog'
 import clipboard from '@chronobank/core-dependencies/utils/clipboard'
 
 import './MicroIcon.scss'
@@ -64,7 +63,7 @@ export default class CopyIcon extends PureComponent {
 function mapDispatchToProps (dispatch) {
   return {
     showCopyDialog: ({ copyValue, title, controlTitle, description }) => dispatch(modalsOpen({
-      component: CopyDialog,
+      componentName: 'CopyDialog',
       props: {
         copyValue,
         title,

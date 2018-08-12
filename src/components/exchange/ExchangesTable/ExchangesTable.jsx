@@ -3,10 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import BuyTokensDialog from 'components/exchange/BuyTokensDialog/BuyTokensDialog'
 import Immutable from 'immutable'
 import { Toggle } from '@material-ui/core'
 import type ExchangeOrderModel from '@chronobank/core/models/exchange/ExchangeOrderModel'
@@ -22,7 +21,6 @@ import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import './ExchangesTable.scss'
-import ExchangeTransferDialog from '../ExchangeTransferDialog/ExchangeTransferDialog'
 
 function prefix (token) {
   return `components.exchange.OrdersTable.${token}`
@@ -45,14 +43,14 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     handleOpenDetails: (exchange: ExchangeOrderModel, isBuy: boolean) => dispatch(modalsOpen({
-      component: BuyTokensDialog,
+      componentName: 'BuyTokensDialog',
       props: {
         exchange,
         isBuy,
       },
     })),
     handleOpenTransfer: (exchange: ExchangeOrderModel, tokenSymbol: string) => dispatch(modalsOpen({
-      component: ExchangeTransferDialog,
+      componentName: 'ExchangeTransferDialog',
       props: {
         exchange,
         tokenSymbol,

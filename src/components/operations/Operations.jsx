@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import Immutable from 'immutable'
 import { CircularProgress } from '@material-ui/core'
 import PropTypes from 'prop-types'
@@ -15,7 +15,6 @@ import { connect } from 'react-redux'
 import { confirmOperation, listOperations, loadMoreCompletedOperations, revokeOperation, setupOperationsSettings } from '@chronobank/core/redux/operations/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_OPERATIONS } from '@chronobank/core/redux/operations/constants'
-import OperationsSettingsDialog from 'components/dialogs/OperationsSettingsDialog'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import Value from 'components/common/Value/Value'
 import './Operations.scss'
@@ -211,7 +210,7 @@ function mapDispatchToProps (dispatch) {
     handleSettings: async () => {
       await dispatch(setupOperationsSettings())
       dispatch(modalsOpen({
-        component: OperationsSettingsDialog,
+        componentName: 'OperationsSettingsDialog',
       }))
     },
   }

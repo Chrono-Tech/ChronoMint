@@ -13,7 +13,7 @@ import React, { PureComponent } from 'react'
 import { logout } from '@chronobank/core/redux/session/thunks'
 import { getBlockchainAddressesList } from '@chronobank/core/redux/session/selectors'
 import { modalsOpen } from 'redux/modals/actions'
-import { IPFSImage, UpdateProfileDialog } from 'components'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
 import QRIcon from 'components/dashboard/MicroIcon/QRIcon'
 import PKIcon from 'components/dashboard/MicroIcon/PKIcon'
@@ -35,7 +35,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     handleProfileEdit: (data) => dispatch(modalsOpen({
-      component: UpdateProfileDialog,
+      componentName: 'UpdateProfileDialog',
       data,
     })),
     handleLogout: () => dispatch(logout()),

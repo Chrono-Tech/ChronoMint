@@ -6,31 +6,51 @@
 import {
   SIDES_CLEAR,
   SIDES_CLOSE_ALL,
-  SIDES_POP,
-  SIDES_PUSH, SIDES_TOGGLE, SIDES_TOGGLE_MAIN_MENU,
+  SIDES_CLOSE,
+  SIDES_INIT,
+  SIDES_OPEN,
+  SIDES_TOGGLE_MAIN_MENU,
+  SIDES_TOGGLE,
 } from './constants'
 
-export const sidesPush = ({ component, panelKey, isOpened, className, componentProps, anchor, drawerProps, preCloseAction }) => (dispatch) => dispatch({
-  type: SIDES_PUSH,
-  component,
-  panelKey,
-  className,
-  isOpened,
-  componentProps,
-  anchor,
-  drawerProps,
-  preCloseAction,
-})
+// This action is used once at SidesStack.jsx to init stack of side panels
+export const initSidesStack = (stack) => (dispatch) =>
+  dispatch({
+    type: SIDES_INIT,
+    stack,
+  })
 
-export const sidesPop = (key) => (dispatch) => dispatch({ type: SIDES_POP, key })
+export const sidesOpen = (props) => (dispatch) =>
+  dispatch({
+    type: SIDES_OPEN,
+    ...props,
+  })
 
-export const sidesClear = () => (dispatch) => dispatch({ type: SIDES_CLEAR })
+export const sidesClose = (key) => (dispatch) =>
+  dispatch({
+    type: SIDES_CLOSE,
+    key,
+  })
 
-export const sidesCloseAll = () => (dispatch) => dispatch({ type: SIDES_CLOSE_ALL })
+export const sidesClear = () => (dispatch) =>
+  dispatch({
+    type: SIDES_CLEAR,
+  })
 
-export const toggleSidePanel = (panelKey, isOpened) => (dispatch) => dispatch({ type: SIDES_TOGGLE, panelKey, isOpened })
+export const sidesCloseAll = () => (dispatch) =>
+  dispatch({
+    type: SIDES_CLOSE_ALL,
+  })
 
-export const toggleMainMenu = (mainMenuIsOpen) => (dispatch) => dispatch({ type: SIDES_TOGGLE_MAIN_MENU, mainMenuIsOpen })
+export const toggleSidePanel = (panelKey, isOpened) => (dispatch) =>
+  dispatch({
+    type: SIDES_TOGGLE,
+    panelKey,
+    isOpened,
+  })
 
-export const sidesClose = sidesPop
-export const sidesOpen = sidesPush
+export const toggleMainMenu = (mainMenuIsOpen) => (dispatch) =>
+  dispatch({
+    type: SIDES_TOGGLE_MAIN_MENU,
+    mainMenuIsOpen,
+  })
