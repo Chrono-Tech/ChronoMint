@@ -3,78 +3,52 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import AddWalletContent from './AddWalletContent/AddWalletContent'
 import AssetsContent from './AssetsContent/AssetsContent'
+import DepositContent from './DepositContent/DepositContent'
+import DepositsContent from './DepositsContent/DepositsContent'
+import DrawerMainMenu from './DrawerMainMenu/DrawerMainMenu'
 import DrawerPartial from './DrawerPartial/DrawerPartial'
 import ExchangeContent from './ExchangeContent/ExchangeContent'
 import FooterPartial from './FooterPartial/FooterPartial'
 import HeaderPartial from './HeaderPartial/HeaderPartial'
 import LOCContent from './LOCContent/LOCContent'
+import NewPollContent from './NewPollContent/NewPollContent'
 import OperationsContent from './OperationsContent/OperationsContent'
+import PersistWrapper from './PersistWrapper/PersistWrapper'
+import PollContent from './PollContent/PollContent'
+import ProfileContent from './ProfileContent/ProfileContent'
 import RewardsContent from './RewardsContent/RewardsContent'
 import SettingsContent from './SettingsContent/SettingsContent'
-import VotingContent from './VotingContent/VotingContent'
-import WalletsContent from './WalletsContent/WalletsContent'
-import WalletContent from './WalletContent/WalletContent'
-import AddWalletContent from './AddWalletContent/AddWalletContent'
 import SidePanel from './SidePanel/SidePanel'
-import ProfileContent from './ProfileContent/ProfileContent'
-import DrawerMainMenu from './DrawerMainMenu/DrawerMainMenu'
-import DepositsContent from './DepositsContent/DepositsContent'
-import DepositContent from './DepositContent/DepositContent'
 import TwoFAContent from './TwoFAContent/TwoFAContent'
-import PersistWrapper from './PersistWrapper/PersistWrapper'
-import NewPollContent from './NewPollContent/NewPollContent'
-import PollContent from './PollContent/PollContent'
 import VoteHistoryContent from './VoteHistoryContent/VoteHistoryContent'
+import VotingContent from './VotingContent/VotingContent'
+import WalletContent from './WalletContent/WalletContent'
+import WalletsContent from './WalletsContent/WalletsContent'
 
 export {
-  HeaderPartial,
-  FooterPartial,
+  AddWalletContent,
+  AssetsContent,
+  DepositContent,
+  DepositsContent,
+  DrawerMainMenu,
   DrawerPartial,
   ExchangeContent,
-  RewardsContent,
-  VotingContent,
-  WalletsContent,
-  WalletContent,
-  OperationsContent,
-  SettingsContent,
-  LOCContent,
-  AssetsContent,
-  SidePanel,
-  ProfileContent,
-  DrawerMainMenu,
-  DepositsContent,
-  DepositContent,
-  AddWalletContent,
-  TwoFAContent,
-  PersistWrapper,
-  NewPollContent,
-  PollContent,
-  VoteHistoryContent,
-}
-
-export default {
-  HeaderPartial,
   FooterPartial,
-  DrawerPartial,
-  ExchangeContent,
-  RewardsContent,
-  VotingContent,
-  WalletsContent,
-  WalletContent,
-  OperationsContent,
-  SettingsContent,
+  HeaderPartial,
   LOCContent,
-  AssetsContent,
-  SidePanel,
-  ProfileContent,
-  DrawerMainMenu,
-  DepositsContent,
-  DepositContent,
-  AddWalletContent,
-  TwoFAContent,
-  PersistWrapper,
   NewPollContent,
+  OperationsContent,
+  PersistWrapper,
   PollContent,
+  ProfileContent,
+  RewardsContent,
+  SettingsContent,
+  SidePanel,
+  TwoFAContent,
   VoteHistoryContent,
+  VotingContent,
+  WalletContent,
+  WalletsContent,
 }

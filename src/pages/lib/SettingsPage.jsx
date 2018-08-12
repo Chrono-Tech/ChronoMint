@@ -4,7 +4,7 @@
  */
 
 import { CSSTransitionGroup } from 'react-transition-group'
-import Partials from 'layouts/partials'
+import { SettingsContent } from 'layouts/partials'
 import React, { Component } from 'react'
 
 import './SettingsPage.scss'
@@ -20,7 +20,7 @@ export default class SettingsPage extends Component {
           transitionEnterTimeout={250}
           transitionLeaveTimeout={250}
         >
-          <Partials.SettingsContent />
+          <SettingsContent />
         </CSSTransitionGroup>
       </div>
     )

@@ -4,7 +4,7 @@
  */
 
 import { CSSTransitionGroup } from 'react-transition-group'
-import Partials from 'layouts/partials'
+import { AddWalletContent } from 'layouts/partials'
 import React, { Component } from 'react'
 
 import './WalletPage.scss'
@@ -20,7 +20,7 @@ export default class WalletPage extends Component {
           transitionEnterTimeout={250}
           transitionLeaveTimeout={250}
         >
-          <Partials.AddWalletContent />
+          <AddWalletContent />
         </CSSTransitionGroup>
       </div>
     )

@@ -4,7 +4,7 @@
  */
 
 import { CSSTransitionGroup } from 'react-transition-group'
-import Partials from 'layouts/partials/index'
+import { VoteHistoryContent } from 'layouts/partials/index'
 import React, { Component } from 'react'
 
 export default class VoteHistoryPage extends Component {
@@ -18,7 +18,7 @@ export default class VoteHistoryPage extends Component {
           transitionEnterTimeout={250}
           transitionLeaveTimeout={250}
         >
-          <Partials.VoteHistoryContent />
+          <VoteHistoryContent />
         </CSSTransitionGroup>
       </div>
     )
