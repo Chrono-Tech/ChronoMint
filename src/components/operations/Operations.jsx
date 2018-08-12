@@ -42,7 +42,7 @@ export default class PendingOperations extends PureComponent {
 
     completedFetching: PropTypes.bool,
     completedEndOfList: PropTypes.bool,
-    locale: PropTypes.string,
+    // locale: PropTypes.string,
   }
 
   static defaultProps = {
@@ -197,7 +197,7 @@ function mapStateToProps (state) {
     required: operations.required,
     selectedNetworkId: network.selectedNetworkId,
     selectedProviderId: network.selectedProviderId,
-    locale: state.get('i18n').locale,
+    // locale: state.get('i18n').locale,
   }
 }
 

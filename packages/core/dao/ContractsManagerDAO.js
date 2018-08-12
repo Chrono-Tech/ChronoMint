@@ -101,7 +101,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
     if (isNew) {
       const isDeployed = await dao.isDeployed()
       if (!isDeployed) {
-        throw new Error(`Can't init ${DAOClass.name} at ${accountParam}; ${isDeployed.message}`)
+        throw new Error(`Can't init ${DAOClass.name} at ${accountParam}`)
       }
     }
 

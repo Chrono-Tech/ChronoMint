@@ -45,7 +45,7 @@ function mapStateToProps (state) {
 export default class CBEAddressDialog extends PureComponent {
   static propTypes = {
     formCBELoadName: PropTypes.func,
-    name: PropTypes.string,
+    // name: PropTypes.string,
     isLoading: PropTypes.bool,
     modalsClose: PropTypes.func,
     ...formPropTypes,

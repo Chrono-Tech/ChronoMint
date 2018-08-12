@@ -4,7 +4,7 @@
  */
 
 import { CSSTransitionGroup } from 'react-transition-group'
-import { VoteHistoryContent } from 'layouts/partials/index'
+import { VoteHistoryContent } from 'layouts/partials'
 import React, { Component } from 'react'
 
 export default class VoteHistoryPage extends Component {

@@ -4,11 +4,10 @@
  */
 
 import PropTypes from 'prop-types'
-import { TransactionsTable } from 'components/dashboard/TransactionsTable/TransactionsTable'
+import TransactionsTable from 'components/dashboard/TransactionsTable/TransactionsTable'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
-import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import { getTxListForWallet } from '@chronobank/core/redux/wallets/selectors/transactions'
 import { formatDataAndGetTransactionsForWallet } from '@chronobank/core/redux/wallet/actions'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
@@ -38,11 +37,6 @@ function mapDispatchToProps (dispatch) {
 export default class TransactionsListWidget extends PureComponent {
   static propTypes = {
     wallet: PTWallet,
-    revoke: PropTypes.func,
-    confirm: PropTypes.func,
-    getPendingData: PropTypes.func,
-    tokens: PropTypes.instanceOf(TokensCollection),
-    locale: PropTypes.string,
     transactions: PropTypes.array,
     getTransactions: PropTypes.func,
   }
@@ -61,8 +55,15 @@ export default class TransactionsListWidget extends PureComponent {
 
     return (
       <div styleName='transactions'>
-        <div styleName='header'><Translate value={`${prefix}.transactions`} /></div>
-        <TransactionsTable transactions={transactions} walletAddress={wallet.address} blockchain={wallet.blockchain} onGetTransactions={this.handleGetTransactions} />
+        <div styleName='header'>
+          <Translate value={`${prefix}.transactions`} />
+        </div>
+        <TransactionsTable
+          transactions={transactions}
+          walletAddress={wallet.address}
+          blockchain={wallet.blockchain}
+          onGetTransactions={this.handleGetTransactions}
+        />
       </div>
     )
   }

@@ -14,7 +14,6 @@ import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { getMainTokenForWalletByBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
-import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
 import Moment from 'components/common/Moment'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
@@ -71,8 +70,8 @@ export default class WalletWidgetDetail extends PureComponent {
     send: PropTypes.func,
     receive: PropTypes.func,
     deposit: PropTypes.func,
-    openEditManagersDialog: PropTypes.func,
-    openEditSignaturesDialog: PropTypes.func,
+    // openEditManagersDialog: PropTypes.func,
+    // openEditSignaturesDialog: PropTypes.func,
     removeEthMultisig: PropTypes.func,
   }
 

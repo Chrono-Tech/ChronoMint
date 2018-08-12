@@ -3,11 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import networkService from '@chronobank/login/network/NetworkService'
+import { getProviderURL } from '@chronobank/core/redux/session/thunks'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import web3Utils from '@chronobank/login/network/Web3Utils'
 import { clearErrors } from '@chronobank/login/redux/network/actions'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
+import { networkSetNetwork } from '@chronobank/login/redux/network/actions'
 import { MenuItem, SelectField } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -26,9 +27,9 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  selectNetwork: (network) => networkService.selectNetwork(network),
+  selectNetwork: (network) => dispatch(networkSetNetwork(network)),
   clearErrors: () => dispatch(clearErrors()),
-  getProviderURL: () => networkService.getProviderURL(),
+  getProviderURL: () => dispatch(getProviderURL()),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -46,7 +47,6 @@ export default class NetworkSelector extends PureComponent {
       bitcoin: PropTypes.string,
       nem: PropTypes.string,
     })),
-    onSelect: PropTypes.func,
     isLoading: PropTypes.bool,
   }
 

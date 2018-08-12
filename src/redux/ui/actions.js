@@ -12,6 +12,15 @@ import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_WATCHER, WATCHER_TX_SET } from '@chronobank/core/redux/watcher/constants'
 import { CHANGE_WALLET_VIEW } from './constants'
 
+export const startUserMonitorAndCloseModals = () => (dispatch) => {
+  userMonitorService.start()
+  dispatch(modalsClose())
+}
+
+export const stopUserMonitor = () => () => {
+  userMonitorService.stop()
+}
+
 export const removeWatchersUserMonitor = () => () => {
   userMonitorService
     .removeAllListeners('active')

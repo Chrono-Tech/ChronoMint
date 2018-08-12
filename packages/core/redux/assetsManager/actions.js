@@ -4,13 +4,13 @@
  */
 
 import uuid from 'uuid/v1'
+import Amount from '@chronobank/core/models/Amount'
 import { notify } from '../notifier/actions'
 import web3Converter from '../../utils/Web3Converter'
 import ReissuableModel from '../../models/tokens/ReissuableModel'
 import TokenModel from '../../models/tokens/TokenModel'
 import OwnerCollection from '../../models/wallet/OwnerCollection'
 import OwnerModel from '../../models/wallet/OwnerModel'
-import Amount from '@chronobank/core/models/Amount'
 import { DUCK_TOKENS, TOKENS_FETCHED, TOKENS_UPDATE } from '../tokens/constants'
 import AssetsManagerNoticeModel, {
   ASSET_PAUSED,
@@ -77,7 +77,7 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
   const managers = await assetsManagerDAO.getManagers(Object.entries(assets).map((item) => item[1].symbol), [account])
   const usersPlatforms = platforms.filter((platform) => platform.by === account)
 
-  Object.values(assets).map((asset) => {
+  Object.values(assets).forEach((asset) => {
     const symbol = web3Converter.bytesToString(asset.symbol)
     dispatch(setTxFromMiddlewareForBlockAsset(asset.address, symbol))
     dispatch(setTxFromMiddlewareForBlackList(asset.address, symbol))
@@ -468,7 +468,7 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     const assets = {}
     Object.entries(assetList).filter(([, asset]) => {
       return asset.symbol !== eventSymbol
-    }).map(([key, value]) => {
+    }).forEach(([key, value]) => {
       assets[key] = value
     })
 
@@ -637,7 +637,7 @@ export const selectPlatform = (platformAddress) => async (dispatch, getState) =>
 
   const promises = []
   const calledAssets = []
-  Object.values(assets).map((asset) => {
+  Object.values(assets).forEach((asset) => {
     if (asset.platform === platformAddress) {
       promises.push(dispatch(getPauseStatus(asset.address)))
       calledAssets.push(asset)
@@ -645,7 +645,7 @@ export const selectPlatform = (platformAddress) => async (dispatch, getState) =>
   })
 
   const pauseResult = await Promise.all(promises)
-  calledAssets.map((asset, i) => {
+  calledAssets.forEach((asset, i) => {
     const token = tokens.getByAddress(asset.address)
     if (token.address()) {
       dispatch({

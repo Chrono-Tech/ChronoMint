@@ -38,8 +38,8 @@ function prefix (token) {
 export default class OperationsSettingsDialog extends PureComponent {
   static propTypes = {
     adminCount: PropTypes.number,
-    handleAddressChange: PropTypes.func,
-    name: PropTypes.string,
+    // handleAddressChange: PropTypes.func,
+    // name: PropTypes.string,
     onClose: PropTypes.func,
     ...formPropTypes,
   }

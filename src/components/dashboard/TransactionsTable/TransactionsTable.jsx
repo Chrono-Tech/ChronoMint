@@ -8,7 +8,7 @@ import Button from 'components/common/ui/Button/Button'
 import TxConfirmations from 'components/common/TxConfirmations/TxConfirmations'
 import { getBlockExplorerUrl } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
-import Moment from 'components/common/Moment/index'
+import Moment from 'components/common/Moment'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import moment from 'moment'
 import PropTypes from 'prop-types'
@@ -39,7 +39,7 @@ function mapStateToProps (state) {
 @connect(mapStateToProps)
 export default class TransactionsTable extends PureComponent {
   static propTypes = {
-    blockchain: PropTypes.string,
+    // blockchain: PropTypes.string,
     walletAddress: PropTypes.string,
     transactions: PropTypes.instanceOf(Array),
     selectedNetworkId: PropTypes.number,

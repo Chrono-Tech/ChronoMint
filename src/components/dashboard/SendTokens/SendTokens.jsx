@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import ModalDialog from '../../dialogs/ModalDialog'
+import ModalDialog from 'components/dialogs/ModalDialog'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
@@ -61,12 +61,12 @@ export default class SendTokens extends PureComponent {
     isModal: PropTypes.bool,
     mainApprove: PropTypes.func,
     mainTransfer: PropTypes.func,
-    resetForm: PropTypes.func,
+    // resetForm: PropTypes.func,
     multisigTransfer: PropTypes.func,
     tokens: PropTypes.instanceOf(TokensCollection),
     token: PropTypes.string,
-    blockchain: PropTypes.string,
-    address: PropTypes.string,
+    // blockchain: PropTypes.string,
+    // address: PropTypes.string,
   }
 
   handleSubmit = (values, formState) => {

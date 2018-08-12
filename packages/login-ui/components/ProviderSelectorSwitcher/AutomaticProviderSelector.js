@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import networkService from '@chronobank/login/network/NetworkService'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
+import { autoSelect } from '@chronobank/login/redux/network/thunks'
 import { Toggle } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -21,22 +21,20 @@ const mapStateToProps = (state) => {
   }
 }
 
-const startAutoSelect = async () => {
-  await networkService.autoSelect()
-}
+const mapDispatchToProps = (dispatch) => ({
+  autoSelect: () => dispatch(autoSelect())
+})
 
-@connect(mapStateToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 class AutomaticProviderSelector extends PureComponent {
   static propTypes = {
-    selectedProviderId: PropTypes.number,
-    selectedNetworkId: PropTypes.number,
-    show: PropTypes.bool,
+    autoSelect: PropTypes.func,
     currentStrategy: PropTypes.string,
     onSelectorSwitch: PropTypes.func,
   }
 
   componentDidMount () {
-    return startAutoSelect()
+    this.props.autoSelect()
   }
 
   handleToggle = () => this.props.onSelectorSwitch(this.props.currentStrategy)

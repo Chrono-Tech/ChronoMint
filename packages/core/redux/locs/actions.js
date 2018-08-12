@@ -4,7 +4,6 @@
  */
 
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
-import type LOCManagerDAO from '../../dao/LOCManagerDAO'
 import { TX_FRONTEND_ERROR_CODES } from '../../dao/constants'
 import LOCModel from '../../models/LOCModel'
 import LOCNoticeModel from '../../models/notices/LOCNoticeModel'
@@ -54,7 +53,7 @@ export const watchInitLOC = () => async (dispatch) => {
 
 export const getLOCs = () => async (dispatch) => {
   dispatch({ type: LOCS_LIST_FETCH })
-  const locManagerDAO: LOCManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
+  const locManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
   const locs = await locManagerDAO.getLOCs()
   dispatch({ type: LOCS_LIST, locs })
 }

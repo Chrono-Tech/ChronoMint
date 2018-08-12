@@ -54,7 +54,6 @@ export default class ExchangeTransferDialog extends React.PureComponent {
     handleClose: PropTypes.func,
     tokenSymbol: PropTypes.string,
     userWallet: PropTypes.instanceOf(MainWallet),
-    dispatch: PropTypes.func,
     depositToExchange: PropTypes.func,
     withdrawFromExchange: PropTypes.func,
     tokens: PropTypes.instanceOf(TokensCollection),

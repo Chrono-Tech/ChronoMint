@@ -61,8 +61,8 @@ export default class Deposit extends PureComponent {
     spender: PropTypes.string,
     addDeposit: PropTypes.func,
     getTransactions: PropTypes.func,
-    onWithdrawDeposit: PropTypes.func,
-    account: PropTypes.string,
+    // onWithdrawDeposit: PropTypes.func,
+    // account: PropTypes.string,
   }
 
   componentDidMount () {

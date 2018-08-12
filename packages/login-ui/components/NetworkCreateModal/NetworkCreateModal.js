@@ -9,10 +9,10 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { modalsClose, modalsOpen } from 'redux/modals/actions'
 import {
-  handleSubmitCreateNetwork,
-  handleSubmitEditNetwork,
-  handleDeleteNetwork,
-} from '@chronobank/login/redux/network/thunks'
+  customNetworkEdit,
+  customNetworksDelete,
+  customNetworkCreate,
+} from '@chronobank/core/redux/persistAccount/actions'
 import {
   AccountCustomNetwork,
 } from '@chronobank/core/models/wallet/persistAccount'
@@ -22,9 +22,9 @@ import NetworkCreateModalForm from './NetworkCreateModalForm/NetworkCreateModalF
 function mapDispatchToProps (dispatch) {
   return {
     handleCloseModal: () => dispatch(modalsClose()),
-    handleSubmitCreateNetwork: (url, ws, alias) => dispatch(handleSubmitCreateNetwork(url, ws, alias)),
-    handleSubmitEditNetwork: (network) => dispatch(handleSubmitEditNetwork(network)),
-    handleDeleteNetwork: (network) => dispatch(handleDeleteNetwork(network)),
+    handleSubmitCreateNetwork: (url, ws, alias) => dispatch(customNetworkCreate(url, ws, alias)),
+    handleSubmitEditNetwork: (network) => dispatch(customNetworkEdit(network)),
+    handleDeleteNetwork: (network) => dispatch(customNetworksDelete(network)),
     openConfirmDeleteModal: (network = null) => dispatch(modalsOpen({
       componentName: 'NetworkDeleteModal',
       props: { network },
@@ -38,7 +38,7 @@ export default class NetworkCreateModal extends PureComponent {
     handleCloseModal: PropTypes.func,
     handleSubmitCreateNetwork: PropTypes.func,
     handleSubmitEditNetwork: PropTypes.func,
-    handleDeleteNetwork: PropTypes.func,
+    // handleDeleteNetwork: PropTypes.func,
     openConfirmDeleteModal: PropTypes.func,
     network: PropTypes.instanceOf(AccountCustomNetwork),
   }

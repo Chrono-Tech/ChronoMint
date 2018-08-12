@@ -4,7 +4,7 @@
  */
 
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
-import { I18n } from '@chronobank/core-dependencies/i18n/index'
+import { I18n } from '@chronobank/core-dependencies/i18n'
 import Button from 'components/common/ui/Button/Button'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
@@ -19,7 +19,6 @@ import FileSelect from 'components/common/FileSelect/FileSelect'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
-import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import { FORM_CBE_TOKEN } from 'components/constants'
 import validate from './validate'
 
@@ -60,11 +59,8 @@ export default class CBETokenDialog extends PureComponent {
   static propTypes = {
     isModify: PropTypes.bool,
     isFetching: PropTypes.bool,
-    handleAddressChange: PropTypes.func,
     onClose: PropTypes.func,
     address: PropTypes.string,
-    tokens: PropTypes.instanceOf(TokensCollection),
-    getDataFromContract: PropTypes.func,
     ...formPropTypes,
   }
 

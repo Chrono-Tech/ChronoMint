@@ -4,11 +4,11 @@
  */
 
 import { Translate } from 'react-redux-i18n'
-import { connect } from "react-redux"
-import PropTypes from "prop-types"
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { getNetworkName } from '@chronobank/login/redux/network/thunks'
 import { TOKEN_ICONS } from 'assets'
 import ProfileModel from '@chronobank/core/models/ProfileModel'
-import networkService from '@chronobank/login/network/NetworkService'
 import React, { PureComponent } from 'react'
 import { logout } from '@chronobank/core/redux/session/thunks'
 import { getBlockchainAddressesList } from '@chronobank/core/redux/session/selectors'
@@ -27,13 +27,13 @@ function mapStateToProps (state) {
   return {
     account: session.account,
     profile: session.profile,
-    networkName: networkService.getName(),
     tokens: getBlockchainAddressesList()(state),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
+    getNetworkName: () => dispatch(getNetworkName()),
     handleProfileEdit: (data) => dispatch(modalsOpen({
       componentName: 'UpdateProfileDialog',
       data,
@@ -46,15 +46,12 @@ function mapDispatchToProps (dispatch) {
 class ProfileContent extends PureComponent {
 
   static propTypes = {
-    isOpened: PropTypes.bool,
-    networkName: PropTypes.string,
     account: PropTypes.string,
     profile: PropTypes.instanceOf(ProfileModel),
     tokens: PropTypes.arrayOf(PropTypes.object),
-
+    getNetworkName: PropTypes.func,
     handleLogout: PropTypes.func,
     handleProfileEdit: PropTypes.func,
-    handleDrawerToggle: PropTypes.func,
     onProfileClose: PropTypes.func,
   }
 
@@ -77,7 +74,7 @@ class ProfileContent extends PureComponent {
 
         <div styleName='network-name'>
           <div styleName='network-name-text'>
-            {this.props.networkName}
+            {this.props.getNetworkName()}
           </div>
         </div>
 

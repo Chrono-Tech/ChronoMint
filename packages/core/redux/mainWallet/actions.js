@@ -390,7 +390,7 @@ export const getTransactionsForMainWallet = ({ wallet, forcedOffset }) => async 
 
 export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
 
-  const transactions: TxHistoryModel = new TxHistoryModel({ ...wallet.transactions }) || new TxHistoryModel()
+  const transactions: TxHistoryModel = new TxHistoryModel({ ...wallet.transactions })
   const offset = forcedOffset ? 0 : (transactions.transactions.length || 0)
   const newOffset = offset + TXS_PER_PAGE
 

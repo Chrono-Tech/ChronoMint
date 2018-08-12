@@ -4,7 +4,6 @@
  */
 
 import { Link } from 'react-router'
-import networkService from '@chronobank/login/network/NetworkService'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { I18n } from '@chronobank/core-dependencies/i18n'
@@ -14,12 +13,12 @@ import { connect } from 'react-redux'
 import menu from 'menu'
 import { drawerHide } from 'redux/drawer/actions'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
+import { getNetworkName } from '@chronobank/login/redux/network/thunks'
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
 import { logout } from '@chronobank/core/redux/session/thunks'
 import chronoWalletLogoSVG from 'assets/img/chronowallettext-white.svg'
-import ProfileModel from '@chronobank/core/models/ProfileModel'
 import ProfileImage from 'components/common/ProfileImage/ProfileImage'
 import exitSvg from 'assets/img/exit-white.svg'
 import { sidesCloseAll, sidesOpen } from 'redux/sides/actions'
@@ -44,7 +43,6 @@ function mapStateToProps (state) {
     isCBE,
     profile,
     isDrawerOpen: state.get('drawer').isOpen,
-    networkName: networkService.getName(),
     avatar: accountProfileSummary.avatar,
     userName: accountProfileSummary.userName,
   }
@@ -52,6 +50,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
+    getNetworkName: () => dispatch(getNetworkName()),
     handleDrawerHide: () => dispatch(drawerHide()),
     handleLogout: () => dispatch(logout()),
     handleProfileEdit: () => dispatch(modalsOpen({
@@ -92,14 +91,12 @@ export default class DrawerMainMenu extends PureComponent {
   static propTypes = {
     isCBE: PropTypes.bool,
     handleProfileEdit: PropTypes.func,
-    handleDrawerHide: PropTypes.func,
-    profile: PropTypes.instanceOf(ProfileModel),
-    networkName: PropTypes.string,
     userName: PropTypes.string,
     handleLogout: PropTypes.func,
     walletsCount: PropTypes.number,
     handleAssetsManagerMoreInfo: PropTypes.func,
     onSelectLink: PropTypes.func,
+    getNetworkName: PropTypes.func,
   }
 
   componentDidMount () {
@@ -203,7 +200,7 @@ export default class DrawerMainMenu extends PureComponent {
                   {userName || getAccountName(selectedAccount) || 'Account name'}
                 </div>
                 <div styleName='network-name-text'>
-                  {this.props.networkName}
+                  {this.props.getNetworkName()}
                 </div>
               </div>
               <div styleName='exit' onClick={this.props.handleLogout}>

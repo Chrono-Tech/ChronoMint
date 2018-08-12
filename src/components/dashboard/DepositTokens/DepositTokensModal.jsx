@@ -39,7 +39,7 @@ export default class DepositTokensModal extends PureComponent {
     mainApprove: PropTypes.func,
     depositAsset: PropTypes.func,
     withdrawAsset: PropTypes.func,
-    resetForm: PropTypes.func,
+    // resetForm: PropTypes.func,
     handleCloseModal: PropTypes.func,
     isWithdraw: PropTypes.bool,
   }

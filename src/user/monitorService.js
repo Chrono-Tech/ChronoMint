@@ -4,6 +4,7 @@
  */
 
 import EventEmitter from 'events'
+import { modalsOpen } from 'redux/modals/actions'
 
 export const USER_ACTIVE = 'USER_ACTIVE'
 
@@ -69,6 +70,10 @@ export class UserMonitorService extends EventEmitter {
       clearTimeout(this._timer)
       this._timer = setTimeout(this._sendIdleSignal, this._idleInterval)
     }
+  }
+
+  setOnActive = (dispatch) => {
+    this.on('active', () => dispatch(modalsOpen({ componentName: 'UserActiveDialog' })))
   }
 }
 
