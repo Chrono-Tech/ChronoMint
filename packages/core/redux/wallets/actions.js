@@ -18,7 +18,8 @@ import {
 } from '@chronobank/login/network/constants'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import WalletModel from '../../models/wallet/WalletModel'
-import { formatBalances, getWalletBalances, subscribeOnTokens } from '../tokens/actions'
+import { subscribeOnTokens } from '../tokens/actions'
+import { formatBalances, getWalletBalances } from '../tokens/utils'
 import TokenModel from '../../models/tokens/TokenModel'
 import tokenService from '../../services/TokenService'
 import Amount from '../../models/Amount'
@@ -30,7 +31,12 @@ import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { AllowanceCollection, SignerMemoryModel } from '../../models'
 import { executeTransaction } from '../ethereum/actions'
-import { WALLETS_SET, WALLETS_SET_NAME, WALLETS_TWO_FA_CONFIRMED, WALLETS_UPDATE_BALANCE, WALLETS_UPDATE_WALLET } from './constants'
+import {
+  WALLETS_SET,
+  WALLETS_SET_NAME,
+  WALLETS_UPDATE_BALANCE,
+  WALLETS_UPDATE_WALLET,
+} from './constants'
 import { getSigner } from '../persistAccount/selectors'
 
 const isOwner = (wallet, account) => {
@@ -43,16 +49,9 @@ export const get2FAEncodedKey = (callback) => () => {
 
 export const setWalletName = (walletId, name) => (dispatch) => dispatch({ type: WALLETS_SET_NAME, walletId, name })
 
-export const check2FAChecked = () => async (dispatch) => {
-  const result = await dispatch(get2FAEncodedKey())
-  let twoFAConfirmed
-  if (typeof result === 'object' && result.code) {
-    twoFAConfirmed = true
-  } else {
-    twoFAConfirmed = false
-  }
-  dispatch({ type: WALLETS_TWO_FA_CONFIRMED, twoFAConfirmed })
-}
+export const setWallet = (wallet) => (dispatch) => dispatch({ type: WALLETS_SET, wallet })
+
+export const setWalletBalance = (walletId, balance) => (dispatch) => dispatch({ type: WALLETS_UPDATE_BALANCE, walletId, balance })
 
 export const initWallets = () => (dispatch) => {
   dispatch(initWalletsFromKeys())
@@ -77,7 +76,7 @@ const initWalletsFromKeys = () => (dispatch) => {
       isMain: true,
     })
 
-    dispatch({ type: WALLETS_SET, wallet })
+    dispatch(setWallet(wallet))
     dispatch(updateWalletBalance({ wallet }))
   })
 }
@@ -119,17 +118,13 @@ const initDerivedWallets = () => async (dispatch, getState) => {
 const updateWalletBalance = ({ wallet }) => async (dispatch) => {
   getWalletBalances({ wallet })
     .then((balancesResult) => {
-      dispatch({
-        type: WALLETS_SET,
-        wallet: new WalletModel({
-          ...wallet,
-          balances: {
-            ...wallet.balances,
-            ...formatBalances({ blockchain: wallet.blockchain, balancesResult }),
-          },
-        }),
-      })
-
+      dispatch(setWallet(new WalletModel({
+        ...wallet,
+        balances: {
+          ...wallet.balances,
+          ...formatBalances({ blockchain: wallet.blockchain, balancesResult }),
+        },
+      })))
     })
     .catch((e) => {
       // eslint-disable-next-line no-console
@@ -137,13 +132,9 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
       const updateBalance = (token: TokenModel) => async () => {
         if (token.blockchain() === wallet.blockchain) {
           const dao = tokenService.getDAO(token)
-          let balance = await dao.getAccountBalance(wallet.address)
+          const balance = await dao.getAccountBalance(wallet.address)
           if (balance) {
-            await dispatch({
-              type: WALLETS_UPDATE_BALANCE,
-              walletId: wallet.id,
-              balance: new Amount(balance, token.symbol(), true),
-            })
+            dispatch(setWalletBalance(wallet.id, new Amount(balance, token.symbol(), true)))
           }
         }
       }
@@ -318,6 +309,6 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
     isDerived: true,
   })
 
-  dispatch({ type: WALLETS_SET, wallet })
+  dispatch(setWallet(wallet))
   dispatch(updateWalletBalance({ wallet }))
 }

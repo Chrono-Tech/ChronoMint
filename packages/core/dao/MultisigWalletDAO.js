@@ -3,11 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { zipWith } from 'lodash'
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
-import AbstractContractDAO from '../dao/AbstractContractDAO'
+import AbstractContractDAO from '../dao/AbstractContract3DAO'
 import Amount from '../models/Amount'
 import TokenModel from '../models/tokens/TokenModel'
 import TxExecModel from '../models/TxExecModel'
@@ -126,23 +126,27 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
       const pendingTxCollection = {}
       const res = await this.contract.methods.getPendings().call()
       const [values, operations, isConfirmed] = Object.values(res)
+      const txs = zipWith(
+        values, operations, isConfirmed,
+        (value, address, isConfirmed) => ({
+          value,
+          address,
+          isConfirmed,
+        }))
+        .filter((operation) => this.isValidId(operation.address))
 
-      const verifiedOperationsPromises = []
       const pendingDataPromises = []
-      operations.filter(this.isValidId).map((operation) => {
-        verifiedOperationsPromises.push(ethereumProvider.checkConfirm2FAtx(operation))
-        pendingDataPromises.push(this.getPendingData(operation))
+      txs.map((operation) => {
+        pendingDataPromises.push(this.getPendingData(operation.address))
       })
-      const verifiedOperations = await Promise.all(verifiedOperationsPromises)
       const pendingData = await Promise.all(pendingDataPromises)
 
-      operations.filter(this.isValidId).forEach((id, i) => {
-        let pendingTxModel
-        pendingTxModel = new MultisigWalletPendingTxModel({
-          id,
-          value: new BigNumber(values [i]),
-          isConfirmed: isConfirmed[i],
-          isPending: verifiedOperations[i] ? verifiedOperations[i].activated : false,
+      txs.forEach((operation, i) => {
+        const pendingTxModel = new MultisigWalletPendingTxModel({
+          id: operation.address,
+          value: new BigNumber(operation.value),
+          isConfirmed: operation.isConfirmed,
+          isPending: false,
           decodedTx: pendingData[i] ? pendingData[i] : null,
         })
         pendingTxCollection[pendingTxModel.id] = pendingTxModel

@@ -5,7 +5,6 @@
 
 import BigNumber from 'bignumber.js'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
-import { change } from 'redux-form/immutable'
 import type MultisigWalletDAO from '../../dao/MultisigWalletDAO'
 import { EE_MS_WALLET_ADDED, EE_MS_WALLET_REMOVED, EE_MS_WALLETS_COUNT } from '../../dao/constants/WalletsManagerDAO'
 import Amount from '../../models/Amount'
@@ -15,7 +14,8 @@ import MultisigWalletPendingTxModel from '../../models/wallet/MultisigWalletPend
 import OwnerModel from '../../models/wallet/OwnerModel'
 import { notify, notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
-import { formatBalances, getWalletBalances, subscribeOnTokens } from '../tokens/actions'
+import { subscribeOnTokens } from '../tokens/actions'
+import { formatBalances, getWalletBalances } from '../tokens/utils'
 import {
   EE_CONFIRMATION,
   EE_CONFIRMATION_NEEDED,
@@ -43,8 +43,6 @@ import {
   ETH_MULTISIG_INIT,
   ETH_MULTISIG_REMOVE,
   ETH_MULTISIG_UPDATE,
-  FORM_2FA_STEPS,
-  FORM_2FA_WALLET,
 } from './constants'
 import { getAccount } from '../session/selectors/models'
 import { getTokens } from '../tokens/selectors'
@@ -82,13 +80,6 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
         }),
       })
 
-      try {
-        await dispatch(check2FAChecked())
-        dispatch(change(FORM_2FA_WALLET, 'step', FORM_2FA_STEPS[2]))
-      } catch (e) {
-        // eslint-disable-next-line
-        console.error(e)
-      }
       const txHash = wallet.transactionHash
 
       if (txHash) {
@@ -357,24 +348,9 @@ export const confirm2FATransfer = (txAddress, walletAddress, confirmToken, callb
 
 export const setEthMultisig2FAConfirmed = (twoFAConfirmed) => (dispatch) => dispatch({ type: ETH_MULTISIG_2_FA_CONFIRMED, twoFAConfirmed })
 
-export const check2FAChecked = () => async (dispatch) => {
-  const result = await dispatch(get2FAEncodedKey())
-  let twoFAConfirmed
-  if (typeof result === 'object' && result.code) {
-    twoFAConfirmed = true
-  } else {
-    twoFAConfirmed = false
-  }
-  dispatch(setEthMultisig2FAConfirmed(twoFAConfirmed))
-}
-
 export const updatePendingTx = (walletAddress: string, tx: MultisigWalletPendingTxModel) => (dispatch, getState) => {
   const wallet = getMultisigWallets(getState()).item(walletAddress)
   dispatch(updateEthMultisigWallet(wallet.updatePendingTx(new MultisigWalletPendingTxModel({ ...tx, isPending: true }))))
-}
-
-export const checkConfirm2FAtx = (txAddress, callback) => {
-  return ethereumProvider.checkConfirm2FAtx(txAddress, callback)
 }
 
 export const setMultisigWalletName = (walletId, name) => (dispatch, getState) => {
