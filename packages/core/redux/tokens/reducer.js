@@ -11,7 +11,7 @@ const initialState = new TokensCollection()
 export default (state = initialState, action) => {
   switch (action.type) {
     case a.TOKENS_INIT:
-      return state.isInited(action.isInited)
+      return state.isInited(true)
     case a.TOKENS_FETCHING:
       return state.leftToFetch(action.count)
     case a.TOKENS_FAILED:

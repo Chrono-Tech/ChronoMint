@@ -3,24 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Tx from 'ethereumjs-tx'
 import EventEmitter from 'events'
 import ipfs from '@chronobank/core-dependencies/utils/IPFS'
-import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import BigNumber from 'bignumber.js'
 import TxExecModel from '../models/TxExecModel'
 import web3Converter from '../utils/Web3Converter'
-import Amount from '../models/Amount'
-
-//#region CONSTANTS
-
-import {
-  BLOCKCHAIN_ETHEREUM,
-  DEFAULT_GAS,
-  DEFAULT_TX_OPTIONS,
-} from './constants'
-
-//#endregion CONSTANTS
+import { DEFAULT_GAS } from './constants'
 
 export default class AbstractContractDAO extends EventEmitter {
 
@@ -147,76 +135,6 @@ export default class AbstractContractDAO extends EventEmitter {
   /** @protected */
   async _ipfsPut (data): string {
     return web3Converter.ipfsHashToBytes32(await ipfs.put(data))
-  }
-
-  /**
-   * Create tx model
-   * @param func
-   * @param args
-   * @param amount
-   * @param value
-   * @param options
-   * @param additionalOptions
-   * @returns {Promise<TxExecModel>}
-   */
-  async submit (func, args, amount, value, options, additionalOptions) {
-    const data = this.contract.methods[func](...args).encodeABI()
-
-    //eslint-disable-next-line prefer-const
-    let { from, feeMultiplier, fields, symbol, id } = Object.assign({}, DEFAULT_TX_OPTIONS, options)
-
-    if (!from) {
-      from = AbstractContractDAO.getAccount()
-    }
-
-    const { gasLimit, gasFee, gasPrice } = await this.estimateGas(func, args, value, from, { feeMultiplier: feeMultiplier || 1 })
-
-    setImmediate(async () => {
-      this.emit('submit', new TxExecModel({
-        _id: id,
-        contract: this.abi.contractName,
-        func,
-        fields: fields || {},
-        from,
-        symbol,
-        blockchain: BLOCKCHAIN_ETHEREUM,
-        to: this.contract._address,
-        feeMultiplier,
-        value,
-        data,
-        fee: {
-          gasLimit: new Amount(gasLimit, 'ETH'),
-          gasFee: new Amount(gasFee, 'ETH'),
-          gasPrice: new Amount(gasPrice, 'ETH'),
-          feeMultiplier,
-        },
-        additionalOptions,
-      }))
-    })
-  }
-
-  async immediateTransfer (tx: TxExecModel) {
-    try {
-      const rawTx = await this.createRawTx(tx)
-      ethereumProvider.transfer(rawTx, tx.from)
-    } catch (e) {
-      // eslint-disable-next-line
-      console.log('Transfer failed', e)
-      throw e
-    }
-  }
-
-  async createRawTx (tx: TxExecModel) {
-    const nonce = await this.web3.eth.getTransactionCount(tx.from)
-    return new Tx({
-      data: tx.data || '',
-      nonce: this.web3.utils.toHex(nonce),
-      gasLimit: this.web3.utils.toHex(tx.fee.gasLimit.toString()),
-      gasPrice: this.web3.utils.toHex(tx.fee.gasPrice.toString()),
-      to: tx.to,
-      from: tx.from,
-      value: this.web3.utils.toHex(tx.value.toString()),
-    })
   }
 
   estimateGas = async (func, args, value, from, additionalOptions): Object => {

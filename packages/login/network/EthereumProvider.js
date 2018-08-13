@@ -48,6 +48,11 @@ export class EthereumProvider extends AbstractProvider {
     return node
   }
 
+  subscribeNewWallet (address) {
+    const node = this._selectNode(this._engine)
+    node.subscribeNewWallet(address)
+  }
+
   getTransactionsList (address, skip, offset) {
     const node = this._selectNode(this._engine)
     return node.getTransactionsList(address, this._id, skip, offset)
@@ -116,7 +121,15 @@ export class EthereumProvider extends AbstractProvider {
   getEngine () {
     return this._engine
   }
+
+  async getAccountBalances (address) {
+    const node = this._selectNode(this._engine)
+    const data = await node.getAddressInfo(address || this._engine.getAddress())
+    return {
+      balance: data.balance,
+      tokens: data.erc20token,
+    }
+  }
 }
 
-// TODO: constructor of EthereumProvider has no args. selectEthereumNode is using via ...arguments
 export const ethereumProvider = new EthereumProvider(selectEthereumNode)

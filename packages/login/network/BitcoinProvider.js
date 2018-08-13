@@ -27,7 +27,7 @@ export class BitcoinProvider extends AbstractProvider {
     this._handleTransaction = (tx) => this.onTransaction(tx)
     this._handleBalance = (balance) => this.onBalance(balance)
     this._handleLastBlock = (lastBlock) => this.onLastBlock(lastBlock)
-    this._handleTransactionUpdated = ( { tx, address, blockchain, symbol }) => this.onTransactionUpdated(tx, address, blockchain, symbol)
+    this._handleTransactionUpdated = ({ tx, address, blockchain, symbol }) => this.onTransactionUpdated(tx, address, blockchain, symbol)
     this._id = id
   }
 
@@ -79,7 +79,7 @@ export class BitcoinProvider extends AbstractProvider {
   async getAccountBalances (address) {
     const node = this._selectNode(this._engine)
     const { balance0, balance6 } = await node.getAddressInfo(address || this._engine.getAddress())
-    return { balance0, balance6 }
+    return balance0 || balance6
   }
 
   async estimateFee (from: string, to, amount: BigNumber, feeRate: Number) {
