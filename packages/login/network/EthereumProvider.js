@@ -3,9 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import {
-  DUCK_PERSIST_ACCOUNT,
-} from '@chronobank/core/redux/persistAccount/constants'
+import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
 import AbstractProvider from './AbstractProvider'
@@ -52,6 +50,11 @@ export class EthereumProvider extends AbstractProvider {
       wavesAddress: wavesEngine && wavesEngine.getAddress(),
     })
     return node
+  }
+
+  subscribeNewWallet (address) {
+    const node = this._selectNode(this._engine)
+    node.subscribeNewWallet(address)
   }
 
   getTransactionsList (address, skip, offset) {
@@ -133,16 +136,6 @@ export class EthereumProvider extends AbstractProvider {
     return this._nemEngine
   }
 
-  addNewEthWallet (num_addresses) {
-    const { network, url } = this.getProviderSettings()
-    const wallet = this.getWallet()
-    const newEngine = new EthereumEngine(wallet, network, url, null, num_addresses)
-
-    this.setEngine(newEngine, ethereumProvider.getNemEngine())
-
-    // web3Provider.pushWallet(num_addresses)
-  }
-
   get2FAEncodedKey (callback) {
     const node = this._selectNode(this._engine)
     return node.get2FAEncodedKey(this._engine, callback)
@@ -166,7 +159,15 @@ export class EthereumProvider extends AbstractProvider {
   getEngine () {
     return this._engine
   }
+
+  async getAccountBalances (address) {
+    const node = this._selectNode(this._engine)
+    const data = await node.getAddressInfo(address || this._engine.getAddress())
+    return {
+      balance: data.balance,
+      tokens: data.erc20token,
+    }
+  }
 }
 
-// TODO: constructor of EthereumProvider has no args. selectEthereumNode is using via ...arguments
 export const ethereumProvider = new EthereumProvider(selectEthereumNode)

@@ -8,7 +8,6 @@ import solidityEvent from 'web3/lib/web3/event'
 import BigNumber from 'bignumber.js'
 import Amount from '../models/Amount'
 import TokenModel from '../models/tokens/TokenModel'
-import TxExecModel from '../models/TxExecModel'
 import TxModel from '../models/TxModel'
 import AbstractTokenDAO from './AbstractTokenDAO'
 import { BLOCKCHAIN_ETHEREUM, EVENT_NEW_BLOCK } from './constants'
@@ -88,6 +87,10 @@ export class EthereumDAO extends AbstractTokenDAO {
     return this.web3.eth.getBlockNumber()
   }
 
+  getAccountBalances (account): Promise {
+    return ethereumProvider.getAccountBalances(account)
+  }
+
   getAccountBalance (account): Promise {
     return this.web3.eth.getBalance(account)
   }
@@ -165,63 +168,6 @@ export class EthereumDAO extends AbstractTokenDAO {
       from,
       to,
       value: new BigNumber(amount),
-    }
-  }
-
-  accept (transfer: TxExecModel) {
-    setImmediate(() => {
-      this.emit('accept', transfer)
-    })
-  }
-
-  reject (transfer: TxExecModel) {
-    setImmediate(() => {
-      this.emit('reject', transfer)
-    })
-  }
-
-  async submit (from, to, amount, token, feeMultiplier, advancedParams) {
-    const { gasLimit, gasFee, gasPrice } = await this.estimateGas(null, [to, amount], amount, from, { feeMultiplier })
-    const value = new Amount(amount, this._symbol)
-
-    setImmediate(async () => {
-      this.emit('submit', new TxExecModel({
-        contract: this._contractName,
-        func: 'transfer',
-        blockchain: this._contractName,
-        symbol: this._symbol,
-        from,
-        fields: {
-          to: {
-            value: to,
-            description: 'to',
-          },
-          amount: {
-            value: new Amount(amount, this._symbol),
-            description: 'amount',
-          },
-        },
-        value,
-        to,
-        additionalOptions: advancedParams,
-        fee: {
-          gasLimit: new Amount(gasLimit, this._symbol),
-          gasFee: new Amount(gasFee, this._symbol),
-          gasPrice: new Amount(gasPrice, this._symbol),
-          feeMultiplier,
-        },
-      }))
-    })
-  }
-
-  async immediateTransfer (tx: TxExecModel) {
-    try {
-      const rawTx = await this.createRawTx(tx)
-      ethereumProvider.transfer(rawTx, tx.from)
-    } catch (e) {
-      // eslint-disable-next-line
-      console.log('Transfer failed', e)
-      throw e
     }
   }
 
