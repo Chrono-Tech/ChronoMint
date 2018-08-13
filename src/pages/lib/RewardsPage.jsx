@@ -4,7 +4,7 @@
  */
 
 import { CSSTransitionGroup } from 'react-transition-group'
-import { RewardsContent } from 'layouts/partials'
+import RewardsContent from 'layouts/partials/RewardsContent/RewardsContent'
 import React, { Component } from 'react'
 
 import './RewardsPage.scss'

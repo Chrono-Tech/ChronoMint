@@ -26,7 +26,6 @@ export default class ExchangeDepositForm extends React.PureComponent {
     maxAmount: PropTypes.instanceOf(Amount).isRequired,
     token: PropTypes.instanceOf(TokenModel).isRequired,
     title: PropTypes.node,
-    dispatch: PropTypes.func,
     ...formPropTypes,
   }
 

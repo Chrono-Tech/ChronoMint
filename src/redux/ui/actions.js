@@ -29,7 +29,9 @@ export const removeWatchersUserMonitor = () => () => {
 
 export const watchInitUserMonitor = () => (dispatch) => {
   userMonitorService
-    .on('active', () => dispatch(modalsOpen({ componentName: 'UserActiveDialog' })))
+    .on('active', () => dispatch(modalsOpen({
+      componentName: 'UserActiveDialog'
+    })))
     .start()
 }
 

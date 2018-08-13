@@ -32,7 +32,8 @@ function prefix (token) {
 function mapDispatchToProps (dispatch) {
   return {
     handleClose: () => dispatch(modalsClose()),
-    depositToExchange: (token: TokenModel, amount: string, recipient: string) => dispatch(mainTransfer(null, token, amount, recipient)),
+    depositToExchange: (token: TokenModel, amount: string, recipient: string) =>
+      dispatch(mainTransfer(null, token, amount, recipient)),
     withdrawFromExchange: (exchange: ExchangeOrderModel, wallet, amount: string, symbol: string) => {
       dispatch(withdrawFromExchange(exchange, wallet, amount, symbol))
     },

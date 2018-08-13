@@ -44,7 +44,6 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class Tokens extends PureComponent {
   static propTypes = {
-    isFetched: PropTypes.bool,
     tokens: PropTypes.arrayOf(
       PropTypes.instanceOf(TokenModel),
     ),

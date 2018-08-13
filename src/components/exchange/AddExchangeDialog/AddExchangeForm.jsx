@@ -53,9 +53,6 @@ const onSubmit = (values) => {
 export default class AddExchangeForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
-    onClose: PropTypes.func,
-    onSubmitFunc: PropTypes.func,
-    onSubmitSuccess: PropTypes.func,
     tokens: PropTypes.instanceOf(TokensCollection),
     balances: PropTypes.instanceOf(BalancesCollection),
     ...formPropTypes,

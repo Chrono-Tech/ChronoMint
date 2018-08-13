@@ -12,7 +12,6 @@ import 'jest-enzyme'
 import { BTC_TESTNET_NODE } from '@chronobank/login/network/BitcoinNode'
 import { LOCAL_ID } from '@chronobank/login/network/settings'
 import web3provider from '@chronobank/login/network/Web3Provider'
-// import networkService from '@chronobank/login/network/NetworkService'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import Web3 from 'web3'
@@ -56,7 +55,6 @@ beforeEach(() => {
   // NOTE: session is always as CBE
   ls.createSession(accounts[0], LOCAL_ID, LOCAL_ID)
   store = mockStore()
-  // networkService.connectStore(store)
 })
 
 afterEach(async (done) => {

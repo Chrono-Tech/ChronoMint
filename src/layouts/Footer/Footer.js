@@ -55,7 +55,7 @@ class Footer extends Component {
   }
 
   renderFormMessage () {
-    const { submitSucceeded, submitting, error } = this.props
+    const { submitSucceeded, error } = this.props
     const msgClasses = classnames({
       subscriptionSubmitSucceeded: submitSucceeded,
       subscriptionSubmitError: error,

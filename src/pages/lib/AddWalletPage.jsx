@@ -4,7 +4,7 @@
  */
 
 import { CSSTransitionGroup } from 'react-transition-group'
-import { AddWalletContent } from 'layouts/partials'
+import AddWalletContent from 'layouts/partials/AddWalletContent/AddWalletContent'
 import React, { Component } from 'react'
 
 import './WalletPage.scss'

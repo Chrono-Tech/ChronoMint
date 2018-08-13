@@ -4,7 +4,7 @@
  */
 
 import { CSSTransitionGroup } from 'react-transition-group'
-import { OperationsContent } from 'layouts/partials'
+import OperationsContent from 'layouts/partials/OperationsContent/OperationsContent'
 import React, { Component } from 'react'
 
 import './OperationsPage.scss'

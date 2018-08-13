@@ -4,7 +4,7 @@
  */
 
 import { CSSTransitionGroup } from 'react-transition-group'
-import { ExchangeContent } from 'layouts/partials'
+import ExchangeContent from 'layouts/partials/ExchangeContent/ExchangeContent'
 import React, { Component } from 'react'
 
 import './ExchangePage.scss'

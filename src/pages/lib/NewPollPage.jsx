@@ -4,7 +4,7 @@
  */
 
 import { CSSTransitionGroup } from 'react-transition-group'
-import { NewPollContent } from 'layouts/partials'
+import NewPollContent from 'layouts/partials/NewPollContent/NewPollContent'
 import React, { Component } from 'react'
 
 export default class NewPollPage extends Component {

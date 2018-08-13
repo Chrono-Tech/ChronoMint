@@ -19,6 +19,7 @@ import FileSelect from 'components/common/FileSelect/FileSelect'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
+import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import { FORM_CBE_TOKEN } from 'components/constants'
 import validate from './validate'
 
@@ -59,6 +60,9 @@ export default class CBETokenDialog extends PureComponent {
   static propTypes = {
     isModify: PropTypes.bool,
     isFetching: PropTypes.bool,
+    handleDataFromContract: PropTypes.func,
+    onSubmit: PropTypes.func,
+    tokens: PropTypes.instanceOf(TokensCollection),
     onClose: PropTypes.func,
     address: PropTypes.string,
     ...formPropTypes,

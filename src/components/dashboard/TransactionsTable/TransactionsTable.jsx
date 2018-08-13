@@ -39,7 +39,6 @@ function mapStateToProps (state) {
 @connect(mapStateToProps)
 export default class TransactionsTable extends PureComponent {
   static propTypes = {
-    // blockchain: PropTypes.string,
     walletAddress: PropTypes.string,
     transactions: PropTypes.instanceOf(Array),
     selectedNetworkId: PropTypes.number,

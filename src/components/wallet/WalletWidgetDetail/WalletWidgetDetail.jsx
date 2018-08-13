@@ -70,8 +70,6 @@ export default class WalletWidgetDetail extends PureComponent {
     send: PropTypes.func,
     receive: PropTypes.func,
     deposit: PropTypes.func,
-    // openEditManagersDialog: PropTypes.func,
-    // openEditSignaturesDialog: PropTypes.func,
     removeEthMultisig: PropTypes.func,
   }
 
@@ -111,7 +109,7 @@ export default class WalletWidgetDetail extends PureComponent {
                   <h3><WalletName wallet={wallet} /></h3>
                   <span styleName='address-address'>{wallet.address}</span>
                 </div>
-                {token && token.isFetched()
+                {tokenIsFetched
                   ? <WalletMainCoinBalance wallet={wallet} />
                   : (
                     <span styleName='noToken'>

@@ -4,7 +4,7 @@
  */
 
 import { CSSTransitionGroup } from 'react-transition-group'
-import { PollContent } from 'layouts/partials'
+import PollContent from 'layouts/partials/PollContent/PollContent'
 import React, { Component } from 'react'
 
 export default class VotingPage extends Component {

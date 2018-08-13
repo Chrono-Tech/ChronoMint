@@ -4,7 +4,7 @@
  */
 
 import { CSSTransitionGroup } from 'react-transition-group'
-import { SettingsContent } from 'layouts/partials'
+import SettingsContent from 'layouts/partials/SettingsContent/SettingsContent'
 import React, { Component } from 'react'
 
 import './SettingsPage.scss'

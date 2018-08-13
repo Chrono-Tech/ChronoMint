@@ -4,7 +4,7 @@
  */
 
 import { CSSTransitionGroup } from 'react-transition-group'
-import { AssetsContent } from 'layouts/partials'
+import AssetsContent from 'layouts/partials/AssetsContent/AssetsContent'
 import React, { Component } from 'react'
 
 import './AssetsPage.scss'

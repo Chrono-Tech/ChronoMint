@@ -18,7 +18,7 @@ import BigNumber from 'bignumber.js'
 import web3Converter from '@chronobank/core/utils/Web3Converter'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { change, untouch } from 'redux-form'
+// import { change, untouch } from 'redux-form'
 import { mainApprove, mainTransfer } from '@chronobank/core/redux/wallets/actions'
 import { multisigTransfer } from '@chronobank/core/redux/multisigWallet/actions'
 import { estimateGasTransfer } from '@chronobank/core/redux/tokens/actions'
@@ -28,7 +28,7 @@ import { MultisigEthWalletModel } from '@chronobank/core/models'
 import {
   ACTION_APPROVE,
   ACTION_TRANSFER,
-  FORM_SEND_TOKENS,
+  // FORM_SEND_TOKENS,
   MODE_ADVANCED,
   MODE_SIMPLE,
 } from 'components/constants'
@@ -46,11 +46,11 @@ function mapDispatchToProps (dispatch) {
     mainApprove: (token, amount, spender, feeMultiplier) => dispatch(mainApprove(token, amount, spender, feeMultiplier)),
     mainTransfer: (wallet, token, amount, recipient, feeMultiplier, advancedModeParams) => dispatch(mainTransfer(wallet, token, amount, recipient, feeMultiplier, advancedModeParams)),
     estimateGas: (tokenId, params, callback, gasPriceMultiplier) => dispatch(estimateGasTransfer(tokenId, params, callback, gasPriceMultiplier)),
-    resetForm: () => {
-      dispatch(change(FORM_SEND_TOKENS, 'recipient', ''))
-      dispatch(change(FORM_SEND_TOKENS, 'amount', ''))
-      dispatch(untouch(FORM_SEND_TOKENS, 'recipient', 'amount'))
-    },
+    // resetForm: () => {
+    //   dispatch(change(FORM_SEND_TOKENS, 'recipient', ''))
+    //   dispatch(change(FORM_SEND_TOKENS, 'amount', ''))
+    //   dispatch(untouch(FORM_SEND_TOKENS, 'recipient', 'amount'))
+    // },
   }
 }
 

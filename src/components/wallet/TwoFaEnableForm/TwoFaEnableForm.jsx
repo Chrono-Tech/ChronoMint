@@ -49,7 +49,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleGoWallets: () => dispatch(goToWallets()),
     get2FAEncodedKey: () => {
       dispatch(get2FAEncodedKey((code) => {
         dispatch(change(FORM_2FA_ENABLE, 'code', code))
@@ -69,10 +68,7 @@ export default class TwoFaEnableForm extends PureComponent {
   static propTypes = {
     handleSetTwoFAConfirmed: PropTypes.func,
     account: PropTypes.string,
-    feeMultiplier: PropTypes.number,
-    handleGoWallets: PropTypes.func,
     confirm2FASecret: PropTypes.func,
-    handleGoTo2FA: PropTypes.func,
     code: PropTypes.string,
     get2FAEncodedKey: PropTypes.func,
     handleGoToWallets: PropTypes.func,

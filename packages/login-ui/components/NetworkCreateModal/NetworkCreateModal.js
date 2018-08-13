@@ -16,7 +16,7 @@ import {
 import {
   AccountCustomNetwork,
 } from '@chronobank/core/models/wallet/persistAccount'
-import { ModalDialog } from 'components'
+import ModalDialog from 'components/dialogs/ModalDialog'
 import NetworkCreateModalForm from './NetworkCreateModalForm/NetworkCreateModalForm'
 
 function mapDispatchToProps (dispatch) {
@@ -38,7 +38,7 @@ export default class NetworkCreateModal extends PureComponent {
     handleCloseModal: PropTypes.func,
     handleSubmitCreateNetwork: PropTypes.func,
     handleSubmitEditNetwork: PropTypes.func,
-    // handleDeleteNetwork: PropTypes.func,
+    handleDeleteNetwork: PropTypes.func,
     openConfirmDeleteModal: PropTypes.func,
     network: PropTypes.instanceOf(AccountCustomNetwork),
   }

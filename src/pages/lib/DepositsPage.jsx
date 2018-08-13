@@ -4,7 +4,7 @@
  */
 
 import { CSSTransitionGroup } from 'react-transition-group'
-import { DepositsContent } from 'layouts/partials'
+import DepositsContent from 'layouts/partials/DepositsContent/DepositsContent'
 import React, { PureComponent } from 'react'
 
 import './DepositsPage.scss'

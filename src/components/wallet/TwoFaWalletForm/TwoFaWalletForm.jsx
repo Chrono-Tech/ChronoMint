@@ -63,7 +63,6 @@ export default class TwoFaWalletForm extends PureComponent {
     check2FAChecked: PropTypes.bool,
     handleSubmit: PropTypes.func,
     account: PropTypes.string,
-    gasPriceMultiplier: PropTypes.number,
     feeMultiplier: PropTypes.number,
     handleGoWallets: PropTypes.func,
     handleGoTo2FA: PropTypes.func,

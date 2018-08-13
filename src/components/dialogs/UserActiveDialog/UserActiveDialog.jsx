@@ -11,7 +11,7 @@ import userMonitorService from 'user/monitorService'
 import { connect } from 'react-redux'
 import { logout } from '@chronobank/core/redux/session/thunks'
 import { modalsClose } from 'redux/modals/actions'
-import { startUserMonitorAndCloseModals, stopUserMonitor } from 'redux/ui/actions'
+import { stopUserMonitor } from 'redux/ui/actions'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import Timer from 'components/common/Timer/Timer'
 

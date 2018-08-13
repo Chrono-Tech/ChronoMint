@@ -3,12 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-/**
- * C - constants
- * A - action
- * S - state
-*/
-
 import * as types from './constants'
 
 const initialState = {

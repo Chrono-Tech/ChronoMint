@@ -73,7 +73,7 @@ function mapStateToProps (state, ownProps) {
 @reduxForm({ form: FORM_RECEIVE_TOKENS })
 export default class ReceiveTokenModal extends PureComponent {
   static propTypes = {
-    // tokenId: PropTypes.string,
+    tokenId: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
     tokens: PropTypes.arrayOf(PropTypes.instanceOf(TokenModel)),
     address: PropTypes.string,

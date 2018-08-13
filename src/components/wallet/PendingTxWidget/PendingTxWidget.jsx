@@ -10,26 +10,16 @@ import TokenValue from 'components/common/TokenValue/TokenValue'
 import React, { PureComponent } from 'react'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
-// import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
-// import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import Preloader from 'components/common/Preloader/Preloader'
 import MultisigWalletPendingTxModel from '@chronobank/core/models/wallet/MultisigWalletPendingTxModel'
 import Amount from '@chronobank/core/models/Amount'
 import { confirmMultisigTx, revokeMultisigTx } from '@chronobank/core/redux/multisigWallet/actions'
-// import { DUCK_I18N } from 'redux/i18n/constants'
 import { modalsOpen } from 'redux/modals/actions'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 
 import { prefix } from './lang'
 import './PendingTxWidget.scss'
-
-// function mapStateToProps (state) {
-//   return {
-//     tokens: state.get(DUCK_TOKENS),
-//     locale: state.get(DUCK_I18N).locale,
-//   }
-// }
 
 function mapDispatchToProps (dispatch) {
 
@@ -46,14 +36,12 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-@connect(/*mapStateToProps*/ null, mapDispatchToProps)
+@connect(null, mapDispatchToProps)
 export default class PendingTxWidget extends PureComponent {
   static propTypes = {
     wallet: PropTypes.oneOfType([PropTypes.instanceOf(WalletModel), PropTypes.instanceOf(MultisigEthWalletModel)]),
     revoke: PropTypes.func,
     confirm: PropTypes.func,
-    // tokens: PropTypes.instanceOf(TokensCollection),
-    // locale: PropTypes.string,
     enterCode: PropTypes.func,
   }
 

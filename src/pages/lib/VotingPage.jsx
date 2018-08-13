@@ -4,7 +4,7 @@
  */
 
 import { CSSTransitionGroup } from 'react-transition-group'
-import { VotingContent } from 'layouts/partials'
+import VotingContent from 'layouts/partials/VotingContent/VotingContent'
 import React, { Component } from 'react'
 
 import './VotingPage.scss'

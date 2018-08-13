@@ -61,7 +61,6 @@ export default class ExchangeWidget extends React.Component {
   static propTypes = {
     isFetched: PropTypes.bool,
     isFetching: PropTypes.bool,
-    search: PropTypes.func,
     assetSymbols: PropTypes.arrayOf(PropTypes.string),
     handleSubmit: PropTypes.func,
     dispatch: PropTypes.func,

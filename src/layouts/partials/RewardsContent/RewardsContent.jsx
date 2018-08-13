@@ -29,7 +29,6 @@ function mapStateToProps (state) {
   return {
     rewards,
     currentPeriod: rewards.currentPeriod(),
-    // TODO @dkchv: hardcoded to TIME
     isDeposited: state.get(DUCK_ASSETS_HOLDER).isDeposited(),
     isCBE,
   }

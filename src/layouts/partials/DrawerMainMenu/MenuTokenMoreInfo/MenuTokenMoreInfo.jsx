@@ -5,7 +5,9 @@
 
 import { DUCK_MONITOR } from '@chronobank/login/redux/monitor/constants'
 import { Link } from 'react-router'
-import { CopyIcon, IPFSImage, QRIcon } from 'components'
+import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import QRIcon from 'components/dashboard/MicroIcon/QRIcon'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'

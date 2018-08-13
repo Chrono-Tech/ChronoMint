@@ -109,29 +109,6 @@ export default class MenuTokensList extends PureComponent {
     return this.handleScrollToBlockchain(blockchain)
   }
 
-  // [AO] Commented, because unused
-  // renderStatus () {
-  //   const { networkStatus, syncStatus } = this.props
-  //   const networkName =  this.props.getNetworkName()
-
-  //   switch (networkStatus.status) {
-  //     case NETWORK_STATUS_ONLINE: {
-  //       switch (syncStatus.status) {
-  //         case SYNC_STATUS_SYNCED:
-  //           return (<div styleName='icon status-synced' title={I18n.t(`${prefix}.synced`, { network: networkName })} />)
-  //         case SYNC_STATUS_SYNCING:
-  //         default:
-  //           return (<div styleName='icon status-syncing' title={I18n.t(`${prefix}.syncing`, { network: networkName })} />)
-  //       }
-  //     }
-  //     case NETWORK_STATUS_OFFLINE:
-  //       return (<div styleName='icon status-offline' title={I18n.t(`${prefix}.offline`)} />)
-  //     case NETWORK_STATUS_UNKNOWN:
-  //     default:
-  //       return null
-  //   }
-  // }
-
   render () {
     const setToken = (token, isClose) => {
       return () => {

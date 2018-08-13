@@ -4,7 +4,7 @@
  */
 
 import { CSSTransitionGroup } from 'react-transition-group'
-import { LOCContent } from 'layouts/partials'
+import LOCContent from 'layouts/partials/LOCContent/LOCContent'
 import React, { Component } from 'react'
 
 import './LOCPage.scss'

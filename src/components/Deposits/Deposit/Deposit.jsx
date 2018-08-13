@@ -9,7 +9,6 @@ import Amount from '@chronobank/core/models/Amount'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { TIME, BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
-import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { getDeposit } from '@chronobank/core/redux/mainWallet/selectors'
 import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
@@ -33,11 +32,9 @@ function mapStateToProps (state) {
   const assetHolder = state.get(DUCK_ASSETS_HOLDER)
   const spender = assetHolder.wallet()
   const wallet = getWallet(state)
-  const { account } = state.get(DUCK_SESSION)
   return {
     wallet,
     spender,
-    account,
     deposit: getDeposit(TIME)(state),
     token: tokens.item(TIME),
     transactions: wallet.transactions.transactions,
@@ -61,8 +58,6 @@ export default class Deposit extends PureComponent {
     spender: PropTypes.string,
     addDeposit: PropTypes.func,
     getTransactions: PropTypes.func,
-    // onWithdrawDeposit: PropTypes.func,
-    // account: PropTypes.string,
   }
 
   componentDidMount () {

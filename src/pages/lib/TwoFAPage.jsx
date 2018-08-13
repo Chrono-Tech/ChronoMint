@@ -4,7 +4,7 @@
  */
 
 import { CSSTransitionGroup } from 'react-transition-group'
-import { TwoFAContent } from 'layouts/partials'
+import TwoFAContent from 'layouts/partials/TwoFAContent/TwoFAContent'
 import React, { Component } from 'react'
 
 import './WalletPage.scss'

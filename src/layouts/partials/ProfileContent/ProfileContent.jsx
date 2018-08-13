@@ -47,12 +47,11 @@ class ProfileContent extends PureComponent {
 
   static propTypes = {
     account: PropTypes.string,
-    profile: PropTypes.instanceOf(ProfileModel),
-    tokens: PropTypes.arrayOf(PropTypes.object),
-    getNetworkName: PropTypes.func,
     handleLogout: PropTypes.func,
     handleProfileEdit: PropTypes.func,
     onProfileClose: PropTypes.func,
+    profile: PropTypes.instanceOf(ProfileModel),
+    tokens: PropTypes.arrayOf(PropTypes.object),
   }
 
   static defaultProps = {
