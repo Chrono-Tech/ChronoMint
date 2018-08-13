@@ -9,7 +9,6 @@ import * as assetDonator from '@chronobank/core/dao/constants/AssetDonatorDAO'
 import * as erc20 from '@chronobank/core/dao/constants/ERC20DAO'
 import * as erc20Manager from '@chronobank/core/dao/constants/ERC20ManagerDAO'
 import * as eth from '@chronobank/core/dao/constants/EthereumDAO'
-import * as exchange from '@chronobank/core/dao/constants/ExchangeDAO'
 import * as loc from '@chronobank/core/dao/constants/LOCManagerDAO'
 import * as operations from '@chronobank/core/dao/constants/PendingManagerDAO'
 import * as platformsManager from '@chronobank/core/dao/constants/PlatformsManagerDAO'
@@ -52,7 +51,6 @@ export default {
     settings: 'Settings',
     wallet: 'Wallet',
     addWallet: 'Add wallet',
-    exchange: 'Exchange',
     voting: 'Voting',
     newPoll: 'Create new poll',
     rewards: 'Bonuses',
@@ -105,14 +103,6 @@ export default {
     sign: 'Sign',
     enterCode: 'Enter Code',
   },
-  exchange: {
-    tokens: 'Exchange tokens',
-    rates: 'Exchange rates',
-    exchange: 'Exchange',
-    buyPrice: 'Buy price',
-    sellPrice: 'Sell price',
-    limits: 'Exchange limits',
-  },
   // common one-word terms
   terms: {
     account: 'Account',
@@ -146,13 +136,11 @@ export default {
   },
   locs: {
     entries: '%{number} entries total',
-    sendToExchange: 'Send to exchange',
     recent: 'Recent LOCs',
     insuranceFee: 'Insurance fee',
     allowedToBeIssued: 'Allowed to be issued',
     expirationDate: 'Expiration Date',
     issuanceParameters: 'Issuance parameters',
-    sendLHToExchange: 'Send LHT to Exchange',
     uploadedFile: 'Uploaded File',
     issueLHT: 'Issue LHT',
     issueS: 'Issue %{asset}',
@@ -455,25 +443,6 @@ export default {
         account: 'Account',
         amount: 'Amount',
         to: 'Address to',
-      },
-    },
-    ExchangeManager: {
-      createExchange: {
-        title: 'Create an exchange',
-      },
-    },
-    Exchange: {
-      [exchange.TX_BUY]: {
-        title: 'Confirm buy tokens for ETH',
-      },
-      [exchange.TX_SELL]: {
-        title: 'Confirm sell tokens for ETH',
-      },
-      [exchange.TX_WITHDRAW_TOKENS]: {
-        title: 'Confirm withdraw tokens',
-      },
-      [exchange.TX_WITHDRAW_ETH]: {
-        title: 'Confirm withdraw ETH',
       },
     },
     Wallet: {

@@ -23,17 +23,13 @@ import UserManagerDAO from './UserManagerDAO'
 import VotingManagerDAO from './VotingManagerDAO'
 import PollInterfaceDAO from './PollInterfaceDAO'
 import WalletsManagerDAO from './WalletsManagerDAO'
-import { ExchangeDAO } from './ExchangeDAO'
-import ExchangeManagerDAO from './ExchangeManagerDAO'
 import ChronoBankAssetDAO from './ChronoBankAssetDAO'
 
 const DAO_LOC_MANAGER = 'LOCManager'
 const DAO_PENDING_MANAGER = 'PendingManager'
 const DAO_USER_MANAGER = 'UserManager'
 const DAO_WALLETS_MANAGER = 'WalletsManager'
-const DAO_EXCHANGE_MANAGER = 'ExchangeManager'
 const DAO_CHRONOBANK_ASSET = 'ChronoBankAsset'
-const DAO_EXCHANGE = 'Exchange'
 const DAO_ERC20_MANAGER = 'ERC20Manager'
 const DAO_VOTING_MANAGER = 'VotingManager'
 const DAO_POLL_INTERFACE = 'PollInterfaceDAO'
@@ -55,9 +51,7 @@ const daoMap = {
   [DAO_PENDING_MANAGER]: PendingManagerDAO,
   [DAO_USER_MANAGER]: UserManagerDAO,
   [DAO_WALLETS_MANAGER]: WalletsManagerDAO,
-  [DAO_EXCHANGE_MANAGER]: ExchangeManagerDAO,
   [DAO_CHRONOBANK_ASSET]: ChronoBankAssetDAO,
-  [DAO_EXCHANGE]: ExchangeDAO,
   // [ DAO_ERC20_MANAGER ]: ERC20ManagerDAO,
   [DAO_VOTING_MANAGER]: VotingManagerDAO,
   [DAO_POLL_INTERFACE]: PollInterfaceDAO,
@@ -183,18 +177,10 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return walletManager
   }
 
-  getExchangeManagerDAO (): Promise<ExchangeManagerDAO> {
-    return this._getDAO(DAO_EXCHANGE_MANAGER)
-  }
-
   async getChronoBankAssetDAO (address): Promise<ChronoBankAssetDAO> {
     const chronoBankAssetProxyDAO = await this.getChronoBankAssetProxyDAO(address)
     const assetAddress = await chronoBankAssetProxyDAO.getLatestVersion()
     return this._getDAO(DAO_CHRONOBANK_ASSET, address ? assetAddress : null)
-  }
-
-  getExchangeDAO (tokenAddress): Promise<ExchangeDAO> {
-    return this._getDAO(DAO_EXCHANGE, tokenAddress)
   }
 
   getLOCManagerDAO (): Promise<LOCManagerDAO> {

@@ -8,13 +8,11 @@ import { Map } from 'immutable'
 
 // Here we have a list of [[ALL]] modals dialogues etc.
 // Keep imports alphabetically sorted
-import AddExchangeDialog from 'components/exchange/AddExchangeDialog/AddExchangeDialog'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import AddTokenDialog from 'components/assetsManager/AddTokenDialog/AddTokenDialog'
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
 import BlacklistDialog from 'components/assetsManager/BlacklistDialog/BlacklistDialog'
 import BlockAssetDialog from 'components/assetsManager/BlockAssetDialog/BlockAssetDialog'
-import BuyTokensDialog from 'components/exchange/BuyTokensDialog/BuyTokensDialog'
 import CBEAddressDialog from 'components/dialogs/CBEAddressDialog'
 import CBETokenDialog from 'components/dialogs/CBETokenDialog/CBETokenDialog'
 import ConfirmTransferDialog from 'components/dialogs/ConfirmTransferDialog/ConfirmTransferDialog'
@@ -23,7 +21,6 @@ import CopyDialog from 'components/dialogs/CopyDialog/CopyDialog'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
 import EditManagersDialog from 'components/dialogs/wallet/EditOwnersDialog/EditOwnersDialog'
 import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog/EditSignaturesDialog'
-import ExchangeTransferDialog from 'components/exchange/ExchangeTransferDialog/ExchangeTransferDialog'
 import LOCDialog from 'components/dialogs/LOC/LOCDialog/LOCDialog'
 import LOCIssueDialog from 'components/dialogs/LOC/LOCIssueDialog/LOCIssueDialog'
 import LOCRedeemDialog from 'components/dialogs/LOC/LOCRedeemDialog/LOCRedeemDialog'
@@ -37,7 +34,6 @@ import ProfileContent from 'layouts/partials/ProfileContent/ProfileContent'
 import PublishPollDialog from 'components/dialogs/PublishPollDialog/PublishPollDialog'
 import ReceiveTokenModal from 'components/dashboard/ReceiveTokenModal/ReceiveTokenModal'
 import RevokeDialog from 'components/assetsManager/RevokeDialog/RevokeDialog'
-import SendToExchangeDialog from 'components/dialogs/LOC/LOCSendToExchangeDialog/SendToExchangeDialog'
 import SendTokens from 'components/dashboard/SendTokens/SendTokens'
 import TwoFaConfirmModal from 'components/wallet/TwoFaConfirmModal/TwoFaConfirmModal'
 import UpdateProfileDialog from 'components/dialogs/UpdateProvideDialog/UpdateProfileDialog'
@@ -47,13 +43,11 @@ import WalletSettingsForm from 'components/wallet/AddWalletWidget/WalletSettings
 export default class ModalSelector extends PureComponent {
   // Keep Map alphabetically sorted
   static modalsMap = new Map({
-    'AddExchangeDialog': AddExchangeDialog,
     'AddPlatformDialog': AddPlatformDialog,
     'AddTokenDialog': AddTokenDialog,
     'AssetManagerDialog': AssetManagerDialog,
     'BlacklistDialog': BlacklistDialog,
     'BlockAssetDialog': BlockAssetDialog,
-    'BuyTokensDialog': BuyTokensDialog,
     'CBEAddressDialog': CBEAddressDialog,
     'CBETokenDialog': CBETokenDialog,
     'ConfirmTransferDialog': ConfirmTransferDialog,
@@ -62,7 +56,6 @@ export default class ModalSelector extends PureComponent {
     'DepositTokensModal': DepositTokensModal,
     'EditManagersDialog': EditManagersDialog,
     'EditSignaturesDialog': EditSignaturesDialog,
-    'ExchangeTransferDialog': ExchangeTransferDialog,
     'LOCDialog': LOCDialog,
     'LOCIssueDialog': LOCIssueDialog,
     'LOCRedeemDialog': LOCRedeemDialog,
@@ -76,7 +69,6 @@ export default class ModalSelector extends PureComponent {
     'PublishPollDialog': PublishPollDialog,
     'ReceiveTokenModal': ReceiveTokenModal,
     'RevokeDialog': RevokeDialog,
-    'SendToExchangeDialog': SendToExchangeDialog,
     'SendTokens': SendTokens,
     'TwoFaConfirmModal': TwoFaConfirmModal,
     'UpdateProfileDialog': UpdateProfileDialog,

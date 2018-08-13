@@ -11,7 +11,6 @@ import { connect } from 'react-redux'
 import type LOCModel from '@chronobank/core/models/LOCModel'
 import { getLOCs } from '@chronobank/core/redux/locs/actions'
 import LOCItem from 'components/locs/LOCItem/LOCItem'
-import PageTitle from 'components/locs/PageTitle'
 import Search from 'components/locs/Search'
 
 import './LOCContent.scss'
@@ -45,7 +44,6 @@ class LOCContent extends PureComponent {
       ? (<div styleName='progress'><CircularProgress size={24} thickness={1.5} /></div>)
       : (
         <div styleName='content'>
-          <PageTitle />
           <Search />
           <div><Translate value='locs.entries' number={locs.size} /></div>
 
