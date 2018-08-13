@@ -122,7 +122,6 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   // getters
   async getPendings () {
     try {
-
       const pendingTxCollection = {}
       const res = await this.contract.methods.getPendings().call()
       const [values, operations, isConfirmed] = Object.values(res)
@@ -135,11 +134,8 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
         }))
         .filter((operation) => this.isValidId(operation.address))
 
-      const pendingDataPromises = []
-      txs.map((operation) => {
-        pendingDataPromises.push(this.getPendingData(operation.address))
-      })
-      const pendingData = await Promise.all(pendingDataPromises)
+      const pendingData = await Promise.all(txs
+        .map((operation) => this.getPendingData(operation.address)))
 
       txs.forEach((operation, i) => {
         const pendingTxModel = new MultisigWalletPendingTxModel({
