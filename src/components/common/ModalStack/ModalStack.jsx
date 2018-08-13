@@ -7,7 +7,6 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { DUCK_MODALS } from 'redux/modals/constants'
-import ModalPortal from './ModalPortal'
 import ModalsSelector from './ModalSelector'
 
 import './ModalStack.scss'
@@ -25,18 +24,15 @@ export default class ModalStack extends PureComponent {
   }
 
   render () {
-
     return (
-      <ModalPortal>
-        <div styleName='root'>
-          {
-            this.props.stack
-              .map((modal, index) => (
-                <ModalsSelector {...modal} />
-              ))
-          }
-        </div>
-      </ModalPortal>
+      <div styleName='root'>
+        {
+          this.props.stack
+            .map((modal, index) => (
+              <ModalsSelector {...modal} />
+            ))
+        }
+      </div>
     )
   }
 }

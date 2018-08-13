@@ -9,50 +9,50 @@
  * S - state
 */
 
-import * as C from './constants'
+import * as types from './constants'
 
 const initialState = {
   stack: [],
   counter: 0,
 }
 
-export default (S = initialState, A) => {
-  switch (A.type) {
-    case C.MODALS_OPEN:
+export default (state = initialState, action) => {
+  switch (action.type) {
+    case types.MODALS_OPEN:
       return {
-        ...S,
-        counter: S.counter + 1,
+        ...state,
+        counter: state.counter + 1,
         stack: [
-          ...S.stack, {
-            key: S.counter,
-            componentName: A.componentName,
-            props: A.props,
+          ...state.stack, {
+            key: state.counter,
+            componentName: action.componentName,
+            props: action.props,
           }
         ],
       }
-    case C.MODALS_CLOSE:
+    case types.MODALS_CLOSE:
       return {
-        ...S,
-        stack: S.stack.slice(0, -1),
+        ...state,
+        stack: state.stack.slice(0, -1),
       }
-    case C.MODALS_REPLACE:
+    case types.MODALS_REPLACE:
       return {
-        ...S,
+        ...state,
         stack: [
-          ...S.stack.slice(0, -1),
+          ...state.stack.slice(0, -1),
           {
-            key: S.counter,
-            componentName: A.componentName,
-            props: A.props,
+            key: state.counter,
+            componentName: action.componentName,
+            props: action.props,
           }
         ],
       }
-    case C.MODALS_CLEAR:
+    case types.MODALS_CLEAR:
       return {
-        ...S,
+        ...state,
         stack: [],
       }
     default:
-      return S
+      return state
   }
 }

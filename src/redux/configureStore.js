@@ -86,8 +86,8 @@ const configureStore = () => {
     const DOMAINS = [
       // 'AssetsManager/',
       // '@@router/',
-      'MODALS/',
-      'SIDES/'
+      // 'MODALS/',
+      // 'SIDES/'
       // 'PROFILE/',
     ]
     const logger = createLogger({

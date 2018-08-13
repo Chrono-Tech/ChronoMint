@@ -4,10 +4,12 @@
  */
 
 import {
+  MENU_ASSETS_MANAGER_PANEL_KEY,
+  NOTIFICATION_PANEL_KEY,
+  PROFILE_SIDE_PANEL_KEY,
   SIDES_CLEAR,
   SIDES_CLOSE_ALL,
   SIDES_CLOSE,
-  SIDES_INIT,
   SIDES_OPEN,
   SIDES_TOGGLE_MAIN_MENU,
   SIDES_TOGGLE,
@@ -16,16 +18,33 @@ import {
 const initialState = {
   isProfilePanelOpen: false,
   mainMenuIsOpen: false,
-  stack: {},
+  stack: {
+    [PROFILE_SIDE_PANEL_KEY]: {
+      componentName: 'ProfileContent',
+      panelKey: PROFILE_SIDE_PANEL_KEY,
+      isOpened: false,
+      direction: 'right',
+      drawerProps: {
+        width: 300,
+      },
+    },
+    [NOTIFICATION_PANEL_KEY]: {
+      componentName: 'NotificationContent',
+      panelKey: NOTIFICATION_PANEL_KEY,
+      isOpened: false,
+      anchor: 'right',
+    },
+    [MENU_ASSETS_MANAGER_PANEL_KEY]: {
+      componentName: 'MenuAssetsManagerMoreInfo',
+      panelKey: MENU_ASSETS_MANAGER_PANEL_KEY,
+      isOpened: false,
+      anchor: 'left',
+    },
+  },
 }
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case SIDES_INIT:
-      return {
-        ...state,
-        stack: action.stack
-      }
     case SIDES_OPEN:
       return {
         ...state,

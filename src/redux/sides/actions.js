@@ -7,18 +7,10 @@ import {
   SIDES_CLEAR,
   SIDES_CLOSE_ALL,
   SIDES_CLOSE,
-  SIDES_INIT,
   SIDES_OPEN,
   SIDES_TOGGLE_MAIN_MENU,
   SIDES_TOGGLE,
 } from './constants'
-
-// This action is used once at SidesStack.jsx to init stack of side panels
-export const initSidesStack = (stack) => (dispatch) =>
-  dispatch({
-    type: SIDES_INIT,
-    stack,
-  })
 
 export const sidesOpen = (props) => (dispatch) =>
   dispatch({
