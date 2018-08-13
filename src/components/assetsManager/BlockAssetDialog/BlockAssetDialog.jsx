@@ -11,7 +11,7 @@ import { modalsClose } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 import { changePauseStatus } from '@chronobank/core/redux/assetsManager/actions'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import './BlockAssetDialog.scss'
 import { prefix } from './lang'
 

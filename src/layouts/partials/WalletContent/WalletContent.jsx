@@ -85,7 +85,7 @@ export default class WalletContent extends Component {
       <div styleName='root'>
         <WalletWidgetDetail wallet={wallet} />
 
-        <TokensListWidget wallet={wallet} />
+        <TokensListWidget walletId={wallet.id} />
 
         <PendingTxWidget wallet={wallet} />
 

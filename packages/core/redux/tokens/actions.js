@@ -7,7 +7,7 @@ import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import WavesDAO from '@chronobank/core/dao/WavesDAO'
-import { modalsOpenConfirmDialog } from '@chronobank/core-dependencies/redux/modals/actions'
+import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
 import { showConfirmTransferModal } from '@chronobank/core-dependencies/redux/ui/actions'
 import { bccDAO, btcDAO, btgDAO, ltcDAO } from '../../dao/BitcoinDAO'
 import ERC20ManagerDAO from '../../dao/ERC20ManagerDAO'
@@ -55,7 +55,8 @@ const setLatestBlock = (blockchain, block) => ({ type: TOKENS_UPDATE_LATEST_BLOC
 const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
     if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
-      dispatch(modalsOpenConfirmDialog({
+      dispatch(modalsOpen({
+        comnponentName: 'ConfirmTxDialog',
         props: {
           tx,
           dao,

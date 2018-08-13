@@ -7,7 +7,7 @@ import BigNumber from 'bignumber.js'
 import { Checkbox, TextField } from 'redux-form-material-ui'
 import Select from 'redux-form-material-ui/es/Select'
 import { CircularProgress, MenuItem, FormControlLabel } from '@material-ui/core'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -27,7 +27,6 @@ import { I18n } from '@chronobank/core-dependencies/i18n'
 import { createAsset } from '@chronobank/core/redux/assetsManager/actions'
 import { DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/constants'
 import { modalsOpen } from 'redux/modals/actions'
-import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import ipfs from '@chronobank/core-dependencies/utils/IPFS'
 import FeeModel from '@chronobank/core/models/tokens/FeeModel'
@@ -74,7 +73,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     handleAddPlatformDialog: () => dispatch(modalsOpen({
-      component: AddPlatformDialog,
+      componentName: 'AddPlatformDialog',
     })),
     onSubmit: onSubmit,
     submitForm: () => dispatch(submit(FORM_ADD_TOKEN_DIALOG)),

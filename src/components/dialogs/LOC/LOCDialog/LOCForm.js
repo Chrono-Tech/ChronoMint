@@ -6,7 +6,7 @@
 import { TextField } from 'redux-form-material-ui'
 import DatePicker from 'components/common/DatePicker'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import { I18n, Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'

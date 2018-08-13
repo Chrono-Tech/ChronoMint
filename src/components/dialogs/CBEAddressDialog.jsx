@@ -4,7 +4,7 @@
  */
 
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
@@ -45,7 +45,6 @@ function mapStateToProps (state) {
 export default class CBEAddressDialog extends PureComponent {
   static propTypes = {
     formCBELoadName: PropTypes.func,
-    name: PropTypes.string,
     isLoading: PropTypes.bool,
     modalsClose: PropTypes.func,
     ...formPropTypes,

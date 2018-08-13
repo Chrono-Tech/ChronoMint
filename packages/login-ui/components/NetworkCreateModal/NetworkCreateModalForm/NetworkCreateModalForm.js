@@ -10,7 +10,7 @@ import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
 import compose from 'recompose/compose'
-import { withStyles } from '@material-ui/core/styles/index'
+import { withStyles } from '@material-ui/core/styles'
 import {
   FORM_NETWORK_CREATE,
 } from '../../../redux/constants'
@@ -25,8 +25,14 @@ class NetworkCreateModalForm extends PureComponent {
   }
 
   render () {
-    const { handleSubmit, pristine, valid, isImportMode, error, network,
-      handleDeleteNetwork, onCloseModal, classes } = this.props
+    const {
+      classes,
+      error,
+      handleDeleteNetwork,
+      handleSubmit,
+      network,
+      onCloseModal,
+    } = this.props
 
     return (
       <form styleName='form' name={FORM_NETWORK_CREATE} onSubmit={handleSubmit}>

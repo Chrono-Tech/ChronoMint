@@ -10,10 +10,16 @@ import ipfs from '@chronobank/core-dependencies/utils/IPFS'
 import userMonitorService from 'user/monitorService'
 import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_WATCHER, WATCHER_TX_SET } from '@chronobank/core/redux/watcher/constants'
-import ConfirmTxDialog from 'components/dialogs/ConfirmTxDialog/ConfirmTxDialog'
-import UserActiveDialog from 'components/dialogs/UserActiveDialog/UserActiveDialog'
-import { CHANGE_WALLET_VIEW, OPEN_BRAND_PARTIAL } from './constants'
-import ConfirmTransferDialog from '../../components/dialogs/ConfirmTransferDialog/ConfirmTransferDialog'
+import { CHANGE_WALLET_VIEW } from './constants'
+
+export const startUserMonitorAndCloseModals = () => (dispatch) => {
+  userMonitorService.start()
+  dispatch(modalsClose())
+}
+
+export const stopUserMonitor = () => () => {
+  userMonitorService.stop()
+}
 
 export const removeWatchersUserMonitor = () => () => {
   userMonitorService
@@ -23,13 +29,15 @@ export const removeWatchersUserMonitor = () => () => {
 
 export const watchInitUserMonitor = () => (dispatch) => {
   userMonitorService
-    .on('active', () => dispatch(modalsOpen({ component: UserActiveDialog })))
+    .on('active', () => dispatch(modalsOpen({
+      componentName: 'UserActiveDialog'
+    })))
     .start()
 }
 
 export const showConfirmTransferModal = (dao, tx) => (dispatch) => {
   dispatch(modalsOpen({
-    component: ConfirmTransferDialog,
+    componentName: 'ConfirmTransferDialog',
     props: {
       tx,
       dao,
@@ -42,7 +50,7 @@ export const showConfirmTransferModal = (dao, tx) => (dispatch) => {
 // TODO @ipavlenko: Do not use promise, use emitter, see showConfirmTransferModal
 export const showConfirmTxModal = (estimateGas, localFeeMultiplier) => (dispatch, getState) => new Promise((resolve) => {
   dispatch(modalsOpen({
-    component: ConfirmTxDialog,
+    componentName: 'ConfirmTxDialog',
     props: {
       callback: (isConfirmed, tx) => resolve({ isConfirmed, updatedTx: tx }),
       localFeeMultiplier,

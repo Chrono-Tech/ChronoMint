@@ -5,7 +5,7 @@
 
 import { Field, reduxForm } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate, I18n } from 'react-redux-i18n'

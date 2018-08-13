@@ -69,7 +69,7 @@ const initWalletsFromKeys = () => (dispatch) => {
     ethereumProvider,
   ]
 
-  providers.map((provider) => {
+  providers.forEach((provider) => {
     const wallet = new WalletModel({
       address: provider.getAddress(),
       blockchain: provider.id(),
@@ -86,7 +86,7 @@ const initDerivedWallets = () => async (dispatch, getState) => {
   const account = getAccount(state)
   const wallets = getWallets(state)
 
-  Object.values(wallets).map((wallet: WalletModel) => {
+  Object.values(wallets).forEach((wallet: WalletModel) => {
     if (wallet.isDerived && !wallet.isMain && isOwner(wallet, account)) {
       dispatch(updateWalletBalance({ wallet }))
 
@@ -246,6 +246,7 @@ export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Nu
   }
 }
 
+// eslint-disable-next-line complexity
 export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }) => async (dispatch, getState) => {
   const state = getState()
   const signer = getSigner(state)
@@ -254,7 +255,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
 
   const lastDeriveNumbers = {}
   Object.values(wallets)
-    .map((wallet) => {
+    .forEach((wallet) => {
       if (wallet.derivedPath && isOwner(wallet, account)) {
         if (!lastDeriveNumbers[wallet.blockchain()] || (lastDeriveNumbers[wallet.blockchain()] && lastDeriveNumbers[wallet.blockchain()] < wallet.deriveNumber)) {
           lastDeriveNumbers[wallet.blockchain()] = wallet.deriveNumber

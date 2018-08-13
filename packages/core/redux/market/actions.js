@@ -23,7 +23,7 @@ export let timerId
 
 const watchMarket = (dispatch, getState) => async () => {
   const { tokens, currencies } = getState().get(DUCK_MARKET)
-  if (tokens.length === 0 || !currencies.length === 0) {
+  if (tokens.length === 0 || currencies.length === 0) {
     return
   }
   const response = await axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${tokens.join(',')}&tsyms=${currencies.join(',')}`)

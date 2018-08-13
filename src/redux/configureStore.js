@@ -73,11 +73,21 @@ const configureStore = () => {
     const WHITE_LIST = []
     // The following actions will be ignored if not whitelisted but presents in DOMAINS
     // So, we can enable whole domain, but still exclude aome actions from domain
-    const IGNORED_ACTIONS = []
+    const IGNORED_ACTIONS = [
+      'market/ADD_TOKEN',
+      'market/UPDATE_LAST_MARKET',
+      'market/UPDATE_RATES',
+      'tokens/fetched',
+      'tokens/fetching',
+      'tokens/updateLatestBlock',
+      'wallet/updateBalance',
+    ]
     // All actions like network/* (starts with network)
     const DOMAINS = [
-      'AssetsManager/',
-      '@@router/',
+      // 'AssetsManager/',
+      // '@@router/',
+      // 'MODALS/',
+      // 'SIDES/'
       // 'PROFILE/',
     ]
     const logger = createLogger({

@@ -4,7 +4,7 @@
  */
 
 import { CSSTransitionGroup } from 'react-transition-group'
-import Partials from 'layouts/partials'
+import AssetsContent from 'layouts/partials/AssetsContent/AssetsContent'
 import React, { Component } from 'react'
 
 import './AssetsPage.scss'
@@ -20,7 +20,7 @@ export default class AssetsPage extends Component {
           transitionEnterTimeout={250}
           transitionLeaveTimeout={250}
         >
-          <Partials.AssetsContent />
+          <AssetsContent />
         </CSSTransitionGroup>
       </div>
     )

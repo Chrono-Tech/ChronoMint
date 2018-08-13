@@ -3,7 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button, IPFSImage } from 'components'
+import Button from 'components/common/ui/Button/Button'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { TextField } from 'redux-form-material-ui'
 
 import { isTestingNetwork } from '@chronobank/login/network/settings'
@@ -44,7 +45,6 @@ import {
   ACTION_DEPOSIT,
   ACTION_WITHDRAW,
 } from 'components/constants'
-import ReceiveTokenModal from '../ReceiveTokenModal/ReceiveTokenModal'
 import './DepositTokensForm.scss'
 import validate from './validate'
 
@@ -105,7 +105,10 @@ function mapDispatchToProps (dispatch) {
     })),
     dispatch: dispatch,
     requireTIME: () => dispatch(requireTIME()),
-    receiveToken: (tokenId, wallet) => dispatch(modalsOpen({ component: ReceiveTokenModal, props: { tokenId, wallet } })),
+    receiveToken: (tokenId, wallet) => dispatch(modalsOpen({
+      componentName: 'ReceiveTokenModal',
+      props: { tokenId, wallet }
+    })),
   }
 }
 
@@ -122,11 +125,9 @@ export default class DepositTokensForm extends PureComponent {
     account: PropTypes.string,
     wallet: PropTypes.instanceOf(WalletModel),
     tokens: PropTypes.instanceOf(TokensCollection),
-    selectedToken: PropTypes.string,
     assets: PropTypes.instanceOf(AssetsCollection),
     requireTIME: PropTypes.func,
     dispatch: PropTypes.func,
-    mainApprove: PropTypes.func,
     mainRevoke: PropTypes.func,
     feeMultiplier: PropTypes.number,
     isWithdraw: PropTypes.bool,

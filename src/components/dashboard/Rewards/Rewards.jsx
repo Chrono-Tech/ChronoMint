@@ -6,7 +6,7 @@
 import RewardsPeriod from 'components/dashboard/RewardsPeriod/RewardsPeriod'
 import SplitSection from 'components/dashboard/SplitSection/SplitSection'
 import { Paper } from '@material-ui/core'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import RewardsPeriodModel from '@chronobank/core/models/rewards/RewardsPeriodModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
