@@ -118,13 +118,18 @@ const initDerivedWallets = () => async (dispatch, getState) => {
 const updateWalletBalance = ({ wallet }) => async (dispatch) => {
   getWalletBalances({ wallet })
     .then((balancesResult) => {
-      dispatch(setWallet(new WalletModel({
-        ...wallet,
-        balances: {
-          ...wallet.balances,
-          ...formatBalances({ blockchain: wallet.blockchain, balancesResult }),
-        },
-      })))
+      try {
+        dispatch(setWallet(new WalletModel({
+          ...wallet,
+          balances: {
+            ...wallet.balances,
+            ...formatBalances({ blockchain: wallet.blockchain, balancesResult }),
+          },
+        })))
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(e.message)
+      }
     })
     .catch((e) => {
       // eslint-disable-next-line no-console

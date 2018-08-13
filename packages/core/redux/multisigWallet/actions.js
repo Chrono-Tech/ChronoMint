@@ -49,7 +49,13 @@ import { getTokens } from '../tokens/selectors'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import { executeTransaction } from '../ethereum/actions'
 
-const updateEthMultisigWallet = (wallet: MultisigEthWalletModel) => (dispatch) => dispatch({ type: ETH_MULTISIG_UPDATE, wallet })
+const updateEthMultisigWallet = (wallet: MultisigEthWalletModel) => ({ type: ETH_MULTISIG_UPDATE, wallet })
+
+const setEthMultisigWalletBalance = (walletId, balance) => ({
+  type: ETH_MULTISIG_BALANCE,
+  walletId,
+  balance,
+})
 
 export const watchMultisigWallet = (wallet: MultisigEthWalletModel): Promise => {
   try {
@@ -382,11 +388,7 @@ export const updateEthMultisigWalletBalance = ({ wallet }) => async (dispatch) =
           const dao = tokenService.getDAO(token)
           const balance = await dao.getAccountBalance(wallet.address)
           if (balance) {
-            dispatch({
-              type: ETH_MULTISIG_BALANCE,
-              walletId: wallet.id,
-              balance: new Amount(balance, token.symbol(), true),
-            })
+            dispatch(setEthMultisigWalletBalance(wallet.id, new Amount(balance, token.symbol(), true)))
           }
         }
       }
