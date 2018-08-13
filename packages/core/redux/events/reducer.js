@@ -11,25 +11,27 @@ import {
   LOGS_UPDATED,
 } from './constants'
 
-export const initialState = {
-  history: {},
-}
+export const initialState = {}
 
 const mutations = {
   [LOGS_LOADING] (state, { address }) {
     address = address.toLowerCase()
-    console.log('address: ', address)
-    const history = state.history[address] || new LogListModel({ address })
+    const history = state[address] || new LogListModel({ address })
     return {
-      ...state.history,
+      ...state,
       [address]: history.loading(),
     }
   },
   [LOGS_LOADED] (state, { address, cursor, entries }) {
     address = address.toLowerCase()
-    const history = state.history[address] || new LogListModel({ address })
+    const history = state[address] || new LogListModel({ address })
+    console.log('LOGS_LOADED: ', state, entries, cursor, address, history.loaded({
+      entries,
+      cursor,
+    }))
+
     return {
-      ...state.history,
+      ...state,
       [address]: history.loaded({
         entries,
         cursor,
@@ -38,9 +40,9 @@ const mutations = {
   },
   [LOGS_UPDATED] (state, { address, cursor, entries }) {
     address = address.toLowerCase()
-    const history = state.history[address] || new LogListModel({ address })
+    const history = state[address] || new LogListModel({ address })
     return {
-      ...state.history,
+      ...state,
       [address]: history.updated({
         entries,
         cursor,

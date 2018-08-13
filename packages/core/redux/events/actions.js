@@ -5,6 +5,8 @@
 
 import { padStart, unionBy, uniq, sortBy } from 'lodash'
 
+import { describeEvent } from '../../describers'
+
 import { web3Selector } from '../ethereum/selectors'
 import { eventsSelector } from './selectors'
 
@@ -14,85 +16,86 @@ import {
   LOGS_UPDATED,
 } from './constants'
 
-// export const pushTx = (address, receipt) => async (dispatch, getState) => {
-//   {
-//     address = address.toLowerCase()
-//     const [tx, block] = await Promise.all([
-//       web3.eth.getTransaction(receipt.transactionHash),
-//       web3.eth.getBlock(receipt.blockHash)
-//     ])
-//
-//     const desciption = describeTx(
-//       {tx, receipt, block},
-//       {
-//         address,
-//         agents: [],
-//         getters: rootGetters
-//       }
-//     )
-//
-//     const entries = Array.isArray(desciption)
-//       ? desciption
-//       : [desciption]
-//
-//     const actualHistory = state.history[address]
-//
-//     commit(LOGS_UPDATED, {
-//       address,
-//       cursor: actualHistory
-//         ? actualHistory.cursor
-//         : null,
-//       entries: actualHistory
-//         ? [...entries, ...actualHistory.entries]
-//         : [...entries]
-//     })
-//
-//     await dispatch('notifications/pushTxEntries', {
-//       entries
-//     }, {root: true})
-//   }
-// }
-//
-// export const pushEvent = (address, log) => async (dispatch, getState) => {
-//   address = address.toLowerCase()
-//   const [tx, receipt, block] = await Promise.all([
-//     web3.eth.getTransaction(log.transactionHash),
-//     web3.eth.getTransactionReceipt(log.transactionHash),
-//     web3.eth.getBlock(log.blockHash)
-//   ])
-//
-//   const desciption = describeEvent(
-//     {log, tx, receipt, block},
-//     {
-//       address,
-//       agents: [],
-//       getters: rootGetters
-//     }
-//   )
-//
-//   const entries = Array.isArray(desciption)
-//     ? desciption
-//     : [desciption]
-//
-//   const actualHistory = state.history[address]
-//
-//   commit(LOGS_UPDATED, {
-//     address,
-//     cursor: actualHistory
-//       ? actualHistory.cursor
-//       : null,
-//     entries: actualHistory
-//       ? [...entries, ...actualHistory.entries]
-//       : [...entries]
-//   })
-//
-//   await dispatch('notifications/pushEventEntries', {
-//     entries
-//   }, {root: true})
-// }
+export const pushTx = (address, receipt) => async (dispatch, getState) => {
+  {
+    address = address.toLowerCase()
+    const [tx, block] = await Promise.all([
+      web3.eth.getTransaction(receipt.transactionHash),
+      web3.eth.getBlock(receipt.blockHash)
+    ])
+
+    const desciption = describeTx(
+      {tx, receipt, block},
+      {
+        address,
+        agents: [],
+        getters: rootGetters
+      }
+    )
+
+    const entries = Array.isArray(desciption)
+      ? desciption
+      : [desciption]
+
+    const actualHistory = state.history[address]
+
+    commit(LOGS_UPDATED, {
+      address,
+      cursor: actualHistory
+        ? actualHistory.cursor
+        : null,
+      entries: actualHistory
+        ? [...entries, ...actualHistory.entries]
+        : [...entries]
+    })
+
+    await dispatch('notifications/pushTxEntries', {
+      entries
+    }, {root: true})
+  }
+}
+
+export const pushEvent = (address, log) => async (dispatch, getState) => {
+  address = address.toLowerCase()
+  const [tx, receipt, block] = await Promise.all([
+    web3.eth.getTransaction(log.transactionHash),
+    web3.eth.getTransactionReceipt(log.transactionHash),
+    web3.eth.getBlock(log.blockHash)
+  ])
+
+  const desciption = describeEvent(
+    { log, tx, receipt, block },
+    {
+      address,
+      agents: [],
+      getters: rootGetters
+    }
+  )
+
+  const entries = Array.isArray(desciption)
+    ? desciption
+    : [desciption]
+
+  const actualHistory = state.history[address]
+
+  commit(LOGS_UPDATED, {
+    address,
+    cursor: actualHistory
+      ? actualHistory.cursor
+      : null,
+    entries: actualHistory
+      ? [...entries, ...actualHistory.entries]
+      : [...entries]
+  })
+
+  await dispatch('notifications/pushEventEntries', {
+    entries
+  }, {root: true})
+}
 
 export const loadMoreEvents = (address, blockScanLimit = 5000, logScanLimit = 25) => async (dispatch, getState) => {
   address = '0x4a2d3fc1587494ca2ca9cdeb457cd94be5d96a61'
+
   console.log('loadMoreEvents: ', address, blockScanLimit, logScanLimit )
   const web3 = web3Selector()(getState())
 
@@ -102,19 +105,21 @@ export const loadMoreEvents = (address, blockScanLimit = 5000, logScanLimit = 25
   })
 
   const allHistory = eventsSelector()(getState())
-  console.log('allHistory: ', allHistory, address)
   const history = allHistory[address]
+
+  console.log('allHistory: ', allHistory, address, history)
+
   const toBlock = await web3.eth.getBlock(
     history.cursor == null ? 'latest' : Math.max(0, history.cursor - 1)
   )
-
-  console.log('toBlock: ',toBlock)
 
   let fromBlock = await web3.eth.getBlock(
     Math.max(0, toBlock.number - blockScanLimit)
   )
 
   const topic = `0x${padStart(address.substring(2), 64, 0)}`
+
+  console.log('toBlock: ', fromBlock, toBlock, topic)
 
   const [logs1, logs2, logs3] = await Promise.all(
     [1, 2, 3].map(
@@ -125,6 +130,7 @@ export const loadMoreEvents = (address, blockScanLimit = 5000, logScanLimit = 25
       })
     )
   )
+
   console.log('logs1, logs2, logs3: ', logs1, logs2, logs3)
 
   let logs = unionBy(
@@ -224,7 +230,9 @@ export const loadMoreEvents = (address, blockScanLimit = 5000, logScanLimit = 25
       }
 
       for (const log of logs) {
-        const description = {} // describeEvent({ log, tx, receipt, block }, context)
+        const description = describeEvent({ log, tx, receipt, block }, context)
+        console.log('Description: ', description)
+
         if (Array.isArray(description)) {
           entries.push(...description)
         } else {
@@ -243,13 +251,12 @@ export const loadMoreEvents = (address, blockScanLimit = 5000, logScanLimit = 25
     }
   }
 
-  const actualHistory = history[address]
   dispatch({
     type: LOGS_LOADED,
     address,
     cursor: fromBlock.number,
-    entries: actualHistory
-      ? [...actualHistory.entries, ...entries]
+    entries: history
+      ? [...history.entries, ...entries]
       : entries,
   })
 }

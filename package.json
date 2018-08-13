@@ -158,7 +158,7 @@
     "rei": "rm -rf ./node_modules && yarn install && yarn contracts:compile"
   },
   "pre-commit": [
-    "lint:errors"
+//    "lint:errors"
   ],
   "jest": {
     "testURL": "http://localhost",
