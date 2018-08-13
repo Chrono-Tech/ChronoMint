@@ -6,65 +6,21 @@
 import * as validator from '../models/validator'
 import { ContractsManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
-import AssetsManagerDAO from './AssetsManagerDAO'
 import ChronoBankAssetProxyDAO from './ChronoBankAssetProxyDAO'
-import ChronoBankPlatformDAO from './ChronoBankPlatformDAO'
-import ERC20DAO from './ERC20DAO'
-import ERC20ManagerDAO from './ERC20ManagerDAO'
-import FeeInterfaceDAO from './FeeInterfaceDAO'
 import LOCManagerDAO from './LOCManagerDAO'
 import PendingManagerDAO from './PendingManagerDAO'
-import PlatformsManagerDAO from './PlatformsManagerDAO'
-import PlatformTokenExtensionGatewayManagerEmitterDAO from './PlatformTokenExtensionGatewayManagerEmitterDAO'
 import RewardsDAO from './RewardsDAO'
-import AssetHolderDAO from './AssetHolderDAO'
-import TokenManagementExtensionDAO from './TokenManagementExtensionDAO'
-import UserManagerDAO from './UserManagerDAO'
-import VotingManagerDAO from './VotingManagerDAO'
-import PollInterfaceDAO from './PollInterfaceDAO'
-import WalletsManagerDAO from './WalletsManagerDAO'
-import ChronoBankAssetDAO from './ChronoBankAssetDAO'
 
 const DAO_LOC_MANAGER = 'LOCManager'
 const DAO_PENDING_MANAGER = 'PendingManager'
-const DAO_USER_MANAGER = 'UserManager'
-const DAO_WALLETS_MANAGER = 'WalletsManager'
-const DAO_CHRONOBANK_ASSET = 'ChronoBankAsset'
-const DAO_ERC20_MANAGER = 'ERC20Manager'
-const DAO_VOTING_MANAGER = 'VotingManager'
-const DAO_POLL_INTERFACE = 'PollInterfaceDAO'
 const DAO_REWARDS = 'Rewards'
-const DAO_ASSETS_MANAGER = 'AssetsManager'
-const DAO_PLATFORMS_MANAGER = 'PlatformsManager'
-const DAO_CHRONOBANK_PLATFORM = 'ChronoBankPlatformDAO'
-const DAO_TOKEN_MANAGEMENT_EXTENSION = 'TokenManagementExtension'
-const DAO_PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER = 'PlatformTokenExtensionGatewayManagerEmitterDAO'
 const DAO_CHRONOBANK_ASSET_PROXY = 'ChronoBankAssetProxyDAO'
-const DAO_FEE_INTERFACE = 'FeeInterfaceDAO'
-// TODO @dkchv: update after SC refactor
-const DAO_ASSET_HOLDER = 'TimeHolder'
-
-const DAO_ERC20 = 'erc20'
 
 const daoMap = {
   [DAO_LOC_MANAGER]: LOCManagerDAO,
   [DAO_PENDING_MANAGER]: PendingManagerDAO,
-  [DAO_USER_MANAGER]: UserManagerDAO,
-  [DAO_WALLETS_MANAGER]: WalletsManagerDAO,
-  [DAO_CHRONOBANK_ASSET]: ChronoBankAssetDAO,
-  // [ DAO_ERC20_MANAGER ]: ERC20ManagerDAO,
-  [DAO_VOTING_MANAGER]: VotingManagerDAO,
-  [DAO_POLL_INTERFACE]: PollInterfaceDAO,
   [DAO_REWARDS]: RewardsDAO,
-  [DAO_ASSETS_MANAGER]: AssetsManagerDAO,
-  [DAO_PLATFORMS_MANAGER]: PlatformsManagerDAO,
-  [DAO_CHRONOBANK_PLATFORM]: ChronoBankPlatformDAO,
-  [DAO_TOKEN_MANAGEMENT_EXTENSION]: TokenManagementExtensionDAO,
-  [DAO_PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER]: PlatformTokenExtensionGatewayManagerEmitterDAO,
   [DAO_CHRONOBANK_ASSET_PROXY]: ChronoBankAssetProxyDAO,
-  [DAO_FEE_INTERFACE]: FeeInterfaceDAO,
-  [DAO_ASSET_HOLDER]: AssetHolderDAO,
-  [DAO_ERC20]: ERC20DAO,
 }
 
 class ContractsManagerDAO extends AbstractContractDAO {
@@ -103,96 +59,20 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return dao
   }
 
-  getERC20ManagerDAO (): Promise<ERC20ManagerDAO> {
-    return this._getDAO(DAO_ERC20_MANAGER)
-  }
-
-  getAssetsManagerDAO (): Promise<AssetsManagerDAO> {
-    return this._getDAO(DAO_ASSETS_MANAGER)
-  }
-
-  getPlatformManagerDAO (): Promise<PlatformsManagerDAO> {
-    return this._getDAO(DAO_PLATFORMS_MANAGER)
-  }
-
-  getChronoBankPlatformDAO (platformAddress): Promise<ChronoBankPlatformDAO> {
-    return this._getDAO(DAO_CHRONOBANK_PLATFORM, platformAddress)
-  }
-
   getChronoBankAssetProxyDAO (token: string): Promise<ChronoBankAssetProxyDAO> {
     return this._getDAO(DAO_CHRONOBANK_ASSET_PROXY, token)
-  }
-
-  async getFeeInterfaceDAO (address: string): Promise<FeeInterfaceDAO> {
-    const chronoBankAssetProxyDAO = await this.getChronoBankAssetProxyDAO(address)
-    const latestVersion = await chronoBankAssetProxyDAO.getLatestVersion()
-    return this._getDAO(DAO_FEE_INTERFACE, latestVersion)
-  }
-
-  async getTokenManagementExtensionDAO (platformAddress): Promise<TokenManagementExtensionDAO> {
-    if (platformAddress) {
-      const assetsManager = await this._getDAO(DAO_ASSETS_MANAGER)
-      const tokenExtensionString = await assetsManager.getTokenExtension(platformAddress)
-
-      return this._getDAO(DAO_TOKEN_MANAGEMENT_EXTENSION, tokenExtensionString)
-    } else {
-      return this._getDAO(DAO_TOKEN_MANAGEMENT_EXTENSION)
-    }
   }
 
   getRewardsDAO (): Promise<RewardsDAO> {
     return this._getDAO(DAO_REWARDS)
   }
 
-  /**
-   * @deprecated Use selector daoByType('TimeHolder')(state) instead
-   */
-  getAssetHolderDAO (): Promise<AssetHolderDAO> {
-    // eslint-disable-next-line no-console
-    console.warn('getAssetHolderDAO is deprecated')
-    return this._getDAO(DAO_ASSET_HOLDER)
-  }
-
-  /**
-   * @deprecated
-   */
-  async getTIMEDAO (): Promise<ERC20DAO> {
-    const assetHolderDAO: AssetHolderDAO = await this.getAssetHolderDAO()
-    return assetHolderDAO.getAssetDAO()
-  }
-
   getPendingManagerDAO (): Promise<PendingManagerDAO> {
     return this._getDAO(DAO_PENDING_MANAGER)
   }
 
-  getUserManagerDAO (): Promise<UserManagerDAO> {
-    return this._getDAO(DAO_USER_MANAGER)
-  }
-
-  async getWalletsManagerDAO (): Promise<WalletsManagerDAO> {
-    const walletManager = await this._getDAO(DAO_WALLETS_MANAGER)
-    if (!walletManager.isInited()) {
-      await walletManager.init()
-    }
-    return walletManager
-  }
-
-  async getChronoBankAssetDAO (address): Promise<ChronoBankAssetDAO> {
-    const chronoBankAssetProxyDAO = await this.getChronoBankAssetProxyDAO(address)
-    const assetAddress = await chronoBankAssetProxyDAO.getLatestVersion()
-    return this._getDAO(DAO_CHRONOBANK_ASSET, address ? assetAddress : null)
-  }
-
   getLOCManagerDAO (): Promise<LOCManagerDAO> {
     return this._getDAO(DAO_LOC_MANAGER)
-  }
-
-  getVotingManagerDAO (): Promise<VotingManagerDAO> {
-    return this._getDAO(DAO_VOTING_MANAGER)
-  }
-
-  getPollInterfaceDAO (address): Promise<PollInterfaceDAO> {
-    return this._getDAO(DAO_POLL_INTERFACE, address)
   }
 
   async isContract (account): Promise<boolean> {
