@@ -22,7 +22,6 @@ import ProfileContent from './ProfileContent/ProfileContent'
 import DrawerMainMenu from './DrawerMainMenu/DrawerMainMenu'
 import DepositsContent from './DepositsContent/DepositsContent'
 import DepositContent from './DepositContent/DepositContent'
-import TwoFAContent from './TwoFAContent/TwoFAContent'
 import PersistWrapper from './PersistWrapper/PersistWrapper'
 import NewPollContent from './NewPollContent/NewPollContent'
 import PollContent from './PollContent/PollContent'
@@ -48,7 +47,6 @@ export {
   DepositsContent,
   DepositContent,
   AddWalletContent,
-  TwoFAContent,
   PersistWrapper,
   NewPollContent,
   PollContent,
@@ -75,7 +73,6 @@ export default {
   DepositsContent,
   DepositContent,
   AddWalletContent,
-  TwoFAContent,
   PersistWrapper,
   NewPollContent,
   PollContent,

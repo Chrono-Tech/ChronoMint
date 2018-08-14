@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
@@ -15,79 +14,53 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import {
-  navigateToCreateAccountFromHW,
-} from '@chronobank/login/redux/network/actions'
-import {
-  navigateBack,
-} from '../../redux/actions'
+  DUCK_DEVICE_ACCOUNT,
+} from '@chronobank/core/redux/device/constants'
 
 import './LoginWithTrezor.scss'
 
 const mapStateToProps = (state) => {
-  const network = state.get(DUCK_NETWORK)
   return {
-    trezor: state.get('devices'),
-    isLoading: network.isLoading,
-    account: network.accounts,
+    isLoading: state.get(DUCK_DEVICE_ACCOUNT).isLoading,
+    accounts: state.get(DUCK_DEVICE_ACCOUNT).deviceList,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    startTrezorSync: () => dispatch(startTrezorSync()),
-    stopTrezorSync: (isReset) => dispatch(stopTrezorSync(isReset)),
     fetchAccount: () => dispatch(fetchAccount()),
-    navigateToCreateAccountFromHW: (account) => dispatch(navigateToCreateAccountFromHW(account)),
-    navigateBack: () => dispatch(navigateBack()),
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 class LoginTrezor extends PureComponent {
   static propTypes = {
-    startTrezorSync: PropTypes.func,
-    stopTrezorSync: PropTypes.func,
     fetchAccount: PropTypes.func,
     onBack: PropTypes.func,
-    onLogin: PropTypes.func,
-    navigateBack: PropTypes.func,
-    trezor: PropTypes.object,
+    previousPage: PropTypes.func,
     isLoading: PropTypes.bool,
-    account: PropTypes.instanceOf(Array),
-    navigateToCreateAccountFromHW: PropTypes.func,
+    accounts: PropTypes.instanceOf(Array),
+    onDeviceSelect: PropTypes.func,
   }
 
   componentDidUpdate (prevProps) {
-    if (!this.props.trezor.isFetched && !this.props.trezor.isFetching) {
-      this.props.startTrezorSync()
-      this.props.fetchAccount()
-    }
+    //if (!this.props.trezor.isFetched && !this.props.trezor.isFetching) {
+    //  this.props.fetchAccount()
+    //}
   }
 
   componentWillUnmount () {
-    this.props.stopTrezorSync()
   }
 
   renderStates () {
-    const { trezor } = this.props
-
-    return trezorStates.map((item) =>
-      trezor[ item.flag ]
-        ? <div key={item.flag} />
-        : (
-          <div styleName='state' key={item.flag}>
+    return (
+          <div styleName='state' key='1'>
             <div styleName='titleContent'>
-              <div styleName='title'><Translate value={item.errorTitle} /></div>
-              <div styleName='subtitle'><Translate value={item.errorTip} /></div>
+              <div styleName='title'>zzz</div>
+              <div styleName='subtitle'>zzz</div>
             </div>
           </div>
-        )
     )
-  }
-
-  handleChange = (index, value) => {
-    console.log(index, value)
-    this.setState({ value })
   }
 
   _buildItem = (item, index) => {
@@ -97,11 +70,11 @@ class LoginTrezor extends PureComponent {
           button
           type='submit'
           name='address'
-          value={item}
+          value={item.address}
           component='button'
           disableGutters={true}
           style={{ margin: 0 }}
-          onClick={() => this.props.navigateToCreateAccountFromHW(item)}
+          onClick={() => this.props.onDeviceSelect(item)}
         >
           <ListItemText
             style={{ paddingLeft:"10px" }}
@@ -111,7 +84,7 @@ class LoginTrezor extends PureComponent {
                 type='body2'
                 style={{ color: 'black', fontWeight: 'bold' }}
               >
-                {item}
+                {item.address}
               </Typography>
             }
             secondary='eth 0'
@@ -124,22 +97,24 @@ class LoginTrezor extends PureComponent {
   }
 
   render () {
-    const { trezor, navigateBack, account } = this.props
-
+    const { previousPage, accounts, isLoading } = this.props
+    console.log('isLoading')
+    console.log(isLoading)
     return (
       <div styleName='form'>
         <div styleName='page-title'>
           <Translate value='LoginWithTrezor.title' />
         </div>
-
+        {!isLoading && (
         <div styleName='states'>
           {this.renderStates()}
         </div>
+	)}
 
-        {trezor.isFetched && (
+        {isLoading && (
           <div styleName='account'>
             <List component='nav' className='list'>
-              {account.map(this._buildItem)}
+              {accounts.map(this._buildItem)}
             </List>
           </div>
         )}
@@ -147,7 +122,7 @@ class LoginTrezor extends PureComponent {
         <div styleName='actions'>
           <Translate value='LoginWithMnemonic.or' />
           <br />
-          <button onClick={navigateBack} styleName='link'>
+          <button onClick={previousPage} styleName='link'>
             <Translate value='LoginWithMnemonic.back' />
           </button>
         </div>

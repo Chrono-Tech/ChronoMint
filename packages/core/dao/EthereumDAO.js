@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
+//import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import solidityEvent from 'web3/lib/web3/event'
 import BigNumber from 'bignumber.js'
 import Amount from '../models/Amount'
@@ -214,7 +214,7 @@ export class EthereumDAO extends AbstractTokenDAO {
     })
   }
 
-  async immediateTransfer (tx: TxExecModel) {
+  /*async immediateTransfer (tx: TxExecModel) {
     try {
       const rawTx = await this.createRawTx(tx)
       ethereumProvider.transfer(rawTx, tx.from)
@@ -268,7 +268,7 @@ export class EthereumDAO extends AbstractTokenDAO {
       return this._getTransferFromBlocks(account, id)
     }
     return txs
-  }
+  }*/
 
   /**
    * Useful for TestRPC

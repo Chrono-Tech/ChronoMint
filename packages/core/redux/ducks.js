@@ -26,6 +26,7 @@ import wallet from './wallet/reducer'
 import wallets from './wallets/reducer'
 import watcher from './watcher/reducer'
 import ethereum from './ethereum/reducer'
+import device from './device/reducer'
 
 const coreReducers = {
   assetsHolder,
@@ -49,6 +50,7 @@ const coreReducers = {
   wallets,
   watcher,
   ethereum,
+  device,
 }
 
 export default coreReducers

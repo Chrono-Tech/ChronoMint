@@ -3,181 +3,132 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import ledgerProvider from '@chronobank/login/network/LedgerProvider'
-import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
-import { fetchAccount, startLedgerSync, stopLedgerSync } from '@chronobank/login/redux/ledger/actions'
-import { CircularProgress, RaisedButton, SelectField, MenuItem, Subheader } from '@material-ui/core'
-import networkService from '@chronobank/login/network/NetworkService'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import Divider from '@material-ui/core/Divider'
+import Typography from '@material-ui/core/Typography'
+import ChevronRight from '@material-ui/icons/ChevronRight'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import BackButton from '../../components/BackButton/BackButton'
-import './LoginWithLedger.scss'
-import { Button } from '../../settings'
+import {
+  DUCK_DEVICE_ACCOUNT,
+} from '@chronobank/core/redux/device/constants'
 
-const ledgerStates = [ {
-  flag: 'isHttps',
-  successTitle: 'LoginWithLedger.isHttps.successTitle',
-  errorTitle: 'LoginWithLedger.isHttps.errorTitle',
-  errorTip: 'LoginWithLedger.isHttps.errorTip',
-}, {
-  flag: 'isU2F',
-  successTitle: 'LoginWithLedger.isU2F.successTitle',
-  errorTitle: 'LoginWithLedger.isU2F.errorTitle',
-  errorTip: 'LoginWithLedger.isU2F.errorTip',
-}, {
-  flag: 'isETHAppOpened',
-  successTitle: 'LoginWithLedger.isETHAppOpened.successTitle',
-  errorTitle: 'LoginWithLedger.isETHAppOpened.errorTitle',
-  errorTip: 'LoginWithLedger.isETHAppOpened.errorTip',
-}, {
-  flag: 'isFetched',
-  successTitle: 'LoginWithLedger.isFetched.successTitle',
-  errorTitle: 'LoginWithLedger.isFetched.errorTitle',
-  errorTip: 'LoginWithLedger.isFetched.errorTip',
-} ]
+import './LoginWithLedger.scss'
 
 const mapStateToProps = (state) => {
-  const network = state.get(DUCK_NETWORK)
   return {
-    ledger: state.get('ledger'),
-    isLoading: network.isLoading,
-    account: network.accounts
+    isLoading: state.get(DUCK_DEVICE_ACCOUNT).isLoading,
+    accounts: state.get(DUCK_DEVICE_ACCOUNT).deviceList,
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  startLedgerSync: () => dispatch(startLedgerSync()),
-  stopLedgerSync: (isReset) => dispatch(stopLedgerSync(isReset)),
-  fetchAccount: () => dispatch(fetchAccount()),
-})
+function mapDispatchToProps (dispatch) {
+  return {
+    fetchAccount: () => dispatch(fetchAccount()),
+  }
+}
 
 @connect(mapStateToProps, mapDispatchToProps)
-class LoginLedger extends PureComponent {
+class LoginWithLedger extends PureComponent {
   static propTypes = {
-    startLedgerSync: PropTypes.func,
-    stopLedgerSync: PropTypes.func,
     fetchAccount: PropTypes.func,
-    onBack: PropTypes.func.isRequired,
-    onLogin: PropTypes.func.isRequired,
-    ledger: PropTypes.shape({
-      isFetched: PropTypes.bool,
-      isFetching: PropTypes.bool,
-      isHttps: PropTypes.bool,
-      isETHAppOpened: PropTypes.bool,
-    }),
+    onBack: PropTypes.func,
+    previousPage: PropTypes.func,
     isLoading: PropTypes.bool,
-    account: PropTypes.array,
-  }
-
-  state = {
-    value: 0,
-  };
-
-  componentWillMount () {
-    this.props.startLedgerSync()
+    accounts: PropTypes.instanceOf(Array),
+    onDeviceSelect: PropTypes.func,
   }
 
   componentDidUpdate (prevProps) {
-    const ledger = this.props.ledger
-    if (!ledger.isFetched && !ledger.isFetching && ledger.isHttps && ledger.isU2F && ledger.isETHAppOpened) {
-      this.props.fetchAccount()
-    }
-    ledgerProvider.setWallet(prevProps.account[0])
-    networkService.selectAccount(prevProps.account[0])
-    networkService.setAccounts(prevProps.account)
+    //if (!this.props.trezor.isFetched && !this.props.trezor.isFetching) {
+    //  this.props.fetchAccount()
+    //}
   }
 
   componentWillUnmount () {
-    this.props.stopLedgerSync()
-  }
-
-  handleBackClick = () => {
-    this.props.stopLedgerSync(true)
-    this.props.onBack()
   }
 
   renderStates () {
-    const { ledger } = this.props
-
-    return ledgerStates.map((item) => ledger[ item.flag ]
-      ? (
-        <div styleName='state' key={item.flag}>
-          <div styleName='flag flagDone' className='material-icons'>done</div>
-          <div styleName='titleContent'><Translate value={item.successTitle} /></div>
-        </div>
-      )
-      : (
-        <div styleName='state' key={item.flag}>
-          <div styleName='flag flagError' className='material-icons'>error</div>
-          <div styleName='titleContent'>
-            <div styleName='title'><Translate value={item.errorTitle} /></div>
-            <div styleName='subtitle'><Translate value={item.errorTip} /></div>
+    return (
+          <div styleName='state' key='1'>
+            <div styleName='titleContent'>
+              <div styleName='title'>zzz</div>
+              <div styleName='subtitle'>zzz</div>
+            </div>
           </div>
-        </div>
-      ))
+    )
   }
 
-  _buildItem(item, index) {
-    return <MenuItem value={index} key={index} primaryText={item} />
+  _buildItem = (item, index) => {
+    return (
+      <div key={index}>
+        <ListItem
+          button
+          type='submit'
+          name='address'
+          value={item.address}
+          component='button'
+          disableGutters={true}
+          style={{ margin: 0 }}
+          onClick={() => this.props.onDeviceSelect(item)}
+        >
+          <ListItemText
+            style={{ paddingLeft:"10px" }}
+            disableTypography
+            primary={
+              <Typography
+                type='body2'
+                style={{ color: 'black', fontWeight: 'bold' }}
+              >
+                {item.address}
+              </Typography>
+            }
+            secondary='eth 0'
+          />
+          <ChevronRight />
+        </ListItem>
+        <Divider light />
+      </div>
+    )
   }
-
-  handleChange = (event, index, value) => {this.setState({ value }); ledgerProvider.setWallet(this.props.account[index]); networkService.selectAccount(this.props.account[index]);}
 
   render () {
-    const { isLoading, ledger, account } = this.props
-
+    const { previousPage, accounts, isLoading } = this.props
+    console.log('isLoading')
+    console.log(isLoading)
     return (
-      <div styleName='root'>
-        <BackButton
-          onClick={this.handleBackClick}
-          to='options'
-        />
-
+      <div styleName='form'>
+        <div styleName='page-title'>
+          <Translate value='LoginWithLedger.title' />
+        </div>
+        {!isLoading && (
         <div styleName='states'>
           {this.renderStates()}
         </div>
+	)}
 
-        {ledger.isFetched && (
+        {isLoading && (
           <div styleName='account'>
-            <SelectField
-              label='Select address'
-              autoWidth={true}
-              fullWidth={true}
-              floatingLabelStyle={{ color: 'white' }}
-              labelStyle={{ color: 'white' }}
-              value={this.state.value}
-              onChange={this.handleChange}
-            >
-              {this.props.account.map(this._buildItem)}
-            </SelectField>
+            <List component='nav' className='list'>
+              {accounts.map(this._buildItem)}
+            </List>
           </div>
         )}
 
         <div styleName='actions'>
-          <div styleName='action'>
-            <Button
-              label={isLoading
-                ? (
-                  <CircularProgress
-                    style={{ verticalAlign: 'middle', marginTop: -2 }}
-                    size={24}
-                    thickness={1.5}
-                  />
-                )
-                : <Translate value='LoginWithLedger.login' />
-              }
-              primary
-              fullWidth
-              disabled={isLoading || !account}
-              onClick={this.props.onLogin}
-            />
-          </div>
+          <Translate value='LoginWithMnemonic.or' />
+          <br />
+          <button onClick={previousPage} styleName='link'>
+            <Translate value='LoginWithMnemonic.back' />
+          </button>
         </div>
       </div>
     )
   }
 }
 
-export default LoginLedger
+export default LoginWithLedger

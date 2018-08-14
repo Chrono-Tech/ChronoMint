@@ -12,6 +12,7 @@ export const getPersistAccount = (state) => {
 }
 
 export const getSigner = (state) => {
+  console.log('get signer')
   console.log(getPersistAccount(state))
   const { decryptedWallet } = getPersistAccount(state)
   return decryptedWallet.signer

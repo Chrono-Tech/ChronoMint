@@ -51,13 +51,13 @@ export default class SignerDeviceModel extends SignerModel {
   }
 
   // Should be synchronous by design
-  static async create ({ web3, device, address, path, publicKey }) {
+  static async create ({ device, address, path, publicKey }) {
     return new SignerDeviceModel({ device, path, address, publicKey })
   }
 
   // Should be synchronous by design
-  static decrypt ({ web3, device, entry }) {
-    const { path, address, publicKey } = entry.encrypted
-    return new SignerDeviceModel({ device, path, address, publicKey })
+  static decrypt ({ device, entry }) {
+    const { path, address, publicKey } = entry.encrypted[0]
+    return new SignerDeviceModel({ device, path, address: `0x${address}`, publicKey })
   }
 }

@@ -19,7 +19,7 @@ import WalletName from 'components/wallet/WalletName/WalletName'
 import walletLinkSvg from 'assets/img/icons/prev.svg'
 import copySvg from 'assets/img/icons/copy.svg'
 import qrSvg from 'assets/img/icons/qr.svg'
-import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
+//import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
 import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED, SYNC_STATUS_SYNCING } from '@chronobank/login/network/MonitorService'
 import { SIDES_TOGGLE_MAIN_MENU } from 'redux/sides/constants'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
@@ -204,7 +204,7 @@ export default class MenuTokenMoreInfo extends PureComponent {
 
           {wallets.map(this.renderWallet)}
 
-          {selectedToken && selectedToken.blockchain === BLOCKCHAIN_ETHEREUM && (
+          {selectedToken && (//selectedToken.blockchain === BLOCKCHAIN_ETHEREUM && (
             <div styleName='network'>
               <div styleName='networkTitle'>
                 <Translate value={`${prefix}.networkTitle`} />

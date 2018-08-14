@@ -8,7 +8,6 @@ import type MultisigWalletDAO from './MultisigWalletDAO'
 import AddressesCollection from '../models/wallet/AddressesCollection'
 import AddressModel from '../models/wallet/AddressModel'
 import MultisigEthWalletModel from '../models/wallet/MultisigEthWalletModel'
-import multisigWalletService from '../services/MultisigWalletService'
 import AbstractContractDAO from './AbstractContract3DAO'
 
 //#region CONSTANTS

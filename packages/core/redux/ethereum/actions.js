@@ -86,6 +86,8 @@ export const processTransaction = ({ web3, entry, signer }) => async (dispatch, 
 }
 
 export const signTransaction = ({ entry, signer }) => async (dispatch) => {
+  console.log('sign Transaction')
+  console.log(entry)
   try {
     const signed = await signer.signTransaction(omitBy(entry.tx, isNil))
     const raw = signed.rawTransaction

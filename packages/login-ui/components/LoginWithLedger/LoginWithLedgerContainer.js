@@ -7,12 +7,12 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
 import {
-  DUCK_PERSIST_ACCOUNT,
-} from '@chronobank/core/redux/persistAccount/constants'
+  DUCK_DEVICE_ACCOUNT,
+} from '@chronobank/core/redux/device/constants'
 import {
   initLedgerDevice,
-} from '@chronobank/login/redux/network/thunks'
-import { DeviceEntryModel } from '@chronobank/core/models/wallet/persistAccount'
+} from '@chronobank/core/redux/device/actions'
+import { DeviceEntryModel } from '@chronobank/core/models'
 import './LoginWithLedger.scss'
 import {
   navigateToSelectImportMethod,
@@ -24,7 +24,7 @@ function mapDispatchToProps (dispatch) {
   return {
     navigateToCreateAccount: () => dispatch(navigateToCreateAccount()),
     navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
-    initAccountsSignature: () => dispatch(initAccountsSignature()),
+    initLedgerDevice: () => dispatch(initLedgerDevice()),
   }
 }
 
@@ -42,7 +42,7 @@ class LoginWithLedgerContainer extends PureComponent {
     deviceList: PropTypes.array,
     navigateToSelectImportMethod: PropTypes.func,
     navigateToCreateAccount: PropTypes.func,
-    initAccountsSignature: PropTypes.func,
+    initLedgerDevice: PropTypes.func,
   }
 
   static defaultProps = {
@@ -52,7 +52,7 @@ class LoginWithLedgerContainer extends PureComponent {
   }
 
   componentDidMount () {
-    this.props.initLedger()
+    this.props.initLedgerDevice()
   }
 
   render () {

@@ -127,6 +127,7 @@ export const alternateTxHandlingFlow = (dao) => (dispatch) => {
 }
 
 export const initTokens = () => async (dispatch, getState) => {
+  console.log('init tokens')
   if (getState().get(DUCK_TOKENS).isInited()) {
     return
   }
@@ -159,10 +160,10 @@ export const initTokens = () => async (dispatch, getState) => {
     })
     .fetchTokens()
 
-  dispatch(initBtcLikeTokens())
-  dispatch(initNemTokens())
-  dispatch(initWavesTokens())
-  dispatch(watchLatestBlock())
+//  dispatch(initBtcLikeTokens())
+//  dispatch(initNemTokens())
+//  dispatch(initWavesTokens())
+//  dispatch(watchLatestBlock())
 }
 
 export const initBtcLikeTokens = () => async (dispatch, getState) => {

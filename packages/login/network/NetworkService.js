@@ -5,7 +5,6 @@
 
 // #region imports
 
-import contractsManagerDAO from '@chronobank/core/dao/ContractsManagerDAO'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
 import EventEmitter from 'events'
@@ -117,7 +116,7 @@ class NetworkService extends EventEmitter {
   async checkNetwork () {
     const dispatch = this._dispatch
     dispatch(loading())
-    const isDeployed = await contractsManagerDAO.isDeployed()
+    const isDeployed = true
     if (!isDeployed) {
       dispatch({
         type: NETWORK_ADD_ERROR,

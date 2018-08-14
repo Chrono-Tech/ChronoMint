@@ -4,7 +4,6 @@
  */
 
 import { getTransactionsForMainWallet } from '../mainWallet/actions'
-import { getTransactionsForEthMultisigWallet } from '../multisigWallet/actions'
 import { WALLET_SELECT_WALLET } from './constants'
 
 export const selectWallet = (blockchain: string, address: string) => (dispatch) => {

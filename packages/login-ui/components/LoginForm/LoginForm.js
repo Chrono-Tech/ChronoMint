@@ -106,6 +106,65 @@ class LoginPage extends React.Component {
     )
   }
 
+  renderType () {
+    const { classes, selectedWallet, submitting, error } = this.props
+
+    switch (selectedWallet.type) {
+      case 'memory': {
+	return (
+	 <div>
+	  <div styleName='field'>
+            <Field
+              component={TextField}
+              name='password'
+              type='password'
+              label={<Translate value='LoginForm.enterPassword' />}
+              fullWidth
+              InputProps={{ className: classes.input }}
+            />
+          </div>
+
+          <div styleName='actions'>
+            <Button
+              styleName='button'
+              buttonType='login'
+              type='submit'
+              label={<Translate value='LoginForm.submitButton' />}
+              isLoading={submitting}
+            />
+
+            {error ? (<div styleName='form-error'>{error}</div>) : null}
+
+            <button onClick={navigateToRecoverAccountPage} styleName='link'>
+              <Translate value='LoginForm.forgotPassword' />
+            </button>
+          </div>
+	 </div>
+        )
+      }
+      case 'device': {
+	return (
+
+          <div styleName='actions'>
+            <Button
+              styleName='button'
+              buttonType='login'
+              type='submit'
+              label={<Translate value='LoginForm.submitButton' />}
+              isLoading={submitting}
+            />
+
+            {error ? (<div styleName='form-error'>{error}</div>) : null}
+
+          </div>
+      
+	)
+      }
+
+    }
+
+  }
+
   render () {
     const {
       classes,
@@ -143,32 +202,8 @@ class LoginPage extends React.Component {
             linkTitle='My Accounts'
           />
 
-          <div styleName='field'>
-            <Field
-              component={TextField}
-              name='password'
-              type='password'
-              label={<Translate value='LoginForm.enterPassword' />}
-              fullWidth
-              InputProps={{ className: classes.input }}
-            />
-          </div>
+          {this.renderType()}
 
-          <div styleName='actions'>
-            <Button
-              styleName='button'
-              buttonType='login'
-              type='submit'
-              label={<Translate value='LoginForm.submitButton' />}
-              isLoading={submitting}
-            />
-
-            {error ? (<div styleName='form-error'>{error}</div>) : null}
-
-            <button onClick={navigateToRecoverAccountPage} styleName='link'>
-              <Translate value='LoginForm.forgotPassword' />
-            </button>
-          </div>
         </div>
 
       </form>

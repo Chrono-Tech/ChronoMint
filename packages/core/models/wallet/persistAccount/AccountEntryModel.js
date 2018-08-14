@@ -32,9 +32,9 @@ class AccountEntryModel extends AbstractAccountModel {
       case 'memory':
         return `0x${this.encrypted[0].address}`
       case 'device':
-        return this.encrypted.address
+        return `0x${this.encrypted[0].address}` 
     }
-  }
+  } 
 
   isMemoryWallet () {
     return !this.type || this.type === 'memory'

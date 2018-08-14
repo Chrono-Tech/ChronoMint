@@ -12,10 +12,13 @@ import profileService from '@chronobank/login/network/ProfileService'
 import { removeWatchersUserMonitor } from '@chronobank/core-dependencies/redux/ui/actions'
 import { daoByType } from '../../redux/daos/selectors'
 import web3Factory from '../../web3/index'
-import { cbeWatcher, watcher } from '../watcher/actions'
 import { watchStopMarket } from '../market/actions'
 import { notify } from '../notifier/actions'
 import { initEthereum } from '../ethereum/actions'
+import { initDAOs } from '../daos/actions'
+import { initWallets } from '../wallets/actions'
+import { initMainWallet } from '../mainWallet/actions'
+import { initTokens } from '../tokens/actions'
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '../persistAccount/constants'
@@ -59,6 +62,8 @@ export const logout = () => async (dispatch, getState) => {
 }
 
 export const login = (account) => async (dispatch, getState) => {
+  console.log('login')
+  
   let state = getState()
 
   const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
@@ -80,16 +85,21 @@ export const login = (account) => async (dispatch, getState) => {
   const web3 = typeof window !== 'undefined'
     ? web3Factory(network)
     : null
-
+  await dispatch(initDAOs({ web3 }))
   await dispatch(initEthereum({ web3 }))
-  await dispatch(watcher({ web3 }))
+  await dispatch(initTokens())
+  //await dispatch(initMainWallet())
+  await dispatch(initWallets())
 
   const userManagerDAO = daoByType('UserManager')(getState())
+  console.log(userManagerDAO)
   const [isCBE, profile, memberId] = await Promise.all([
     userManagerDAO.isCBE(account),
     userManagerDAO.getMemberProfile(account, web3),
     userManagerDAO.getMemberId(account),
   ])
+  console.log('isCBE')
+  console.log(isCBE)
 
   // @todo Need to refactor PendingManagerDAO
   // TODO @bshevchenko: PendingManagerDAO should receive member id from redux state
@@ -99,37 +109,16 @@ export const login = (account) => async (dispatch, getState) => {
   dispatch({ type: SESSION_PROFILE, profile, isCBE })
 
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
-  isCBE && dispatch(cbeWatcher())
 
   dispatch(replace(ls.getLastURL() || defaultURL))
 }
 
 export const bootstrap = (relogin = true, isMetaMaskRequired = true, isLocalAccountRequired = true) => async (dispatch, getState) => {
-  if (isMetaMaskRequired) {
-    networkService.checkMetaMask()
-  }
   if (networkService) {
     networkService
       .on('createSession', createSession)
       .on('destroySession', destroySession)
       .on('login', ({ account, dispatch }) => dispatch(login(account)))
-  }
-
-  if (!relogin) {
-    return networkService
-  }
-
-  if (isLocalAccountRequired) {
-    const localAccount = ls.getLocalAccount()
-    const isPassed = await networkService.checkLocalSession(localAccount)
-    if (isPassed) {
-      await networkService.restoreLocalSession(localAccount, getState().get('ethMultisigWallet'))
-      networkService.createNetworkSession(localAccount, LOCAL_PROVIDER_ID, LOCAL_ID)
-      dispatch(login(localAccount))
-    } else {
-      // eslint-disable-next-line
-      console.warn('Can\'t restore local session')
-    }
   }
 
   return networkService

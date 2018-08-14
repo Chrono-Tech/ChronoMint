@@ -72,7 +72,6 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
 }
 
 export const decryptAccount = (entry, password) => async (dispatch) => {
-  
   const signer = await SignerMemoryModel.decrypt({ entry, password })
   console.log(signer)
   console.log(signer.privateKey)
@@ -122,7 +121,7 @@ export const createAccount = ({ name, wallet, type }) => async (dispatch) => {
     key: uuid(),
     name,
     type,
-    encrypted: wallet,
+    encrypted: [wallet],
     profile: null,
   })
 

@@ -8,7 +8,7 @@ import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, B
 import { TOKEN_ICONS } from 'assets'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import contractsManagerDAO from '@chronobank/core/dao/ContractsManagerDAO'
+import contractsManagerDAO from '@chronobank/core/dao/ContractsManagerDAO3'
 import { TX_TRANSFER } from '@chronobank/core/dao/constants/ERC20DAO'
 import web3Converter from '@chronobank/core/utils/Web3Converter'
 import Amount from '@chronobank/core/models/Amount'
@@ -118,7 +118,6 @@ export default class SendTokensForm extends PureComponent {
     onTransfer: PropTypes.func,
     onApprove: PropTypes.func,
     gasPriceMultiplier: PropTypes.number,
-    formErrors: PropTypes.shape(PropTypes.any),
     ...formPropTypes,
   }
 
@@ -409,6 +408,7 @@ export default class SendTokensForm extends PureComponent {
     return null
   }
 
+//TODO move this to utils or selectors
   isFieldValid = (fieldName) => {
     return fieldName in this.props.formErrors
   }

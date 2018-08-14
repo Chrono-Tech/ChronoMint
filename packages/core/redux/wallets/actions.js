@@ -23,7 +23,6 @@ import TokenModel from '../../models/tokens/TokenModel'
 import tokenService from '../../services/TokenService'
 import Amount from '../../models/Amount'
 import { getAccount } from '../session/selectors'
-import { updateEthMultisigWalletBalance } from '../multisigWallet/actions'
 import ethereumDAO from '../../dao/EthereumDAO'
 import { getMainEthWallet, getWallets } from './selectors/models'
 import { notifyError } from '../notifier/actions'
@@ -31,6 +30,9 @@ import { DUCK_SESSION } from '../session/constants'
 import { AllowanceCollection, SignerMemoryModel } from '../../models'
 import { executeTransaction } from '../ethereum/actions'
 import { WALLETS_SET, WALLETS_TWO_FA_CONFIRMED, WALLETS_UPDATE_BALANCE, WALLETS_UPDATE_WALLET } from './constants'
+import {
+  DUCK_PERSIST_ACCOUNT,
+} from '../persistAccount/constants'
 import { getSigner } from '../persistAccount/selectors'
 
 const isOwner = (wallet, account) => {
@@ -57,20 +59,23 @@ export const initWallets = () => (dispatch) => {
   dispatch(initDerivedWallets())
 }
 
-const initWalletsFromKeys = () => (dispatch) => {
+const initWalletsFromKeys = () => (dispatch, getState) => {
+  console.log('Init wallets from keys')
+  const state = getState()
+  const signer = getSigner(state)
   const providers = [
-    bccProvider,
-    btgProvider,
-    ltcProvider,
-    btcProvider,
-    nemProvider,
-    wavesProvider,
+//    bccProvider,
+//    btgProvider,
+//    ltcProvider,
+//    btcProvider,
+//    nemProvider,
+//    wavesProvider,
     ethereumProvider,
   ]
 
   providers.map((provider) => {
     const wallet = new WalletModel({
-      address: provider.getAddress(),
+      address: signer.getAddress(),
       blockchain: provider.id(),
       isMain: true,
     })

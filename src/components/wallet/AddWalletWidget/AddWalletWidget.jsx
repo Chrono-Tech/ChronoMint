@@ -4,7 +4,6 @@
  */
 
 import uuid from 'uuid/v1'
-import { create2FAWallet, createWallet } from '@chronobank/core/redux/multisigWallet/actions'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -13,7 +12,6 @@ import { goToWallets, resetWalletsForm } from '@chronobank/core/redux/mainWallet
 import { FORM_ADD_NEW_WALLET } from '@chronobank/core/redux/mainWallet/constants'
 import WidgetContainer from 'components/WidgetContainer/WidgetContainer'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
-import { FORM_2FA_STEPS, FORM_2FA_WALLET } from '@chronobank/core/redux/multisigWallet/constants'
 import {
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_BITCOIN,
@@ -23,11 +21,9 @@ import {
 import './AddWalletWidget.scss'
 import SelectWalletType from './SelectWalletType/SelectWalletType'
 import SelectEthWallet from './SelectEthWallet/SelectEthWallet'
-import MultisigWalletForm from './MultisigWalletForm/MultisigWalletForm'
 import TimeLockedWalletForm from './TimeLockedWalletForm/TimeLockedWalletForm'
 import { prefix } from './lang'
 import CustomWalletForm from './CustomWalletForm/CustomWalletForm'
-import TwoFaWalletForm from '../TwoFaWalletForm/TwoFaWalletForm'
 import StandardWalletForm from './StandardWalletForm/StandardWalletForm'
 
 function mapStateToProps (state) {

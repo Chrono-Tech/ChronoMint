@@ -4,6 +4,7 @@
  */
 
 import EventEmitter from 'events'
+import * as validator from '../models/validator'
 
 export default class ContractsManagerDAO extends EventEmitter {
   constructor ({ address, abi }) {
@@ -43,5 +44,11 @@ export default class ContractsManagerDAO extends EventEmitter {
 
   async isExists (address: String) {
     return this.contract.methods.isExists(address).call()
+  }
+
+  async isContract (account): Promise<boolean> {
+    return validator.address(account) === null
+      ? await this.getCode(account) !== null
+      : false
   }
 }

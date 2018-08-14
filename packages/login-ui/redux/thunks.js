@@ -21,12 +21,14 @@ import * as NetworkThunks from '@chronobank/login/redux/network/thunks'
 import * as SessionActions from '@chronobank/core/redux/session/actions'
 import { getSigner } from '@chronobank/core/redux/persistAccount/selectors'
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
+import * as DeviceActions from '@chronobank/core/redux/device/actions'
 import { login } from '@chronobank/core/redux/session/actions'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 import networkService from '@chronobank/login/network/NetworkService'
 import { AccountEntryModel } from '@chronobank/core/models'
 import {
   createAccountEntry,
+  createDeviceAccountEntry,
 } from '@chronobank/core/redux/persistAccount/utils'
 import {
   isLocalNode,
@@ -37,15 +39,6 @@ import {
   FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
   FORM_FOOTER_EMAIL_SUBSCRIPTION,
 } from './constants'
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
-export const navigateToCreateAccountFromHW = (address) => (dispatch) => {
-  dispatch(NetworkActions.networkSetAccounts(address))
-  dispatch(LoginUIActions.navigateToCreateHWAccount())
-}
 
 /*
  * Thunk dispatched by "" screen.
@@ -103,27 +96,33 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   const state = getState()
   const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
   const wlt = new AccountEntryModel(selectedWallet)
-  switch (selectedWallet.type) {
-    case 'memory': {
+  console.log(wlt) 
+    switch(wlt.type) {
+     case 'memory' : {
       try {
         const wallet = await dispatch(PersistAccountActions.decryptAccount(wlt, password))
-	console.log(wallet)
+        await dispatch(SessionActions.getProfileSignature(wallet.signer))
+	      
+        await dispatch(NetworkThunks.handleLogin(wallet.signer.address))
+      } catch (e) {
+        throw new SubmissionError({ password: e && e.message })
+      }
+     }
+
+     case 'device': {
+      
+      console.log('navigate to device login')
+      try {
+        const wallet = await dispatch(DeviceActions.loadDeviceAccount(wlt))
+        console.log(wallet)
         dispatch(SessionActions.getProfileSignature(wallet.signer))
 
         await dispatch(NetworkThunks.handleLogin(wallet.signer.address))
-
       } catch (e) {
         throw new SubmissionError({ password: e && e.message })
       }
     }
-    case 'device': {
-      try {
-        
-      } catch (e) {
-
-      }
-    }
-  }
+   }
 }
 
 
@@ -188,44 +187,6 @@ export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKe
  * TODO: to add description
  * TODO: to rework it
  */
-export const onSubmitCreateHWAccountPage = (walletName) =>
-  async (dispatch, getState) => {
-    const validateName = dispatch(PersistAccountActions.validateAccountName(walletName))
-
-    if (!validateName) {
-      throw new SubmissionError({ walletName: 'Wrong wallet name' })
-    }
-
-    dispatch(NetworkActions.setAccountCredentials(walletName, walletName))
-
-    const state = getState()
-    const {
-      importAccountMode,
-      newAccountPrivateKey,
-    } = state.get(DUCK_NETWORK)
-
-    if (importAccountMode) {
-      try {
-        let wallet = await dispatch(PersistAccountActions.createHWAccount({
-          name: walletName,
-          pupblicKey: newAccountPrivateKey,
-          numberOfAccounts: 0,
-        }))
-
-        dispatch(PersistAccountActions.accountAdd(wallet))
-        dispatch(PersistAccountActions.accountSelect(wallet))
-        dispatch(NetworkActions.networkResetImportAccountMode())
-      } catch (e) {
-        throw new SubmissionError({ _error: e && e.message })
-      }
-    }
-  }
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to rework it
- */
 export const onSubmitCreateHWAccountPageSuccess = () => {
   // FIXME: empty thunk
 }
@@ -247,6 +208,19 @@ export const onSubmitCreateHWAccountPageFail = (errors, submitErrors) => {
 */
 export const onCreateWalletFromJSON = (name, walletJSON, profile) => (dispatch) => {
   const account = createAccountEntry(name, walletJSON, profile)
+
+  dispatch(PersistAccountActions.accountAdd(account))
+
+}
+
+/*
+ * Thunk dispatched by "" screen.
+ * TODO: to add description
+ * TODO: to move logic to utils
+*/
+export const onCreateWalletFromDevice = (name, device, profile) => (dispatch) => {
+	
+  const account = createDeviceAccountEntry(name, device, profile)
 
   dispatch(PersistAccountActions.accountAdd(account))
 
@@ -305,10 +279,16 @@ export const selectProviderWithNetwork = (networkId, providerId) => (dispatch) =
   }
 }
 
-export const onWalletSelect = (wallet) => (dispatch) => {
-
+export const onWalletSelect = (wallet) => async (dispatch) => {
+  console.log(wallet)
   dispatch(PersistAccountActions.accountSelect(wallet))
   dispatch(LoginUIActions.navigateToLoginPage())
+}
+
+export const onDeviceSelect = (device) => (dispatch) => {
+
+  dispatch(DeviceActions.deviceSelect(device))
+
 }
 
 // #endregion

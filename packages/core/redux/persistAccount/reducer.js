@@ -10,7 +10,7 @@ import * as a from './constants'
 const persistConfig = {
   key: 'account',
   storage: storage,
-  blacklist: ['decryptedWallet', 'rehydrated'],
+//  blacklist: ['decryptedWallet', 'rehydrated'],
 //  transforms: typeof window === 'undefined'
 //    ? []
 //    : [ decryptedAccountTransform() ],

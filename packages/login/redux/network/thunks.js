@@ -112,7 +112,8 @@ export const handleLogin = (address) => async (dispatch, getState) => {
   dispatch(NetworkActions.clearErrors())
 
   const isPassed = await networkService.checkNetwork()
-
+  console.log('isPassed')
+  console.log(isPassed)
   if (isPassed) {
     networkService.createNetworkSession(
       selectedAccount,

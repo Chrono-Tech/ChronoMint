@@ -1,11 +1,11 @@
 import EventEmitter from 'events'
 import EthereumTx from 'ethereumjs-tx'
 import hdkey from 'ethereumjs-wallet/hdkey'
-import { TrezorConnect } from 'connect/connect'
+import TrezorConnect from 'trezor-connect';
 const stripHexPrefix = require('strip-hex-prefix')
 const BigNumber = require('bignumber.js')
 
-const DEFAULT_PATH = "44'/60'/0'/0"
+const DEFAULT_PATH = "m/44'/60'/0'/0"
 const DEFAULT_PATH_FACTORY = (index) => `${DEFAULT_PATH}/${index}`
 
 export default class TrezorDevice extends EventEmitter {
@@ -18,19 +18,17 @@ export default class TrezorDevice extends EventEmitter {
   }
 
   async init () {
-    TrezorConnect.getXPubKey(DEFAULT_PATH, response => {
-      const { xpubkey, publicKey, success } = response
-      if (success) {
-        this.xpubkey = xpubkey
-        const wallet = hdkey.fromExtendedKey(this.xpubkey).getWallet()
-        this.emit('connected')
-        return {
+    const result = await TrezorConnect.getPublicKey({ path: DEFAULT_PATH });
+    console.log(result)
+    const { xpub } = result.payload
+    this.xpubkey = xpub
+    const wallet = hdkey.fromExtendedKey(this.xpubkey).getWallet()
+    this.emit('connected')
+    return {
           path: DEFAULT_PATH,
           address: wallet.getAddress().toString('hex'),
-          publicKey
-        }
-      }
-    })
+          publicKey: wallet.getPublicKey()
+    }
   }
 
   stripAndPad (str) {

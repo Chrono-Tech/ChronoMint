@@ -96,47 +96,26 @@ export const getProfilesForAccounts = (walletsList) => async () => {
     }, [])
 }
 
-export const createAndSetAccount = async ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => {
-  let hex = ''
-
-  if (privateKey){
-    hex = `0x${privateKey}`
-  }
-
-  if (mnemonic){
-    hex = hdkey
-      .fromMasterSeed(bip39.mnemonicToSeed(mnemonic))
-      .derivePath(WALLET_HD_PATH)
-      .getWallet()
-      .getPrivateKeyString()
-  }
-
-  const accounts = new Accounts()
-
-  let wallet = await accounts.wallet.create(numberOfAccounts)
-  const account = accounts.privateKeyToAccount(hex)
-  wallet.add(account)
-
-  const entry = new AccountEntryModel({
-    key: uuid(),
-    name,
-    types,
-    encrypted: wallet && wallet.encrypt(password),
-    profile: null,
-  })
-
-  const newAccounts = getProfilesForAccounts([entry])
-
-  return newAccounts[0] || entry
-}
-
 export const createAccountEntry = (name, walletFileImportObject, profile = null) =>
   new AccountEntryModel({
     key: uuid(),
     name,
+    type: 'memory',
     encrypted: [walletFileImportObject],
     profile,
   })
+
+export const createDeviceAccountEntry = (name, device, profile = null) => {
+  console.log('create device account')
+  console.log(device)
+  return new AccountEntryModel({
+    key: uuid(),
+    name,
+    type: 'device',
+    encrypted: [device],
+    profile,
+  })
+}
 
 export const getAddressByMnemonic = (mnemonic) => {
   return mnemonicProvider

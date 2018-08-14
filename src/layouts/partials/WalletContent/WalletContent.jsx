@@ -12,7 +12,6 @@ import { formatDataAndGetTransactionsForWallet } from '@chronobank/core/redux/wa
 import { DUCK_WALLET } from '@chronobank/core/redux/wallet/constants'
 import WalletWidgetDetail from 'components/wallet/WalletWidgetDetail/WalletWidgetDetail'
 import TokensListWidget from 'components/wallet/TokensListWidget/TokensListWidget'
-import PendingTxWidget from 'components/wallet/PendingTxWidget/PendingTxWidget'
 import OwnersListWidget from 'components/wallet/OwnersListWidget/OwnersListWidget'
 import { goToWallets } from '@chronobank/core/redux/mainWallet/actions'
 import { getWalletInfo } from '@chronobank/core/redux/wallets/selectors/wallet'
@@ -86,8 +85,6 @@ export default class WalletContent extends Component {
         <WalletWidgetDetail wallet={wallet} />
 
         <TokensListWidget wallet={wallet} />
-
-        <PendingTxWidget wallet={wallet} />
 
         <OwnersListWidget wallet={wallet} />
 
