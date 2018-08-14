@@ -72,7 +72,7 @@ class LoginTrezor extends PureComponent {
           name='address'
           value={item.address}
           component='button'
-          disableGutters={true}
+          disableGutters
           style={{ margin: 0 }}
           onClick={() => this.props.onDeviceSelect(item)}
         >

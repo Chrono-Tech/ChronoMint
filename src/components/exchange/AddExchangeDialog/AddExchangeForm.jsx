@@ -3,7 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button, TokenValue } from 'components'
+import Button from 'components/common/ui/Button/Button'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 import BigNumber from 'bignumber.js'
 import classnames from 'classnames'
 import ExchangeOrderModel from '@chronobank/core/models/exchange/ExchangeOrderModel'
@@ -52,9 +53,6 @@ const onSubmit = (values) => {
 export default class AddExchangeForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
-    onClose: PropTypes.func,
-    onSubmitFunc: PropTypes.func,
-    onSubmitSuccess: PropTypes.func,
     tokens: PropTypes.instanceOf(TokensCollection),
     balances: PropTypes.instanceOf(BalancesCollection),
     ...formPropTypes,

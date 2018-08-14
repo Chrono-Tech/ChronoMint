@@ -22,9 +22,9 @@ import loginReducers from '@chronobank/login/redux/ducks'
 import { DUCK_I18N } from 'redux/i18n/constants'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import { DUCK_WALLETS } from '@chronobank/core/redux/wallets/constants'
+import transformer from '@chronobank/core/redux/serialize'
 import ducks from './ducks'
 import routingReducer from './routing'
-import transformer from './serialize'
 import createHistory, { historyMiddleware } from './browserHistoryStore'
 import translations from '../i18n'
 
@@ -73,20 +73,37 @@ const configureStore = () => {
     const WHITE_LIST = []
     // The following actions will be ignored if not whitelisted but presents in DOMAINS
     // So, we can enable whole domain, but still exclude aome actions from domain
-    const IGNORED_ACTIONS = []
+    const IGNORED_ACTIONS = [
+      'market/ADD_TOKEN',
+      'market/UPDATE_LAST_MARKET',
+      'market/UPDATE_RATES',
+      'tokens/fetched',
+      'tokens/fetching',
+      'tokens/updateLatestBlock',
+      'wallet/updateBalance',
+    ]
     // All actions like network/* (starts with network)
     const DOMAINS = [
-      'AssetsManager/',
-      '@@router/',
+      // 'AssetsManager/',
+      // '@@router/',
+      // 'MODALS/',
+      // 'SIDES/'
+      // 'PROFILE/',
     ]
     const logger = createLogger({
       collapsed: true,
-      predicate: (getState, action) => WHITE_LIST.includes(action.type) || (!IGNORED_ACTIONS.includes(action.type) && DOMAINS.some((domain) => {
+      predicate: (getState, action) => {
         if (!action.type) {
-          console.error('%c action', 'background: red; color: #fff', action)
+          console.error('%c action has no type field!', 'background: red; color: #fff', action)
+          return true
         }
-        return action.type.startsWith(domain)
-      })),
+        return WHITE_LIST.includes(action.type) || (
+          !IGNORED_ACTIONS.includes(action.type) &&
+          DOMAINS.some((domain) => {
+            return action.type.startsWith(domain)
+          })
+        )
+      },
     })
     // Note: logger must be the last middleware in chain, otherwise it will log thunk and promise, not actual actions
     middleware.push(logger)

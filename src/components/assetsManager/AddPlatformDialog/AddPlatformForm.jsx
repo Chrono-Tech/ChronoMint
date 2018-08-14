@@ -3,14 +3,14 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { I18n } from '@chronobank/core-dependencies/i18n'
 import { FormControlLabel } from '@material-ui/core'
 import { Checkbox, TextField } from 'redux-form-material-ui'
-import { Field, reduxForm } from 'redux-form/immutable'
+import { Field, reduxForm, formPropTypes } from 'redux-form/immutable'
 import { createPlatform } from '@chronobank/core/redux/assetsManager/actions'
 import { FORM_ADD_PLATFORM_DIALOG } from 'components/constants'
 import './AddPlatformForm.scss'
@@ -37,8 +37,7 @@ const onSubmit = (values, dispatch) => {
 export default class AddPlatformForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
-    formValues: PropTypes.shape(PropTypes.any),
-    formErrors: PropTypes.shape(PropTypes.any),
+    ...formPropTypes
   }
 
   render () {

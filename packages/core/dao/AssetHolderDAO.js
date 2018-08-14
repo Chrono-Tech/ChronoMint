@@ -75,7 +75,7 @@ export default class AssetHolderDAO extends AbstractContractDAO {
     )
   }
 
-  getDeposit (tokenAddress: String, account: String): Promise {
+  getDeposit (tokenAddress: string, account: string): Promise {
     return this.contract.methods.getDepositBalance(tokenAddress, account).call()
   }
 }

@@ -6,19 +6,19 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { SidePanel } from 'layouts/partials'
-import { DUCK_SIDES } from 'redux/sides/constants'
+import SideSelector from './SideSelector'
+import {
+  DUCK_SIDES,
+} from 'redux/sides/constants'
 
 import './SideStack.scss'
 
-function mapStateToProps (state) {
-  return {
-    stack: state.get(DUCK_SIDES).stack,
-  }
-}
+const mapStateToProps = (state) => ({
+  stack: state.get(DUCK_SIDES).stack,
+})
 
 @connect(mapStateToProps)
-class SideStack extends PureComponent {
+export default class SideStack extends PureComponent {
   static propTypes = {
     stack: PropTypes.objectOf(PropTypes.object),
   }
@@ -26,14 +26,11 @@ class SideStack extends PureComponent {
   render () {
     return (
       <div styleName='root'>
-        {this.props.stack && Object.values(this.props.stack).map((panel) => {
-          return (
-            <SidePanel key={panel.panelKey} {...panel} />
-          )
-        })}
+        {
+          this.props.stack && Object.values(this.props.stack)
+            .map((panel) => <SideSelector key={panel.panelKey} {...panel}/> )
+        }
       </div>
     )
   }
 }
-
-export default SideStack

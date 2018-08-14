@@ -17,15 +17,16 @@ import {
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
+import { autoSelect } from '@chronobank/login/redux/network/thunks'
 import * as NetworkThunks from '@chronobank/login/redux/network/thunks'
-import * as SessionActions from '@chronobank/core/redux/session/actions'
 import { getSigner } from '@chronobank/core/redux/persistAccount/selectors'
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
 import * as DeviceActions from '@chronobank/core/redux/device/actions'
 import { login } from '@chronobank/core/redux/session/actions'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
-import networkService from '@chronobank/login/network/NetworkService'
 import { AccountEntryModel } from '@chronobank/core/models'
+import { SignerMemoryModel } from '@chronobank/core/models'
+import { checkTestRPC } from '@chronobank/login/redux/network/utils'
 import {
   createAccountEntry,
   createDeviceAccountEntry,
@@ -60,13 +61,12 @@ export const navigateToCreateAccountWithoutImport = () => (dispatch) => {
  */
 export const initCommonNetworkSelector = () => (dispatch, getState) => {
   const state = getState()
-
   const { isLocal } = state.get(DUCK_NETWORK)
 
-  networkService.autoSelect()
+  dispatch(autoSelect())
 
   if (!isLocal) {
-    networkService.checkTestRPC()
+    checkTestRPC()
   }
 
 }

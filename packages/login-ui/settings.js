@@ -18,4 +18,4 @@ export const styles = {
   theme,
 }
 
-export { default as Button } from 'components/common/ui/Button/Button'
+export Button from 'components/common/ui/Button/Button'

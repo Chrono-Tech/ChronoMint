@@ -13,8 +13,6 @@ import AdditionalActionModel from '../models/AdditionalActionModel'
 import ProfileNoticeModel from '../models/notices/ProfileNoticeModel'
 import AbstractContractDAO from './AbstractContract3DAO'
 
-//#region CONSTANTS
-
 import {
   DEFAULT_TX_OPTIONS,
 } from './constants'
@@ -25,8 +23,6 @@ import {
   TX_SET_OWN_HASH,
   TX_SET_REQUIRED_SIGNS,
 } from './constants/UserManagerDAO'
-
-//#endregion CONSTANTS
 
 const EVENT_CBE_UPDATE = 'CBEUpdate'
 const EVENT_PROFILE_UPDATE = 'SetHash'
@@ -41,12 +37,10 @@ export default class UserManagerDAO extends AbstractContractDAO {
 
     this.CBEUpdateEmitter = this.contract.events.CBEUpdate({})
       .on('data', this.handleCBEUpdateData.bind(this))
-      .on('changed', this.handleCBEUpdateChanged.bind(this))
       .on('error', this.handleCBEUpdateError.bind(this))
 
     this.NewUserRegisteredEmitter = this.contract.events.NewUserRegistered({})
       .on('data', this.handleNewUserRegisteredData.bind(this))
-      .on('changed', this.handleNewUserRegisteredChanged.bind(this))
       .on('error', this.handleNewUserRegisteredError.bind(this))
   }
 
@@ -61,20 +55,24 @@ export default class UserManagerDAO extends AbstractContractDAO {
   }
 
   handleCBEUpdateData = (data) => {
+    if (!data.event) {
+      return
+    }
+
     this.emit('CBEUpdate', data)
   }
-
-  handleCBEUpdateChanged = (data) => {}
 
   handleCBEUpdateError = (data) => {
     this.emit('CBEUpdate_error', data)
   }
 
   handleNewUserRegisteredData = (data) => {
+    if (!data.event) {
+      return
+    }
+
     this.emit('NewUserRegistered', data)
   }
-
-  handleNewUserRegisteredChanged = (data) => {}
 
   handleNewUserRegisteredError = (data) => {
     this.emit('NewUserRegistered_error', data)

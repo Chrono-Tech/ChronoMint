@@ -4,24 +4,14 @@
  */
 
 import AbstractContractDAO from './AbstractContract3DAO'
-
-//#region CONSTANTS
-
-import {
-  CALL_BLACKLIST,
-  CALL_PAUSED,
-  TX_PAUSE,
-  TX_PAUSED,
-  TX_RESTRICT,
-  TX_RESTRICTED,
-  TX_UNPAUSE,
-  TX_UNPAUSED,
-  TX_UNRESTRICT,
-  TX_UNRESTRICTED,
-} from './constants/ChronoBankAssetDAO'
 import { ChronoBankAssetABI } from './abi'
 
-//#endregion CONSTANTS
+import {
+  TX_PAUSE,
+  TX_RESTRICT,
+  TX_UNPAUSE,
+  TX_UNRESTRICT,
+} from './constants/ChronoBankAssetDAO'
 
 export default class ChronoBankAssetDAO extends AbstractContractDAO {
 
@@ -34,8 +24,6 @@ export default class ChronoBankAssetDAO extends AbstractContractDAO {
 
     this.allEventsEmitter = this.history.events.allEvents({})
       .on('data', this.handleEventsData.bind(this))
-      .on('changed', this.handleEventsChanged.bind(this))
-      .on('error', this.handleEventsError.bind(this))
   }
 
   disconnect () {
@@ -51,17 +39,8 @@ export default class ChronoBankAssetDAO extends AbstractContractDAO {
     if (!data.event) {
       return
     }
-    console.log('ChronoBankAssetDAO handleEventsData: ', data.event, data)
+
     this.emit(data.event, data)
-  }
-
-  handleEventsChanged (data) {
-    console.log('ChronoBankAssetDAO handleEventsChanged: ', data.event, data)
-  }
-
-  handleEventsError (data) {
-    console.log('ChronoBankAssetDAO handleEventsError: ', data.event, data)
-    this.emit(data.event + '_error', data)
   }
 
   getPauseStatus () {

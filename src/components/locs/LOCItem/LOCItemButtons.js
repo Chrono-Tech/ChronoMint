@@ -10,28 +10,24 @@ import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import LOCModel from '@chronobank/core/models/LOCModel'
 import { modalsOpen } from 'redux/modals/actions'
-import LOCDialog from 'components/dialogs/LOC/LOCDialog/LOCDialog'
-import LOCIssueDialog from 'components/dialogs/LOC/LOCIssueDialog/LOCIssueDialog'
-import LOCRedeemDialog from 'components/dialogs/LOC/LOCRedeemDialog/LOCRedeemDialog'
-import LOCStatusDialog from 'components/dialogs/LOC/LOCStatusDialog/LOCStatusDialog'
 import IPFS from '@chronobank/core-dependencies/utils/IPFS'
 import './LOCItem.scss'
 
 const mapDispatchToProps = (dispatch) => ({
   showLOCDialog: (loc: LOCModel) => dispatch(modalsOpen({
-    component: LOCDialog,
+    componentName: 'LOCDialog',
     props: { loc },
   })),
   showLOCStatusDialog: (loc: LOCModel) => dispatch(modalsOpen({
-    component: LOCStatusDialog,
+    componentName: 'LOCStatusDialog',
     props: { loc },
   })),
   showLOCIssueDialog: (loc: LOCModel) => dispatch(modalsOpen({
-    component: LOCIssueDialog,
+    componentName: 'LOCIssueDialog',
     props: { loc },
   })),
   showLOCRedeemDialog: (loc: LOCModel) => dispatch(modalsOpen({
-    component: LOCRedeemDialog,
+    componentName: 'LOCRedeemDialog',
     props: { loc },
   })),
   showUploadedFileModal: (loc: LOCModel) => {

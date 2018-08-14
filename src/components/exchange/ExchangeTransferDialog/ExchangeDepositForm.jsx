@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -26,7 +26,6 @@ export default class ExchangeDepositForm extends React.PureComponent {
     maxAmount: PropTypes.instanceOf(Amount).isRequired,
     token: PropTypes.instanceOf(TokenModel).isRequired,
     title: PropTypes.node,
-    dispatch: PropTypes.func,
     ...formPropTypes,
   }
 

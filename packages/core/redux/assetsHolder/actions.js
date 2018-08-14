@@ -11,12 +11,10 @@ import { DUCK_SESSION } from '../session/constants'
 import { subscribeOnTokens } from '../tokens/actions'
 import tokenService from '../../services/TokenService'
 import { daoByType } from '../daos/selectors'
-import TxExecModel from '../../models/TxExecModel'
 import { getWallet } from '../wallets/selectors/models'
 import { WALLETS_UPDATE_WALLET } from '../wallets/constants'
 import WalletModel from '../../models/wallet/WalletModel'
 import AllowanceCollection from '../../models/AllowanceCollection'
-import { web3Selector } from '../ethereum/selectors'
 import { executeTransaction } from '../ethereum/actions'
 
 import {

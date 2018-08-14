@@ -13,7 +13,7 @@ import TxModel from '@chronobank/core/models/TxModel'
 import CurrentTransactionNotificationModel from '@chronobank/core/models/CurrentTransactionNotificationModel'
 import { pendingTransactionsSelector } from '@chronobank/core/redux/mainWallet/selectors/tokens'
 import Immutable from 'immutable'
-import { connect } from "react-redux"
+import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
 import ReceivedTransactionSVG from 'assets/img/r-0.svg'
 import Value from 'components/common/Value/Value'
@@ -23,7 +23,7 @@ import { FULL_DATE } from '@chronobank/core/models/constants'
 import { IconButton } from '@material-ui/core'
 import { ethereumPendingFormatSelector } from '@chronobank/core/redux/ethereum/selectors'
 import TxEntryModel from '@chronobank/core/models/TxEntryModel'
-import { SIDES_CLOSE_ALL } from 'redux/sides/constants'
+import { sidesCloseAll } from 'redux/sides/actions'
 import { prefix } from './lang'
 import './NotificationContent.scss'
 
@@ -43,7 +43,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    onClose: () => dispatch({ type: SIDES_CLOSE_ALL }),
+    onClose: () => dispatch(sidesCloseAll()),
   }
 }
 

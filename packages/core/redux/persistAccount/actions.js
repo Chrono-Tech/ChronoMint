@@ -8,10 +8,10 @@ import hdkey from 'ethereumjs-wallet/hdkey'
 import bip39 from 'bip39'
 import Accounts from 'web3-eth-accounts'
 import { SignerBitcoinMemoryModel, SignerMemoryModel, SignerDeviceModel } from '../../models'
-import profileService from '@chronobank/login/network/ProfileService'
 import {
   WALLET_HD_PATH,
 } from '@chronobank/login/network/constants'
+import * as ProfileThunks from '../profile/thunks'
 import {
   AccountModel,
   AccountEntryModel,
@@ -61,9 +61,9 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
   console.log('walletsList')
   console.log(walletsList)
 
-  let index = walletsList.findIndex((item) => item.key === wallet.key)
+  const index = walletsList.findIndex((item) => item.key === wallet.key)
 
-  let copyWalletList = [...walletsList]
+  const copyWalletList = [...walletsList]
 
   copyWalletList.splice(index, 1, wallet)
 
@@ -104,7 +104,7 @@ export const resetPasswordAccount = (wallet, mnemonic, password) => async (dispa
 
   const newCopy = await dispatch(createAccount({ name: wallet.name, mnemonic, password }))
 
-  let newWallet = {
+  const newWallet = {
     ...wallet,
     encrypted: newCopy.encrypted,
   }
@@ -170,13 +170,12 @@ export const downloadWallet = () => (dispatch, getState) => {
   }
 }
 
-export const setProfilesForAccounts = (walletsList) => async () => {
+export const setProfilesForAccounts = (walletsList) => async (dispatch) => {
 
   const addresses = getWalletsListAddresses(walletsList)
-  const { data } = await profileService.getPersonInfo(addresses)
-  console.log('data')
-  console.log(data)
-  if (data.length) {
+  const data = await dispatch(ProfileThunks.getUserInfo(addresses))
+
+  if (Array.isArray(data)) {
     return data.reduce((prev, profile) => {
 
       const updatedProfileAccounts =
@@ -223,7 +222,7 @@ export const customNetworkEdit = (network: AccountCustomNetwork) => (dispatch, g
   const foundNetworkIndex = customNetworksList.findIndex((item) => network.id === item.id)
 
   if (foundNetworkIndex !== -1) {
-    let copyNetworksList = [...customNetworksList]
+    const copyNetworksList = [...customNetworksList]
 
     copyNetworksList.splice(foundNetworkIndex, 1, network)
 

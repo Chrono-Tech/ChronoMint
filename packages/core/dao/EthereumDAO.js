@@ -8,7 +8,6 @@ import solidityEvent from 'web3/lib/web3/event'
 import BigNumber from 'bignumber.js'
 import Amount from '../models/Amount'
 import TokenModel from '../models/tokens/TokenModel'
-import TxExecModel from '../models/TxExecModel'
 import TxModel from '../models/TxModel'
 import AbstractTokenDAO from './AbstractTokenDAO'
 import { BLOCKCHAIN_ETHEREUM, EVENT_NEW_BLOCK } from './constants'
@@ -86,6 +85,10 @@ export class EthereumDAO extends AbstractTokenDAO {
 
   getBlockNumber (): Promise {
     return this.web3.eth.getBlockNumber()
+  }
+
+  getAccountBalances (account): Promise {
+    return ethereumProvider.getAccountBalances(account)
   }
 
   getAccountBalance (account): Promise {
@@ -168,107 +171,6 @@ export class EthereumDAO extends AbstractTokenDAO {
     }
   }
 
-  accept (transfer: TxExecModel) {
-    setImmediate(() => {
-      this.emit('accept', transfer)
-    })
-  }
-
-  reject (transfer: TxExecModel) {
-    setImmediate(() => {
-      this.emit('reject', transfer)
-    })
-  }
-
-  async submit (from, to, amount, token, feeMultiplier, advancedParams) {
-    const { gasLimit, gasFee, gasPrice } = await this.estimateGas(null, [to, amount], amount, from, { feeMultiplier })
-    const value = new Amount(amount, this._symbol)
-
-    setImmediate(async () => {
-      this.emit('submit', new TxExecModel({
-        contract: this._contractName,
-        func: 'transfer',
-        blockchain: this._contractName,
-        symbol: this._symbol,
-        from,
-        fields: {
-          to: {
-            value: to,
-            description: 'to',
-          },
-          amount: {
-            value: new Amount(amount, this._symbol),
-            description: 'amount',
-          },
-        },
-        value,
-        to,
-        additionalOptions: advancedParams,
-        fee: {
-          gasLimit: new Amount(gasLimit, this._symbol),
-          gasFee: new Amount(gasFee, this._symbol),
-          gasPrice: new Amount(gasPrice, this._symbol),
-          feeMultiplier,
-        },
-      }))
-    })
-  }
-
-  /*async immediateTransfer (tx: TxExecModel) {
-    try {
-      const rawTx = await this.createRawTx(tx)
-      ethereumProvider.transfer(rawTx, tx.from)
-    } catch (e) {
-      // eslint-disable-next-line
-      console.log('Transfer failed', e)
-      throw e
-    }
-  }
-
-  async getTransfer (id, account, skip, offset, tokens): Promise<TxModel> {
-    let tokensMap = {}
-    tokens.items().map((token) => {
-      if (token.address()) {
-        tokensMap[token.address()] = token.symbol()
-      }
-    })
-    let txs = []
-    try {
-      const txsResult = await ethereumProvider.getTransactionsList(account, skip, offset)
-      for (const tx of txsResult) {
-        if (tx.logs.length > 0) {
-          let txToken
-          if (tokensMap[tx.from]) {
-            txToken = tokensMap[tx.from]
-          }
-          if (tokensMap[tx.to]) {
-            txToken = tokensMap[tx.to]
-          }
-          tx.logs.map((log) => {
-            if (tokensMap[log.address]) {
-              txToken = tokensMap[log.address]
-            }
-            if (log.signature === transferSignature) {
-              let resultDecoded = new solidityEvent(null, signatureDefinition).decode(log)
-              tx.from = resultDecoded.args.from
-              tx.to = resultDecoded.args.to
-              tx.value = resultDecoded.args.value
-            }
-          })
-          if (txToken) {
-            tx.symbol = txToken
-          }
-        }
-
-        txs.push(this._getTxModel(tx, tx.timestamp, tokens))
-      }
-    } catch (e) {
-      // eslint-disable-next-line
-      console.warn('Middleware API is not available, fallback to block-by-block scanning', e)
-      return this._getTransferFromBlocks(account, id)
-    }
-    return txs
-  }*/
 
   /**
    * Useful for TestRPC

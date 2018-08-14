@@ -68,6 +68,7 @@ export default class SignerDeviceModel extends SignerModel {
 
   // Should be synchronous by design
   static async create ({ device, address, path, publicKey }) {
+  //eslint-disable-next-line no-unused-vars
     return new SignerDeviceModel({ device, path, address, publicKey })
   }
 

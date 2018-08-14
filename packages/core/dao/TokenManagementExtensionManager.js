@@ -19,7 +19,7 @@ export default class TokenManagementExtensionManager extends EventEmitter {
    * @param address
    * @returns {Promise<TokenManagementExtensionDAO>}
    */
-  async getTokenManagementExtensionDAO (address: String) {
+  async getTokenManagementExtensionDAO (address: string) {
     const tokenManagementExtensionDao = new TokenManagementExtensionDAO({ abi: TokenManagementInterfaceABI, address, history: this.history })
     tokenManagementExtensionDao.connect(this.web3)
 

@@ -25,6 +25,11 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     this.connect()
   }
 
+  subscribeNewWallet (ethAddress) {
+    this._handleSubscribe({ ethAddress })
+    this.addListener('unsubscribe', (address) => this._handleUnsubscribe(address))
+  }
+
   async _handleSubscribe ({ ethAddress, nemAddress, wavesAddress }) {
     if (!this._socket) {
       return
@@ -120,5 +125,9 @@ export default class EthereumMiddlewareNode extends AbstractNode {
       return typeof callback === 'function' ? callback(data) : data
     }
   }
-}
 
+  async getAddressInfo (address) {
+    const { data } = await this._api.get(`addr/${address}/balance`)
+    return data
+  }
+}

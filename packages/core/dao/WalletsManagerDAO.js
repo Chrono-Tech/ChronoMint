@@ -3,14 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import BigNumber from 'bignumber.js'
 import type MultisigWalletDAO from './MultisigWalletDAO'
 import AddressesCollection from '../models/wallet/AddressesCollection'
 import AddressModel from '../models/wallet/AddressModel'
 import MultisigEthWalletModel from '../models/wallet/MultisigEthWalletModel'
 import AbstractContractDAO from './AbstractContract3DAO'
-
-//#region CONSTANTS
 
 import {
   EE_MS_WALLET_ADDED,
@@ -20,8 +17,6 @@ import {
 import {
   BLOCKCHAIN_ETHEREUM,
 } from './constants'
-
-//#endregion CONSTANTS
 
 export default class WalletsManagerDAO extends AbstractContractDAO {
 
@@ -60,8 +55,6 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
     }
   }
 
-  //#region Handlers
-
   /**
    * handler for event "WalletCreated"
    * @param data - Object from blockchain
@@ -81,10 +74,6 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   handleWalletRemoved (data) {
     this.emit(EE_MS_WALLET_REMOVED, `${BLOCKCHAIN_ETHEREUM}-${data.returnValues.wallet}`)
   }
-
-  //#endregion
-
-  //#region Actions
 
   /**
    * fetch ethereum multisig wallets

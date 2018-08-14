@@ -4,7 +4,7 @@
  */
 
 import { CSSTransitionGroup } from 'react-transition-group'
-import Partials from 'layouts/partials'
+import ExchangeContent from 'layouts/partials/ExchangeContent/ExchangeContent'
 import React, { Component } from 'react'
 
 import './ExchangePage.scss'
@@ -20,7 +20,7 @@ export default class ExchangePage extends Component {
           transitionEnterTimeout={250}
           transitionLeaveTimeout={250}
         >
-          <Partials.ExchangeContent />
+          <ExchangeContent />
         </CSSTransitionGroup>
       </div>
     )

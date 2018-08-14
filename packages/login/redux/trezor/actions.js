@@ -4,7 +4,7 @@
  */
 
 import trezorProvider from '../../network/TrezorProvider'
-import networkService from '../../network/NetworkService'
+import { selectAccount } from '../network/actions'
 import { NETWORK_SET_ACCOUNTS } from '../../redux/network/constants'
 
 export const TREZOR_SET_U2F = 'trezor/SET_U2F'
@@ -28,7 +28,7 @@ export const stopTrezorSync = (isReset = false) => (dispatch) => {
   }
   // reset state if we do not intent to login
   dispatch({ type: NETWORK_SET_ACCOUNTS, accounts: [] })
-  networkService.selectAccount(null)
+  dispatch(selectAccount(null))
   dispatch({ type: TREZOR_FETCHED, isFetched: false })
 }
 
@@ -40,7 +40,7 @@ export const fetchAccount = () => async (dispatch) => {
     return
   }
   dispatch({ type: NETWORK_SET_ACCOUNTS, accounts })
-  networkService.selectAccount(accounts[ 0 ])
+  dispatch(selectAccount(accounts[ 0 ]))
   dispatch({ type: TREZOR_FETCHED, isFetched: true })
   // we do not need to watching eth app on login
   dispatch(stopTrezorSync())

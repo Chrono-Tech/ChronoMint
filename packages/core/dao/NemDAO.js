@@ -80,18 +80,8 @@ export default class NemDAO extends EventEmitter {
     return this._decimals
   }
 
-  async getAccountBalances () {
-    const balance = await this._nemProvider.getAccountBalances(this._namespace)
-    if (balance) {
-      const { confirmed, unconfirmed, vested } = balance
-      return {
-        confirmed,
-        unconfirmed: unconfirmed != null
-          ? unconfirmed
-          : confirmed,
-        vested,
-      }
-    }
+  getAccountBalances () {
+    return this._nemProvider.getAccountBalances(this._namespace)
   }
 
   async getAccountBalance () {
