@@ -3,12 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import {
+/*import {
   bccProvider,
   btcProvider,
   btgProvider,
   ltcProvider,
-} from '@chronobank/login/network/BitcoinProvider'
+} from '@chronobank/login/network/BitcoinProvider'*/
 import EventEmitter from 'events'
 import BigNumber from 'bignumber.js'
 import Amount from '../models/Amount'

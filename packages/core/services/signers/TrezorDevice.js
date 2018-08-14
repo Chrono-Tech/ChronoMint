@@ -43,19 +43,13 @@ export default class TrezorDevice extends EventEmitter {
     return !!this.xpubkey
   }
 
-  async getAddressInfoList (from: Number = 0, limit: Number = 5): String {
+  async getAddress (path) {
     if (this.isConnected) {
       const hdKey = hdkey.fromExtendedKey(this.xpubkey)
-      return Array.from({ length: limit }).map((element, index) => {
-        const wallet = hdKey.deriveChild(from + index).getWallet()
-        return {
-          path: DEFAULT_PATH_FACTORY(index),
-          address: `0x${wallet.getAddress().toString('hex')}`,
-          publicKey: wallet.getPublicKey().toString('hex')
-        }
-      })
+      const wallet = hdKey.derivePath(path).getWallet()
+      return `0x${wallet.getAddress().toString('hex')}`
     }
-    return []
+    return 
   }
 
   async signTransaction (path, txData) {

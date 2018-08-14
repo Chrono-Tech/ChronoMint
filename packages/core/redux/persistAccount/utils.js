@@ -11,8 +11,6 @@ import profileService from '@chronobank/login/network/ProfileService'
 import {
   profileImgJPG,
 } from '@chronobank/core-dependencies/assets'
-import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import {
   WALLET_HD_PATH,
 } from '@chronobank/login/network/constants'
@@ -62,6 +60,10 @@ export const getAccountAvatarImg = (account) => {
 
   return ''
 }
+
+export const generateMnemonic = () => {
+    return bip39.generateMnemonic()
+  }
 
 export const getAccountAvatar = (account: AccountEntryModel) => {
   const img = getAccountAvatarImg(account)
@@ -115,18 +117,6 @@ export const createDeviceAccountEntry = (name, device, profile = null) => {
     encrypted: [device],
     profile,
   })
-}
-
-export const getAddressByMnemonic = (mnemonic) => {
-  return mnemonicProvider
-    .createEthereumWallet(mnemonic)
-    .getAddressString()
-}
-
-export const getAddressByPrivateKey = (privateKey) => {
-  return privateKeyProvider
-    .createEthereumWallet(privateKey)
-    .getAddressString()
 }
 
 export const validateMnemonicForAccount = (mnemonic, selectedWallet: AccountEntryModel) => {

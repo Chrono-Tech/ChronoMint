@@ -17,9 +17,7 @@ import {
   networkSetProvider,
 } from '../redux/network/actions'
 import { utils as web3Converter } from '../settings'
-import metaMaskResolver from './metaMaskResolver'
 import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE } from './MonitorService'
-import privateKeyProvider from './privateKeyProvider'
 import {
   getNetworkById,
   getNetworksByProvider,
@@ -173,17 +171,6 @@ class NetworkService extends EventEmitter {
     }
   }
 
-  async restoreLocalSession (account, wallets) {
-    this.selectProvider(LOCAL_PROVIDER_ID)
-    this.selectNetwork(LOCAL_ID)
-    const accounts = await this.loadAccounts()
-    this.selectAccount(account)
-
-    const index = Math.max(accounts.indexOf(account), 0)
-    const provider = privateKeyProvider.getPrivateKeyProvider(LOCAL_PRIVATE_KEYS[index], this.getProviderSettings(), wallets)
-    await setup(provider)
-  }
-
   selectAccount = (selectedAccount) => {
     this._dispatch({ type: NETWORK_SELECT_ACCOUNT, selectedAccount })
   }
@@ -250,30 +237,6 @@ class NetworkService extends EventEmitter {
     }
 
     return name
-  }
-
-  checkMetaMask = () => {
-    metaMaskResolver
-      .on('resolve', (isMetaMask) => {
-        try {
-          if (isMetaMask) {
-            this._dispatch({ type: NETWORK_SET_TEST_METAMASK })
-            this.isMetamask = true
-          }
-        } catch (e) {
-          // eslint-disable-next-line
-          console.error(e)
-        }
-      })
-      .start()
-  }
-
-  isMetaMask = () => {
-    return this.isMetamask
-  }
-
-  async checkTestRPC (/*providerUrl*/) {
-    return false
   }
 
   async autoSelect () {

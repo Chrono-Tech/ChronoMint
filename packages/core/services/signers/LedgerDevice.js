@@ -60,28 +60,19 @@ export default class LedgerDevice extends EventEmitter {
     )
   }
 
-  async getAddressInfoList (from: Number = 0, limit: Number = 5): String {
+  async getAddress (path) {
     return this._safeExec(
       async () => {
         if (this.isConnected) {
-          const addresses = []
-          for (let i = from; i < from + limit; i++) {
-            const path = DEFAULT_PATH_FACTORY(i)
             const transport = await TransportU2F.create()
             const app = new AppEth(transport)
-            const { address, publicKey } = await Promise.race([
+            const { address } = await Promise.race([
               this._getAddressInfo(app, path),
               rejectOnTimeout(2000)
             ])
-            addresses.push({
-              path,
-              address,
-              publicKey
-            })
-          }
-          return addresses
+            return address
         }
-        return []
+        return
       }
     )
   }

@@ -24,12 +24,18 @@ export default class SignerMemoryModel extends SignerModel {
   }
 
   // this method is a part of base interface
-  getAddress () {
-    return this.address
+  getAddress (path) {
+    if(!path)
+      return this.address
+    else 
+      return this.getDerivedWallet(this.wallet.privateKey, path).address
   }
 
-  async signTransaction (tx) { // tx object
-    return this.wallet.signTransaction(tx)
+  async signTransaction (tx, path) { // tx object
+    if(!path)
+      return this.wallet.signTransaction(tx)
+    else 
+      return this.getDerivedWallet(this.wallet.privateKey, path).signTransaction(tx)
   }
 
   async signData (data) { // data object
@@ -72,7 +78,7 @@ export default class SignerMemoryModel extends SignerModel {
     return new SignerMemoryModel({ wallet })
   }
 
-  static fromDerivedPath ({ seed, derivedPath }) {
+  getDerivedWallet ({ seed, derivedPath }) {
     const hdWallet = hdKey.fromMasterSeed(seed)
     const wallet = hdWallet.derivePath(derivedPath).getWallet()
     const newSeed = Buffer.from(wallet.getPrivateKey()).toString('hex')

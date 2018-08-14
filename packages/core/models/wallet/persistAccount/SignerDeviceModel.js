@@ -19,24 +19,40 @@ export default class SignerDeviceModel extends SignerModel {
     return this.device
   }
 
-  getAddress () {
-    return this.address
+  getAddress (path) {
+    if (path) {
+      return device.getAddress(path)
+    } else { 
+      return this.address
+    }
   }
 
   getPublicKey () {
     return this.publicKey
   }
 
-  async signTransaction (txData) { // tx object
+  async signTransaction (txData, path) { // tx object
+    let pth
+    if(path) {
+      pth = path
+    } else {
+      pth = this.path
+    }
     return this.device.signTransaction(
-      this.path,
+      pth,
       txData,
     )
   }
 
-  async signData (data) { // tx object
+  async signData (data, path) { // tx object
+    let pth
+    if(path) {
+      pth = path
+    } else {
+      pth = this.path
+    }
     return this.device.signData(
-      this.path,
+      pth,
       data,
     )
   }

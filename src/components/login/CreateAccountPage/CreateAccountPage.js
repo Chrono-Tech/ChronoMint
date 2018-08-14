@@ -18,7 +18,7 @@ import {
   GenerateMnemonicContainer,
   ConfirmMnemonicContainer,
 } from '@chronobank/login-ui/components'
-import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
+import { generateMnemonic } from '@chronobank/core/redux/persistAccount/utils'
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -48,7 +48,7 @@ class CreateAccountPage extends PureComponent {
       page: CreateAccountPage.PAGES.CREATE_ACCOUNT_FORM,
       accountName: null,
       password: null,
-      mnemonic: mnemonicProvider.generateMnemonic(),
+      mnemonic: generateMnemonic(),
     }
   }
 

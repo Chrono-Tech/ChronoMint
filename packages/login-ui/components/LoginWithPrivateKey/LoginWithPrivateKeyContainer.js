@@ -6,7 +6,6 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import { stopSubmit, SubmissionError } from 'redux-form'
 import {
   navigateBack,
@@ -35,9 +34,9 @@ class LoginWithPrivateKeyContainer extends PureComponent {
 
     privateKey = (privateKey || '').trim()
 
-    if (!privateKeyProvider.validatePrivateKey(privateKey)) {
-      throw new SubmissionError({ pk: 'Wrong private key' })
-    }
+    //if (privateKeyProvider.validatePrivateKey(privateKey)) {
+    //   throw new SubmissionError({ pk: 'Wrong private key' })
+    //}
 
     if (privateKey.slice(0, 2) === '0x') {
       privateKey = privateKey.slice(2)
