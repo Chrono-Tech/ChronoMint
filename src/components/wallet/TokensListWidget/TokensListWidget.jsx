@@ -11,17 +11,15 @@ import { TOKEN_ICONS } from 'assets'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { integerWithDelimiter } from '@chronobank/core-dependencies/utils/formatter'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import { walletTokensAmountAndBalanceSelector } from '@chronobank/core/redux/wallets/selectors/balances'
 import { getTokens } from '@chronobank/core/redux/tokens/selectors'
-import { PTWallet } from '@chronobank/core/redux/wallet/types'
-
 import { prefix } from './lang'
 import './TokensListWidget.scss'
 
 function makeMapStateToProps (state, props) {
-  const { wallet } = props
-  let getTokensBalances = walletTokensAmountAndBalanceSelector(wallet.id)
+  const { walletId } = props
+  let getTokensBalances = walletTokensAmountAndBalanceSelector(walletId)
   const mapStateToProps = (ownState) => {
     return {
       tokensBalances: getTokensBalances(ownState),
@@ -39,7 +37,7 @@ export default class TokensListWidget extends PureComponent {
       symbol: PropTypes.string,
       value: PropTypes.number,
     })),
-    wallet: PTWallet,
+    walletId: PropTypes.number,
   }
 
   constructor (props) {
@@ -118,7 +116,7 @@ export default class TokensListWidget extends PureComponent {
                 {this.renderDirection('valueUsd')}
               </button>
             </div>
-            {this.getTokensList().length && this.getTokensList().map((balanceInfo) => {
+            {this.getTokensList().length > 0 && this.getTokensList().map((balanceInfo) => {
               const token = this.props.tokens.item(balanceInfo.symbol)
 
               return (

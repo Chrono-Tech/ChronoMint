@@ -20,7 +20,7 @@ import {
   onSubmitSubscribeNewsletterFail,
 } from '@chronobank/login-ui/redux/thunks'
 
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import { TextField } from 'redux-form-material-ui'
 import LogoChronobankFull from 'assets/img/logo-chrono-bank-full.svg'
 import PlayWhite from 'assets/img/play-white.svg'
@@ -55,7 +55,7 @@ class Footer extends Component {
   }
 
   renderFormMessage () {
-    const { submitSucceeded, submitting, error } = this.props
+    const { submitSucceeded, error } = this.props
     const msgClasses = classnames({
       subscriptionSubmitSucceeded: submitSucceeded,
       subscriptionSubmitError: error,
@@ -147,7 +147,7 @@ class Footer extends Component {
 
             <div styleName='connect'>
               <div styleName='title-container'>
-                <span styleName='title'>{'Connect with us'}</span>
+                <span styleName='title'>Connect with us</span>
               </div>
               <div styleName='logos-container'>
                 <div styleName='logo-wrapper'>
@@ -240,7 +240,7 @@ class Footer extends Component {
         </div>
         <div styleName='copyright'>
           <span styleName='copyright-text'>
-            {<Translate value={'copyright'} />}
+            {<Translate value='copyright' />}
           </span>
         </div>
 

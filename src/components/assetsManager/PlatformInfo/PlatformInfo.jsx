@@ -4,10 +4,10 @@
  */
 
 import classnames from 'classnames'
-import { Button, IPFSImage, TokenValue } from 'components'
+import Button from 'components/common/ui/Button/Button'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 import Amount from '@chronobank/core/models/Amount'
-import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
-import RevokeDialog from 'components/assetsManager/RevokeDialog/RevokeDialog'
 import Preloader from 'components/common/Preloader/Preloader'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -16,10 +16,8 @@ import { Translate } from 'react-redux-i18n'
 import { getFee, getManagersForAssetSymbol } from '@chronobank/core/redux/assetsManager/actions'
 import { DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/constants'
 import { modalsOpen } from 'redux/modals/actions'
-import BlockAssetDialog from 'components/assetsManager/BlockAssetDialog/BlockAssetDialog'
 import ReissueAssetForm from 'components/assetsManager/ReissueAssetForm/ReissueAssetForm'
 import { getSelectedToken } from '@chronobank/core/redux/assetsManager/selectors'
-import BlacklistDialog from 'components/assetsManager/BlacklistDialog/BlacklistDialog'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import tokenIconStubSVG from 'assets/img/asset_stub.svg'
 import blockedSVG from 'assets/img/blocked-white.svg'
@@ -44,16 +42,16 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     handleAddManagerDialog: () => dispatch(modalsOpen({
-      component: AssetManagerDialog,
+      componentName: 'AssetManagerDialog',
     })),
     openBlockAssetDialog: (token) => dispatch(modalsOpen({
-      component: BlockAssetDialog,
+      componentName: 'BlockAssetDialog',
       props: {
         token,
       },
     })),
     openBlacklistDialog: (token) => dispatch(modalsOpen({
-      component: BlacklistDialog,
+      componentName: 'BlacklistDialog',
       props: {
         token,
       },
@@ -61,7 +59,7 @@ function mapDispatchToProps (dispatch) {
     getManagersForAssetSymbol: (symbol) => dispatch(getManagersForAssetSymbol(symbol)),
     getFee: (symbol) => dispatch(getFee(symbol)),
     handleRevokeDialog: () => dispatch(modalsOpen({
-      component: RevokeDialog,
+      componentName: 'RevokeDialog',
     })),
   }
 }

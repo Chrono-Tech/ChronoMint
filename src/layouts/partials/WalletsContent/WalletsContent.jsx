@@ -4,7 +4,7 @@
  */
 
 import { getTwoFaChecked, isHave2FAWallets } from '@chronobank/core/redux/wallets/selectors'
-import { WalletWidget } from 'components'
+import WalletWidget from 'components/wallet/WalletWidget/WalletWidget'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'

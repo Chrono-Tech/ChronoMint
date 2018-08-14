@@ -55,10 +55,13 @@ export const pendingEntrySelector = (address, key) => createSelector(
     if (address in pending) {
       const res = pending[address][key] || null
       if (!res) {
+        // eslint-disable-next-line
         console.log('res null', address, key, pending, new Error())
       }
       return res
     }
+
+    // eslint-disable-next-line
     console.log('res null', address, key, pending, new Error())
     return null
   },
@@ -77,7 +80,7 @@ export const getDataForConfirm = (tx: TxExecModel) => createSelector(
     const amountBalance = balances[tx.symbol]
     const feeBalance = balances[mainSymbol]
     if (tx.fields && tx.fields.amount) {
-      amountBalanceAfter = tx.fields.amount && tx.fields.amount.mark === 'plus' ?
+      amountBalanceAfter = tx.fields.amount.mark === 'plus' ?
         amountBalance.plus(tx.fields.amount.value) :
         amountBalance.minus(tx.fields.amount.value)
     }

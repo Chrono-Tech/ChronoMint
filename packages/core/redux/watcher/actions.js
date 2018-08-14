@@ -20,7 +20,7 @@ import { watchInitCBE } from '../settings/user/cbe/actions'
 import { initTokens } from '../tokens/actions'
 import { initDAOs } from '../daos/actions'
 import { watchInitPolls } from '../voting/actions'
-import { watchInitProfile } from '../session/actions'
+import { daoByType } from '../../redux/daos/selectors'
 import { initMultisigWalletManager } from '../multisigWallet/actions'
 import { initWallets } from '../wallets/actions'
 import {
@@ -64,6 +64,11 @@ export const txHandlingFlow = () => (dispatch) => {
       dispatch(notify(new TransactionErrorNoticeModel(tx, e)))
     }
   }
+}
+
+export const watchInitProfile = () => async (dispatch, getState) => {
+  const userManagerDAO = daoByType('UserManager')(getState())
+  return userManagerDAO.watchProfile((notice) => dispatch(notify(notice)))
 }
 
 // for all users on all pages

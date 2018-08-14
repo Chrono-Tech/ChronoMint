@@ -4,7 +4,7 @@
  */
 
 import iconTokenDefaultSVG from 'assets/img/avaToken.svg'
-import { IPFSImage } from 'components'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import ExchangeOrderModel from '@chronobank/core/models/exchange/ExchangeOrderModel'

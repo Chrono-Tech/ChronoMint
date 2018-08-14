@@ -7,7 +7,7 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import { TextField } from 'redux-form-material-ui'
 import { Field, reduxForm } from 'redux-form/immutable'
 import {  revokeAsset } from '@chronobank/core/redux/assetsManager/actions'
@@ -41,7 +41,7 @@ const onSubmit = (values, dispatch, props) => {
 export default class AddPlatformForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
-    formErrors: PropTypes.shape(PropTypes.any),
+    formErrors: PropTypes.any,
   }
 
   render () {

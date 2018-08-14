@@ -4,16 +4,16 @@
  */
 
 import { Translate } from 'react-redux-i18n'
-import { connect } from "react-redux"
-import PropTypes from "prop-types"
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { getNetworkName } from '@chronobank/login/redux/network/thunks'
 import { TOKEN_ICONS } from 'assets'
 import ProfileModel from '@chronobank/core/models/ProfileModel'
-import networkService from '@chronobank/login/network/NetworkService'
 import React, { PureComponent } from 'react'
-import { logout } from '@chronobank/core/redux/session/actions'
+import { logout } from '@chronobank/core/redux/session/thunks'
 import { getBlockchainAddressesList } from '@chronobank/core/redux/session/selectors'
 import { modalsOpen } from 'redux/modals/actions'
-import { IPFSImage, UpdateProfileDialog } from 'components'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
 import QRIcon from 'components/dashboard/MicroIcon/QRIcon'
 import PKIcon from 'components/dashboard/MicroIcon/PKIcon'
@@ -27,15 +27,15 @@ function mapStateToProps (state) {
   return {
     account: session.account,
     profile: session.profile,
-    networkName: networkService.getName(),
     tokens: getBlockchainAddressesList()(state),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
+    getNetworkName: () => dispatch(getNetworkName()),
     handleProfileEdit: (data) => dispatch(modalsOpen({
-      component: UpdateProfileDialog,
+      componentName: 'UpdateProfileDialog',
       data,
     })),
     handleLogout: () => dispatch(logout()),
@@ -46,16 +46,12 @@ function mapDispatchToProps (dispatch) {
 class ProfileContent extends PureComponent {
 
   static propTypes = {
-    isOpened: PropTypes.bool,
-    networkName: PropTypes.string,
     account: PropTypes.string,
-    profile: PropTypes.instanceOf(ProfileModel),
-    tokens: PropTypes.arrayOf(PropTypes.object),
-
     handleLogout: PropTypes.func,
     handleProfileEdit: PropTypes.func,
-    handleDrawerToggle: PropTypes.func,
     onProfileClose: PropTypes.func,
+    profile: PropTypes.instanceOf(ProfileModel),
+    tokens: PropTypes.arrayOf(PropTypes.object),
   }
 
   static defaultProps = {
@@ -77,7 +73,7 @@ class ProfileContent extends PureComponent {
 
         <div styleName='network-name'>
           <div styleName='network-name-text'>
-            {this.props.networkName}
+            {this.props.getNetworkName()}
           </div>
         </div>
 

@@ -32,7 +32,7 @@ export default class UserRow extends React.Component {
     reverseIcon: false,
   }
 
-  renderDefaultAvatar(){
+  renderDefaultAvatar (){
     return (
       <div styleName='default-avatar-wrapper'>
         <span styleName='default-avatar' className='chronobank-icon'>
@@ -42,7 +42,7 @@ export default class UserRow extends React.Component {
     )
   }
 
-  renderAvatar(){
+  renderAvatar (){
     const { avatar } = this.props
 
     if (!avatar){

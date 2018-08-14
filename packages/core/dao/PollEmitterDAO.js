@@ -4,10 +4,8 @@
  */
 
 import PollNoticeModel from '../models/notices/PollNoticeModel'
-import { MultiEventsHistoryABI, PollEmitterABI } from './abi'
+import { PollEmitterABI } from './abi'
 import AbstractContractDAO from './AbstractContract3DAO'
-
-//#region CONSTANTS
 
 import {
   IS_ACTIVATED,
@@ -19,8 +17,6 @@ import {
   EVENT_POLL_ENDED,
   EVENT_POLL_VOTED,
 } from './constants/PollEmitterDAO'
-
-//#endregion CONSTANTS
 
 export default class PollEmitterDAO extends AbstractContractDAO {
   constructor (address, history) {
@@ -53,7 +49,7 @@ export default class PollEmitterDAO extends AbstractContractDAO {
     if (!data.event) {
       return null
     }
-    console.log('PollEmitterDAO handleAllEventsData: ', data)
+
     this.emit(data.event, data)
   }
 

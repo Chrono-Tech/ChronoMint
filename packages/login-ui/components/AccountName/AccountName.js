@@ -56,18 +56,20 @@ class AccountName extends PureComponent {
               buttonType='login'
               type='submit'
               label={isLoading
-                ? <span styleName='spinner-wrapper'>
-                  <img
-                    src={spinner}
-                    alt=''
-                    width={24}
-                    height={24}
-                  />
-                </span> : <Translate value='AccountName.submit' />}
+                ? (
+                  <span styleName='spinner-wrapper'>
+                    <img
+                      src={spinner}
+                      alt=''
+                      width={24}
+                      height={24}
+                    />
+                  </span>
+                ) : (<Translate value='AccountName.submit' />)}
               disabled={isLoading}
             />
 
-            { error ? (<div styleName='form-error'>{error}</div>) : null }
+            {error ? (<div styleName='form-error'>{error}</div>) : null}
 
             <Translate value='AccountName.or' />
             <br />

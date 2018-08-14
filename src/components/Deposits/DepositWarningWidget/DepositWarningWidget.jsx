@@ -5,7 +5,8 @@
 
 import React, { PureComponent } from 'react'
 import { TOKEN_ICONS } from 'assets'
-import { Button, IPFSImage } from 'components'
+import Button from 'components/common/ui/Button/Button'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TIME } from '@chronobank/core/dao/constants'
@@ -13,7 +14,6 @@ import { DUCK_ASSETS_HOLDER } from '@chronobank/core/redux/assetsHolder/constant
 import AllowanceModel from '@chronobank/core/models/wallet/AllowanceModel'
 import { getDeposit } from '@chronobank/core/redux/mainWallet/selectors'
 import { modalsOpen } from 'redux/modals/actions'
-import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
 import PropTypes from 'prop-types'
@@ -34,7 +34,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleContinueDeposit: () => dispatch(modalsOpen({ component: DepositTokensModal })),
+    handleContinueDeposit: () => dispatch(modalsOpen({ componentName: 'DepositTokensModal' })),
   }
 }
 

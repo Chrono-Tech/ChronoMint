@@ -3,9 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import CBETokenDialog from 'components/dialogs/CBETokenDialog/CBETokenDialog'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -32,7 +31,7 @@ function mapDispatchToProps (dispatch) {
     remove: (token) => dispatch(revokeToken(token)),
     form: (token, isModify) => {
       dispatch(modalsOpen({
-        component: CBETokenDialog,
+        componentName: 'CBETokenDialog',
         props: {
           initialValues: token,
           isModify,
@@ -45,7 +44,6 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class Tokens extends PureComponent {
   static propTypes = {
-    isFetched: PropTypes.bool,
     tokens: PropTypes.arrayOf(
       PropTypes.instanceOf(TokenModel),
     ),

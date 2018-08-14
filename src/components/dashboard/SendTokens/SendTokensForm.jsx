@@ -3,7 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button, IPFSImage } from 'components'
+import Button from 'components/common/ui/Button/Button'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LITECOIN, ETH } from '@chronobank/core/dao/constants'
 import { TOKEN_ICONS } from 'assets'
 import Preloader from 'components/common/Preloader/Preloader'
@@ -118,7 +119,6 @@ export default class SendTokensForm extends PureComponent {
     onTransfer: PropTypes.func,
     onApprove: PropTypes.func,
     gasPriceMultiplier: PropTypes.number,
-    formErrors: PropTypes.shape(PropTypes.any),
     ...formPropTypes,
   }
 

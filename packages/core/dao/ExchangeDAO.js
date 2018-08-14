@@ -65,7 +65,7 @@ export class ExchangeDAO extends AbstractContractDAO {
   sell (amount: BigNumber, exchange: ExchangeOrderModel, token: TokenModel) {
     const amountWithDecimals = token.addDecimals(amount)
     const priceInWei = exchange.buyPrice()
-    let price = this._c.fromWei(priceInWei)
+    const price = this._c.fromWei(priceInWei)
 
     return this._tx(
       TX_SELL,
@@ -82,7 +82,7 @@ export class ExchangeDAO extends AbstractContractDAO {
   buy (amount: BigNumber, exchange: ExchangeOrderModel, token: TokenModel) {
     const amountWithDecimals = token.addDecimals(amount)
     const priceInWei = exchange.sellPrice()
-    let price = this._c.fromWei(priceInWei)
+    const price = this._c.fromWei(priceInWei)
 
     return this._tx(
       TX_BUY,

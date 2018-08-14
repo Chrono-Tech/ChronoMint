@@ -51,7 +51,7 @@ export const getWalletTokens = (walletId: string, isAmountGt: boolean) => {
           const bAmount = balance
           const bSymbol = balance.symbol()
           const tAmount = convertAmountToNumber(bSymbol, bAmount)
-          let tokenAmountKeyValuePair = {}
+          const tokenAmountKeyValuePair = {}
           tokenAmountKeyValuePair[bSymbol] = tAmount
           return {
             symbol: bSymbol,

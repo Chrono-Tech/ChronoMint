@@ -3,11 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { zipWith } from 'lodash'
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
-import AbstractContractDAO from '../dao/AbstractContractDAO'
+import AbstractContractDAO from '../dao/AbstractContract3DAO'
 import Amount from '../models/Amount'
 import TokenModel from '../models/tokens/TokenModel'
 import TxExecModel from '../models/TxExecModel'
@@ -122,27 +122,27 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   // getters
   async getPendings () {
     try {
-
-      let pendingTxCollection = {}
+      const pendingTxCollection = {}
       const res = await this.contract.methods.getPendings().call()
       const [values, operations, isConfirmed] = Object.values(res)
+      const txs = zipWith(
+        values, operations, isConfirmed,
+        (value, address, isConfirmed) => ({
+          value,
+          address,
+          isConfirmed,
+        }))
+        .filter((operation) => this.isValidId(operation.address))
 
-      let verifiedOperationsPromises = []
-      let pendingDataPromises = []
-      operations.filter(this.isValidId).map((operation) => {
-        verifiedOperationsPromises.push(ethereumProvider.checkConfirm2FAtx(operation))
-        pendingDataPromises.push(this.getPendingData(operation))
-      })
-      const verifiedOperations = await Promise.all(verifiedOperationsPromises)
-      const pendingData = await Promise.all(pendingDataPromises)
+      const pendingData = await Promise.all(txs
+        .map((operation) => this.getPendingData(operation.address)))
 
-      operations.filter(this.isValidId).forEach((id, i) => {
-        let pendingTxModel
-        pendingTxModel = new MultisigWalletPendingTxModel({
-          id,
-          value: new BigNumber(values [i]),
-          isConfirmed: isConfirmed[i],
-          isPending: verifiedOperations[i] ? verifiedOperations[i].activated : false,
+      txs.forEach((operation, i) => {
+        const pendingTxModel = new MultisigWalletPendingTxModel({
+          id: operation.address,
+          value: new BigNumber(operation.value),
+          isConfirmed: operation.isConfirmed,
+          isPending: false,
           decodedTx: pendingData[i] ? pendingData[i] : null,
         })
         pendingTxCollection[pendingTxModel.id] = pendingTxModel
@@ -150,6 +150,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
       return pendingTxCollection
     } catch (e) {
+      // eslint-disable-next-line
       console.warn(e)
       return Promise.resolve({})
     }
@@ -158,12 +159,13 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   async getOwners () {
     try {
       const counter = await this.contract.methods.m_numOwners().call()
-      let promises = []
+      const promises = []
       for (let i = 0; i < counter; i++) {
         promises.push(this.contract.methods.getOwner(i).call())
       }
       return Promise.all(promises)
     } catch (e) {
+      // eslint-disable-next-line
       console.warn(e)
       return Promise.resolve([])
     }
@@ -173,6 +175,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     try {
       return this.contract.methods.m_required().call()
     } catch (e) {
+      // eslint-disable-next-line
       console.warn(e)
       return Promise.resolve(0)
     }
@@ -187,6 +190,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     try {
       return this.contract.methods.releaseTime().call()
     } catch (e) {
+      // eslint-disable-next-line
       console.warn(e)
       return Promise.resolve(0)
     }
@@ -261,6 +265,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
           to: args._to,
         }
       default:
+        // eslint-disable-next-line
         console.warn('warn: decoder not implemented for function: ', func)
         return args
     }

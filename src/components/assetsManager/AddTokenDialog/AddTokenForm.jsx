@@ -7,7 +7,7 @@ import BigNumber from 'bignumber.js'
 import { Checkbox, TextField } from 'redux-form-material-ui'
 import Select from 'redux-form-material-ui/es/Select'
 import { CircularProgress, MenuItem, FormControlLabel } from '@material-ui/core'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -27,7 +27,6 @@ import { I18n } from '@chronobank/core-dependencies/i18n'
 import { createAsset } from '@chronobank/core/redux/assetsManager/actions'
 import { DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/constants'
 import { modalsOpen } from 'redux/modals/actions'
-import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import ipfs from '@chronobank/core-dependencies/utils/IPFS'
 import FeeModel from '@chronobank/core/models/tokens/FeeModel'
@@ -62,11 +61,11 @@ const onSubmit = (values, dispatch) => {
 
 function mapStateToProps (state) {
   const assetsManager = state.get(DUCK_ASSETS_MANAGER)
-  const form = state.get('form')
+  const form = state.get('form').get(FORM_ADD_TOKEN_DIALOG)
 
   return {
-    formValues: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('values'),
-    formErrors: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('syncErrors'),
+    formValues: form && form.get('values'),
+    formErrors: (form && form.get('syncErrors')) || {},
     platformsList: assetsManager.usersPlatforms(),
   }
 }
@@ -74,7 +73,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     handleAddPlatformDialog: () => dispatch(modalsOpen({
-      component: AddPlatformDialog,
+      componentName: 'AddPlatformDialog',
     })),
     onSubmit: onSubmit,
     submitForm: () => dispatch(submit(FORM_ADD_TOKEN_DIALOG)),
@@ -92,6 +91,12 @@ class Platform extends PureComponent {
     platform: PropTypes.instanceOf(Object),
     selectedPlatform: PropTypes.instanceOf(Object),
     onClick: PropTypes.func,
+    ...formPropTypes
+  }
+
+  static defaultProps = {
+    formValues: null,
+    formErrors: {},
   }
 
   handleClick = () => this.props.onClick(this.props.platform)
@@ -125,8 +130,6 @@ class Platform extends PureComponent {
 export default class AddTokenForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
-    formValues: PropTypes.shape(PropTypes.any),
-    formErrors: PropTypes.shape(PropTypes.any),
     platformsList: PropTypes.arrayOf(PropTypes.object),
     dispatch: PropTypes.func,
     onClose: PropTypes.func.isRequired,

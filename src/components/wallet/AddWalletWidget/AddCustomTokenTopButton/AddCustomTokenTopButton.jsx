@@ -12,7 +12,6 @@ import { formValueSelector } from 'redux-form/immutable'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
 import { modalsOpen } from 'redux/modals/actions'
-import AddTokenDialog from 'components/dialogs/AddTokenDialog/AddTokenDialog'
 import './AddCustomTokenTopButton.scss'
 
 function makeMapStateToProps () {
@@ -29,7 +28,7 @@ function makeMapStateToProps () {
 function mapDispatchToProps (dispatch) {
   return {
     handleAddToken: () => dispatch(modalsOpen({
-      component: AddTokenDialog,
+      componentName: 'AddTokenDialog',
     })),
 
   }

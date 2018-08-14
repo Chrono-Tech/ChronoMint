@@ -4,7 +4,6 @@
  */
 
 import { Link } from 'react-router'
-import networkService from '@chronobank/login/network/NetworkService'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { I18n } from '@chronobank/core-dependencies/i18n'
@@ -14,22 +13,20 @@ import { connect } from 'react-redux'
 import menu from 'menu'
 import { drawerHide } from 'redux/drawer/actions'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
+import { getNetworkName } from '@chronobank/login/redux/network/thunks'
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
-import { logout } from '@chronobank/core/redux/session/actions'
-import chronWalletLogoSVG from 'assets/img/chronowallettext-white.svg'
-import ProfileModel from '@chronobank/core/models/ProfileModel'
+import { logout } from '@chronobank/core/redux/session/thunks'
+import chronoWalletLogoSVG from 'assets/img/chronowallettext-white.svg'
 import ProfileImage from 'components/common/ProfileImage/ProfileImage'
 import exitSvg from 'assets/img/exit-white.svg'
-import { sidesCloseAll, sidesPush } from 'redux/sides/actions'
+import { sidesCloseAll, sidesOpen } from 'redux/sides/actions'
 import { modalsOpen } from 'redux/modals/actions'
-import UpdateProfileDialog from 'components/dialogs/UpdateProvideDialog/UpdateProfileDialog'
 import { getAccountAvatar, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
 import { MENU_TOKEN_MORE_INFO_PANEL_KEY } from 'redux/sides/constants'
 import { getWalletsLength } from '@chronobank/core/redux/wallets/selectors/wallets'
 import { getAccountProfileSummary } from '@chronobank/core/redux/session/selectors'
-import MenuAssetsManagerMoreInfo from './MenuAssetsManagerMoreInfo/MenuAssetsManagerMoreInfo'
 import MenuTokensList from './MenuTokensList/MenuTokensList'
 import { prefix } from './lang'
 
@@ -46,7 +43,6 @@ function mapStateToProps (state) {
     isCBE,
     profile,
     isDrawerOpen: state.get('drawer').isOpen,
-    networkName: networkService.getName(),
     avatar: accountProfileSummary.avatar,
     userName: accountProfileSummary.userName,
   }
@@ -54,13 +50,16 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
+    getNetworkName: () => dispatch(getNetworkName()),
     handleDrawerHide: () => dispatch(drawerHide()),
     handleLogout: () => dispatch(logout()),
-    handleProfileEdit: () => dispatch(modalsOpen({ component: UpdateProfileDialog })),
+    handleProfileEdit: () => dispatch(modalsOpen({
+      componentName: 'UpdateProfileDialog'
+    })),
     handle: (handleClose) => {
       dispatch(sidesCloseAll())
-      dispatch(sidesPush({
-        component: MenuAssetsManagerMoreInfo,
+      dispatch(sidesOpen({
+        componentName: 'MenuAssetsManagerMoreInfo',
         panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY,
         isOpened: true,
         anchor: 'left',
@@ -73,8 +72,8 @@ function mapDispatchToProps (dispatch) {
 
     handleAssetsManagerMoreInfo: (handleClose) => {
       dispatch(sidesCloseAll())
-      dispatch(sidesPush({
-        component: MenuAssetsManagerMoreInfo,
+      dispatch(sidesOpen({
+        componentName: 'MenuAssetsManagerMoreInfo',
         panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY,
         isOpened: true,
         anchor: 'left',
@@ -92,14 +91,12 @@ export default class DrawerMainMenu extends PureComponent {
   static propTypes = {
     isCBE: PropTypes.bool,
     handleProfileEdit: PropTypes.func,
-    handleDrawerHide: PropTypes.func,
-    profile: PropTypes.instanceOf(ProfileModel),
-    networkName: PropTypes.string,
     userName: PropTypes.string,
     handleLogout: PropTypes.func,
     walletsCount: PropTypes.number,
     handleAssetsManagerMoreInfo: PropTypes.func,
     onSelectLink: PropTypes.func,
+    getNetworkName: PropTypes.func,
   }
 
   componentDidMount () {
@@ -184,7 +181,7 @@ export default class DrawerMainMenu extends PureComponent {
             ref={this.setRef}
           >
             <div styleName='chronWalletLogo'>
-              <img src={chronWalletLogoSVG} alt='ChronoWallet logo' />
+              <img src={chronoWalletLogoSVG} alt='ChronoWallet logo' />
               <div styleName='subtitle'>{require('../../../../package.json').version}</div>
             </div>
 
@@ -203,7 +200,7 @@ export default class DrawerMainMenu extends PureComponent {
                   {userName || getAccountName(selectedAccount) || 'Account name'}
                 </div>
                 <div styleName='network-name-text'>
-                  {this.props.networkName}
+                  {this.props.getNetworkName()}
                 </div>
               </div>
               <div styleName='exit' onClick={this.props.handleLogout}>

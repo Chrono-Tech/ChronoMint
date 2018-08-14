@@ -5,7 +5,9 @@
 
 import { DUCK_MONITOR } from '@chronobank/login/redux/monitor/constants'
 import { Link } from 'react-router'
-import { CopyIcon, IPFSImage, QRIcon } from 'components'
+import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import QRIcon from 'components/dashboard/MicroIcon/QRIcon'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -19,10 +21,10 @@ import WalletName from 'components/wallet/WalletName/WalletName'
 import walletLinkSvg from 'assets/img/icons/prev.svg'
 import copySvg from 'assets/img/icons/copy.svg'
 import qrSvg from 'assets/img/icons/qr.svg'
-import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
+import { toggleMainMenu } from 'redux/sides/actions'
 import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED, SYNC_STATUS_SYNCING } from '@chronobank/login/network/MonitorService'
-import { SIDES_TOGGLE_MAIN_MENU } from 'redux/sides/constants'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
+import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import './MenuTokenMoreInfo.scss'
 import { prefix } from './lang'
 import { getSelectedToken, getSelectedWalletAddress, getWalletCompactWalletsList } from './selectors'
@@ -48,7 +50,7 @@ const makeMapStateToProps = () => {
 
 function mapDispatchToProps (dispatch) {
   return {
-    onMainMenuClose: () => dispatch({ type: SIDES_TOGGLE_MAIN_MENU, mainMenuIsOpen: false }),
+    onMainMenuClose: () => dispatch(toggleMainMenu(false)),
     selectWallet: (blockchain, address) => dispatch(selectWallet(blockchain, address)),
   }
 }
@@ -165,9 +167,13 @@ export default class MenuTokenMoreInfo extends PureComponent {
           </div>
 
           <div styleName='walletIrem'>
-            <Link to='/wallet' styleName='walletTitle' onClick={() => {
-              this.handleSelectLink(token.blockchain(), walletAddress)
-            }}>
+            <Link
+              to='/wallet'
+              styleName='walletTitle'
+              onClick={() => {
+                this.handleSelectLink(token.blockchain(), walletAddress)
+              }}
+            >
               <div styleName='walletName'><Translate value={`${prefix}.mainWalletTitle`} /></div>
               <div styleName='walletAddress'>{walletAddress}</div>
               <div styleName='walletLink'>

@@ -3,14 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import networkService from '@chronobank/login/network/NetworkService'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import ContractDAOModel from '../../models/contracts/ContractDAOModel'
 import { getAccount } from '../session/selectors/models'
 import AbstractContractDAO from '../../dao/AbstractContract3DAO'
 import { ContractsManagerABI } from '../../dao/abi'
-
-//#region CONSTANTS
-
 import {
   ASSET_HOLDER_LIBRARY,
   ASSET_DONATOR_LIBRARY,
@@ -23,20 +20,20 @@ import {
   MULTI_EVENTS_HISTORY,
   VOTING_MANAGER_LIBRARY,
   WALLETS_MANAGER,
-  TOKEN_MANAGMENT_EXTENSION_LIBRARY,
 } from '../../dao/ContractList'
+
 import {
   DAOS_REGISTER,
   DAOS_INITIALIZED,
 } from './constants'
 
-//#endregion
-
 // eslint-disable-next-line import/prefer-default-export
 export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
-  const account = getAccount(getState())
+  let state = getState()
+  const account = getAccount(state)
+  const currentNetwork = state.get(DUCK_NETWORK).selectedNetworkId
   AbstractContractDAO.setAccount(account)
-  const currentNetworkId = networkService.getCurrentNetwork()
+  const currentNetworkId = currentNetwork
   const contractManagerAddress = ContractsManagerABI.networks[currentNetworkId].address
   const contractManagerDAO = CONTRACTS_MANAGER.create(contractManagerAddress)
   await contractManagerDAO.connect(web3)
@@ -57,18 +54,20 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     ASSET_HOLDER_LIBRARY,
     ASSET_DONATOR_LIBRARY,
     PLATFORMS_MANAGER_LIBRARY,
-    TOKEN_MANAGMENT_EXTENSION_LIBRARY,
     USER_MANAGER_LIBRARY,
     ERC20_MANAGER,
     VOTING_MANAGER_LIBRARY,
     WALLETS_MANAGER,
   ]
 
-  const getDaoModel = async (contract, address: String) => {
-    if (!address) {
+  const getDaoModel = async (contract, contractAddress: string, isGetAddressFromContract: boolean = true) => {
+    let address = contractAddress
+    if (!address && isGetAddressFromContract) {
       address = await contractManagerDAO.getContractAddressByType(contract.type)
+      address = typeof address === 'string' ? address.toLowerCase() : null
     }
-    const dao = contract.create(address.toLowerCase(), historyAddress)
+
+    const dao = contract.create(address, historyAddress)
     dao.connect(web3)
     return new ContractDAOModel({
       contract,
@@ -79,14 +78,13 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
   }
 
   const models = await Promise.all(
-    contracts.map((contract) => getDaoModel(contract)),
+    contracts.map((contract) => {
+      return getDaoModel(contract)
+    }),
   )
 
-  const tokenManagementInterfaceDAO = models.find((model) => {
-    return model.contract.type === 'TokenManagementInterface'
-  })
-  const platfromTokenExtension = await getDaoModel(PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER_LIBRARY, tokenManagementInterfaceDAO.address)
-  models.push(platfromTokenExtension)
+  const platformTokenExtensionGatewayManagerEmitter = await getDaoModel(PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER_LIBRARY, null, false)
+  models.push(platformTokenExtensionGatewayManagerEmitter)
 
   for (const model of models) {
     dispatch({
@@ -95,7 +93,7 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     })
   }
 
-  const state = getState()
+  state = getState()
   // post registration setup
   for (const model of models) {
     if (typeof model.dao.postStoreDispatchSetup === 'function') {

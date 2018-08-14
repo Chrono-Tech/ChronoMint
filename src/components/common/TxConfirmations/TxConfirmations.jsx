@@ -39,7 +39,7 @@ export default class TxConfirmations extends PureComponent {
     textMode: PropTypes.bool,
   }
 
-  getBlockMiningTime = (blockchain: String) => {
+  getBlockMiningTime = (blockchain: string) => {
     switch (blockchain) {
       case BLOCKCHAIN_BITCOIN:
       case BLOCKCHAIN_BITCOIN_CASH:

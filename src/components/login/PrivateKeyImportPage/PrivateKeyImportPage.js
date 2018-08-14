@@ -23,7 +23,7 @@ import {
   CreateAccountContainer,
   GenerateWalletContainer,
 } from '@chronobank/login-ui/components'
-import ProfileService from '@chronobank/login/network/ProfileService'
+import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
 import AccountProfileModel from '@chronobank/core/models/wallet/persistAccount/AccountProfileModel'
 import {
   getAddressByPrivateKey,
@@ -31,11 +31,12 @@ import {
 
 function mapDispatchToProps (dispatch) {
   return {
-    downloadWallet: () => dispatch(downloadWallet()),
     accountDeselect: () => dispatch(accountDeselect()),
-    navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
-    navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
+    downloadWallet: () => dispatch(downloadWallet()),
+    getUserInfo: (addresses: string[]) => dispatch(ProfileThunks.getUserInfo(addresses)),
     navigateBack: () => dispatch(navigateBack()),
+    navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
+    navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
     onSubmitCreateAccountImportPrivateKey: async (name, password, mnemonic) => await dispatch(onSubmitCreateAccountImportPrivateKey(name, password, mnemonic)),
   }
 }
@@ -54,6 +55,7 @@ class PrivateKeyImportPage extends PureComponent {
     navigateToSelectImportMethod: PropTypes.func,
     navigateBack: PropTypes.func,
     onSubmitCreateAccountImportPrivateKey: PropTypes.func,
+    getUserInfo: PropTypes.func,
   }
 
   constructor (props) {
@@ -104,7 +106,7 @@ class PrivateKeyImportPage extends PureComponent {
   async onSubmitPrivateKey ({ privateKey }) {
     const address = getAddressByPrivateKey(privateKey)
 
-    const { data } = await ProfileService.getPersonInfo([address])
+    const data = await this.props.getUserInfo([address])
 
     const profile = data[0]
 

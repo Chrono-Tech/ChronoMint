@@ -12,13 +12,8 @@ import { Translate } from 'react-redux-i18n'
 import { TOKEN_ICONS } from 'assets'
 import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import ReceiveTokenModal from 'components/dashboard/ReceiveTokenModal/ReceiveTokenModal'
 import { getMainTokenForWalletByBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
-import SendTokens from 'components/dashboard/SendTokens/SendTokens'
-import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
-import EditManagersDialog from 'components/dialogs/wallet/EditOwnersDialog/EditOwnersDialog'
-import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog/EditSignaturesDialog'
 import Moment from 'components/common/Moment'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
@@ -39,7 +34,7 @@ function mapDispatchToProps (dispatch) {
   return {
     send: (token, wallet) => {
       dispatch(modalsOpen({
-        component: SendTokens,
+        componentName: 'SendTokens',
         props: {
           wallet,
           isModal: true,
@@ -48,19 +43,20 @@ function mapDispatchToProps (dispatch) {
       }))
     },
     receive: (wallet) => dispatch(modalsOpen({
-      component: ReceiveTokenModal,
-      props: {
-        wallet,
-      },
+      componentName: 'ReceiveTokenModal',
+      props: { wallet },
     })),
     removeEthMultisig: (wallet) => dispatch(removeWallet(wallet)),
-    deposit: (props) => dispatch(modalsOpen({ component: DepositTokensModal, props })),
+    deposit: (props) => dispatch(modalsOpen({
+      componentName: 'DepositTokensModal',
+      props,
+    })),
     openEditManagersDialog: (wallet) => dispatch(modalsOpen({
-      component: EditManagersDialog,
+      componentName: 'EditManagersDialog',
       props: { wallet },
     })),
     openEditSignaturesDialog: (wallet) => dispatch(modalsOpen({
-      component: EditSignaturesDialog,
+      componentName: 'EditSignaturesDialog',
       props: { wallet },
     })),
   }
@@ -74,8 +70,6 @@ export default class WalletWidgetDetail extends PureComponent {
     send: PropTypes.func,
     receive: PropTypes.func,
     deposit: PropTypes.func,
-    openEditManagersDialog: PropTypes.func,
-    openEditSignaturesDialog: PropTypes.func,
     removeEthMultisig: PropTypes.func,
   }
 
@@ -115,7 +109,7 @@ export default class WalletWidgetDetail extends PureComponent {
                   <h3><WalletName wallet={wallet} /></h3>
                   <span styleName='address-address'>{wallet.address}</span>
                 </div>
-                {token && token.isFetched()
+                {tokenIsFetched
                   ? <WalletMainCoinBalance wallet={wallet} />
                   : (
                     <span styleName='noToken'>

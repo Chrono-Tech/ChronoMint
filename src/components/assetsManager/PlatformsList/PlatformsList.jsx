@@ -3,7 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { IPFSImage, TokenValue } from 'components'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'

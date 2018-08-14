@@ -11,7 +11,7 @@ import {
   navigateToLoginPage,
 } from '@chronobank/login-ui/redux/actions'
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
-import { ModalStack } from 'components'
+import ModalStack from 'components/common/ModalStack/ModalStack'
 import { MuiThemeProvider } from '@material-ui/core/styles'
 
 import WalletTitleBG from 'assets/img/wallet-title-bg.png'

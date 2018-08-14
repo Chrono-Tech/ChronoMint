@@ -8,7 +8,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import i18n from 'i18n'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import { changeMomentLocale } from 'redux/ui/actions'
 import classnames from 'classnames'
 
@@ -79,7 +79,7 @@ export default class LocaleDropDown extends PureComponent {
     return (
       <div styleName='root'>
         <Button
-          styleName={newButtonStyle ? 'langButtonNewStyle' : 'langButton' }
+          styleName={newButtonStyle ? 'langButtonNewStyle' : 'langButton'}
           onClick={this.handleClick}
         >
           {locale}

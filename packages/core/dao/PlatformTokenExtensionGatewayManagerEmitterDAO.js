@@ -20,7 +20,6 @@ export default class PlatformTokenExtensionGatewayManagerEmitterDAO extends Abst
 
     this.allEventsEmitter = this.history.events.allEvents({})
       .on('data', this.handleEventsData.bind(this))
-      .on('changed', this.handleEventsChanged.bind(this))
       .on('error', this.handleEventsError.bind(this))
   }
 
@@ -37,16 +36,11 @@ export default class PlatformTokenExtensionGatewayManagerEmitterDAO extends Abst
     if (!data.event) {
       return
     }
-    console.log('PlatformTokenExtensionGatewayManagerEmitterDAO handleEventsData: ', data.event, data)
+
     this.emit(data.event, data)
   }
 
-  handleEventsChanged (data) {
-    console.log('PlatformTokenExtensionGatewayManagerEmitterDAO handleEventsChanged: ', data.event, data)
-  }
-
   handleEventsError (data) {
-    console.log('PlatformTokenExtensionGatewayManagerEmitterDAO handleEventsError: ', data.event, data)
     this.emit(data.event + '_error', data)
   }
 

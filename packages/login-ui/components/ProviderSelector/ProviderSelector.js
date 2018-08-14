@@ -3,9 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import networkService from '@chronobank/login/network/NetworkService'
 import { clearErrors } from '@chronobank/login/redux/network/actions'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
+import { selectProvider } from '@chronobank/core/redux/session/thunks'
 import { MenuItem, SelectField } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -23,7 +23,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  selectProvider: (providerId) => networkService.selectProvider(providerId),
+  selectProvider: (providerId) => dispatch(selectProvider(providerId)),
   clearErrors: () => dispatch(clearErrors()),
 })
 

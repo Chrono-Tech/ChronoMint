@@ -3,7 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button, ModalDialog } from 'components'
+import Button from 'components/common/ui/Button/Button'
+import ModalDialog from 'components/dialogs/ModalDialog'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'

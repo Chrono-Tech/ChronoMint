@@ -3,11 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button, IPFSImage } from 'components'
+import Button from 'components/common/ui/Button/Button'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import iconTokenDefaultSVG from 'assets/img/avaToken.svg'
 import BigNumber from 'bignumber.js'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import Immutable from 'immutable'
 import ExchangeOrderModel from '@chronobank/core/models/exchange/ExchangeOrderModel'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
@@ -56,7 +56,6 @@ export default class BuyTokensForm extends React.PureComponent {
   static propTypes = {
     exchangeToken: PropTypes.instanceOf(TokenModel),
     exchange: PropTypes.instanceOf(ExchangeOrderModel),
-    filter: PropTypes.instanceOf(Immutable.Map),
     isBuy: PropTypes.bool,
     tokens: PropTypes.instanceOf(TokensCollection),
     balances: PropTypes.instanceOf(BalancesCollection),

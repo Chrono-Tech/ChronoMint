@@ -3,11 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { connect } from "react-redux"
-import PropTypes from "prop-types"
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import Drawer from '@material-ui/core/Drawer'
-import { SIDES_TOGGLE } from 'redux/sides/constants'
+import { toggleSidePanel } from 'redux/sides/actions'
 import styles from './SidePanel.scss'
 
 function mapStateToProps () {
@@ -16,7 +16,7 @@ function mapStateToProps () {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handlePanelClose: (panelKey: string) => dispatch({ type: SIDES_TOGGLE, panelKey: panelKey, isOpened: false }),
+    handlePanelClose: (panelKey: string) => dispatch(toggleSidePanel(panelKey, false)),
   }
 }
 

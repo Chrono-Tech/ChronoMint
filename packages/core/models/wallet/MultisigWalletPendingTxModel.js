@@ -28,12 +28,12 @@ const defaultValues = {
 
 export default class MultisigWalletPendingTxModel extends AbstractModel {
   constructor (props) {
-    props = {
+    const newProps = {
       ...defaultValues,
       ...props,
     }
-    super(props, schemaFactory())
-    Object.assign(this, props)
+    super(newProps, schemaFactory())
+    Object.assign(this, newProps)
     Object.freeze(this)
   }
 

@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import QRCode from 'qrcode'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -11,8 +11,7 @@ import { Translate } from 'react-redux-i18n'
 import { Checkbox, TextField } from 'redux-form-material-ui'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { goToWallets } from '@chronobank/core/redux/mainWallet/actions'
-import { confirm2FASecret, get2FAEncodedKey } from '@chronobank/core/redux/multisigWallet/actions'
-import { ETH_MULTISIG_2_FA_CONFIRMED } from '@chronobank/core/redux/multisigWallet/constants'
+import { confirm2FASecret, get2FAEncodedKey, setEthMultisig2FAConfirmed } from '@chronobank/core/redux/multisigWallet/actions'
 import PropTypes from 'prop-types'
 import TWO_FA_LOGO_PNG from 'assets/img/2fa/2-fa.png'
 import APPSTORE_SVG from 'assets/img/appstore.svg'
@@ -50,7 +49,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleGoWallets: () => dispatch(goToWallets()),
     get2FAEncodedKey: () => {
       dispatch(get2FAEncodedKey((code) => {
         dispatch(change(FORM_2FA_ENABLE, 'code', code))
@@ -59,7 +57,7 @@ function mapDispatchToProps (dispatch) {
     confirm2FASecret: (account, confirmToken, callback) => {
       dispatch(confirm2FASecret(account, confirmToken, callback))
     },
-    handleSetTwoFAConfirmed: (twoFAConfirmed) => dispatch({ type: ETH_MULTISIG_2_FA_CONFIRMED, twoFAConfirmed }),
+    handleSetTwoFAConfirmed: (twoFAConfirmed) => dispatch(setEthMultisig2FAConfirmed(twoFAConfirmed)),
     handleGoToWallets: () => dispatch(goToWallets()),
   }
 }
@@ -70,10 +68,7 @@ export default class TwoFaEnableForm extends PureComponent {
   static propTypes = {
     handleSetTwoFAConfirmed: PropTypes.func,
     account: PropTypes.string,
-    feeMultiplier: PropTypes.number,
-    handleGoWallets: PropTypes.func,
     confirm2FASecret: PropTypes.func,
-    handleGoTo2FA: PropTypes.func,
     code: PropTypes.string,
     get2FAEncodedKey: PropTypes.func,
     handleGoToWallets: PropTypes.func,

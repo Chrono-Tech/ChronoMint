@@ -5,7 +5,7 @@
 
 export const DUCK_MODALS = 'modals'
 
-export const MODALS_PUSH = 'modals/PUSH'
-export const MODALS_REPLACE = 'modals/REPLACE'
-export const MODALS_POP = 'modals/POP'
-export const MODALS_CLEAR = 'modals/CLEAR'
+export const MODALS_OPEN = 'MODALS/OPEN'
+export const MODALS_REPLACE = 'MODALS/REPLACE'
+export const MODALS_CLOSE = 'MODALS/CLOSE'
+export const MODALS_CLEAR = 'MODALS/CLEAR'

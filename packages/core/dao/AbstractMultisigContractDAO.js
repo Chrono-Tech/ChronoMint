@@ -13,14 +13,10 @@ import TxExecModel from '../models/TxExecModel'
 import contractsManagerDAO from './ContractsManagerDAO'
 import AbstractContractDAO from './AbstractContract3DAO'
 
-//#region CONSTANTS
-
 import {
   DEFAULT_TX_OPTIONS,
   TX_FRONTEND_ERROR_CODES,
 } from './constants'
-
-//#endregion CONSTANTS
 
 export default class AbstractMultisigContractDAO extends AbstractContractDAO {
   constructor ({ address, history, abi }) {
@@ -141,7 +137,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
 
     args = await this._decodeArgs(tx.funcName(), args)
 
-    let fields = {}
+    const fields = {}
     Object.entries(args).map(([key, value]) => {
       fields[key] = {
         value,
