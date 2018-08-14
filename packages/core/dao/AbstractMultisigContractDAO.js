@@ -7,7 +7,7 @@ import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import ethABI from 'ethereumjs-abi'
 import TxExecModel from '../models/TxExecModel'
-import AbstractContractDAO from './AbstractContract3DAO'
+import AbstractContractDAO from './AbstractContractDAO'
 
 export default class AbstractMultisigContractDAO extends AbstractContractDAO {
   constructor ({ address, history, abi }) {

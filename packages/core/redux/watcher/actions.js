@@ -4,58 +4,16 @@
  */
 
 import { watchInitMonitor } from '@chronobank/login/redux/monitor/actions'
-import { showConfirmTxModal, watchInitUserMonitor } from '@chronobank/core-dependencies/redux/ui/actions'
-import AbstractContractDAO from '../../dao/AbstractContractDAO'
-import { TX_FRONTEND_ERROR_CODES } from '../../dao/constants'
-import TransactionErrorNoticeModel from '../../models/notices/TransactionErrorNoticeModel'
-import TxError from '../../models/TxError'
+import { watchInitUserMonitor } from '@chronobank/core-dependencies/redux/ui/actions'
 import { watchInitTokens, watchPlatformManager } from '../assetsManager/actions'
 import { initMainWallet } from '../mainWallet/actions'
 import { watchInitMarket } from '../market/actions'
-import { notify } from '../notifier/actions'
 import { initTokens } from '../tokens/actions'
 import { initDAOs } from '../daos/actions'
 import { watchInitPolls } from '../voting/actions'
 import { initMultisigWalletManager } from '../multisigWallet/actions'
 import { initWallets } from '../wallets/actions'
-import { WATCHER, WATCHER_TX_END, WATCHER_TX_SET } from './constants'
-import TxExecModel from '../../models/TxExecModel'
-
-export const txHandlingFlow = () => (dispatch) => {
-  AbstractContractDAO.txStart = async (tx: TxExecModel, estimateGas, localFeeMultiplier) => {
-    dispatch({ type: WATCHER_TX_SET, tx })
-
-    const { isConfirmed, updatedTx } = await dispatch(showConfirmTxModal(estimateGas, localFeeMultiplier))
-    if (!isConfirmed) {
-      throw new TxError('Cancelled by user from custom tx confirmation modal', TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED)
-    }
-
-    // uncomment code below if you want to simulate prolongation of tx mining
-    // const sleep = (seconds) => {
-    //   return new Promise(resolve => {
-    //     setTimeout(() => {
-    //       resolve()
-    //     }, seconds * 1000)
-    //   })
-    // }
-    // const seconds = 10
-    // console.warn('Simulated ' + seconds + ' seconds prolongation of tx mining')
-    // await sleep(seconds)
-    return updatedTx
-  }
-
-  AbstractContractDAO.txGas = (tx: TxExecModel) => {
-    dispatch({ type: WATCHER_TX_SET, tx })
-  }
-
-  AbstractContractDAO.txEnd = (tx: TxExecModel, e: ?TxError = null) => {
-    dispatch({ type: WATCHER_TX_END, tx })
-
-    if (e && e.codeValue !== TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED) {
-      dispatch(notify(new TransactionErrorNoticeModel(tx, e)))
-    }
-  }
-}
+import { WATCHER } from './constants'
 
 // for all users on all pages
 export const globalWatcher = () => async (dispatch) => {
@@ -75,6 +33,5 @@ export const watcher = ({ web3 }) => async (dispatch) => {
   dispatch(watchInitUserMonitor())
   dispatch(watchInitMarket())
   dispatch(watchInitPolls())
-  dispatch(txHandlingFlow())
   dispatch({ type: WATCHER })
 }

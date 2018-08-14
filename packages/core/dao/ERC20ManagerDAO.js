@@ -5,7 +5,7 @@
 
 import TokenNoticeModel from '../models/notices/TokenNoticeModel'
 import TokenModel from '../models/tokens/TokenModel'
-import AbstractContractDAO from './AbstractContract3DAO'
+import AbstractContractDAO from './AbstractContractDAO'
 import ethereumDAO from './EthereumDAO'
 import web3Converter from '../utils/Web3Converter'
 

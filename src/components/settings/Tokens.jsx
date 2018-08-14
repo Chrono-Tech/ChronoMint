@@ -29,15 +29,6 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     remove: (token) => dispatch(revokeToken(token)),
-    form: (token, isModify) => {
-      dispatch(modalsOpen({
-        componentName: 'CBETokenDialog',
-        props: {
-          initialValues: token,
-          isModify,
-        },
-      }))
-    },
   }
 }
 

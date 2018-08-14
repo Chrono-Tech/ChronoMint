@@ -4,7 +4,7 @@
  */
 
 import TokenModel from '../models/tokens/TokenModel'
-import AbstractContractDAO from './AbstractContract3DAO'
+import AbstractContractDAO from './AbstractContractDAO'
 import web3Converter from '../utils/Web3Converter'
 
 export default class TokenManagementExtensionDAO extends AbstractContractDAO {

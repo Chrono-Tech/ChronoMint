@@ -7,7 +7,7 @@ import Immutable from 'immutable'
 import type AbstractModel from '../models/AbstractModelOld'
 import CBEModel from '../models/CBEModel'
 import ProfileModel from '../models/ProfileModel'
-import AbstractContractDAO from './AbstractContract3DAO'
+import AbstractContractDAO from './AbstractContractDAO'
 import { TX_ADD_CBE, TX_REVOKE_CBE } from './constants/UserManagerDAO'
 
 export default class UserManagerDAO extends AbstractContractDAO {

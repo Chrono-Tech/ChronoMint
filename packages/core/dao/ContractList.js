@@ -19,9 +19,10 @@ import {
   UserManagerABI,
   VotingManagerABI,
   WalletsManagerABI,
+  RewardsABI,
 } from './abi'
 
-import ContractsManagerDAO from './ContractsManagerDAO3'
+import ContractsManagerDAO from './ContractsManagerDAO'
 import AssetHolderDAO from './AssetHolderDAO'
 import ERC20ManagerDAO from './ERC20ManagerDAO'
 import VotingManagerDAO from './VotingManagerDAO'
@@ -33,6 +34,7 @@ import AssetsManagerDAO from './AssetsManagerDAO'
 import PlatformManagerDAO from './PlatformsManagerDAO'
 import TokenManagementExtensionDAO from './TokenManagementExtensionDAO'
 import PlatformTokenExtensionGatewayManagerEmitterDAO from './PlatformTokenExtensionGatewayManagerEmitterDAO'
+import RewardsDAO from './RewardsDAO'
 
 export const CONTRACTS_MANAGER = new ContractModel({
   type: 'ContractsManager',
@@ -110,4 +112,10 @@ export const WALLETS_MANAGER = new ContractModel({
   type: 'WalletsManager',
   abi: WalletsManagerABI,
   DAOClass: WalletsManagerDAO,
+})
+
+export const REWARDS = new ContractModel({
+  type: 'Rewards',
+  abi: RewardsABI,
+  DAOClass: RewardsDAO,
 })

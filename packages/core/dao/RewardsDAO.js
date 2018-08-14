@@ -4,14 +4,12 @@
  */
 
 import BigNumber from 'bignumber.js'
-import resultCodes from 'chronobank-smart-contracts/common/errors'
 import type ERC20DAO from './ERC20DAO'
 import Amount from '../models/Amount'
 import AssetModel from '../models/assetHolder/AssetModel'
 import AssetsCollection from '../models/assetHolder/AssetsCollection'
 import RewardsPeriodModel from '../models/rewards/RewardsPeriodModel'
 import tokenService from '../services/TokenService'
-import { MultiEventsHistoryABI, RewardsABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import {
   EE_REWARDS_ERROR,
@@ -22,9 +20,17 @@ import {
 } from './constants/RewardsDAO'
 
 export default class RewardsDAO extends AbstractContractDAO {
-  constructor (at) {
-    super(RewardsABI, at, MultiEventsHistoryABI)
-    this._okCodes = [resultCodes.OK, resultCodes.REWARD_CALCULATION_FAILED]
+  constructor ({ address, history, abi }) {
+    super({ address, history, abi })
+  }
+
+  /**
+   * connect DAO to web3 and history contract
+   * @param web3
+   * @param options
+   */
+  connect (web3, options) {
+    super.connect(web3, options)
   }
 
   async getAssets (): Promise {

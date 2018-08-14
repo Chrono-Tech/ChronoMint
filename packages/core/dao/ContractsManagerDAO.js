@@ -3,73 +3,43 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import * as validator from '../models/validator'
-import { ContractsManagerABI } from './abi'
-import AbstractContractDAO from './AbstractContractDAO'
-import RewardsDAO from './RewardsDAO'
+import EventEmitter from 'events'
 
-const DAO_REWARDS = 'Rewards'
-
-const daoMap = {
-  [DAO_REWARDS]: RewardsDAO,
-}
-
-class ContractsManagerDAO extends AbstractContractDAO {
-  _contracts = {}
-
-  getContractAddressByType (type: string) {
-    return this._call('getContractAddressByType', [type])
+export default class ContractsManagerDAO extends EventEmitter {
+  constructor ({ address, abi }) {
+    super()
+    this.address = address
+    this.abi = abi
   }
 
-  /** @private */
-  async _getDAO (daoType: string, account = null, isNew = false): Promise<AbstractContractDAO> {
-    let accountParam = account
-    if (!daoMap.hasOwnProperty(daoType)) {
-      // return
-      throw new Error(`invalid DAO type ${daoType}`)
+  connect (web3, options = {}) {
+    if (this.isConnected) {
+      this.disconnect()
     }
 
-    accountParam = accountParam || await this.getContractAddressByType(daoType)
+    this.contract = new web3.eth.Contract(this.abi.abi, this.address, options)
+    this.web3 = web3
+  }
 
-    const key = `${accountParam}-${daoType}`
-    if (this._contracts.hasOwnProperty(key)) {
-      return this._contracts[key]
+  disconnect () {
+    if (this.isConnected) {
+      this.contract = null
+      this.web3 = null
     }
+  }
 
-    const DAOClass = daoMap[daoType]
-    const dao = new DAOClass(accountParam)
-
-    if (isNew) {
-      const isDeployed = await dao.isDeployed()
-      if (!isDeployed) {
-        throw new Error(`Can't init ${DAOClass.name} at ${accountParam}`)
-      }
+  async getContractAddressByType (type: string) {
+    let address
+    try {
+      address = await this.contract.methods.getContractAddressByType(this.web3.utils.stringToHex(type)).call()
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log('getContractAddressByType error: ', e)
     }
-
-    this._contracts[key] = dao
-    return dao
+    return address
   }
 
-  getRewardsDAO (): Promise<RewardsDAO> {
-    return this._getDAO(DAO_REWARDS)
-  }
-
-  async isContract (account): Promise<boolean> {
-    return validator.address(account) === null
-      ? await this.getCode(account) !== null
-      : false
-  }
-
-  subscribeOnReset () {
-    this._web3Provider.onResetPermanent(() => this.handleWeb3Reset())
-  }
-
-  handleWeb3Reset () {
-    this._contracts = {}
-    if (this.contract) {
-      this.contract = this._initContract()
-    }
+  async isExists (address: string) {
+    return this.contract.methods.isExists(address).call()
   }
 }
-
-export default new ContractsManagerDAO(ContractsManagerABI)

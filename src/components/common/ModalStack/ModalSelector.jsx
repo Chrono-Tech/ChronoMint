@@ -14,7 +14,6 @@ import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/Asse
 import BlacklistDialog from 'components/assetsManager/BlacklistDialog/BlacklistDialog'
 import BlockAssetDialog from 'components/assetsManager/BlockAssetDialog/BlockAssetDialog'
 import CBEAddressDialog from 'components/dialogs/CBEAddressDialog'
-import CBETokenDialog from 'components/dialogs/CBETokenDialog/CBETokenDialog'
 import ConfirmTransferDialog from 'components/dialogs/ConfirmTransferDialog/ConfirmTransferDialog'
 import ConfirmTxDialog from 'components/dialogs/ConfirmTxDialog/ConfirmTxDialog'
 import CopyDialog from 'components/dialogs/CopyDialog/CopyDialog'
@@ -44,7 +43,6 @@ export default class ModalSelector extends PureComponent {
     'BlacklistDialog': BlacklistDialog,
     'BlockAssetDialog': BlockAssetDialog,
     'CBEAddressDialog': CBEAddressDialog,
-    'CBETokenDialog': CBETokenDialog,
     'ConfirmTransferDialog': ConfirmTransferDialog,
     'ConfirmTxDialog': ConfirmTxDialog,
     'CopyDialog': CopyDialog,
