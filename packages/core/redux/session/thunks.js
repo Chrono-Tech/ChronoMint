@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { getNetworkById, LOCAL_ID, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID, LOCAL_PRIVATE_KEYS } from '@chronobank/login/network/settings'
+import { getNetworkById, LOCAL_ID, LOCAL_PRIVATE_KEYS, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import { removeWatchersUserMonitor } from '@chronobank/core-dependencies/redux/ui/actions'
@@ -20,17 +20,11 @@ import * as ProfileThunks from '../profile/thunks'
 import ProfileService from '../profile/service'
 import { daoByType } from '../../redux/daos/selectors'
 import web3Factory from '../../web3'
-import { cbeWatcher, watcher } from '../watcher/actions'
+import { watcher } from '../watcher/actions'
 import { watchStopMarket } from '../market/actions'
 import { initEthereum } from '../ethereum/actions'
-import {
-  DUCK_PERSIST_ACCOUNT,
-} from '../persistAccount/constants'
-import {
-  DEFAULT_CBE_URL,
-  DEFAULT_USER_URL,
-  DUCK_SESSION,
-} from './constants'
+import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
+import { DEFAULT_CBE_URL, DEFAULT_USER_URL, DUCK_SESSION } from './constants'
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
@@ -229,7 +223,6 @@ export const login = (account) => async (dispatch, getState) => {
   dispatch(SessionActions.sessionProfile(profile, isCBE))
 
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
-  isCBE && dispatch(cbeWatcher())
 
   dispatch(replace(LocalStorage.getLastURL() || defaultURL))
 }

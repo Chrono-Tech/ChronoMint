@@ -6,21 +6,12 @@
 import * as validator from '../models/validator'
 import { ContractsManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
-import ChronoBankAssetProxyDAO from './ChronoBankAssetProxyDAO'
-import PendingManagerDAO from './PendingManagerDAO'
 import RewardsDAO from './RewardsDAO'
-import UserManagerDAO from './UserManagerDAO'
 
-const DAO_PENDING_MANAGER = 'PendingManager'
 const DAO_REWARDS = 'Rewards'
-const DAO_CHRONOBANK_ASSET_PROXY = 'ChronoBankAssetProxyDAO'
-const DAO_USER_MANAGER = 'UserManager'
 
 const daoMap = {
-  [DAO_USER_MANAGER]: UserManagerDAO,
-  [DAO_PENDING_MANAGER]: PendingManagerDAO,
   [DAO_REWARDS]: RewardsDAO,
-  [DAO_CHRONOBANK_ASSET_PROXY]: ChronoBankAssetProxyDAO,
 }
 
 class ContractsManagerDAO extends AbstractContractDAO {
@@ -59,16 +50,8 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return dao
   }
 
-  getUserManagerDAO (): Promise<UserManagerDAO> {
-    return this._getDAO(DAO_USER_MANAGER)
-  }
-
   getRewardsDAO (): Promise<RewardsDAO> {
     return this._getDAO(DAO_REWARDS)
-  }
-
-  getPendingManagerDAO (): Promise<PendingManagerDAO> {
-    return this._getDAO(DAO_PENDING_MANAGER)
   }
 
   async isContract (account): Promise<boolean> {

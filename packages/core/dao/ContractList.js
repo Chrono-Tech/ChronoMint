@@ -14,6 +14,7 @@ import {
   MultiEventsHistoryABI,
   PlatformsManagerABI,
   PlatformTokenExtensionGatewayManagerEmitterABI,
+  PollInterfaceABI,
   TokenManagementInterfaceABI,
   UserManagerABI,
   VotingManagerABI,
@@ -71,7 +72,7 @@ export const USER_MANAGER_LIBRARY = new ContractModel({
 
 export const POLL_INTERFACE_MANAGER = new ContractModel({
   type: 'PollInterfaceManager',
-  abi: AssetHolderABI,
+  abi: PollInterfaceABI,
   DAOClass: PollInterfaceDAO,
 })
 

@@ -13,20 +13,12 @@ import { watchInitTokens, watchPlatformManager } from '../assetsManager/actions'
 import { initMainWallet } from '../mainWallet/actions'
 import { watchInitMarket } from '../market/actions'
 import { notify } from '../notifier/actions'
-import { watchInitOperations } from '../operations/actions'
-import { watchInitCBE } from '../settings/user/cbe/actions'
 import { initTokens } from '../tokens/actions'
 import { initDAOs } from '../daos/actions'
 import { watchInitPolls } from '../voting/actions'
-import { daoByType } from '../../redux/daos/selectors'
 import { initMultisigWalletManager } from '../multisigWallet/actions'
 import { initWallets } from '../wallets/actions'
-import {
-  WATCHER_CBE,
-  WATCHER_TX_SET,
-  WATCHER_TX_END,
-  WATCHER,
-} from './constants'
+import { WATCHER, WATCHER_TX_END, WATCHER_TX_SET } from './constants'
 import TxExecModel from '../../models/TxExecModel'
 
 export const txHandlingFlow = () => (dispatch) => {
@@ -65,11 +57,6 @@ export const txHandlingFlow = () => (dispatch) => {
   }
 }
 
-export const watchInitProfile = () => async (dispatch, getState) => {
-  const userManagerDAO = daoByType('UserManager')(getState())
-  return userManagerDAO.watchProfile((notice) => dispatch(notify(notice)))
-}
-
 // for all users on all pages
 export const globalWatcher = () => async (dispatch) => {
   dispatch(watchInitMonitor())
@@ -79,7 +66,6 @@ export const globalWatcher = () => async (dispatch) => {
 export const watcher = ({ web3 }) => async (dispatch) => {
   await dispatch(initDAOs({ web3 }))
   dispatch(initMultisigWalletManager())
-  dispatch(watchInitProfile())
   dispatch(initTokens())
   dispatch(initMainWallet())
   dispatch(initWallets())
@@ -88,17 +74,7 @@ export const watcher = ({ web3 }) => async (dispatch) => {
   dispatch(watchInitMonitor())
   dispatch(watchInitUserMonitor())
   dispatch(watchInitMarket())
-  // TODO @Abdulov fix it
-  // dispatch(watchInitERC20Tokens())
   dispatch(watchInitPolls())
   dispatch(txHandlingFlow())
   dispatch({ type: WATCHER })
-}
-
-// only for CBE
-export const cbeWatcher = () => async (dispatch) => {
-  dispatch({ type: WATCHER_CBE })
-  // settings
-  dispatch(watchInitCBE())
-  dispatch(watchInitOperations())
 }

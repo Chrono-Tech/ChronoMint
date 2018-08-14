@@ -109,7 +109,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   watchError (callback) {
     return this.on('Error', async (data) => {
-      callback(this._c.hexToDecimal(data.returnValues.errorCode))
+      callback(data.returnValues.errorCode)
     })
   }
 

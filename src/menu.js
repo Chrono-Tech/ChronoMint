@@ -27,9 +27,6 @@ export default {
   ],
   cbe: [
     {
-      key: 'pOperations', title: 'nav.operations', icon: 'alarm', path: '/cbe/operations',
-    },
-    {
       key: 'cbeSettings', title: 'nav.settings', icon: 'settings', path: '/cbe/settings',
     },
   ],

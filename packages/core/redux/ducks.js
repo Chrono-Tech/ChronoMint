@@ -13,7 +13,6 @@ import ethMultisigWallet from './multisigWallet/reducer'
 import mainWallet from './mainWallet/reducer'
 import market from './market/reducer'
 import notifier from './notifier/reducer'
-import operations from './operations/reducer'
 import persistAccount from './persistAccount/reducer'
 import profile from './profile/reducer'
 import rewards from './rewards/reducer'
@@ -35,7 +34,6 @@ const coreReducers = {
   mainWallet,
   market,
   notifier,
-  operations,
   persistAccount,
   profile,
   rewards,

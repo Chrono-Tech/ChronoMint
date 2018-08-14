@@ -48,8 +48,6 @@ export { default as MultisigEthWalletModel } from './wallet/MultisigEthWalletMod
 export { default as MultisigTransactionModel } from './wallet/MultisigTransactionModel'
 export { default as MultisigWalletCollection } from './wallet/MultisigWalletCollection'
 export { default as MultisigWalletPendingTxModel } from './wallet/MultisigWalletPendingTxModel'
-export { default as OperationModel } from './OperationModel'
-export { default as OperationNoticeModel } from './notices/OperationNoticeModel'
 export { default as OwnerCollection } from './wallet/OwnerCollection'
 export { default as OwnerModel } from './wallet/OwnerModel'
 export { default as PausedModel } from './tokens/PausedModel'

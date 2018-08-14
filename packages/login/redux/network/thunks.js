@@ -61,7 +61,7 @@ export const updateSelectedAccount = () => (dispatch, getState) => {
 
   const foundAccount = walletsList
     .find((account) =>
-      account.key === selectedWallet.key
+      account.key === selectedWallet.key,
     )
 
   if (foundAccount) {
@@ -89,7 +89,7 @@ export const initAccountsSignature = () =>
     const accounts = await dispatch(PersistAccountActions.setProfilesForAccounts(walletsList))
 
     accounts.forEach((account) =>
-      dispatch(PersistAccountActions.accountUpdate(account))
+      dispatch(PersistAccountActions.accountUpdate(account)),
     )
 
     dispatch(updateSelectedAccount())
@@ -218,7 +218,7 @@ export const loginUport = () => async (dispatch) => {
 }
 
 // Need to think how to merge it with getProviderSettings method. Looks almost the same.
-export const getNetworkName = () => (dispatch,getState ) => {
+export const getNetworkName = () => (dispatch, getState) => {
   const state = getState()
   const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
   const { selectedNetworkId, selectedProviderId, isLocal } = state.get(DUCK_NETWORK)

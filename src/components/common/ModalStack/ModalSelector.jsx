@@ -25,7 +25,6 @@ import MenuAssetsManagerMoreInfo from 'layouts/partials/DrawerMainMenu/MenuAsset
 import NetworkCreateModal from '@chronobank/login-ui/components/NetworkCreateModal/NetworkCreateModal'
 import NetworkCreateModalForm from '@chronobank/login-ui/components/NetworkCreateModal/NetworkCreateModalForm/NetworkCreateModalForm'
 import NotificationContent from 'layouts/partials/NotificationContent/NotificationContent'
-import OperationsSettingsDialog from 'components/dialogs/OperationsSettingsDialog'
 import ProfileContent from 'layouts/partials/ProfileContent/ProfileContent'
 import PublishPollDialog from 'components/dialogs/PublishPollDialog/PublishPollDialog'
 import ReceiveTokenModal from 'components/dashboard/ReceiveTokenModal/ReceiveTokenModal'
@@ -56,7 +55,6 @@ export default class ModalSelector extends PureComponent {
     'NetworkCreateModal': NetworkCreateModal,
     'NetworkCreateModalForm': NetworkCreateModalForm,
     'NotificationContent': NotificationContent,
-    'OperationsSettingsDialog': OperationsSettingsDialog,
     'ProfileContent': ProfileContent,
     'PublishPollDialog': PublishPollDialog,
     'ReceiveTokenModal': ReceiveTokenModal,

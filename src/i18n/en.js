@@ -44,8 +44,6 @@ export default {
     deposits: 'Deposits',
     deposit: 'Deposit',
     cbeDashboard: 'CBE Dashboard',
-    lhOperations: 'LH Operations',
-    operations: 'Operations',
     settings: 'Settings',
     wallet: 'Wallet',
     addWallet: 'Add wallet',
@@ -131,23 +129,6 @@ export default {
     failed: 'Failed',
     remove: 'Remove',
     modify: 'Modify',
-  },
-  operations: {
-    completed: 'Completed operations',
-    settings: 'Operations settings',
-    desc: 'Description',
-    signs: 'Signatures remained',
-    sign: 'Sign',
-    revoke: 'Revoke',
-    emptyPendingList: 'No pending operations.',
-    emptyCompletedList: 'No completed operations.',
-    adminCount: 'Number of CBE',
-    requiredSigns: 'Required signatures',
-    errors: {
-      // TODO @bshevchenko: move this duplicate error to the common tx errors list
-      duplicate: 'This transaction already added to the list of operations needed multi-signatures.',
-      requiredSigns: 'The amount of signatures required should not exceed CBE count.',
-    },
   },
   settings: {
     user: {
@@ -686,19 +667,6 @@ export default {
       dividendsAccumulatedForPeriod: 'Dividends accumulated for period',
       yourApproximateRevenueForPeriod: 'Your approximate revenue for period',
     },
-    locs: {
-      PageTitle: {
-        labourOfferingCompanies: 'Labour Offering Companies',
-      },
-    },
-    operations: {
-      Operations: {
-        settings: 'Settings',
-        description: 'Description',
-        signatures: 'Signatures',
-        actions: 'Actions',
-      },
-    },
     settings: {
       Tokens: {
         tokens: 'Tokens',
@@ -717,16 +685,6 @@ export default {
       },
     },
     dialogs: {
-      OperationsSettingsDialog: {
-        operationsSettings: 'Operations Settings',
-        cancel: 'Cancel',
-        save: 'Save',
-      },
-      CBEAddressDialog: {
-        addCbeAddress: 'Add CBE Address',
-        cancel: 'Cancel',
-        addAddress: 'Add Address',
-      },
       AddTokenDialog: {
         tokenContractAddress: 'Token contract address',
         tokenName: 'Token name',
