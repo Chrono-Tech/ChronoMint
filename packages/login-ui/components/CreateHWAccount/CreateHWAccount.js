@@ -9,7 +9,6 @@ import { connect } from 'react-redux'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
-import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import styles from 'layouts/Splash/styles'
 import Button from 'components/common/ui/Button/Button'
 import { FORM_CREATE_HW_ACCOUNT } from '../constants'
@@ -23,13 +22,6 @@ import validate from './validate'
 
 import fieldStyles from './styles'
 import './CreateHWAccount.scss'
-
-function mapStateToProps (state) {
-
-  return {
-    isImportMode: state.get(DUCK_NETWORK).importAccountMode,
-  }
-}
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -45,11 +37,12 @@ function mapDispatchToProps (dispatch) {
 
 class CreateHWAccountPage extends PureComponent {
   static propTypes = {
-    isImportMode: PropTypes.bool,
+    handleSubmit: PropTypes.func,
+    error: PropTypes.string,
   }
 
   render () {
-    const { handleSubmit, pristine, valid, initialValues, error, isImportMode } = this.props
+    const { handleSubmit, error } = this.props
 
     return (
       <form styleName='form' name={FORM_CREATE_HW_ACCOUNT} onSubmit={handleSubmit}>
@@ -95,5 +88,5 @@ class CreateHWAccountPage extends PureComponent {
 }
 
 const form = reduxForm({ form: FORM_CREATE_HW_ACCOUNT, validate })(CreateHWAccountPage)
-export default connect(mapStateToProps, mapDispatchToProps)(form)
+export default connect(null, mapDispatchToProps)(form)
 

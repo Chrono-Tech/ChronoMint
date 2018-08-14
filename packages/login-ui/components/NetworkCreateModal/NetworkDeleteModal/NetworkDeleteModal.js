@@ -17,7 +17,7 @@ import {
 import {
   AccountCustomNetwork,
 } from '@chronobank/core/models/wallet/persistAccount'
-import { ModalDialog } from 'components/dialogs/ModalDialog'
+import ModalDialog from 'components/dialogs/ModalDialog'
 
 import './NetworkDeleteModal.scss'
 

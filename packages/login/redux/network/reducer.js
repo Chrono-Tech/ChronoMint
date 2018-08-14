@@ -126,16 +126,6 @@ export default (state = initialState, action) => {
         ...state,
         newAccountPrivateKey: null,
       }
-    case actions.NETWORK_SET_IMPORT_ACCOUNT_MODE:
-      return {
-        ...state,
-        importAccountMode: true,
-      }
-    case actions.NETWORK_RESET_IMPORT_ACCOUNT_MODE:
-      return {
-        ...state,
-        importAccountMode: false,
-      }
     case actions.NETWORK_SET_LOGIN_SUBMITTING:
       return {
         ...state,

@@ -354,7 +354,7 @@ export const setTx = (tx) => async (dispatch, getState) => {
   const state = getState()
   const account = getAccount(state)
   const assetsManagerDAO = daoByType('AssetsManager')(state)
-  //eslint-disable-next-line
+  // eslint-disable-next-line
   const txModel = await assetsManagerDAO.getTxModel(tx, account)
   //TODO convert tx to tx model
   // dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList: new Immutable.Map().set(txModel.id, txModel) } })

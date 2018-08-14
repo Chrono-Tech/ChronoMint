@@ -4,51 +4,37 @@
  */
 
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { stopSubmit } from 'redux-form/immutable'
 import {
   AccountEntryModel,
 } from '@chronobank/core/models/wallet/persistAccount'
 import {
-  initRecoverAccountPage,
-} from '@chronobank/login/redux/network/thunks'
-import {
-  navigateToSelectWallet,
-} from '../../redux/actions'
-import {
   FORM_RESET_PASSWORD,
 } from '../../redux/constants'
 import ResetPassword from './ResetPassword'
 
-function mapDispatchToProps (dispatch,) {
-  return {
-    initRecoverAccountPage: () => dispatch(initRecoverAccountPage()),
-    navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
-  }
-}
-
-class ResetPasswordContainer extends PureComponent {
+export default class ResetPasswordContainer extends PureComponent {
   static propTypes = {
     selectedWallet: PropTypes.instanceOf(AccountEntryModel),
-    initRecoverAccountPage: PropTypes.func,
-    navigateToSelectWallet: PropTypes.func,
+    onSubmitSuccess: PropTypes.func,
+    onSubmit: PropTypes.func,
   }
 
-  async handleSubmit (values) {
+  handleSubmit = async (values) => {
     const { onSubmit } = this.props
-    let password = values.get('password')
+    const password = values.get('password')
 
     onSubmit && await onSubmit({ password })
   }
 
-  handleSubmitSuccess (result) {
+  handleSubmitSuccess = (result) => {
     const { onSubmitSuccess } = this.props
 
     onSubmitSuccess && onSubmitSuccess(result)
   }
 
-  handleSubmitFail (errors, dispatch, submitErrors) {
+  handleSubmitFail = (errors, dispatch, submitErrors) => {
     dispatch(stopSubmit(FORM_RESET_PASSWORD, submitErrors && submitErrors.errors))
   }
 
@@ -56,11 +42,10 @@ class ResetPasswordContainer extends PureComponent {
     return (
       <ResetPassword
         selectedWallet={this.props.selectedWallet}
-        onSubmit={this.handleSubmit.bind(this)}
-        onSubmitSuccess={this.handleSubmitSuccess.bind(this)}
+        onSubmit={this.handleSubmit}
+        onSubmitSuccess={this.handleSubmitSuccess}
+        onSubmitFail={this.handleSubmitFail}
       />
     )
   }
 }
-
-export default connect(null, mapDispatchToProps)(ResetPasswordContainer)

@@ -24,7 +24,7 @@ export default class AccountSelector extends PureComponent {
       PropTypes.instanceOf(AccountEntryModel),
     ),
     navigateToSelectImportMethod: PropTypes.func,
-    initAccountsSignature: PropTypes.func,
+    navigateToCreateAccount: PropTypes.func,
   }
 
   static defaultProps = {
@@ -47,7 +47,7 @@ export default class AccountSelector extends PureComponent {
     return (
       <div styleName='wallets-list'>
         {
-          walletsList ? walletsList.map((w, i) => (
+          walletsList.map((w, i) => (
             <UserRow
               key={i}
               title={getAccountName(w)}
@@ -57,7 +57,7 @@ export default class AccountSelector extends PureComponent {
               reverseIcon
               onClick={() => onWalletSelect(w)}
             />
-          )) : null
+          ))
         }
       </div>
     )
