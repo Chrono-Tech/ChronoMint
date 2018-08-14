@@ -19,6 +19,9 @@ import './AccountName.scss'
 
 class AccountName extends PureComponent {
   static propTypes = {
+    error: PropTypes.string,
+    handleSubmit: PropTypes.func,
+    isLoading: PropTypes.bool,
     previousPage: PropTypes.func,
   }
 

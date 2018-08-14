@@ -16,6 +16,8 @@ import {
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
+import web3Converter from '@chronobank/core/utils/Web3Converter'
+import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE } from '@chronobank/login/network/MonitorService'
 import {
   DUCK_NETWORK,
 } from './constants'
@@ -40,7 +42,6 @@ import {
 export const resetAllLoginFlags = () => (dispatch) => {
   dispatch(NetworkActions.networkResetImportPrivateKey())
   dispatch(NetworkActions.networkResetImportWalletFile())
-  dispatch(NetworkActions.networkResetImportAccountMode())
   dispatch(NetworkActions.networkResetAccountRecoveryMode())
   dispatch(NetworkActions.networkResetNewMnemonic())
   dispatch(NetworkActions.networkResetNewAccountCredential())
@@ -235,10 +236,10 @@ export const getNetworkName = () => (dispatch, getState) => {
   return name
 }
 
-export const autoSelect = (network) => (dispatch, getState) => {
+export const autoSelect = () => (dispatch, getState) => {
   const { priority, preferMainnet } = getState().get(DUCK_NETWORK)
   let checkerIndex = 0
-  let checkers = []
+  const checkers = []
 
   const selectAndResolve = (networkId, providerId) => {
     dispatch(selectProvider(providerId))

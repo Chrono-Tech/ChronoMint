@@ -6,11 +6,10 @@
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { getNetworkById, LOCAL_ID, providerMap } from '@chronobank/login/network/settings'
 import web3Provider from '@chronobank/login/network/Web3Provider'
-import { networkSetNetwork } from '@chronobank/login/redux/network/actions'
+import { networkSetNetwork, addError } from '@chronobank/login/redux/network/actions'
 import Web3 from 'web3'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import EthereumEngine from '@chronobank/login/network/EthereumEngine'
-import { addError } from '@chronobank/login/redux/network/actions'
 import { TextField } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -27,7 +26,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   addError: (error) => dispatch(addError(error)),
-  selectNetwork: (networkId) => dispatch(networkSetNetwork(selectedNetworkId))
+  selectNetwork: (selectedNetworkId) => dispatch(networkSetNetwork(selectedNetworkId))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
