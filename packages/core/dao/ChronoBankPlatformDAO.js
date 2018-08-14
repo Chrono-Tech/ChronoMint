@@ -40,14 +40,6 @@ export default class ChronoBankPlatformDAO extends AbstractContractDAO {
     }
   }
 
-  handleEventsData = (data) => {
-    if (!data.event) {
-      return
-    }
-
-    this.emit(data.event, data)
-  }
-
   reissueAsset (token, value) {
     const amount = token.addDecimals(value, token)
     return this._tx(TX_REISSUE_ASSET, [web3Converter.stringToBytes(token.symbol()), amount])

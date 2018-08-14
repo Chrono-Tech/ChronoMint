@@ -93,7 +93,7 @@ export const pushEvent = (address, log) => async (dispatch, getState) => {
   }, {root: true})
 }
 
-export const loadMoreEvents = (address, blockScanLimit = 5000, logScanLimit = 25) => async (dispatch, getState) => {
+export const loadMoreEvents = (address, blockScanLimit = 5000, logScanLimit = 50) => async (dispatch, getState) => {
   address = '0x4a2d3fc1587494ca2ca9cdeb457cd94be5d96a61'
 
   console.log('loadMoreEvents: ', address, blockScanLimit, logScanLimit )
@@ -122,11 +122,11 @@ export const loadMoreEvents = (address, blockScanLimit = 5000, logScanLimit = 25
   console.log('toBlock: ', fromBlock, toBlock, topic)
 
   const [logs1, logs2, logs3] = await Promise.all(
-    [1, 2, 3].map(
+    [1, 2].map(
       (number) => web3.eth.getPastLogs({
         toBlock: `0x${Number(toBlock.number).toString(16)}`,
         fromBlock: `0x${Number(fromBlock.number).toString(16)}`,
-        topics: [0, 1, 2, 3].map((n) => number === n ? topic : null)
+        topics: [0, 1, 2].map((n) => number === n ? topic : null)
       })
     )
   )

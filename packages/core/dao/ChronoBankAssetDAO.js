@@ -35,14 +35,6 @@ export default class ChronoBankAssetDAO extends AbstractContractDAO {
     }
   }
 
-  handleEventsData (data) {
-    if (!data.event) {
-      return
-    }
-
-    this.emit(data.event, data)
-  }
-
   getPauseStatus () {
     return this.contract.methods.paused().call()
   }

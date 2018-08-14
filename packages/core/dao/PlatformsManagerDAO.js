@@ -39,14 +39,6 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
     }
   }
 
-  handleEventsData = (data) => {
-    if (!data.event) {
-      return
-    }
-
-    this.emit(data.event, data)
-  }
-
   /**
    *
    * @param state

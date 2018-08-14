@@ -57,14 +57,6 @@ export default class VotingManagerDAO extends AbstractContractDAO {
     }
   }
 
-  handleEventsData = (data) => {
-    if (!data.event) {
-      return
-    }
-
-    this.emit(data.event, data)
-  }
-
   getVoteLimit (): Promise {
     return this.contract.methods.getVoteLimit().call()
   }

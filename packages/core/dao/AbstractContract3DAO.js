@@ -149,6 +149,26 @@ export default class AbstractContractDAO extends EventEmitter {
     return web3Converter.ipfsHashToBytes32(await ipfs.put(data))
   }
 
+  handleEventsData (data) {
+    if (!data.event) {
+      return
+    }
+    //eslint-disable-next-line
+    console.log(`Event ${this.constructor.name} data: `, data.event, data)
+
+    this.emit(data.event, data)
+  }
+
+  handleEventsError (data) {
+    if (!data.event) {
+      return
+    }
+    //eslint-disable-next-line
+    console.warn(`Event ${this.constructor.name} error: `, data.event, data)
+
+    this.emit(data.event + '_error', data)
+  }
+
   /**
    * Create tx model
    * @param func

@@ -32,18 +32,6 @@ export default class PlatformTokenExtensionGatewayManagerEmitterDAO extends Abst
     }
   }
 
-  handleEventsData (data) {
-    if (!data.event) {
-      return
-    }
-
-    this.emit(data.event, data)
-  }
-
-  handleEventsError (data) {
-    this.emit(data.event + '_error', data)
-  }
-
   watchAssetCreate (callback, account) {
     this.on(TX_ASSET_CREATED, callback, { by: account })
   }

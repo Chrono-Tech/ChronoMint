@@ -12,15 +12,15 @@ const schemaFactory = () => ({
   key: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  category: PropTypes.oneOfType([PropTypes.string, null]),
+  category: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(null)]),
   date: PropTypes.instanceOf(Date).isRequired,
-  icon: PropTypes.oneOfType([PropTypes.string, null]),
+  icon: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(null)]),
   title: PropTypes.string.isRequired,
-  message: PropTypes.oneOfType([PropTypes.string, null]),
-  amountTitle: PropTypes.oneOfType([PropTypes.string, null]),
+  message: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(null)]),
+  amountTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(null)]),
   isAmountSigned: PropTypes.bool,
-  amount: PropTypes.instanceOf(Amount),
-  target: PropTypes.oneOfType([PropTypes.string, null]),
+  amount: PropTypes.oneOfType([Amount, PropTypes.instanceOf(null)]),
+  target: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(null)]),
 })
 
 export default class LogEventModel extends AbstractModel {

@@ -11,13 +11,15 @@ import { ETH } from '../dao/constants'
 export const describeEvent = (data, context) => {
   const { log, block } = data
 
-  console.log('describeEvent: ', data, data.log.topics[0], context)
+  console.log('describeEvent: ', data, data.log.topics[0], EVENT_DESCRIBERS_BY_TOPIC)
 
   const array = EVENT_DESCRIBERS_BY_TOPIC[data.log.topics[0]]
+  console.log('describeEvent: array: ', array, EVENT_DESCRIBERS_BY_TOPIC)
   if (array) {
     for (const describer of array) {
       const { input, params } = decodeLog(describer.abi, data.log)
       const desc = describer.describe(data, context, { abi: describer.abi, input, params })
+      console.log('describer.describe: ', desc)
       if (desc) {
         return desc
       }

@@ -30,3 +30,4 @@ export { default as AssetDonatorABI } from 'chronobank-smart-contracts/build/con
 export { default as ChronoBankAssetProxyABI } from 'chronobank-smart-contracts/build/contracts/ChronoBankAssetProxy.json'
 export { default as AssetsManagerABI } from 'chronobank-smart-contracts/build/contracts/AssetsManager.json'
 export { default as ChronoBankAssetABI } from 'chronobank-smart-contracts/build/contracts/ChronoBankAsset.json'
+export { default as ChronoBankPlatformEmitterABI } from 'chronobank-smart-contracts/build/contracts/ChronoBankPlatformEmitter.json'
