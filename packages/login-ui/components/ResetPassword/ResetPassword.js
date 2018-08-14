@@ -14,7 +14,7 @@ import {
   getAccountAddress,
   getAccountAvatarImg,
 } from '@chronobank/core/redux/persistAccount/utils'
-import { reduxForm, Field } from 'redux-form/immutable'
+import { reduxForm, Field, formPropTypes } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import Button from 'components/common/ui/Button/Button'
 import styles from 'layouts/Splash/styles'
@@ -28,15 +28,15 @@ import './ResetPassword.scss'
 class ResetPassword extends PureComponent {
   static propTypes = {
     selectedWallet: PropTypes.instanceOf(AccountEntryModel),
-    onSubmit: PropTypes.func,
     submitting: PropTypes.bool,
+    ...formPropTypes,
   }
 
   render () {
-    const { onSubmit, selectedWallet, submitting } = this.props
+    const { handleSubmit, selectedWallet, submitting } = this.props
 
     return (
-      <form styleName='form' name={FORM_RESET_PASSWORD} onSubmit={onSubmit}>
+      <form styleName='form' name={FORM_RESET_PASSWORD} onSubmit={handleSubmit}>
 
         <div styleName='page-title'>
           <Translate value='ResetPassword.title' />
