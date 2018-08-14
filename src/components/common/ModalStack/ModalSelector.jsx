@@ -21,10 +21,6 @@ import CopyDialog from 'components/dialogs/CopyDialog/CopyDialog'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
 import EditManagersDialog from 'components/dialogs/wallet/EditOwnersDialog/EditOwnersDialog'
 import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog/EditSignaturesDialog'
-import LOCDialog from 'components/dialogs/LOC/LOCDialog/LOCDialog'
-import LOCIssueDialog from 'components/dialogs/LOC/LOCIssueDialog/LOCIssueDialog'
-import LOCRedeemDialog from 'components/dialogs/LOC/LOCRedeemDialog/LOCRedeemDialog'
-import LOCStatusDialog from 'components/dialogs/LOC/LOCStatusDialog/LOCStatusDialog'
 import MenuAssetsManagerMoreInfo from 'layouts/partials/DrawerMainMenu/MenuAssetsManagerMoreInfo/MenuAssetsManagerMoreInfo'
 import NetworkCreateModal from '@chronobank/login-ui/components/NetworkCreateModal/NetworkCreateModal'
 import NetworkCreateModalForm from '@chronobank/login-ui/components/NetworkCreateModal/NetworkCreateModalForm/NetworkCreateModalForm'
@@ -56,10 +52,6 @@ export default class ModalSelector extends PureComponent {
     'DepositTokensModal': DepositTokensModal,
     'EditManagersDialog': EditManagersDialog,
     'EditSignaturesDialog': EditSignaturesDialog,
-    'LOCDialog': LOCDialog,
-    'LOCIssueDialog': LOCIssueDialog,
-    'LOCRedeemDialog': LOCRedeemDialog,
-    'LOCStatusDialog': LOCStatusDialog,
     'MenuAssetsManagerMoreInfo': MenuAssetsManagerMoreInfo,
     'NetworkCreateModal': NetworkCreateModal,
     'NetworkCreateModalForm': NetworkCreateModalForm,

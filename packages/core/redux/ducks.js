@@ -10,7 +10,6 @@ import assetsManager from './assetsManager/reducer'
 import dao from './daos/reducer'
 import ethereum from './ethereum/reducer'
 import ethMultisigWallet from './multisigWallet/reducer'
-import locs from './locs/reducer'
 import mainWallet from './mainWallet/reducer'
 import market from './market/reducer'
 import notifier from './notifier/reducer'
@@ -33,7 +32,6 @@ const coreReducers = {
   dao,
   ethereum,
   ethMultisigWallet,
-  locs,
   mainWallet,
   market,
   notifier,

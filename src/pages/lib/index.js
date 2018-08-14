@@ -4,7 +4,6 @@
  */
 
 import AssetsPage from './AssetsPage'
-import LOCPage from './LOCPage'
 import OperationsPage from './OperationsPage'
 import RewardsPage from './RewardsPage'
 import SettingsPage from './SettingsPage'
@@ -27,7 +26,6 @@ export {
   PollPage,
   OperationsPage,
   SettingsPage,
-  LOCPage,
   AssetsPage,
   DepositsPage,
   DepositPage,
@@ -45,7 +43,6 @@ export default {
   PollPage,
   OperationsPage,
   SettingsPage,
-  LOCPage,
   AssetsPage,
   DepositsPage,
   DepositPage,

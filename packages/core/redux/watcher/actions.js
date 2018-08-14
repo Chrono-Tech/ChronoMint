@@ -9,9 +9,7 @@ import AbstractContractDAO from '../../dao/AbstractContractDAO'
 import { TX_FRONTEND_ERROR_CODES } from '../../dao/constants'
 import TransactionErrorNoticeModel from '../../models/notices/TransactionErrorNoticeModel'
 import TxError from '../../models/TxError'
-import type TxExecModel from '../../models/TxExecModel'
 import { watchInitTokens, watchPlatformManager } from '../assetsManager/actions'
-import { watchInitLOC } from '../locs/actions'
 import { initMainWallet } from '../mainWallet/actions'
 import { watchInitMarket } from '../market/actions'
 import { notify } from '../notifier/actions'
@@ -29,6 +27,7 @@ import {
   WATCHER_TX_END,
   WATCHER,
 } from './constants'
+import TxExecModel from '../../models/TxExecModel'
 
 export const txHandlingFlow = () => (dispatch) => {
   AbstractContractDAO.txStart = async (tx: TxExecModel, estimateGas, localFeeMultiplier) => {
@@ -101,6 +100,5 @@ export const cbeWatcher = () => async (dispatch) => {
   dispatch({ type: WATCHER_CBE })
   // settings
   dispatch(watchInitCBE())
-  dispatch(watchInitLOC())
   dispatch(watchInitOperations())
 }

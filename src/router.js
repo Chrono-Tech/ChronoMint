@@ -20,7 +20,6 @@ import {
 import Splash from 'layouts/Splash/Splash'
 import {
   AssetsPage,
-  LOCPage,
   OperationsPage,
   RewardsPage,
   SettingsPage,
@@ -85,7 +84,6 @@ const router = (
         <Route path='vote-history' component={VoteHistoryPage} />
         <Route path='assets' component={AssetsPage} />
         <Route path='cbe'>
-          <Route path='locs' component={LOCPage} />
           <Route path='operations' component={OperationsPage} />
           <Route path='settings' component={SettingsPage} />
         </Route>

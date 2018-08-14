@@ -6,7 +6,6 @@
 export default {
   global: [
     { key: 'about', title: 'global.about', path: 'https://chronobank.io/' },
-    // { key: 'labourHours', title: 'global.labourHours', path: 'https://chronobank.io/#labor-hours' },
     { key: 'laborx', title: 'global.laborx', path: 'https://chronobank.io/products/laborx' },
     { key: 'team', title: 'global.team', path: 'https://chronobank.io/team' },
     { key: 'faq', title: 'global.faq', path: 'https://chronobank.io/faq' },
@@ -16,9 +15,6 @@ export default {
     {
       key: 'deposits', title: 'nav.deposits', icon: 'dashboard', path: '/deposits',
     },
-    /*{
-      key: 'exchange', title: 'nav.exchange', icon: 'compare_arrows', path: '/exchange',
-    },*/
     {
       key: 'voting', title: 'nav.voting', icon: 'done', path: '/voting',
     },
@@ -30,10 +26,6 @@ export default {
     },
   ],
   cbe: [
-    // {key: 'cbeDashboard', title: 'nav.cbeDashboard', icon: 'dashboard', path: '/cbe', disabled: true},
-    {
-      key: 'locs', title: 'nav.locs', icon: 'group', path: '/cbe/locs',
-    },
     {
       key: 'pOperations', title: 'nav.operations', icon: 'alarm', path: '/cbe/operations',
     },

@@ -31,19 +31,6 @@ export default {
     added: 'CBE %{address} was added',
     removed: 'CBE %{address} was removed',
   },
-  locs: {
-    title: 'LOC',
-    added: '\'%{name}\' was added.',
-    removed: '\'%{name}\' was removed.',
-    updated: '\'%{name}\' was updated.',
-    statusUpdated: '\'%{name}\' status was updated.',
-    issued: '\'%{name}\' issued tokens.',
-    revoked: '\'%{name}\' redeemed tokens.',
-    failed: '\'%{name}\' is failed.',
-    details: {
-      amount: 'Amount',
-    },
-  },
   polls: {
     title: 'Polls',
     isCreated: 'Poll created',
