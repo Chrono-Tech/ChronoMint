@@ -5,9 +5,6 @@
 
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import web3Utils from '@chronobank/login/network/Web3Utils'
-import {
-  selectProviderWithNetwork,
-} from '@chronobank/login/redux/network/thunks'
 import { clearErrors } from '@chronobank/login/redux/network/actions'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import {
@@ -15,7 +12,7 @@ import {
 } from '@chronobank/core/redux/persistAccount/constants'
 import { getNetworkWithProviderNames, getProviderById, isLocalNode, getNetworksSelectorGroup } from '@chronobank/login/network/settings'
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
-import { autoSelect } from '@chronobank/login/redux/network/thunks'
+import { autoSelect, selectProviderWithNetwork } from '@chronobank/login/redux/network/thunks'
 import { Popover } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -98,6 +95,7 @@ export default class CommonNetworkSelector extends PureComponent {
     selectProviderWithNetwork: PropTypes.func,
     selectedNetworkId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     selectedProviderId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    selectedProvider: PropTypes.object,
     customNetworksList: PropTypes.array,
     modalOpenAddNetwork: PropTypes.func,
   }

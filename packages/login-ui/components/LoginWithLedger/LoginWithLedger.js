@@ -6,9 +6,8 @@
 import ledgerProvider from '@chronobank/login/network/LedgerProvider'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { fetchAccount, startLedgerSync, stopLedgerSync } from '@chronobank/login/redux/ledger/actions'
-import { CircularProgress } from 'material-ui'
-import SelectField from 'material-ui/SelectField'
-import MenuItem from 'material-ui/MenuItem'
+import { CircularProgress, MenuItem } from '@material-ui/core'
+import Select from 'redux-form-material-ui/es/Select'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -104,6 +103,16 @@ class LoginLedger extends PureComponent {
     this.props.onBack()
   }
 
+  handleChange = (event, index, value) => {
+    this.setState({ value })
+    ledgerProvider.setWallet(this.props.account[index])
+    this.props.selectAccount(this.props.account[index])
+  }
+
+  _buildItem (item, index) {
+    return <MenuItem value={index} key={index} primaryText={item} />
+  }
+
   renderStates () {
     const { ledger } = this.props
 
@@ -125,16 +134,6 @@ class LoginLedger extends PureComponent {
       ))
   }
 
-  _buildItem (item, index) {
-    return <MenuItem value={index} key={index} primaryText={item} />
-  }
-
-  handleChange = (event, index, value) => {
-    this.setState({ value })
-    ledgerProvider.setWallet(this.props.account[index])
-    this.props.selectAccount(this.props.account[index])
-  }
-
   render () {
     const { isLoading, ledger, account } = this.props
 
@@ -151,7 +150,7 @@ class LoginLedger extends PureComponent {
 
         {ledger.isFetched && (
           <div styleName='account'>
-            <SelectField
+            <Select
               label='Select address'
               autoWidth
               fullWidth
@@ -161,7 +160,7 @@ class LoginLedger extends PureComponent {
               onChange={this.handleChange}
             >
               {this.props.account.map(this._buildItem)}
-            </SelectField>
+            </Select>
           </div>
         )}
 

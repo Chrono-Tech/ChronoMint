@@ -16,7 +16,7 @@ import {
 } from '../../../redux/constants'
 import validate from './validate'
 import styles from './styles'
-import scss from './NetworkCreateModalForm.scss'
+import './NetworkCreateModalForm.scss'
 
 class NetworkCreateModalForm extends PureComponent {
   static propTypes = {

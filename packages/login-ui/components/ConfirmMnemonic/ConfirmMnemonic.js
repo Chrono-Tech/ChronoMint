@@ -19,6 +19,8 @@ class ConfirmMnemonic extends Component {
   static propTypes = {
     mnemonic: PropTypes.string,
     previousPage: PropTypes.func,
+    handleSubmit: PropTypes.func,
+    change: PropTypes.func,
   }
 
   static defaultProps = {
@@ -37,6 +39,20 @@ class ConfirmMnemonic extends Component {
       confirmPhrase: [],
       currentWordsArray: wordsArray.sort((a,b) => a.word < b.word),
     }
+    // this.clearMnemonic = this.clearMnemonic.bind(this)
+    // this.clearLastWord = this.clearLastWord.bind(this)
+    this.handleClickWord = this.handleClickWord.bind(this)
+  }
+
+  handleClickWord (word) {
+    const { change } = this.props
+
+    if (!this.state.confirmPhrase.includes(word)) {
+      this.setState(
+        { confirmPhrase: this.state.confirmPhrase.concat(word) },
+        () => change('mnemonic', this.getCurrentMnemonic())
+      )
+    }
   }
 
   getCurrentMnemonic () {
@@ -50,7 +66,7 @@ class ConfirmMnemonic extends Component {
       return (
         <Button
           key={index}
-          onClick={this.onClickWord.bind(this, item)}
+          onClick={this.handleClickWord(item)}
           styleName='word'
           disabled={wordSelected}
         >
@@ -60,18 +76,7 @@ class ConfirmMnemonic extends Component {
     )
   }
 
-  onClickWord (word) {
-    const { change } = this.props
-
-    if (!this.state.confirmPhrase.includes(word)) {
-      this.setState(
-        { confirmPhrase: this.state.confirmPhrase.concat(word) },
-        () => change('mnemonic', this.getCurrentMnemonic())
-      )
-    }
-  }
-
-  clearMnemonic () {
+  clearMnemonic = () => {
     const { change } = this.props
 
     this.setState(
@@ -80,8 +85,8 @@ class ConfirmMnemonic extends Component {
     )
   }
 
-  clearLastWord () {
-    const { dispatch, change } = this.props
+  clearLastWord = () => {
+    const { change } = this.props
 
     this.setState(
       { confirmPhrase: this.state.confirmPhrase.slice(0, -1) },
@@ -123,10 +128,10 @@ class ConfirmMnemonic extends Component {
           </div>
 
           <div styleName='controlsBlock'>
-            <div styleName='control' onClick={this.clearMnemonic.bind(this)}>
+            <div styleName='control' onClick={this.clearMnemonic}>
               <Translate value='ConfirmMnemonic.startOver' />
             </div>
-            <div styleName='control' onClick={this.clearLastWord.bind(this)}>
+            <div styleName='control' onClick={this.clearLastWord}>
               <Translate value='ConfirmMnemonic.undo' />
             </div>
           </div>
