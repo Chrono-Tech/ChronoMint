@@ -39,12 +39,9 @@ class ConfirmMnemonic extends Component {
       confirmPhrase: [],
       currentWordsArray: wordsArray.sort((a,b) => a.word < b.word),
     }
-    // this.clearMnemonic = this.clearMnemonic.bind(this)
-    // this.clearLastWord = this.clearLastWord.bind(this)
-    this.handleClickWord = this.handleClickWord.bind(this)
   }
 
-  handleClickWord (word) {
+  handleClickWord = (word) => {
     const { change } = this.props
 
     if (!this.state.confirmPhrase.includes(word)) {
