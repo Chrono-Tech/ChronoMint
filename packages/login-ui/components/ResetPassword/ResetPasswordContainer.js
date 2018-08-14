@@ -21,27 +21,20 @@ export default class ResetPasswordContainer extends PureComponent {
     onSubmit: PropTypes.func,
   }
 
-  constructor (props) {
-    super(props)
-    this.handleSubmit = this.handleSubmit.bind(this)
-    this.handleSubmitSuccess = this.handleSubmitSuccess.bind(this)
-    this.handleSubmitFail = this.handleSubmitFail.bind(this)
-  }
-
-  async handleSubmit (values) {
+  handleSubmit = async (values) => {
     const { onSubmit } = this.props
     const password = values.get('password')
 
     onSubmit && await onSubmit({ password })
   }
 
-  handleSubmitSuccess (result) {
+  handleSubmitSuccess = (result) => {
     const { onSubmitSuccess } = this.props
 
     onSubmitSuccess && onSubmitSuccess(result)
   }
 
-  handleSubmitFail (errors, dispatch, submitErrors) {
+  handleSubmitFail = (errors, dispatch, submitErrors) => {
     dispatch(stopSubmit(FORM_RESET_PASSWORD, submitErrors && submitErrors.errors))
   }
 
