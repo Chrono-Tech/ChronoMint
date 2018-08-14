@@ -59,12 +59,6 @@ const initWalletsFromKeys = () => (dispatch, getState) => {
   const state = getState()
   const signer = getSigner(state)
   const providers = [
-//    bccProvider,
-//    btgProvider,
-//    ltcProvider,
-//    btcProvider,
-//    nemProvider,
-//    wavesProvider,
     ethereumProvider,
   ]
 

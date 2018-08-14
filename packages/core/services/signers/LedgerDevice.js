@@ -7,7 +7,6 @@ import TransportU2F from '@ledgerhq/hw-transport-u2f'
 import AppEth from '@ledgerhq/hw-app-eth'
 
 const DEFAULT_PATH = "44'/60'/0'"
-const DEFAULT_PATH_FACTORY = (index) => `${DEFAULT_PATH}/${index}`
 
 const LOCK = 'LedgerDevice'
 

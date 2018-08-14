@@ -3,13 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import WavesDAO from '@chronobank/core/dao/WavesDAO'
 import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
 import { showConfirmTransferModal } from '@chronobank/core-dependencies/redux/ui/actions'
-import { bccDAO, btcDAO, btgDAO, ltcDAO } from '../../dao/BitcoinDAO'
 import ERC20ManagerDAO from '../../dao/ERC20ManagerDAO'
 import ethereumDAO from '../../dao/EthereumDAO'
-import NemDAO from '../../dao/NemDAO'
 import TokenModel from '../../models/tokens/TokenModel'
 import type TransferExecModel from '../../models/TransferExecModel'
 import TransferError from '../../models/TransferError'
