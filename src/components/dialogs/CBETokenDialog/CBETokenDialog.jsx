@@ -4,26 +4,26 @@
  */
 
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
-import { I18n } from 'platform/i18n/index'
+import { I18n } from '@chronobank/core-dependencies/i18n'
 import Button from 'components/common/ui/Button/Button'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
-import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
-import { addToken, DUCK_SETTINGS_ERC20_TOKENS, formTokenLoadMetaData, getDataFromContract, modifyToken } from 'redux/settings/erc20/tokens/actions'
+import { ACCEPT_IMAGES } from '@chronobank/core/models/FileSelect/FileExtension'
+import { addToken, formTokenLoadMetaData, getDataFromContract, modifyToken } from '@chronobank/core/redux/settings/erc20/tokens/actions'
+import { DUCK_SETTINGS_ERC20_TOKENS } from '@chronobank/core/redux/settings/erc20/tokens/constants'
 import { modalsClose } from 'redux/modals/actions'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import ModalDialog from 'components/dialogs/ModalDialog'
-import TokenModel from 'models/tokens/TokenModel'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
-import TokensCollection from 'models/tokens/TokensCollection'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
+import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
+import { FORM_CBE_TOKEN } from 'components/constants'
 import validate from './validate'
 
 import '../FormDialog.scss'
-
-export const FORM_CBE_TOKEN = 'CBETokenDialog'
 
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_CBE_TOKEN)
@@ -60,11 +60,11 @@ export default class CBETokenDialog extends PureComponent {
   static propTypes = {
     isModify: PropTypes.bool,
     isFetching: PropTypes.bool,
-    handleAddressChange: PropTypes.func,
+    handleDataFromContract: PropTypes.func,
+    onSubmit: PropTypes.func,
+    tokens: PropTypes.instanceOf(TokensCollection),
     onClose: PropTypes.func,
     address: PropTypes.string,
-    tokens: PropTypes.instanceOf(TokensCollection),
-    getDataFromContract: PropTypes.func,
     ...formPropTypes,
   }
 
@@ -78,7 +78,7 @@ export default class CBETokenDialog extends PureComponent {
               name='address'
               fullWidth
               disabled={this.props.isFetching}
-              floatingLabelText={<Translate value='common.ethAddress' />}
+              label={<Translate value='common.ethAddress' />}
               onBlur={this.props.handleDataFromContract}
             />
             {
@@ -89,27 +89,27 @@ export default class CBETokenDialog extends PureComponent {
                   name='name'
                   fullWidth
                   disabled={this.props.isFetching}
-                  floatingLabelText={<Translate value='common.name' />}
+                  label={<Translate value='common.name' />}
                 />
                 <Field
                   component={TextField}
                   name='symbol'
                   fullWidth
                   disabled={this.props.isFetching}
-                  floatingLabelText={<Translate value='settings.erc20.tokens.symbol' />}
+                  label={<Translate value='settings.erc20.tokens.symbol' />}
                 />
                 <Field
                   component={TextField}
                   name='decimals'
                   fullWidth
                   disabled={this.props.isFetching}
-                  floatingLabelText={<Translate value='settings.erc20.tokens.decimals' />}
+                  label={<Translate value='settings.erc20.tokens.decimals' />}
                 />
                 <Field
                   component={TextField}
                   name='url'
                   fullWidth
-                  floatingLabelText={<Translate value='settings.erc20.tokens.url' />}
+                  label={<Translate value='settings.erc20.tokens.url' />}
                 />
                 <Field
                   component={FileSelect}

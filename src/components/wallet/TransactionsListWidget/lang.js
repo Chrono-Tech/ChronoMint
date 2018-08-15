@@ -3,11 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export const prefix = 'OwnersListWidget'
+export const prefix = 'TransactionsListWidget'
 
 export default {
   en: {
-    title: 'Wallet owners',
-    signatures: '%{s1} signatures of %{s2} owners required to perform transactions',
+    transactions: 'Transactions',
   },
 }

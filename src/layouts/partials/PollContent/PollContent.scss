@@ -1,0 +1,194 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.root {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  .head {
+    width: 587px;
+    min-height: 360px;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+    border-color: $color-grey-1;
+    background-color: $background-color-1;
+    border-radius: 2px 2px 0 0;
+    line-height: 36px;
+    font-size: 30px;
+    color: $color-white;
+    font-weight: 500;
+    position: relative;
+    margin: 0 auto;
+    .mainTitle {
+      padding: 30px;
+      border-bottom: 1px solid $color-purpule;
+    }
+    .content {
+      width: 100%;
+      min-height: 260px;
+      display: flex;
+      .layerChart {
+        position: relative;
+        width: 260px;
+        flex-grow: 0;
+        flex-shrink: 0;
+        .entryTotal {
+          left: 70px;
+          top: 107px;
+          text-align: center;
+          width: 120px;
+        }
+      }
+      .layerInfo {
+        flex-shrink: 1;
+        padding: 30px 30px 30px 0;
+        .status {
+          width: 130px;
+        }
+        .days {
+          width: 130px;
+          background-color: rgba(0, 0, 0, 0.1);
+          border-radius: 3px;
+          text-transform: uppercase;
+          padding: 9px 10px 7px;
+          font-size: 16px;
+          line-height: 19px;
+          white-space: nowrap;
+        }
+        .infoBlock {
+          padding-top: 30px;
+          font-size: 16px;
+          line-height: 22px;
+          .title {
+            color: $color-white;
+          }
+          .value {
+            color: $additionalData-color-1;
+          }
+        }
+      }
+      .entry {
+        z-index: 1;
+        position: absolute;
+        .entryTitle {
+          font-size: 29px;
+          line-height: 29px;
+          color: $color-white;
+        }
+        .entryLabel {
+          font-size: 14px;
+          line-height: 14px;
+          color: $color-white;
+        }
+      }
+      .chart {
+        @include position(absolute, 30px, auto, auto, 30px);
+        width: 200px;
+        height: 200px;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 15px;
+        border-radius: 50%;
+      }
+    }
+  }
+  .body {
+    width: 587px;
+    margin: 0 auto;
+    color: $color-primary-0;
+    background-color: $color-white;
+    font-size: 30px;
+    border-radius: 0 0 2px 2px;
+    line-height: 36px;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+    font-weight: 500;
+    padding-bottom: 30px;
+    border-width: 0;
+    .description {
+      padding: 30px 30px 10px;
+      font-size: 16px;
+      line-height: 22px;
+    }
+    .wrapper {
+      display: flex;
+      .filesList {
+        padding: 0 30px 15px;
+        flex-grow: 1;
+      }
+      .historyLinkWrapper {
+        text-align: right;
+        padding: 10px 30px 0 0;
+        width: 180px;
+        a {
+          white-space: nowrap;
+          text-decoration: none;
+          color: $border-color;
+          font-size: 16px;
+          font-weight: 700;
+        }
+      }
+    }
+    .cast {
+      background-color: transparent;
+      font-size: 20px;
+      padding: 30px;
+      border-top: $color-grey-1 solid 1px;
+      border-bottom: $color-grey-1 solid 1px;
+      line-height: 28px;
+    }
+    .entriesWrapper {
+      .entry {
+        font-size: 16px;
+        padding: 40px 30px 10px 30px;
+        line-height: 22px;
+        font-weight: 400;
+        min-height: 26px;
+        border-bottom: 1px solid $button-color-3;
+        position: relative;
+        display: flex;
+        .title {
+          flex: 1;
+          padding-right: 50px;
+        }
+        .action {
+          position: absolute;
+          flex-shrink: 0;
+          flex-grow: 0;
+          right: 30px;
+          top: 15px;
+          button {
+            width: 40px;
+            border-radius: 50%;
+            box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+            height: 40px;
+            border: none;
+            text-align: center;
+            color: $color-white;
+            font-size: 24px;
+            opacity: 0.9;
+            cursor: pointer;
+            &:disabled {
+              cursor: not-allowed;
+            }
+            &:hover {
+              opacity: 1;
+            }
+            &:focus {
+              outline: 0;
+            }
+          }
+        }
+        .progress {
+          position: absolute;
+          height: 5px;
+          bottom: 0;
+          left: 0;
+        }
+      }
+    }
+  }
+}

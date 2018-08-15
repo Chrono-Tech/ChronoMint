@@ -3,14 +3,14 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import networkService from '@chronobank/login/network/NetworkService'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { getNetworkById, LOCAL_ID, providerMap } from '@chronobank/login/network/settings'
 import web3Provider from '@chronobank/login/network/Web3Provider'
+import { networkSetNetwork, addError } from '@chronobank/login/redux/network/actions'
 import Web3 from 'web3'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import EthereumEngine from '@chronobank/login/network/EthereumEngine'
-import { addError } from '@chronobank/login/redux/network/actions'
-import { TextField } from 'material-ui'
+import { TextField } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -20,14 +20,13 @@ import BackButton from '../../components/BackButton/BackButton'
 import styles from '../../components/stylesLoginPage'
 
 const mapStateToProps = (state) => ({
-  selectedNetworkId: state.get('network').selectedNetworkId,
-  providers: state.get('network').providers,
+  selectedNetworkId: state.get(DUCK_NETWORK).selectedNetworkId,
+  providers: state.get(DUCK_NETWORK).providers,
 })
 
 const mapDispatchToProps = (dispatch) => ({
   addError: (error) => dispatch(addError(error)),
-  selectNetwork: (networkId) => networkService.selectNetwork(networkId),
-  loadAccounts: () => networkService.loadAccounts(),
+  selectNetwork: (selectedNetworkId) => dispatch(networkSetNetwork(selectedNetworkId))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -36,17 +35,16 @@ class LoginMetamask extends PureComponent {
     onBack: PropTypes.func.isRequired,
     addError: PropTypes.func,
     selectNetwork: PropTypes.func,
-    loadAccounts: PropTypes.func,
     selectedNetworkId: PropTypes.number,
     onLogin: PropTypes.func,
   }
 
   componentWillMount () {
-    const web3 = new Web3(window.web3.currentProvider)
-    web3Provider.reinit(web3, window.web3.currentProvider)
-    const engine = new EthereumEngine(null,{id: web3.version.network},null,window.web3.currentProvider,null)    
-    ethereumProvider.setEngine(engine, null) 
-    window.web3.version.getNetwork((error, currentNetworkId) => {
+    const web3 = new Web3(window.Web3.currentProvider)
+    web3Provider.reinit(web3, window.Web3.currentProvider)
+    const engine = new EthereumEngine(null,{ id: web3.version.network },null,window.Web3.currentProvider,null)
+    ethereumProvider.setEngine(engine, null)
+    window.Web3.version.getNetwork((error, currentNetworkId) => {
       if (error) {
         this.props.addError(<Translate value='LoginMetamask.wrongMetaMask' />)
       }
@@ -65,7 +63,7 @@ class LoginMetamask extends PureComponent {
           to='options'
         />
         <TextField
-          floatingLabelText={<Translate value='LoginMetamask.network' />}
+          label={<Translate value='LoginMetamask.network' />}
           value={name}
           fullWidth
           {...styles.textField}

@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import ErrorList from 'platform/ErrorList'
-import validator from 'models/validator'
+import ErrorList from '@chronobank/core-dependencies/ErrorList'
+import validator from '@chronobank/core/models/validator'
 
 export default (values, props) => {
   const amount = +values.get('amount')

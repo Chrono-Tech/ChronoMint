@@ -3,19 +3,16 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { ActionDelete, FileFileDownload } from 'material-ui/svg-icons'
-import { CircularProgress } from 'material-ui'
+import classnames from 'classnames'
+import { CircularProgress } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import globalStyles from 'styles'
-import ArbitraryNoticeModel from 'models/notices/ArbitraryNoticeModel'
-import FileModel from 'models/FileSelect/FileModel'
+import ArbitraryNoticeModel from '@chronobank/core/models/notices/ArbitraryNoticeModel'
+import FileModel from '@chronobank/core/models/FileSelect/FileModel'
 import { download } from 'redux/ui/actions'
-import { notify } from 'redux/notifier/actions'
-import formatFileSize from 'utils/formatFileSize'
-import FileIcon from './FileIcon'
+import { notify } from '@chronobank/core/redux/notifier/actions'
 
 import './FileItem.scss'
 
@@ -23,7 +20,6 @@ class FileItem extends PureComponent {
   static propTypes = {
     file: PropTypes.instanceOf(FileModel),
     onRemove: PropTypes.func.isRequired,
-    handleDownload: PropTypes.func,
   }
 
   renderErrors () {
@@ -44,24 +40,19 @@ class FileItem extends PureComponent {
     if (file.uploading()) {
       return <CircularProgress size={16} thickness={1.5} />
     }
+
+    const handleDelete = () => () => this.props.onRemove(file.id())
+
     return (
       <div styleName='actionButtons'>
-        {file.hasErrors()
-          ? null
-          : (
-            <FileFileDownload
-              styleName='buttonItem'
-              onClick={() => this.props.handleDownload(file.hash(), file.name())}
-            />
-          )
-        }
         {file.hasErrors() || file.uploaded()
           ? (
-            <ActionDelete
-              styleName='buttonItem'
-              color={file.hasErrors() ? globalStyles.colors.error : null}
-              onClick={() => this.props.onRemove(file.id())}
-            />
+            <button
+              styleName={classnames('buttonItem', { 'errorButton': !!file.hasErrors() })}
+              onClick={handleDelete()}
+            >
+              <i styleName='action-icon' className='chronobank-icon'>delete</i>
+            </button>
           )
           : null
         }
@@ -76,10 +67,9 @@ class FileItem extends PureComponent {
       <div styleName='root'>
         <div styleName='row'>
           <div styleName={file.hasErrors() ? 'contentWithError' : 'content'}>
-            <FileIcon styleName='icon' type={file.icon()} />
+            <i styleName='icon' className='chronobank-icon'>file</i>
             <div styleName='info'>
               <div styleName='name'>{file.name()}</div>
-              <div styleName='meta'>{formatFileSize(file.size())}</div>
             </div>
           </div>
           <div styleName='action'>

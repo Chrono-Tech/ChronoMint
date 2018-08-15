@@ -3,21 +3,23 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button, TokenValue } from 'components'
+import Button from 'components/common/ui/Button/Button'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 import BigNumber from 'bignumber.js'
 import classnames from 'classnames'
-import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
-import TokensCollection from 'models/tokens/TokensCollection'
+import ExchangeOrderModel from '@chronobank/core/models/exchange/ExchangeOrderModel'
+import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
-import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
-import BalancesCollection from 'models/tokens/BalancesCollection'
-import Amount from 'models/Amount'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
+import BalancesCollection from '@chronobank/core/models/tokens/BalancesCollection'
+import Amount from '@chronobank/core/models/Amount'
 import { TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
+import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
+import { FORM_CREATE_EXCHANGE } from 'components/constants'
 import './AddExchangeForm.scss'
 import TokenListSelector from './TokenListSelector'
 import validate from './validate'
@@ -26,11 +28,9 @@ export const prefix = (text) => {
   return `components.exchange.AddExchangeForm.${text}`
 }
 
-export const FORM_CREATE_EXCHANGE = 'createExchangeForm'
-
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_CREATE_EXCHANGE)
-  const balances = state.get(DUCK_MAIN_WALLET).balances()
+  const balances = getMainEthWallet(state).balances
   const tokens = state.get(DUCK_TOKENS)
   return {
     token: selector(state, 'token'),
@@ -53,9 +53,6 @@ const onSubmit = (values) => {
 export default class AddExchangeForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
-    onClose: PropTypes.func,
-    onSubmitFunc: PropTypes.func,
-    onSubmitSuccess: PropTypes.func,
     tokens: PropTypes.instanceOf(TokensCollection),
     balances: PropTypes.instanceOf(BalancesCollection),
     ...formPropTypes,
@@ -90,12 +87,12 @@ export default class AddExchangeForm extends PureComponent {
               <Field
                 component={TextField}
                 name='sellPrice'
-                floatingLabelText={<Translate value={prefix('sellPrice')} />}
+                label={<Translate value={prefix('sellPrice')} />}
               />
               <Field
                 component={TextField}
                 name='buyPrice'
-                floatingLabelText={<Translate value={prefix('buyPrice')} />}
+                label={<Translate value={prefix('buyPrice')} />}
               />
             </div>
           </div>

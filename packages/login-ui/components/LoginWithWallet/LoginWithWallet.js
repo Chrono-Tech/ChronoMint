@@ -3,41 +3,28 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { clearErrors, loading } from '@chronobank/login/redux/network/actions'
-import { CircularProgress, FlatButton, TextField } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
+import { reduxForm } from 'redux-form/immutable'
+import React, { Component } from 'react'
+import Button from 'components/common/ui/Button/Button'
 import { Translate } from 'react-redux-i18n'
-import BackButton from '../../components/BackButton/BackButton'
-import styles from '../../components/stylesLoginPage'
+import FileIcon from 'assets/img/icons/file-white.svg'
+import DeleteIcon from 'assets/img/icons/delete-white.svg'
+import SpinnerGif from 'assets/img/spinningwheel.gif'
+import CheckIcon from 'assets/img/icons/check-green.svg'
+import {
+  FORM_WALLET_UPLOAD,
+} from '../../redux/constants'
 import './LoginWithWallet.scss'
-import { Button } from '../../settings'
 
-const mapStateToProps = (state) => ({
-  isLoading: state.get('network').isLoading,
-})
-
-const mapDispatchToProps = (dispatch) => ({
-  clearErrors: () => dispatch(clearErrors()),
-  loading: (isLoading) => dispatch(loading(isLoading)),
-})
-
-@connect(mapStateToProps, mapDispatchToProps)
-class LoginWithWallet extends PureComponent {
+class LoginWithWallet extends Component {
   static propTypes = {
-    isLoading: PropTypes.bool,
-    onBack: PropTypes.func.isRequired,
-    onGenerate: PropTypes.func.isRequired,
-    onLogin: PropTypes.func.isRequired,
-    clearErrors: PropTypes.func,
-    loading: PropTypes.func,
+    previousPage: PropTypes.func,
   }
 
   constructor () {
     super()
     this.state = {
-      password: '',
       wallet: null,
       isUploaded: false,
       isUploading: false,
@@ -46,7 +33,6 @@ class LoginWithWallet extends PureComponent {
   }
 
   handleFileUploaded = (e) => {
-    this.props.clearErrors()
     this.setState({
       isUploading: false,
       isUploaded: true,
@@ -66,18 +52,6 @@ class LoginWithWallet extends PureComponent {
     const reader = new FileReader()
     reader.onload = this.handleFileUploaded
     reader.readAsText(file)
-    this.props.clearErrors()
-  }
-
-  handlePasswordChange = (target, value) => {
-    this.setState({ password: value })
-    this.props.clearErrors()
-  }
-
-  handleEnterPassword = () => {
-    this.props.clearErrors()
-    this.forceUpdate()
-    this.props.onLogin(this.state.wallet, this.state.password)
   }
 
   handleRemoveWallet = () => {
@@ -90,52 +64,65 @@ class LoginWithWallet extends PureComponent {
     this.walletFileUploadInput.value = ''
   }
 
+  async handleSubmitForm (){
+    const { onSubmit } = this.props
+    const { wallet } = this.state
+
+    await onSubmit(wallet)
+  }
+
   render () {
-    const { isLoading } = this.props
-    const {
-      password, isUploading, isUploaded, fileName,
-    } = this.state
+    const { handleSubmit, error, previousPage, submitting } = this.props
+    const { isUploading, isUploaded, fileName } = this.state
 
     return (
-      <div styleName='root'>
-        <div styleName='back'>
-          <BackButton
-            onClick={this.props.onBack}
-            to='options'
-          />
+      <form styleName='wrapper' name={FORM_WALLET_UPLOAD} onSubmit={handleSubmit(this.handleSubmitForm.bind(this))}>
+        <div styleName='page-title'>
+          <Translate value='LoginWithWallet.title' />
         </div>
-        <div>
 
+        <p styleName='description'>
+          <Translate value='LoginWithWallet.description' />
+          <br />
+          <Translate value='LoginWithWallet.descriptionExtra' />
+        </p>
+
+        <div styleName='row'>
           {!isUploaded && !isUploading && (
-            <div
-              styleName='upload'
+            <Button
+              styleName='button buttonWallet'
+              buttonType='login'
               onClick={() => this.walletFileUploadInput.click()}
             >
-              <div styleName='uploadContent'>{<Translate value='LoginWithWallet.uploadWalletFile' />}</div>
-            </div>
+              <img styleName='before-img' src={FileIcon} alt='' />
+              <span styleName='button-text'>
+                <Translate value='LoginWithWallet.uploadWalletFile' />
+              </span>
+            </Button>
           )}
 
           {isUploading && (
-            <div styleName='progress'>
-              <CircularProgress
-                size={16}
-                color={styles.colors.colorPrimary1}
-                thickness={1.5}
-              />
-              <span styleName='progressText'>{<Translate value='LoginWithWallet.uploading' />}</span>
-            </div>
+            <Button styleName='button' buttonType='login' disabled>
+              <img styleName='before-img' src={SpinnerGif} alt='' />
+              <span styleName='button-text'>
+                <Translate value='LoginWithWallet.uploading' />
+              </span>
+              <img styleName='after-img' src={DeleteIcon} alt='' />
+            </Button>
           )}
 
           {isUploaded && (
-            <div styleName='uploaded'>
-              <div styleName='walletIcon' className='material-icons'>attachment</div>
-              <div styleName='walletName'>{fileName}</div>
-              <div
-                styleName='walletRemove'
-                className='material-icons'
-                onClick={this.handleRemoveWallet}
-              >delete
-              </div>
+            <div styleName='password-wrapper'>
+              <Button styleName='button' buttonType='login' disabled>
+                <img styleName='before-img' src={CheckIcon} alt='' />
+                <span styleName='button-text'>{fileName}</span>
+                <span
+                  styleName='removeButton'
+                  onClick={() => this.handleRemoveWallet()}
+                >
+                  <img styleName='after-img' src={DeleteIcon} alt='' />
+                </span>
+              </Button>
             </div>
           )}
 
@@ -145,50 +132,29 @@ class LoginWithWallet extends PureComponent {
             type='file'
             styleName='hide'
           />
+
         </div>
-
-        <TextField
-          floatingLabelText={<Translate value='LoginWithWallet.enterPassword' />}
-          type='password'
-          value={password}
-          onChange={this.handlePasswordChange}
-          required
-          fullWidth
-          {...styles.textField}
-        />
-
-        {isLoading && (
-          <div styleName='tip'>
-            <em>{<Translate value='LoginWithWallet.bePatient' />}</em>
-          </div>
-        )}
 
         <div styleName='actions'>
-          <div styleName='action'>
-            <Button
-              flat
-              styleName='whiteButton'
-              label={<Translate value='LoginWithWallet.generateNewWallet' />}
-              fullWidth
-              disabled={isLoading}
-              onClick={this.props.onGenerate}
-            />
-          </div>
-          <div styleName='action'>
-            <Button
-              label={isLoading ? <CircularProgress
-                style={{ verticalAlign: 'middle', marginTop: -2 }}
-                size={24}
-                thickness={1.5}
-              /> : <Translate value='LoginWithWallet.login' />}
-              disabled={isLoading || !isUploaded || !password || password === ''}
-              onClick={this.handleEnterPassword}
-            />
-          </div>
+          <Button
+            styleName='submit'
+            buttonType='login'
+            type='submit'
+            isLoading={submitting}
+            disabled={!isUploaded || submitting}
+            label={<Translate value='LoginWithWallet.login' />}
+          />
+          { error ? <div styleName='error'>{error}</div> : null }
+          <Translate value='LoginWithWallet.or' />
+          <br />
+          <button onClick={previousPage} styleName='link'>
+            <Translate value='LoginWithWallet.back' />
+          </button>
         </div>
-      </div>
+
+      </form>
     )
   }
 }
 
-export default LoginWithWallet
+export default reduxForm({ form: FORM_WALLET_UPLOAD })(LoginWithWallet)

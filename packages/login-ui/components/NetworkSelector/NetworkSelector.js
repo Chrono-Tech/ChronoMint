@@ -3,11 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import networkService from '@chronobank/login/network/NetworkService'
+import { getProviderURL } from '@chronobank/core/redux/session/thunks'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import web3Utils from '@chronobank/login/network/Web3Utils'
-import { clearErrors, DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
-import { MenuItem, SelectField } from 'material-ui'
+import { clearErrors, networkSetNetwork } from '@chronobank/login/redux/network/actions'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
+import { MenuItem, Select } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -25,9 +26,9 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  selectNetwork: (network) => networkService.selectNetwork(network),
+  selectNetwork: (network) => dispatch(networkSetNetwork(network)),
   clearErrors: () => dispatch(clearErrors()),
-  getProviderURL: () => networkService.getProviderURL(),
+  getProviderURL: () => dispatch(getProviderURL()),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -45,7 +46,6 @@ export default class NetworkSelector extends PureComponent {
       bitcoin: PropTypes.string,
       nem: PropTypes.string,
     })),
-    onSelect: PropTypes.func,
     isLoading: PropTypes.bool,
   }
 
@@ -66,8 +66,8 @@ export default class NetworkSelector extends PureComponent {
   render () {
     const { selectedNetworkId, networks, isLoading } = this.props
     return (
-      <SelectField
-        floatingLabelText={<Translate value='NetworkSelector.network' />}
+      <Select
+        label={<Translate value='NetworkSelector.network' />}
         onChange={this.handleChange}
         value={selectedNetworkId}
         fullWidth
@@ -75,7 +75,7 @@ export default class NetworkSelector extends PureComponent {
         {...styles.selectField}
       >
         {networks && networks.map(this.renderNetworkItem)}
-      </SelectField>
+      </Select>
     )
   }
 }

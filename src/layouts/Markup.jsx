@@ -4,25 +4,30 @@
  */
 
 import { Translate } from 'react-redux-i18n'
-import { ModalStack, SideStack, Snackbar } from 'components'
+import Snackbar from 'components/common/Snackbar/Snackbar'
+import SideStack from 'components/common/SideStack/SideStack'
+import ModalStack from 'components/common/ModalStack/ModalStack'
 import BUTTONS from 'components/common/TopButtons/buttons'
 import menu from 'menu'
 import classnames from 'classnames'
-import { IconButton, MuiThemeProvider } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { closeNotifier, DUCK_NOTIFIER } from 'redux/notifier/actions'
-import { DUCK_SESSION } from 'redux/session/actions'
+import { closeNotifier } from '@chronobank/core/redux/notifier/actions'
+import { DUCK_NOTIFIER } from '@chronobank/core/redux/notifier/constants'
 import theme from 'styles/themes/default'
-import { DUCK_SIDES, SIDES_TOGGLE_MAIN_MENU } from 'redux/sides/actions'
-import { DUCK_MODALS } from 'redux/modals/actions'
+import { DUCK_SIDES } from 'redux/sides/constants'
+import { DUCK_MODALS } from 'redux/modals/constants'
+import MuiThemeProvider from '@material-ui/core/es/styles/MuiThemeProvider'
+import IconButton from '@material-ui/core/es/IconButton/IconButton'
+import DrawerMainMenu from 'layouts/partials/DrawerMainMenu/DrawerMainMenu'
+import HeaderPartial from 'layouts/partials/HeaderPartial/HeaderPartial'
+import { toggleMainMenu } from 'redux/sides/actions'
+
 import './Markup.scss'
-import { DrawerMainMenu, HeaderPartial } from './partials'
 
 function mapStateToProps (state) {
   return {
-    isCBE: state.get(DUCK_SESSION).isCBE,
     notice: state.get(DUCK_NOTIFIER).notice,
     mainMenuIsOpen: state.get(DUCK_SIDES).mainMenuIsOpen,
     modalStackSize: state.get(DUCK_MODALS).stack.length,
@@ -32,14 +37,13 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     handleCloseNotifier: () => dispatch(closeNotifier()),
-    onToggleMainMenu: (mainMenuIsOpen) => dispatch({ type: SIDES_TOGGLE_MAIN_MENU, mainMenuIsOpen }),
+    onToggleMainMenu: (mainMenuIsOpen) => dispatch(toggleMainMenu(mainMenuIsOpen)),
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class Markup extends PureComponent {
   static propTypes = {
-    isCBE: PropTypes.bool,
     modalStackSize: PropTypes.number,
     notice: PropTypes.instanceOf(Object),
     handleCloseNotifier: PropTypes.func,
@@ -86,9 +90,9 @@ export default class Markup extends PureComponent {
     }
 
     if (!currentPage) {
-      Object.keys(BUTTONS).map((path) => {
+      Object.keys(BUTTONS).forEach((path) => {
         if (path === pathname) {
-          currentPage = BUTTONS[ path ]
+          currentPage = BUTTONS[path]
         }
       })
     }
@@ -100,7 +104,7 @@ export default class Markup extends PureComponent {
 
   render () {
     return (
-      <MuiThemeProvider muiTheme={theme}>
+      <MuiThemeProvider theme={theme}>
         <div styleName={classnames('root', { 'noScroll': this.props.modalStackSize > 0 })}>
           <div styleName={classnames('mainMenu', { 'open': this.props.mainMenuIsOpen })}>
             <DrawerMainMenu onSelectLink={this.handleToggleMainMenuAndScroll} />

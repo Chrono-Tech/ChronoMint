@@ -3,18 +3,19 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import RewardsPeriod from 'components/dashboard/RewardsPeriod/RewardsPeriod'
-import RewardsCollection from 'models/rewards/RewardsCollection'
-import RewardsCurrentPeriodModel from 'models/rewards/RewardsCurrentPeriodModel'
+import RewardsCollection from '@chronobank/core/models/rewards/RewardsCollection'
+import RewardsCurrentPeriodModel from '@chronobank/core/models/rewards/RewardsCurrentPeriodModel'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Link } from 'react-router'
-import { DUCK_ASSETS_HOLDER } from 'redux/assetsHolder/actions'
-import { closePeriod, DUCK_REWARDS, initRewards, withdrawRevenue } from 'redux/rewards/actions'
-import { DUCK_SESSION } from 'redux/session/actions'
+import { DUCK_ASSETS_HOLDER } from '@chronobank/core/redux/assetsHolder/constants'
+import { DUCK_REWARDS } from '@chronobank/core/redux/rewards/constants'
+import { closePeriod, initRewards, withdrawRevenue } from '@chronobank/core/redux/rewards/actions'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import './RewardsContent.scss'
 
 function prefix (token) {
@@ -28,7 +29,6 @@ function mapStateToProps (state) {
   return {
     rewards,
     currentPeriod: rewards.currentPeriod(),
-    // TODO @dkchv: hardcoded to TIME
     isDeposited: state.get(DUCK_ASSETS_HOLDER).isDeposited(),
     isCBE,
   }

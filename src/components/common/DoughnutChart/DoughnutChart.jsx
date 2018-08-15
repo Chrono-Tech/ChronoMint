@@ -16,7 +16,7 @@ export default class DoughnutChart extends PureComponent {
   static propTypes = {
     weight: PropTypes.number,
     rounded: PropTypes.bool,
-    items: PropTypes.array,
+    items: PropTypes.arrayOf(PropTypes.object),
   }
 
   static defaultProps = {

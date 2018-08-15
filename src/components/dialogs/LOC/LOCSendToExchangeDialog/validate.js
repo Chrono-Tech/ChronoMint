@@ -4,8 +4,8 @@
  */
 
 import BigNumber from 'bignumber.js'
-import ErrorList from 'platform/ErrorList'
-import * as validator from 'models/validator'
+import ErrorList from '@chronobank/core-dependencies/ErrorList'
+import * as validator from '@chronobank/core/models/validator'
 
 export default (values, props) => {
   const sendAmount = values.get('sendAmount')

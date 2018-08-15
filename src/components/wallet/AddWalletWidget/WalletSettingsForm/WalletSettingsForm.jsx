@@ -11,14 +11,13 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
 import ModalDialog from 'components/dialogs/ModalDialog'
-import { setMultisigWalletName } from 'redux/multisigWallet/actions'
+import { setMultisigWalletName } from '@chronobank/core/redux/multisigWallet/actions'
 import { modalsClose } from 'redux/modals/actions'
-import { WALLET_SET_NAME } from 'redux/mainWallet/actions'
-import { PTWallet } from 'redux/wallet/types'
+import { PTWallet } from '@chronobank/core/redux/wallet/types'
+import { setWalletName } from '@chronobank/core/redux/wallets/actions'
+import { FORM_WALLET_SETTINGS } from 'components/constants'
 import { prefix } from './lang'
 import './WalletSettingsForm.scss'
-
-export const FORM_WALLET_SETTINGS = 'WalletSettingsForm'
 
 function mapStateToProps (state, ownProps) {
   return {
@@ -32,11 +31,11 @@ function mapDispatchToProps (dispatch, ownProps) {
   return {
     onSubmit: (values: Map) => {
       const name = values.get('name')
-      const { wallet, blockchain, address } = ownProps
+      const { wallet } = ownProps
       if (wallet.isMain) {
-        dispatch({ type: WALLET_SET_NAME, blockchain, address, name })
+        dispatch(setWalletName(wallet.id, name))
       } else {
-        dispatch(setMultisigWalletName(address, name))
+        dispatch(setMultisigWalletName(wallet.id, name))
       }
       dispatch(modalsClose())
     },
@@ -65,7 +64,7 @@ export default class WalletSettingsForm extends PureComponent {
                 component={TextField}
                 name='name'
                 fullWidth
-                floatingLabelText={<Translate value={`${prefix}.name`} />}
+                label={<Translate value={`${prefix}.name`} />}
               />
             </div>
           </div>

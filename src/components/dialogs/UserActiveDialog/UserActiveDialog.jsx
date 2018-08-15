@@ -9,8 +9,9 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import userMonitorService from 'user/monitorService'
 import { connect } from 'react-redux'
-import { logout } from 'redux/session/actions'
+import { logout } from '@chronobank/core/redux/session/thunks'
 import { modalsClose } from 'redux/modals/actions'
+import { stopUserMonitor } from 'redux/ui/actions'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import Timer from 'components/common/Timer/Timer'
 
@@ -23,6 +24,7 @@ function mapDispatchToProps (dispatch) {
       userMonitorService.start()
       dispatch(modalsClose())
     },
+    stopUserMonitor: () => dispatch(stopUserMonitor()),
   }
 }
 
@@ -34,7 +36,7 @@ export default class UserActiveDialog extends PureComponent {
   }
 
   componentDidMount () {
-    userMonitorService.stop()
+    this.props.stopUserMonitor()
   }
 
   handleTimeEnd = () => {
@@ -48,7 +50,7 @@ export default class UserActiveDialog extends PureComponent {
 
   render () {
     return (
-      <ModalDialog title={<Translate value='UserActiveDialog.title' />}>
+      <ModalDialog title={<Translate value='UserActiveDialog.title' />} hideCloseIcon>
         <div styleName='content'>
           <div styleName='dialogBody'>
             <Translate value='UserActiveDialog.text' />

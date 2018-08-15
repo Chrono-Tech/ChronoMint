@@ -3,23 +3,23 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button, ModalDialog } from 'components'
+import Button from 'components/common/ui/Button/Button'
+import ModalDialog from 'components/dialogs/ModalDialog'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
-import { Field, formPropTypes, reduxForm, formValueSelector } from 'redux-form/immutable'
-import { confirm2FATransfer, updatePendingTx } from 'redux/multisigWallet/actions'
+import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
+import { confirm2FATransfer, updatePendingTx } from '@chronobank/core/redux/multisigWallet/actions'
 import PropTypes from 'prop-types'
-import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
-import MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxModel'
+import MultisigWalletPendingTxModel from '@chronobank/core/models/wallet/MultisigWalletPendingTxModel'
 import Preloader from 'components/common/Preloader/Preloader'
 import { modalsClose } from 'redux/modals/actions'
+import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
+import { FORM_2FA_CONFIRM } from 'components/constants'
 import { prefix } from './lang'
 import './TwoFaConfirmModal.scss'
 import validate from './validate'
-
-export const FORM_2FA_CONFIRM = 'Form2FAConfirm'
 
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_2FA_CONFIRM)
@@ -42,7 +42,7 @@ function mapDispatchToProps (dispatch) {
 export default class TwoFaConfirmModal extends PureComponent {
   static propTypes = {
     confirm2FATransfer: PropTypes.func,
-    wallet: PropTypes.instanceOf(MultisigWalletModel),
+    wallet: PropTypes.instanceOf(MultisigEthWalletModel),
     handleUpdatePendingTx: PropTypes.func,
     tx: PropTypes.instanceOf(MultisigWalletPendingTxModel),
     ...formPropTypes,
@@ -79,7 +79,7 @@ export default class TwoFaConfirmModal extends PureComponent {
                 <Field
                   component={TextField}
                   name='confirmToken'
-                  floatingLabelText={<Translate value={`${prefix}.authCode`} />}
+                  label={<Translate value={`${prefix}.authCode`} />}
                 />
               ) : (
                 <div><Preloader /></div>

@@ -5,10 +5,10 @@
 
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import Moment from 'components/common/Moment/index'
+import Moment from 'components/common/Moment'
 import moment from 'moment'
 import BigNumber from 'bignumber.js'
-import Amount from 'models/Amount'
+import Amount from '@chronobank/core/models/Amount'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import { Translate } from 'react-redux-i18n'
 
@@ -21,7 +21,7 @@ export default class Value extends PureComponent {
   renderValue () {
     const { value, params = {} } = this.props
 
-    if (value === null && value === undefined) { // null/undefined
+    if (value === null || value === undefined) { // null/undefined
       return ''
     }
 

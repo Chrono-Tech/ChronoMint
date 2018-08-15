@@ -3,9 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import networkService from '@chronobank/login/network/NetworkService'
 import { clearErrors } from '@chronobank/login/redux/network/actions'
-import { MenuItem, SelectField } from 'material-ui'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
+import { selectProvider } from '@chronobank/core/redux/session/thunks'
+import { MenuItem, SelectField } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -13,7 +14,7 @@ import { Translate } from 'react-redux-i18n'
 import styles from '../../components/stylesLoginPage'
 
 const mapStateToProps = (state) => {
-  const network = state.get('network')
+  const network = state.get(DUCK_NETWORK)
   return {
     selectedProviderId: network.selectedProviderId,
     providers: network.providers,
@@ -22,7 +23,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  selectProvider: (providerId) => networkService.selectProvider(providerId),
+  selectProvider: (providerId) => dispatch(selectProvider(providerId)),
   clearErrors: () => dispatch(clearErrors()),
 })
 
@@ -46,7 +47,7 @@ class ProviderSelector extends PureComponent {
 
     return (
       <SelectField
-        floatingLabelText={<Translate value='ProviderSelector.provider' />}
+        label={<Translate value='ProviderSelector.provider' />}
         onChange={this.handleChange}
         value={selectedProviderId}
         fullWidth

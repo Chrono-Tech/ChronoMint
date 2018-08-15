@@ -35,17 +35,16 @@ export class WavesEngine {
       case 'ISSUE' :
         return this._describeIssueTransaction(params)
       case 'TRANSFER' :
-        return this._describeTransferTransaction(params.to,params.amount,params.asset)
+        return this._describeTransferTransaction(params.to, params.amount, params.asset)
       default:
-        return null;
+        return null
     }
   }
-
 
   createTransaction (type, params) {
     const data = this.describeTransaction(type, params)
 
-    const transferTransaction = new this._Transactions.TransferTransaction(data);
+    const transferTransaction = new this._Transactions.TransferTransaction(data)
 
     return transferTransaction.prepareForAPI(this.getPrivateKey()).then((preparedData) => {
       return preparedData
@@ -65,7 +64,7 @@ export class WavesEngine {
       reissuable: reissuable,
 
       fee: 100000000,
-      timestamp: Date.now()
+      timestamp: Date.now(),
 
     }
     return issueData
@@ -73,7 +72,7 @@ export class WavesEngine {
 
   _describeTransferTransaction (to, amount: BigNumber, asset) {
     const transferData = {
-      senderPublicKey: this.getPublicKey(), 
+      senderPublicKey: this.getPublicKey(),
       // An arbitrary address; mine, in this example
       recipient: to,
 
@@ -90,7 +89,7 @@ export class WavesEngine {
       // 140 bytes of data (it's allowed to use Uint8Array here)
       attachment: '',
 
-      timestamp: Date.now()
+      timestamp: Date.now(),
 
     }
     return transferData

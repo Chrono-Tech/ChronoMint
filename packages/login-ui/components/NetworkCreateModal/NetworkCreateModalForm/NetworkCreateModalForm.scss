@@ -1,0 +1,102 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.form {
+  margin:0 auto;
+  width: 350px;
+  padding: 20px 30px 0;
+
+  @include xs-only {
+    width: 100%;
+    padding: 0 20px;
+  }
+}
+
+.title {
+  color: $color-white;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 42px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.actions {
+  text-align: center;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button {
+  text-align: center;
+  margin-bottom: 30px;
+  display: inline-block;
+
+  button {
+    min-width: 0;
+  }
+}
+
+.form-error {
+  font-size: 12px;
+  line-height: 12px;
+  text-align:center;
+  color: $error-color;
+  margin-bottom: 10px;
+}
+
+.deleteIcon {
+  font-size: 26px;
+}
+
+.buttonAdd {
+  button {
+    padding: 0 40px;
+
+  }
+}
+
+.buttonCancel {
+  margin-right: 10px;
+
+  button {
+    font-size: 16px;
+  }
+}
+
+.buttonDelete {
+  margin-right: 25px;
+
+  button {
+    padding: 0;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+  }
+}
+
+.label {
+  color: $additionalData-color-1;
+  top: 28px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  text-align: left;
+  transform-origin: left;
+}
+
+.field {
+  margin-bottom: 20px;
+}
+
+.textField {
+  color: $additionalData-color-1;
+  text-align: left;
+}

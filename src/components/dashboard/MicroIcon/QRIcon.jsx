@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Popover } from 'material-ui'
+import { Popover } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import QRCode from 'qrcode'
 import React, { PureComponent } from 'react'
@@ -69,12 +69,11 @@ export default class QRIcon extends PureComponent {
 
         </span>
         <Popover
-          zDepth={3}
           open={this.state.isQROpen}
           anchorEl={this.state.qrAnchorEl}
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-          onRequestClose={() => this.handleQRClose()}
+          onClose={this.handleQRClose.bind(this)}
+          style={{ zIndex: 3000 }}
         >
           {this.renderQR()}
         </Popover>

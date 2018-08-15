@@ -1,0 +1,22 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import '~styles/partials/mixins';
+@import '~styles/partials/variables';
+
+.root {
+
+}
+
+.content {
+  padding: 30px;
+  max-width: 400px;
+  .actionsWrapper {
+    margin-top: 30px;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+

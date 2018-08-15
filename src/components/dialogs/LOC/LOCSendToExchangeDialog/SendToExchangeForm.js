@@ -5,12 +5,12 @@
 
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import Amount from 'models/Amount'
+import Amount from '@chronobank/core/models/Amount'
 import validate from './validate'
 
 import './SendToExchangeForm.scss'
@@ -39,7 +39,7 @@ class SendToExchangeForm extends PureComponent {
         <Field
           component={TextField}
           name='sendAmount'
-          floatingLabelText='Amount to send'
+          label='Amount to send'
         />
 
         <div styleName='footer'>

@@ -32,6 +32,7 @@ export default class AddTokenDialog extends PureComponent {
   }
 
   render () {
+
     return (
       <ModalDialog title={<Translate value={prefix('dialogTitle')} />}>
         <AddTokenForm

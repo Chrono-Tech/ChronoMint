@@ -11,17 +11,15 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import iconSvg from 'assets/img/icons/portfolio-white.svg'
-import { getUserTokens } from 'redux/assetsManager/selectors'
-import TokenModel from 'models/tokens/TokenModel'
-import { IconButton } from 'material-ui'
-import { IPFSImage } from 'components'
-import { SIDES_TOGGLE_MAIN_MENU } from 'redux/sides/actions'
+import { getUserTokens } from '@chronobank/core/redux/assetsManager/selectors'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
+import { IconButton } from '@material-ui/core'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import { toggleMainMenu } from 'redux/sides/actions'
 import './MenuAssetsManagerMoreInfo.scss'
 import { prefix } from './lang'
 
-export const MENU_ASSETS_MANAGER_PANEL_KEY = 'menuAssetsManagerPanelKey'
-
-function mapStateToProps (state, ownProps) {
+function mapStateToProps (state) {
   return {
     assets: getUserTokens()(state),
   }
@@ -29,7 +27,7 @@ function mapStateToProps (state, ownProps) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    onMainMenuClose: () => dispatch({ type: SIDES_TOGGLE_MAIN_MENU, mainMenuIsOpen: false }),
+    onMainMenuClose: () => dispatch(toggleMainMenu(false)),
   }
 }
 
@@ -53,7 +51,7 @@ export default class MenuAssetsManagerMoreInfo extends PureComponent {
   }
 
   renderPlatform = (platformAddress, key) => {
-    const assetsList = this.props.assets[ platformAddress ]
+    const assetsList = this.props.assets[platformAddress]
     return (
       <div styleName='walletIrem' key={platformAddress}>
         <Link to='/assets' href styleName='walletTitle' onClick={this.handleSelectLink}>

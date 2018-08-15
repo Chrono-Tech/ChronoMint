@@ -3,11 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import networkService from './NetworkService'
 import AbstractProvider from './AbstractProvider'
 import EthereumEngine from './EthereumEngine'
 import selectEthereumNode from './EthereumNode'
-import web3Provider from './Web3Provider'
 
 export class EthereumProvider extends AbstractProvider {
   constructor () {
@@ -20,7 +18,7 @@ export class EthereumProvider extends AbstractProvider {
   setEngine (ethEngine: EthereumEngine, nemEngine, wavesEngine) {
     if (this._isInited) {
       this.unsubscribe(this._engine, this._nemEngine)
-      this._isInited = false;
+      this._isInited = false
     }
     this._engine = ethEngine
     this._nemEngine = nemEngine
@@ -50,13 +48,31 @@ export class EthereumProvider extends AbstractProvider {
     return node
   }
 
+  subscribeNewWallet (address) {
+    const node = this._selectNode(this._engine)
+    node.subscribeNewWallet(address)
+  }
+
   getTransactionsList (address, skip, offset) {
     const node = this._selectNode(this._engine)
     return node.getTransactionsList(address, this._id, skip, offset)
   }
 
-  getPrivateKey () {
-    return this._engine ? this._engine.getPrivateKey() : null
+  getPrivateKey (address) {
+    if (address) {
+      let pk = null
+      this._engine
+        // eslint-disable-next-line no-underscore-dangle
+        ? this._engine._engine.wallets.map((wallet) => {
+          if (wallet.getAddressString() === address) {
+            pk = wallet.privKey
+          }
+        })
+        : null
+      return pk
+    } else {
+      return this._engine ? this._engine.getPrivateKey() : null
+    }
   }
 
   getPublicKey () {
@@ -82,24 +98,6 @@ export class EthereumProvider extends AbstractProvider {
     node.on(event, callback)
   }
 
-  getWallet () {
-    return this._engine ? this._engine._wallet : null
-  }
-
-  getNemEngine () {
-    return this._nemEngine
-  }
-
-  addNewEthWallet (num_addresses) {
-    const { network, url } = networkService.getProviderSettings()
-    const wallet = this.getWallet()
-    const newEngine = new EthereumEngine(wallet, network, url, null, num_addresses)
-
-    this.setEngine(newEngine, ethereumProvider.getNemEngine())
-
-    web3Provider.pushWallet(num_addresses)
-  }
-
   get2FAEncodedKey (callback) {
     const node = this._selectNode(this._engine)
     return node.get2FAEncodedKey(this._engine, callback)
@@ -118,6 +116,19 @@ export class EthereumProvider extends AbstractProvider {
   checkConfirm2FAtx (txAddress, callback) {
     const node = this._selectNode(this._engine)
     return node.checkConfirm2FAtx(txAddress, callback)
+  }
+
+  getEngine () {
+    return this._engine
+  }
+
+  async getAccountBalances (address) {
+    const node = this._selectNode(this._engine)
+    const data = await node.getAddressInfo(address || this._engine.getAddress())
+    return {
+      balance: data.balance,
+      tokens: data.erc20token,
+    }
   }
 }
 

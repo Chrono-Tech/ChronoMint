@@ -5,16 +5,16 @@
 
 import { Field, reduxForm } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { I18n, Translate } from 'react-redux-i18n'
-import LOCModel from 'models/LOCModel'
+import LOCModel from '@chronobank/core/models/LOCModel'
 import validate from './validate'
 
 import './LOCRedeemForm.scss'
 
-export const LOC_REDEEM_FORM_NAME = 'LOCRedeemForm'
+const LOC_REDEEM_FORM_NAME = 'LOCRedeemForm'
 
 const onSubmit = (values) => +values.get('amount')
 
@@ -42,7 +42,7 @@ class LOCRedeemForm extends PureComponent {
           component={TextField}
           name='amount'
           type='number'
-          floatingLabelText={<Translate value='locs.forms.amountToBeS' action={actionToken} />}
+          label={<Translate value='locs.forms.amountToBeS' action={actionToken} />}
         />
 
         <div styleName='footer'>

@@ -4,23 +4,22 @@
  */
 
 import { en as Login } from '@chronobank/login-ui/lang'
-import { en as components } from 'components/lang'
-import * as assetDonator from 'dao/AssetDonatorDAO'
-import * as erc20 from 'dao/ERC20DAO'
-import * as erc20Manager from 'dao/ERC20ManagerDAO'
-import * as eth from 'dao/EthereumDAO'
-import * as bitcoin from '@chronobank/login/network/BitcoinProvider'
-import * as exchange from 'dao/ExchangeDAO'
-import * as loc from 'dao/LOCManagerDAO'
-import * as operations from 'dao/PendingManagerDAO'
-import * as platformsManager from 'dao/PlatformsManagerDAO'
-import * as pollInterface from 'dao/PollInterfaceDAO'
-import * as rewards from 'dao/RewardsDAO'
-import * as time from 'dao/AssetHolderDAO'
-import * as user from 'dao/UserManagerDAO'
-import { en as layouts } from 'layouts/lang'
-import * as votingManager from 'dao/VotingManagerDAO'
-import * as chronoBankAsset from 'dao/ChronoBankAssetDAO'
+import components from 'components/lang'
+import * as assetDonator from '@chronobank/core/dao/constants/AssetDonatorDAO'
+import * as erc20 from '@chronobank/core/dao/constants/ERC20DAO'
+import * as erc20Manager from '@chronobank/core/dao/constants/ERC20ManagerDAO'
+import * as eth from '@chronobank/core/dao/constants/EthereumDAO'
+import * as exchange from '@chronobank/core/dao/constants/ExchangeDAO'
+import * as loc from '@chronobank/core/dao/constants/LOCManagerDAO'
+import * as operations from '@chronobank/core/dao/constants/PendingManagerDAO'
+import * as platformsManager from '@chronobank/core/dao/constants/PlatformsManagerDAO'
+import * as pollInterface from '@chronobank/core/dao/constants/PollInterfaceDAO'
+import * as rewards from '@chronobank/core/dao/constants/RewardsDAO'
+import * as time from '@chronobank/core/dao/constants/AssetHolderDAO'
+import * as user from '@chronobank/core/dao/constants/UserManagerDAO'
+import layouts from 'layouts/lang'
+import * as votingManager from '@chronobank/core/dao/constants/VotingManagerDAO'
+import * as chronoBankAsset from '@chronobank/core/dao/constants/ChronoBankAssetDAO'
 
 export default {
   copyright: 'Copyright © 2018 LaborX Pty Ltd. All Rights Reserved.',
@@ -32,8 +31,8 @@ export default {
   false: 'no',
   tokenNotAvailable: 'Token Not Available',
   ...Login,
-  ...components,
-  layouts,
+  ...components.en,
+  layouts: layouts.en,
   global: {
     about: 'About',
     labourHours: 'Labour—Hours',
@@ -55,6 +54,7 @@ export default {
     addWallet: 'Add wallet',
     exchange: 'Exchange',
     voting: 'Voting',
+    newPoll: 'Create new poll',
     rewards: 'Bonuses',
     assets: 'My assets',
     profile: 'Profile',
@@ -68,6 +68,7 @@ export default {
     pageNotFound: 'Page not found',
     backToMain: 'Back to main page',
     twoFa: 'Enable 2FA',
+    poll: 'Poll',
   },
   common: {
     name: 'Name',
@@ -77,7 +78,7 @@ export default {
   },
   wallet: {
     modeAdvanced: 'Advanced',
-    modeSimple: 'Simple',
+    modeSimple: 'Basic',
     templateName: 'Template name',
     satPerByte: 'SAT / byte',
     gweiPerGas: 'GWEI 0 / gas',
@@ -241,13 +242,16 @@ export default {
   },
   notices: require('./en-notices'),
   tx: {
+    from: 'From',
+    to: 'To',
     transactions: 'Transactions',
     blockNumber: 'Block Number',
     noTransactions: 'No transactions',
     confirm: 'Confirm Transaction',
     fee: 'Fee',
-    balanceAfter: 'Balance after',
+    balanceAfter: '%{symbol} balance after',
     feeLeft: 'Transaction fee left',
+    notEnough: 'Not enough %{symbol}',
     TokenManagementInterface: {
       createAssetWithoutFee: {
         title: 'Confirm create token',
@@ -307,6 +311,7 @@ export default {
     Ethereum: {
       [eth.TX_TRANSFER]: {
         title: 'Transfer ETH',
+        to: 'Address to',
       },
     },
     /* eslint-disable global-require */
@@ -370,6 +375,7 @@ export default {
     AssetDonator: {
       [assetDonator.TX_REQUIRE_TIME]: {
         title: 'Require TIME',
+        donation: 'Donation',
       },
     },
     PlatformsManager: {
@@ -448,6 +454,7 @@ export default {
         title: 'Transfer tokens',
         account: 'Account',
         amount: 'Amount',
+        to: 'Address to',
       },
     },
     ExchangeManager: {
@@ -472,6 +479,18 @@ export default {
     Wallet: {
       transfer: {
         title: 'Transfer',
+        value: 'Value',
+        to: 'To',
+        symbol: 'Symbol',
+      },
+      confirm: {
+        title: 'Confirm tx',
+        value: 'Value',
+        to: 'To',
+        symbol: 'Symbol',
+      },
+      revoke: {
+        title: 'Revoke tx',
         value: 'Value',
         to: 'To',
         symbol: 'Symbol',
@@ -529,6 +548,10 @@ export default {
     WalletsManager: {
       'createWallet': {
         title: 'Create multisignature wallet',
+        owners: 'Owners',
+        requiredSignatures: 'Required signatures',
+        releaseTime: 'Release time',
+        isTimeLocked: 'Is timeLocked',
       },
       'create2FAWallet': {
         title: 'Create 2FA wallet',
@@ -551,13 +574,13 @@ export default {
     lowerThanOrEqual: 'Should be lower or equal than %{limit}',
     moreThan: 'Should be more than %{limit}',
     moreThanOrEqual: 'Should be more or equal than %{limit}',
+    countMoreThan: 'Count should be more than %{limit}',
+    countMoreThanOrEqual: 'Count should be more or equal than %{limit}',
     invalidLatinString: 'String must have only Latin characters (A-z)',
     mustBeUnique: 'Value must be unique',
     invalidConfirm2FACode: 'Should be a 6-digit code',
-
-    // TODO @bshevchenko: errors domain only for common cases. Move out entries below to the appropriate domains
     cantSentToYourself: 'Can\'t send tokens to yourself',
-    notEnoughTokens: 'Not enough tokens',
+    notTokens: 'The wallet has insufficient funds',
     platformNotEnoughTokens: 'Platform doesn\'t have enough tokens to sell you',
     invalidCurrencyNumber: 'Should have maximum %{decimals} decimal places',
     greaterThanAllowed: 'Amount is greater than allowed',
@@ -720,7 +743,7 @@ export default {
     errors: {
       // TODO @dkchv: add errors
     },
-    addAttachments: 'Add attachments',
+    attachNew: 'Attach new',
     selectFile: 'Select File',
     filesLimit: '%{files} of %{limit}',
   },
@@ -804,26 +827,6 @@ export default {
       dividendsAccumulatedForPeriod: 'Dividends accumulated for period',
       yourApproximateRevenueForPeriod: 'Your approximate revenue for period',
     },
-    Poll: {
-      new: 'New',
-      ongoing: 'Ongoing',
-      daysLeft: 'days left',
-      daysLeft_1: 'day left',
-      finished: 'Finished',
-      timeHoldersAlreadyVoted: 'percent of TIME received',
-      no: 'No',
-      requiredVotes: 'Required TIME',
-      receivedVotes: 'Received TIME',
-      variants: 'Variants',
-      documents: 'Documents',
-      remove: 'Remove',
-      details: 'Details',
-      endPoll: 'End Poll',
-      activate: 'Activate',
-      vote: 'Vote',
-      published: 'Published',
-      endDate: 'End Date',
-    },
     locs: {
       PageTitle: {
         labourOfferingCompanies: 'Labour Offering Companies',
@@ -865,48 +868,6 @@ export default {
         cancel: 'Cancel',
         addAddress: 'Add Address',
       },
-      PollEditDialog: {
-        editPoll: 'Edit Poll',
-        newPoll: 'New Poll',
-        pollTitle: 'Poll title',
-        pollDescription: 'Poll description',
-        voteLimit: 'Vote Limit in TIME per option',
-        finishedDate: 'Finished date',
-        addAttachments: 'Add Attachments',
-        option: 'Option',
-        optionIndex: 'Option #%{index}',
-        updatePoll: 'Update Poll',
-        createPoll: 'Create Poll',
-        addOption: 'Add Option',
-      },
-      PollDetailsDialog: {
-        published: 'Published',
-        finished: 'Finished',
-        no: 'No',
-        endDate: 'End date',
-        requiredVotes: 'Required TIME',
-        receivedVotes: 'Received TIME',
-        variants: 'Variants',
-        documents: 'Documents',
-        ongoing: 'Ongoing',
-        new: 'New',
-        timeHoldersAlreadyVoted: 'percent of TIME received',
-        optionNumber: 'Option #%{number}',
-        pollOptions: 'Poll options',
-        idxNumber: '#%{number}',
-      },
-      AddCurrencyDialog: {
-        addToken: 'Add Token',
-        howToAddYourToken: 'How to add your token? It\'s easy!',
-        youCanConnectToYourPersonalWallet: 'You can connect to your personal wallet one of the already added tokens or add any other ERC20 token.',
-        clickOnThePlusButtonAbove: 'Click on the + plus button above.',
-        fillTheForm: 'Fill the form, check values and press SAVE.',
-        waitUntilYourToken: 'Wait until your token will be added (mined), select it in the list on the left and press SAVE.',
-        allTokens: 'All tokens',
-        save: 'Save',
-        close: 'Close',
-        tokens: 'Tokens',
-      },
       AddTokenDialog: {
         tokenContractAddress: 'Token contract address',
         tokenName: 'Token name',
@@ -937,6 +898,11 @@ export default {
   },
   topButtons: {
     addDeposit: 'Add deposit',
-    addWallet: 'Add wallet',
+    addWallet: 'Add a wallet',
+    addPoll: 'Add a Poll',
+    publish: 'Publish',
+    endPoll: 'End poll',
+    addToken: 'Add a token',
+    voteHistory: 'Changes History',
   },
 }

@@ -99,6 +99,8 @@
         line-height: 17px;
         font-weight: 500;
         .no-transactions {
+          font-size: 14px;
+          color: $color-grey-2;
         }
         .txs-loading {
         }

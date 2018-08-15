@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import BigNumber from 'bignumber.js'
 import WavesAbstractNode, { WavesBalance, WavesTx } from './WavesAbstractNode'
 
 export default class WavesMiddlewareNode extends WavesAbstractNode {

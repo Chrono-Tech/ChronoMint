@@ -5,15 +5,15 @@
 
 import BigNumber from 'bignumber.js'
 import Preloader from 'components/common/Preloader/Preloader'
-import Amount from 'models/Amount'
-import TokenModel from 'models/tokens/TokenModel'
-import TokensCollection from 'models/tokens/TokensCollection'
+import Amount from '@chronobank/core/models/Amount'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
+import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { DUCK_MARKET } from 'redux/market/action'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
-import { integerWithDelimiter } from 'utils/formatter'
+import { DUCK_MARKET } from '@chronobank/core/redux/market/constants'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
+import { integerWithDelimiter } from '@chronobank/core-dependencies/utils/formatter'
 
 import './TokenValue.scss'
 
@@ -34,7 +34,6 @@ class TokenValue extends PureComponent {
     precision: PropTypes.number,
     tokens: PropTypes.instanceOf(TokensCollection),
     symbol: PropTypes.string,
-    className: PropTypes.string,
     prefix: PropTypes.string,
     isInvert: PropTypes.bool,
     prices: PropTypes.object,
@@ -44,7 +43,6 @@ class TokenValue extends PureComponent {
     renderOnlyPrice: PropTypes.bool,
     onlyPriceValue: PropTypes.bool,
     noRenderSymbol: PropTypes.bool,
-    bold: PropTypes.bool,
     style: PropTypes.object,
   }
 
@@ -77,7 +75,7 @@ class TokenValue extends PureComponent {
       return valueInCurrency
     }
 
-    return <span styleName='price'>{`≈USD ${valueInCurrency}`}</span>
+    return <span styleName='price'>{`USD ${valueInCurrency}`}</span>
   }
 
   render () {

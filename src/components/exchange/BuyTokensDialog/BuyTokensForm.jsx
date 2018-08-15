@@ -3,25 +3,26 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button, IPFSImage } from 'components'
+import Button from 'components/common/ui/Button/Button'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import iconTokenDefaultSVG from 'assets/img/avaToken.svg'
-import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import BigNumber from 'bignumber.js'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import Immutable from 'immutable'
-import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
-import TokensCollection from 'models/tokens/TokensCollection'
+import ExchangeOrderModel from '@chronobank/core/models/exchange/ExchangeOrderModel'
+import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import { change, Field, formPropTypes, formValueSelector, isInvalid, reduxForm } from 'redux-form/immutable'
-import { approveTokensForExchange, getTokensAllowance } from 'redux/exchange/actions'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
-import BalancesCollection from 'models/tokens/BalancesCollection'
-import TokenModel from 'models/tokens/TokenModel'
-import Amount from 'models/Amount'
+import { approveTokensForExchange, getTokensAllowance } from '@chronobank/core/redux/exchange/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
+import BalancesCollection from '@chronobank/core/models/tokens/BalancesCollection'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
+import Amount from '@chronobank/core/models/Amount'
+import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
+import { FORM_EXCHANGE_BUY_TOKENS } from 'components/constants'
 import './BuyTokensDialog.scss'
 import validate from './validate'
 
@@ -29,13 +30,12 @@ function prefix (token) {
   return `components.exchange.BuyTokensDialog.${token}`
 }
 
-export const FORM_EXCHANGE_BUY_TOKENS = 'ExchangeTokensForm'
-
 function mapStateToProps (state) {
   const tokens = state.get(DUCK_TOKENS)
   const selector = formValueSelector(FORM_EXCHANGE_BUY_TOKENS)
   const invalidSelector = isInvalid(FORM_EXCHANGE_BUY_TOKENS)
-  const wallet = state.get(DUCK_MAIN_WALLET)
+  const wallet = getMainEthWallet(state)
+
   return {
     tokens,
     balances: wallet.balances(),
@@ -56,7 +56,6 @@ export default class BuyTokensForm extends React.PureComponent {
   static propTypes = {
     exchangeToken: PropTypes.instanceOf(TokenModel),
     exchange: PropTypes.instanceOf(ExchangeOrderModel),
-    filter: PropTypes.instanceOf(Immutable.Map),
     isBuy: PropTypes.bool,
     tokens: PropTypes.instanceOf(TokensCollection),
     balances: PropTypes.instanceOf(BalancesCollection),
@@ -165,7 +164,7 @@ export default class BuyTokensForm extends React.PureComponent {
                       component={TextField}
                       name='buy'
                       fullWidth
-                      floatingLabelText={(
+                      label={(
                         <span><Translate value={prefix('amountIn')} />&nbsp;{exchangeToken.symbol()}</span>)}
                       onChange={this.handleSetPrice}
                     />
@@ -185,7 +184,7 @@ export default class BuyTokensForm extends React.PureComponent {
                       component={TextField}
                       name='sell'
                       fullWidth
-                      floatingLabelText={(
+                      label={(
                         <span><Translate value={prefix('amountIn')} />&nbsp;{ethToken.symbol()}</span>)}
                       onChange={this.handleSetPrice}
                     />

@@ -3,12 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { ExchangesTable, ExchangeWidget } from 'components'
-import { Paper } from 'material-ui'
+import { Paper } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { watchExchanges } from 'redux/exchange/actions'
+import ExchangeWidget from 'components/exchange/ExchangeWidget/ExchangeWidget'
+import ExchangesTable from 'components/exchange/ExchangesTable/ExchangesTable'
+import { watchExchanges } from '@chronobank/core/redux/exchange/actions'
 import './ExchangeContent.scss'
 
 const mapDispatchToProps = (dispatch) => ({

@@ -1,0 +1,22 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.buttonWithIcon {
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 21px;
+    i {
+      margin-left: 5px;
+      font-size: 21px;
+    }
+    span {
+      margin-left: 10px;
+    }
+  }
+}

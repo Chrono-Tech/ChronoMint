@@ -1,0 +1,109 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+.wrapper {
+  margin:0 auto 20px;
+  width: 350px;
+
+  @include xs-only {
+    width: 100%;
+    padding: 0 20px;
+  }
+}
+
+.page-title {
+  color: $color-white;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 42px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.account-item {
+  padding: 20px 12px 20px 30px;
+  font-size: 14px;
+  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  min-height: 82px;
+  border-bottom: 1px solid $color-grey-1;
+  background: $color-white;
+
+
+  &:hover, &.providerItemActive {
+    background: $color-grey-3;
+  }
+}
+
+.account-item-content {
+  color: $color-primary-3;
+  text-overflow: ellipsis;
+  min-width: 0;
+  word-wrap: break-word;
+  margin-right: 10px;
+}
+
+.account-item-icon {
+  display: flex;
+  align-items: center;
+  color: $color-grey-7;
+  font-size: 22px;
+}
+
+.root {
+}
+
+.user-row {
+  border-top: 1px solid $color-purpule;
+}
+
+.field {
+  margin-bottom: 50px;
+}
+
+.button {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.actions {
+  text-align: center;
+  margin-bottom: 45px;
+}
+
+.page-title {
+  color: $color-white;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 42px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.form {
+  margin:0 auto;
+  width: 350px;
+
+  @include xs-only {
+    width: 100%;
+    padding: 0 20px;
+  }
+}
+
+.form-error {
+  font-size: 12px;
+  line-height: 12px;
+  text-align:center;
+  color: $error-color;
+  margin-bottom: 10px;
+}
+.spinner-wrapper {
+  display: flex;
+  justify-content: center;
+}

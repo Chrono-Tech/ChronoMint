@@ -4,7 +4,6 @@
  */
 
 import * as WavesAPI from '@waves/waves-api'
-import bip39 from 'bip39'
 
 export default class WavesWallet {
   constructor (seed, keyPair, network) {

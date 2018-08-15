@@ -3,15 +3,15 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
-import TokenModel from 'models/tokens/TokenModel'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
-import Amount from 'models/Amount'
+import Amount from '@chronobank/core/models/Amount'
 import './ExchangeTransferDialog.scss'
 import styles from './styles'
 import validate from './validate'
@@ -26,7 +26,6 @@ export default class ExchangeDepositForm extends React.PureComponent {
     maxAmount: PropTypes.instanceOf(Amount).isRequired,
     token: PropTypes.instanceOf(TokenModel).isRequired,
     title: PropTypes.node,
-    dispatch: PropTypes.func,
     ...formPropTypes,
   }
 
@@ -45,7 +44,7 @@ export default class ExchangeDepositForm extends React.PureComponent {
               name='amount'
               fullWidth
               floatingLabelStyle={styles.TextField.floatingLabelStyle}
-              floatingLabelText={(
+              label={(
                 <span><Translate value={prefix('amountIn')} />&nbsp;{this.props.token.symbol()}</span>)}
               style={styles.TextField.style}
             />

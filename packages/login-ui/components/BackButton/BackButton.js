@@ -7,12 +7,13 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 
 import './BackButton.scss'
 import { Button } from '../../settings'
 
 const mapStateToProps = (state) => ({
-  isLoading: state.get('network').isLoading,
+  isLoading: state.get(DUCK_NETWORK).isLoading,
 })
 
 @connect(mapStateToProps, null)

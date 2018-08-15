@@ -3,25 +3,24 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import BuyTokensDialog from 'components/exchange/BuyTokensDialog/BuyTokensDialog'
 import Immutable from 'immutable'
-import { Toggle } from 'material-ui'
-import type ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
-import ExchangesCollection from 'models/exchange/ExchangesCollection'
+import { Toggle } from '@material-ui/core'
+import type ExchangeOrderModel from '@chronobank/core/models/exchange/ExchangeOrderModel'
+import ExchangesCollection from '@chronobank/core/models/exchange/ExchangesCollection'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import Amount from 'models/Amount'
-import { DUCK_EXCHANGE, getNextPage } from 'redux/exchange/actions'
+import Amount from '@chronobank/core/models/Amount'
+import { getNextPage } from '@chronobank/core/redux/exchange/actions'
+import { DUCK_EXCHANGE } from '@chronobank/core/redux/exchange/constants'
 import { modalsOpen } from 'redux/modals/actions'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
-import TokensCollection from 'models/tokens/TokensCollection'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
+import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import './ExchangesTable.scss'
-import ExchangeTransferDialog from '../ExchangeTransferDialog/ExchangeTransferDialog'
 
 function prefix (token) {
   return `components.exchange.OrdersTable.${token}`
@@ -44,14 +43,14 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     handleOpenDetails: (exchange: ExchangeOrderModel, isBuy: boolean) => dispatch(modalsOpen({
-      component: BuyTokensDialog,
+      componentName: 'BuyTokensDialog',
       props: {
         exchange,
         isBuy,
       },
     })),
     handleOpenTransfer: (exchange: ExchangeOrderModel, tokenSymbol: string) => dispatch(modalsOpen({
-      component: ExchangeTransferDialog,
+      componentName: 'ExchangeTransferDialog',
       props: {
         exchange,
         tokenSymbol,

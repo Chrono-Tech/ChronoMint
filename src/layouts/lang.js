@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import * as partials from 'layouts/partials/lang'
+import partials from 'layouts/partials/lang'
 
 export default {
   en: {

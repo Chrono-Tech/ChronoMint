@@ -4,22 +4,20 @@
  */
 
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
-import { FlatButton } from 'material-ui'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { modalsClose } from 'redux/modals/actions'
-import { setRequiredSignatures } from 'redux/operations/actions'
-import ErrorList from 'platform/ErrorList'
+import { setRequiredSignatures } from '@chronobank/core/redux/operations/actions'
+import ErrorList from '@chronobank/core-dependencies/ErrorList'
 import ModalDialog from 'components/dialogs/ModalDialog'
-import validator from 'models/validator'
+import validator from '@chronobank/core/models/validator'
+import { FORM_OPERATION_SETTINGS } from 'components/constants'
 
 import './FormDialog.scss'
-
-export const FORM_OPERATION_SETTINGS = 'OperationSettingsDialog'
 
 function prefix (token) {
   return `components.dialogs.OperationsSettingsDialog.${token}`
@@ -40,8 +38,6 @@ function prefix (token) {
 export default class OperationsSettingsDialog extends PureComponent {
   static propTypes = {
     adminCount: PropTypes.number,
-    handleAddressChange: PropTypes.func,
-    name: PropTypes.string,
     onClose: PropTypes.func,
     ...formPropTypes,
   }
@@ -58,7 +54,7 @@ export default class OperationsSettingsDialog extends PureComponent {
               component={TextField}
               name='requiredSigns'
               fullWidth
-              floatingLabelText={<Translate value='operations.requiredSigns' />}
+              label={<Translate value='operations.requiredSigns' />}
             />
           </div>
           <div styleName='footer'>
