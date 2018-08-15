@@ -19,7 +19,7 @@ export const loadI18n = (locale) => async (dispatch, getState) => {
     const translationsFiltered = {}
     Object.entries(translations).filter((t) => {
       return typeof t[1] === 'object' && Object.keys(t[1]).length
-    }).map((t) => translationsFiltered[t[0]] = t[1])
+    }).map((t) => translationsFiltered[t[0]] = merge({}, currentI18n.translations['en'], t[1]))
 
     // i18nJson is global object getting from ./i18nJson.js file
     dispatch(loadTranslations(merge({}, currentI18n.translations, translationsFiltered, i18nJson)))
