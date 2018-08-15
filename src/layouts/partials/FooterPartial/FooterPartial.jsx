@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { TextField } from '@material-ui/core'
+import { TextField } from 'redux-form-material-ui'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import menu from 'menu'
