@@ -1,0 +1,100 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+.providersList {
+  border-radius: 20px;
+  border-top: 3px solid #E2A864;
+  overflow: hidden;
+  background: #fff;
+  margin-top: 10px;
+  font-size: 14px;
+
+  @include xs-only {
+    width: 100%;
+    top: 10px;
+  }
+}
+.providerItem {
+  padding: 15px 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+
+  &.providerItemActive {
+    background: $color-grey-3;
+    font-weight: 500;
+  }
+
+  &:hover {
+    background: $color-grey-3;
+  }
+}
+
+.providerItemCustomNetwork {
+  cursor: initial;
+}
+
+.providerItemText {
+  flex: 1;
+  padding-right: 10px;
+  text-overflow: ellipsis;
+  min-width: 0;
+  overflow: hidden ;
+}
+
+.providerItemIcon {
+  font-size: 20px;
+  color: $color-grey-2;
+  cursor: pointer;
+
+  &:hover {
+    color: $color-primary-0;
+  }
+}
+
+.providerGroupItem {
+  background-color: $color-grey-3;
+  padding: 15px 20px;
+  line-height: 17px;
+  border-top: 1px solid $color-white;
+  border-bottom: 1px solid $color-white;
+}
+
+.providerGroupItemTitle {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.providerGroupItemDescription {
+  color: $color-grey-2;
+  font-weight: 500;
+}
+
+.root {
+
+}
+
+.networkButton {
+  button {
+    color: #5DB3ED;
+    border:1px solid #5DB3ED;
+    background: transparent;
+    font-size: 14px;
+    text-transform: none;
+    padding: 12px 30px;
+
+    &:hover {
+      color:#fff;
+      border-color: transparent;
+    }
+  }
+}
+
+.popover {
+  background: transparent !important;
+  border-radius: 20px !important;
+}

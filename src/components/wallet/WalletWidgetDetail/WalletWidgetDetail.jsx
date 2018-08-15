@@ -4,7 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
-import TokenModel from 'models/tokens/TokenModel'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { modalsOpen } from 'redux/modals/actions'
@@ -12,16 +12,12 @@ import { Translate } from 'react-redux-i18n'
 import { TOKEN_ICONS } from 'assets'
 import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import ReceiveTokenModal from 'components/dashboard/ReceiveTokenModal/ReceiveTokenModal'
-import { getMainTokenForWalletByBlockchain } from 'redux/tokens/selectors'
-import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
-import SendTokens from 'components/dashboard/SendTokens/SendTokens'
-import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
-import EditManagersDialog from 'components/dialogs/wallet/EditOwnersDialog/EditOwnersDialog'
-import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog/EditSignaturesDialog'
+import { getMainTokenForWalletByBlockchain } from '@chronobank/core/redux/tokens/selectors'
+import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import Moment from 'components/common/Moment'
-import { openSendForm } from 'redux/wallet/actions'
-import { PTWallet } from 'redux/wallet/types'
+import WalletModel from '@chronobank/core/models/wallet/WalletModel'
+import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
+import { removeWallet } from '@chronobank/core/redux/multisigWallet/actions'
 import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
 import './WalletWidgetDetail.scss'
 import { prefix } from './lang'
@@ -37,27 +33,30 @@ function mapStateToProps (state, ownProps) {
 function mapDispatchToProps (dispatch) {
   return {
     send: (token, wallet) => {
-      dispatch(openSendForm({
-        wallet,
-        isModal: true,
-        token,
-        blockchain: wallet.blockchain,
-        address: wallet.address,
-      }, SendTokens))
+      dispatch(modalsOpen({
+        componentName: 'SendTokens',
+        props: {
+          wallet,
+          isModal: true,
+          token,
+        },
+      }))
     },
-    receive: (blockchain) => dispatch(modalsOpen({
-      component: ReceiveTokenModal,
-      props: {
-        blockchain,
-      },
+    receive: (wallet) => dispatch(modalsOpen({
+      componentName: 'ReceiveTokenModal',
+      props: { wallet },
     })),
-    deposit: (props) => dispatch(modalsOpen({ component: DepositTokensModal, props })),
+    removeEthMultisig: (wallet) => dispatch(removeWallet(wallet)),
+    deposit: (props) => dispatch(modalsOpen({
+      componentName: 'DepositTokensModal',
+      props,
+    })),
     openEditManagersDialog: (wallet) => dispatch(modalsOpen({
-      component: EditManagersDialog,
+      componentName: 'EditManagersDialog',
       props: { wallet },
     })),
     openEditSignaturesDialog: (wallet) => dispatch(modalsOpen({
-      component: EditSignaturesDialog,
+      componentName: 'EditSignaturesDialog',
       props: { wallet },
     })),
   }
@@ -66,13 +65,12 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class WalletWidgetDetail extends PureComponent {
   static propTypes = {
-    wallet: PTWallet,
+    wallet: PropTypes.oneOfType([PropTypes.instanceOf(WalletModel), PropTypes.instanceOf(MultisigEthWalletModel)]),
     token: PropTypes.instanceOf(TokenModel),
     send: PropTypes.func,
     receive: PropTypes.func,
     deposit: PropTypes.func,
-    openEditManagersDialog: PropTypes.func,
-    openEditSignaturesDialog: PropTypes.func,
+    removeEthMultisig: PropTypes.func,
   }
 
   handleSend = (wallet) => () => {
@@ -80,11 +78,15 @@ export default class WalletWidgetDetail extends PureComponent {
   }
 
   handleReceive = () => {
-    this.props.receive(this.props.wallet.blockchain)
+    this.props.receive(this.props.wallet)
   }
 
   handleDeposit = () => {
     this.props.deposit()
+  }
+
+  handleRemoveEthMultisig = () => {
+    this.props.removeEthMultisig(this.props.wallet)
   }
 
   render () {
@@ -93,7 +95,6 @@ export default class WalletWidgetDetail extends PureComponent {
 
     return (
       <div styleName='header-container' className='WalletWidgetDetail__root'>
-        <h1 styleName='header-text'><Translate value={`${prefix}.walletTitle`} title={wallet.blockchain} /></h1>
         <div styleName='wallet-list-container'>
           <div styleName='wallet-container'>
             <div styleName='body'>
@@ -108,7 +109,7 @@ export default class WalletWidgetDetail extends PureComponent {
                   <h3><WalletName wallet={wallet} /></h3>
                   <span styleName='address-address'>{wallet.address}</span>
                 </div>
-                {token && token.isFetched()
+                {tokenIsFetched
                   ? <WalletMainCoinBalance wallet={wallet} />
                   : (
                     <span styleName='noToken'>
@@ -158,6 +159,15 @@ export default class WalletWidgetDetail extends PureComponent {
                       type='submit'
                       label={<Translate value={`${prefix}.depositButton`} />}
                       onClick={this.handleDeposit}
+                    />
+                  </div>
+                )*/}
+                {/*wallet.isMultisig && (
+                  <div styleName='action'>
+                    <Button
+                      type='submit'
+                      label={<Translate value={`${prefix}.removeButton`} />}
+                      onClick={this.handleRemoveEthMultisig}
                     />
                   </div>
                 )*/}

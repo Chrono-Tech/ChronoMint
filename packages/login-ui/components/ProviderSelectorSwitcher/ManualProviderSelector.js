@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
-import { Toggle } from 'material-ui'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
+import { Toggle } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'

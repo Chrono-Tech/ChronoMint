@@ -2,8 +2,8 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-import AbstractNode from './AbstractNode'
 import EthCrypto from 'eth-crypto'
+import AbstractNode from './AbstractNode'
 
 const eventsList = [
   'platformrequested',
@@ -23,6 +23,11 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     this.addListener('subscribe', (address) => this._handleSubscribe(address))
     this.addListener('unsubscribe', (address) => this._handleUnsubscribe(address))
     this.connect()
+  }
+
+  subscribeNewWallet (ethAddress) {
+    this._handleSubscribe({ ethAddress })
+    this.addListener('unsubscribe', (address) => this._handleUnsubscribe(address))
   }
 
   async _handleSubscribe ({ ethAddress, nemAddress, wavesAddress }) {
@@ -50,7 +55,7 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     }
   }
 
-  async _handleUnsubscribe ({ ethAddress, nemAddress, wavesAddress }) {
+  async _handleUnsubscribe (/*{ ethAddress, nemAddress, wavesAddress }*/) {
 
     //No method delete in API, I'm not sure if we need the procedure bellow
 
@@ -120,5 +125,9 @@ export default class EthereumMiddlewareNode extends AbstractNode {
       return typeof callback === 'function' ? callback(data) : data
     }
   }
-}
 
+  async getAddressInfo (address) {
+    const { data } = await this._api.get(`addr/${address}/balance`)
+    return data
+  }
+}

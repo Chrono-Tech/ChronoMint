@@ -3,13 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { CircularProgress } from 'material-ui'
+import { CircularProgress } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import type LOCModel from 'models/LOCModel'
-import { getLOCs } from 'redux/locs/actions'
+import type LOCModel from '@chronobank/core/models/LOCModel'
+import { getLOCs } from '@chronobank/core/redux/locs/actions'
 import LOCItem from 'components/locs/LOCItem/LOCItem'
 import PageTitle from 'components/locs/PageTitle'
 import Search from 'components/locs/Search'

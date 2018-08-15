@@ -4,16 +4,15 @@
  */
 
 import ledgerProvider from '@chronobank/login/network/LedgerProvider'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { fetchAccount, startLedgerSync, stopLedgerSync } from '@chronobank/login/redux/ledger/actions'
-import { CircularProgress, RaisedButton } from 'material-ui'
-import networkService from '@chronobank/login/network/NetworkService'
-import SelectField from 'material-ui/SelectField'
-import MenuItem from 'material-ui/MenuItem'
-import Subheader from 'material-ui/Subheader'
+import { CircularProgress, MenuItem } from '@material-ui/core'
+import Select from 'redux-form-material-ui/es/Select'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
+import { setAccounts, selectAccount } from '@chronobank/login/redux/network/actions'
 import BackButton from '../../components/BackButton/BackButton'
 import './LoginWithLedger.scss'
 import { Button } from '../../settings'
@@ -41,11 +40,11 @@ const ledgerStates = [ {
 } ]
 
 const mapStateToProps = (state) => {
-  const network = state.get('network')
+  const network = state.get(DUCK_NETWORK)
   return {
     ledger: state.get('ledger'),
     isLoading: network.isLoading,
-    account: network.accounts
+    account: network.accounts,
   }
 }
 
@@ -53,11 +52,15 @@ const mapDispatchToProps = (dispatch) => ({
   startLedgerSync: () => dispatch(startLedgerSync()),
   stopLedgerSync: (isReset) => dispatch(stopLedgerSync(isReset)),
   fetchAccount: () => dispatch(fetchAccount()),
+  selectAccount: (account) => dispatch(selectAccount(account)),
+  setAccounts: (account) => dispatch(setAccounts(account)),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class LoginLedger extends PureComponent {
   static propTypes = {
+    selectAccount: PropTypes.func,
+    setAccounts: PropTypes.func,
     startLedgerSync: PropTypes.func,
     stopLedgerSync: PropTypes.func,
     fetchAccount: PropTypes.func,
@@ -81,11 +84,14 @@ class LoginLedger extends PureComponent {
     this.props.startLedgerSync()
   }
 
-  componentWillReceiveProps ({ ledger }) {
+  componentDidUpdate (prevProps) {
+    const ledger = this.props.ledger
     if (!ledger.isFetched && !ledger.isFetching && ledger.isHttps && ledger.isU2F && ledger.isETHAppOpened) {
       this.props.fetchAccount()
     }
-    ledgerProvider.setWallet(this.props.account[0]); networkService.selectAccount(this.props.account[0]); networkService.setAccounts(this.props.account)
+    ledgerProvider.setWallet(prevProps.account[0])
+    this.props.selectAccount(prevProps.account[0])
+    this.props.setAccounts(prevProps.account)
   }
 
   componentWillUnmount () {
@@ -95,6 +101,16 @@ class LoginLedger extends PureComponent {
   handleBackClick = () => {
     this.props.stopLedgerSync(true)
     this.props.onBack()
+  }
+
+  handleChange = (event, index, value) => {
+    this.setState({ value })
+    ledgerProvider.setWallet(this.props.account[index])
+    this.props.selectAccount(this.props.account[index])
+  }
+
+  _buildItem (item, index) {
+    return <MenuItem value={index} key={index} primaryText={item} />
   }
 
   renderStates () {
@@ -118,12 +134,6 @@ class LoginLedger extends PureComponent {
       ))
   }
 
-  _buildItem(item, index) {
-    return <MenuItem value={index} key={index} primaryText={item}/>
-  }
-	
-  handleChange = (event, index, value) => {this.setState({value}); ledgerProvider.setWallet(this.props.account[index]); networkService.selectAccount(this.props.account[index]);}
-
   render () {
     const { isLoading, ledger, account } = this.props
 
@@ -140,15 +150,17 @@ class LoginLedger extends PureComponent {
 
         {ledger.isFetched && (
           <div styleName='account'>
-            <SelectField floatingLabelText="Select address"
-                         autoWidth={true}
-                         fullWidth={true}
-                         floatingLabelStyle={{ color: 'white' }}
-                         labelStyle={{ color: 'white' }}
-                         value={this.state.value}
-                         onChange={this.handleChange}>
+            <Select
+              label='Select address'
+              autoWidth
+              fullWidth
+              floatingLabelStyle={{ color: 'white' }}
+              labelStyle={{ color: 'white' }}
+              value={this.state.value}
+              onChange={this.handleChange}
+            >
               {this.props.account.map(this._buildItem)}
-            </SelectField>
+            </Select>
           </div>
         )}
 

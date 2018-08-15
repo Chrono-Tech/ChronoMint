@@ -1,0 +1,21 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        fill: none;
+      }
+    </style>
+  </defs>
+  <title>65a7d0dd-b6fe-4fe5-a4db-e0696a8d7a5f</title>
+  <path class="cls-1" d="M9.867,4H16a4,4,0,0,1,4,4v6.133a0,0,0,0,1,0,0H9.867a0,0,0,0,1,0,0V4A0,0,0,0,1,9.867,4Z"/>
+  <path class="cls-1" d="M7.733,4h0a0,0,0,0,1,0,0V7.733a0,0,0,0,1,0,0H4a0,0,0,0,1,0,0v0A3.733,3.733,0,0,1,7.733,4Z"/>
+  <path class="cls-1" d="M7.733,16.267h0a0,0,0,0,1,0,0V20a0,0,0,0,1,0,0H4a0,0,0,0,1,0,0v0A3.733,3.733,0,0,1,7.733,16.267Z" transform="translate(-12.267 24) rotate(-90)"/>
+  <path class="cls-1" d="M20,16.267h0a0,0,0,0,1,0,0V20a0,0,0,0,1,0,0H16.267a0,0,0,0,1,0,0v0A3.733,3.733,0,0,1,20,16.267Z" transform="translate(36.267 36.267) rotate(180)"/>
+  <rect class="cls-1" x="4" y="9.867" width="3.733" height="3.733"/>
+  <rect class="cls-1" x="9.867" y="16.267" width="3.733" height="3.733"/>
+  <rect class="cls-2" width="24" height="24"/>
+</svg>

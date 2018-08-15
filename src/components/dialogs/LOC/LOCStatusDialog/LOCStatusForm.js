@@ -4,11 +4,11 @@
  */
 
 import { Field, reduxForm } from 'redux-form/immutable'
-import { MenuItem } from 'material-ui'
-import { Button } from 'components'
+import { MenuItem } from '@material-ui/core'
+import Button from 'components/common/ui/Button/Button'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { SelectField } from 'redux-form-material-ui'
+import Select from 'redux-form-material-ui/es/Select'
 import { Translate } from 'react-redux-i18n'
 
 import './LOCStatusForm.scss'
@@ -29,10 +29,10 @@ class LOCStatusForm extends PureComponent {
         <p styleName='subHeader'><Translate value='forms.mustBeCoSigned' /></p>
 
         <Field
-          component={SelectField}
+          component={Select}
           name='status'
           fullWidth
-          floatingLabelText={<Translate value='terms.status' />}
+          label={<Translate value='terms.status' />}
         >
           <MenuItem value={0} primaryText={<Translate value='locs.status.maintenance' />} />
           <MenuItem value={1} primaryText={<Translate value='locs.status.active' />} />

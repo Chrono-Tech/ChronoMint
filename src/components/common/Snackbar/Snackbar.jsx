@@ -5,6 +5,7 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
+import classnames from 'classnames'
 
 import './Snackbar.scss'
 
@@ -50,9 +51,10 @@ export default class Snackbar extends PureComponent {
   render () {
     const notice = this.props.notice
     const address = notice.address()
+    const isErrorNotice = notice.constructor.name.toLowerCase().indexOf('error') >= 0
 
     return (
-      <div styleName='snackbar'>
+      <div styleName={classnames('snackbar', { 'error-notice': isErrorNotice })}>
         <span styleName='snackbar-entry'>
           <span styleName='entry-status'>{notice.title()}</span>
         </span>

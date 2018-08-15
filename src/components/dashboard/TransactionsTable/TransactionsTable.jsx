@@ -4,23 +4,23 @@
  */
 
 import classnames from 'classnames'
-import { Button, TxConfirmations } from 'components'
+import Button from 'components/common/ui/Button/Button'
+import TxConfirmations from 'components/common/TxConfirmations/TxConfirmations'
 import { getBlockExplorerUrl } from '@chronobank/login/network/settings'
-import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
-import Moment from 'components/common/Moment/index'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
+import Moment from 'components/common/Moment'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { DUCK_I18N } from 'redux/i18n/actions'
+import { DUCK_I18N } from 'redux/i18n/constants'
 import Preloader from 'components/common/Preloader/Preloader'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
-import TokensCollection from 'models/tokens/TokensCollection'
-import TokenModel from 'models/tokens/TokenModel'
-import TransactionsCollection from 'models/wallet/TransactionsCollection'
-import { DUCK_SESSION } from 'redux/session/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
+import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import './TransactionsTable.scss'
 import { prefix } from './lang'
 
@@ -39,9 +39,8 @@ function mapStateToProps (state) {
 @connect(mapStateToProps)
 export default class TransactionsTable extends PureComponent {
   static propTypes = {
-    blockchain: PropTypes.string,
     walletAddress: PropTypes.string,
-    transactions: PropTypes.instanceOf(TransactionsCollection),
+    transactions: PropTypes.instanceOf(Array),
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
     locale: PropTypes.string,
@@ -58,11 +57,12 @@ export default class TransactionsTable extends PureComponent {
     const account = this.props.walletAddress || this.props.account
     const token: TokenModel = this.props.tokens.item(trx.symbol())
     const blockExplorerUrl = (txHash) => getBlockExplorerUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash, token.blockchain())
+    const isFrom = trx.from().split(',').some((from) => from === account)
 
     const info = (
       <div styleName='info'>
-        <div styleName='title'><Translate value={`${prefix}.${trx.to() === account ? 'receiving' : 'sending'}`} /></div>
-        <div styleName='address'>{trx.to() === account ? trx.from() : trx.to()}</div>
+        <div styleName='title'><Translate value={`${prefix}.${isFrom ? 'sending' : 'receiving'}`} /></div>
+        <div styleName='address'>{isFrom ? trx.to() : trx.from()}</div>
       </div>
     )
 
@@ -76,7 +76,7 @@ export default class TransactionsTable extends PureComponent {
         }
 
         <div styleName='valuesWrapper'>
-          <div styleName={classnames('value', { 'receiving': trx.to() === account, 'sending': trx.from() === account })}>
+          <div styleName={classnames('value', { 'receiving': !isFrom, 'sending': isFrom })}>
             <TokenValue value={trx.value()} noRenderPrice />
           </div>
           <div styleName='confirmationsText'><TxConfirmations transaction={trx} textMode /></div>
@@ -87,9 +87,9 @@ export default class TransactionsTable extends PureComponent {
 
   render () {
     const { transactions, locale } = this.props
-    const size = transactions.size()
-    const endOfList = transactions.endOfList()
-    const isFetching = transactions.isFetching()
+    const size = transactions.length
+    const endOfList = false //transactions.endOfList() //TODO
+    const isFetching = false //transactions.isFetching() //TODO
     const data = buildTableData(transactions, locale)
 
     return (
@@ -99,7 +99,7 @@ export default class TransactionsTable extends PureComponent {
             ? (
               <div styleName='no-transactions-section'>
                 <div styleName='section-header'>
-                  <h5 styleName='no-transactions'>No transactions found.</h5>
+                  <h5 styleName='no-transactions'><Translate value={`${prefix}.noTransactionsFound`} /></h5>
                 </div>
               </div>
             )
@@ -150,7 +150,6 @@ export default class TransactionsTable extends PureComponent {
 function buildTableData (transactions, locale) {
   moment.locale(locale)
   const groups = transactions
-    .items()
     .filter((tx) => tx.value().gt(0))
     .reduce((data, trx) => {
       const groupBy = trx.date('YYYY-MM-DD')

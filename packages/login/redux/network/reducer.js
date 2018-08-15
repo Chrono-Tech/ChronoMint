@@ -4,7 +4,7 @@
  */
 
 import { getNetworksByProvider, providerMap } from '../../network/settings'
-import * as actions from './actions'
+import * as actions from './constants'
 
 const initialState = {
   isLoading: false,
@@ -22,8 +22,8 @@ const initialState = {
     providerMap.giveth,
   ],
   priority: [
-    providerMap.chronoBank.id,
     providerMap.infura.id,
+    providerMap.chronoBank.id,
     providerMap.mew.id,
     providerMap.giveth.id,
   ],
@@ -31,8 +31,20 @@ const initialState = {
   selectedProviderId: null,
   networks: [],
   selectedNetworkId: null,
+  newAccountName: null,
+  newAccountPassword: null,
+  newAccountMnemonic: null,
+  newAccountPrivateKey: null,
+  isLoginSubmitting: false,
+  accountRecoveryMode: false,
+  walletFileImportMode: false,
+  walletFileImportObject: null,
+  accountSignaturesLoading: false,
+  accountSignaturesData: null,
+  accountSignaturesError: null,
 }
 
+// eslint-disable-next-line complexity
 export default (state = initialState, action) => {
   switch (action.type) {
     case actions.NETWORK_LOADING:
@@ -51,7 +63,15 @@ export default (state = initialState, action) => {
         isMetamask: true,
       }
     case actions.NETWORK_SET_NETWORK:
-      return { ...state, selectedNetworkId: action.selectedNetworkId }
+      return {
+        ...state,
+        selectedNetworkId: action.selectedNetworkId,
+      }
+    case actions.NETWORK_RESET_NETWORK:
+      return {
+        ...state,
+        selectedNetworkId:  null,
+      }
     case actions.NETWORK_SET_PROVIDER:
       return {
         ...state,
@@ -74,6 +94,91 @@ export default (state = initialState, action) => {
         isLoading: false,
         errors: [...state.errors, action.error],
       }
+    case actions.NETWORK_SET_NEW_ACCOUNT_CREDENTIALS:
+      return {
+        ...state,
+        newAccountName: action.walletName,
+        newAccountPassword: action.walletPassword,
+      }
+    case actions.NETWORK_RESET_NEW_ACCOUNT_CREDENTIALS:
+      return {
+        ...state,
+        newAccountName: null,
+        newAccountPassword: null,
+      }
+    case actions.NETWORK_SET_NEW_MNEMONIC:
+      return {
+        ...state,
+        newAccountMnemonic: action.mnemonic,
+      }
+    case actions.NETWORK_RESET_NEW_MNEMONIC:
+      return {
+        ...state,
+        newAccountMnemonic: null,
+      }
+    case actions.NETWORK_SET_IMPORT_PRIVATE_KEY:
+      return {
+        ...state,
+        newAccountPrivateKey: action.privateKey,
+      }
+    case actions.NETWORK_RESET_IMPORT_PRIVATE_KEY:
+      return {
+        ...state,
+        newAccountPrivateKey: null,
+      }
+    case actions.NETWORK_SET_LOGIN_SUBMITTING:
+      return {
+        ...state,
+        isLoginSubmitting: true,
+      }
+    case actions.NETWORK_RESET_LOGIN_SUBMITTING:
+      return {
+        ...state,
+        isLoginSubmitting: false,
+      }
+    case actions.NETWORK_SET_ACCOUNT_RECOVERY_MODE:
+      return {
+        ...state,
+        accountRecoveryMode: true,
+      }
+    case actions.NETWORK_RESET_ACCOUNT_RECOVERY_MODE:
+      return {
+        ...state,
+        accountRecoveryMode: false,
+      }
+    case actions.NETWORK_SET_IMPORT_WALLET_FILE:
+      return {
+        ...state,
+        walletFileImportMode: true,
+      }
+    case actions.NETWORK_RESET_IMPORT_WALLET_FILE:
+      return {
+        ...state,
+        walletFileImportMode: false,
+      }
+    case actions.NETWORK_ACCOUNTS_SIGNATURES_LOADING:
+      return {
+        ...state,
+        loadingAccountSignatures: true,
+      }
+    case actions.NETWORK_ACCOUNTS_SIGNATURES_RESET_LOADING:
+      return {
+        ...state,
+        loadingAccountSignatures: false,
+      }
+
+    case actions.NETWORK_SET_WALLET_FILE_IMPORTED:
+      return {
+        ...state,
+        walletFileImportObject: action.wallet,
+      }
+    case actions.NETWORK_RESET_WALLET_FILE_IMPORTED:
+      return {
+        ...state,
+        walletFileImportObject: null,
+      }
+    case actions.NETWORK_GET_ACCOUNTS:
+      return state
     default:
       return state
   }

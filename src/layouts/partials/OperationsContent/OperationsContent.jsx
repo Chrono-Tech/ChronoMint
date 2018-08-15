@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Operations } from 'components'
-import { Paper } from 'material-ui'
+import Operations from 'components/operations/Operations'
+import { Paper } from '@material-ui/core'
 import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
 
@@ -14,7 +14,7 @@ function prefix (token) {
   return `layouts.partials.OperationsContent.${token}`
 }
 
-export default class SettingsContent extends Component {
+export default class OperationsContent extends Component {
   render () {
     return (
       <div styleName='root'>

@@ -4,21 +4,20 @@
  */
 
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import { validate } from 'models/CBEModel'
-import { addCBE, formCBELoadName } from 'redux/settings/user/cbe/actions'
+import { validate } from '@chronobank/core/models/CBEModel'
+import { addCBE, formCBELoadName } from '@chronobank/core/redux/settings/user/cbe/actions'
 import { modalsClose } from 'redux/modals/actions'
 import ModalDialog from 'components/dialogs/ModalDialog'
-import validator from 'models/validator'
+import validator from '@chronobank/core/models/validator'
+import { FORM_CBE_ADDRESS } from 'components/constants'
 
 import './FormDialog.scss'
-
-export const FORM_CBE_ADDRESS = 'CBEAddressDialog'
 
 function prefix (token) {
   return `components.dialogs.CBEAddressDialog.${token}`
@@ -46,7 +45,6 @@ function mapStateToProps (state) {
 export default class CBEAddressDialog extends PureComponent {
   static propTypes = {
     formCBELoadName: PropTypes.func,
-    name: PropTypes.string,
     isLoading: PropTypes.bool,
     modalsClose: PropTypes.func,
     ...formPropTypes,
@@ -78,7 +76,7 @@ export default class CBEAddressDialog extends PureComponent {
               component={TextField}
               fullWidth
               name='address'
-              floatingLabelText={<Translate value='common.ethAddress' />}
+              label={<Translate value='common.ethAddress' />}
               onChange={this.handleAddressChange}
               disabled={initialValues.address() !== null}
             />
@@ -87,7 +85,7 @@ export default class CBEAddressDialog extends PureComponent {
               fullWidth
               name='name'
               style={{ width: '100%' }}
-              floatingLabelText={<Translate value='common.name' />}
+              label={<Translate value='common.name' />}
               disabled={isLoading}
             />
           </div>

@@ -5,20 +5,22 @@
 
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import classnames from 'classnames'
 import { Translate } from 'react-redux-i18n'
+import TokenPrice from 'components/common/TokenPrice/TokenPrice'
 import React, { PureComponent } from 'react'
-import { Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
 import Button from 'components/common/ui/Button/Button'
 
-import Amount from 'models/Amount'
-import BalanceModel from 'models/tokens/BalanceModel'
-import TransferExecModel from 'models/TransferExecModel'
-import BitcoinDAO from 'dao/BitcoinDAO'
-import NemDAO from 'dao/NemDAO'
-import WavesDAO from 'dao/WavesDAO'
+import Amount from '@chronobank/core/models/Amount'
+import BalanceModel from '@chronobank/core/models/tokens/BalanceModel'
+import TransferExecModel from '@chronobank/core/models/TransferExecModel'
+import BitcoinDAO from '@chronobank/core/dao/BitcoinDAO'
+import NemDAO from '@chronobank/core/dao/NemDAO'
+import WavesDAO from '@chronobank/core/dao/WavesDAO'
 
 import { modalsClear, modalsClose } from 'redux/modals/actions'
-import { getMainWalletBalance, getWalletBalanceForSymbol } from 'redux/wallet/selectors'
+import { getWalletBalanceForSymbol } from '@chronobank/core/redux/wallet/selectors'
+import { getWallet } from '@chronobank/core/redux/wallets/selectors/models'
 
 import Value from 'components/common/Value/Value'
 import TokenValue from 'components/common/TokenValue/TokenValue'
@@ -29,9 +31,10 @@ import './ConfirmTransferDialog.scss'
 
 const mapStateToProps = (state, ownProps) => {
   const { tx } = ownProps
+  const wallet = getWallet(`${tx.blockchain}-${tx.from}`)(state)
   return ({
     amountBalance: getWalletBalanceForSymbol(tx.from(), tx.amountToken().blockchain(), tx.amountToken().symbol())(state),
-    feeBalance: getMainWalletBalance(tx.feeToken().symbol())(state),
+    feeBalance: wallet.balances[tx.feeToken().symbol()],
   })
 }
 
@@ -103,16 +106,8 @@ export default class ConfirmTransferDialog extends PureComponent {
       { key: 'hash', type: 'String', label: 'tx.General.transfer.params.hash', value: tx.hash() },
     ].filter(({ value }) => value != null) // nil check
 
-    // const operationDetails = Object.entries(tx.txSummary()).map((key, value) => ({
-    //   key,
-    //   type,
-    //   value,
-    //   label,
-    // }))
-
     return [
       ...basicDetails,
-      // ...operationDetails,
     ]
   }
 
@@ -123,7 +118,7 @@ export default class ConfirmTransferDialog extends PureComponent {
     switch (type) {
       case 'Amount':
       case 'TokenValue':
-        return <TokenValue prefix='&asymp;&nbsp;' value={value} />
+        return <TokenValue value={value} />
       case 'Preloader':
       case 'Progress':
         return <Preloader />
@@ -164,29 +159,38 @@ export default class ConfirmTransferDialog extends PureComponent {
     const isValid = fee.gt(0) && feeBalanceAfter.gte(0) || amountBalanceAfter.gte(0)
 
     return (
-      <ModalDialog onModalClose={this.handleClose} title={<Translate value={tx.title()} />}>
+      <ModalDialog hideCloseIcon title={<Translate value={tx.title()} />}>
         <div styleName='root'>
           <div styleName='content'>
-            <div>
-              <Table selectable={false} className='adaptiveTable'>
-                <TableBody displayRowCheckbox={false}>
-                  {details.map(({ key, type, label, value }) => (
-                    <TableRow key={key}>
-                      <TableRowColumn style={{ width: '35%' }}>
-                        <Translate value={label} />
-                      </TableRowColumn>
-                      <TableRowColumn style={{ width: '65%', whiteSpace: 'normal' }}>
-                        {this.renderValue({ type, value })}
-                      </TableRowColumn>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+            <div styleName='paramsList'>
+              {details.map(({ key, type, label, value }) => {
+                if (key === 'amount') {
+                  return (
+                    <div styleName='param' key={key}>
+                      <div styleName={classnames('value', { 'big': key === 'amount' })}>
+                        <Value value={value} params={{ noRenderPrice: true }} />
+                      </div>
+                      <div styleName='price'>USD <TokenPrice value={value} isRemoveDecimals /></div>
+                    </div>
+                  )
+                }
+                return (
+                  <div styleName='param' key={key}>
+                    <div styleName='label'>
+                      <Translate value={label} />
+                    </div>
+                    <div styleName='value'>
+                      {this.renderValue({ type, value })}
+                    </div>
+                  </div>
+                )
+              })}
             </div>
-
-            <div styleName='errorMessage'>
-              {!isValid && <div styleName='error'>Not enough coins</div>}
-            </div>
+            {!isValid && (
+              <div styleName='errorMessage'>
+                <div styleName='error'>Not enough coins</div>
+              </div>
+            )}
 
           </div>
           <div styleName='footer'>
@@ -197,7 +201,6 @@ export default class ConfirmTransferDialog extends PureComponent {
               onClick={this.handleClose}
             />
             <Button
-              flat
               styleName='action'
               label={<Translate value='terms.confirm' />}
               disabled={!isValid}

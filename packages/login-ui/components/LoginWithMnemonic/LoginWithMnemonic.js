@@ -3,118 +3,71 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
-import { CircularProgress, TextField } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
+import { reduxForm, Field } from 'redux-form/immutable'
+import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
-import BackButton from '../../components/BackButton/BackButton'
-import styles from '../../components/stylesLoginPage'
-import { Button } from '../../settings'
-
+import Button from 'components/common/ui/Button/Button'
+import {
+  FORM_MNEMONIC_LOGIN_PAGE,
+} from '../../redux/constants'
+import validate from './validate'
 import './LoginWithMnemonic.scss'
 
-const mapStateToProps = (state) => ({
-  isLoading: state.get('network').isLoading,
-})
-
-@connect(mapStateToProps, null)
 class LoginWithMnemonic extends PureComponent {
   static propTypes = {
-    onLogin: PropTypes.func.isRequired,
-    onBack: PropTypes.func.isRequired,
-    onGenerate: PropTypes.func.isRequired,
-    isLoading: PropTypes.bool,
-  }
-
-  constructor (props) {
-    super(props)
-    this.state = {
-      mnemonicKey: '',
-      isValidated: false,
-    }
-  }
-
-  componentWillMount () {
-    // use it for tests
-    // address: 0x13f219bbb158a49b3e09505fccc333916f11bacb
-    // this.setState({
-    //   mnemonicKey: 'leave plate clog interest recall distance actor gun flash cupboard ritual hold',
-    //   isValidated: true
-    // })
-    this.setState({ mnemonicKey: '' })
-  }
-
-  componentWillUnmount () {
-    this.setState({ mnemonicKey: '' })
-  }
-
-  handleMnemonicBlur = () => {
-    this.setState({ mnemonicKey: this.mnemonicKey.getValue().trim() })
-  }
-
-  handleMnemonicChange = () => {
-    const mnemonicKey = this.mnemonicKey.getValue()
-    const isValidated = mnemonicProvider.validateMnemonic(mnemonicKey.trim())
-    this.setState({ mnemonicKey, isValidated })
+    previousPage: PropTypes.func,
   }
 
   render () {
-    const { isLoading } = this.props
-    const { mnemonicKey, isValidated } = this.state
+    const { handleSubmit, error, previousPage, submitting } = this.props
 
     return (
-      <div styleName='root'>
-        <BackButton
-          onClick={() => this.props.onBack()}
-          to='options'
-        />
-        <div onClick={() => this.mnemonicKey.focus()}>
-          <TextField
-            ref={(input) => {
-              this.mnemonicKey = input
-            }}
-            floatingLabelText={<Translate value='LoginWithMnemonic.mnemonicKey' />}
-            value={mnemonicKey}
-            onChange={this.handleMnemonicChange}
-            onBlur={this.handleMnemonicBlur}
-            errorText={(isValidated || mnemonicKey === '') ? '' : <Translate value='LoginWithMnemonic.wrongMnemonic' />}
-            multiLine
+      <form styleName='form' name={FORM_MNEMONIC_LOGIN_PAGE} onSubmit={handleSubmit}>
+
+        <div styleName='page-title'>
+          <Translate value='LoginWithMnemonic.title' />
+        </div>
+
+        <div styleName='field'>
+          <Field
+            styleName='mnemonicField'
+            component={TextField}
+            name='mnemonic'
+            type='text'
             fullWidth
-            disabled={isLoading}
-            {...styles.textField}
+            multiline
+            InputProps={{
+              disableUnderline: true,
+            }}
+            rows={2}
+            rowsMax={2}
           />
         </div>
+
         <div styleName='actions'>
-          <div styleName='action'>
-            <Button
-              styleName='whiteButton'
-              flat
-              fullWidth
-              disabled={isLoading}
-              onClick={() => this.props.onGenerate()}
-            >
-              <Translate value='LoginWithMnemonic.generateMnemonic' />
-            </Button>
-          </div>
-          <div styleName='action'>
-            <Button
-              label={isLoading
-                ? <CircularProgress
-                  style={{ verticalAlign: 'middle', marginTop: -2 }}
-                  size={24}
-                  thickness={1.5}
-                />
-                : <Translate value='LoginWithMnemonic.loginWithMnemonic' />}
-              disabled={!isValidated || isLoading}
-              onClick={() => this.props.onLogin(mnemonicKey)}
-            />
-          </div>
+          <Button
+            styleName='button'
+            buttonType='login'
+            type='submit'
+            isLoading={submitting}
+          >
+            <Translate value='LoginWithMnemonic.submit' />
+          </Button>
+
+          { error ? (<div styleName='form-error'>{error}</div>) : null }
+
+          <Translate value='LoginWithMnemonic.or' />
+          <br />
+          <button onClick={previousPage} styleName='link'>
+            <Translate value='LoginWithMnemonic.back' />
+          </button>
         </div>
-      </div>
+
+      </form>
     )
   }
 }
 
-export default LoginWithMnemonic
+export default reduxForm({ form: FORM_MNEMONIC_LOGIN_PAGE, validate })(LoginWithMnemonic)

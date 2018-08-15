@@ -6,6 +6,10 @@
 import * as AccountSelector from './components/AccountSelector/lang'
 import * as BackButton from './components/BackButton/lang'
 import * as GenerateMnemonic from './components/GenerateMnemonic/lang'
+import * as ConfirmMnemonic from './components/ConfirmMnemonic/lang'
+import * as CreateAccount from './components/CreateAccount/lang'
+import * as RecoverAccount from './components/RecoverAccount/lang'
+import * as ResetPassword from './components/ResetPassword/lang'
 import * as GenerateWallet from './components/GenerateWallet/lang'
 import * as LoginForm from './components/LoginForm/lang'
 import * as LoginMetamask from './components/LoginMetamask/lang'
@@ -19,10 +23,19 @@ import * as LoginWithWallet from './components/LoginWithWallet/lang'
 import * as NetworkSelector from './components/NetworkSelector/lang'
 import * as ProviderSelector from './components/ProviderSelector/lang'
 import * as ProviderSelectorSwitcher from './components/ProviderSelectorSwitcher/lang'
+import * as NetworkCreateModal from './components/NetworkCreateModal/lang'
+import * as NetworkCreateModalForm from './components/NetworkCreateModal/NetworkCreateModalForm/lang'
+import * as NetworkDeleteModal from './components/NetworkCreateModal/NetworkDeleteModal/lang'
 import * as Warning from './components/Warning/lang'
+import * as AccountName from './components/AccountName/lang'
+import * as NotFoundPage from './components/NotFoundPage/lang'
 
 export const en = {
-  LoginPage: LoginForm.en,
+  ConfirmMnemonic: ConfirmMnemonic.en,
+  CreateAccount: CreateAccount.en,
+  RecoverAccount: RecoverAccount.en,
+  ResetPassword: ResetPassword.en,
+  LoginForm: LoginForm.en,
   LoginWithLedger: LoginWithLedger.en,
   LoginWithTrezor: LoginWithTrezor.en,
   LoginMetamask: LoginMetamask.en,
@@ -39,4 +52,9 @@ export const en = {
   Warning: Warning.en,
   LoginUPort: LoginUPort.en,
   AccountSelector: AccountSelector.en,
+  NetworkCreateModal: NetworkCreateModal.en,
+  NetworkCreateModalForm: NetworkCreateModalForm.en,
+  NetworkDeleteModal: NetworkDeleteModal.en,
+  AccountName: AccountName.en,
+  NotFoundPage: NotFoundPage.en,
 }

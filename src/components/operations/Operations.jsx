@@ -3,18 +3,19 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import Immutable from 'immutable'
-import { CircularProgress, FlatButton, FontIcon } from 'material-ui'
+import { CircularProgress } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { getBlockExplorerUrl } from '@chronobank/login/network/settings'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { connect } from 'react-redux'
-import { confirmOperation, listOperations, loadMoreCompletedOperations, revokeOperation, setupOperationsSettings } from 'redux/operations/actions'
+import { confirmOperation, listOperations, loadMoreCompletedOperations, revokeOperation, setupOperationsSettings } from '@chronobank/core/redux/operations/actions'
 import { modalsOpen } from 'redux/modals/actions'
-import OperationsSettingsDialog from 'components/dialogs/OperationsSettingsDialog'
-import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
+import { DUCK_OPERATIONS } from '@chronobank/core/redux/operations/constants'
+import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import Value from 'components/common/Value/Value'
 import './Operations.scss'
 
@@ -41,7 +42,6 @@ export default class PendingOperations extends PureComponent {
 
     completedFetching: PropTypes.bool,
     completedEndOfList: PropTypes.bool,
-    locale: PropTypes.string,
   }
 
   static defaultProps = {
@@ -185,8 +185,8 @@ export default class PendingOperations extends PureComponent {
 }
 
 function mapStateToProps (state) {
-  const operations = state.get('operations')
-  const network = state.get('network')
+  const operations = state.get(DUCK_OPERATIONS)
+  const network = state.get(DUCK_NETWORK)
   return {
     list: operations.list,
     isFetched: operations.isFetched,
@@ -196,7 +196,6 @@ function mapStateToProps (state) {
     required: operations.required,
     selectedNetworkId: network.selectedNetworkId,
     selectedProviderId: network.selectedProviderId,
-    locale: state.get('i18n').locale,
   }
 }
 
@@ -209,7 +208,7 @@ function mapDispatchToProps (dispatch) {
     handleSettings: async () => {
       await dispatch(setupOperationsSettings())
       dispatch(modalsOpen({
-        component: OperationsSettingsDialog,
+        componentName: 'OperationsSettingsDialog',
       }))
     },
   }

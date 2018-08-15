@@ -15,7 +15,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
-let srcAppArg = process.argv.find(e => e.startsWith('--src-app='))
+let srcAppArg = process.argv.find((e) => e.startsWith('--src-app='))
 const srcApp = srcAppArg ? srcAppArg.substr('--src-app='.length) : 'index'
 
 module.exports = config.buildConfig(

@@ -3,80 +3,149 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
-import { Checkbox, MuiThemeProvider } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
-import theme from 'styles/themes/default'
-import BackButton from '../../components/BackButton/BackButton'
-import styles from '../../components/stylesLoginPage'
-import Warning from '../../components/Warning/Warning'
-import './GenerateMnemonic.scss'
+import ReactDOM from 'react-dom'
+import React, { Component } from 'react'
+import QRCode from 'qrcode'
+import PrintIcon from 'assets/img/icons/print-white.svg'
+import LogoPrintVersion from 'assets/img/logo-chrono-wallet-bw.svg'
 import { Button } from '../../settings'
 
-class GenerateMnemonic extends PureComponent {
+import './GenerateMnemonic.scss'
+
+export default class MnemonicPage extends Component {
   static propTypes = {
-    onBack: PropTypes.func,
+    mnemonic: PropTypes.string,
+    onProceed: PropTypes.func,
   }
 
-  constructor () {
-    super()
-    this.state = {
-      isConfirmed: false,
-      mnemonicKey: mnemonicProvider.generateMnemonic(),
+  static defaultProps = {
+    mnemonic: '',
+  }
+
+  showMnemonicPrintVersion () {
+    const { mnemonic } = this.props
+    const qrCodeDivId = 'print-qr-code'
+
+    const element = (
+      <div styleName='print-wrapper'>
+        <img styleName='print-logo' src={LogoPrintVersion} alt='Logo' />
+        <div styleName='print-title'>Your back-up phrase<br />(Mnemonic Key)</div>
+        <div styleName='print-mnemonic'>
+          { mnemonic }
+        </div>
+        <div styleName='print-qr-description'>
+          Scan this QR code to speed up
+          <br />
+          entering process
+        </div>
+        <canvas id={qrCodeDivId} width='230' height='230' />
+      </div>
+    )
+
+    this.renderPrintVersionContent(element)
+
+    QRCode.toCanvas(
+      document.getElementById(qrCodeDivId),
+      mnemonic,
+      {
+        errorCorrectionLevel: 'H',
+        type: 'image/jpeg',
+        margin: 0,
+        width: 230,
+      },
+      function (error) {
+        if (error) {
+          // eslint-disable-next-line no-console
+          console.error(error)
+        }
+      })
+
+    window.print()
+  }
+
+  renderPrintVersionContent (content) {
+    const printVersionContainerId = 'generate-mnemonic-container'
+    const printVersionWrapper = document.createElement('div')
+    printVersionWrapper.setAttribute('id', printVersionContainerId)
+
+    document.body.appendChild(printVersionWrapper)
+
+    window.onafterprint = () => {
+      printVersionWrapper.parentNode.removeChild(printVersionWrapper)
     }
-  }
 
-  componentWillMount () {
-    this.setState({ mnemonicKey: mnemonicProvider.generateMnemonic() })
-  }
-
-  componentWillUnmount () {
-    this.setState({ mnemonicKey: '' })
-  }
-
-  handleCheckClick = (target, value) => {
-    this.setState({ isConfirmed: value })
+    ReactDOM.render(content, document.getElementById(printVersionContainerId))
   }
 
   render () {
-    const { isConfirmed, mnemonicKey } = this.state
-
     return (
-      <div>
-        <BackButton
-          onClick={() => this.props.onBack()}
-          to='loginWithMnemonic'
-        />
-        <MuiThemeProvider muiTheme={theme}>
-          <div styleName='root'>
-            <div styleName='keyBox'>
-              <div styleName='keyLabel'><Translate value='GenerateMnemonic.generateMnemonic' /></div>
-              <div styleName='keyValue'>{mnemonicKey}</div>
-            </div>
-            <div styleName='message'><Translate value='GenerateMnemonic.warning' dangerousHTML /></div>
-            <Warning />
-            <div styleName='actions'>
-              <div styleName='actionConfirm'>
-                <Checkbox
-                  onCheck={this.handleCheckClick}
-                  label={<Translate value='GenerateMnemonic.iUnderstand' />}
-                  checked={isConfirmed}
-                  {...styles.checkbox}
-                />
+      <div styleName='wrapper'>
+        <div>
+          <div styleName='page-title'>
+            <Translate value='GenerateMnemonic.title' />
+          </div>
+
+          <p styleName='description'>
+            <Translate value='GenerateMnemonic.description' />
+            <Translate value='GenerateMnemonic.descriptionExtra' />
+          </p>
+
+          <div styleName='passPhraseWrapper'>
+            <div styleName='passPhrase'>{this.props.mnemonic}</div>
+            <div styleName='printButtonWrapper'>
+              <div styleName='printButton' onClick={() => this.showMnemonicPrintVersion()}>
+                <img src={PrintIcon} alt='' />
               </div>
-              <Button
-                label={<Translate value='GenerateMnemonic.continue' />}
-                disabled={!isConfirmed}
-                onClick={() => this.props.onBack()}
-              />
             </div>
           </div>
-        </MuiThemeProvider>
+
+          <div styleName='infoBlock'>
+            <div styleName='infoBlockHeader'>
+              <Translate value='GenerateMnemonic.infoHeader' />
+            </div>
+
+            <ol styleName='infoBlockList'>
+              <li>
+                <p styleName='listItemContent'>
+                  <b>
+                    <Translate value='GenerateMnemonic.infoContentPart1' />
+                  </b>
+                  &nbsp;
+                  <Translate value='GenerateMnemonic.infoContentPart2' />
+                </p>
+              </li>
+
+              <li>
+                <p styleName='listItemContent'>
+                  <b>
+                    <Translate value='GenerateMnemonic.infoContentPart3' />
+                  </b>
+                  &nbsp;
+                  <Translate value='GenerateMnemonic.infoContentPart4' />
+                </p>
+              </li>
+            </ol>
+          </div>
+
+          <div styleName='actions'>
+            <Button
+              styleName='submit'
+              buttonType='login'
+              onClick={this.props.onProceed}
+            >
+              <Translate value='GenerateMnemonic.proceed' />
+            </Button>
+          </div>
+
+          <div styleName='progressBlock'>
+            <div styleName='progressPoint' />
+            <div styleName='progressPoint' />
+            <div styleName='progressPoint progressPointInactive' />
+          </div>
+        </div>
       </div>
     )
   }
 }
-
-export default GenerateMnemonic

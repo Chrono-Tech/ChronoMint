@@ -3,10 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Paper } from 'material-ui'
+import { Paper } from '@material-ui/core'
 import React, { Component } from 'react'
-import { Tokens, CBEAddresses } from 'components'
-
+import Tokens from 'components/settings/Tokens'
+import CBEAddresses from 'components/settings/CBEAddresses'
 import './SettingsContent.scss'
 
 export default class SettingsContent extends Component {

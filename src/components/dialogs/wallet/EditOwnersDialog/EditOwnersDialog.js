@@ -3,14 +3,14 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { addOwner, removeOwner } from 'redux/multisigWallet/actions'
+import { addOwner, removeOwner } from '@chronobank/core/redux/multisigWallet/actions'
 import { modalsClose } from 'redux/modals/actions'
 import EditManagersBaseForm from 'components/forms/EditManagersBaseForm/EditManagersBaseForm'
 import ModalDialog from 'components/dialogs/ModalDialog'
+import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -23,7 +23,7 @@ function mapDispatchToProps (dispatch) {
 @connect(null, mapDispatchToProps)
 class EditManagersDialog extends PureComponent {
   static propTypes = {
-    wallet: PropTypes.instanceOf(MultisigWalletModel),
+    wallet: PropTypes.instanceOf(MultisigEthWalletModel),
     modalsClose: PropTypes.func,
     handleRemoveOwner: PropTypes.func,
     handleAddOwner: PropTypes.func,

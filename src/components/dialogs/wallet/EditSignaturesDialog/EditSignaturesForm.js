@@ -8,11 +8,10 @@ import Button from 'components/common/ui/Button/Button'
 import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
+import { FORM_EDIT_SIGNATURES } from 'components/constants'
 import './EditSignaturesForm.scss'
 import { prefix } from './lang'
 import validate from './validate'
-
-export const FORM_EDIT_SIGNATURES = 'FormEditSignatures'
 
 const onSubmit = (values) => values.get('requiredSignatures')
 

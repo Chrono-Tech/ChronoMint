@@ -1,0 +1,27 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.entryStatus {
+  .entryBadge {
+    border-radius: 3px;
+    min-height: 17px;
+    padding: 2px 20px;
+    font-size: 14px;
+    line-height: 17px;
+    text-transform: uppercase;
+    width: 130px;
+
+    &.badgeOrange {
+      background-color: $badge-orange;
+    }
+
+    &.badgeBlue {
+      background-color: $color-blue-6;
+    }
+  }
+}
+

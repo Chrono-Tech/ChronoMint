@@ -4,7 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
-import { TextField } from 'material-ui'
+import { TextField } from '@material-ui/core'
 import Button from 'components/common/ui/Button/Button'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -60,12 +60,12 @@ export default class CopyDialog extends PureComponent {
               </div>
               <TextField
                 ref={(el) => {
-                this.inputElement = el
-              }}
+                  this.inputElement = el
+                }}
                 name='value'
                 value={this.props.copyValue}
                 fullWidth
-                floatingLabelText={this.props.controlTitle}
+                label={this.props.controlTitle}
               />
             </div>
             <div styleName='footer'>

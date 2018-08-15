@@ -3,49 +3,93 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import networkService from '@chronobank/login/network/NetworkService'
-import { LOCAL_ID, TESTRPC_URL, LOCAL_PROVIDER_ID } from '@chronobank/login/network/settings'
-import web3Provider from '@chronobank/login/network/Web3Provider'
+import {
+  isLocalNode,
+} from '@chronobank/login/network/settings'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import Web3 from 'web3'
-import AccountSelector from '../../components/AccountSelector/AccountSelector'
-import BackButton from '../../components/BackButton/BackButton'
+import { Translate } from 'react-redux-i18n'
+import {
+  handleLoginLocalAccountClick,
+} from '@chronobank/login/redux/network/thunks'
+import { loadAccounts } from '@chronobank/core/redux/session/thunks'
+import {
+  navigateToLoginPage,
+} from '../../redux/actions'
+import {
+  onSubmitLoginTestRPC,
+  onSubmitLoginTestRPCFail,
+} from '../../redux/thunks'
+import './LoginLocal.scss'
 
-const mapDispatchToProps = () => ({
-  selectNetwork: (networkId) => networkService.selectNetwork(networkId),
-  selectProvider: (id) => networkService.selectProvider(id),
+const mapDispatchToProps = (dispatch) => ({
+  loadAccounts: () => dispatch(loadAccounts()),
+  onSubmit: () => dispatch(onSubmitLoginTestRPC()),
+  onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitLoginTestRPCFail(errors, submitErrors)),
+  navigateToLoginPage: () => dispatch(navigateToLoginPage()),
+  handleLoginLocalAccountClick: (account) => dispatch(handleLoginLocalAccountClick(account)),
 })
 
-@connect(null, mapDispatchToProps)
+const mapStateToProps = (state) => {
+  const network = state.get(DUCK_NETWORK)
+  return {
+    accounts: network.accounts,
+    isLocalNode: isLocalNode(network.selectedProviderId, network.selectedNetworkId),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
 class LoginLocal extends PureComponent {
   static propTypes = {
-    selectNetwork: PropTypes.func,
-    onLogin: PropTypes.func,
-    onBack: PropTypes.func.isRequired,
-    selectProvider: PropTypes.func,
+    accounts: PropTypes.array,
+    navigateToLoginPage: PropTypes.func,
+    handleLoginLocalAccountClick: PropTypes.func,
+    isLocalNode: PropTypes.bool,
   }
 
-  componentWillMount () {
-    const web3 = new Web3()
-    web3Provider.reinit(web3, new web3.providers.HttpProvider(TESTRPC_URL))
+  async componentWillMount (){
+    if (this.props.isLocalNode) {
+      await this.props.loadAccounts()
+    } else {
+      this.props.navigateToLoginPage()
+    }
   }
 
-  handleSelectAccount = (account) => {
-    this.props.selectProvider(LOCAL_PROVIDER_ID)
-    this.props.selectNetwork(LOCAL_ID)
-    this.props.onLogin(account)
+  componentDidUpdate (){
+    if (!this.props.isLocalNode){
+      this.props.navigateToLoginPage()
+    }
+  }
+
+  renderRPCSelectorMenuItem (item, i){
+    return (
+      <div
+        key={i}
+        onClick={() => this.props.handleLoginLocalAccountClick(item)}
+        styleName='account-item'
+      >
+        <div styleName='account-item-content'>
+          { item }
+        </div>
+        <div styleName='account-item-icon'>
+          <div className='chronobank-icon'>next</div>
+        </div>
+      </div>
+    )
   }
 
   render () {
+    const { accounts } = this.props
+
     return (
-      <div>
-        <BackButton
-          onClick={this.props.onBack}
-          to='options'
-        />
-        <AccountSelector onSelectAccount={this.handleSelectAccount} />
+      <div styleName='wrapper'>
+
+        <div styleName='page-title'>
+          <Translate value='LoginLocal.title' />
+        </div>
+        {accounts.map((item, i) => this.renderRPCSelectorMenuItem(item, i))}
       </div>
     )
   }

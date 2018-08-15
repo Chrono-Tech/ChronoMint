@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { PTWallet } from 'redux/wallet/types'
+import { PTWallet } from '@chronobank/core/redux/wallet/types'
 import React, { PureComponent } from 'react'
 
 import './SubIconForWallet.scss'

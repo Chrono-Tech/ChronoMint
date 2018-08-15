@@ -3,27 +3,26 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button } from 'components'
-import web3Converter from 'utils/Web3Converter'
+import Button from 'components/common/ui/Button/Button'
+import web3Converter from '@chronobank/core/utils/Web3Converter'
 import React, { PureComponent } from 'react'
-import { getGasPriceMultiplier } from 'redux/session/selectors'
+import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
 import { push } from 'react-router-redux'
-import { change, Field, formValueSelector, reduxForm } from 'redux-form/immutable'
+import { Field, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Slider } from 'redux-form-material-ui'
-import { FEE_RATE_MULTIPLIER, goToWallets } from 'redux/mainWallet/actions'
+import { goToWallets } from '@chronobank/core/redux/mainWallet/actions'
+import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
 import PropTypes from 'prop-types'
 import TWO_FA_LOGO_PNG from 'assets/img/2fa/2-fa.png'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import Preloader from 'components/common/Preloader/Preloader'
-import { create2FAWallet, DUCK_MULTISIG_WALLET, estimateGasFor2FAForm, FORM_2FA_STEPS, FORM_2FA_WALLET } from 'redux/multisigWallet/actions'
-import OwnerCollection from 'models/wallet/OwnerCollection'
-import OwnerModel from 'models/wallet/OwnerModel'
-import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
-import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
-import { getMarket } from 'redux/market/selectors'
-import { DUCK_SESSION } from 'redux/session/actions'
+import { estimateGasFor2FAForm } from '@chronobank/core/redux/multisigWallet/actions'
+import { DUCK_ETH_MULTISIG_WALLET, FORM_2FA_STEPS, FORM_2FA_WALLET } from '@chronobank/core/redux/multisigWallet/constants'
+import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
+import { getMarket } from '@chronobank/core/redux/market/selectors'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { prefix } from './lang'
 import './TwoFaWalletForm.scss'
 
@@ -34,7 +33,7 @@ function mapStateToProps (state) {
   const feeMultiplier = selector(state, 'feeMultiplier')
   const step = selector(state, 'step')
   const { account } = state.get(DUCK_SESSION)
-  const check2FAChecked = state.get(DUCK_MULTISIG_WALLET).twoFAConfirmed()
+  const check2FAChecked = state.get(DUCK_ETH_MULTISIG_WALLET).twoFAConfirmed()
 
   return {
     selectedCurrency,
@@ -53,27 +52,6 @@ function mapDispatchToProps (dispatch) {
   return {
     handleGoWallets: () => dispatch(goToWallets()),
     handleGoTo2FA: () => dispatch(push('/2fa')),
-    onSubmit: (values, dispatch, props) => {
-      // owners
-      let ownersCollection = new OwnerCollection()
-      ownersCollection = ownersCollection.add(new OwnerModel({
-        address: props.account,
-      }))
-
-      // date
-      let releaseTime = new Date(0)
-
-      const wallet = new MultisigWalletModel({
-        ...props.initialValues.toJS(),
-        ...values.toJS(),
-        releaseTime,
-        is2FA: true,
-        owners: ownersCollection,
-      })
-
-      dispatch(create2FAWallet(wallet, values.get('feeMultiplier')))
-      dispatch(change(FORM_2FA_WALLET, 'step', FORM_2FA_STEPS[1]))
-    },
   }
 }
 
@@ -85,7 +63,6 @@ export default class TwoFaWalletForm extends PureComponent {
     check2FAChecked: PropTypes.bool,
     handleSubmit: PropTypes.func,
     account: PropTypes.string,
-    gasPriceMultiplier: PropTypes.number,
     feeMultiplier: PropTypes.number,
     handleGoWallets: PropTypes.func,
     handleGoTo2FA: PropTypes.func,
@@ -109,7 +86,7 @@ export default class TwoFaWalletForm extends PureComponent {
     clearTimeout(this.timeout)
     this.setState({ isFeeLoading: true })
     this.timeout = setTimeout(() => {
-      estimateGasFor2FAForm(
+      this.props.dispatch(estimateGasFor2FAForm(
         account,
         feeMultiplier,
         (error, { gasFee, gasPrice }) => {
@@ -117,11 +94,11 @@ export default class TwoFaWalletForm extends PureComponent {
             this.setState({ gasFee, gasPrice, isFeeLoading: false })
           } else {
             // eslint-disable-next-line
-            console.log(error)
+            console.error(error)
           }
         },
         feeMultiplier,
-      )
+      ))
     }, 1000)
   }
 

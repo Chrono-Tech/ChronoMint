@@ -3,20 +3,20 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { DatePicker, TextField } from 'redux-form-material-ui'
+import { TextField } from 'redux-form-material-ui'
+import DatePicker from 'components/common/DatePicker'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
-import { FlatButton } from 'material-ui'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import { I18n, Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import Amount from 'models/Amount'
-import { getToken } from 'redux/locs/selectors'
-import { LHT } from 'dao/LHTDAO'
-import TokenModel from 'models/tokens/TokenModel'
+import Amount from '@chronobank/core/models/Amount'
+import { getToken } from '@chronobank/core/redux/locs/selectors'
+import { LHT } from '@chronobank/core/dao/LHTDAO'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { connect } from 'react-redux'
-import LOCModel from 'models/LOCModel'
-import { addLOC, removeLOC, updateLOC } from 'redux/locs/actions'
+import LOCModel from '@chronobank/core/models/LOCModel'
+import { addLOC, removeLOC, updateLOC } from '@chronobank/core/redux/locs/actions'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import validate from './validate'
 
@@ -76,14 +76,14 @@ class LOCForm extends PureComponent {
               component={TextField}
               name='name'
               fullWidth
-              floatingLabelText={<Translate value='locs.title' />}
+              label={<Translate value='locs.title' />}
             />
             <Field
               component={TextField}
               name='website'
               hintText='http://...'
               fullWidth
-              floatingLabelText={<Translate value='terms.website' />}
+              label={<Translate value='terms.website' />}
             />
 
             <Field
@@ -91,7 +91,7 @@ class LOCForm extends PureComponent {
               name='expDate'
               fullWidth
               hintText={<Translate value='locs.expirationDate' />}
-              floatingLabelText={<Translate value='locs.expirationDate' />}
+              label={<Translate value='locs.expirationDate' />}
             />
           </div>
           <div styleName='col'>
@@ -101,7 +101,7 @@ class LOCForm extends PureComponent {
               name='issueLimit'
               type='number'
               fullWidth
-              floatingLabelText={(
+              label={(
                 <Translate
                   value='locs.forms.amountToBeS'
                   action={I18n.t('locs.forms.actions.issued')}

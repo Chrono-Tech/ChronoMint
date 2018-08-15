@@ -7,20 +7,19 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import { TextField } from 'redux-form-material-ui'
 import { Field, reduxForm } from 'redux-form/immutable'
-import { DUCK_ASSETS_MANAGER, revokeAsset } from 'redux/assetsManager/actions'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
-import TokensCollection from 'models/tokens/TokensCollection'
+import {  revokeAsset } from '@chronobank/core/redux/assetsManager/actions'
+import { DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/constants'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
+import { FORM_NAME } from 'components/constants'
 import validate from './validate'
 import './RevokeForm.scss'
 
 export const prefix = (token) => {
   return `Assets.RevokeForm.${token}`
 }
-
-export const FORM_NAME = 'RevokeDialog'
 
 function mapStateToProps (state) {
   const form = state.get('form')
@@ -42,10 +41,7 @@ const onSubmit = (values, dispatch, props) => {
 export default class AddPlatformForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
-    formErrors: PropTypes.object,
-    onSubmitSuccess: PropTypes.func,
-    selectedToken: PropTypes.string,
-    tokens: PropTypes.instanceOf(TokensCollection),
+    formErrors: PropTypes.any,
   }
 
   render () {
@@ -57,7 +53,7 @@ export default class AddPlatformForm extends PureComponent {
             component={TextField}
             name='amount'
             fullWidth
-            floatingLabelText={<Translate value={prefix('amount')} />}
+            label={<Translate value={prefix('amount')} />}
           />
 
         </div>

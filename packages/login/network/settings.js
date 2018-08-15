@@ -3,16 +3,18 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import uuid from 'uuid/v1'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_LITECOIN,
-} from './BitcoinProvider'
+} from './constants'
 
 export const NETWORK_MAIN_ID = 1
+export const CUSTOM_PROVIDER_ID = 'CustomProviderID'
 export const LOCAL_ID = 9999999999
-export const LOCAL_PROVIDER_ID = 6
+export const LOCAL_PROVIDER_ID = 8
 // export const LOCAL_MNEMONIC = 'video visa alcohol fault earth naive army senior major inherit convince electric'
 export const LOCAL_PRIVATE_KEYS = [
   '6b9027372deb53f4ae973a5614d8a57024adf33126ece6b587d9e08ba901c0d2',
@@ -110,73 +112,91 @@ export const MIDDLEWARE_MAP = {
 
 // --------- providers
 
+export const infuraMainnet = {
+  ...MAINNET_BASE,
+  host: `mainnet.infura.io/${INFURA_TOKEN}`,
+  ws: 'wss://mainnet.infura.io/ws',
+}
+
+export const infuraTestnet = {
+  ...RINKEBY_BASE,
+  host: `rinkeby.infura.io/${INFURA_TOKEN}`,
+  ws: 'wss://rinkeby.infura.io/ws',
+}
+
 export const infuraNetworkMap = [
-  {
-    ...MAINNET_BASE,
-    host: `mainnet.infura.io/${INFURA_TOKEN}`,
-  },
-  {
-    ...RINKEBY_BASE,
-    host: `rinkeby.infura.io/${INFURA_TOKEN}`,
-  },
+  infuraMainnet,
+  infuraTestnet,
 ]
+
+const mewMainnet = {
+  id: NETWORK_MAIN_ID,
+  protocol: 'https',
+  name: 'Mainnet (production MyEtherWallet)',
+  scanner: blockExplorersMap.Ethereum.mainnet,
+  bitcoin: 'bitcoin',
+  bitcoinCash: 'bitcoin',
+  bitcoinGold: 'bitcoingold',
+  litecoin: 'litecoin',
+  nem: 'mainnet',
+  host: `api.myetherapi.com/eth`,
+}
 
 export const mewNetworkMap = [
-  {
-    id: NETWORK_MAIN_ID,
-    protocol: 'https',
-    name: 'Mainnet (production MyEtherWallet)',
-    scanner: blockExplorersMap.Ethereum.mainnet,
-    bitcoin: 'bitcoin',
-    bitcoinCash: 'bitcoin',
-    bitcoinGold: 'bitcoingold',
-    litecoin: 'litecoin',
-    nem: 'mainnet',
-    host: `api.myetherapi.com/eth`,
-  },
+  mewMainnet,
 ]
+
+const givethMainnet = {
+  id: NETWORK_MAIN_ID,
+  protocol: 'https',
+  name: 'Mainnet (production Giveth)',
+  scanner: blockExplorersMap.Ethereum.mainnet,
+  bitcoin: 'bitcoin',
+  bitcoinCash: 'bitcoin',
+  bitcoinGold: 'bitcoingold',
+  litecoin: 'litecoin',
+  nem: 'mainnet',
+  waves: 'MAINNET_CONFIG',
+  host: `mew.giveth.io`,
+}
 
 export const givethNetworkMap = [
-  {
-    id: NETWORK_MAIN_ID,
-    protocol: 'https',
-    name: 'Mainnet (production Giveth)',
-    scanner: blockExplorersMap.Ethereum.mainnet,
-    bitcoin: 'bitcoin',
-    bitcoinCash: 'bitcoin',
-    bitcoinGold: 'bitcoingold',
-    litecoin: 'litecoin',
-    nem: 'mainnet',
-    waves: 'MAINNET_CONFIG',
-    host: `mew.giveth.io`,
-  },
+  givethMainnet,
 ]
 
-const chronoBankMap = [
-  {
-    ...MAINNET_BASE,
-    host: 'mainnet-full-parity-rpc.chronobank.io/',
-  },
-  {
-    ...RINKEBY_BASE,
-    host: 'rinkeby-full-geth-rpc.chronobank.io/',
-  },
+export const chronoBankMainnet = {
+  ...MAINNET_BASE,
+  host: 'mainnet-full-parity-rpc.chronobank.io/',
+  ws: 'wss://mainnet-full-geth-ws.chronobank.io',
+}
+
+export const chronoBankTestnet = {
+  ...RINKEBY_BASE,
+  host: 'rinkeby-full-geth-rpc.chronobank.io/',
+  ws: 'wss://rinkeby-full-geth-ws.chronobank.io',
+}
+
+export const chronoBankMap = [
+  chronoBankMainnet,
+  chronoBankTestnet,
 ]
+
+export const chronoBankPrivate = {
+  id: 777,
+  protocol: 'https',
+  host: 'private.chronobank.io/',
+  name: 'Private (develop network)',
+  bitcoin: 'testnet',
+  bitcoinCash: 'testnet',
+  // bitcoinGold: 'bitcoingold_testnet',
+  litecoin: 'litecoin_testnet',
+  nem: 'testnet',
+  waves: 'TESTNET_CONFIG',
+}
 
 // dev only
-if (process.env.NODE_ENV === 'development') {
-  chronoBankMap.push({
-    id: 777,
-    protocol: 'https',
-    host: 'private.chronobank.io/',
-    name: 'Private (develop network)',
-    bitcoin: 'testnet',
-    bitcoinCash: 'testnet',
-    // bitcoinGold: 'bitcoingold_testnet',
-    litecoin: 'litecoin_testnet',
-    nem: 'testnet',
-    waves: 'TESTNET_CONFIG',
-  })
+if (process.env['NODE_ENV'] === 'development') {
+  chronoBankMap.push(chronoBankPrivate)
 }
 
 // local only
@@ -224,9 +244,17 @@ export const providerMap = {
   },
   local: {
     id: LOCAL_PROVIDER_ID,
-    name: 'Local',
+    name: 'TestRPC',
     disabled: true,
   },
+}
+
+export const createNetworkProvider = (name, disabled = false) => {
+  return {
+    id: uuid(),
+    name,
+    disabled,
+  }
 }
 
 export const getNetworksByProvider = (providerId, withLocal = false) => {
@@ -266,6 +294,51 @@ export const getNetworksByProvider = (providerId, withLocal = false) => {
       return []
     }
   }
+}
+
+export const getNetworksWithProviders = (providers = [], withLocal = false) => {
+  let networks = []
+
+  providers
+    .filter((provider) => provider && !provider.disabled)
+    .forEach((provider) => {
+
+      const networksProvider = getNetworksByProvider(provider && provider.id, withLocal)
+        .map((network) => ({
+          provider,
+          network,
+        }))
+
+      networks = networks.concat(networksProvider)
+    })
+
+  if (withLocal) {
+    networks.push({
+      provider: providerMap.local,
+      network: infuraLocalNetwork,
+    })
+  }
+
+  return networks
+}
+
+export const getNetworkWithProviderNames = (providerId, networkId, withLocal = false) => {
+  if (isLocalNode(providerId, networkId)) {
+    return 'localNode'
+  }
+
+  const provider = getProviderById(providerId)
+  const network = getNetworkById(networkId, providerId, withLocal)
+
+  if (!provider.name && !network.name) {
+    return ''
+  }
+
+  return `${provider.name} - ${network.name}`
+}
+
+export const isLocalNode = (providerId, networkId) => {
+  return providerId === LOCAL_PROVIDER_ID && networkId === LOCAL_ID
 }
 
 export const getProviderById = (providerId) => {
@@ -310,3 +383,79 @@ export const isTestingNetwork = (networkId, providerId) => {
   const net = getNetworkById(networkId, providerId)
   return net.id !== NETWORK_MAIN_ID
 }
+
+export const getDeveloperNetworksGroup = (isLocal) => {
+  let developerProviders = []
+
+  if (isLocal) {
+    developerProviders.push({
+      provider: providerMap.local,
+      network: infuraLocalNetwork,
+    })
+  }
+
+  if (process.env['NODE_ENV'] === 'development') {
+    developerProviders.push({
+      provider: providerMap.chronoBank,
+      network: chronoBankPrivate,
+    })
+  }
+
+  return developerProviders
+}
+
+export const getNetworksSelectorGroup = (isLocal = false) => {
+  let groups
+
+  const productionNetworks = {
+    title: 'Production networks',
+    description: 'Manage your funds',
+    providers: [
+      {
+        provider: providerMap.chronoBank,
+        network: chronoBankMainnet,
+      },
+      {
+        provider: providerMap.infura,
+        network: infuraMainnet,
+      },
+      /*{ // does not support websocket
+        provider: providerMap.mew,
+        network: mewMainnet,
+      },
+      {
+        provider: providerMap.giveth,
+        network: givethMainnet,
+      },*/
+    ],
+  }
+
+  let testNetworks = {
+    title: 'Test networks',
+    description: 'Test networks with fake funds',
+    providers: [
+      {
+        provider: providerMap.chronoBank,
+        network: chronoBankTestnet,
+      },
+      {
+        provider: providerMap.infura,
+        network: infuraTestnet,
+      },
+    ],
+  }
+
+  groups = [productionNetworks, testNetworks]
+
+  const developerNetworkProviders = getDeveloperNetworksGroup(isLocal)
+
+  if (developerNetworkProviders.length) {
+    groups.push({
+      title: 'Developer networks',
+      providers: developerNetworkProviders,
+    })
+  }
+
+  return groups
+}
+
