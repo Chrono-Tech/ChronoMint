@@ -5,8 +5,8 @@
 
 import uuid from 'uuid/v1'
 import {
-  profileImgJPG,
-} from '@chronobank/core-dependencies/assets'
+  DEFAULT_AVATAR,
+} from 'components/constants'
 import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import Accounts from 'web3-eth-accounts'
@@ -59,7 +59,7 @@ export const getAccountAvatarImg = (account) => {
 export const getAccountAvatar = (account: AccountEntryModel) => {
   const img = getAccountAvatarImg(account)
 
-  return img || profileImgJPG
+  return img || DEFAULT_AVATAR
 }
 
 export const createAccountEntry = (name, walletFileImportObject, profile = null) =>
