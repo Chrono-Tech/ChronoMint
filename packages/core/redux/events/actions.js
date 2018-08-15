@@ -4,7 +4,6 @@
  */
 
 import { padStart, unionBy, uniq, sortBy } from 'lodash'
-
 import { describeEvent, describeTx } from '../../describers'
 
 import { web3Selector } from '../ethereum/selectors'
@@ -106,8 +105,6 @@ export const loadMoreEvents = (address, blockScanLimit = 10000, logScanLimit = 5
   const allHistory = eventsSelector()(getState())
   const history = allHistory[address]
 
-  console.log('allHistory: ', allHistory, address, history)
-
   const toBlock = await web3.eth.getBlock(
     history.cursor == null ? 'latest' : Math.max(0, history.cursor - 1)
   )
@@ -129,8 +126,6 @@ export const loadMoreEvents = (address, blockScanLimit = 10000, logScanLimit = 5
       })
     )
   )
-
-  console.log('logs1, logs2, logs3: ', logs1, logs2, logs3)
 
   let logs = unionBy(
     logs1,
@@ -169,7 +164,6 @@ export const loadMoreEvents = (address, blockScanLimit = 10000, logScanLimit = 5
     uniq(logs.map((entry) => entry.blockHash))
       .map((blockHash) => web3.eth.getBlock(blockHash))
   )
-  console.log('blocks: ', blocks)
 
   const blocksMap = blocks.reduce(
     (target, block) => {

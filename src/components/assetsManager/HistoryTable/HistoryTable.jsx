@@ -52,7 +52,7 @@ export default class HistoryTable extends PureComponent {
 
         data[group] = data[group] || {
           dateBy: group,
-          dateTitle: <Moment date={event.date} format={SHORT_DATE} />,
+          dateTitle: moment(event.date).format('DD MMMM, YYYY'),
           eventList: [],
         }
         data[group].eventList.push(event)
@@ -63,107 +63,27 @@ export default class HistoryTable extends PureComponent {
     return Object.values(groups)
   }
 
-  renderList (eventList: Array) {
-    const renderArrayList = []
+  renderRow (event, index) {
+    console.log('renderRow: ', event)
 
-
-    return renderArrayList
-  }
-
-  renderRow ({ trx, timeTitle }, index) {
     return (
       <div styleName='row' key={index}>
         <div styleName='col-time'>
-          <div styleName='property'>
-            <div styleName='text-faded'>{timeTitle}</div>
-          </div>
-        </div>
-
-        <div styleName='col-type'>
-          <div styleName='property'>
-            <span styleName='badge-in'>{trx.type()}</span>
-          </div>
-        </div>
-
-        <div styleName='col-manager'>
-          <div styleName='property'>
-            <div styleName='text-faded'>{trx.by()}</div>
-          </div>
+          <div styleName='text-faded'>{moment(event.date).format('hh:mm A')}</div>
         </div>
 
         <div styleName='col-value'>
-          <div styleName='property'>
-            <div styleName='value'>
-              {this.renderValue(trx)}
+          <div styleName='col-value-container'>
+            <div styleName='event-title-container'>
+              <span styleName='event-title'>{event.title}</span>
+            </div>
+            <div styleName='event-address-container'>
+              <span styleName='event-address'>{event.key}</span>
             </div>
           </div>
         </div>
       </div>
     )
-  }
-
-  renderValue (trx) {
-    let value
-    switch (trx.type()) {
-      case TX_PAUSED:
-      case TX_UNPAUSED:
-        value = (<div><Translate value={prefix('token')} />: {trx.symbol()}</div>)
-        break
-      case TX_RESTRICTED:
-        value = (
-          <div>
-            <div><Translate value={prefix('token')} />: {trx.symbol()}</div>
-            <div><Translate value={prefix('user')} />: {trx.args().restricted} </div>
-          </div>
-        )
-        break
-      case TX_UNRESTRICTED:
-        value = (
-          <div>
-            <div><Translate value={prefix('token')} />: {trx.symbol()}</div>
-            <div><Translate value={prefix('user')} />: {trx.args().unrestricted} </div>
-          </div>
-        )
-        break
-      case TX_ISSUE:
-      case TX_REVOKE:
-        if (trx.symbol()) {
-          value = (
-            <TokenValue value={new Amount(trx.value(), trx.symbol())} />
-          )
-        } else {
-          value = ''
-        }
-        break
-      case TX_PLATFORM_ATTACHED:
-      case TX_PLATFORM_DETACHED:
-      case TX_PLATFORM_REQUESTED:
-        value = trx.args().platform
-        break
-      case TX_OWNERSHIP_CHANGE:
-        value = (
-          <div>
-            <div><Translate value={prefix('token')} />: {trx.symbol()}</div>
-            {
-              trx.isFromEmpty()
-                ? <span><Translate value={prefix('added')} />: {trx.to()}</span>
-                : <span><Translate value={prefix('deleted')} />: {trx.from()}</span>
-            }
-          </div>
-        )
-        break
-      case TX_ASSET_CREATED:
-        value = (
-          <div>
-            <div><Translate value={prefix('token')} />: {trx.symbol()}</div>
-            <div><Translate value={prefix('platform')} />: {trx.args().platform} </div>
-          </div>
-        )
-        break
-      default:
-        value = ''
-    }
-    return value
   }
 
   render () {
@@ -172,7 +92,6 @@ export default class HistoryTable extends PureComponent {
     const isLoading = events && events.isLoading
     const eventsList = Array.isArray(events.entries) ? events.entries : []
     const data = this.buildTableData(eventsList)
-    console.log('HistoryTable data: ', data, this.props)
 
     let currentDate
 
@@ -182,15 +101,13 @@ export default class HistoryTable extends PureComponent {
           <h3><Translate value={prefix('title')} /></h3>
         </div>
         <div styleName='content'>
-          {eventsList.map((event) => {
-            return (<div styleName='section' key={event.key}>
+          {data.map((group) => {
+            return (<div styleName='section' key={group.dateBy}>
               <div styleName='section-header'>
-                <h5>{event.date}</h5>
+                <h5>{group.dateTitle}</h5>
               </div>
               <div styleName='table'>
-                <div styleName='table-body'>
-                  {event.eventList.map((item, index) => this.renderRow(item, index))}
-                </div>
+                {group.eventList.map((item, index) => this.renderRow(item, index))}
               </div>
             </div>)
           })}
