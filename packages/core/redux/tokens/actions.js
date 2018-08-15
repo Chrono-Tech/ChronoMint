@@ -130,7 +130,7 @@ export const initTokens = () => async (dispatch, getState) => {
 //  dispatch(watchLatestBlock())
 }
 
-export const initBtcLikeTokens = () => async (dispatch, getState) => {
+/*export const initBtcLikeTokens = () => async (dispatch, getState) => {
   const btcLikeTokens = [btcDAO, bccDAO, btgDAO, ltcDAO]
   const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
   dispatch(setTokensFetchingCount(currentCount + btcLikeTokens.length))
@@ -158,7 +158,7 @@ export const initBtcLikeTokens = () => async (dispatch, getState) => {
         }
       }),
   )
-}
+}*/
 
 /*export const initNemTokens = () => async (dispatch, getState) => {
   try {

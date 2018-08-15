@@ -52,6 +52,16 @@ class LoginWithLedger extends PureComponent {
   componentWillUnmount () {
   }
 
+  handleChange = (event, index, value) => {
+    this.setState({ value })
+    ledgerProvider.setWallet(this.props.account[index])
+    this.props.selectAccount(this.props.account[index])
+  }
+
+  _buildItem (item, index) {
+    return <MenuItem value={index} key={index} primaryText={item} />
+  }
+
   renderStates () {
     return (
           <div styleName='state' key='1'>

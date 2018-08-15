@@ -6,22 +6,16 @@
 import uuid from 'uuid/v1'
 import hdkey from 'ethereumjs-wallet/hdkey'
 import bip39 from 'bip39'
-import Accounts from 'web3-eth-accounts'
-import { SignerBitcoinMemoryModel, SignerMemoryModel, SignerDeviceModel } from '../../models'
-import {
-  WALLET_HD_PATH,
-} from '@chronobank/login/network/constants'
 import * as ProfileThunks from '../profile/thunks'
+import * as AccountUtils from './utils'
+import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
+import BitcoinMemoryDevice from '../../services/signers/BitcoinMemoryDevice'
 import {
   AccountModel,
   AccountEntryModel,
   AccountProfileModel,
   AccountCustomNetwork,
 } from '../../models/wallet/persistAccount'
-import {
-  getWalletsListAddresses,
-  getAccountAddress,
-} from './utils'
 import {
   CUSTOM_NETWORKS_LIST_ADD,
   CUSTOM_NETWORKS_LIST_RESET,
@@ -72,20 +66,20 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
 }
 
 export const decryptAccount = (entry, password) => async (dispatch) => {
-  const signer = await SignerMemoryModel.decrypt({ entry, password })
+  const signer = await EthereumMemoryDevice.init({ entry, password })
   console.log(signer)
-  console.log(signer.privateKey)
-  const btcSigner = await SignerBitcoinMemoryModel.create({ privateKey: signer.privateKey })
+  console.log(signer.wallet.privateKey)
+  const btcSigner = await BitcoinMemoryDevice.init({ seed: signer.wallet.privateKey, network: '' })
 
-  const model = new AccountModel({
+  const account = new AccountModel({
     entry,
-    signer,
-    btcSigner,
+    signers: { ethereum: signer, bitcoin: btcSigner },
   })
+  
 
-  dispatch(accountLoad(model))
+  dispatch(accountLoad(account))
 
-  return model
+  return account
 
 
 }
@@ -133,10 +127,8 @@ export const createAccount = ({ name, wallet, type }) => async (dispatch) => {
 }
 
 export const createMemoryAccount = ({name, password, mnemonic, privateKey}) => async (dispatch) => {
-  console.log(SignerMemoryModel)
-  const signer = await SignerMemoryModel.create({ privateKey, mnemonic, numbeOfAccounts: 0 })
-  console.log(signer)
-  const wallet = await signer.encrypt(password)
+  const wallet = await EthereumMemoryDevice.create({ privateKey, mnemonic })
+  console.log(wallet)
   const account = await dispatch(createAccount({name, wallet, type: 'memory'}))
   console.log(account)
   return account
@@ -172,7 +164,7 @@ export const downloadWallet = () => (dispatch, getState) => {
 
 export const setProfilesForAccounts = (walletsList) => async (dispatch) => {
 
-  const addresses = getWalletsListAddresses(walletsList)
+  const addresses = AccountUtils.getWalletsListAddresses(walletsList)
   const data = await dispatch(ProfileThunks.getUserInfo(addresses))
 
   if (Array.isArray(data)) {
@@ -180,7 +172,7 @@ export const setProfilesForAccounts = (walletsList) => async (dispatch) => {
 
       const updatedProfileAccounts =
         walletsList
-          .filter((wallet) => getAccountAddress(wallet, true) === profile.address)
+          .filter((wallet) => AccountUtils.getAccountAddress(wallet, true) === profile.address)
           .map((account) => {
             const profileModel = profile && new AccountProfileModel(profile) || null
             return new AccountEntryModel({

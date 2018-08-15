@@ -13,7 +13,6 @@ import {
   BLOCKCHAIN_WAVES,
   WALLET_HD_PATH,
 } from '@chronobank/login/network/constants'
-import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import WalletModel from '../../models/wallet/WalletModel'
 import { subscribeOnTokens } from '../tokens/actions'
 import { formatBalances, getWalletBalances } from '../tokens/utils'
@@ -51,27 +50,23 @@ export const setWalletBalance = (walletId, balance) => (dispatch) => dispatch({ 
 
 export const initWallets = () => (dispatch) => {
   dispatch(initWalletsFromKeys())
-  dispatch(initDerivedWallets())
+  //TODO refactor DerivedWallets separate for each blockchain
+  //dispatch(initDerivedWallets())
 }
 
 const initWalletsFromKeys = () => (dispatch, getState) => {
   console.log('Init wallets from keys')
   const state = getState()
   const signer = getSigner(state)
-  const providers = [
-    ethereumProvider,
-  ]
 
-  providers.forEach((provider) => {
     const wallet = new WalletModel({
-      address: signer.getAddress(),
-      blockchain: provider.id(),
+      address: signer.address,
+      blockchain: signer.type,
       isMain: true,
     })
 
     dispatch(setWallet(wallet))
     dispatch(updateWalletBalance({ wallet }))
-  })
 }
 
 const initDerivedWallets = () => async (dispatch, getState) => {

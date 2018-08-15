@@ -16,13 +16,12 @@ import {
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
+import web3Converter from '@chronobank/core/utils/Web3Converter'
+import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE } from '@chronobank/login/network/MonitorService'
 import {
   DUCK_NETWORK,
 } from './constants'
 import * as NetworkActions from './actions'
-import uportProvider from '../../network/uportProvider'
-import privateKeyProvider from '../../network/privateKeyProvider'
-import walletProvider from '../../network/walletProvider'
 import setup from '../../network/EngineUtils'
 import web3Provider from '../../network/Web3Provider'
 import {
@@ -40,7 +39,6 @@ import {
 export const resetAllLoginFlags = () => (dispatch) => {
   dispatch(NetworkActions.networkResetImportPrivateKey())
   dispatch(NetworkActions.networkResetImportWalletFile())
-  dispatch(NetworkActions.networkResetImportAccountMode())
   dispatch(NetworkActions.networkResetAccountRecoveryMode())
   dispatch(NetworkActions.networkResetNewMnemonic())
   dispatch(NetworkActions.networkResetNewAccountCredential())
@@ -100,19 +98,8 @@ export const handleLogin = (address) => async (dispatch, getState) => {
   dispatch(NetworkActions.loading())
   dispatch(NetworkActions.clearErrors())
 
-  const providerSettings = dispatch(getProviderSettings())
-  const provider = walletProvider.getProvider(
-    wallet[0],
-    password,
-    providerSettings,
-  )
-
-  dispatch(NetworkActions.selectAccount(provider.ethereum.getAddress()))
-  await setup(provider)
-
   const state = getState()
   const {
-    selectedAccount,
     selectedProviderId,
     selectedNetworkId,
   } = state.get(DUCK_NETWORK)
@@ -123,11 +110,11 @@ export const handleLogin = (address) => async (dispatch, getState) => {
 
   if (isPassed) {
     dispatch(createNetworkSession(
-      selectedAccount,
+      address,
       selectedProviderId,
       selectedNetworkId,
     ))
-    await dispatch(login(selectedAccount))
+    await dispatch(login(address))
   }
 
 }
@@ -235,10 +222,10 @@ export const getNetworkName = () => (dispatch,getState ) => {
   return name
 }
 
-export const autoSelect = (network) => (dispatch, getState) => {
+export const autoSelect = () => (dispatch, getState) => {
   const { priority, preferMainnet } = getState().get(DUCK_NETWORK)
   let checkerIndex = 0
-  let checkers = []
+  const checkers = []
 
   const selectAndResolve = (networkId, providerId) => {
     dispatch(selectProvider(providerId))

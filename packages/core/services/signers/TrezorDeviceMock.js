@@ -17,11 +17,16 @@ export default class TrezorDeviceMock extends EventEmitter {
     return 'Trezor Device Mock'
   }
 
+  get type () {
+    return 'Ethereum'
+  }
+
   async init () {
     const hdWallet = hdkey.fromMasterSeed(MOCK_SEED)
     const xpub = hdWallet.publicExtendedKey() 
     this.xpubkey = xpub
     const wallet = hdkey.fromExtendedKey(this.xpubkey).getWallet()
+    this.address = `0x${wallet.getAddress().toString('hex')}`
     this.emit('connected')
     return {
           path: DEFAULT_PATH,
@@ -43,7 +48,7 @@ export default class TrezorDeviceMock extends EventEmitter {
     return !!this.xpubkey
   }
 
-  async getAddress (path) {
+  getAddress (path) {
     if (this.isConnected) {
       const hdKey = hdkey.fromExtendedKey(this.xpubkey)
       const wallet = hdKey.derivePath(path).getWallet()

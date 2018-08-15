@@ -94,6 +94,7 @@ const configureStore = () => {
       collapsed: true,
       predicate: (getState, action) => {
         if (!action.type) {
+          // eslint-disable-next-line no-console
           console.error('%c action has no type field!', 'background: red; color: #fff', action)
           return true
         }

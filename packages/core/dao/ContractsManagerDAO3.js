@@ -36,7 +36,7 @@ export default class ContractsManagerDAO extends EventEmitter {
     try {
       address = await this.contract.methods.getContractAddressByType(this.web3.utils.stringToHex(type)).call()
     } catch (e) {
-      //eslint-disable-next-line
+      // eslint-disable-next-line no-console
       console.log('getContractAddressByType error: ', e)
     }
     return address

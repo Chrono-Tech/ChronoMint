@@ -11,7 +11,7 @@ import { accountLoad } from '../persistAccount/actions'
 import {
   AccountModel,
   DeviceEntryModel,
-  SignerDeviceModel,
+  SignerModel,
 } from '../../models'
 import {
   DUCK_DEVICE_ACCOUNT,
@@ -75,6 +75,10 @@ export const initTrezorDevice = (wallet) => async (dispatch, getState) => {
 
 }
 
+export const initMemoryDevice = (wallet, password) => async (dispatch, getState) => {
+
+}
+
 export const loadDeviceAccount = (entry) => async (dispatch) => {
   let device;
   console.log('load device account')
@@ -83,10 +87,10 @@ export const loadDeviceAccount = (entry) => async (dispatch) => {
       device = new TrezorDeviceMock()
     }
   }
-  const signer = await SignerDeviceModel.decrypt({device, entry})
+  device.init()
   const wallet = new AccountModel({
     entry,
-    signer,
+    signers: { ethereum: device },
   })
   await dispatch(accountLoad(wallet))
 

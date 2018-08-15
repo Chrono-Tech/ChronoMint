@@ -10,9 +10,6 @@ import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
 
 import {
-  initImportMethodsPage,
-} from '@chronobank/login/redux/network/actions'
-import {
   navigateToCreateAccount,
   navigateToLedgerImportMethod,
   navigateToMnemonicImportMethod,
@@ -43,7 +40,6 @@ function mapDispatchToProps (dispatch) {
     navigateToPrivateKeyImportMethod: () => dispatch(navigateToPrivateKeyImportMethod()),
     navigateToCreateAccount: () => dispatch(navigateToCreateAccount()),
     navigateToCreateAccountWithoutImport: () => dispatch(navigateToCreateAccountWithoutImport()),
-    initImportMethodsPage: () => dispatch(initImportMethodsPage()),
     navigateToWalletUploadMethod: () => dispatch(navigateToWalletUploadMethod()),
   }
 }
@@ -56,7 +52,6 @@ export default class ImportMethodsPage extends PureComponent {
     navigateToPluginImportMethod: PropTypes.func,
     navigateToMnemonicImportMethod: PropTypes.func,
     navigateToPrivateKeyImportMethod: PropTypes.func,
-    initImportMethodsPage: PropTypes.func,
     navigateToCreateAccountWithoutImport: PropTypes.func,
     navigateToWalletUploadMethod: PropTypes.func,
   }

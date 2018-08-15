@@ -7,7 +7,6 @@ import { getNetworkById, LOCAL_ID, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID, LOCAL_PRI
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import { removeWatchersUserMonitor } from '@chronobank/core-dependencies/redux/ui/actions'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import { push, replace } from '@chronobank/core-dependencies/router'
 import LocalStorage from '@chronobank/core-dependencies/utils/LocalStorage'
 import web3Provider from '@chronobank/login/network/Web3Provider'
@@ -207,24 +206,19 @@ export const login = (account) => async (dispatch, getState) => {
   await dispatch(watcher({ web3 }))
 
   const userManagerDAO = daoByType('UserManager')(getState())
-  const [isCBE, profile /*memberId*/] = await Promise.all([
-    userManagerDAO.isCBE(account),
+  const [profile /*memberId*/] = await Promise.all([
     userManagerDAO.getMemberProfile(account, web3),
     userManagerDAO.getMemberId(account),
   ])
 
-  dispatch(SessionActions.sessionProfile(profile, isCBE))
+  dispatch(SessionActions.sessionProfile(profile, false))
 
-  const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
-  isCBE && dispatch(cbeWatcher())
+  const defaultURL = DEFAULT_USER_URL
 
   dispatch(replace(LocalStorage.getLastURL() || defaultURL))
 }
 
 export const bootstrap = (relogin = true, isMetaMaskRequired = true, isLocalAccountRequired = true) => async (dispatch, getState) => {
-  if (isMetaMaskRequired) {
-    dispatch(checkMetaMask())
-  }
 
   if (!relogin) {
     return true
@@ -252,7 +246,7 @@ export const getProfileSignature = (wallet) => async (dispatch) => {
   }
   try {
     const signDataString = ProfileService.getSignData()
-    const signData = wallet.sign(signDataString)
+    const signData = wallet.signData(signDataString)
     const profileSignature = await dispatch(ProfileThunks.getUserProfile(signData.signature))
     dispatch(SessionActions.setProfileSignature(profileSignature))
 

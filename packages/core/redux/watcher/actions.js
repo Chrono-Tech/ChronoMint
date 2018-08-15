@@ -16,7 +16,6 @@ import { initMainWallet } from '../mainWallet/actions'
 import { watchInitMarket } from '../market/actions'
 import { notify } from '../notifier/actions'
 import { watchInitOperations } from '../operations/actions'
-import { watchInitCBE } from '../settings/user/cbe/actions'
 import { initTokens } from '../tokens/actions'
 import { initDAOs } from '../daos/actions'
 import { watchInitPolls } from '../voting/actions'
@@ -96,11 +95,3 @@ export const watcher = ({ web3 }) => async (dispatch) => {
   dispatch({ type: WATCHER })
 }
 
-// only for CBE
-export const cbeWatcher = () => async (dispatch) => {
-  dispatch({ type: WATCHER_CBE })
-  // settings
-  dispatch(watchInitCBE())
-  dispatch(watchInitLOC())
-  dispatch(watchInitOperations())
-}

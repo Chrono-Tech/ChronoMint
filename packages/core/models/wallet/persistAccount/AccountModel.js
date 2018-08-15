@@ -6,11 +6,9 @@
 import PropTypes from 'prop-types'
 import AbstractAccountModel from './AbstractAccountModel'
 import AccountEntryModel from './AccountEntryModel'
-import SignerModel from './SignerModel'
 
 const schema = {
-  signer: PropTypes.instanceOf(SignerModel),
-  btcSigner: PropTypes.instanceOf(SignerModel),
+  signers: PropTypes.instanceOf(Object),
   entry: PropTypes.instanceOf(AccountEntryModel),
 }
 
@@ -21,16 +19,12 @@ class AccountModel extends AbstractAccountModel {
     Object.freeze(this)
   }
 
-  get signerLitecoin () {
-
+  setSigner (type, signer) {
+    this.signers[type] = signer
   }
 
-  get signerDesh () {
-
-  }
-
-  get signerWaves () {
-
+  getSigner (type) {
+    return this.signers[type] = signer
   }
 
 }

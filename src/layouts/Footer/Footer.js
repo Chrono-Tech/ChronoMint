@@ -35,7 +35,7 @@ import StripesToCropFooter from 'assets/img/stripes-2-crop-footer.jpg'
 import spinner from 'assets/img/spinningwheel-1.gif'
 
 import validate from './validate'
-import scssStyles from './Footer.scss'
+import './Footer.scss'
 import styles from './styles'
 
 const mapDispatchToProps = (dispatch) => {

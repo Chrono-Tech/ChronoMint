@@ -20,14 +20,13 @@ import {
   AccountNameContainer,
 } from '@chronobank/login-ui/components'
 import { SubmissionError } from 'redux-form'
-import profileService from '@chronobank/login/network/ProfileService'
+import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
 import { getAddress } from '@chronobank/core/redux/persistAccount/utils'
 
 function mapDispatchToProps (dispatch) {
   return {
+    getUserInfo: (addresses: string[]) => dispatch(ProfileThunks.getUserInfo(addresses)),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
-    navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
-    navigateToLoginPage: () => dispatch(navigateToLoginPage()),
     onCreateWalletFromDevice: (name, device, profile) => dispatch(onCreateWalletFromDevice(name, device, profile)),
     navigateBack: () => dispatch(navigateBack()),
   }
@@ -40,9 +39,8 @@ class TrezorLoginPage extends PureComponent {
   }
 
   static propTypes = {
+    getUserInfo: PropTypes.func,
     navigateToSelectWallet: PropTypes.func,
-    navigateToSelectImportMethod: PropTypes.func,
-    navigateToLoginPage: PropTypes.func,
     navigateBack: PropTypes.func,
     onCreateWalletFromDevice: PropTypes.func,
   }
@@ -95,7 +93,7 @@ class TrezorLoginPage extends PureComponent {
 
     // If profile has been got && profile does exist && userName != null then create wallet
     try {
-      response = await profileService.getPersonInfo([getAddress(device.address, true)])
+      response = await this.props.getUserInfo([getAddress(device.address, true)])
 
       profile = response.data[0]
       userName = profile.userName

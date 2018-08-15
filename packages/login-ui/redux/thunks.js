@@ -17,15 +17,14 @@ import {
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
-import { autoSelect } from '@chronobank/login/redux/network/thunks'
 import * as NetworkThunks from '@chronobank/login/redux/network/thunks'
 import { getSigner } from '@chronobank/core/redux/persistAccount/selectors'
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
 import * as DeviceActions from '@chronobank/core/redux/device/actions'
-import { login } from '@chronobank/core/redux/session/actions'
+import * as SessionThunks from '@chronobank/core/redux/session/thunks'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 import { AccountEntryModel } from '@chronobank/core/models'
-import { SignerMemoryModel } from '@chronobank/core/models'
+import { EthereumMemoryDevice } from '@chronobank/core/services/signers/EthereumMemoryDevice'
 import { checkTestRPC } from '@chronobank/login/redux/network/utils'
 import {
   createAccountEntry,
@@ -47,7 +46,6 @@ import {
  */
 export const navigateToCreateAccountWithoutImport = () => (dispatch) => {
   dispatch(LoginUIActions.navigateToCreateAccount())
-  dispatch(NetworkActions.networkResetImportAccountMode())
 }
 
 // #endregion
@@ -63,7 +61,7 @@ export const initCommonNetworkSelector = () => (dispatch, getState) => {
   const state = getState()
   const { isLocal } = state.get(DUCK_NETWORK)
 
-  dispatch(autoSelect())
+  dispatch(NetworkThunks.autoSelect())
 
   if (!isLocal) {
     checkTestRPC()
@@ -101,9 +99,10 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
      case 'memory' : {
       try {
         const wallet = await dispatch(PersistAccountActions.decryptAccount(wlt, password))
-        await dispatch(SessionActions.getProfileSignature(wallet.signer))
+	console.log(wallet.signers.ethereum.address)
+        await dispatch(SessionThunks.getProfileSignature(wallet.signers.ethereum))
 	      
-        await dispatch(NetworkThunks.handleLogin(wallet.signer.address))
+        await dispatch(NetworkThunks.handleLogin(wallet.signers.ethereum.address))
       } catch (e) {
         throw new SubmissionError({ password: e && e.message })
       }
@@ -114,10 +113,10 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
       console.log('navigate to device login')
       try {
         const wallet = await dispatch(DeviceActions.loadDeviceAccount(wlt))
-        console.log(wallet)
-        dispatch(SessionActions.getProfileSignature(wallet.signer))
-
-        await dispatch(NetworkThunks.handleLogin(wallet.signer.address))
+        console.log(wallet.signers.ethereum.address)
+        dispatch(SessionThunks.getProfileSignature(wallet.signers.ethereum))
+        
+        await dispatch(NetworkThunks.handleLogin(wallet.signers.ethereum.address))
       } catch (e) {
         throw new SubmissionError({ password: e && e.message })
       }
@@ -181,25 +180,6 @@ export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKe
     }
 
   }
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to rework it
- */
-export const onSubmitCreateHWAccountPageSuccess = () => {
-  // FIXME: empty thunk
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to rework it
- */
-// eslint-disable-next-line no-unused-vars
-export const onSubmitCreateHWAccountPageFail = (errors, submitErrors) => {
-  // FIXME: empty thunk
-}
 
 /*
  * Thunk dispatched by "" screen.

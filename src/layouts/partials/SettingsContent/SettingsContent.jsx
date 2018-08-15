@@ -6,7 +6,6 @@
 import { Paper } from '@material-ui/core'
 import React, { Component } from 'react'
 import Tokens from 'components/settings/Tokens'
-import CBEAddresses from 'components/settings/CBEAddresses'
 import './SettingsContent.scss'
 
 export default class SettingsContent extends Component {
@@ -21,7 +20,6 @@ export default class SettingsContent extends Component {
           </div>
           <div styleName='column'>
             <Paper>
-              <CBEAddresses />
             </Paper>
           </div>
         </div>

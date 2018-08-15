@@ -14,14 +14,10 @@ import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/Asse
 import BlacklistDialog from 'components/assetsManager/BlacklistDialog/BlacklistDialog'
 import BlockAssetDialog from 'components/assetsManager/BlockAssetDialog/BlockAssetDialog'
 import BuyTokensDialog from 'components/exchange/BuyTokensDialog/BuyTokensDialog'
-import CBEAddressDialog from 'components/dialogs/CBEAddressDialog'
-import CBETokenDialog from 'components/dialogs/CBETokenDialog/CBETokenDialog'
 import ConfirmTransferDialog from 'components/dialogs/ConfirmTransferDialog/ConfirmTransferDialog'
 import ConfirmTxDialog from 'components/dialogs/ConfirmTxDialog/ConfirmTxDialog'
 import CopyDialog from 'components/dialogs/CopyDialog/CopyDialog'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
-import EditManagersDialog from 'components/dialogs/wallet/EditOwnersDialog/EditOwnersDialog'
-import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog/EditSignaturesDialog'
 import MenuAssetsManagerMoreInfo from 'layouts/partials/DrawerMainMenu/MenuAssetsManagerMoreInfo/MenuAssetsManagerMoreInfo'
 import NetworkCreateModal from '@chronobank/login-ui/components/NetworkCreateModal/NetworkCreateModal'
 import NetworkCreateModalForm from '@chronobank/login-ui/components/NetworkCreateModal/NetworkCreateModalForm/NetworkCreateModalForm'
@@ -46,14 +42,10 @@ export default class ModalSelector extends PureComponent {
     'BlacklistDialog': BlacklistDialog,
     'BlockAssetDialog': BlockAssetDialog,
     'BuyTokensDialog': BuyTokensDialog,
-    'CBEAddressDialog': CBEAddressDialog,
-    'CBETokenDialog': CBETokenDialog,
     'ConfirmTransferDialog': ConfirmTransferDialog,
     'ConfirmTxDialog': ConfirmTxDialog,
     'CopyDialog': CopyDialog,
     'DepositTokensModal': DepositTokensModal,
-    'EditManagersDialog': EditManagersDialog,
-    'EditSignaturesDialog': EditSignaturesDialog,
     'MenuAssetsManagerMoreInfo': MenuAssetsManagerMoreInfo,
     'NetworkCreateModal': NetworkCreateModal,
     'NetworkCreateModalForm': NetworkCreateModalForm,
