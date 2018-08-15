@@ -109,7 +109,7 @@ export const handleWalletLogin = (wallet, password) => async (dispatch, getState
   )
 
   dispatch(NetworkActions.selectAccount(provider.ethereum.getAddress()))
-  await setup(provider)
+  setup(provider)
 
   const state = getState()
   const {

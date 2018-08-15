@@ -13,6 +13,7 @@ import {
 } from '@chronobank/core/dao/constants'
 import Amount from '@chronobank/core/models/Amount'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
 import web3Converter from '@chronobank/core/utils/Web3Converter'
@@ -64,7 +65,7 @@ export default class SendTokens extends PureComponent {
     // resetForm: PropTypes.func,
     multisigTransfer: PropTypes.func,
     tokens: PropTypes.instanceOf(TokensCollection),
-    token: PropTypes.string,
+    token: PropTypes.instanceOf(TokenModel),
     // blockchain: PropTypes.string,
     // address: PropTypes.string,
   }

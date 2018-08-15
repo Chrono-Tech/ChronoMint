@@ -9,6 +9,7 @@ import {
 } from '@chronobank/core-dependencies/assets'
 import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
+import Accounts from 'web3-eth-accounts'
 import {
   AccountEntryModel,
 } from '../../models/wallet/persistAccount'
@@ -86,4 +87,11 @@ export const validateMnemonicForAccount = (mnemonic, selectedWallet: AccountEntr
   const address = getAddressByMnemonic(mnemonic)
 
   return addressFromWallet === address
+}
+
+export const decryptAccount = (encrypted, password) => {
+  const accounts = new Accounts()
+  accounts.wallet.clear()
+
+  return accounts.wallet.decrypt(encrypted, password)
 }

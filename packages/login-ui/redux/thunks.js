@@ -25,6 +25,7 @@ import { SignerMemoryModel } from '@chronobank/core/models'
 import { checkTestRPC } from '@chronobank/login/redux/network/utils'
 import {
   createAccountEntry,
+  decryptAccount,
 } from '@chronobank/core/redux/persistAccount/utils'
 import {
   isLocalNode,
@@ -100,10 +101,10 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
 
   try {
-    const wallet = dispatch(PersistAccountActions.decryptAccount(selectedWallet.encrypted, password))
+    const wallet = decryptAccount(selectedWallet.encrypted, password)
     dispatch(PersistAccountActions.accountLoad(new SignerMemoryModel({ wallet })))
 
-    const privateKey = wallet && wallet[0] && wallet[0].privateKey
+    const privateKey = wallet[0] && wallet[0].privateKey
 
     dispatch(SessionThunks.getProfileSignature(wallet[0]))
 

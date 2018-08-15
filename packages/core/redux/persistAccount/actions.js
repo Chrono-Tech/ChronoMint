@@ -67,13 +67,6 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
 
 }
 
-export const decryptAccount = (encrypted, password) => () => {
-  const accounts = new Accounts()
-  accounts.wallet.clear()
-
-  return accounts.wallet.decrypt(encrypted, password)
-}
-
 export const validateAccountName = (name) => (dispatch, getState) => {
   const state = getState()
 
@@ -123,7 +116,7 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
     key: uuid(),
     name,
     types,
-    encrypted: wallet && wallet.encrypt(password),
+    encrypted: wallet.encrypt(password),
     profile: null,
   })
 
