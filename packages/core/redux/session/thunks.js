@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { getNetworkById, LOCAL_ID, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID, LOCAL_PRIVATE_KEYS } from '@chronobank/login/network/settings'
+import { getNetworkById, LOCAL_ID, LOCAL_PRIVATE_KEYS, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import { removeWatchersUserMonitor } from '@chronobank/core-dependencies/redux/ui/actions'
@@ -11,26 +11,18 @@ import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import { push, replace } from '@chronobank/core-dependencies/router'
 import LocalStorage from '@chronobank/core-dependencies/utils/LocalStorage'
 import web3Provider from '@chronobank/login/network/Web3Provider'
-import * as Utils from '@chronobank/login/redux/network/utils'
 import setup from '@chronobank/login/network/EngineUtils'
 import metaMaskResolver from '@chronobank/login/network/metaMaskResolver'
-import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import * as SessionActions from './actions'
 import * as ProfileThunks from '../profile/thunks'
 import ProfileService from '../profile/service'
 import { daoByType } from '../../redux/daos/selectors'
 import web3Factory from '../../web3'
-import { cbeWatcher, watcher } from '../watcher/actions'
+import { watcher } from '../watcher/actions'
 import { watchStopMarket } from '../market/actions'
 import { initEthereum } from '../ethereum/actions'
-import {
-  DUCK_PERSIST_ACCOUNT,
-} from '../persistAccount/constants'
-import {
-  DEFAULT_CBE_URL,
-  DEFAULT_USER_URL,
-  DUCK_SESSION,
-} from './constants'
+import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
+import { DEFAULT_CBE_URL, DEFAULT_USER_URL, DUCK_SESSION } from './constants'
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
@@ -44,33 +36,6 @@ export const checkMetaMask = () => (dispatch) => {
   metaMaskResolver
     .on('resolve', metaMaskHandler)
     .start()
-}
-
-export const checkNetwork = () => async (dispatch) => {
-  dispatch(NetworkActions.loading())
-  const isDeployed = await contractsManagerDAO.isDeployed()
-  if (!isDeployed) {
-    dispatch(NetworkActions.addError('Network is unavailable.'))
-  }
-  //return isDeployed
-  return true
-}
-
-export const checkLocalSession = (account, providerURL) => async (dispatch) => {
-  const isTestRPC = Utils.checkTestRPC(providerURL)
-  // testRPC must be exists
-  if (!isTestRPC || !account) {
-    return false
-  }
-
-  // contacts and network must be valid
-  const isDeployed = await dispatch(checkNetwork())
-  if (!isDeployed) {
-    return false
-  }
-
-  // all tests passed
-  return true
 }
 
 export const getAccounts = () => (dispatch, getState) => {
@@ -188,8 +153,6 @@ export const logout = () => async (dispatch, getState) => {
     dispatch(push('/'))
     if (selectedNetworkId === NETWORK_MAIN_ID) {
       location.reload()
-    } else {
-      await dispatch(bootstrap(false))
     }
   } catch (e) {
     // eslint-disable-next-line
@@ -229,34 +192,12 @@ export const login = (account) => async (dispatch, getState) => {
   dispatch(SessionActions.sessionProfile(profile, isCBE))
 
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
-  isCBE && dispatch(cbeWatcher())
 
   dispatch(replace(LocalStorage.getLastURL() || defaultURL))
 }
 
-export const bootstrap = (relogin = true, isMetaMaskRequired = true, isLocalAccountRequired = true) => async (dispatch, getState) => {
-  if (isMetaMaskRequired) {
-    dispatch(checkMetaMask())
-  }
-
-  if (!relogin) {
-    return true
-  }
-
-  if (isLocalAccountRequired) {
-    const localAccount = LocalStorage.getLocalAccount()
-    const isPassed = await dispatch(checkLocalSession(localAccount))
-    if (isPassed) {
-      await dispatch(restoreLocalSession(localAccount, getState().get('ethMultisigWallet')))
-      dispatch(createNetworkSession(localAccount, LOCAL_PROVIDER_ID, LOCAL_ID))
-      dispatch(login(localAccount))
-    } else {
-      // eslint-disable-next-line
-      console.warn('Can\'t restore local session')
-    }
-  }
-
-  return true
+export const bootstrap = () => async () => {
+  return true //FIXME remove method
 }
 
 export const getProfileSignature = (wallet) => async (dispatch) => {

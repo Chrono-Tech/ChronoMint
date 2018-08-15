@@ -4,7 +4,7 @@
  */
 
 import web3Converter from '../utils/Web3Converter'
-import AbstractContractDAO from './AbstractContract3DAO'
+import AbstractContractDAO from './AbstractContractDAO'
 import { ChronoBankPlatformABI } from './abi'
 
 import {
