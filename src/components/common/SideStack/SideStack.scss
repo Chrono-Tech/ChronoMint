@@ -5,9 +5,9 @@
 @import "~styles/partials/mixins";
 
 .root {
-  @include position(absolute, 0, auto, auto, auto);
+  @include position(absolute, 0, auto, 0, auto);
   width: 0;
-  height: 0;
+  height: auto;
   z-index: 1200;
   @include sm-only {
     z-index: 1600;

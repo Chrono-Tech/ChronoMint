@@ -37,7 +37,7 @@ export default class TokensListWidget extends PureComponent {
       symbol: PropTypes.string,
       value: PropTypes.number,
     })),
-    walletId: PropTypes.number,
+    walletId: PropTypes.string,
   }
 
   constructor (props) {

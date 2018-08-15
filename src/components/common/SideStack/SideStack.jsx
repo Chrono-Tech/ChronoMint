@@ -28,7 +28,7 @@ export default class SideStack extends PureComponent {
       <div styleName='root'>
         {
           this.props.stack && Object.values(this.props.stack)
-            .map((panel) => <SideSelector key={panel.panelKey} {...panel}/> )
+            .map((panel) => <SideSelector key={panel.panelKey} {...panel} />)
         }
       </div>
     )
