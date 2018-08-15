@@ -5,7 +5,6 @@
 
 import AssetsPage from './AssetsPage'
 import RewardsPage from './RewardsPage'
-import SettingsPage from './SettingsPage'
 import VotingPage from './VotingPage'
 import PollPage from './PollPage'
 import DepositsPage from './DepositsPage'
@@ -23,7 +22,6 @@ export {
   RewardsPage,
   VotingPage,
   PollPage,
-  SettingsPage,
   AssetsPage,
   DepositsPage,
   DepositPage,
@@ -39,7 +37,6 @@ export default {
   RewardsPage,
   VotingPage,
   PollPage,
-  SettingsPage,
   AssetsPage,
   DepositsPage,
   DepositPage,

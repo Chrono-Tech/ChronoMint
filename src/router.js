@@ -21,7 +21,6 @@ import Splash from 'layouts/Splash/Splash'
 import {
   AssetsPage,
   RewardsPage,
-  SettingsPage,
   VotingPage,
   PollPage,
   WalletsPage,
@@ -82,9 +81,6 @@ const router = (
         <Route path='new-poll' component={NewPollPage} />
         <Route path='vote-history' component={VoteHistoryPage} />
         <Route path='assets' component={AssetsPage} />
-        <Route path='cbe'>
-          <Route path='settings' component={SettingsPage} />
-        </Route>
       </Route>
 
       <Route path='/login' component={Splash}>

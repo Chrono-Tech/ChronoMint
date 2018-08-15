@@ -18,7 +18,6 @@ import profile from './profile/reducer'
 import rewards from './rewards/reducer'
 import session from './session/reducer'
 import settingsErc20Tokens from './settings/erc20/tokens/reducer'
-import settingsUserCBE from './settings/user/cbe/reducer'
 import tokens from './tokens/reducer'
 import voting from './voting/reducer'
 import wallet from './wallet/reducer'
@@ -39,7 +38,6 @@ const coreReducers = {
   rewards,
   session,
   settingsErc20Tokens,
-  settingsUserCBE,
   tokens,
   voting,
   wallet,
