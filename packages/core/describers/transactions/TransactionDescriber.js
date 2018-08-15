@@ -16,30 +16,17 @@ export class TransactionDescriber {
 
 export const decodeParameters = (abi, tx) => {
   const inputsBody = tx.input.substring(10)
-  // try {
-  //   const params = Web3ABI.decodeParameters(abi.inputs, `0x${inputsBody}`)
-  //   const inputs = abi.inputs.map(
-  //     input => ({
-  //       input,
-  //       value: params[input.name]
-  //     })
-  //   )
-  //   return {
-  //     params,
-  //     inputs
-  //   }
-  // } catch (e) {
-  const names = abi.inputs ? abi.inputs.map(x => x.name) : []
-  const types = abi.inputs ? abi.inputs.map(x => x.type) : []
+  const names = abi.inputs ? abi.inputs.map((x) => x.name) : []
+  const types = abi.inputs ? abi.inputs.map((x) => x.type) : []
   const inputsBuf = Buffer.from(inputsBody, `hex`)
   const values = ethAbi.rawDecode(types, inputsBuf, [])
-  // console.log(e, values)
+
   const items = zipWith(names, types, values).map(([name, type, value]) => ({
     name,
     type,
     value: cloneDeepWith(
       value,
-      node => {
+      (node) => {
         if (node instanceof BN) {
           return new BigNumber(node.toString())
         }
@@ -57,8 +44,9 @@ export const decodeParameters = (abi, tx) => {
       },
     ),
   }))
+
   return {
-    inputs: items.map(item => ({
+    inputs: items.map((item) => ({
       input: item.name,
       value: item.value,
     })),
@@ -67,11 +55,10 @@ export const decodeParameters = (abi, tx) => {
       return target
     }, {}),
   }
-  // }
 }
 
 export const findFunctionABI = (abi, name) => {
-  return abi.abi.find(entry => entry.type === 'function' && entry.name === name)
+  return abi.abi.find((entry) => entry.type === 'function' && entry.name === name)
 }
 
 // Helper functions

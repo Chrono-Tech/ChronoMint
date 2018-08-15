@@ -348,7 +348,7 @@ export const getTransactions = () => async (dispatch, getState) => {
   const tokens = state.get(DUCK_TOKENS)
   // const assetsManagerDAO = daoByType('AssetsManager')(state)
   // const transactionsList = await assetsManagerDAO.getTransactions(account, tokens)
-  await dispatch(loadMoreEvents(account))
+  // await dispatch(loadMoreEvents(account))
 
   dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList: [] } })
 }

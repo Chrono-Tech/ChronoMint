@@ -43,7 +43,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    createPlatform: () => dispatch(loadMoreEvents()),
+    createPlatform: () => dispatch(createPlatform()),
     handleAddPlatformDialog: () => dispatch(modalsOpen({
       component: AddPlatformDialog,
     })),
@@ -186,11 +186,9 @@ export default class AssetManager extends PureComponent {
             {this.renderBody()}
           </Paper>
           <div styleName='delimiter' />
-          {/*
-          // TODO repair table
           <Paper>
             {this.renderTable()}
-          </Paper>*/}
+          </Paper>
         </div>
       </div>
     )

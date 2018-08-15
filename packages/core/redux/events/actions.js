@@ -5,7 +5,7 @@
 
 import { padStart, unionBy, uniq, sortBy } from 'lodash'
 
-import { describeEvent } from '../../describers'
+import { describeEvent, describeTx } from '../../describers'
 
 import { web3Selector } from '../ethereum/selectors'
 import { eventsSelector } from './selectors'
@@ -18,18 +18,22 @@ import {
 
 export const pushTx = (address, receipt) => async (dispatch, getState) => {
   {
+    const web3 = web3Selector()(getState())
+    const state = getState()
+
     address = address.toLowerCase()
+
     const [tx, block] = await Promise.all([
       web3.eth.getTransaction(receipt.transactionHash),
       web3.eth.getBlock(receipt.blockHash)
     ])
 
     const desciption = describeTx(
-      {tx, receipt, block},
+      { tx, receipt, block },
       {
         address,
         agents: [],
-        getters: rootGetters
+        // getters: rootGetters
       }
     )
 
@@ -39,23 +43,22 @@ export const pushTx = (address, receipt) => async (dispatch, getState) => {
 
     const actualHistory = state.history[address]
 
-    commit(LOGS_UPDATED, {
+    dispatch(LOGS_UPDATED, {
       address,
       cursor: actualHistory
         ? actualHistory.cursor
         : null,
       entries: actualHistory
         ? [...entries, ...actualHistory.entries]
-        : [...entries]
+        : [...entries],
     })
-
-    await dispatch('notifications/pushTxEntries', {
-      entries
-    }, {root: true})
   }
 }
 
 export const pushEvent = (address, log) => async (dispatch, getState) => {
+  const web3 = web3Selector()(getState())
+  const state = getState()
+
   address = address.toLowerCase()
   const [tx, receipt, block] = await Promise.all([
     web3.eth.getTransaction(log.transactionHash),
@@ -68,7 +71,7 @@ export const pushEvent = (address, log) => async (dispatch, getState) => {
     {
       address,
       agents: [],
-      getters: rootGetters
+      // getters: rootGetters
     }
   )
 
@@ -78,26 +81,22 @@ export const pushEvent = (address, log) => async (dispatch, getState) => {
 
   const actualHistory = state.history[address]
 
-  commit(LOGS_UPDATED, {
+  dispatch(LOGS_UPDATED, {
     address,
     cursor: actualHistory
       ? actualHistory.cursor
       : null,
     entries: actualHistory
       ? [...entries, ...actualHistory.entries]
-      : [...entries]
+      : [...entries],
   })
-
-  await dispatch('notifications/pushEventEntries', {
-    entries
-  }, {root: true})
 }
 
-export const loadMoreEvents = (address, blockScanLimit = 5000, logScanLimit = 50) => async (dispatch, getState) => {
-  address = '0x4a2d3fc1587494ca2ca9cdeb457cd94be5d96a61'
-
+export const loadMoreEvents = (address, blockScanLimit = 10000, logScanLimit = 50) => async (dispatch, getState) => {
   console.log('loadMoreEvents: ', address, blockScanLimit, logScanLimit )
+
   const web3 = web3Selector()(getState())
+  address = address.toLowerCase()
 
   await dispatch({
     type: LOGS_LOADING,
@@ -122,11 +121,11 @@ export const loadMoreEvents = (address, blockScanLimit = 5000, logScanLimit = 50
   console.log('toBlock: ', fromBlock, toBlock, topic)
 
   const [logs1, logs2, logs3] = await Promise.all(
-    [1, 2].map(
+    [1, 2, 3].map(
       (number) => web3.eth.getPastLogs({
         toBlock: `0x${Number(toBlock.number).toString(16)}`,
         fromBlock: `0x${Number(fromBlock.number).toString(16)}`,
-        topics: [0, 1, 2].map((n) => number === n ? topic : null)
+        topics: Array.from({ length: number + 1 }).map((n, i) => number === i ? topic : null)
       })
     )
   )
@@ -165,8 +164,6 @@ export const loadMoreEvents = (address, blockScanLimit = 5000, logScanLimit = 50
   fromBlock = await web3.eth.getBlock(
     logs[logs.length - 1].blockHash
   )
-
-  // const logs
 
   const blocks = await Promise.all(
     uniq(logs.map((entry) => entry.blockHash))
@@ -240,14 +237,14 @@ export const loadMoreEvents = (address, blockScanLimit = 5000, logScanLimit = 50
         }
       }
 
-      if (tx.from.toLowerCase() === address || tx.to.toLowerCase() === address) {
-        const description = {} // describeTx({ tx, receipt, block }, context)
-        if (Array.isArray(description)) {
-          entries.push(...description)
-        } else {
-          entries.push(description)
-        }
-      }
+      // if (tx.from.toLowerCase() === address || tx.to.toLowerCase() === address) {
+      //   const description = describeTx({ tx, receipt, block }, context)
+      //   if (Array.isArray(description)) {
+      //     entries.push(...description)
+      //   } else {
+      //     entries.push(description)
+      //   }
+      // }
     }
   }
 

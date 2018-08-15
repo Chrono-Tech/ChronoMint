@@ -10,6 +10,7 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import moment from 'moment'
+import { currentAccountEvents } from '@chronobank/core/redux/events/selectors'
 import { DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/constants'
 import Moment from 'components/common/Moment/index'
 import { SHORT_DATE } from '@chronobank/core/models/constants'
@@ -18,6 +19,7 @@ import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from '@chronobank/core/dao/c
 import { TX_PLATFORM_ATTACHED, TX_PLATFORM_DETACHED, TX_PLATFORM_REQUESTED } from '@chronobank/core/dao/constants/PlatformsManagerDAO'
 import { TX_ASSET_CREATED } from '@chronobank/core/dao/constants/AssetsManagerDAO'
 import TransactionsCollection from '@chronobank/core/models/wallet/TransactionsCollection'
+import LogListModel from "@chronobank/core/models/LogListModel";
 import { TX_PAUSED, TX_RESTRICTED, TX_UNPAUSED, TX_UNRESTRICTED } from '@chronobank/core/dao/constants/ChronoBankAssetDAO'
 
 import './HistoryTable.scss'
@@ -30,41 +32,42 @@ function mapStateToProps (state) {
   const assetsManager = state.get(DUCK_ASSETS_MANAGER)
   return {
     locale: state.get('i18n').locale,
-    transactionsList: assetsManager.transactionsList(),
+    events: currentAccountEvents()(state),
   }
 }
 
 @connect(mapStateToProps)
 export default class HistoryTable extends PureComponent {
   static propTypes = {
-    transactionsList: PropTypes.instanceOf(TransactionsCollection),
+    events: PropTypes.instanceOf(LogListModel),
     locale: PropTypes.string,
   }
 
-  buildTableData (historyItems, locale) {
+  buildTableData (eventItems, locale) {
     moment.locale(locale)
-    const groups = historyItems
-      .reduce((data, trx) => {
-        const groupBy = trx.date('YYYY-MM-DD')
-        data[ groupBy ] = data[ groupBy ] || {
-          dateBy: trx.date('YYYY-MM-DD'),
-          dateTitle: <Moment date={trx.date('YYYY-MM-DD')} format={SHORT_DATE} />,
-          transactions: [],
+    const groups = eventItems
+      .reduce((data, event) => {
+        const group = moment(event.date).format('YYYY-MM-DD')
+        console.log('buildTableData: ', event, group)
+
+        data[group] = data[group] || {
+          dateBy: group,
+          dateTitle: <Moment date={event.date} format={SHORT_DATE} />,
+          eventList: [],
         }
-        data[ groupBy ].transactions.push({
-          trx,
-          timeBy: trx.date('HH:mm:ss'),
-          timeTitle: trx.date('HH:mm'),
-        })
+        data[group].eventList.push(event)
+
         return data
       }, {})
 
     return Object.values(groups)
-      .sort((a, b) => a.dateBy > b.dateBy ? -1 : a.dateBy < b.dateBy)
-      .map((group) => ({
-        ...group,
-        transactions: group.transactions.sort((a, b) => a.timeBy > b.timeBy ? -1 : a.timeBy < b.timeBy),
-      }))
+  }
+
+  renderList (eventList: Array) {
+    const renderArrayList = []
+
+
+    return renderArrayList
   }
 
   renderRow ({ trx, timeTitle }, index) {
@@ -164,7 +167,14 @@ export default class HistoryTable extends PureComponent {
   }
 
   render () {
-    const data = this.buildTableData(this.props.transactionsList.items(), this.props.locale)
+
+    const { events } = this.props
+    const isLoading = events && events.isLoading
+    const eventsList = Array.isArray(events.entries) ? events.entries : []
+    const data = this.buildTableData(eventsList)
+    console.log('HistoryTable data: ', data, this.props)
+
+    let currentDate
 
     return (
       <div styleName='root'>
@@ -172,35 +182,20 @@ export default class HistoryTable extends PureComponent {
           <h3><Translate value={prefix('title')} /></h3>
         </div>
         <div styleName='content'>
-          {data.length ?
-            (
-              <div styleName='table'>
-                <div styleName='table-head'>
-                  <div styleName='row'>
-                    <div styleName='col-time'><Translate value={prefix('time')} /></div>
-                    <div styleName='col-type'><Translate value={prefix('type')} /></div>
-                    <div styleName='col-manager'><Translate value={prefix('manager')} /></div>
-                    <div styleName='col-value'><Translate value={prefix('value')} /></div>
-                  </div>
-                </div>
-              </div>
-            )
-            : ''}
-          {data.map((group) => (
-            <div styleName='section' key={group.dateBy}>
+          {eventsList.map((event) => {
+            return (<div styleName='section' key={event.key}>
               <div styleName='section-header'>
-                <h5>{group.dateTitle}</h5>
+                <h5>{event.date}</h5>
               </div>
               <div styleName='table'>
                 <div styleName='table-body'>
-                  {group.transactions.map((item, index) => this.renderRow(item, index))}
+                  {event.eventList.map((item, index) => this.renderRow(item, index))}
                 </div>
               </div>
-            </div>
-          ))}
+            </div>)
+          })}
         </div>
-        {
-          this.props.transactionsList.isFetching() &&
+        { isLoading &&
           <div styleName='footer'>
             <CircularProgress
               style={{ verticalAlign: 'middle', marginTop: -2 }}

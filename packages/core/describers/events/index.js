@@ -1,10 +1,8 @@
-import * as tokens from './lib/tokenEventDescribers'
 import * as asset from './lib/assetEventDescribers'
 
 export * from './EventDescriber'
 
 export const EVENT_DESCRIBERS = [
-  ...Object.values(tokens),
   ...Object.values(asset),
 ]
 

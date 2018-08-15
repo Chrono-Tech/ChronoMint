@@ -26,6 +26,7 @@ import {
   DEFAULT_USER_URL,
   DUCK_SESSION,
 } from './constants'
+import {loadMoreEvents} from "../events/actions";
 
 export const changeGasSlideValue = (value, blockchain) => (dispatch) =>
   dispatch(SessionActions.gasSliderMultiplierChange(value, blockchain))
@@ -97,6 +98,8 @@ export const login = (account) => async (dispatch, getState) => {
 
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
   isCBE && dispatch(cbeWatcher())
+
+  dispatch(loadMoreEvents(account))
 
   dispatch(replace(ls.getLastURL() || defaultURL))
 }
