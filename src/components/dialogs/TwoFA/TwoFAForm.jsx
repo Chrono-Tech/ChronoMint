@@ -4,7 +4,7 @@
  */
 
 import Two2FImg from 'assets/img/2fa/2-fa.png'
-import { Checkbox, TextField } from '@material-ui/core'
+import { Checkbox, TextField } from 'redux-form-material-ui'
 import Button from 'components/common/ui/Button/Button'
 import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'

@@ -3,11 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { change } from 'redux-form/immutable'
-import { FORM_CBE_TOKEN } from '@chronobank/core-dependencies/constants'
-import BigNumber from 'bignumber.js'
 import { I18n } from '@chronobank/core-dependencies/i18n'
-import { address } from '../../../../models/validator'
 import type AbstractFetchingModel from '../../../../models/AbstractFetchingModel'
 import type TokenNoticeModel from '../../../../models/notices/TokenNoticeModel'
 import type TokenModel from '../../../../models/tokens/TokenModel'
@@ -16,13 +12,9 @@ import { DUCK_SESSION } from '../../../session/constants'
 import { TOKENS_FETCHED, TOKENS_REMOVE, TOKENS_UPDATE } from '../../../tokens/constants'
 import tokenService from '../../../../services/TokenService'
 import Amount from '../../../../models/Amount'
-import contractsManagerDAO from '../../../../dao/ContractsManagerDAO'
-import ERC20DAO from '../../../../dao/ERC20DAO'
 import { daoByType } from '../../../daos/selectors'
 
-import {
-  TOKENS_FORM_FETCH,
-} from './constants'
+import { TOKENS_FORM_FETCH } from './constants'
 
 const setToken = (token: TokenModel) => ({ type: TOKENS_UPDATE, token })
 const removeToken = (token: TokenModel) => ({ type: TOKENS_REMOVE, token })
@@ -57,10 +49,10 @@ export const watchInitERC20Tokens = () => async (dispatch, getState) => {
   // ])
 }
 
-export const formTokenLoadMetaData = async (token: TokenModel, dispatch, ownProps) => {
+export const formTokenLoadMetaData = (token: TokenModel, ownProps) => async (dispatch, getState) => {
   const errors = {}
   dispatch({ type: TOKENS_FORM_FETCH })
-  const managerDAO = await contractsManagerDAO.getERC20ManagerDAO()
+  const managerDAO = daoByType('ERC20Manager')(getState())
   const symbolAddress = token.symbol() && await managerDAO.getTokenAddressBySymbol(token.symbol())
 
   if (ownProps.tokens.getByAddress(token.address()).isFetched() && !ownProps.isModify) {
@@ -77,9 +69,9 @@ export const formTokenLoadMetaData = async (token: TokenModel, dispatch, ownProp
   }
 }
 
-export const addToken = (token: TokenModel | AbstractFetchingModel) => async (dispatch) => {
+export const addToken = (token: TokenModel | AbstractFetchingModel) => async (dispatch, getState) => {
   dispatch(setToken(token.isFetching(true)))
-  const dao = await contractsManagerDAO.getERC20ManagerDAO()
+  const dao = daoByType('ERC20Manager')(getState())
   try {
     await dao.addToken(token)
   } catch (e) {
@@ -87,10 +79,10 @@ export const addToken = (token: TokenModel | AbstractFetchingModel) => async (di
   }
 }
 
-export const modifyToken = (oldToken: TokenModel | AbstractFetchingModel, newToken: TokenModel) => async (dispatch) => {
+export const modifyToken = (oldToken: TokenModel | AbstractFetchingModel, newToken: TokenModel) => async (dispatch, getState) => {
   dispatch(removeToken(oldToken))
   dispatch(setToken(newToken.isFetching(true)))
-  const dao = await contractsManagerDAO.getERC20ManagerDAO()
+  const dao = daoByType('ERC20Manager')(getState())
   try {
     await dao.modifyToken(oldToken, newToken.totalSupply(new Amount(0, newToken.symbol())))
   } catch (e) {
@@ -99,28 +91,12 @@ export const modifyToken = (oldToken: TokenModel | AbstractFetchingModel, newTok
   }
 }
 
-export const revokeToken = (token: TokenModel | AbstractFetchingModel) => async (dispatch) => {
+export const revokeToken = (token: TokenModel | AbstractFetchingModel) => async (dispatch, getState) => {
   dispatch(setToken(token.isFetching(true)))
-  const dao = await contractsManagerDAO.getERC20ManagerDAO()
+  const dao = daoByType('ERC20Manager')(getState())
   try {
     await dao.removeToken(token)
   } catch (e) {
     dispatch(setToken(token.isFetching(false)))
   }
-}
-
-export const getDataFromContract = (token) => async (dispatch) => {
-  dispatch({ type: TOKENS_FORM_FETCH })
-  if (!address(token.address())) {
-    const dao = new ERC20DAO(token)
-    const symbol = await dao.getSymbolFromContract()
-    const decimals = new BigNumber(await dao.getDecimalsFromContract())
-
-    if (symbol) { // check only the symbol, because token can have decimal values of 0
-      dispatch(change(FORM_CBE_TOKEN, 'symbol', symbol))
-      dispatch(change(FORM_CBE_TOKEN, 'decimals', decimals))
-    }
-
-  }
-  dispatch({ type: TOKENS_FORM_FETCH, end: true })
 }

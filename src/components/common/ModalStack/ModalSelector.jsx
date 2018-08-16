@@ -13,16 +13,16 @@ import AddTokenDialog from 'components/assetsManager/AddTokenDialog/AddTokenDial
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
 import BlacklistDialog from 'components/assetsManager/BlacklistDialog/BlacklistDialog'
 import BlockAssetDialog from 'components/assetsManager/BlockAssetDialog/BlockAssetDialog'
-import BuyTokensDialog from 'components/exchange/BuyTokensDialog/BuyTokensDialog'
 import ConfirmTransferDialog from 'components/dialogs/ConfirmTransferDialog/ConfirmTransferDialog'
 import ConfirmTxDialog from 'components/dialogs/ConfirmTxDialog/ConfirmTxDialog'
 import CopyDialog from 'components/dialogs/CopyDialog/CopyDialog'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
+import EditManagersDialog from 'components/dialogs/wallet/EditOwnersDialog/EditOwnersDialog'
+import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog/EditSignaturesDialog'
 import MenuAssetsManagerMoreInfo from 'layouts/partials/DrawerMainMenu/MenuAssetsManagerMoreInfo/MenuAssetsManagerMoreInfo'
 import NetworkCreateModal from '@chronobank/login-ui/components/NetworkCreateModal/NetworkCreateModal'
 import NetworkCreateModalForm from '@chronobank/login-ui/components/NetworkCreateModal/NetworkCreateModalForm/NetworkCreateModalForm'
 import NotificationContent from 'layouts/partials/NotificationContent/NotificationContent'
-import OperationsSettingsDialog from 'components/dialogs/OperationsSettingsDialog'
 import ProfileContent from 'layouts/partials/ProfileContent/ProfileContent'
 import PublishPollDialog from 'components/dialogs/PublishPollDialog/PublishPollDialog'
 import ReceiveTokenModal from 'components/dashboard/ReceiveTokenModal/ReceiveTokenModal'
@@ -41,16 +41,16 @@ export default class ModalSelector extends PureComponent {
     'AssetManagerDialog': AssetManagerDialog,
     'BlacklistDialog': BlacklistDialog,
     'BlockAssetDialog': BlockAssetDialog,
-    'BuyTokensDialog': BuyTokensDialog,
     'ConfirmTransferDialog': ConfirmTransferDialog,
     'ConfirmTxDialog': ConfirmTxDialog,
     'CopyDialog': CopyDialog,
     'DepositTokensModal': DepositTokensModal,
+    'EditManagersDialog': EditManagersDialog,
+    'EditSignaturesDialog': EditSignaturesDialog,
     'MenuAssetsManagerMoreInfo': MenuAssetsManagerMoreInfo,
     'NetworkCreateModal': NetworkCreateModal,
     'NetworkCreateModalForm': NetworkCreateModalForm,
     'NotificationContent': NotificationContent,
-    'OperationsSettingsDialog': OperationsSettingsDialog,
     'ProfileContent': ProfileContent,
     'PublishPollDialog': PublishPollDialog,
     'ReceiveTokenModal': ReceiveTokenModal,

@@ -26,6 +26,6 @@ store
       <MuiThemeProvider theme={themeDefault}>
         {router}
       </MuiThemeProvider>,
-      document.getElementById('react-root')
+      document.getElementById('react-root'),
     )
   })

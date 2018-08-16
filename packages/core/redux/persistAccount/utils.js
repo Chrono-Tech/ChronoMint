@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import bip39 from 'bip39'
 import uuid from 'uuid/v1'
 import {
   profileImgJPG,

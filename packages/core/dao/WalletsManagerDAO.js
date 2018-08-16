@@ -7,7 +7,8 @@ import type MultisigWalletDAO from './MultisigWalletDAO'
 import AddressesCollection from '../models/wallet/AddressesCollection'
 import AddressModel from '../models/wallet/AddressModel'
 import MultisigEthWalletModel from '../models/wallet/MultisigEthWalletModel'
-import AbstractContractDAO from './AbstractContract3DAO'
+import multisigWalletService from '../services/MultisigWalletService'
+import AbstractContractDAO from './AbstractContractDAO'
 
 import {
   EE_MS_WALLET_ADDED,

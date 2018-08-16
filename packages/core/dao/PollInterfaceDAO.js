@@ -6,7 +6,7 @@
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
 import Amount from '../models/Amount'
-import AbstractContractDAO from './AbstractContract3DAO'
+import AbstractContractDAO from './AbstractContractDAO'
 
 //#region CONSTANTS
 

@@ -6,7 +6,7 @@
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import ContractDAOModel from '../../models/contracts/ContractDAOModel'
 import { getAccount } from '../session/selectors/models'
-import AbstractContractDAO from '../../dao/AbstractContract3DAO'
+import AbstractContractDAO from '../../dao/AbstractContractDAO'
 import { ContractsManagerABI } from '../../dao/abi'
 import {
   ASSET_HOLDER_LIBRARY,

@@ -9,7 +9,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { integerWithDelimiter } from '@chronobank/core-dependencies/utils/formatter'
 import { priceTokenSelector } from '@chronobank/core/redux/wallet/selectors'
-import { getToken } from '@chronobank/core/redux/locs/selectors'
+import { getToken } from '@chronobank/core/redux/tokens/selectors'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 
 function makeMapStateToProps (state, props) {

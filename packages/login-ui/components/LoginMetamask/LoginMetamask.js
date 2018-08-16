@@ -10,7 +10,7 @@ import { networkSetNetwork, addError } from '@chronobank/login/redux/network/act
 import Web3 from 'web3'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import EthereumEngine from '@chronobank/login/network/EthereumEngine'
-import { TextField } from '@material-ui/core'
+import { TextField } from 'redux-form-material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
