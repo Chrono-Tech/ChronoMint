@@ -6,6 +6,7 @@
 export { default as GenerateMnemonicContainer } from './GenerateMnemonic/GenerateMnemonicContainer'
 export { default as LoginWithMnemonicContainer } from './LoginWithMnemonic/LoginWithMnemonicContainer'
 export { default as LoginWithPrivateKeyContainer } from './LoginWithPrivateKey/LoginWithPrivateKeyContainer'
+export { default as LoginWithTrezor } from './LoginWithTrezor/LoginWithTrezor'
 export { default as LoginForm } from './LoginForm/LoginForm'
 export { default as LoginWithOptions } from './LoginWithOptions/LoginWithOptions'
 export { default as AccountSelectorContainer } from './AccountSelector/AccountSelectorContainer'

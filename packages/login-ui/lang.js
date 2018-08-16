@@ -26,6 +26,7 @@ import * as ProviderSelectorSwitcher from './components/ProviderSelectorSwitcher
 import * as NetworkCreateModal from './components/NetworkCreateModal/lang'
 import * as NetworkCreateModalForm from './components/NetworkCreateModal/NetworkCreateModalForm/lang'
 import * as NetworkDeleteModal from './components/NetworkCreateModal/NetworkDeleteModal/lang'
+import * as DerivationPathForm from './components/DerivationPathForm/lang'
 import * as Warning from './components/Warning/lang'
 import * as AccountName from './components/AccountName/lang'
 import * as NotFoundPage from './components/NotFoundPage/lang'
@@ -57,4 +58,5 @@ export const en = {
   NetworkDeleteModal: NetworkDeleteModal.en,
   AccountName: AccountName.en,
   NotFoundPage: NotFoundPage.en,
+  DerivationPathForm: DerivationPathForm.en,
 }
