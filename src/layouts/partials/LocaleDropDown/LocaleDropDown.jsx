@@ -33,7 +33,7 @@ export default class LocaleDropDown extends PureComponent {
   static propTypes = {
     locale: PropTypes.string,
     onChangeLocale: PropTypes.func,
-    translations: PropTypes.arrayOf(PropTypes.object),
+    translations: PropTypes.object, // FIXME: at the moment it is fixed. But maybe more reliable fix is to replace data type. Or specify data type instead of .object
     newButtonStyle: PropTypes.bool,
   }
 
