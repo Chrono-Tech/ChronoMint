@@ -28,11 +28,7 @@ import './AddTokenDialog.scss'
 
 const asyncValidate = (values, dispatch, props) => {
   try {
-    return formTokenLoadMetaData(
-      new TokenModel(values),
-      dispatch,
-      props,
-    )
+    return dispatch(formTokenLoadMetaData(new TokenModel(values), props))
   } catch (e) {
     throw e
   }

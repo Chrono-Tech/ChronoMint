@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import resultCodes from 'chronobank-smart-contracts/common/errors'
 import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
 import customSerializer from '@chronobank/core-dependencies/utils/CustomSerializer'
 import Enzyme from 'enzyme'
@@ -12,11 +11,9 @@ import 'jest-enzyme'
 import { BTC_TESTNET_NODE } from '@chronobank/login/network/BitcoinNode'
 import { LOCAL_ID } from '@chronobank/login/network/settings'
 import web3provider from '@chronobank/login/network/Web3Provider'
-import networkService from '@chronobank/login/network/NetworkService'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import Web3 from 'web3'
-import AbstractContractDAO from '@chronobank/core/dao/AbstractContractDAO'
 import MarketSocket from '@chronobank/core/market/MarketSocket'
 import ls from '@chronobank/core-dependencies/utils/LocalStorage'
 
@@ -30,7 +27,8 @@ web3provider.reinit(web3, new web3.providers.HttpProvider('http://localhost:8545
 web3provider.resolve()
 export const accounts = web3.eth.accounts
 
-AbstractContractDAO.setup(accounts[0], [resultCodes.OK, true], resultCodes)
+// FIXME revive somehow
+// AbstractContractDAO.setup(accounts[0], [resultCodes.OK, true], resultCodes)
 
 const reverter = new Reverter(web3provider.getWeb3instance())
 
@@ -56,12 +54,10 @@ beforeEach(() => {
   // NOTE: session is always as CBE
   ls.createSession(accounts[0], LOCAL_ID, LOCAL_ID)
   store = mockStore()
-  networkService.connectStore(store)
 })
 
 afterEach(async (done) => {
   ls.destroySession()
-  await AbstractContractDAO.stopWholeWatching()
   done()
 })
 

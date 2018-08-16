@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import AbstractContractDAO from './AbstractContract3DAO'
+import AbstractContractDAO from './AbstractContractDAO'
 
 import {
   TX_ASSET_CREATED,
@@ -19,8 +19,8 @@ export default class PlatformTokenExtensionGatewayManagerEmitterDAO extends Abst
     super.connect(web3, options)
 
     this.allEventsEmitter = this.history.events.allEvents({})
-      .on('data', this.handleEventsData.bind(this))
-      .on('error', this.handleEventsError.bind(this))
+      .on('data', this.handleEventsData)
+      .on('error', this.handleEventsError)
   }
 
   disconnect () {

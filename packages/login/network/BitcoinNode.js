@@ -13,6 +13,7 @@ import BitcoinBlockexplorerNode from './BitcoinBlockexplorerNode'
 import BitcoinMiddlewareNode from './BitcoinMiddlewareNode'
 
 const BTC_MAINNET_NODE = new BitcoinMiddlewareNode({
+  feeRate: 200,
   api: axios.create({
     baseURL: 'https://middleware-bitcoin-mainnet-rest.chronobank.io',
     timeout: 4000,

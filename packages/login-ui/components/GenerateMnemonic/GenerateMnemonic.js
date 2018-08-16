@@ -17,7 +17,7 @@ import './GenerateMnemonic.scss'
 export default class MnemonicPage extends Component {
   static propTypes = {
     mnemonic: PropTypes.string,
-    navigateToConfirmPage: PropTypes.func,
+    onProceed: PropTypes.func,
   }
 
   static defaultProps = {
@@ -56,7 +56,10 @@ export default class MnemonicPage extends Component {
         width: 230,
       },
       function (error) {
-        if (error) console.error(error)
+        if (error) {
+          // eslint-disable-next-line no-console
+          console.error(error)
+        }
       })
 
     window.print()
@@ -64,7 +67,7 @@ export default class MnemonicPage extends Component {
 
   renderPrintVersionContent (content) {
     const printVersionContainerId = 'generate-mnemonic-container'
-    let printVersionWrapper = document.createElement('div')
+    const printVersionWrapper = document.createElement('div')
     printVersionWrapper.setAttribute('id', printVersionContainerId)
 
     document.body.appendChild(printVersionWrapper)

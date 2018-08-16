@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import networkService from '@chronobank/login/network/NetworkService'
+import { loginUport } from '@chronobank/login/redux/network/thunks'
 import { addError } from '@chronobank/login/redux/network/actions'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { CircularProgress } from '@material-ui/core'
@@ -20,7 +20,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  loginUport: () => networkService.loginUport(),
+  loginUport: () => dispatch(loginUport()),
   addError: (e) => dispatch(addError(e)),
 })
 

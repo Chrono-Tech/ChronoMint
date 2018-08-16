@@ -80,7 +80,7 @@ export const getDataForConfirm = (tx: TxExecModel) => createSelector(
     const amountBalance = balances[tx.symbol]
     const feeBalance = balances[mainSymbol]
     if (tx.fields && tx.fields.amount) {
-      amountBalanceAfter = tx.fields.amount && tx.fields.amount.mark === 'plus' ?
+      amountBalanceAfter = tx.fields.amount.mark === 'plus' ?
         amountBalance.plus(tx.fields.amount.value) :
         amountBalance.minus(tx.fields.amount.value)
     }

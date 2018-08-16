@@ -1,3 +1,4 @@
+import uuid from 'uuid/v1'
 import BigNumber from 'bignumber.js'
 import Web3ABI from 'web3-eth-abi'
 import { Amount } from '../models'
@@ -11,15 +12,11 @@ import { ETH } from '../dao/constants'
 export const describeEvent = (data, context) => {
   const { log, block } = data
 
-  console.log('describeEvent: ', data, data.log.topics[0], EVENT_DESCRIBERS_BY_TOPIC)
-
   const array = EVENT_DESCRIBERS_BY_TOPIC[data.log.topics[0]]
-  console.log('describeEvent: array: ', array, EVENT_DESCRIBERS_BY_TOPIC)
   if (array) {
     for (const describer of array) {
       const { input, params } = decodeLog(describer.abi, data.log)
       const desc = describer.describe(data, context, { abi: describer.abi, input, params })
-      console.log('describer.describe: ', desc)
       if (desc) {
         return desc
       }
@@ -56,7 +53,6 @@ const formatPengigTxData = ({ abi, tx }) => {
 
 const defaultDescription = (entry, context) => {
   const { tx, receipt, block } = entry
-  const { dao } = context
   const address = context.address.toLowerCase()
 
   const v = new BigNumber(tx.value)
@@ -75,10 +71,10 @@ const defaultDescription = (entry, context) => {
     amountTitle = 'tx.amount'
   }
 
-  const amount = new Amount(value, dao.token ? dao.token.symbol() : ETH)
+  const amount = new Amount(value, ETH)
   const path = `tx`
   return new LogTxModel({
-    key: block ? `${block.hash}/${tx.transactionIndex}` : null,
+    key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
     type: 'tx',
     name: 'custom',
     date: new Date(block ? (block.timestamp * 1000) : null),
@@ -106,10 +102,9 @@ const defaultDescription = (entry, context) => {
   })
 }
 
-export const describeTx = (entry, context) => {
+export const describeTx = (entry, context = {}) => {
   const { tx, receipt } = entry
-  const { dao } = context
-  const abi = dao.abi
+  const { abi } = context
 
   let info
   if (!receipt) {
@@ -124,7 +119,7 @@ export const describeTx = (entry, context) => {
   const array = TRANSACTION_DESCRIBERS_BY_TOPIC[info.topic]
   if (array) {
     for (const describer of array) {
-      const desc = describer.describe(entry, context, { abi: describer.abi, inputs: info.inputs, params: info.params })
+      const desc = describer.describe(entry, context, { abi: describer.abi, inputs: info.inputs, params: info.params, ...context })
       if (desc) {
         return desc
       }

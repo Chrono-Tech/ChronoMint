@@ -12,23 +12,21 @@ import './UserRow.scss'
 
 export default class UserRow extends React.Component {
   static propTypes = {
-    avatar: PropTypes.string,
-    onClick: PropTypes.func,
-    hideActionIcon: PropTypes.bool,
     actionIcon: PropTypes.string,
+    avatar: PropTypes.string,
+    hideActionIcon: PropTypes.bool,
     linkTitle: PropTypes.string,
+    onClick: PropTypes.func,
     reverseIcon: PropTypes.bool,
+
   }
 
   static defaultProps = {
-    avatar: '',
-    name: '',
-    address: '',
-    onClick: null,
-    hideActionIcon: false,
     actionIcon: actionIcon,
-    actionIconClass: '',
+    avatar: '',
+    hideActionIcon: false,
     linkTitle: '',
+    onClick: null,
     reverseIcon: false,
   }
 

@@ -168,7 +168,7 @@ class IPFS {
     const files = fileCollection.files().filter((item) => !(item.uploaded() || item.hasErrors()))
     const promises = []
     files.forEach((file) => promises.push(this.uploadFile(file, config, callback)))
-    const result = promises
+    const result = promises.length
       ? await Promise.all(promises)
       : []
     result.forEach((file) => {

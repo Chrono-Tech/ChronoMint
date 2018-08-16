@@ -12,7 +12,6 @@ import { isCBE } from '@chronobank/core/redux/session/selectors'
 import { PTPoll } from '@chronobank/core/redux/voting/types'
 import Button from 'components/common/ui/Button/Button'
 import { modalsOpen } from 'redux/modals/actions'
-import PublishPollDialog from 'components/dialogs/PublishPollDialog/PublishPollDialog'
 import './ActivatePollTopButton.scss'
 
 function makeMapStateToProps () {
@@ -31,7 +30,7 @@ function makeMapStateToProps () {
 function mapDispatchToProps (dispatch) {
   return {
     handlePollActivate: (poll) => dispatch(modalsOpen({
-      component: PublishPollDialog,
+      componentName: 'PublishPollDialog',
       props: {
         poll,
       },

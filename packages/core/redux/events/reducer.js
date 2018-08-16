@@ -25,11 +25,6 @@ const mutations = {
   [LOGS_LOADED] (state, { address, cursor, entries }) {
     address = address.toLowerCase()
     const history = state[address] || new LogListModel({ address })
-    console.log('LOGS_LOADED: ', state, entries, cursor, address, history.loaded({
-      entries,
-      cursor,
-    }))
-
     return {
       ...state,
       [address]: history.loaded({

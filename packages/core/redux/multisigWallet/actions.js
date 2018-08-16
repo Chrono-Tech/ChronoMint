@@ -5,7 +5,6 @@
 
 import BigNumber from 'bignumber.js'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
-import { change } from 'redux-form/immutable'
 import type MultisigWalletDAO from '../../dao/MultisigWalletDAO'
 import { EE_MS_WALLET_ADDED, EE_MS_WALLET_REMOVED, EE_MS_WALLETS_COUNT } from '../../dao/constants/WalletsManagerDAO'
 import Amount from '../../models/Amount'
@@ -16,6 +15,7 @@ import OwnerModel from '../../models/wallet/OwnerModel'
 import { notify, notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { subscribeOnTokens } from '../tokens/actions'
+import { formatBalances, getWalletBalances } from '../tokens/utils'
 import {
   EE_CONFIRMATION,
   EE_CONFIRMATION_NEEDED,
@@ -43,15 +43,19 @@ import {
   ETH_MULTISIG_INIT,
   ETH_MULTISIG_REMOVE,
   ETH_MULTISIG_UPDATE,
-  FORM_2FA_STEPS,
-  FORM_2FA_WALLET,
 } from './constants'
 import { getAccount } from '../session/selectors/models'
 import { getTokens } from '../tokens/selectors'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import { executeTransaction } from '../ethereum/actions'
 
-const updateEthMultisigWallet = (wallet: MultisigEthWalletModel) => (dispatch) => dispatch({ type: ETH_MULTISIG_UPDATE, wallet })
+const updateEthMultisigWallet = (wallet: MultisigEthWalletModel) => ({ type: ETH_MULTISIG_UPDATE, wallet })
+
+const setEthMultisigWalletBalance = (walletId, balance) => ({
+  type: ETH_MULTISIG_BALANCE,
+  walletId,
+  balance,
+})
 
 export const watchMultisigWallet = (wallet: MultisigEthWalletModel): Promise => {
   try {
@@ -67,6 +71,7 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
   walletsManagerDAO
     .on(EE_MS_WALLET_ADDED, async (wallet: MultisigEthWalletModel) => {
       const wallets = getMultisigWallets(getState())
+      ethereumProvider.subscribeNewWallet(wallet.address)
 
       const walletFromDuck = wallets.item(wallet.id)
       const walletName = walletFromDuck && walletFromDuck.name ? walletFromDuck.name : ''
@@ -81,13 +86,6 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
         }),
       })
 
-      try {
-        await dispatch(check2FAChecked())
-        dispatch(change(FORM_2FA_WALLET, 'step', FORM_2FA_STEPS[2]))
-      } catch (e) {
-        // eslint-disable-next-line
-        console.error(e)
-      }
       const txHash = wallet.transactionHash
 
       if (txHash) {
@@ -193,35 +191,6 @@ export const initMultisigWalletManager = () => async (dispatch, getState) => {
   }
   dispatch({ type: ETH_MULTISIG_INIT, isInited: true })
   const walletsManagerDAO = daoByType('WalletsManager')(getState())
-
-  /*let wallets = getState().get(DUCK_ETH_MULTISIG_WALLET)
-   wallets.items().map((wallet) => {
-     if (wallet.isDerived() && isOwner(wallet, account)) {
-       switch (wallet.blockchain()) {
-         case BLOCKCHAIN_BITCOIN:
-           btcProvider.createNewChildAddress(wallet.deriveNumber())
-           btcProvider.subscribeNewWallet(wallet.address)
-           break
-         case BLOCKCHAIN_BITCOIN_CASH:
-           bccProvider.createNewChildAddress(wallet.deriveNumber())
-           bccProvider.subscribeNewWallet(wallet.address)
-           break
-         case BLOCKCHAIN_BITCOIN_GOLD:
-           btgProvider.createNewChildAddress(wallet.deriveNumber())
-           btgProvider.subscribeNewWallet(wallet.address)
-           break
-         case BLOCKCHAIN_LITECOIN:
-           ltcProvider.createNewChildAddress(wallet.deriveNumber())
-           ltcProvider.subscribeNewWallet(wallet.address)
-           break
-         case BLOCKCHAIN_ETHEREUM:
-           dispatch(subscribeOnTokens(getTokensBalancesAndWatch(wallet.address, wallet.blockchain(), wallet.customTokens())))
-           break
-         default:
-       }
-     }
-   })*/
-
   dispatch(subscribeOnWalletManager())
   dispatch(subscribeOnMultisigWalletService())
 
@@ -385,24 +354,9 @@ export const confirm2FATransfer = (txAddress, walletAddress, confirmToken, callb
 
 export const setEthMultisig2FAConfirmed = (twoFAConfirmed) => (dispatch) => dispatch({ type: ETH_MULTISIG_2_FA_CONFIRMED, twoFAConfirmed })
 
-export const check2FAChecked = () => async (dispatch) => {
-  const result = await dispatch(get2FAEncodedKey())
-  let twoFAConfirmed
-  if (typeof result === 'object' && result.code) {
-    twoFAConfirmed = true
-  } else {
-    twoFAConfirmed = false
-  }
-  dispatch(setEthMultisig2FAConfirmed(twoFAConfirmed))
-}
-
 export const updatePendingTx = (walletAddress: string, tx: MultisigWalletPendingTxModel) => (dispatch, getState) => {
   const wallet = getMultisigWallets(getState()).item(walletAddress)
   dispatch(updateEthMultisigWallet(wallet.updatePendingTx(new MultisigWalletPendingTxModel({ ...tx, isPending: true }))))
-}
-
-export const checkConfirm2FAtx = (txAddress, callback) => {
-  return ethereumProvider.checkConfirm2FAtx(txAddress, callback)
 }
 
 export const setMultisigWalletName = (walletId, name) => (dispatch, getState) => {
@@ -416,21 +370,30 @@ export const setMultisigWalletName = (walletId, name) => (dispatch, getState) =>
 }
 
 export const updateEthMultisigWalletBalance = ({ wallet }) => async (dispatch) => {
-  const updateBalance = (token: TokenModel) => async () => {
-    if (token.blockchain() === wallet.blockchain) {
-      const dao = tokenService.getDAO(token)
-      const balance = await dao.getAccountBalance(wallet.address)
-      if (balance) {
-        await dispatch({
-          type: ETH_MULTISIG_BALANCE,
-          walletId: wallet.id,
-          balance: new Amount(balance, token.symbol(), true),
-        })
+  getWalletBalances({ wallet })
+    .then((balancesResult) => {
+      dispatch(updateEthMultisigWallet(new MultisigEthWalletModel({
+        ...wallet,
+        balances: {
+          ...wallet.balances,
+          ...formatBalances({ blockchain: wallet.blockchain, balancesResult }),
+        },
+      })))
+    })
+    .catch((e) => {
+      // eslint-disable-next-line no-console
+      console.log('call balances from middleware is failed', e)
+      const updateBalance = (token: TokenModel) => async () => {
+        if (token.blockchain() === wallet.blockchain) {
+          const dao = tokenService.getDAO(token)
+          const balance = await dao.getAccountBalance(wallet.address)
+          if (balance) {
+            dispatch(setEthMultisigWalletBalance(wallet.id, new Amount(balance, token.symbol(), true)))
+          }
+        }
       }
-    }
-  }
-
-  dispatch(subscribeOnTokens(updateBalance))
+      dispatch(subscribeOnTokens(updateBalance))
+    })
 }
 
 export const getTransactionsForEthMultisigWallet = ({ wallet, forcedOffset }) => async (dispatch, getState) => {

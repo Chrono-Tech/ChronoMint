@@ -12,7 +12,6 @@ export class EventDescriber {
 export const decodeLog = (abi, log) => {
   const [, ...topics] = log.topics
   const params = Web3ABI.decodeLog(abi.inputs, log.data, topics)
-  console.log('decodeLog: ', params, topics)
 
   const inputs = abi.inputs.map(
     (input) => ({

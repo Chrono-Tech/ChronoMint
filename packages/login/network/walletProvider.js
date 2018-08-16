@@ -6,7 +6,6 @@
 import bitcoin from 'bitcoinjs-lib'
 import * as WavesApi from '@waves/waves-api'
 import nemSdk from 'nem-sdk'
-import Wallet from 'ethereumjs-wallet'
 import { byEthereumNetwork } from './NetworkProvider'
 import { createBCCEngine, createBTCEngine, createLTCEngine, createBTGEngine } from './BitcoinUtils'
 import EthereumEngine from './EthereumEngine'

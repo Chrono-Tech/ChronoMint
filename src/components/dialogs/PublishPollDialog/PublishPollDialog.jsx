@@ -4,7 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'

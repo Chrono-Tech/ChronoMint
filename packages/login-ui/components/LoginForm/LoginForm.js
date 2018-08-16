@@ -6,14 +6,12 @@
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import compose from 'recompose/compose'
-import spinner from 'assets/img/spinningwheel-1.gif'
 import React from 'react'
 import { Field, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
-import { isLocalNode } from '@chronobank/login/network/settings'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import {
   getAccountAddress,
@@ -23,9 +21,6 @@ import {
 import {
   DUCK_NETWORK,
 } from '@chronobank/login/redux/network/constants'
-import {
-  initAccountsSignature,
-} from '@chronobank/login/redux/network/thunks'
 import {
   navigateToSelectWallet,
   navigateToRecoverAccountPage,
@@ -50,10 +45,6 @@ function mapStateToProps (state) {
   const formSelector = formValueSelector(FORM_LOGIN_PAGE)
 
   return {
-    accounts: network.accounts,
-    isLocalNode: isLocalNode(network.selectedProviderId, network.selectedNetworkId),
-    isLoginSubmitting: network.isLoginSubmitting,
-    selectedAccount: network.selectedAccount,
     selectedNetworkId: network.selectedNetworkId,
     selectedProvider: network.selectedProviderId,
     selectedWallet: selectedWallet,
@@ -73,22 +64,21 @@ function mapDispatchToProps (dispatch) {
     onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitLoginFormFail(errors, submitErrors)),
     initLoginPage: () => dispatch(initLoginPage()),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
-    initAccountsSignature: () => dispatch(initAccountsSignature()),
     navigateToRecoverAccountPage: () => dispatch(navigateToRecoverAccountPage()),
   }
 }
 
 class LoginPage extends React.Component {
   static propTypes = {
-    accounts: PropTypes.instanceOf(Array),
-    initAccountsSignature: PropTypes.func,
     initLoginPage: PropTypes.func,
-    isLocalNode: PropTypes.bool,
-    isLoginSubmitting: PropTypes.bool,
+    navigateToRecoverAccountPage: PropTypes.func,
+    handleSubmit: PropTypes.func,
     navigateToSelectWallet: PropTypes.func,
-    selectedAccount: PropTypes.string,
     selectedWallet: PropTypes.object,
     successMessage: PropTypes.string,
+    classes: PropTypes.any,
+    error: PropTypes.string,
+    submitting: PropTypes.bool,
   }
 
   componentWillMount () {
@@ -114,16 +104,9 @@ class LoginPage extends React.Component {
       classes,
       error,
       handleSubmit,
-      initialValues,
-      isImportMode,
-      isLocalNode,
-      isLoginSubmitting,
       navigateToSelectWallet,
       navigateToRecoverAccountPage,
-      onSubmit,
-      pristine,
       selectedWallet,
-      valid,
       submitting,
     } = this.props
 

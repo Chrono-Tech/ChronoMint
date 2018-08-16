@@ -4,21 +4,22 @@
  */
 
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import { nemProvider } from '@chronobank/login/network/NemProvider'
+import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_LITECOIN,
-  WALLET_HD_PATH,
   BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
+  WALLET_HD_PATH,
 } from '@chronobank/login/network/constants'
-import { nemProvider } from '@chronobank/login/network/NemProvider'
-import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import WalletModel from '../../models/wallet/WalletModel'
 import { subscribeOnTokens } from '../tokens/actions'
+import { formatBalances, getWalletBalances } from '../tokens/utils'
 import TokenModel from '../../models/tokens/TokenModel'
 import tokenService from '../../services/TokenService'
 import Amount from '../../models/Amount'
@@ -30,7 +31,12 @@ import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { AllowanceCollection, SignerMemoryModel } from '../../models'
 import { executeTransaction } from '../ethereum/actions'
-import { WALLETS_SET, WALLETS_SET_NAME, WALLETS_TWO_FA_CONFIRMED, WALLETS_UPDATE_BALANCE, WALLETS_UPDATE_WALLET } from './constants'
+import {
+  WALLETS_SET,
+  WALLETS_SET_NAME,
+  WALLETS_UPDATE_BALANCE,
+  WALLETS_UPDATE_WALLET,
+} from './constants'
 import { getSigner } from '../persistAccount/selectors'
 
 const isOwner = (wallet, account) => {
@@ -43,16 +49,9 @@ export const get2FAEncodedKey = (callback) => () => {
 
 export const setWalletName = (walletId, name) => (dispatch) => dispatch({ type: WALLETS_SET_NAME, walletId, name })
 
-export const check2FAChecked = () => async (dispatch) => {
-  const result = await dispatch(get2FAEncodedKey())
-  let twoFAConfirmed
-  if (typeof result === 'object' && result.code) {
-    twoFAConfirmed = true
-  } else {
-    twoFAConfirmed = false
-  }
-  dispatch({ type: WALLETS_TWO_FA_CONFIRMED, twoFAConfirmed })
-}
+export const setWallet = (wallet) => (dispatch) => dispatch({ type: WALLETS_SET, wallet })
+
+export const setWalletBalance = (walletId, balance) => (dispatch) => dispatch({ type: WALLETS_UPDATE_BALANCE, walletId, balance })
 
 export const initWallets = () => (dispatch) => {
   dispatch(initWalletsFromKeys())
@@ -70,14 +69,14 @@ const initWalletsFromKeys = () => (dispatch) => {
     ethereumProvider,
   ]
 
-  providers.map((provider) => {
+  providers.forEach((provider) => {
     const wallet = new WalletModel({
       address: provider.getAddress(),
       blockchain: provider.id(),
       isMain: true,
     })
 
-    dispatch({ type: WALLETS_SET, wallet })
+    dispatch(setWallet(wallet))
     dispatch(updateWalletBalance({ wallet }))
   })
 }
@@ -87,7 +86,7 @@ const initDerivedWallets = () => async (dispatch, getState) => {
   const account = getAccount(state)
   const wallets = getWallets(state)
 
-  Object.values(wallets).map((wallet: WalletModel) => {
+  Object.values(wallets).forEach((wallet: WalletModel) => {
     if (wallet.isDerived && !wallet.isMain && isOwner(wallet, account)) {
       dispatch(updateWalletBalance({ wallet }))
 
@@ -117,21 +116,35 @@ const initDerivedWallets = () => async (dispatch, getState) => {
 }
 
 const updateWalletBalance = ({ wallet }) => async (dispatch) => {
-  const updateBalance = (token: TokenModel) => async () => {
-    if (token.blockchain() === wallet.blockchain) {
-      const dao = tokenService.getDAO(token)
-      const balance = await dao.getAccountBalance(wallet.address)
-      if (balance) {
-        await dispatch({
-          type: WALLETS_UPDATE_BALANCE,
-          walletId: wallet.id,
-          balance: new Amount(balance, token.symbol(), true),
-        })
+  getWalletBalances({ wallet })
+    .then((balancesResult) => {
+      try {
+        dispatch(setWallet(new WalletModel({
+          ...wallet,
+          balances: {
+            ...wallet.balances,
+            ...formatBalances({ blockchain: wallet.blockchain, balancesResult }),
+          },
+        })))
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(e.message)
       }
-    }
-  }
-
-  dispatch(subscribeOnTokens(updateBalance))
+    })
+    .catch((e) => {
+      // eslint-disable-next-line no-console
+      console.log('call balances from middleware is failed', e)
+      const updateBalance = (token: TokenModel) => async () => {
+        if (token.blockchain() === wallet.blockchain) {
+          const dao = tokenService.getDAO(token)
+          const balance = await dao.getAccountBalance(wallet.address)
+          if (balance) {
+            dispatch(setWalletBalance(wallet.id, new Amount(balance, token.symbol(), true)))
+          }
+        }
+      }
+      dispatch(subscribeOnTokens(updateBalance))
+    })
 }
 
 export const subscribeWallet = ({ wallet }) => async (dispatch) => {
@@ -233,6 +246,7 @@ export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Nu
   }
 }
 
+// eslint-disable-next-line complexity
 export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }) => async (dispatch, getState) => {
   const state = getState()
   const signer = getSigner(state)
@@ -241,7 +255,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
 
   const lastDeriveNumbers = {}
   Object.values(wallets)
-    .map((wallet) => {
+    .forEach((wallet) => {
       if (wallet.derivedPath && isOwner(wallet, account)) {
         if (!lastDeriveNumbers[wallet.blockchain()] || (lastDeriveNumbers[wallet.blockchain()] && lastDeriveNumbers[wallet.blockchain()] < wallet.deriveNumber)) {
           lastDeriveNumbers[wallet.blockchain()] = wallet.deriveNumber
@@ -301,6 +315,6 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
     isDerived: true,
   })
 
-  dispatch({ type: WALLETS_SET, wallet })
+  dispatch(setWallet(wallet))
   dispatch(updateWalletBalance({ wallet }))
 }

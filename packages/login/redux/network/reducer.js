@@ -126,16 +126,6 @@ export default (state = initialState, action) => {
         ...state,
         newAccountPrivateKey: null,
       }
-    case actions.NETWORK_SET_IMPORT_ACCOUNT_MODE:
-      return {
-        ...state,
-        importAccountMode: true,
-      }
-    case actions.NETWORK_RESET_IMPORT_ACCOUNT_MODE:
-      return {
-        ...state,
-        importAccountMode: false,
-      }
     case actions.NETWORK_SET_LOGIN_SUBMITTING:
       return {
         ...state,
@@ -187,6 +177,8 @@ export default (state = initialState, action) => {
         ...state,
         walletFileImportObject: null,
       }
+    case actions.NETWORK_GET_ACCOUNTS:
+      return state
     default:
       return state
   }

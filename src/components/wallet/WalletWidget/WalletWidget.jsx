@@ -15,13 +15,10 @@ import { TOKEN_ICONS } from 'assets'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import ReceiveTokenModal from 'components/dashboard/ReceiveTokenModal/ReceiveTokenModal'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import { getMainSymbolForBlockchain, getTokens, isBTCLikeBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
-import SendTokens from 'components/dashboard/SendTokens/SendTokens'
-import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
-import { makeGetTxListForWallet } from "@chronobank/core/redux/wallet/selectors"
+import { makeGetTxListForWallet } from '@chronobank/core/redux/wallet/selectors'
 import { getWalletInfo } from '@chronobank/core/redux/wallets/selectors/wallet'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
@@ -29,7 +26,6 @@ import './WalletWidget.scss'
 import { prefix } from './lang'
 import Moment from '../../common/Moment'
 import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
-import WalletSettingsForm from '../AddWalletWidget/WalletSettingsForm/WalletSettingsForm'
 import WalletMainCoinBalance from './WalletMainCoinBalance'
 import WalletTokensList from './WalletTokensList'
 import WalletName from '../WalletName/WalletName'
@@ -55,7 +51,7 @@ function mapDispatchToProps (dispatch) {
   return {
     send: (token, wallet) => {
       dispatch(modalsOpen({
-        component: SendTokens,
+        componentName: 'SendTokens',
         props: {
           wallet,
           isModal: true,
@@ -64,15 +60,18 @@ function mapDispatchToProps (dispatch) {
       }))
     },
     receive: (wallet) => dispatch(modalsOpen({
-      component: ReceiveTokenModal,
+      componentName: 'ReceiveTokenModal',
       props: {
         wallet,
       },
     })),
-    deposit: (props) => dispatch(modalsOpen({ component: DepositTokensModal, props })),
+    deposit: (props) => dispatch(modalsOpen({
+      componentName: 'DepositTokensModal',
+      props,
+    })),
     selectWallet: (blockchain, address) => dispatch(selectWallet(blockchain, address)),
     setWalletName: (wallet, blockchain, address) => dispatch(modalsOpen({
-      component: WalletSettingsForm,
+      componentName: 'WalletSettingsForm',
       props: {
         wallet,
         blockchain,
@@ -91,12 +90,6 @@ export default class WalletWidget extends PureComponent {
     wallet: PropTypes.oneOfType([PropTypes.instanceOf(WalletModel), PropTypes.instanceOf(MultisigEthWalletModel)]),
     address: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
-    tokens: PropTypes.instanceOf(TokensCollection),
-    walletInfo: PropTypes.shape({
-      address: PropTypes.string,
-      balance: PropTypes.number,
-      tokens: PropTypes.array,
-    }),
     send: PropTypes.func,
     receive: PropTypes.func,
     deposit: PropTypes.func,
@@ -174,7 +167,7 @@ export default class WalletWidget extends PureComponent {
     }
 
     let incoming = null
-    this.props.pendingTransactions.map((t) => {
+    this.props.pendingTransactions.forEach((t) => {
       if (!incoming && t.from() !== this.props.address && t.confirmations() < 4) {
         incoming = t
       }
@@ -196,7 +189,7 @@ export default class WalletWidget extends PureComponent {
     }
 
     let sending = null
-    this.props.pendingTransactions.map((t) => {
+    this.props.pendingTransactions.forEach((t) => {
 
       if (!sending && t.from() === this.props.address && t.confirmations() < 4) {
         sending = t
@@ -248,7 +241,7 @@ export default class WalletWidget extends PureComponent {
                     <span styleName='address-address'>{address}</span>
                   </div>
 
-                  {token && token.isFetched()
+                  {tokenIsFetched
                     ? <WalletMainCoinBalance wallet={wallet} />
                     : (
                       <span styleName='noToken'>

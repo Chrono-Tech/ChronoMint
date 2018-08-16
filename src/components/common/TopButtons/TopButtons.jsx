@@ -10,7 +10,7 @@ import { history } from 'redux/configureStore'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
 import { DUCK_SIDES } from 'redux/sides/constants'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import BUTTONS from './buttons'
 import './TopButtons.scss'
 
@@ -27,7 +27,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-class TopButtons extends PureComponent {
+export default class TopButtons extends PureComponent {
   static propTypes = {
     handleAction: PropTypes.func,
     location: PropTypes.shape({
@@ -83,5 +83,3 @@ class TopButtons extends PureComponent {
     )
   }
 }
-
-export default TopButtons

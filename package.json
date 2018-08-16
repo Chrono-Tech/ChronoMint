@@ -1,6 +1,6 @@
 {
   "name": "@chronobank/mint",
-  "version": "0.9.3",
+  "version": "0.9.5",
   "description": "Control panel for ChronoBank",
   "private": true,
   "author": "chronobank",
@@ -30,6 +30,7 @@
     "babel-preset-react-hmre": "^1.1.1",
     "babel-preset-stage-0": "^6.24.1",
     "chalk": "1.1.3",
+    "circular-dependency-plugin": "4.4.0",
     "copy-webpack-plugin": "^4.0.0",
     "coveralls": "^2.13.1",
     "cross-env": "^5.0.0",
@@ -158,7 +159,7 @@
     "rei": "rm -rf ./node_modules && yarn install && yarn contracts:compile"
   },
   "pre-commit": [
-//    "lint:errors"
+    "lint:errors"
   ],
   "jest": {
     "testURL": "http://localhost",

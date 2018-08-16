@@ -68,7 +68,7 @@ export default class TxExecModel extends AbstractModel {
 
   details () {
     const details = []
-    Object.entries(this.fields).map(([, field]) => {
+    Object.entries(this.fields).forEach(([, field]) => {
       details.push({
         label: I18n.t(`${this.i18nFunc()}${field.description}`),
         value: field.value,

@@ -7,14 +7,12 @@
 
 import {
   NETWORK_ACCOUNTS_SIGNATURES_LOADING,
-  NETWORK_ACCOUNTS_SIGNATURES_REJECT,
   NETWORK_ACCOUNTS_SIGNATURES_RESET_LOADING,
-  NETWORK_ACCOUNTS_SIGNATURES_RESOLVE,
   NETWORK_ADD_ERROR,
   NETWORK_CLEAR_ERRORS,
+  NETWORK_GET_ACCOUNTS,
   NETWORK_LOADING,
   NETWORK_RESET_ACCOUNT_RECOVERY_MODE,
-  NETWORK_RESET_IMPORT_ACCOUNT_MODE,
   NETWORK_RESET_IMPORT_PRIVATE_KEY,
   NETWORK_RESET_IMPORT_WALLET_FILE,
   NETWORK_RESET_LOGIN_SUBMITTING,
@@ -25,8 +23,6 @@ import {
   NETWORK_SELECT_ACCOUNT,
   NETWORK_SET_ACCOUNT_RECOVERY_MODE,
   NETWORK_SET_ACCOUNTS,
-  NETWORK_SET_IMPORT_ACCOUNT_MODE,
-  NETWORK_SET_IMPORT_MNEMONIC,
   NETWORK_SET_IMPORT_PRIVATE_KEY,
   NETWORK_SET_IMPORT_WALLET_FILE,
   NETWORK_SET_LOGIN_SUBMITTING,
@@ -36,9 +32,6 @@ import {
   NETWORK_SET_PROFILE_SIGNATURE,
   NETWORK_SET_PROVIDER,
   NETWORK_SET_TEST_METAMASK,
-  NETWORK_SET_TEST_MNEMONIC,
-  NETWORK_SET_TEST_RPC,
-  NETWORK_SET_TEST_WALLET_FILE,
   NETWORK_SET_WALLET_FILE_IMPORTED,
 } from './constants'
 
@@ -70,13 +63,13 @@ export const clearErrors = () => ({
   type: NETWORK_CLEAR_ERRORS,
 })
 
-export const networknetworkResetImportAccountMode = () => ({
-  type: NETWORK_RESET_IMPORT_ACCOUNT_MODE,
-})
-
 export const networkSetAccounts = (accounts) => ({
   type: NETWORK_SET_ACCOUNTS,
   accounts,
+})
+
+export const networkGetAccounts = () => ({
+  type: NETWORK_GET_ACCOUNTS,
 })
 
 export const networkResetImportPrivateKey = () => ({
@@ -120,10 +113,6 @@ export const networkSetNewMnemonic = (mnemonic) => ({
   mnemonic,
 })
 
-export const networkResetImportAccountMode = () => ({
-  type: NETWORK_RESET_IMPORT_ACCOUNT_MODE,
-})
-
 export const setAccountCredentials = (walletName, walletPassword) => ({
   type: NETWORK_SET_NEW_ACCOUNT_CREDENTIALS,
   walletName,
@@ -158,10 +147,6 @@ export const setImportedWalletFile = (wallet) => ({
 
 export const setImportWalletFile = () => ({
   type: NETWORK_SET_IMPORT_WALLET_FILE,
-})
-
-export const initImportMethodsPage = () => ({
-  type: NETWORK_SET_IMPORT_ACCOUNT_MODE,
 })
 
 export const setTestMetamask = () => ({

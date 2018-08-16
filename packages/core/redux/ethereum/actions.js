@@ -176,10 +176,12 @@ const submitTransaction = (entry) => async (dispatch, getState) => {
 
   const state = getState()
   const account = getAccount(state)
+  const dao = daoByAddress(entry.tx.to)(state) || ethereumDAO
 
   const description = describeTx(entry, {
     address: account,
-    dao: daoByAddress(entry.tx.to)(state) || ethereumDAO,
+    abi: dao.abi,
+    token: dao.token,
   })
 
   dispatch(modalsOpenConfirmDialog({

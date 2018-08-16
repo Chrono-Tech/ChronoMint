@@ -192,7 +192,7 @@ export const notEmpty = (value) => {
     }
   }
   if (isString(value)) {
-    if (value == null || value === '') {
+    if (value === '') {
       return I18n.t('validator.required')
     }
   }
