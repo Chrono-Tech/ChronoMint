@@ -5,6 +5,8 @@
 
 import PropTypes from 'prop-types'
 import { stopSubmit, SubmissionError } from 'redux-form/immutable'
+import { connect } from 'react-redux'
+import { change } from 'redux-form'
 import React, { Component } from 'react'
 import {
   FORM_CONFIRM_MNEMONIC,
@@ -12,19 +14,52 @@ import {
 
 import ConfirmMnemonic from './ConfirmMnemonic'
 
+function mapDispatchToProps (dispatch) {
+  return {
+    change: (key, value) => dispatch(change(FORM_CONFIRM_MNEMONIC, key, value)),
+  }
+}
+
+@connect(null, mapDispatchToProps)
 export default class ConfirmMnemonicContainer extends Component {
   static propTypes = {
     mnemonic: PropTypes.string,
     previousPage: PropTypes.func,
     onSubmit: PropTypes.func,
     onSubmitSuccess: PropTypes.func,
+    change: PropTypes.func,
   }
 
   static defaultProps = {
     mnemonic: '',
   }
 
-  handleSubmit (values) {
+  constructor (props) {
+    super(props)
+
+    const wordsArray = props.mnemonic
+      ? props.mnemonic.split(' ')
+        .map((word, index) => ({ index, word }))
+        .sort((a,b) => a.word < b.word)
+      : []
+
+    this.state = {
+      confirmPhrase: [],
+      currentWordsArray: wordsArray,
+    }
+  }
+
+  handleClickWord = (word) => {
+    if (!this.state.confirmPhrase.includes(word)) {
+      this.setState(
+        { confirmPhrase: this.state.confirmPhrase.concat(word) },
+        this.refreshCurrentMnemonicForm
+      )
+      return true
+    }
+  }
+
+  handleSubmit = (values) => {
     const { onSubmit, mnemonic } = this.props
 
     const formMnemonic = values.get('mnemonic')
@@ -36,23 +71,47 @@ export default class ConfirmMnemonicContainer extends Component {
     onSubmit && onSubmit()
   }
 
-  handleSubmitSuccess (result) {
+  handleSubmitSuccess = (result) => {
     const { onSubmitSuccess } = this.props
 
     onSubmitSuccess && onSubmitSuccess(result)
   }
 
-  handleSubmitFail (errors, dispatch, submitErrors) {
+  handleSubmitFail = (errors, dispatch, submitErrors) => {
     dispatch(stopSubmit(FORM_CONFIRM_MNEMONIC, submitErrors && submitErrors.errors))
+  }
+
+  handleClearMnemonic = () => {
+    this.setState(
+      { confirmPhrase: [] },
+      this.refreshCurrentMnemonicForm
+    )
+  }
+
+  handleClearLastWord = () => {
+    this.setState(
+      { confirmPhrase: this.state.confirmPhrase.slice(0, -1) },
+      this.refreshCurrentMnemonicForm
+    )
+  }
+
+  refreshCurrentMnemonicForm = () => {
+    const confPhrase = this.state.confirmPhrase.join(' ')
+    this.props.change('mnemonic', confPhrase)
   }
 
   render () {
     return (
       <ConfirmMnemonic
+        confirmPhrase={this.state.confirmPhrase}
+        currentWordsArray={this.state.currentWordsArray}
         mnemonic={this.props.mnemonic}
-        onSubmit={this.handleSubmit.bind(this)}
-        onSubmitSuccess={this.handleSubmitSuccess.bind(this)}
-        onSubmitFail={this.handleSubmitFail.bind(this)}
+        onClearLastWord={this.handleClearLastWord}
+        onClearMnemonic={this.handleClearMnemonic}
+        onClickWord={this.handleClickWord}
+        onSubmit={this.handleSubmit}
+        onSubmitFail={this.handleSubmitFail}
+        onSubmitSuccess={this.handleSubmitSuccess}
         previousPage={this.props.previousPage}
       />
     )
