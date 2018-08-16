@@ -26,7 +26,7 @@ import {
   DEFAULT_USER_URL,
   DUCK_SESSION,
 } from './constants'
-import {loadMoreEvents} from "../events/actions";
+import { loadMoreEvents } from "../events/actions"
 
 export const changeGasSlideValue = (value, blockchain) => (dispatch) =>
   dispatch(SessionActions.gasSliderMultiplierChange(value, blockchain))

@@ -92,8 +92,6 @@ export const pushEvent = (address, log) => async (dispatch, getState) => {
 }
 
 export const loadMoreEvents = (address, blockScanLimit = 10000, logScanLimit = 50) => async (dispatch, getState) => {
-  console.log('loadMoreEvents: ', address, blockScanLimit, logScanLimit )
-
   const web3 = web3Selector()(getState())
   address = address.toLowerCase()
 
@@ -114,8 +112,6 @@ export const loadMoreEvents = (address, blockScanLimit = 10000, logScanLimit = 5
   )
 
   const topic = `0x${padStart(address.substring(2), 64, 0)}`
-
-  console.log('toBlock: ', fromBlock, toBlock, topic)
 
   const [logs1, logs2, logs3] = await Promise.all(
     [1, 2, 3].map(
@@ -222,8 +218,6 @@ export const loadMoreEvents = (address, blockScanLimit = 10000, logScanLimit = 5
 
       for (const log of logs) {
         const description = describeEvent({ log, tx, receipt, block }, context)
-        console.log('Description: ', description)
-
         if (Array.isArray(description)) {
           entries.push(...description)
         } else {

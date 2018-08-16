@@ -242,6 +242,7 @@ export default {
   },
   notices: require('./en-notices'),
   tx: {
+    title: 'New transaction',
     from: 'From',
     to: 'To',
     amount: 'Amount',
@@ -377,7 +378,7 @@ export default {
     AssetDonator: {
       [assetDonator.TX_REQUIRE_TIME]: {
         title: 'Require TIME',
-        donation: 'Donation',
+        donation: 'Donation to',
       },
     },
     PlatformsManager: {
@@ -449,7 +450,8 @@ export default {
     ERC20Interface: {
       [erc20.TX_APPROVE]: {
         title: 'Approve to transfer your tokens',
-        account: 'Account',
+        from: 'From',
+        spender: 'Spender',
         amount: 'Amount',
       },
       [erc20.TX_TRANSFER]: {

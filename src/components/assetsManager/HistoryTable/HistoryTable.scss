@@ -2,7 +2,6 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import "~styles/partials/mixins";
 @import "~styles/partials/variables";
 
@@ -23,7 +22,6 @@ $cell-padding: 24px 0px;
       line-height: 31px;
       font-size: 26px;
       font-weight: 500;
-      font-family: 'proxima-nova';
       color: #333333;
       display: block;
       padding: 0;
@@ -86,7 +84,6 @@ $cell-padding: 24px 0px;
               }
             }
 
-
             .event-address-container {
               display: flex;
 
@@ -102,80 +99,84 @@ $cell-padding: 24px 0px;
         }
       }
 
-    @include md-only {
+      @include md-only {
 
-      .section {
-        margin: 10px 0px;
-      }
-
-      .table {
-        display: block;
-        .table-head {
-          display: none;
+        .section {
+          margin: 10px 0px;
         }
-        .table-body {
-          margin: 5px 5px;
-          display: table;
-          width: 100%;
-          table-layout: fixed;
 
-          margin-top: 10px;
-          .row {
-            display: table-row-group;
-            padding: 0;
-            .col-time, .col-block, .col-type, .col-manager, .col-value {
-              display: table-row;
-            }
-            .label {
-              width: 70px;
-              display: table-cell;
-            }
-            .property {
-              display: table-cell;
-            }
+        .table {
+          display: block;
+          .table-head {
+            display: none;
+          }
+          .table-body {
+            margin: 5px 5px;
+            display: table;
+            width: 100%;
+            table-layout: fixed;
 
-            .col-value {
+            margin-top: 10px;
+            .row {
+              display: table-row-group;
+              padding: 0;
+              .col-time, .col-block, .col-type, .col-manager, .col-value {
+                display: table-row;
+              }
+              .label {
+                width: 70px;
+                display: table-cell;
+              }
               .property {
-                padding-bottom: 20px;
+                display: table-cell;
+              }
+
+              .col-value {
+                .property {
+                  padding-bottom: 20px;
+                }
               }
             }
           }
         }
       }
-    }
 
-    .section {
+      .section {
 
-      .section-header {
+        .section-header {
 
-        h5 {
-          display: block;
-          text-align: left;
-          font-size: 14px;
-          line-height: 17px;
-          color: #333333;
-          font-family: proxima-nova, sans-serif;
-          font-weight: 500;
-          padding-left: 35px;
-          padding-top: 15px;
-          padding-bottom: 15px;
-          border-top: 1px solid #F2F2F2;
-        }
+          h5 {
+            display: block;
+            text-align: left;
+            font-size: 14px;
+            line-height: 17px;
+            color: #333333;
+            font-family: proxima-nova, sans-serif;
+            font-weight: 500;
+            padding-left: 35px;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            border-top: 1px solid #F2F2F2;
+          }
 
-        .no-transactions {
-          line-height: 100px
-        }
+          .no-transactions {
+            line-height: 100px
+          }
 
-        .txs-loading {
-          text-align: center;
-          padding: 25px;
+          .txs-loading {
+            text-align: center;
+            padding: 25px;
+          }
         }
       }
     }
-  }
 
-  .footer {
-    padding: 24px 16px;
-    text-align: center;
+    .footer {
+      padding: 24px 16px;
+      text-align: center;
+    }
+  }
+  .text-faded {
+
   }
 }

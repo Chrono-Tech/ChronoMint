@@ -1,12 +1,13 @@
+import uuid from 'uuid/v1'
 import { ethFeeInfo, findFunctionABI, TransactionDescriber } from '../TransactionDescriber'
 import { Amount, LogTxModel } from '../../../models'
-import ERC20DAODefaultABI from '../../../dao/abi/ERC20DAODefaultABI'
+import { AssetDonatorABI, ERC20DAODefaultABI } from '../../../dao/abi'
+import { TIME } from '../../../dao/constants'
 
 export const FUNCTION_TRANSFER = new TransactionDescriber(
   findFunctionABI(ERC20DAODefaultABI, 'transfer'),
-  ({ tx, receipt, block }, { address, dao }, { params }) => {
-    const symbol = dao.token.symbol()
-    const abi = dao.abi
+  ({ tx, receipt, block }, { address }, { params, token, abi }) => {
+    const symbol = token.symbol()
     address = address.toLowerCase()
     if (symbol && (params._to.toLowerCase() === address || tx.from.toLowerCase() === address)) {
       const {
@@ -16,9 +17,9 @@ export const FUNCTION_TRANSFER = new TransactionDescriber(
 
       const transferAmount = new Amount(params._value, symbol)
 
-      const path = `tx.${abi.contractName}tx.Transfer`
+      const path = `tx.${abi.contractName}.transfer`
       return new LogTxModel({
-        key: block ? `${block.hash}/${tx.transactionIndex}` : null,
+        key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: 'transfer',
         date: new Date(block ? (block.timestamp * 1000) : null),
         title: `${path}.title`,
@@ -41,5 +42,65 @@ export const FUNCTION_TRANSFER = new TransactionDescriber(
         ],
       })
     }
+  },
+)
+
+export const FUNCTION_APPROVE = new TransactionDescriber(
+  findFunctionABI(ERC20DAODefaultABI, 'approve'),
+  ({ tx, block }, { address }, { params, token, abi }) => {
+    const symbol = token.symbol()
+    address = address.toLowerCase()
+    if (symbol && (params._spender.toLowerCase() === address || tx.from.toLowerCase() === address)) {
+      const value = new Amount(params._value, symbol)
+
+      const path = `tx.${abi.contractName}.transfer`
+      return new LogTxModel({
+        key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
+        name: 'transfer',
+        date: new Date(block ? (block.timestamp * 1000) : null),
+        title: `${path}.title`,
+        isAmountSigned: true,
+        fields: [
+          {
+            value: tx.from,
+            description: `${path}.from`,
+          },
+          {
+            value: params._spender,
+            description: `${path}.spender`,
+          },
+          {
+            value,
+            description: `${path}.amount`,
+          },
+        ],
+      })
+    }
+  },
+)
+
+export const FUNCTION_REQUIRE_TIME = new TransactionDescriber(
+  findFunctionABI(AssetDonatorABI, 'sendTime'),
+  ({ tx, block }, context, { abi }) => {
+    const symbol = TIME
+    const transferAmount = new Amount(1000000000, symbol)
+    const path = `tx.${abi.contractName}.sendTime`
+    return new LogTxModel({
+      key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
+      name: 'transfer',
+      date: new Date(block ? (block.timestamp * 1000) : null),
+      title: `${path}.title`,
+      isAmountSigned: true,
+      fields: [
+        {
+          value: tx.from,
+          description: `${path}.donation`,
+        },
+        {
+          value: transferAmount,
+          description: `${path}.amount`,
+        },
+      ],
+    })
   },
 )

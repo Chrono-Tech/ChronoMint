@@ -68,7 +68,7 @@ export default class ConfirmTxDialog extends PureComponent {
                 return (
                   <div styleName='param' key={i}>
                     <div styleName='label'>
-                      {field.description}
+                      <Translate value={field.description} />
                     </div>
                     <div styleName='value'>
                       <Value value={field.value} />

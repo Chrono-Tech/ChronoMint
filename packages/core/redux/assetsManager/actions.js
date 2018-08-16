@@ -26,7 +26,6 @@ import { daoByType } from '../daos/selectors'
 import { web3Selector } from '../ethereum/selectors'
 import { executeTransaction } from '../ethereum/actions'
 import assetsManagerService from '../../services/AssetsManagerService'
-import { loadMoreEvents } from '../events/actions'
 
 import { TX_PLATFORM_REQUESTED } from '../../dao/constants/PlatformsManagerDAO'
 
@@ -165,7 +164,6 @@ export const watchPlatformManager = () => async (dispatch, getState) => {
   }
 
   platformsManagerDAO.on(TX_PLATFORM_REQUESTED, (data) => {
-    console.log('TX_PLATFORM_REQUESTED: ', data)
     if (data.returnValues.by.toLowerCase() !== account) {
       return
     }
@@ -341,11 +339,11 @@ export const checkIsReissuable = async (token: TokenModel, asset) => {
   }
 }
 
-export const getTransactions = () => async (dispatch, getState) => {
+export const getTransactions = () => async (dispatch) => {
   dispatch({ type: GET_TRANSACTIONS_START })
-  const state = getState()
-  const account = getAccount(state)
-  const tokens = state.get(DUCK_TOKENS)
+  // const state = getState()
+  // const account = getAccount(state)
+  // const tokens = state.get(DUCK_TOKENS)
   // const assetsManagerDAO = daoByType('AssetsManager')(state)
   // const transactionsList = await assetsManagerDAO.getTransactions(account, tokens)
   // await dispatch(loadMoreEvents(account))
@@ -409,7 +407,7 @@ export const watchInitTokens = () => async (dispatch, getState) => {
   dispatch(getTransactions())
   const state = getState()
   const account = getAccount(state)
-  const tokens =  state.get(DUCK_TOKENS)
+  const tokens = state.get(DUCK_TOKENS)
 
   assetsManagerService.setPlatformTokenExtensionGatewayManagerEmitterDAO(daoByType('PlatformTokenExtensionGatewayManagerEmitterDAO')(state))
 
