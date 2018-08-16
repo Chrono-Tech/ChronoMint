@@ -43,10 +43,10 @@ export const EVENT_OWNERSHIP_CHANGE = new EventDescriber(
     return new LogEventModel({
       key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
       type: 'event',
-      name: 'Revoke',
+      name: 'OwnershipChange',
       date: new Date(block.timestamp * 1000),
       icon: 'event',
-      title: 'Revoke',
+      title: 'OwnershipChange',
       message: params.proxy,
       target: null,
     })
@@ -80,7 +80,7 @@ export const EVENT_RECOVERY = new EventDescriber(
       name: 'Recovery',
       date: new Date(block.timestamp * 1000),
       icon: 'event',
-      title: 'Approve',
+      title: 'Recovery',
       message: params.proxy,
       target: null,
     })
@@ -94,10 +94,10 @@ export const EVENT_OWNERSHIP_RECOVERY = new EventDescriber(
     return new LogEventModel({
       key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
       type: 'event',
-      name: 'Recovery',
+      name: 'Transfer',
       date: new Date(block.timestamp * 1000),
       icon: 'event',
-      title: 'Approve',
+      title: 'Transfer',
       message: params.proxy,
       target: null,
     })

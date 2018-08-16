@@ -6,7 +6,7 @@
 import uuid from 'uuid/v1'
 import BigNumber from 'bignumber.js'
 import { isNil, omitBy } from 'lodash'
-import { modalsOpenConfirmDialog } from '@chronobank/core-dependencies/redux/modals/actions'
+import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
 import { SignerMemoryModel, TxEntryModel, TxExecModel } from '../../models'
 import { pendingEntrySelector, web3Selector } from './selectors'
 import { DUCK_ETHEREUM, NONCE_UPDATE, TX_CREATE, TX_STATUS, WEB3_UPDATE } from './constants'
@@ -184,7 +184,8 @@ const submitTransaction = (entry) => async (dispatch, getState) => {
     token: dao.token,
   })
 
-  dispatch(modalsOpenConfirmDialog({
+  dispatch(modalsOpen({
+    componentName: 'ConfirmTxDialog',
     props: {
       entry,
       description,

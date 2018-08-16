@@ -20,15 +20,17 @@ function mapStateToProps (state) {
 @connect(mapStateToProps)
 export default class ModalStack extends PureComponent {
   static propTypes = {
-    stack: PropTypes.array,
+    stack: PropTypes.instanceOf(PropTypes.array),
   }
 
   render () {
+    console.log('ModalsStack: ', this.props)
+
     return (
       <div styleName='root'>
         {
           this.props.stack
-            .map((modal, index) => (
+            .map((modal, ) => (
               <ModalsSelector {...modal} />
             ))
         }

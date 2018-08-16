@@ -36,10 +36,12 @@ export const describeEvent = (data, context) => {
   })
 }
 
-const formatPengigTxData = ({ abi, tx }) => {
-  const data = abi != null && tx.data != null // nil check
+const formatPendingTxData = ({ abi, tx }) => {
+  const data = abi != null && tx.data != null
     ? decodeTxData(abi.abi, tx.data)
     : (tx.data != null ? { name: 'Unknown contract' } : null)
+
+  console.log('formatPendingTxData data: ', data)
   if (data) {
     const params = data.params.reduce((accumulator, entry) => ({ ...accumulator, [entry.name]: entry.value }), {})
     return {
@@ -106,9 +108,11 @@ export const describeTx = (entry, context = {}) => {
   const { tx, receipt } = entry
   const { abi } = context
 
+  console.log('describeTx: ', tx, abi)
+
   let info
   if (!receipt) {
-    info = formatPengigTxData({ abi, tx })
+    info = formatPendingTxData({ abi, tx })
   } else {
     info = {
       topic: tx.input.substr(0, 10),

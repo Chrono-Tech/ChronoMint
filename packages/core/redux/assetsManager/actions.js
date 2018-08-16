@@ -45,6 +45,9 @@ import {
   SELECT_TOKEN,
   SET_ASSETS,
 } from './constants'
+import { DAOS_REGISTER } from '../daos/constants'
+import ContractDAOModel from '../../models/contracts/ContractDAOModel'
+import { TOKEN_MANAGEMENT_EXTENSION_LIBRARY } from '../../dao/ContractList'
 import { getAccount } from '../session/selectors/models'
 import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from '../../dao/constants/ChronoBankPlatformDAO'
 
@@ -197,6 +200,15 @@ export const createAsset = (token: TokenModel) => async (dispatch, getState) => 
 
     const tokenManagementExtension =
       await platformsManagerDAO.tokenManagementExtensionManager.getTokenManagementExtensionDAO(tokenExtensionAddress)
+
+    await dispatch({
+      type: DAOS_REGISTER,
+      model: new ContractDAOModel({
+        contract: TOKEN_MANAGEMENT_EXTENSION_LIBRARY,
+        address: tokenManagementExtension.address.toLowerCase(),
+        dao: tokenManagementExtension,
+      }),
+    })
 
     if (token.withFee()) {
       tx = await tokenManagementExtension.createAssetWithFee(token)
