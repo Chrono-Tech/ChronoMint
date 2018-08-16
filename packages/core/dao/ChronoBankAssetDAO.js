@@ -23,7 +23,7 @@ export default class ChronoBankAssetDAO extends AbstractContractDAO {
     super.connect(web3, options)
 
     this.allEventsEmitter = this.history.events.allEvents({})
-      .on('data', this.handleEventsData.bind(this))
+      .on('data', this.handleEventsData)
   }
 
   disconnect () {

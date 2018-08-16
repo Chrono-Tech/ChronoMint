@@ -154,4 +154,18 @@ export default class AbstractContractDAO extends EventEmitter {
 
     return { gasLimit: gasLimitBN, gasFee: gasFeeBN, gasPrice: gasPriceBN }
   }
+
+  handleEventsData = (data) => {
+    if (!data.event) {
+      return
+    }
+    this.emit(data.event, data)
+  }
+
+  handleEventsError = (data) => {
+    if (!data.event) {
+      return
+    }
+    this.emit(data.event + '_error', data)
+  }
 }
