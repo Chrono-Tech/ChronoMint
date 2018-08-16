@@ -3,15 +3,14 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import networkService from '@chronobank/login/network/NetworkService'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { getNetworkById, LOCAL_ID, providerMap } from '@chronobank/login/network/settings'
 import web3Provider from '@chronobank/login/network/Web3Provider'
+import { networkSetNetwork, addError } from '@chronobank/login/redux/network/actions'
 import Web3 from 'web3'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import EthereumEngine from '@chronobank/login/network/EthereumEngine'
-import { addError } from '@chronobank/login/redux/network/actions'
-import { TextField } from '@material-ui/core'
+import { TextField } from 'redux-form-material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -27,8 +26,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   addError: (error) => dispatch(addError(error)),
-  selectNetwork: (networkId) => networkService.selectNetwork(networkId),
-  loadAccounts: () => networkService.loadAccounts(),
+  selectNetwork: (selectedNetworkId) => dispatch(networkSetNetwork(selectedNetworkId))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -37,7 +35,6 @@ class LoginMetamask extends PureComponent {
     onBack: PropTypes.func.isRequired,
     addError: PropTypes.func,
     selectNetwork: PropTypes.func,
-    loadAccounts: PropTypes.func,
     selectedNetworkId: PropTypes.number,
     onLogin: PropTypes.func,
   }

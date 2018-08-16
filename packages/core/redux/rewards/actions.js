@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import AssetModel from '../../models/assetHolder/AssetModel'
 import RewardsPeriodModel from '../../models/rewards/RewardsPeriodModel'
 import TokenModel from '../../models/tokens/TokenModel'
@@ -24,6 +23,7 @@ import {
   REWARDS_PERIOD_COUNT,
   REWARDS_PERIOD,
 } from './constants'
+import { daoByType } from '../daos/selectors'
 
 //#endregion
 
@@ -73,8 +73,8 @@ export const initRewards = () => async (dispatch, getState) => {
   dispatch({ type: REWARDS_INIT, isInited: true })
 
   // init base info
-  rewardDAO = await contractsManagerDAO.getRewardsDAO()
-  const [ assets, count, address ] = await Promise.all([
+  rewardDAO = daoByType('TimeHolder')(getState())
+  const [assets, count, address] = await Promise.all([
     rewardDAO.getAssets(),
     rewardDAO.getLastPeriod(),
     rewardDAO.getAddress(),

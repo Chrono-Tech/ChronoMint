@@ -10,18 +10,14 @@ import assetsManager from './assetsManager/reducer'
 import dao from './daos/reducer'
 import ethereum from './ethereum/reducer'
 import ethMultisigWallet from './multisigWallet/reducer'
-import exchange from './exchange/reducer'
-import locs from './locs/reducer'
 import mainWallet from './mainWallet/reducer'
 import market from './market/reducer'
 import notifier from './notifier/reducer'
-import operations from './operations/reducer'
 import persistAccount from './persistAccount/reducer'
 import profile from './profile/reducer'
 import rewards from './rewards/reducer'
 import session from './session/reducer'
 import settingsErc20Tokens from './settings/erc20/tokens/reducer'
-import settingsUserCBE from './settings/user/cbe/reducer'
 import tokens from './tokens/reducer'
 import voting from './voting/reducer'
 import wallet from './wallet/reducer'
@@ -35,18 +31,14 @@ const coreReducers = {
   dao,
   ethereum,
   ethMultisigWallet,
-  exchange,
-  locs,
   mainWallet,
   market,
   notifier,
-  operations,
   persistAccount,
   profile,
   rewards,
   session,
   settingsErc20Tokens,
-  settingsUserCBE,
   tokens,
   voting,
   wallet,

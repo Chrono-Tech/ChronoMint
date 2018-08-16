@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import React, { Component } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { subscribeWallet, unsubscribeWallet } from '@chronobank/core/redux/wallets/actions'
@@ -21,7 +21,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(null, mapDispatchToProps)
-export default class BalanceSubscription extends Component {
+export default class BalanceSubscription extends React.Component {
   static propTypes = {
     handleSubscribe: PropTypes.func,
     handleUnsubscribe: PropTypes.func,

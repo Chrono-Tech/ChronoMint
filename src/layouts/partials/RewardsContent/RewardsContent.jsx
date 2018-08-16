@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import RewardsPeriod from 'components/dashboard/RewardsPeriod/RewardsPeriod'
 import RewardsCollection from '@chronobank/core/models/rewards/RewardsCollection'
 import RewardsCurrentPeriodModel from '@chronobank/core/models/rewards/RewardsCurrentPeriodModel'
@@ -29,7 +29,6 @@ function mapStateToProps (state) {
   return {
     rewards,
     currentPeriod: rewards.currentPeriod(),
-    // TODO @dkchv: hardcoded to TIME
     isDeposited: state.get(DUCK_ASSETS_HOLDER).isDeposited(),
     isCBE,
   }

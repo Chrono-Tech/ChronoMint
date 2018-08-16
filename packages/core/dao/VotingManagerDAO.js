@@ -16,7 +16,7 @@ import votingService from '../services/VotingService'
 import { daoByType } from '../redux/daos/selectors'
 import PollInterfaceManagerDAO from './PollInterfaceManagerDAO'
 import web3Converter from '../utils/Web3Converter'
-import AbstractContractDAO from './AbstractContract3DAO'
+import AbstractContractDAO from './AbstractContractDAO'
 
 import {
   IS_CREATED,

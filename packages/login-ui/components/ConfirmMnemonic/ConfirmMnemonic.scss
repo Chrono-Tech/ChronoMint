@@ -49,39 +49,6 @@
   flex-wrap: wrap;
 }
 
-.word {
-  width: 23%;
-  margin-bottom: 10px;
-
-  button {
-    white-space: nowrap;
-    width: 100%;
-    cursor: pointer;
-    user-select: none;
-    color: #FFFFFF;
-    background-color: #614DBA;
-    text-transform: lowercase;
-    line-height: 38px;
-    border-radius: 2px;
-    font-size: 16px;
-    font-weight: 700;
-    padding: 12px 0;
-
-    &:disabled {
-      background: $background-color-1;
-    }
-
-    &:hover:not(:disabled) {
-      background-color: $button-color-2;
-      color: $background-color-1;
-    }
-  }
-
-  @include md-only {
-    width: 31%;
-  }
-}
-
 .submitButton {
   background: #00A0D2;
   font-size: 14px;

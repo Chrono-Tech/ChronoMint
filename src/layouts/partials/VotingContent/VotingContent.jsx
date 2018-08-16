@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Poll } from 'components'
+import Poll from 'components/voting/Poll/Poll'
 import Amount from '@chronobank/core/models/Amount'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'

@@ -20,7 +20,6 @@ import Slider from 'components/common/Slider'
 import DatePicker from 'components/common/DatePicker'
 import TimePicker from 'components/common/TimePicker'
 import { DUCK_I18N } from 'redux/i18n/constants'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import { daoByType } from '@chronobank/core/redux/daos/selectors'
 import VotingManagerDAO from '@chronobank/core/dao/VotingManagerDAO'
 import { TX_CREATE_POLL } from '@chronobank/core/dao/constants/VotingManagerDAO'
@@ -29,14 +28,13 @@ import { createPoll } from '@chronobank/core/redux/voting/actions'
 import { DUCK_VOTING } from '@chronobank/core/redux/voting/constants'
 import { modalsClose } from 'redux/modals/actions'
 import Amount from '@chronobank/core/models/Amount'
-import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
 import { TIME } from '@chronobank/core/dao/constants'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import PollDetailsModel from '@chronobank/core/models/PollDetailsModel'
 import FileModel from '@chronobank/core/models/FileSelect/FileModel'
 import { I18n } from '@chronobank/core-dependencies/i18n'
-import { Button } from 'components/index'
+import Button from 'components/common/ui/Button/Button'
 import { FORM_EDIT_POLL } from 'components/constants'
 import './PollEditForm.scss'
 import validate from './validate'
@@ -66,7 +64,6 @@ function mapStateToProps (state) {
     maxVoteLimitInTIME: new BigNumber(state.get(DUCK_VOTING).voteLimitInTIME() || 0),
     maxVoteLimitInPercent: new BigNumber(state.get(DUCK_VOTING).voteLimitInPercent() || 0),
     voteLimitInTIME: selector(state, 'voteLimitInTIME'),
-    timeToken: state.get(DUCK_TOKENS).item('TIME'),
     locale: state.get(DUCK_I18N).locale,
     initialValues: {
       feeMultiplier: 1,
@@ -118,8 +115,6 @@ export default class PollEditForm extends Component {
     isModify: PropTypes.bool,
     account: PropTypes.string,
     votingDao: PropTypes.instanceOf(VotingManagerDAO),
-    voteLimit: PropTypes.objectOf(BigNumber),
-    timeToken: PropTypes.instanceOf(TokenModel),
     maxVoteLimitInTIME: PropTypes.instanceOf(BigNumber),
     maxVoteLimitInPercent: PropTypes.instanceOf(BigNumber),
     locale: PropTypes.string,

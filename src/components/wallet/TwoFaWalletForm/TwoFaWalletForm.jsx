@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import web3Converter from '@chronobank/core/utils/Web3Converter'
 import React, { PureComponent } from 'react'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
@@ -63,7 +63,6 @@ export default class TwoFaWalletForm extends PureComponent {
     check2FAChecked: PropTypes.bool,
     handleSubmit: PropTypes.func,
     account: PropTypes.string,
-    gasPriceMultiplier: PropTypes.number,
     feeMultiplier: PropTypes.number,
     handleGoWallets: PropTypes.func,
     handleGoTo2FA: PropTypes.func,

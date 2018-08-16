@@ -6,15 +6,13 @@
 import ledgerProvider from '@chronobank/login/network/LedgerProvider'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { fetchAccount, startLedgerSync, stopLedgerSync } from '@chronobank/login/redux/ledger/actions'
-import { CircularProgress, RaisedButton } from 'material-ui'
-import networkService from '@chronobank/login/network/NetworkService'
-import SelectField from 'material-ui/SelectField'
-import MenuItem from 'material-ui/MenuItem'
-import Subheader from 'material-ui/Subheader'
+import { CircularProgress, MenuItem } from '@material-ui/core'
+import Select from 'redux-form-material-ui/es/Select'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
+import { setAccounts, selectAccount } from '@chronobank/login/redux/network/actions'
 import BackButton from '../../components/BackButton/BackButton'
 import './LoginWithLedger.scss'
 import { Button } from '../../settings'
@@ -54,11 +52,15 @@ const mapDispatchToProps = (dispatch) => ({
   startLedgerSync: () => dispatch(startLedgerSync()),
   stopLedgerSync: (isReset) => dispatch(stopLedgerSync(isReset)),
   fetchAccount: () => dispatch(fetchAccount()),
+  selectAccount: (account) => dispatch(selectAccount(account)),
+  setAccounts: (account) => dispatch(setAccounts(account)),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class LoginLedger extends PureComponent {
   static propTypes = {
+    selectAccount: PropTypes.func,
+    setAccounts: PropTypes.func,
     startLedgerSync: PropTypes.func,
     stopLedgerSync: PropTypes.func,
     fetchAccount: PropTypes.func,
@@ -88,8 +90,8 @@ class LoginLedger extends PureComponent {
       this.props.fetchAccount()
     }
     ledgerProvider.setWallet(prevProps.account[0])
-    networkService.selectAccount(prevProps.account[0])
-    networkService.setAccounts(prevProps.account)
+    this.props.selectAccount(prevProps.account[0])
+    this.props.setAccounts(prevProps.account)
   }
 
   componentWillUnmount () {
@@ -99,6 +101,16 @@ class LoginLedger extends PureComponent {
   handleBackClick = () => {
     this.props.stopLedgerSync(true)
     this.props.onBack()
+  }
+
+  handleChange = (event, index, value) => {
+    this.setState({ value })
+    ledgerProvider.setWallet(this.props.account[index])
+    this.props.selectAccount(this.props.account[index])
+  }
+
+  _buildItem (item, index) {
+    return <MenuItem value={index} key={index} primaryText={item} />
   }
 
   renderStates () {
@@ -122,16 +134,6 @@ class LoginLedger extends PureComponent {
       ))
   }
 
-  _buildItem (item, index) {
-    return <MenuItem value={index} key={index} primaryText={item} />
-  }
-
-  handleChange = (event, index, value) => {
-    this.setState({ value })
-    ledgerProvider.setWallet(this.props.account[index])
-    networkService.selectAccount(this.props.account[index])
-  }
-
   render () {
     const { isLoading, ledger, account } = this.props
 
@@ -148,7 +150,7 @@ class LoginLedger extends PureComponent {
 
         {ledger.isFetched && (
           <div styleName='account'>
-            <SelectField
+            <Select
               label='Select address'
               autoWidth
               fullWidth
@@ -158,7 +160,7 @@ class LoginLedger extends PureComponent {
               onChange={this.handleChange}
             >
               {this.props.account.map(this._buildItem)}
-            </SelectField>
+            </Select>
           </div>
         )}
 

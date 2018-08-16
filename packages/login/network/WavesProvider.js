@@ -35,8 +35,8 @@ export class WavesProvider extends AbstractProvider {
 
   async getAssets () {
     const node = this._selectNode(this._engine)
-    const { /*balance,*/ assets } = await node.getAddressInfo(this._engine.getAddress())
-    return assets || []
+    const { assets } = await node.getAddressInfo(this._engine.getAddress())
+    return { ...assets }
   }
 
   getPrivateKey () {
@@ -47,9 +47,9 @@ export class WavesProvider extends AbstractProvider {
     const node = this._selectNode(this._engine)
     const { balance, assets } = await node.getAddressInfo(this._engine.getAddress())
     if (Object.keys(assets).length && assets[asset]) {
-      return assets[asset]['balance']
+      return new BigNumber(assets[asset]['balance'])
     }
-    return balance
+    return new BigNumber(balance)
   }
 
   async getTransactionsList (address, id, skip, offset) {

@@ -4,7 +4,7 @@
  */
 
 import { CSSTransitionGroup } from 'react-transition-group'
-import Partials from 'layouts/partials'
+import NewPollContent from 'layouts/partials/NewPollContent/NewPollContent'
 import React, { Component } from 'react'
 
 export default class NewPollPage extends Component {
@@ -18,7 +18,7 @@ export default class NewPollPage extends Component {
           transitionEnterTimeout={250}
           transitionLeaveTimeout={250}
         >
-          <Partials.NewPollContent />
+          <NewPollContent />
         </CSSTransitionGroup>
       </div>
     )

@@ -4,7 +4,7 @@
  */
 
 import { FeeInterfaceABI } from './abi'
-import AbstractContractDAO from './AbstractContract3DAO'
+import AbstractContractDAO from './AbstractContractDAO'
 
 export default class FeeInterfaceDAO extends AbstractContractDAO {
   constructor (address, history) {

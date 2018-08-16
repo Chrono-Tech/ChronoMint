@@ -14,15 +14,6 @@ import {
   ltcProvider,
 } from '../../network/BitcoinProvider'
 import { nemProvider } from '../../network/NemProvider'
-import walletProvider from '../../network/walletProvider'
-import networkService from '../../network/NetworkService'
-
-export const getWalletProvider = (wallet, password: string) =>
-  walletProvider.getProvider(
-    wallet,
-    password,
-    networkService.getProviderSettings(),
-  )
 
 export const getPrivateKeyFromBlockchain = (blockchain: string) => {
   switch (blockchain) {
@@ -39,4 +30,8 @@ export const getPrivateKeyFromBlockchain = (blockchain: string) => {
     default:
       return null
   }
+}
+
+export const checkTestRPC = (/*providerUrl*/) => {
+  return false
 }

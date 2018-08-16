@@ -6,21 +6,33 @@
  */
 
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
-import { login } from '@chronobank/core/redux/session/thunks'
+import {
+  createNetworkSession,
+  getProviderSettings,
+  login,
+  selectProvider,
+} from '@chronobank/core/redux/session/thunks'
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
+import web3Converter from '@chronobank/core/utils/Web3Converter'
+import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE } from '@chronobank/login/network/MonitorService'
 import {
   DUCK_NETWORK,
 } from './constants'
 import * as NetworkActions from './actions'
+import uportProvider from '../../network/uportProvider'
 import privateKeyProvider from '../../network/privateKeyProvider'
-import networkService from '../../network/NetworkService'
-import {
-  LOCAL_PRIVATE_KEYS,
-} from '../../network/settings'
-import * as networkUtils from './utils'
+import walletProvider from '../../network/walletProvider'
 import setup from '../../network/EngineUtils'
+import web3Provider from '../../network/Web3Provider'
+import {
+  getNetworkById,
+  getNetworksByProvider,
+  LOCAL_PRIVATE_KEYS,
+  NETWORK_MAIN_ID,
+} from '../../network/settings'
+import { DUCK_ETH_MULTISIG_WALLET } from '@chronobank/core/redux/multisigWallet/constants'
 
 /*
  * Thunk dispatched by "" screen.
@@ -30,7 +42,6 @@ import setup from '../../network/EngineUtils'
 export const resetAllLoginFlags = () => (dispatch) => {
   dispatch(NetworkActions.networkResetImportPrivateKey())
   dispatch(NetworkActions.networkResetImportWalletFile())
-  dispatch(NetworkActions.networkResetImportAccountMode())
   dispatch(NetworkActions.networkResetAccountRecoveryMode())
   dispatch(NetworkActions.networkResetNewMnemonic())
   dispatch(NetworkActions.networkResetNewAccountCredential())
@@ -51,7 +62,7 @@ export const updateSelectedAccount = () => (dispatch, getState) => {
 
   const foundAccount = walletsList
     .find((account) =>
-      account.key === selectedWallet.key
+      account.key === selectedWallet.key,
     )
 
   if (foundAccount) {
@@ -79,7 +90,7 @@ export const initAccountsSignature = () =>
     const accounts = await dispatch(PersistAccountActions.setProfilesForAccounts(walletsList))
 
     accounts.forEach((account) =>
-      dispatch(PersistAccountActions.accountUpdate(account))
+      dispatch(PersistAccountActions.accountUpdate(account)),
     )
 
     dispatch(updateSelectedAccount())
@@ -90,9 +101,14 @@ export const handleWalletLogin = (wallet, password) => async (dispatch, getState
   dispatch(NetworkActions.loading())
   dispatch(NetworkActions.clearErrors())
 
-  const provider = networkUtils.getWalletProvider(wallet[0], password)
+  const providerSettings = dispatch(getProviderSettings())
+  const provider = walletProvider.getProvider(
+    wallet[0],
+    password,
+    providerSettings,
+  )
 
-  networkService.selectAccount(provider.ethereum.getAddress())
+  dispatch(NetworkActions.selectAccount(provider.ethereum.getAddress()))
   await setup(provider)
 
   const state = getState()
@@ -104,17 +120,12 @@ export const handleWalletLogin = (wallet, password) => async (dispatch, getState
 
   dispatch(NetworkActions.clearErrors())
 
-  const isPassed = await networkService.checkNetwork()
-
-  if (isPassed) {
-    networkService.createNetworkSession(
-      selectedAccount,
-      selectedProviderId,
-      selectedNetworkId,
-    )
-    await dispatch(login(selectedAccount))
-  }
-
+  dispatch(createNetworkSession(
+    selectedAccount,
+    selectedProviderId,
+    selectedNetworkId,
+  ))
+  await dispatch(login(selectedAccount))
 }
 
 /*
@@ -135,15 +146,15 @@ export const handleLoginLocalAccountClick = (account = '') =>
   async (dispatch, getState) => {
     let state = getState()
     const { accounts } = state.get(DUCK_NETWORK)
-    const wallets = state.get('ethMultisigWallet') // FIXME: to use constant
-
+    const wallets = state.get(DUCK_ETH_MULTISIG_WALLET)
+    const providerSetting = dispatch(getProviderSettings())
     const index = Math.max(accounts.indexOf(account), 0)
     const provider = privateKeyProvider.getPrivateKeyProvider(
       LOCAL_PRIVATE_KEYS[index],
-      networkService.getProviderSettings(),
+      providerSetting,
       wallets,
     )
-    networkService.selectAccount(account)
+    dispatch(NetworkActions.selectAccount(account))
     await setup(provider)
 
     state = getState()
@@ -155,20 +166,12 @@ export const handleLoginLocalAccountClick = (account = '') =>
 
     dispatch(NetworkActions.clearErrors())
 
-    const isPassed = await networkService.checkNetwork(
+    dispatch(createNetworkSession(
       selectedAccount,
       selectedProviderId,
       selectedNetworkId,
-    )
-
-    if (isPassed) {
-      networkService.createNetworkSession(
-        selectedAccount,
-        selectedProviderId,
-        selectedNetworkId,
-      )
-      dispatch(login(selectedAccount))
-    }
+    ))
+    dispatch(login(selectedAccount))
   }
 
 /*
@@ -181,27 +184,102 @@ export const selectProviderWithNetwork = (networkId, providerId) => (dispatch) =
   dispatch(NetworkActions.networkSetNetwork(networkId))
 }
 
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
-export const handleSubmitCreateNetwork = (url, ws, alias) => (dispatch) => {
-  dispatch(PersistAccountActions.customNetworkCreate(url, ws, alias))
+// TODO: actually, this method does not used. It is wrong. Need to be used
+export const isMetaMask = () => (dispatch, getState) => {
+  const state = getState()
+  const network = state.get(DUCK_NETWORK)
+  return network.isMetamask
 }
 
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
-export const handleSubmitEditNetwork = (network) => (dispatch) => {
-  dispatch(PersistAccountActions.customNetworkEdit(network))
+export const loginUport = () => async (dispatch) => {
+  const provider = uportProvider.getUportProvider()
+
+  dispatch(NetworkActions.loading())
+  dispatch(NetworkActions.clearErrors())
+
+  web3Provider.reinit(provider.getWeb3(), provider.getProvider())
+  const encodedAddress = await provider.requestAddress()
+  const { network, address } = uportProvider.decodeMNIDaddress(encodedAddress)
+
+  dispatch(NetworkActions.networkSetNetwork(web3Converter.hexToDecimal(network)))
+  dispatch(NetworkActions.networkSetAccounts([address]))
+  dispatch(NetworkActions.selectAccount(address))
+
+  return true
 }
 
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
-export const handleDeleteNetwork = (network) => (dispatch) => {
-  dispatch(PersistAccountActions.customNetworksDelete(network))
+// Need to think how to merge it with getProviderSettings method. Looks almost the same.
+export const getNetworkName = () => (dispatch, getState) => {
+  const state = getState()
+  const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
+  const { selectedNetworkId, selectedProviderId, isLocal } = state.get(DUCK_NETWORK)
+  const network = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
+  const { name } = network
+
+  if (!network.host) {
+    const customNetwork = customNetworksList
+      .find((network) => network.id === selectedNetworkId)
+
+    return customNetwork && customNetwork.name
+  }
+
+  return name
 }
 
+export const autoSelect = () => (dispatch, getState) => {
+  const { priority, preferMainnet } = getState().get(DUCK_NETWORK)
+  let checkerIndex = 0
+  const checkers = []
+
+  const selectAndResolve = (networkId, providerId) => {
+    dispatch(selectProvider(providerId))
+    dispatch(NetworkActions.networkSetNetwork(networkId))
+  }
+
+  const handleNetwork = (status) => {
+    switch (status) {
+      case NETWORK_STATUS_OFFLINE:
+        runNextChecker()
+        break
+      case NETWORK_STATUS_ONLINE:
+        resetCheckers()
+        break
+    }
+  }
+
+  const resetCheckers = () => {
+    checkerIndex = 0
+    checkers.length = checkerIndex
+    web3Provider.getMonitorService().removeListener('network', handleNetwork)
+  }
+
+  const runNextChecker = () => {
+    if (checkerIndex < checkers.length) {
+      web3Provider.beforeReset()
+      web3Provider.afterReset()
+      checkers[checkerIndex]()
+      checkerIndex++
+    } else {
+      resetCheckers()
+    }
+  }
+
+  priority.forEach((providerId) => {
+    const networks = getNetworksByProvider(providerId)
+    if (preferMainnet) {
+      checkers.push(() => selectAndResolve(NETWORK_MAIN_ID, providerId))
+    } else {
+      networks
+        .filter((network) => network.id !== NETWORK_MAIN_ID)
+        .forEach((network) => {
+          checkers.push(() => selectAndResolve(network.id, providerId))
+        })
+    }
+  })
+
+  web3Provider
+    .getMonitorService()
+    .on('network', handleNetwork)
+
+  runNextChecker()
+}

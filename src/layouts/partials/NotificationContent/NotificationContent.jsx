@@ -13,7 +13,7 @@ import TxModel from '@chronobank/core/models/TxModel'
 import CurrentTransactionNotificationModel from '@chronobank/core/models/CurrentTransactionNotificationModel'
 import { pendingTransactionsSelector } from '@chronobank/core/redux/mainWallet/selectors/tokens'
 import Immutable from 'immutable'
-import { connect } from "react-redux"
+import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
 import ReceivedTransactionSVG from 'assets/img/r-0.svg'
 import Value from 'components/common/Value/Value'

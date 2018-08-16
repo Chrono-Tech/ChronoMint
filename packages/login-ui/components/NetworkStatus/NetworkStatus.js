@@ -14,16 +14,6 @@ import { Translate } from 'react-redux-i18n'
 
 import './NetworkStatus.scss'
 
-const selectProvider = (providerId) => {
-  const provider = getProviderById(providerId)
-  return provider.name
-}
-
-const selectNetwork = (networkId, providerId) => {
-  const network = getNetworkById(networkId, providerId)
-  return network.name
-}
-
 const formatPercent = (value) => Math.round(value * 10000) / 100
 
 const selectStatus = ({ network, sync }) => {
@@ -51,8 +41,8 @@ function mapStateToProps (state) {
   return {
     status: selectStatus(monitor),
     sync: monitor.sync,
-    provider: selectProvider(network.selectedProviderId),
-    network: selectNetwork(network.selectedNetworkId, network.selectedProviderId),
+    provider: getProviderById(network.selectedProviderId).name,
+    network: getNetworkById(network.selectedNetworkId, network.selectedProviderId).name,
   }
 }
 

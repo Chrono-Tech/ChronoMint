@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { connect } from "react-redux"
-import PropTypes from "prop-types"
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import Drawer from '@material-ui/core/Drawer'
 import { toggleSidePanel } from 'redux/sides/actions'

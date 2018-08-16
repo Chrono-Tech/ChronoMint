@@ -39,7 +39,7 @@ export const getWalletsLengthFromState = (state) => {
 export const getMainAddresses = (state) => {
   const wallets = getWallets(state)
   const addresses = []
-  Object.values(wallets).map((wallet) => {
+  Object.values(wallets).forEach((wallet) => {
     if (wallet.isMain) {
       addresses.push(wallet.address)
     }

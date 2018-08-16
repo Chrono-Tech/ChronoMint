@@ -77,7 +77,7 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
   const managers = await assetsManagerDAO.getManagers(Object.entries(assets).map((item) => item[1].symbol), [account])
   const usersPlatforms = platforms.filter((platform) => platform.by === account)
 
-  Object.values(assets).map((asset) => {
+  Object.values(assets).forEach((asset) => {
     const symbol = web3Converter.bytesToString(asset.symbol)
     dispatch(setTxFromMiddlewareForBlockAsset(asset.address, symbol))
     dispatch(setTxFromMiddlewareForBlackList(asset.address, symbol))
@@ -355,7 +355,7 @@ export const setTx = (tx) => async (dispatch, getState) => {
   const state = getState()
   const account = getAccount(state)
   const assetsManagerDAO = daoByType('AssetsManager')(state)
-  //eslint-disable-next-line
+  // eslint-disable-next-line
   const txModel = await assetsManagerDAO.getTxModel(tx, account)
   //TODO convert tx to tx model
   // dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList: new Immutable.Map().set(txModel.id, txModel) } })
@@ -469,7 +469,7 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     const assets = {}
     Object.entries(assetList).filter(([, asset]) => {
       return asset.symbol !== eventSymbol
-    }).map(([key, value]) => {
+    }).forEach(([key, value]) => {
       assets[key] = value
     })
 
@@ -638,7 +638,7 @@ export const selectPlatform = (platformAddress) => async (dispatch, getState) =>
 
   const promises = []
   const calledAssets = []
-  Object.values(assets).map((asset) => {
+  Object.values(assets).forEach((asset) => {
     if (asset.platform === platformAddress) {
       promises.push(dispatch(getPauseStatus(asset.address)))
       calledAssets.push(asset)
@@ -646,7 +646,7 @@ export const selectPlatform = (platformAddress) => async (dispatch, getState) =>
   })
 
   const pauseResult = await Promise.all(promises)
-  calledAssets.map((asset, i) => {
+  calledAssets.forEach((asset, i) => {
     const token = tokens.getByAddress(asset.address)
     if (token.address()) {
       dispatch({

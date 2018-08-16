@@ -3,7 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { CopyIcon, IPFSImage } from 'components'
+import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import QRCode from 'qrcode'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { Link } from 'react-router'

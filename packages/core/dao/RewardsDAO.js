@@ -4,18 +4,13 @@
  */
 
 import BigNumber from 'bignumber.js'
-import resultCodes from 'chronobank-smart-contracts/common/errors'
 import type ERC20DAO from './ERC20DAO'
 import Amount from '../models/Amount'
 import AssetModel from '../models/assetHolder/AssetModel'
 import AssetsCollection from '../models/assetHolder/AssetsCollection'
 import RewardsPeriodModel from '../models/rewards/RewardsPeriodModel'
 import tokenService from '../services/TokenService'
-import { MultiEventsHistoryABI, RewardsABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
-
-//#region CONSTANTS
-
 import {
   EE_REWARDS_ERROR,
   EE_REWARDS_PERIOD,
@@ -24,12 +19,18 @@ import {
   TX_WITHDRAW_REWARD,
 } from './constants/RewardsDAO'
 
-//#endregion CONSTANTS
-
 export default class RewardsDAO extends AbstractContractDAO {
-  constructor (at) {
-    super(RewardsABI, at, MultiEventsHistoryABI)
-    this._okCodes = [ resultCodes.OK, resultCodes.REWARD_CALCULATION_FAILED ]
+  constructor ({ address, history, abi }) {
+    super({ address, history, abi })
+  }
+
+  /**
+   * connect DAO to web3 and history contract
+   * @param web3
+   * @param options
+   */
+  connect (web3, options) {
+    super.connect(web3, options)
   }
 
   async getAssets (): Promise {
@@ -49,7 +50,7 @@ export default class RewardsDAO extends AbstractContractDAO {
 
   async getAssetDAO (): Promise<ERC20DAO> {
     const addresses = await this._call('getAssets')
-    return tokenService.getDAO(addresses[ 0 ])
+    return tokenService.getDAO(addresses[0])
   }
 
   getPeriodLength (): Promise {
@@ -61,39 +62,39 @@ export default class RewardsDAO extends AbstractContractDAO {
   }
 
   getRewardsLeft (address): Promise {
-    return this._call('getRewardsLeft', [ address ])
+    return this._call('getRewardsLeft', [address])
   }
 
   getRewardsFor (account, asset: AssetModel): Promise<BigNumber> {
-    return this._call('rewardsFor', [ asset.id(), account ])
+    return this._call('rewardsFor', [asset.id(), account])
   }
 
   /** @private */
   async fetchPeriod (id, asset: AssetModel, account): Promise<RewardsPeriodModel> {
     const values = await Promise.all([
-      this._call('totalDepositInPeriod', [ id ]), // 0
-      this._call('depositBalanceInPeriod', [ account, id ]), // 1
-      this._call('isClosed', [ id ]), // 2
-      this._call('assetBalanceInPeriod', [ asset.id(), id ]), // 3
-      this._callNum('periodUnique', [ id ]), // 4
-      this._callNum('getPeriodStartDate', [ id ]), // 5
+      this._call('totalDepositInPeriod', [id]), // 0
+      this._call('depositBalanceInPeriod', [account, id]), // 1
+      this._call('isClosed', [id]), // 2
+      this._call('assetBalanceInPeriod', [asset.id(), id]), // 3
+      this._callNum('periodUnique', [id]), // 4
+      this._callNum('getPeriodStartDate', [id]), // 5
       this.getPeriodLength(), // 6
     ])
 
     this.emit(EE_REWARDS_PERIOD, new RewardsPeriodModel({
       id,
-      totalDeposit: new Amount(values[ 0 ], asset.symbol()),
-      userDeposit: new Amount(values[ 1 ], asset.symbol()),
-      isClosed: values[ 2 ],
-      assetBalance: new Amount(values[ 3 ], asset.symbol()),
-      uniqueShareholders: values[ 4 ],
-      startDate: values[ 5 ],
-      periodLength: values [ 6 ],
+      totalDeposit: new Amount(values[0], asset.symbol()),
+      userDeposit: new Amount(values[1], asset.symbol()),
+      isClosed: values[2],
+      assetBalance: new Amount(values[3], asset.symbol()),
+      uniqueShareholders: values[4],
+      startDate: values[5],
+      periodLength: values [6],
     }))
   }
 
   async withdraw (account, asset: AssetModel) {
-    const amount = await this.getRewardsFor(account)
+    const amount = await this.getRewardsFor(account, asset)
     return this._tx(TX_WITHDRAW_REWARD, [
       asset.id(),
       amount,

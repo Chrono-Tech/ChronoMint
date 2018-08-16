@@ -5,8 +5,8 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { TextField, Toggle } from 'redux-form-material-ui'
-import { I18n } from '@chronobank/core-dependencies/i18n/index'
+import { Checkbox, TextField } from 'redux-form-material-ui'
+import { I18n } from '@chronobank/core-dependencies/i18n'
 import { Field } from 'redux-form/immutable'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
@@ -35,7 +35,9 @@ export default class TokensList extends PureComponent {
           <div styleName='field'>
             <Field
               component={TextField}
-              underlineShow={false}
+              InputProps={{
+                disableUnderline: true,
+              }}
               name='filter'
               fullWidth
               placeholder={I18n.t(`${prefix}.filter`)}
@@ -50,7 +52,7 @@ export default class TokensList extends PureComponent {
               <div styleName='title'>{token.name() || token.symbol()}</div>
               <div styleName='field'>
                 <Field
-                  component={Toggle}
+                  component={Checkbox}
                   name={`tokens.${token.id()}`}
                 />
               </div>
