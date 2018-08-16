@@ -56,16 +56,13 @@ class LoginTrezor extends PureComponent {
     startTrezorSync: PropTypes.func,
     stopTrezorSync: PropTypes.func,
     fetchAccount: PropTypes.func,
-    onBack: PropTypes.func,
-    onLogin: PropTypes.func,
     navigateBack: PropTypes.func,
     trezor: PropTypes.object,
-    isLoading: PropTypes.bool,
     account: PropTypes.instanceOf(Array),
     navigateToCreateAccountFromHW: PropTypes.func,
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate () {
     if (!this.props.trezor.isFetched && !this.props.trezor.isFetching) {
       this.props.startTrezorSync()
       this.props.fetchAccount()
@@ -74,28 +71,6 @@ class LoginTrezor extends PureComponent {
 
   componentWillUnmount () {
     this.props.stopTrezorSync()
-  }
-
-  renderStates () {
-    const { trezor } = this.props
-
-    return trezorStates.map((item) =>
-      trezor[ item.flag ]
-        ? <div key={item.flag} />
-        : (
-          <div styleName='state' key={item.flag}>
-            <div styleName='titleContent'>
-              <div styleName='title'><Translate value={item.errorTitle} /></div>
-              <div styleName='subtitle'><Translate value={item.errorTip} /></div>
-            </div>
-          </div>
-        )
-    )
-  }
-
-  handleChange = (index, value) => {
-    console.log(index, value)
-    this.setState({ value })
   }
 
   _buildItem = (item, index) => {
@@ -128,6 +103,23 @@ class LoginTrezor extends PureComponent {
         </ListItem>
         <Divider light />
       </div>
+    )
+  }
+
+  renderStates () {
+    const { trezor } = this.props
+
+    return trezorStates.map((item) =>
+      trezor[ item.flag ]
+        ? <div key={item.flag} />
+        : (
+          <div styleName='state' key={item.flag}>
+            <div styleName='titleContent'>
+              <div styleName='title'><Translate value={item.errorTitle} /></div>
+              <div styleName='subtitle'><Translate value={item.errorTip} /></div>
+            </div>
+          </div>
+        )
     )
   }
 

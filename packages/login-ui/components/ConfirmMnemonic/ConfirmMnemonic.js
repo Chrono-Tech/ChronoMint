@@ -12,82 +12,39 @@ import Button from 'components/common/ui/Button/Button'
 import {
   FORM_CONFIRM_MNEMONIC,
 } from '@chronobank/login-ui/redux/constants'
+import MnemonicButton from './MnemonicButton'
 
 import './ConfirmMnemonic.scss'
 
 class ConfirmMnemonic extends Component {
   static propTypes = {
-    mnemonic: PropTypes.string,
+    confirmPhrase: PropTypes.arrayOf(PropTypes.string),
+    currentWordsArray: PropTypes.arrayOf(PropTypes.object),
+    error: PropTypes.string,
+    handleSubmit: PropTypes.func,
+    onClearLastWord: PropTypes.func,
+    onClearMnemonic: PropTypes.func,
+    onClickWord: PropTypes.func,
     previousPage: PropTypes.func,
   }
 
-  static defaultProps = {
-    mnemonic: '',
-  }
+  getWordsButtons = () =>
+    this.props.currentWordsArray
+      .map((item) => {
+        const wordSelected = this.props.confirmPhrase.includes(item.word)
+        const keyIndex = `${item.word}${item.index}`
+        return (
+          <MnemonicButton
+            key={keyIndex}
+            isWordSelected={wordSelected}
+            mnemonicWord={item.word}
+            onClick={this.props.onClickWord}
+          />
+        )
+      })
 
-  constructor (props) {
-    super(props)
-
-    const wordsArray = props.mnemonic ?
-      props.mnemonic.split(' ').map((word, index) => {
-        return { index, word }
-      }) : []
-
-    this.state = {
-      confirmPhrase: [],
-      currentWordsArray: wordsArray.sort((a,b) => a.word < b.word),
-    }
-  }
-
-  getCurrentMnemonic () {
-    return this.state.confirmPhrase.map((item) => item.word).join(' ')
-  }
-
-  getWordsButtons () {
-    return this.state.currentWordsArray.map((item, index) => {
-      const wordSelected = this.state.confirmPhrase.includes(item)
-
-      return (
-        <Button
-          key={index}
-          onClick={this.onClickWord.bind(this, item)}
-          styleName='word'
-          disabled={wordSelected}
-        >
-          { item.word }
-        </Button>
-      )}
-    )
-  }
-
-  onClickWord (word) {
-    const { change } = this.props
-
-    if (!this.state.confirmPhrase.includes(word)) {
-      this.setState(
-        { confirmPhrase: this.state.confirmPhrase.concat(word) },
-        () => change('mnemonic', this.getCurrentMnemonic())
-      )
-    }
-  }
-
-  clearMnemonic () {
-    const { change } = this.props
-
-    this.setState(
-      { confirmPhrase: [] },
-      () => change('mnemonic', this.getCurrentMnemonic())
-    )
-  }
-
-  clearLastWord () {
-    const { dispatch, change } = this.props
-
-    this.setState(
-      { confirmPhrase: this.state.confirmPhrase.slice(0, -1) },
-      () => change('mnemonic', this.getCurrentMnemonic())
-    )
-  }
+  getCurrentMnemonic = () =>
+    this.props.confirmPhrase.join(' ')
 
   render () {
     const { handleSubmit, error, previousPage } = this.props
@@ -104,7 +61,11 @@ class ConfirmMnemonic extends Component {
           </p>
 
           <div styleName='passPhraseWrapper'>
-            <div styleName='passPhrase'>{ this.getCurrentMnemonic() }</div>
+            <div styleName='passPhrase'>
+              {
+                this.getCurrentMnemonic()
+              }
+            </div>
             <Field
               component='input'
               type='hidden'
@@ -123,10 +84,10 @@ class ConfirmMnemonic extends Component {
           </div>
 
           <div styleName='controlsBlock'>
-            <div styleName='control' onClick={this.clearMnemonic.bind(this)}>
+            <div styleName='control' onClick={this.props.onClearMnemonic}>
               <Translate value='ConfirmMnemonic.startOver' />
             </div>
-            <div styleName='control' onClick={this.clearLastWord.bind(this)}>
+            <div styleName='control' onClick={this.props.onClearLastWord}>
               <Translate value='ConfirmMnemonic.undo' />
             </div>
           </div>

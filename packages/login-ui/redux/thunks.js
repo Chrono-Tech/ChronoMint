@@ -17,7 +17,6 @@ import {
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
-import { autoSelect } from '@chronobank/login/redux/network/thunks'
 import * as NetworkThunks from '@chronobank/login/redux/network/thunks'
 import * as SessionThunks from '@chronobank/core/redux/session/thunks'
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
@@ -52,7 +51,6 @@ export const navigateToCreateAccountFromHW = (address) => (dispatch) => {
  */
 export const navigateToCreateAccountWithoutImport = () => (dispatch) => {
   dispatch(LoginUIActions.navigateToCreateAccount())
-  dispatch(NetworkActions.networkResetImportAccountMode())
 }
 
 // #endregion
@@ -68,7 +66,7 @@ export const initCommonNetworkSelector = () => (dispatch, getState) => {
   const state = getState()
   const { isLocal } = state.get(DUCK_NETWORK)
 
-  dispatch(autoSelect())
+  dispatch(NetworkThunks.autoSelect())
 
   if (!isLocal) {
     checkTestRPC()
@@ -191,24 +189,20 @@ export const onSubmitCreateHWAccountPage = (walletName) =>
 
     const state = getState()
     const {
-      importAccountMode,
       newAccountPrivateKey,
     } = state.get(DUCK_NETWORK)
 
-    if (importAccountMode) {
-      try {
-        let wallet = await dispatch(PersistAccountActions.createHWAccount({
-          name: walletName,
-          pupblicKey: newAccountPrivateKey,
-          numberOfAccounts: 0,
-        }))
+    try {
+      const wallet = await dispatch(PersistAccountActions.createHWAccount({
+        name: walletName,
+        pupblicKey: newAccountPrivateKey,
+        numberOfAccounts: 0,
+      }))
 
-        dispatch(PersistAccountActions.accountAdd(wallet))
-        dispatch(PersistAccountActions.accountSelect(wallet))
-        dispatch(NetworkActions.networkResetImportAccountMode())
-      } catch (e) {
-        throw new SubmissionError({ _error: e && e.message })
-      }
+      dispatch(PersistAccountActions.accountAdd(wallet))
+      dispatch(PersistAccountActions.accountSelect(wallet))
+    } catch (e) {
+      throw new SubmissionError({ _error: e && e.message })
     }
   }
 

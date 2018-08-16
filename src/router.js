@@ -20,11 +20,7 @@ import {
 import Splash from 'layouts/Splash/Splash'
 import {
   AssetsPage,
-  ExchangePage,
-  LOCPage,
-  OperationsPage,
   RewardsPage,
-  SettingsPage,
   VotingPage,
   PollPage,
   WalletsPage,
@@ -79,18 +75,12 @@ const router = (
         <Route path='add-wallet' component={AddWalletPage} />
         <Route path='deposits' component={DepositsPage} />
         <Route path='deposit' component={DepositPage} />
-        <Route path='exchange' component={ExchangePage} />
         <Route path='rewards' component={RewardsPage} />
         <Route path='voting' component={VotingPage} />
         <Route path='poll' component={PollPage} />
         <Route path='new-poll' component={NewPollPage} />
         <Route path='vote-history' component={VoteHistoryPage} />
         <Route path='assets' component={AssetsPage} />
-        <Route path='cbe'>
-          <Route path='locs' component={LOCPage} />
-          <Route path='operations' component={OperationsPage} />
-          <Route path='settings' component={SettingsPage} />
-        </Route>
       </Route>
 
       <Route path='/login' component={Splash}>

@@ -31,19 +31,6 @@ export default {
     added: 'CBE %{address} was added',
     removed: 'CBE %{address} was removed',
   },
-  locs: {
-    title: 'LOC',
-    added: '\'%{name}\' was added.',
-    removed: '\'%{name}\' was removed.',
-    updated: '\'%{name}\' was updated.',
-    statusUpdated: '\'%{name}\' status was updated.',
-    issued: '\'%{name}\' issued tokens.',
-    revoked: '\'%{name}\' redeemed tokens.',
-    failed: '\'%{name}\' is failed.',
-    details: {
-      amount: 'Amount',
-    },
-  },
   polls: {
     title: 'Polls',
     isCreated: 'Poll created',
@@ -67,17 +54,6 @@ export default {
     pkIcon: 'Your private key has been copied to the clipboard.',
     changed: 'Profile has been successfully changed.',
   },
-  operations: {
-    title: 'Pending Operations',
-    confirmed: 'Operation confirmed, signatures remained: %{remained}',
-    cancelled: 'Operation cancelled',
-    revoked: 'Operation revoked, signatures remained: %{remained}',
-    done: 'Operation complete',
-    details: {
-      hash: 'Hash',
-      operation: 'Operation',
-    },
-  },
   settings: {
     title: 'Settings',
     erc20: {
@@ -99,11 +75,11 @@ export default {
   },
   assetsManager: {
     title: 'Assets manager',
-    [ MANAGER_ADDED ]: 'Manager added',
-    [ MANAGER_REMOVED ]: 'Manager removed',
-    [ ASSET_PAUSED ]: 'Asset %{symbol} was blocked',
-    [ ASSET_UNPAUSED ]: 'Asset %{symbol} was unblocked',
-    [ USER_ADDED_TO_BLACKLIST ]: 'User (%{address}) was added to blacklist',
-    [ USER_DELETED_FROM_BLACKLIST ]: 'User (%{address}) was deleted from blacklist',
+    [MANAGER_ADDED]: 'Manager added',
+    [MANAGER_REMOVED]: 'Manager removed',
+    [ASSET_PAUSED]: 'Asset %{symbol} was blocked',
+    [ASSET_UNPAUSED]: 'Asset %{symbol} was unblocked',
+    [USER_ADDED_TO_BLACKLIST]: 'User (%{address}) was added to blacklist',
+    [USER_DELETED_FROM_BLACKLIST]: 'User (%{address}) was deleted from blacklist',
   },
 }

@@ -5,7 +5,7 @@
 
 import PollNoticeModel from '../models/notices/PollNoticeModel'
 import { PollEmitterABI } from './abi'
-import AbstractContractDAO from './AbstractContract3DAO'
+import AbstractContractDAO from './AbstractContractDAO'
 
 import {
   IS_ACTIVATED,

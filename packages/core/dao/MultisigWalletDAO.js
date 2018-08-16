@@ -7,7 +7,7 @@ import { zipWith } from 'lodash'
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
-import AbstractContractDAO from '../dao/AbstractContract3DAO'
+import AbstractContractDAO from './AbstractContractDAO'
 import Amount from '../models/Amount'
 import TokenModel from '../models/tokens/TokenModel'
 import TxExecModel from '../models/TxExecModel'
@@ -109,7 +109,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   watchError (callback) {
     return this.on('Error', async (data) => {
-      callback(this._c.hexToDecimal(data.returnValues.errorCode))
+      callback(data.returnValues.errorCode)
     })
   }
 

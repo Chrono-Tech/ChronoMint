@@ -4,11 +4,7 @@
  */
 
 import AssetsPage from './AssetsPage'
-import ExchangePage from './ExchangePage'
-import LOCPage from './LOCPage'
-import OperationsPage from './OperationsPage'
 import RewardsPage from './RewardsPage'
-import SettingsPage from './SettingsPage'
 import VotingPage from './VotingPage'
 import PollPage from './PollPage'
 import DepositsPage from './DepositsPage'
@@ -21,15 +17,11 @@ import NewPollPage from './NewPollPage'
 import VoteHistoryPage from './VoteHistoryPage'
 
 export {
-  ExchangePage,
   WalletsPage,
   WalletPage,
   RewardsPage,
   VotingPage,
   PollPage,
-  OperationsPage,
-  SettingsPage,
-  LOCPage,
   AssetsPage,
   DepositsPage,
   DepositPage,
@@ -40,15 +32,11 @@ export {
 }
 
 export default {
-  ExchangePage,
   WalletsPage,
   WalletPage,
   RewardsPage,
   VotingPage,
   PollPage,
-  OperationsPage,
-  SettingsPage,
-  LOCPage,
   AssetsPage,
   DepositsPage,
   DepositPage,

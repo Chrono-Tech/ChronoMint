@@ -15,7 +15,6 @@ import StandardWalletForm from 'components/wallet/AddWalletWidget/StandardWallet
 import UpdateProvideDialog from 'components/dialogs/UpdateProvideDialog/lang'
 import OwnersList from 'components/wallet/OwnersList/lang'
 import SignaturesList from 'components/wallet/SignaturesList/lang'
-import exchange from 'components/exchange/lang'
 import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog/lang'
 import SendTokens from 'components/dashboard/SendTokens/lang'
 import * as GasSlider from 'components/common/GasSlider/lang'
@@ -53,7 +52,6 @@ export default {
     SignaturesList: SignaturesList.en,
     // TODO @Abdulov refactor this
     components: {
-      exchange: exchange.en,
       GasSlider: GasSlider.en,
     },
     TwoFA: TwoFA.en,

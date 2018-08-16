@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import AbstractContractDAO from './AbstractContract3DAO'
+import AbstractContractDAO from './AbstractContractDAO'
 import { ChronoBankAssetABI } from './abi'
 
 import {

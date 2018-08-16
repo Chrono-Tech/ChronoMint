@@ -9,8 +9,6 @@ import * as assetDonator from '@chronobank/core/dao/constants/AssetDonatorDAO'
 import * as erc20 from '@chronobank/core/dao/constants/ERC20DAO'
 import * as erc20Manager from '@chronobank/core/dao/constants/ERC20ManagerDAO'
 import * as eth from '@chronobank/core/dao/constants/EthereumDAO'
-import * as exchange from '@chronobank/core/dao/constants/ExchangeDAO'
-import * as loc from '@chronobank/core/dao/constants/LOCManagerDAO'
 import * as operations from '@chronobank/core/dao/constants/PendingManagerDAO'
 import * as platformsManager from '@chronobank/core/dao/constants/PlatformsManagerDAO'
 import * as pollInterface from '@chronobank/core/dao/constants/PollInterfaceDAO'
@@ -46,13 +44,9 @@ export default {
     deposits: 'Deposits',
     deposit: 'Deposit',
     cbeDashboard: 'CBE Dashboard',
-    locs: 'LOC Admin',
-    lhOperations: 'LH Operations',
-    operations: 'Operations',
     settings: 'Settings',
     wallet: 'Wallet',
     addWallet: 'Add wallet',
-    exchange: 'Exchange',
     voting: 'Voting',
     newPoll: 'Create new poll',
     rewards: 'Bonuses',
@@ -105,14 +99,6 @@ export default {
     sign: 'Sign',
     enterCode: 'Enter Code',
   },
-  exchange: {
-    tokens: 'Exchange tokens',
-    rates: 'Exchange rates',
-    exchange: 'Exchange',
-    buyPrice: 'Buy price',
-    sellPrice: 'Sell price',
-    limits: 'Exchange limits',
-  },
   // common one-word terms
   terms: {
     account: 'Account',
@@ -143,76 +129,6 @@ export default {
     failed: 'Failed',
     remove: 'Remove',
     modify: 'Modify',
-  },
-  locs: {
-    entries: '%{number} entries total',
-    sendToExchange: 'Send to exchange',
-    recent: 'Recent LOCs',
-    insuranceFee: 'Insurance fee',
-    allowedToBeIssued: 'Allowed to be issued',
-    expirationDate: 'Expiration Date',
-    issuanceParameters: 'Issuance parameters',
-    sendLHToExchange: 'Send LHT to Exchange',
-    uploadedFile: 'Uploaded File',
-    issueLHT: 'Issue LHT',
-    issueS: 'Issue %{asset}',
-    issueLimit: 'Issue Limit',
-    issued: 'Issued',
-    // TODO @dkchv: avoid LHT in tokens
-    redeemLHT: 'Redeem LHT',
-    redeemS: 'Redeem %{asset}',
-    title: 'LOC title',
-    edit: 'Edit LOC',
-    new: 'New LOC',
-    delete: 'Delete LOC',
-    save: 'Save changes',
-    create: 'Create LOC',
-    viewContract: 'View Contact',
-    editInfo: 'Edit LOC Info',
-    daysLeft: 'days left',
-    daysLeft_1: 'day left',
-    updateStatus: 'Update Status',
-    addedOn: 'Added on %{date}',
-    forms: {
-      amountToBeS: 'Amount to be %{action}',
-      allowedToBeS: 'Allowed to be %{action} on behalf of %{name}: %{limit} %{currency}',
-      actions: {
-        issued: 'issued',
-        redeemed: 'redeemed',
-      },
-    },
-    status: {
-      maintenance: 'Maintenance',
-      active: 'Active',
-      suspended: 'Suspended',
-      bankrupt: 'Bankrupt',
-      inactive: 'Inactive',
-    },
-    notice: {
-      added: 'Added',
-      removed: 'Removed',
-      updated: 'Updated',
-      statusUpdated: 'Status updated',
-      issued: 'Issued',
-      revoked: 'Revoked',
-    },
-  },
-  operations: {
-    completed: 'Completed operations',
-    settings: 'Operations settings',
-    desc: 'Description',
-    signs: 'Signatures remained',
-    sign: 'Sign',
-    revoke: 'Revoke',
-    emptyPendingList: 'No pending operations.',
-    emptyCompletedList: 'No completed operations.',
-    adminCount: 'Number of CBE',
-    requiredSigns: 'Required signatures',
-    errors: {
-      // TODO @bshevchenko: move this duplicate error to the common tx errors list
-      duplicate: 'This transaction already added to the list of operations needed multi-signatures.',
-      requiredSigns: 'The amount of signatures required should not exceed CBE count.',
-    },
   },
   settings: {
     user: {
@@ -389,50 +305,6 @@ export default {
         title: 'Confirm detach platform',
       },
     },
-    LOCManager: {
-      [loc.standardFuncs.SET_STATUS]: {
-        title: 'Set Status',
-      },
-      [loc.standardFuncs.ADD_LOC]: {
-        title: 'Add LOC',
-        name: 'Name',
-        website: 'Website',
-        issueLimit: 'Issue Limit',
-        publishedHash: 'Contract',
-        expDate: 'Expiration Date',
-        currency: 'Currency',
-      },
-      [loc.standardFuncs.SET_LOC]: {
-        title: 'Update LOC',
-        name: 'Name',
-        website: 'Website',
-        issueLimit: 'Issue Limit',
-        publishedHash: 'Contract',
-        expDate: 'Expiration Date',
-      },
-      [loc.multisigFuncs.REMOVE_LOC]: {
-        title: 'Remove LOC',
-        name: 'Name',
-      },
-      [loc.multisigFuncs.REISSUE_ASSET]: {
-        title: 'Issue asset',
-        amount: 'Amount',
-        name: 'Name',
-      },
-      [loc.multisigFuncs.REVOKE_ASSET]: {
-        title: 'Revoke Asset',
-        amount: 'Amount',
-        name: 'Name',
-      },
-      [loc.multisigFuncs.UPDATE_LOC_STATUS]: {
-        title: 'Update LOC status',
-        name: 'Name',
-        status: 'Status',
-      },
-      [loc.multisigFuncs.SEND_ASSET]: {
-        title: 'Send Asset',
-      },
-    },
     ERC20Manager: {
       [erc20Manager.TX_MODIFY_TOKEN]: {
         title: 'Modify Token',
@@ -455,25 +327,6 @@ export default {
         account: 'Account',
         amount: 'Amount',
         to: 'Address to',
-      },
-    },
-    ExchangeManager: {
-      createExchange: {
-        title: 'Create an exchange',
-      },
-    },
-    Exchange: {
-      [exchange.TX_BUY]: {
-        title: 'Confirm buy tokens for ETH',
-      },
-      [exchange.TX_SELL]: {
-        title: 'Confirm sell tokens for ETH',
-      },
-      [exchange.TX_WITHDRAW_TOKENS]: {
-        title: 'Confirm withdraw tokens',
-      },
-      [exchange.TX_WITHDRAW_ETH]: {
-        title: 'Confirm withdraw ETH',
       },
     },
     Wallet: {
@@ -632,19 +485,6 @@ export default {
     FRONTEND_RESULT_FALSE: 'Transaction failed with false result.',
     FRONTEND_RESULT_TRUE: 'Transaction failed with true result.',
     FRONTEND_INVALID_RESULT: 'Transaction invalid result.',
-
-    LOC_NOT_FOUND: 'LOC not found',
-    LOC_EXISTS: 'LOC exists',
-    LOC_INACTIVE: 'LOC inactive',
-    LOC_SHOULD_NO_BE_ACTIVE: 'LOC Should be active',
-    LOC_INVALID_PARAMETER: 'LOC invalid parameters',
-    LOC_INVALID_INVOCATION: 'LOC invalid invocation',
-    LOC_ADD_CONTRACT: 'LOC add contract',
-    LOC_SEND_ASSET: 'LOC send asset',
-    LOC_REQUESTED_ISSUE_VALUE_EXCEEDED: 'LOC requested issue value exceed',
-    LOC_REISSUING_ASSET_FAILED: 'LOC reissuing asset failed',
-    LOC_REQUESTED_REVOKE_VALUE_EXCEEDED: 'LOC requested revoke value exceed',
-    LOC_REVOKING_ASSET_FAILED: 'LOC revoking asset failed',
 
     USER_NOT_FOUND: 'User not found',
     USER_INVALID_PARAMETER: 'User: invalid request parameters',
@@ -827,19 +667,6 @@ export default {
       dividendsAccumulatedForPeriod: 'Dividends accumulated for period',
       yourApproximateRevenueForPeriod: 'Your approximate revenue for period',
     },
-    locs: {
-      PageTitle: {
-        labourOfferingCompanies: 'Labour Offering Companies',
-      },
-    },
-    operations: {
-      Operations: {
-        settings: 'Settings',
-        description: 'Description',
-        signatures: 'Signatures',
-        actions: 'Actions',
-      },
-    },
     settings: {
       Tokens: {
         tokens: 'Tokens',
@@ -858,16 +685,6 @@ export default {
       },
     },
     dialogs: {
-      OperationsSettingsDialog: {
-        operationsSettings: 'Operations Settings',
-        cancel: 'Cancel',
-        save: 'Save',
-      },
-      CBEAddressDialog: {
-        addCbeAddress: 'Add CBE Address',
-        cancel: 'Cancel',
-        addAddress: 'Add Address',
-      },
       AddTokenDialog: {
         tokenContractAddress: 'Token contract address',
         tokenName: 'Token name',

@@ -12,7 +12,8 @@ const SUBSCRIPTIONS_REST = `${BASE_PATH}/subscriptions`
 export default class PublicBackendProvider {
 
   getPublicHost = () => {
-    // FIXME: ti use process.env.PUBLIC_BACKEND_REST_URL or rework this part of code
+    // PUBLIC_BACKEND_REST_URL may appear via WebPack
+    // eslint-disable-next-line no-undef
     return PUBLIC_BACKEND_REST_URL || DEFAULT_BACKEND_HOST // PUBLIC_BACKEND_REST_URL - global CONST from Webpack
   }
 

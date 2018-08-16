@@ -26,6 +26,7 @@ export default class SideSelector extends PureComponent {
   static getSide (sideProps) {
     if (!sideProps || !sideProps.componentName) {
       // throw new Error('componentName is mandatory property for the SideSelector')
+      // eslint-disable-next-line no-console
       console.warn('SideSelector Error: Cant\'t display side by data:', sideProps)
       return null // return null is safe since React 16.x
     }

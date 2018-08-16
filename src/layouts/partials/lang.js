@@ -4,7 +4,6 @@
  */
 
 import FooterPartial from 'layouts/partials/FooterPartial/lang'
-import OperationsContent from 'layouts/partials/OperationsContent/lang'
 import RewardsContent from 'layouts/partials/RewardsContent/lang'
 import VotingContent from 'layouts/partials/VotingContent/lang'
 import DrawerMainMenu from 'layouts/partials/DrawerMainMenu/lang'
@@ -24,7 +23,6 @@ export default {
   en: {
     FooterPartial: FooterPartial.en,
     WalletContent: WalletContent.en,
-    OperationsContent: OperationsContent.en,
     RewardsContent: RewardsContent.en,
     VotingContent: VotingContent.en,
     DrawerMainMenu: DrawerMainMenu.en,

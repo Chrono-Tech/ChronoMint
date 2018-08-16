@@ -7,7 +7,6 @@
 
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
 import {
-  checkNetwork,
   createNetworkSession,
   getProviderSettings,
   login,
@@ -16,6 +15,8 @@ import {
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
+import web3Converter from '@chronobank/core/utils/Web3Converter'
+import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE } from '@chronobank/login/network/MonitorService'
 import {
   DUCK_NETWORK,
 } from './constants'
@@ -31,6 +32,7 @@ import {
   LOCAL_PRIVATE_KEYS,
   NETWORK_MAIN_ID,
 } from '../../network/settings'
+import { DUCK_ETH_MULTISIG_WALLET } from '@chronobank/core/redux/multisigWallet/constants'
 
 /*
  * Thunk dispatched by "" screen.
@@ -40,7 +42,6 @@ import {
 export const resetAllLoginFlags = () => (dispatch) => {
   dispatch(NetworkActions.networkResetImportPrivateKey())
   dispatch(NetworkActions.networkResetImportWalletFile())
-  dispatch(NetworkActions.networkResetImportAccountMode())
   dispatch(NetworkActions.networkResetAccountRecoveryMode())
   dispatch(NetworkActions.networkResetNewMnemonic())
   dispatch(NetworkActions.networkResetNewAccountCredential())
@@ -61,7 +62,7 @@ export const updateSelectedAccount = () => (dispatch, getState) => {
 
   const foundAccount = walletsList
     .find((account) =>
-      account.key === selectedWallet.key
+      account.key === selectedWallet.key,
     )
 
   if (foundAccount) {
@@ -89,7 +90,7 @@ export const initAccountsSignature = () =>
     const accounts = await dispatch(PersistAccountActions.setProfilesForAccounts(walletsList))
 
     accounts.forEach((account) =>
-      dispatch(PersistAccountActions.accountUpdate(account))
+      dispatch(PersistAccountActions.accountUpdate(account)),
     )
 
     dispatch(updateSelectedAccount())
@@ -119,17 +120,12 @@ export const handleWalletLogin = (wallet, password) => async (dispatch, getState
 
   dispatch(NetworkActions.clearErrors())
 
-  const isPassed = await dispatch(checkNetwork())
-
-  if (isPassed) {
-    dispatch(createNetworkSession(
-      selectedAccount,
-      selectedProviderId,
-      selectedNetworkId,
-    ))
-    await dispatch(login(selectedAccount))
-  }
-
+  dispatch(createNetworkSession(
+    selectedAccount,
+    selectedProviderId,
+    selectedNetworkId,
+  ))
+  await dispatch(login(selectedAccount))
 }
 
 /*
@@ -150,7 +146,7 @@ export const handleLoginLocalAccountClick = (account = '') =>
   async (dispatch, getState) => {
     let state = getState()
     const { accounts } = state.get(DUCK_NETWORK)
-    const wallets = state.get('ethMultisigWallet') // FIXME: to use constant
+    const wallets = state.get(DUCK_ETH_MULTISIG_WALLET)
     const providerSetting = dispatch(getProviderSettings())
     const index = Math.max(accounts.indexOf(account), 0)
     const provider = privateKeyProvider.getPrivateKeyProvider(
@@ -170,17 +166,12 @@ export const handleLoginLocalAccountClick = (account = '') =>
 
     dispatch(NetworkActions.clearErrors())
 
-    // checkNetwork has no arguments. See the diff.
-    const isPassed = await dispatch(checkNetwork())
-
-    if (isPassed) {
-      dispatch(createNetworkSession(
-        selectedAccount,
-        selectedProviderId,
-        selectedNetworkId,
-      ))
-      dispatch(login(selectedAccount))
-    }
+    dispatch(createNetworkSession(
+      selectedAccount,
+      selectedProviderId,
+      selectedNetworkId,
+    ))
+    dispatch(login(selectedAccount))
   }
 
 /*
@@ -218,7 +209,7 @@ export const loginUport = () => async (dispatch) => {
 }
 
 // Need to think how to merge it with getProviderSettings method. Looks almost the same.
-export const getNetworkName = () => (dispatch,getState ) => {
+export const getNetworkName = () => (dispatch, getState) => {
   const state = getState()
   const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
   const { selectedNetworkId, selectedProviderId, isLocal } = state.get(DUCK_NETWORK)
@@ -235,10 +226,10 @@ export const getNetworkName = () => (dispatch,getState ) => {
   return name
 }
 
-export const autoSelect = (network) => (dispatch, getState) => {
+export const autoSelect = () => (dispatch, getState) => {
   const { priority, preferMainnet } = getState().get(DUCK_NETWORK)
   let checkerIndex = 0
-  let checkers = []
+  const checkers = []
 
   const selectAndResolve = (networkId, providerId) => {
     dispatch(selectProvider(providerId))

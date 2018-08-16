@@ -54,6 +54,12 @@ export const getMainSymbolForBlockchain = (blockchain) => {
       return WAVES
   }
 }
+
+export const getToken = (tokenId: string) => createSelector(
+  [getTokens],
+  (tokens) => tokens.item(tokenId),
+)
+
 export const getMainTokenForWalletByBlockchain = (blockchain) => createSelector(
   [getTokens],
   (tokens) => tokens.item(getMainSymbolForBlockchain(blockchain)),

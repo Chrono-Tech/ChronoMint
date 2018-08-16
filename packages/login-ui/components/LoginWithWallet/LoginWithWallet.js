@@ -12,7 +12,6 @@ import FileIcon from 'assets/img/icons/file-white.svg'
 import DeleteIcon from 'assets/img/icons/delete-white.svg'
 import SpinnerGif from 'assets/img/spinningwheel.gif'
 import CheckIcon from 'assets/img/icons/check-green.svg'
-import spinner from 'assets/img/spinningwheel-1.gif'
 import {
   FORM_WALLET_UPLOAD,
 } from '../../redux/constants'
@@ -20,7 +19,6 @@ import './LoginWithWallet.scss'
 
 class LoginWithWallet extends Component {
   static propTypes = {
-    isLoading: PropTypes.bool,
     previousPage: PropTypes.func,
   }
 
