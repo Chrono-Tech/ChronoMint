@@ -133,31 +133,3 @@ export const describeTx = (entry, context) => {
 
   return defaultDescription(entry, context)
 }
-
-export const describeUnknownTx = (entry, context) => {
-  const { tx, receipt } = entry
-  const { dao } = context
-  const abi = dao.abi
-
-  let info
-  if (!receipt) {
-    info = formatPengigTxData({ abi, tx })
-  } else {
-    info = {
-      topic: tx.input.substr(0, 10),
-      ...decodeParameters(abi, entry.tx),
-    }
-  }
-
-  const array = TRANSACTION_DESCRIBERS_BY_TOPIC[info.topic]
-  if (array) {
-    for (const describer of array) {
-      const desc = describer.describe(entry, context, { abi: describer.abi, inputs: info.inputs, params: info.params })
-      if (desc) {
-        return desc
-      }
-    }
-  }
-
-  return defaultDescription(entry, context)
-}

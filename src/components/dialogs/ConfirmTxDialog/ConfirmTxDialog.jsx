@@ -14,8 +14,10 @@ import { Translate } from 'react-redux-i18n'
 import { modalsClear, modalsClose } from 'redux/modals/actions'
 import { ETH } from '@chronobank/core/dao/constants'
 import TxEntryModel from '@chronobank/core/models/TxEntryModel'
+import { LogTxModel } from '@chronobank/core/models'
 
 import './ConfirmTxDialog.scss'
+import Value from '../../common/Value/Value'
 
 function mapDispatchToProps (dispatch, props) {
   return {
@@ -29,6 +31,7 @@ function mapDispatchToProps (dispatch, props) {
 @connect(null, mapDispatchToProps)
 export default class ConfirmTxDialog extends PureComponent {
   static propTypes = {
+    description: PropTypes.instanceOf(LogTxModel),
     accept: PropTypes.func.isRequired,
     reject: PropTypes.func.isRequired,
     handleAccept: PropTypes.func,
@@ -50,34 +53,29 @@ export default class ConfirmTxDialog extends PureComponent {
   }
 
   render () {
-    const { entry } = this.props
+    const { entry, description } = this.props
 
     const tx = entry.tx
     const gasFee = tx.gasPrice.mul(tx.gasLimit)
 
     return (
-      <ModalDialog hideCloseIcon title={<Translate value='tx.confirm' />}>
+      <ModalDialog hideCloseIcon title={<Translate value={description.title} />}>
         <div styleName='root'>
           <div styleName='content'>
             <div styleName='paramsList'>
 
-              <div styleName='param'>
-                <div styleName='label'>
-                  <Translate value='tx.from' />
-                </div>
-                <div styleName='value'>
-                  {tx.from}
-                </div>
-              </div>
-
-              <div styleName='param'>
-                <div styleName='label'>
-                  <Translate value='tx.to' />
-                </div>
-                <div styleName='value'>
-                  {tx.to}
-                </div>
-              </div>
+              {description.fields && description.fields.map((field, i) => {
+                return (
+                  <div styleName='param' key={i}>
+                    <div styleName='label'>
+                      {field.description}
+                    </div>
+                    <div styleName='value'>
+                      <Value value={field.value} />
+                    </div>
+                  </div>
+                )
+              })}
 
               <div styleName='param'>
                 <div styleName='label'>

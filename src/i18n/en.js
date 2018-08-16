@@ -244,11 +244,13 @@ export default {
   tx: {
     from: 'From',
     to: 'To',
+    amount: 'Amount',
     transactions: 'Transactions',
     blockNumber: 'Block Number',
     noTransactions: 'No transactions',
     confirm: 'Confirm Transaction',
     fee: 'Fee',
+    amountFee: 'Amount+Fee',
     balanceAfter: '%{symbol} balance after',
     feeLeft: 'Transaction fee left',
     notEnough: 'Not enough %{symbol}',
@@ -452,9 +454,9 @@ export default {
       },
       [erc20.TX_TRANSFER]: {
         title: 'Transfer tokens',
-        account: 'Account',
+        from: 'From',
+        to: 'To',
         amount: 'Amount',
-        to: 'Address to',
       },
     },
     ExchangeManager: {

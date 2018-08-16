@@ -2,6 +2,7 @@
   "name": "@chronobank/core",
   "version": "1.0.0",
   "dependencies": {
+    "bn.js": "^4.11.8",
     "axios": "^0.16.2",
     "async-lock": "^1.1.2",
     "bignumber.js": "^4.1.0",
