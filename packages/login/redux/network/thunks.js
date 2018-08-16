@@ -16,7 +16,8 @@ import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
 import web3Converter from '@chronobank/core/utils/Web3Converter'
-import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE } from '@chronobank/login/network/MonitorService'
+import { DUCK_ETH_MULTISIG_WALLET } from '@chronobank/core/redux/multisigWallet/constants'
+import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE } from '../../network/MonitorService'
 import {
   DUCK_NETWORK,
 } from './constants'
@@ -32,7 +33,6 @@ import {
   LOCAL_PRIVATE_KEYS,
   NETWORK_MAIN_ID,
 } from '../../network/settings'
-import { DUCK_ETH_MULTISIG_WALLET } from '@chronobank/core/redux/multisigWallet/constants'
 
 /*
  * Thunk dispatched by "" screen.

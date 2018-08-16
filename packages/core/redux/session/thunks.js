@@ -8,7 +8,8 @@ import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import { removeWatchersUserMonitor } from '@chronobank/core-dependencies/redux/ui/actions'
 import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
-import { push, replace } from '@chronobank/core-dependencies/router'
+import { replace } from '@chronobank/core-dependencies/router'
+import { navigateToRoot } from '@chronobank/login-ui/redux/navigation'
 import LocalStorage from '@chronobank/core-dependencies/utils/LocalStorage'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import setup from '@chronobank/login/network/EngineUtils'
@@ -130,10 +131,6 @@ export const destroyNetworkSession = (lastURL, isReset = true) => (dispatch) => 
 }
 
 export const createNetworkSession = (account, provider, network) => (dispatch) => {
-  // TODO: check it, maybe we do not need to set accounts here...
-  // if (!this._account) {
-  //   this._account = account
-  // }
   dispatch(NetworkActions.networkSetAccounts([account]))
 
   if (!account || !provider || !network) {
@@ -150,12 +147,12 @@ export const logout = () => async (dispatch, getState) => {
     dispatch(removeWatchersUserMonitor())
     dispatch(watchStopMarket())
     dispatch(destroyNetworkSession(`${window.location.pathname}${window.location.search}`))
-    dispatch(push('/'))
+    dispatch(navigateToRoot())
     if (selectedNetworkId === NETWORK_MAIN_ID) {
       location.reload()
     }
   } catch (e) {
-    // eslint-disable-next-line
+    // eslint-disable-next-line no-console
     console.error('logout error:', e)
   }
 }

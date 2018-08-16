@@ -8,7 +8,13 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
-
+import Trezor from 'assets/img/icons/trezor-white.svg'
+import Ledger from 'assets/img/icons/ledger-nano-white.svg'
+import Plugin from 'assets/img/icons/plugin-white.svg'
+import Mnemonic from 'assets/img/icons/mnemonic-white.svg'
+import Key from 'assets/img/icons/key-white.svg'
+import Wallet from 'assets/img/icons/wallet-white.svg'
+import Uport from 'assets/img/icons/uport.svg'
 import {
   navigateToCreateAccount,
   navigateToLedgerImportMethod,
@@ -17,17 +23,10 @@ import {
   navigateToPrivateKeyImportMethod,
   navigateToTrezorImportMethod,
   navigateToWalletUploadMethod,
-} from '@chronobank/login-ui/redux/actions'
+} from '../../redux/navigation'
 import {
   navigateToCreateAccountWithoutImport,
-} from '@chronobank/login-ui/redux/thunks'
-import Trezor from 'assets/img/icons/trezor-white.svg'
-import Ledger from 'assets/img/icons/ledger-nano-white.svg'
-import Plugin from 'assets/img/icons/plugin-white.svg'
-import Mnemonic from 'assets/img/icons/mnemonic-white.svg'
-import Key from 'assets/img/icons/key-white.svg'
-import Wallet from 'assets/img/icons/wallet-white.svg'
-import Uport from 'assets/img/icons/uport.svg'
+} from '../../redux/thunks'
 
 import './LoginWithOptions.scss'
 

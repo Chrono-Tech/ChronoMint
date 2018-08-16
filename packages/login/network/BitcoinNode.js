@@ -8,7 +8,7 @@ import { networks } from 'bitcoinjs-lib'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_LITECOIN,
-} from '@chronobank/login/network/constants'
+} from '../network/constants'
 import BitcoinBlockexplorerNode from './BitcoinBlockexplorerNode'
 import BitcoinMiddlewareNode from './BitcoinMiddlewareNode'
 

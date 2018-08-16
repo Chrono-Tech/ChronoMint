@@ -6,7 +6,7 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { navigateBack } from '@chronobank/login-ui/redux/actions'
+import { navigateBack } from '../../redux/navigation'
 import AccountName from './AccountName'
 
 const mapDispatchToProps = (dispatch) => {

@@ -50,7 +50,7 @@ export const isCBE = () => createSelector(
   (isCBE) => isCBE,
 )
 
-export const getProfileSignature = createSelector(
+export const selectProfileSignature = createSelector(
   (state) => state.get(DUCK_SESSION),
   (session) => {
     const { profileSignature } = session
@@ -68,9 +68,9 @@ export const getSelectedAccountName = createSelector(
   },
 )
 
-export const getAccountProfileSummary = createSelector(
+export const selectAccountProfileSummary = createSelector(
   [
-    getProfileSignature,
+    selectProfileSignature,
     getSelectedAccountName,
   ],
   (profile, selectedAccountName) => {

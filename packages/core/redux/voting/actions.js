@@ -4,7 +4,6 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { push } from '@chronobank/core-dependencies/router'
 import votingService from '../../services/VotingService'
 import type PollNoticeModel from '../../models/notices/PollNoticeModel'
 import PollDetailsModel from '../../models/PollDetailsModel'
@@ -44,8 +43,6 @@ import {
 import { executeTransaction } from '../ethereum/actions'
 
 const PAGE_SIZE = 20
-
-export const goToVoting = () => (dispatch) => dispatch(push('/voting'))
 
 export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
   switch (notice.status()) {

@@ -11,7 +11,8 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
-import { goToWallets, resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
+import { resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
+import { navigateToWallets } from '@chronobank/login-ui/redux/navigation'
 import { createNewChildAddress } from '@chronobank/core/redux/wallets/actions'
 import { getChronobankTokens } from '@chronobank/core/redux/settings/erc20/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM, ETH } from '@chronobank/core/dao/constants'
@@ -40,7 +41,7 @@ function mapDispatchToProps (dispatch) {
       const tokens = Object.keys(values.get('tokens').filter((token) => token).toObject()) || []
       const name = values.get('name')
       dispatch(createNewChildAddress({ blockchain: BLOCKCHAIN_ETHEREUM, tokens, name }))
-      dispatch(goToWallets())
+      dispatch(navigateToWallets())
       dispatch(resetWalletsForm())
     },
   }
