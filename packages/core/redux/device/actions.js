@@ -54,7 +54,7 @@ export const onDeviceSelect = (wallet) => (dispatch) => {
 
 export const initLedgerDevice = (wallet) => async (dispatch, getState) => {
   console.log('initLedgerDevice')
-  const ledger = new LedgerDeviceMock()
+  const ledger = new TrezorDeviceMock()
   const result = await ledger.init()
   console.log(result)
   dispatch(deviceAdd(result))
