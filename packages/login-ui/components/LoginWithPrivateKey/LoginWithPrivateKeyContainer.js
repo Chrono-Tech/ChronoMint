@@ -5,25 +5,15 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
-import { stopSubmit, SubmissionError } from 'redux-form'
-import {
-  navigateBack,
-} from '../../redux/actions'
+import { stopSubmit } from 'redux-form'
 import {
   FORM_PRIVATE_KEY_LOGIN_PAGE,
 } from '../../redux/constants'
 import LoginWithPrivateKey from './LoginWithPrivateKey'
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    navigateBack: () => dispatch(navigateBack()),
-  }
-}
-
-class LoginWithPrivateKeyContainer extends PureComponent {
+export default class LoginWithPrivateKeyContainer extends PureComponent {
   static propTypes = {
-    navigateBack: PropTypes.func,
+    previousPage: PropTypes.func,
     onSubmitSuccess: PropTypes.func,
   }
 
@@ -61,10 +51,8 @@ class LoginWithPrivateKeyContainer extends PureComponent {
         onSubmit={this.handleSubmit.bind(this)}
         onSubmitSuccess={this.handleSubmitSuccess.bind(this)}
         onSubmitFail={this.handleSubmitFail.bind(this)}
-        previousPage={this.props.navigateBack}
+        previousPage={this.props.previousPage}
       />
     )
   }
 }
-
-export default connect(null, mapDispatchToProps)(LoginWithPrivateKeyContainer)

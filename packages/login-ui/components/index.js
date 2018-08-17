@@ -19,6 +19,7 @@ export { default as GenerateWalletContainer } from './GenerateWallet/GenerateWal
 export { default as LoginWithWalletContainer } from './LoginWithWallet/LoginWithWalletContainer'
 export { default as LoginWithTrezorContainer } from './LoginWithTrezor/LoginWithTrezorContainer'
 export { default as LoginWithLedgerContainer } from './LoginWithLedger/LoginWithLedgerContainer'
+export { default as DerivationPathFormContainer } from './DerivationPathForm/DerivationPathFormContainer'
 export { default as AccountNameContainer } from './AccountName/AccountNameContainer'
 export { default as LoginLocal } from './LoginLocal/LoginLocal'
 export { default as NotFoundPage } from './NotFoundPage/NotFoundPage'

@@ -18,6 +18,7 @@ import {
 import {
   LoginWithLedgerContainer,
   AccountNameContainer,
+  DerivationPathFormContainer,
 } from '@chronobank/login-ui/components'
 import { SubmissionError } from 'redux-form'
 import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
@@ -36,6 +37,7 @@ class LedgerLoginPage extends PureComponent {
   static PAGES = {
     DEVICE_SELECT_FORM: 1,
     ACCOUNT_NAME_FORM: 2,
+    DERIVATION_PATH_FORM: 3,
   }
 
   static propTypes = {
@@ -61,6 +63,7 @@ class LedgerLoginPage extends PureComponent {
           <LoginWithLedgerContainer
             previousPage={this.previousPage.bind(this)}
             onDeviceSelect={this.onSubmitDevice.bind(this)}
+            navigateToDerivationPathForm={this.navigateToDerivationPathForm.bind(this)}
           />
         )
 
@@ -69,6 +72,14 @@ class LedgerLoginPage extends PureComponent {
           <AccountNameContainer
             previousPage={this.previousPage.bind(this)}
             onSubmit={this.onSubmitAccountName.bind(this)}
+          />
+        )
+
+      case LedgerLoginPage.PAGES.DERIVATION_PATH_FORM:
+        return (
+          <DerivationPathFormContainer
+            previousPage={this.navigateToDeviceSelectForm.bind(this)}
+            onSubmit={this.onSubmitDerivationPath.bind(this)}
           />
         )
 
@@ -121,9 +132,30 @@ class LedgerLoginPage extends PureComponent {
     navigateToSelectWallet()
   }
 
+  async onSubmitDerivationPath ({ path }) {
+    console.log('path', path)
+    this.setState({
+      page: LedgerLoginPage.PAGES.DEVICE_SELECT_FORM
+    })
+  }
+
+  navigateToDerivationPathForm () {
+    this.setState({
+      page: LedgerLoginPage.PAGES.DERIVATION_PATH_FORM
+    })
+  }
+
+  navigateToDeviceSelectForm () {
+    this.setState({
+      page: LedgerLoginPage.PAGES.DEVICE_SELECT_FORM,
+    })
+  }
+
   previousPage () {
-    if (this.state.page === LedgerLoginPage.PAGES.WALLET_UPLOAD_FORM){
-      this.props.navigateBack()
+    console.log('prev', this.state.page, this.props)
+    if (this.state.page === LedgerLoginPage.PAGES.DEVICE_SELECT_FORM){
+      const a = this.props.navigateBack()
+      console.log('nav back', a)
     } else {
       this.setState ({ page: this.state.page - 1 })
     }

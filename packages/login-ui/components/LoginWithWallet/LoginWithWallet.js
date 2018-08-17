@@ -142,7 +142,7 @@ class LoginWithWallet extends Component {
             type='submit'
             isLoading={submitting}
             disabled={!isUploaded || submitting}
-            label={<Translate value='LoginWithWallet.login' />}
+            label={<Translate value='LoginWithWallet.submit' />}
           />
           { error ? <div styleName='error'>{error}</div> : null }
           <Translate value='LoginWithWallet.or' />
