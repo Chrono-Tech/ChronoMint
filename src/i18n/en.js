@@ -276,10 +276,12 @@ export default {
       [time.TX_DEPOSIT]: {
         title: 'Deposit TIME',
         amount: 'Amount',
+        from: 'From',
       },
       [time.TX_WITHDRAW_SHARES]: {
         title: 'Withdraw TIME',
         amount: 'Amount',
+        from: 'From',
       },
     },
     Rewards: {

@@ -5,7 +5,7 @@
 
 import PropTypes from 'prop-types'
 import AbstractModel from './AbstractModel'
-import LogTxModel from './LogTxModel'
+import LogTxModel from './describes/LogTxModel'
 import LogEventModel from './LogEventModel'
 
 const schemaFactory = () => ({

@@ -70,6 +70,7 @@ export const fetchAssetDeposit = (token: TokenModel) => async (dispatch, getStat
   const asset = getState().get(DUCK_ASSETS_HOLDER).assets().item(token.address()).deposit(new Amount(
     deposit,
     token.symbol(),
+    true,
   ))
   dispatch({ type: ASSET_HOLDER_ASSET_UPDATE, asset })
 }
@@ -84,7 +85,7 @@ export const fetchAssetAllowance = (token: TokenModel) => async (dispatch, getSt
 
   const wallet = getWallet(`Ethereum-${account}`)(getState())
   const allowance = new AllowanceModel({
-    amount: new Amount(assetHolderWalletAllowance, token.id()),
+    amount: new Amount(assetHolderWalletAllowance, token.id(), true),
     spender: holderWallet,
     token: token.id(),
     isFetching: false,
