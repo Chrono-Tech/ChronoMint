@@ -18,8 +18,15 @@ import './ConfirmMnemonic.scss'
 
 class ConfirmMnemonic extends Component {
   static propTypes = {
-    confirmPhrase: PropTypes.arrayOf(PropTypes.string),
-    currentWordsArray: PropTypes.arrayOf(PropTypes.object),
+    isWordAlreadyUsed: PropTypes.func,
+    confirmPhrase: PropTypes.arrayOf(PropTypes.shape({
+      index: PropTypes.number,
+      word: PropTypes.string,
+    })),
+    currentWordsArray: PropTypes.arrayOf(PropTypes.shape({
+      index: PropTypes.number,
+      word: PropTypes.string,
+    })),
     error: PropTypes.string,
     handleSubmit: PropTypes.func,
     onClearLastWord: PropTypes.func,
@@ -31,20 +38,22 @@ class ConfirmMnemonic extends Component {
   getWordsButtons = () =>
     this.props.currentWordsArray
       .map((item) => {
-        const wordSelected = this.props.confirmPhrase.includes(item.word)
+        const isWordUsed = this.props.isWordAlreadyUsed(item)
         const keyIndex = `${item.word}${item.index}`
         return (
           <MnemonicButton
             key={keyIndex}
-            isWordSelected={wordSelected}
-            mnemonicWord={item.word}
+            isWordUsed={isWordUsed}
+            mnemonicWordItem={item}
             onClick={this.props.onClickWord}
           />
         )
       })
 
   getCurrentMnemonic = () =>
-    this.props.confirmPhrase.join(' ')
+    this.props.confirmPhrase
+      .map((item) => item.word)
+      .join(' ')
 
   render () {
     const { handleSubmit, error, previousPage } = this.props
