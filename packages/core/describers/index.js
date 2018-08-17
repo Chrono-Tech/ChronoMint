@@ -41,7 +41,6 @@ const formatPendingTxData = ({ abi, tx }) => {
     ? decodeTxData(abi.abi, tx.data)
     : (tx.data != null ? { name: 'Unknown contract' } : null)
 
-  console.log('formatPendingTxData data: ', data)
   if (data) {
     const params = data.params.reduce((accumulator, entry) => ({ ...accumulator, [entry.name]: entry.value }), {})
     return {
@@ -107,8 +106,6 @@ const defaultDescription = (entry, context) => {
 export const describeTx = (entry, context = {}) => {
   const { tx, receipt } = entry
   const { abi } = context
-
-  console.log('describeTx: ', tx, abi)
 
   let info
   if (!receipt) {

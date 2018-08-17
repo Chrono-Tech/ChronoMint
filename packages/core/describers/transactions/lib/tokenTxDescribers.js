@@ -1,19 +1,15 @@
 import uuid from 'uuid/v1'
-import { ethFeeInfo, findFunctionABI, TransactionDescriber } from '../TransactionDescriber'
+import { findFunctionABI, TransactionDescriber } from '../TransactionDescriber'
 import { Amount, LogTxModel } from '../../../models'
 import { AssetDonatorABI, ERC20DAODefaultABI } from '../../../dao/abi'
 import { TIME } from '../../../dao/constants'
 
 export const FUNCTION_TRANSFER = new TransactionDescriber(
   findFunctionABI(ERC20DAODefaultABI, 'transfer'),
-  ({ tx, receipt, block }, { address }, { params, token, abi }) => {
+  ({ tx, block }, { address }, { params, token, abi }) => {
     const symbol = token.symbol()
     address = address.toLowerCase()
     if (symbol && (params._to.toLowerCase() === address || tx.from.toLowerCase() === address)) {
-      const {
-        amount,
-        amountTitle,
-      } = ethFeeInfo({ tx, receipt }, { address, symbol })
 
       const transferAmount = new Amount(params._value, symbol)
 
@@ -23,9 +19,6 @@ export const FUNCTION_TRANSFER = new TransactionDescriber(
         name: 'transfer',
         date: new Date(block ? (block.timestamp * 1000) : null),
         title: `${path}.title`,
-        amount,
-        amountTitle,
-        isAmountSigned: true,
         fields: [
           {
             value: tx.from,
@@ -59,7 +52,8 @@ export const FUNCTION_APPROVE = new TransactionDescriber(
         name: 'transfer',
         date: new Date(block ? (block.timestamp * 1000) : null),
         title: `${path}.title`,
-        isAmountSigned: true,
+        from: '',
+        to: '',
         fields: [
           {
             value: tx.from,
@@ -90,7 +84,6 @@ export const FUNCTION_REQUIRE_TIME = new TransactionDescriber(
       name: 'transfer',
       date: new Date(block ? (block.timestamp * 1000) : null),
       title: `${path}.title`,
-      isAmountSigned: true,
       fields: [
         {
           value: tx.from,

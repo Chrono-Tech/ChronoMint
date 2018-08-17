@@ -71,12 +71,13 @@ function mapStateToProps (state) {
 
   const token = tokens.item(tokenId)
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
-  const balance = wallet.balances[tokenId]
-  const balanceEth = wallet.balances[ETH]
+  const balance = wallet.balances[tokenId] || new Amount(0, tokenId)
+  const balanceEth = wallet.balances[ETH] || new Amount(0, ETH)
   const assets = assetHolder.assets()
   const spender = assetHolder.wallet()
 
   return {
+    wallet,
     balance,
     balanceEth,
     deposit: assets.item(token.address()).deposit(),
@@ -107,7 +108,7 @@ function mapDispatchToProps (dispatch) {
     requireTIME: () => dispatch(requireTIME()),
     receiveToken: (tokenId, wallet) => dispatch(modalsOpen({
       componentName: 'ReceiveTokenModal',
-      props: { tokenId, wallet }
+      props: { tokenId, wallet },
     })),
   }
 }

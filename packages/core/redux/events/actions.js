@@ -108,15 +108,11 @@ export const loadMoreEvents = (address, blockScanLimit = 100000, logScanLimit = 
     history.cursor == null ? 'latest' : Math.max(0, history.cursor - 1)
   )
 
-  console.log('toBlock: ', toBlock)
-
   let fromBlock = await web3.eth.getBlock(
     Math.max(0, toBlock.number - blockScanLimit)
   )
 
   const topic = `0x${padStart(address.substring(2), 64, 0)}`
-
-  console.log('fromBlock: ', fromBlock, toBlock, topic)
 
   const [logs1, logs2, logs3] = await Promise.all(
     [1, 2, 3].map(
@@ -154,16 +150,12 @@ export const loadMoreEvents = (address, blockScanLimit = 100000, logScanLimit = 
   }
 
   if (logs.length === 0) {
-
-    console.log('Logs not found')
     return
   }
 
   fromBlock = await web3.eth.getBlock(
     logs[logs.length - 1].blockHash
   )
-
-  console.log('fromBlock: ', fromBlock)
 
   const blocks = await Promise.all(
     uniq(logs.map((entry) => entry.blockHash))
@@ -217,8 +209,6 @@ export const loadMoreEvents = (address, blockScanLimit = 100000, logScanLimit = 
 
   const entries = []
 
-  console.log('Block transactions: ', logs, transactions)
-
   for (const { block, transactions } of sortBy(Object.values(tree), (v) => -v.block.timestamp)) {
     for (const { tx, receipt, logs } of Object.values(transactions)) {
       const context = {
@@ -246,8 +236,6 @@ export const loadMoreEvents = (address, blockScanLimit = 100000, logScanLimit = 
       // }
     }
   }
-
-  console.log('LOGS_LOADED: ', fromBlock, entries)
 
   dispatch({
     type: LOGS_LOADED,
