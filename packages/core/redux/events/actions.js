@@ -4,7 +4,10 @@
  */
 
 import { padStart, unionBy, uniq, sortBy } from 'lodash'
+import Web3ABI from 'web3-eth-abi'
 import { describeEvent, describeTx } from '../../describers'
+import { findFunctionABI } from '../../describers/transactions'
+import { DUCK_SESSION } from '../session/constants'
 
 import { web3Selector } from '../ethereum/selectors'
 import { eventsSelector } from './selectors'
@@ -91,10 +94,12 @@ export const pushEvent = (address, log) => async (dispatch, getState) => {
   })
 }
 
-export const loadMoreEvents = (address, blockScanLimit = 100000, logScanLimit = 15) => async (dispatch, getState) => {
+export const loadEvents = (topics = null, address: string = null, blockScanLimit = 10000, logScanLimit = 20) => async (dispatch, getState) => {
+  console.log('loadEvents: ', topics, address, blockScanLimit, logScanLimit)
 
   const web3 = web3Selector()(getState())
-  address = address.toLowerCase()
+  const account = getState().get(DUCK_SESSION).account
+  address = address ? address.toLowerCase() : account
 
   await dispatch({
     type: LOGS_LOADING,
@@ -108,23 +113,25 @@ export const loadMoreEvents = (address, blockScanLimit = 100000, logScanLimit = 
     history.cursor == null ? 'latest' : Math.max(0, history.cursor - 1)
   )
 
-  console.log('toBlock: ', toBlock)
-
   let fromBlock = await web3.eth.getBlock(
     Math.max(0, toBlock.number - blockScanLimit)
   )
 
   const topic = `0x${padStart(address.substring(2), 64, 0)}`
 
-  console.log('fromBlock: ', fromBlock, toBlock, topic)
-
   const [logs1, logs2, logs3] = await Promise.all(
     [1, 2, 3].map(
-      (number) => web3.eth.getPastLogs({
-        toBlock: `0x${Number(toBlock.number).toString(16)}`,
-        fromBlock: `0x${Number(fromBlock.number).toString(16)}`,
-        topics: Array.from({ length: number + 1 }).map((n, i) => number === i ? topic : null)
-      })
+      (number) => {
+        const topicsArray = Array.from({ length: number + 1 }).map((n, i) => number === i ? topic : null)
+        topicsArray[0] = topics
+        console.log('topicsArray: ', topicsArray)
+
+        return web3.eth.getPastLogs({
+          toBlock: `0x${Number(toBlock.number).toString(16)}`,
+          fromBlock: `0x${Number(fromBlock.number).toString(16)}`,
+          topics: topicsArray,
+        })
+      }
     )
   )
 

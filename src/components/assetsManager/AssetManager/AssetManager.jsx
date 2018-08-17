@@ -21,7 +21,6 @@ import TokensSVG from 'assets/img/assets2.svg'
 import ManagersSVG from 'assets/img/assets3.svg'
 import CrowdsaleSVG from 'assets/img/assets4.svg'
 import './AssetManager.scss'
-import {loadMoreEvents} from "../../../../packages/core/redux/events/actions";
 
 function prefix (token) {
   return `Assets.AssetManager.${token}`
@@ -118,7 +117,6 @@ export default class AssetManager extends PureComponent {
                       </span>
                     </div>
                   </div>
-
                 </div>
               </div>
               <div className='col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6'>

@@ -5,13 +5,20 @@
 
 import uuid from 'uuid/v1'
 import Amount from '@chronobank/core/models/Amount'
+import { ASSET_TOPICS } from '@chronobank/core/describers/constants'
+import { loadEvents } from '@chronobank/core/redux/events/actions'
 import { notify } from '../notifier/actions'
 import web3Converter from '../../utils/Web3Converter'
 import ReissuableModel from '../../models/tokens/ReissuableModel'
 import TokenModel from '../../models/tokens/TokenModel'
 import OwnerCollection from '../../models/wallet/OwnerCollection'
 import OwnerModel from '../../models/wallet/OwnerModel'
-import { DUCK_TOKENS, TOKENS_FETCHED, TOKENS_UPDATE } from '../tokens/constants'
+import {
+  DUCK_TOKENS,
+  TOKENS_FETCHED,
+  TOKENS_UPDATE,
+} from '../tokens/constants'
+
 import AssetsManagerNoticeModel, {
   ASSET_PAUSED,
   ASSET_UNPAUSED,
@@ -416,13 +423,15 @@ export const setManagers = (tx) => async (dispatch, getState) => {
 
 export const watchInitTokens = () => async (dispatch, getState) => {
   await dispatch(getAssetsManagerData())
-  dispatch(getTransactions())
+
   const state = getState()
   const account = getAccount(state)
   const tokens = state.get(DUCK_TOKENS)
 
-  assetsManagerService.setPlatformTokenExtensionGatewayManagerEmitterDAO(daoByType('PlatformTokenExtensionGatewayManagerEmitterDAO')(state))
+  console.log('ASSET_TOPICS: ', ASSET_TOPICS)
+  dispatch(loadEvents(ASSET_TOPICS, account))
 
+  assetsManagerService.setPlatformTokenExtensionGatewayManagerEmitterDAO(daoByType('PlatformTokenExtensionGatewayManagerEmitterDAO')(state))
   await Promise.all([
     dispatch(subscribeToBlockAssetEvents()),
     dispatch(subscribeToRestrictedEvents()),

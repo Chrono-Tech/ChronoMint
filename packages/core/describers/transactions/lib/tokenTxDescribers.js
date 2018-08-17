@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import uuid from 'uuid/v1'
 import { ethFeeInfo, findFunctionABI, TransactionDescriber } from '../TransactionDescriber'
 import { Amount, LogTxModel } from '../../../models'
@@ -9,6 +14,7 @@ export const FUNCTION_TRANSFER = new TransactionDescriber(
   ({ tx, receipt, block }, { address }, { params, token, abi }) => {
     const symbol = token.symbol()
     address = address.toLowerCase()
+
     if (symbol && (params._to.toLowerCase() === address || tx.from.toLowerCase() === address)) {
       const {
         amount,

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import uuid from 'uuid/v1'
 import BigNumber from 'bignumber.js'
 import Web3ABI from 'web3-eth-abi'
@@ -61,16 +66,12 @@ const defaultDescription = (entry, context) => {
   const fee = new BigNumber(tx.gasPrice).mul(receipt ? receipt.cumulativeGasUsed : tx.gasLimit)
 
   let value = null
-  let amountTitle = null
   if (tx.from.toLowerCase() === address && tx.to.toLowerCase() === address) {
     value = fee.mul(-1)
-    amountTitle = 'tx.fee'
   } else if (tx.from.toLowerCase() === address) {
     value = v.minus(fee)
-    amountTitle = v.eq(0) ? 'tx.fee' : 'tx.amountFee'
   } else {
     value = v
-    amountTitle = 'tx.amount'
   }
 
   const amount = new Amount(value, ETH)
@@ -84,9 +85,6 @@ const defaultDescription = (entry, context) => {
     title: `${path}.title`,
     message: tx.to,
     target: null,
-    amountTitle,
-    isAmountSigned: true,
-    amount,
     fields: [
       {
         value: tx.from,
