@@ -5,4 +5,7 @@
 
 import * as eventDescribers from './events/lib/assetEventDescribers'
 
-export const ASSET_TOPICS = Object.entries(eventDescribers).forEach(([, describer]) => describer.topic)
+export const ASSET_TOPICS = Object.entries(eventDescribers).reduce((describers, [, describer]) => {
+  describers.push(describer.topic)
+  return describers
+}, [])

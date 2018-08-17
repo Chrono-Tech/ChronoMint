@@ -28,6 +28,8 @@ export const describeEvent = (data, context) => {
     }
   }
 
+  console.warn('Unknown event: ', log.topics[0], data.log)
+
   return new LogEventModel({
     key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
     type: 'event',
@@ -46,7 +48,6 @@ const formatPendingTxData = ({ abi, tx }) => {
     ? decodeTxData(abi.abi, tx.data)
     : (tx.data != null ? { name: 'Unknown contract' } : null)
 
-  console.log('formatPendingTxData data: ', data)
   if (data) {
     const params = data.params.reduce((accumulator, entry) => ({ ...accumulator, [entry.name]: entry.value }), {})
     return {

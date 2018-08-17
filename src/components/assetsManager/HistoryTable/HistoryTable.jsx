@@ -3,24 +3,17 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Amount from '@chronobank/core/models/Amount'
 import { CircularProgress } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import { currentAccountEvents } from '@chronobank/core/redux/events/selectors'
-import { DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/constants'
-import Moment from 'components/common/Moment'
-import { SHORT_DATE } from '@chronobank/core/models/constants'
-import TokenValue from 'components/common/TokenValue/TokenValue'
-import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from '@chronobank/core/dao/constants/ChronoBankPlatformDAO'
-import { TX_PLATFORM_ATTACHED, TX_PLATFORM_DETACHED, TX_PLATFORM_REQUESTED } from '@chronobank/core/dao/constants/PlatformsManagerDAO'
-import { TX_ASSET_CREATED } from '@chronobank/core/dao/constants/AssetsManagerDAO'
-import TransactionsCollection from '@chronobank/core/models/wallet/TransactionsCollection'
-import LogListModel from "@chronobank/core/models/LogListModel";
-import { TX_PAUSED, TX_RESTRICTED, TX_UNPAUSED, TX_UNRESTRICTED } from '@chronobank/core/dao/constants/ChronoBankAssetDAO'
+import { getHistoryEvents } from '@chronobank/core/redux/events/selectors'
+import LogListModel from '@chronobank/core/models/LogListModel'
+import { getHistoryKey } from '@chronobank/core/utils/eventHistory'
+import { ASSET_TOPICS } from '@chronobank/core/describers/constants'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 
 import './HistoryTable.scss'
 
@@ -29,10 +22,12 @@ function prefix (token) {
 }
 
 function mapStateToProps (state) {
-  const assetsManager = state.get(DUCK_ASSETS_MANAGER)
+  const account = state.get(DUCK_SESSION).account
+  const historyKey = getHistoryKey(ASSET_TOPICS, account)
+
   return {
     locale: state.get('i18n').locale,
-    events: currentAccountEvents()(state),
+    events: getHistoryEvents(historyKey)(state),
   }
 }
 
@@ -48,7 +43,6 @@ export default class HistoryTable extends PureComponent {
     const groups = eventItems
       .reduce((data, event) => {
         const group = moment(event.date).format('YYYY-MM-DD')
-        console.log('buildTableData: ', event, group)
 
         data[group] = data[group] || {
           dateBy: group,
@@ -64,8 +58,6 @@ export default class HistoryTable extends PureComponent {
   }
 
   renderRow (event, index) {
-    console.log('renderRow: ', event)
-
     return (
       <div styleName='row' key={index}>
         <div styleName='col-time'>
@@ -78,7 +70,7 @@ export default class HistoryTable extends PureComponent {
               <span styleName='event-title'>{event.title}</span>
             </div>
             <div styleName='event-address-container'>
-              <span styleName='event-address'>{event.key}</span>
+              <span styleName='event-address'>{event.address}</span>
             </div>
           </div>
         </div>
@@ -87,13 +79,10 @@ export default class HistoryTable extends PureComponent {
   }
 
   render () {
-
     const { events } = this.props
     const isLoading = events && events.isLoading
     const eventsList = Array.isArray(events.entries) ? events.entries : []
     const data = this.buildTableData(eventsList)
-
-    let currentDate
 
     return (
       <div styleName='root'>
@@ -102,14 +91,16 @@ export default class HistoryTable extends PureComponent {
         </div>
         <div styleName='content'>
           {data.map((group) => {
-            return (<div styleName='section' key={group.dateBy}>
-              <div styleName='section-header'>
-                <h5>{group.dateTitle}</h5>
+            return (
+              <div styleName='section' key={group.dateBy}>
+                <div styleName='section-header'>
+                  <h5>{group.dateTitle}</h5>
+                </div>
+                <div styleName='table'>
+                  {group.eventList.map((item, index) => this.renderRow(item, index))}
+                </div>
               </div>
-              <div styleName='table'>
-                {group.eventList.map((item, index) => this.renderRow(item, index))}
-              </div>
-            </div>)
+            )
           })}
         </div>
         { isLoading &&

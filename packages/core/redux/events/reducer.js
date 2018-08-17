@@ -14,31 +14,31 @@ import {
 export const initialState = {}
 
 const mutations = {
-  [LOGS_LOADING] (state, { address }) {
+  [LOGS_LOADING] (state, { address, historyKey, topics }) {
     address = address.toLowerCase()
-    const history = state[address] || new LogListModel({ address })
+    const history = state[historyKey] || new LogListModel({ address, topics })
     return {
       ...state,
-      [address]: history.loading(),
+      [historyKey]: history.loading(),
     }
   },
-  [LOGS_LOADED] (state, { address, cursor, entries }) {
+  [LOGS_LOADED] (state, { address, historyKey, cursor, entries }) {
     address = address.toLowerCase()
-    const history = state[address] || new LogListModel({ address })
+    const history = state[historyKey] || new LogListModel({ address })
     return {
       ...state,
-      [address]: history.loaded({
+      [historyKey]: history.loaded({
         entries,
         cursor,
       }),
     }
   },
-  [LOGS_UPDATED] (state, { address, cursor, entries }) {
+  [LOGS_UPDATED] (state, { address, historyKey, cursor, entries }) {
     address = address.toLowerCase()
-    const history = state[address] || new LogListModel({ address })
+    const history = state[historyKey] || new LogListModel({ address })
     return {
       ...state,
-      [address]: history.updated({
+      [historyKey]: history.updated({
         entries,
         cursor,
       }),

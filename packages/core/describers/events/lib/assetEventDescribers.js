@@ -5,7 +5,7 @@
 
 import { EventDescriber, findEventABI } from '../EventDescriber'
 import LogEventModel from '../../../models/LogEventModel'
-import { ChronoBankPlatformEmitterABI } from '../../../dao/abi'
+import { ChronoBankPlatformEmitterABI,  PlatformTokenExtensionGatewayManagerEmitterABI } from '../../../dao/abi'
 
 export const EVENT_ISSUE = new EventDescriber(
   findEventABI(ChronoBankPlatformEmitterABI, 'Issue'),
@@ -92,8 +92,8 @@ export const EVENT_RECOVERY = new EventDescriber(
   },
 )
 
-export const EVENT_OWNERSHIP_RECOVERY = new EventDescriber(
-  findEventABI(ChronoBankPlatformEmitterABI, 'Recovery'),
+export const EVENT_TRANSFER = new EventDescriber(
+  findEventABI(ChronoBankPlatformEmitterABI, 'Transfer'),
   ({ log, block }, context, { params }) => {
 
     return new LogEventModel({
@@ -103,6 +103,40 @@ export const EVENT_OWNERSHIP_RECOVERY = new EventDescriber(
       date: new Date(block.timestamp * 1000),
       icon: 'event',
       title: 'Transfer',
+      message: params.proxy,
+      target: null,
+    })
+  },
+)
+
+export const EVENT_ERROR = new EventDescriber(
+  findEventABI(ChronoBankPlatformEmitterABI, 'Error'),
+  ({ log, block }, context, { params }) => {
+
+    return new LogEventModel({
+      key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
+      type: 'event',
+      name: 'Error',
+      date: new Date(block.timestamp * 1000),
+      icon: 'event',
+      title: 'Error',
+      message: params.proxy,
+      target: null,
+    })
+  },
+)
+
+export const EVENT_ASSET_CREATED = new EventDescriber(
+  findEventABI(PlatformTokenExtensionGatewayManagerEmitterABI, 'AssetCreated'),
+  ({ log, block }, context, { params }) => {
+
+    return new LogEventModel({
+      key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
+      type: 'event',
+      name: 'AssetCreated',
+      date: new Date(block.timestamp * 1000),
+      icon: 'event',
+      title: 'Asset created',
       message: params.proxy,
       target: null,
     })

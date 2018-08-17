@@ -4,10 +4,9 @@
  */
 
 import { padStart, unionBy, uniq, sortBy } from 'lodash'
-import Web3ABI from 'web3-eth-abi'
 import { describeEvent, describeTx } from '../../describers'
-import { findFunctionABI } from '../../describers/transactions'
 import { DUCK_SESSION } from '../session/constants'
+import { getHistoryKey } from '../../utils/eventHistory'
 
 import { web3Selector } from '../ethereum/selectors'
 import { eventsSelector } from './selectors'
@@ -34,8 +33,6 @@ export const pushTx = (address, receipt) => async (dispatch, getState) => {
       { tx, receipt, block },
       {
         address,
-        agents: [],
-        // getters: rootGetters
       }
     )
 
@@ -72,8 +69,6 @@ export const pushEvent = (address, log) => async (dispatch, getState) => {
     { log, tx, receipt, block },
     {
       address,
-      agents: [],
-      // getters: rootGetters
     }
   )
 
@@ -100,14 +95,16 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
   const web3 = web3Selector()(getState())
   const account = getState().get(DUCK_SESSION).account
   address = address ? address.toLowerCase() : account
+  const historyKey = getHistoryKey(topics, address)
 
   await dispatch({
     type: LOGS_LOADING,
     address,
+    historyKey,
   })
 
   const allHistory = eventsSelector()(getState())
-  const history = allHistory[address]
+  const history = allHistory[historyKey]
 
   const toBlock = await web3.eth.getBlock(
     history.cursor == null ? 'latest' : Math.max(0, history.cursor - 1)
@@ -161,7 +158,6 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
   }
 
   if (logs.length === 0) {
-
     console.log('Logs not found')
     return
   }
@@ -169,8 +165,6 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
   fromBlock = await web3.eth.getBlock(
     logs[logs.length - 1].blockHash
   )
-
-  console.log('fromBlock: ', fromBlock)
 
   const blocks = await Promise.all(
     uniq(logs.map((entry) => entry.blockHash))
@@ -258,6 +252,7 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
 
   dispatch({
     type: LOGS_LOADED,
+    historyKey,
     address,
     cursor: fromBlock.number,
     entries: history
