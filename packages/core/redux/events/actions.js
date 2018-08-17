@@ -218,8 +218,6 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
 
   const entries = []
 
-  console.log('Block transactions: ', logs, transactions)
-
   for (const { block, transactions } of sortBy(Object.values(tree), (v) => -v.block.timestamp)) {
     for (const { tx, receipt, logs } of Object.values(transactions)) {
       const context = {
@@ -247,8 +245,6 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
       // }
     }
   }
-
-  console.log('LOGS_LOADED: ', fromBlock, entries)
 
   dispatch({
     type: LOGS_LOADED,

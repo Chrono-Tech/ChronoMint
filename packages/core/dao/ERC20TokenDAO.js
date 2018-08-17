@@ -91,7 +91,7 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
   }
 
   handleAllEventsData = (data) => {
-    switch (data.event) {
+    switch (`${data.event}`.toLowerCase()) {
       case 'transfer':
         this.handleTransferData(data)
         break

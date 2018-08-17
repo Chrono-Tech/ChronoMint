@@ -6,9 +6,8 @@
 import uuid from 'uuid/v1'
 import BigNumber from 'bignumber.js'
 import Web3ABI from 'web3-eth-abi'
-import { Amount } from '../models'
+import { Amount, LogTxModel } from '../models'
 import LogEventModel from '../models/LogEventModel'
-import LogTxModel from '../models/LogTxModel'
 import { EVENT_DESCRIBERS_BY_TOPIC, decodeLog } from './events'
 import { TRANSACTION_DESCRIBERS_BY_TOPIC, decodeParameters, findFunctionABI } from './transactions'
 import { decodeTxData } from '../utils/DecodeUtils'
@@ -106,8 +105,6 @@ const defaultDescription = (entry, context) => {
 export const describeTx = (entry, context = {}) => {
   const { tx, receipt } = entry
   const { abi } = context
-
-  console.log('describeTx: ', tx, abi)
 
   let info
   if (!receipt) {

@@ -50,7 +50,7 @@ function mapStateToProps (state) {
     selectedWallet: selectedWallet,
     successMessage: formSelector(state, FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE),
     initialValues: {
-      password: 'QWEpoi123',
+      password: '1',
     },
   }
 }

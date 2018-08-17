@@ -14,7 +14,7 @@ import { Translate } from 'react-redux-i18n'
 import { modalsClear, modalsClose } from 'redux/modals/actions'
 import { ETH } from '@chronobank/core/dao/constants'
 import TxEntryModel from '@chronobank/core/models/TxEntryModel'
-import LogTxModel from '@chronobank/core/models/LogTxModel'
+import { LogTxModel } from '@chronobank/core/models'
 
 import './ConfirmTxDialog.scss'
 import Value from '../../common/Value/Value'

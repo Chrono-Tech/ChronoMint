@@ -30,7 +30,7 @@ import { ETH, BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
 import { estimateGasForDeposit, requireTIME } from '@chronobank/core/redux/mainWallet/actions'
 import { mainApprove, mainRevoke } from '@chronobank/core/redux/wallets/actions'
-import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from '@chronobank/core/dao/constants/AssetHolderDAO'
+import { TX_DEPOSIT, WITHDRAW } from '@chronobank/core/dao/constants/AssetHolderDAO'
 import { TX_APPROVE } from '@chronobank/core/dao/constants/ERC20DAO'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
@@ -50,7 +50,6 @@ import validate from './validate'
 
 const DEPOSIT_FIRST = 'depositFirst'
 const DEPOSIT_SECOND = 'depositSecond'
-const WITHDRAW = 'withdraw'
 
 function prefix (token) {
   return `components.DepositTokens.${token}`
@@ -71,12 +70,13 @@ function mapStateToProps (state) {
 
   const token = tokens.item(tokenId)
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
-  const balance = wallet.balances[tokenId]
-  const balanceEth = wallet.balances[ETH]
+  const balance = wallet.balances[tokenId] || new Amount(0, tokenId)
+  const balanceEth = wallet.balances[ETH] || new Amount(0, ETH)
   const assets = assetHolder.assets()
   const spender = assetHolder.wallet()
 
   return {
+    wallet,
     balance,
     balanceEth,
     deposit: assets.item(token.address()).deposit(),
@@ -103,11 +103,10 @@ function mapDispatchToProps (dispatch) {
     mainRevoke: (token, spender, feeMultiplier) => dispatch(mainRevoke(token, spender, feeMultiplier, {
       skipSlider: true,
     })),
-    dispatch: dispatch,
     requireTIME: () => dispatch(requireTIME()),
     receiveToken: (tokenId, wallet) => dispatch(modalsOpen({
       componentName: 'ReceiveTokenModal',
-      props: { tokenId, wallet }
+      props: { tokenId, wallet },
     })),
   }
 }
@@ -166,7 +165,7 @@ export default class DepositTokensForm extends PureComponent {
           action = TX_DEPOSIT
           break
         case WITHDRAW:
-          action = TX_WITHDRAW_SHARES
+          action = WITHDRAW
           break
       }
       this.handleGetGasPrice(action, newProps.amount, newProps.feeMultiplier, this.props.spender)
