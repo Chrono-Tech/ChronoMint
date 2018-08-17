@@ -23,9 +23,9 @@ import LIQUI_PNG from 'assets/img/marketsLogos/liqui.png'
 import KUCOIN_PNG from 'assets/img/marketsLogos/kucoin.png'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { getTokensForBlockchain } from '@chronobank/core/redux/tokens/selectors'
-import { MenuItem } from '@material-ui/core'
+import { MenuItem, MuiThemeProvider } from '@material-ui/core'
 import { FORM_RECEIVE_TOKENS } from 'components/constants'
-import styles from '../styles'
+import inversedTheme from 'styles/themes/inversed'
 import './ReceiveTokenModal.scss'
 
 const marketsTIME = [
@@ -121,21 +121,27 @@ export default class ReceiveTokenModal extends PureComponent {
         </div>
         {this.props.tokens.length > 1 && (
           <div styleName='tokenSelector'>
-            <Field
-              fullWidth
-              component={Select}
-              name='tokenId'
-            >
-              {
-                this.props.tokens
-                  .map((token: TokenModel) => {
-                    return (<MenuItem
-                      key={token.symbol()}
-                      value={token.id()}
-                      primaryText={<span>{token.symbol()}</span>}
-                    />)
-                  })}
-            </Field>
+            <MuiThemeProvider theme={inversedTheme}>
+              <Field
+                fullWidth
+                component={Select}
+                name='tokenId'
+                menu-symbol='symbolSelectorMenu'
+              >
+                {
+                  this.props.tokens
+                    .map((token: TokenModel) => {
+                      return (
+                        <MenuItem
+                          key={token.symbol()}
+                          value={token.id()}
+                        >
+                          {token.symbol()}
+                        </MenuItem>
+                      )
+                    })}
+              </Field>
+            </MuiThemeProvider>
           </div>
         )}
       </div>
