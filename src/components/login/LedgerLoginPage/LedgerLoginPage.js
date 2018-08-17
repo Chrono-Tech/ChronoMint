@@ -153,7 +153,7 @@ class LedgerLoginPage extends PureComponent {
 
   previousPage () {
     if (this.state.page === LedgerLoginPage.PAGES.DEVICE_SELECT_FORM){
-      const a = this.props.navigateBack()
+      this.props.navigateBack()
     } else {
       this.setState ({ page: this.state.page - 1 })
     }
