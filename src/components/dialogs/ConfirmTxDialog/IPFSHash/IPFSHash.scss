@@ -1,0 +1,44 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import '~styles/partials/mixins';
+@import '~styles/partials/variables';
+
+.root {
+  .param {
+    padding-bottom: 30px;
+    .label {
+      text-transform: capitalize;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 19px;
+      padding-bottom: 5px;
+    }
+    .value {
+      font-size: 16px;
+      line-height: 19px;
+      :global {
+        .Preloader__root {
+          display: flex;
+          justify-content: flex-start;
+        }
+      }
+      &.big {
+        :global {
+          .TokenValue__root {
+            color: $color-blue-4;
+            font-size: 30px;
+            line-height: 36px;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+    .price {
+      color: $color-primary-0;
+      font-weight: 500;
+      font-size: 16px;
+    }
+  }
+}

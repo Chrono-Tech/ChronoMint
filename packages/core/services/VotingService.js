@@ -52,6 +52,7 @@ class VotingService extends EventEmitter {
     }
 
     const dao = this.getPollEmitterDAO(address, web3, history)
+    this.emit('newPollDao', dao)
 
     return Promise.all([
       dao.watchVoted((result) => {

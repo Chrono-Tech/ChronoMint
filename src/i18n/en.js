@@ -374,20 +374,36 @@ export default {
     PollInterface: {
       [pollInterface.TX_ACTIVATE_POLL]: {
         title: 'Activate poll',
+        pollAddress: 'Poll address',
+        from: 'From',
       },
       [pollInterface.TX_REMOVE_POLL]: {
         title: 'Remove Poll',
+        pollAddress: 'Poll address',
+        from: 'From',
       },
       [pollInterface.TX_END_POLL]: {
         title: 'End Poll',
+        pollAddress: 'Poll address',
+        from: 'From',
       },
       [pollInterface.TX_VOTE]: {
         title: 'Vote',
+        pollAddress: 'Poll address',
+        from: 'From',
       },
     },
     VotingManager: {
       [votingManager.TX_CREATE_POLL]: {
-        title: 'Create Poll',
+        modalTitle: 'Create Poll',
+        from: 'From',
+        to: 'To',
+        options: 'Options',
+        files: 'Files',
+        description: 'Description',
+        title: 'Title',
+        deadline: 'End Poll Date',
+        votelimit: 'End Poll by the most voted option',
       },
     },
     ChronoBankAsset: {

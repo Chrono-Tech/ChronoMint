@@ -42,6 +42,8 @@ import {
   POLLS_VOTE_LIMIT,
 } from './constants'
 import { executeTransaction } from '../ethereum/actions'
+import { registerDao } from '../daos/actions'
+import { ContractDAOModel, ContractModel } from '../../models'
 
 const PAGE_SIZE = 20
 
@@ -89,6 +91,17 @@ export const watchInitPolls = () => async (dispatch, getState) => {
     .subscribeToVoting(account)
 
   votingService
+    .on('newPollDao', async (emitterDao) => {
+      const dao = await votingManagerDAO.pollInterfaceManagerDAO.getPollInterfaceDAO(emitterDao.address)
+      dispatch(registerDao(new ContractDAOModel({
+        contract: new ContractModel({
+          abi: dao.abi,
+          type: `${dao.getContractName()}-${dao.address}`,
+        }),
+        address: dao.address,
+        dao,
+      })))
+    })
     .on(EVENT_POLL_CREATED, callback)
     .on(EVENT_POLL_REMOVED, callback)
     .on(EVENT_POLL_ACTIVATED, callback)
