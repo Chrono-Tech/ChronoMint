@@ -113,7 +113,7 @@ export default class HistoryTable extends PureComponent {
         </div>
         { !isLoading &&
           <div styleName='load-more'>
-            <button styleName='load-more-button' onClick={this.props.loadMoreEvents} >Load more</button>
+            <button styleName='load-more-button' onClick={this.props.loadMoreEvents}>Load more</button>
           </div>
         }
         { isLoading &&

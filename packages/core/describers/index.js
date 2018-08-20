@@ -80,7 +80,7 @@ const defaultDescription = (entry, context) => {
     name: 'custom',
     date: new Date(block ? (block.timestamp * 1000) : null),
     icon: 'event',
-    title: `${path}.title`,
+    title: `Unknown transaction`,
     message: tx.to,
     target: null,
     fields: [
@@ -100,28 +100,37 @@ const defaultDescription = (entry, context) => {
   })
 }
 
-export const describeTx = (entry, context = {}) => {
-  const { tx, receipt } = entry
+export const describePendingTx = (entry, context = {}) => {
+  const { tx } = entry
   const { abi } = context
 
   if (!abi) {
     return defaultDescription(entry, context)
   }
 
-  let info
-  if (!receipt) {
-    info = formatPendingTxData({ abi, tx })
-  } else {
-    info = {
-      topic: tx.input.substr(0, 10),
-      ...decodeParameters(abi, entry.tx),
-    }
-  }
+  const info = formatPendingTxData({ abi, tx })
 
   const array = TRANSACTION_DESCRIBERS_BY_TOPIC[info.topic]
   if (array) {
     for (const describer of array) {
       const desc = describer.describe(entry, context, { abi: describer.abi, inputs: info.inputs, params: info.params, ...context })
+      if (desc) {
+        return desc
+      }
+    }
+  }
+
+  return defaultDescription(entry, context)
+}
+
+export const describeTx = (entry, context = {}) => {
+  const { tx } = entry
+
+  const array = TRANSACTION_DESCRIBERS_BY_TOPIC[tx.input.substr(0, 10)]
+  if (array) {
+    for (const describer of array) {
+      const { inputs, params } = decodeParameters(describer.abi, entry.tx)
+      const desc = describer.describe(entry, context, { abi: describer.abi, inputs, params, ...context })
       if (desc) {
         return desc
       }

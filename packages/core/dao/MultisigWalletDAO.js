@@ -48,6 +48,10 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   handleAllEventsData = (data) => {
+    if (!data || !data.event) {
+      return
+    }
+
     this.emit(data.event, data)
   }
 

@@ -45,7 +45,6 @@ export const decodeParameters = (abi, tx) => {
             return `0x${node.toString('hex')}`
           }
         }
-        // returns undefined to handle recursive
       },
     ),
   }))

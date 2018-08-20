@@ -12,7 +12,7 @@ import { pendingEntrySelector, web3Selector } from './selectors'
 import { DUCK_ETHEREUM, NONCE_UPDATE, TX_CREATE, TX_STATUS, WEB3_UPDATE } from './constants'
 import { getSigner } from '../persistAccount/selectors'
 import ethereumDAO from '../../dao/EthereumDAO'
-import { describeTx } from '../../describers'
+import { describePendingTx } from '../../describers'
 import { daoByAddress } from '../daos/selectors'
 import { getAccount } from '../session/selectors/models'
 
@@ -178,7 +178,7 @@ const submitTransaction = (entry) => async (dispatch, getState) => {
   const account = getAccount(state)
   const dao = daoByAddress(entry.tx.to)(state) || ethereumDAO
 
-  const description = describeTx(entry, {
+  const description = describePendingTx(entry, {
     address: account,
     abi: dao.abi,
     token: dao.token,

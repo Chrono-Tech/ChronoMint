@@ -6,5 +6,5 @@
 import { sha3_256 } from 'js-sha3'
 
 export const getHistoryKey = (topics, address) => {
-  return sha3_256(address + '-' + topics.join(''))
+  return sha3_256([address, '-', ...topics].join(''))
 }

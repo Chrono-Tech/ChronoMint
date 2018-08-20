@@ -18,7 +18,7 @@ export const EVENT_ISSUE = new EventDescriber(
       address: log.address,
       date: new Date(block.timestamp * 1000),
       icon: 'event',
-      title: 'Asset created',
+      title: 'Issue',
       message: params.proxy,
       target: null,
     })

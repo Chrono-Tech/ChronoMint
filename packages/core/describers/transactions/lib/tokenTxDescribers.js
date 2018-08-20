@@ -52,10 +52,10 @@ export const FUNCTION_APPROVE = new TransactionDescriber(
     if (symbol && (params._spender.toLowerCase() === address || tx.from.toLowerCase() === address)) {
       const value = new Amount(params._value, symbol)
 
-      const path = `tx.${abi.contractName}.transfer`
+      const path = `tx.${abi.contractName}.approve`
       return new LogTxModel({
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
-        name: 'transfer',
+        name: 'approve',
         date: new Date(block ? (block.timestamp * 1000) : null),
         title: `${path}.title`,
         from: '',
@@ -87,7 +87,7 @@ export const FUNCTION_REQUIRE_TIME = new TransactionDescriber(
     const path = `tx.${abi.contractName}.sendTime`
     return new LogTxModel({
       key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
-      name: 'transfer',
+      name: 'sendTime',
       date: new Date(block ? (block.timestamp * 1000) : null),
       title: `${path}.title`,
       fields: [

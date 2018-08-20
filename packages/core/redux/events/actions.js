@@ -13,14 +13,15 @@ import { eventsSelector } from './selectors'
 import EventsHistory from '../../services/EventsService'
 
 import {
-  LOGS_LOADED,
-  LOGS_LOADING,
-  LOGS_UPDATED,
+  EVENTS_LOGS_LOADED,
+  EVENTS_LOGS_LOADING,
+  EVENTS_LOGS_UPDATED,
+  ADD_EVENT_TO_HISTORY,
 } from './constants'
 
 export const watchEventsToHistory = () => async (dispatch, getState) => {
 
-  EventsHistory.on('addEventToHistory', (event) => {
+  EventsHistory.on(ADD_EVENT_TO_HISTORY, (event) => {
     const allHistory = eventsSelector()(getState())
     const topic = event.raw.topics[0]
 
@@ -56,7 +57,7 @@ export const pushTx = (historyKey, receipt) => async (dispatch, getState) => {
     const actualHistory = allHistory[historyKey]
 
     dispatch({
-      type: LOGS_UPDATED,
+      type: EVENTS_LOGS_UPDATED,
       historyKey,
       cursor: actualHistory
         ? actualHistory.cursor
@@ -91,7 +92,7 @@ export const pushEvent = (historyKey, log) => async (dispatch, getState) => {
   const actualHistory = allHistory[historyKey]
 
   dispatch({
-    type: LOGS_UPDATED,
+    type: EVENTS_LOGS_UPDATED,
     address: account,
     historyKey,
     cursor: actualHistory
@@ -103,7 +104,7 @@ export const pushEvent = (historyKey, log) => async (dispatch, getState) => {
   })
 }
 
-export const loadEvents = (topics = null, address: string = null, blockScanLimit = 100000, logScanLimit = 50) => async (dispatch, getState) => {
+export const loadEvents = (topics = null, address: string = null, blockScanLimit = 100000, logScanLimit = 10) => async (dispatch, getState) => {
 
   const web3 = web3Selector()(getState())
   const account = getState().get(DUCK_SESSION).account
@@ -111,7 +112,7 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
   const historyKey = getHistoryKey(topics, address)
 
   await dispatch({
-    type: LOGS_LOADING,
+    type: EVENTS_LOGS_LOADING,
     address,
     historyKey,
     topics,
@@ -171,7 +172,7 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
 
   if (logs.length === 0) {
     dispatch({
-      type: LOGS_LOADED,
+      type: EVENTS_LOGS_LOADED,
       historyKey,
       address,
       entries: history.entries
@@ -263,7 +264,7 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
   }
 
   dispatch({
-    type: LOGS_LOADED,
+    type: EVENTS_LOGS_LOADED,
     historyKey,
     address,
     cursor: fromBlock.number,

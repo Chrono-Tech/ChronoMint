@@ -6,15 +6,15 @@
 import LogListModel from '../../models/LogListModel'
 
 import {
-  LOGS_LOADING,
-  LOGS_LOADED,
-  LOGS_UPDATED,
+  EVENTS_LOGS_LOADING,
+  EVENTS_LOGS_LOADED,
+  EVENTS_LOGS_UPDATED,
 } from './constants'
 
 export const initialState = {}
 
 const mutations = {
-  [LOGS_LOADING] (state, { address, historyKey, topics }) {
+  [EVENTS_LOGS_LOADING] (state, { address, historyKey, topics }) {
     address = address.toLowerCase()
     const history = state[historyKey] || new LogListModel({ address, topics, historyKey })
     return {
@@ -22,7 +22,7 @@ const mutations = {
       [historyKey]: history.loading(),
     }
   },
-  [LOGS_LOADED] (state, { address, historyKey, cursor, entries }) {
+  [EVENTS_LOGS_LOADED] (state, { address, historyKey, cursor, entries }) {
     address = address.toLowerCase()
     const history = state[historyKey] || new LogListModel({ address })
     return {
@@ -33,7 +33,7 @@ const mutations = {
       }),
     }
   },
-  [LOGS_UPDATED] (state, { address, historyKey, cursor, entries }) {
+  [EVENTS_LOGS_UPDATED] (state, { address, historyKey, cursor, entries }) {
     address = address.toLowerCase()
     const history = state[historyKey] || new LogListModel({ address })
     return {
