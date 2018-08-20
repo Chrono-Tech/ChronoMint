@@ -10,7 +10,7 @@
   margin-bottom: 30px;
   margin-top: 30px;
 
-  @include sm-only {
+  @include xs-only {
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -20,7 +20,7 @@
   .header-text {
     color: $color-white;
 
-    @include sm-only {
+    @include xs-only {
       margin-left: 5px;
     }
   }
@@ -28,6 +28,10 @@
   .wallet-list-container {
     display: flex;
     flex-direction: column;
+
+    @include xs-only {
+      width: 100%;
+    }
   }
 }
 
