@@ -9,7 +9,8 @@ import { Link } from 'react-router'
 import PropTypes from 'prop-types'
 import { getSelectedPoll, getVotingFlags } from '@chronobank/core/redux/voting/selectors'
 import { initAssetsHolder } from '@chronobank/core/redux/assetsHolder/actions'
-import { goToVoting, listPolls, vote } from '@chronobank/core/redux/voting/thunks'
+import { listPolls, vote } from '@chronobank/core/redux/voting/thunks'
+import { navigateToVoting } from 'redux/ui/navigation'
 import moment from 'moment'
 import { isCBE } from '@chronobank/core/redux/session/selectors'
 import { getDepositAmount } from '@chronobank/core/redux/assetsHolder/selectors'
@@ -49,7 +50,7 @@ function mapDispatchToProps (dispatch) {
     handleVote: (choice) => () => {
       dispatch(vote(choice))
     },
-    handleGoVotingPage: () => dispatch(goToVoting()),
+    handleGoVotingPage: () => dispatch(navigateToVoting()),
   }
 }
 

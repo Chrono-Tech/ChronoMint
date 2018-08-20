@@ -4,7 +4,6 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { navigateToVoting } from 'redux/ui/navigation'
 import votingService from '../../services/VotingService'
 import type PollNoticeModel from '../../models/notices/PollNoticeModel'
 import type PollDetailsModel from '../../models/PollDetailsModel'
@@ -36,8 +35,6 @@ import { executeTransaction } from '../ethereum/actions'
 import * as VotingActions from './actions'
 
 const PAGE_SIZE = 20
-
-export const goToVoting = () => (dispatch) => dispatch(navigateToVoting())
 
 export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
   switch (notice.status()) {
@@ -104,7 +101,6 @@ export const createPoll = (poll: PollDetailsModel) => async (dispatch, getState)
   const votingDAO = daoByType('VotingManager')(state)
 
   try {
-    dispatch(goToVoting())
     const tx = await votingDAO.createPoll(poll.poll)
     if (tx) {
       dispatch(executeTransaction({ tx }))
@@ -125,7 +121,6 @@ export const removePoll = (pollObject: PTPoll) => async (dispatch, getState) => 
 
   try {
     dispatch(VotingActions.handlePollRemoved(poll.id))
-    dispatch(goToVoting())
     const dao = await votingDAO.pollInterfaceManagerDAO.getPollInterfaceDAO(poll.id)
 
     const tx = dao.removePoll()

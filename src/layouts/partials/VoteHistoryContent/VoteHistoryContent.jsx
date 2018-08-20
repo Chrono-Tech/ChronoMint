@@ -9,7 +9,8 @@ import Button from 'components/common/ui/Button/Button'
 import PropTypes from 'prop-types'
 import { getSelectedPoll, getVotingFlags } from '@chronobank/core/redux/voting/selectors'
 import { initAssetsHolder } from '@chronobank/core/redux/assetsHolder/actions'
-import { goToVoting, listPolls, vote } from '@chronobank/core/redux/voting/thunks'
+import { listPolls, vote } from '@chronobank/core/redux/voting/thunks'
+import { navigateToVoting } from 'redux/ui/navigation'
 import { isCBE } from '@chronobank/core/redux/session/selectors'
 import { getDepositAmount } from '@chronobank/core/redux/assetsHolder/selectors'
 import { PTPoll } from '@chronobank/core/redux/voting/types'
@@ -44,7 +45,7 @@ function mapDispatchToProps (dispatch) {
     handleVote: (choice) => () => {
       dispatch(vote(choice))
     },
-    handleGoVotingPage: () => dispatch(goToVoting()),
+    handleGoVotingPage: () => dispatch(navigateToVoting()),
   }
 }
 
