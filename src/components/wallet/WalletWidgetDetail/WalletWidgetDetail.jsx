@@ -17,7 +17,7 @@ import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import Moment from 'components/common/Moment'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
-import { removeWallet } from '@chronobank/core/redux/multisigWallet/actions'
+import { removeWalletAndNavigateToWallets } from 'redux/core/multisigWallet/thunks'
 import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
 import './WalletWidgetDetail.scss'
 import { prefix } from './lang'
@@ -46,7 +46,7 @@ function mapDispatchToProps (dispatch) {
       componentName: 'ReceiveTokenModal',
       props: { wallet },
     })),
-    removeEthMultisig: (wallet) => dispatch(removeWallet(wallet)),
+    removeEthMultisig: (wallet) => dispatch(removeWalletAndNavigateToWallets(wallet)),
     deposit: (props) => dispatch(modalsOpen({
       componentName: 'DepositTokensModal',
       props,
