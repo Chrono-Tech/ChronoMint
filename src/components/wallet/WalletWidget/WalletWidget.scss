@@ -3,14 +3,28 @@
  * Licensed under the AGPL Version 3 license.
  */
 @import '~styles/partials/variables';
+@import "~styles/partials/mixins";
 
 .header-container {
   width: 587px;
   margin-bottom: 28px;
   margin-top: 28px;
+
+  @include sm-only {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    width: 100%;
+  }
+
   .header-text {
     color: $color-white;
+
+    @include sm-only {
+      margin-left: 5px;
+    }
   }
+
   .wallet-list-container {
     display: flex;
     flex-direction: column;
@@ -26,6 +40,12 @@
   background-color: $color-white;
   border-radius: 2px;
   box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+
+  @include sm-only {
+    flex: 1;
+    margin-left: 5px;
+    width: 390px;
+  }
 }
 
 .settings-container {
@@ -157,6 +177,12 @@
   flex-direction: column;
   padding-top: 50px;
   width: 370px;
+
+  @include xs-only {
+    flex: 1;
+    width: 100%;
+    max-width: 264px;
+  }
 }
 
 .token-container {
@@ -165,6 +191,12 @@
   flex-direction: row;
   margin-right: 40px;
   margin-left: 40px;
+
+  @include xs-only {
+    margin-right: 20px;
+    margin-left: 20px;
+  }
+
   :global {
     .SubIconForWallet_root {
       position: absolute;
@@ -178,7 +210,12 @@
   display: flex;
   width: 100px;
   height: 100px;
-  margin-top: 50px;
+  margin-top: 25px;
+
+  @include xs-only {
+    width: 50px;
+    height: 50px;
+  }
 }
 
 .address-title {
@@ -195,6 +232,7 @@
   font-weight: 400;
   line-height: 20px;
   text-align: left;
+  word-wrap: break-word;
 }
 
 .token-amount-container {
