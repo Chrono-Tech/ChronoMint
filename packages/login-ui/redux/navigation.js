@@ -10,8 +10,6 @@ import {
   push,
 } from 'react-router-redux'
 
-// #region Navigation thunks
-
 /*
  * Thunk dispatched by any screen.
  * Going back from anywhere
@@ -124,5 +122,3 @@ export const navigateToWalletUploadMethod = () => (dispatch) => {
 export const navigateToLoginLocal = () => (dispatch) => {
   dispatch(push('/login/local-login'))
 }
-
-// #endregion

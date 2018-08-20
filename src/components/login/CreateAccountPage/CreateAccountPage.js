@@ -11,7 +11,7 @@ import {
 } from '@chronobank/login-ui/redux/thunks'
 import {
   navigateToSelectImportMethod,
-} from '@chronobank/login-ui/redux/actions'
+} from '@chronobank/login-ui/redux/navigation'
 import {
   CreateAccountContainer,
   GenerateWalletContainer,

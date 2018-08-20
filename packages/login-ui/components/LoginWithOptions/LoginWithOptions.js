@@ -17,7 +17,7 @@ import {
   navigateToPrivateKeyImportMethod,
   navigateToTrezorImportMethod,
   navigateToWalletUploadMethod,
-} from '@chronobank/login-ui/redux/actions'
+} from '@chronobank/login-ui/redux/navigation'
 import {
   navigateToCreateAccountWithoutImport,
 } from '@chronobank/login-ui/redux/thunks'

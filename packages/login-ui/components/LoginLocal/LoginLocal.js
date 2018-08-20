@@ -17,7 +17,7 @@ import {
 import { loadAccounts } from '@chronobank/core/redux/session/thunks'
 import {
   navigateToLoginPage,
-} from '../../redux/actions'
+} from '../../redux/navigation'
 import {
   onSubmitLoginTestRPC,
   onSubmitLoginTestRPCFail,

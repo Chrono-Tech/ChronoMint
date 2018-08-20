@@ -17,10 +17,10 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import {
   navigateToCreateAccountFromHW,
-} from '@chronobank/login/redux/network/actions'
+} from '../../redux/thunks'
 import {
   navigateBack,
-} from '../../redux/actions'
+} from '../../redux/navigation'
 
 import './LoginWithTrezor.scss'
 

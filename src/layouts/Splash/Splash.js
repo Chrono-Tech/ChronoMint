@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import { CommonNetworkSelector } from '@chronobank/login-ui/components'
 import {
   navigateToLoginPage,
-} from '@chronobank/login-ui/redux/actions'
+} from '@chronobank/login-ui/redux/navigation'
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 import ModalStack from 'components/common/ModalStack/ModalStack'
 import { MuiThemeProvider } from '@material-ui/core/styles'
