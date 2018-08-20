@@ -4,7 +4,7 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { push } from '@chronobank/core-dependencies/router'
+import { navigateToVoting } from 'redux/ui/navigation'
 import votingService from '../../services/VotingService'
 import type PollNoticeModel from '../../models/notices/PollNoticeModel'
 import type PollDetailsModel from '../../models/PollDetailsModel'
@@ -37,7 +37,7 @@ import * as VotingActions from './actions'
 
 const PAGE_SIZE = 20
 
-export const goToVoting = () => (dispatch) => dispatch(push('/voting'))
+export const goToVoting = () => (dispatch) => dispatch(navigateToVoting())
 
 export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
   switch (notice.status()) {

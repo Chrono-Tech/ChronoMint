@@ -12,7 +12,7 @@ import { change, formValueSelector } from 'redux-form/immutable'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import { history } from '@chronobank/core-dependencies/configureStore'
-import { push } from '@chronobank/core-dependencies/router'
+import { navigateToWallets } from 'redux/ui/navigation'
 import { getDeriveWalletsAddresses, getMultisigWallets } from '../wallet/selectors'
 import Amount from '../../models/Amount'
 import ApprovalNoticeModel from '../../models/notices/ApprovalNoticeModel'
@@ -72,7 +72,7 @@ import {
   WALLET_TRANSACTION_UPDATED,
 } from './constants'
 
-export const goToWallets = () => (dispatch) => dispatch(push('/wallets'))
+export const goToWallets = () => (dispatch) => dispatch(navigateToWallets())
 
 export const goBackForAddWalletsForm = () => (dispatch, getState) => {
   const selector = formValueSelector(FORM_ADD_NEW_WALLET)

@@ -7,7 +7,7 @@ import Button from 'components/common/ui/Button/Button'
 import web3Converter from '@chronobank/core/utils/Web3Converter'
 import React, { PureComponent } from 'react'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
-import { push } from 'react-router-redux'
+import { navigateTo2Fa } from 'redux/ui/navigation'
 import { Field, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
@@ -51,7 +51,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     handleGoWallets: () => dispatch(goToWallets()),
-    handleGoTo2FA: () => dispatch(push('/2fa')),
+    handleGoTo2FA: () => dispatch(navigateTo2Fa()),
   }
 }
 
