@@ -78,7 +78,9 @@ export class BitcoinProvider extends AbstractProvider {
 
   async getAccountBalances (address) {
     const node = this._selectNode(this._engine)
-    const { balance0, balance6 } = await node.getAddressInfo(address || this._engine.getAddress())
+    const result = await node.getAddressInfo(address || this._engine.getAddress())
+    console.log('res', node, this._engine, result.balance0.toString(), result.balance6.toString())
+    const { balance0, balance6 } = result
     return balance0 || balance6
   }
 

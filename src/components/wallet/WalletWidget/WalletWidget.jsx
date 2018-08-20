@@ -209,6 +209,7 @@ export default class WalletWidget extends PureComponent {
   render () {
     const { address, token, blockchain, wallet, showGroupTitle } = this.props
     const tokenIsFetched = (token && token.isFetched())
+    console.log('addr', address, token, wallet)
 
     return (
       <BalanceSubscription wallet={wallet}>

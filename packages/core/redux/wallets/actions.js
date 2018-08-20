@@ -88,6 +88,7 @@ const initDerivedWallets = () => async (dispatch, getState) => {
 
   Object.values(wallets).forEach((wallet: WalletModel) => {
     if (wallet.isDerived && !wallet.isMain && isOwner(wallet, account)) {
+      console.log('initDerivedWallets', wallet, account)
       dispatch(updateWalletBalance({ wallet }))
 
       switch (wallet.blockchain) {
@@ -118,6 +119,8 @@ const initDerivedWallets = () => async (dispatch, getState) => {
 const updateWalletBalance = ({ wallet }) => async (dispatch) => {
   getWalletBalances({ wallet })
     .then((balancesResult) => {
+      console.log('getWalletBalances', wallet, balancesResult)
+
       try {
         dispatch(setWallet(new WalletModel({
           ...wallet,
@@ -139,6 +142,7 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
           const dao = tokenService.getDAO(token)
           const balance = await dao.getAccountBalance(wallet.address)
           if (balance) {
+            console.log('setWalletBalance', wallet, new Amount(balance, token.symbol(), true))
             dispatch(setWalletBalance(wallet.id, new Amount(balance, token.symbol(), true)))
           }
         }
