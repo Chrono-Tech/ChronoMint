@@ -12,7 +12,7 @@ import classnames from 'classnames'
 import { connect } from 'react-redux'
 import menu from 'menu'
 import { drawerToggle, drawerHide } from 'redux/drawer/actions'
-import { logoutAndGoToRoot } from 'redux/core/session/thunks'
+import { logoutAndGoToRoot } from 'redux/ui/thunks'
 import styles from '../styles'
 
 import './DrawerPartial.scss'

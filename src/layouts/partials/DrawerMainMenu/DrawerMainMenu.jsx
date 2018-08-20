@@ -17,7 +17,7 @@ import { getNetworkName } from '@chronobank/login/redux/network/thunks'
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
-import { logoutAndGoToRoot } from 'redux/core/session/thunks'
+import { logoutAndGoToRoot } from 'redux/ui/thunks'
 import chronoWalletLogoSVG from 'assets/img/chronowallettext-white.svg'
 import ProfileImage from 'components/common/ProfileImage/ProfileImage'
 import exitSvg from 'assets/img/exit-white.svg'
