@@ -12,8 +12,6 @@ import {
   LoginForm,
   CreateHWAccount,
   LoginWithOptions,
-  LoginWithTrezor,
-  LoginWithLedger,
   LoginWithPlugin,
   LoginLocal,
 } from '@chronobank/login-ui/components'
@@ -32,6 +30,7 @@ import {
   NewPollPage,
   VoteHistoryPage,
 } from 'pages/lib'
+import LocalStorage from '@chronobank/core-dependencies/utils/LocalStorage'
 import MnemonicImportPage from 'components/login/MnemonicImportPage/MnemonicImportPage'
 import PrivateKeyImportPage from 'components/login/PrivateKeyImportPage/PrivateKeyImportPage'
 import WalletImportPage from 'components/login/WalletImportPage/WalletImportPage'
@@ -39,11 +38,10 @@ import RecoverAccountPage from 'components/login/RecoverAccountPage/RecoverAccou
 import AccountSelectorPage from 'components/login/AccountSelectorPage/AccountSelectorPage'
 import CreateAccountPage from 'components/login/CreateAccountPage/CreateAccountPage'
 import { store, history } from './redux/configureStore'
-import ls from '@chronobank/core-dependencies/utils/LocalStorage'
 import './styles/themes/default.scss'
 
 const requireAuth = (nextState, replace) => {
-  if (!ls.isSession()) {
+  if (!LocalStorage.isSession()) {
     // pass here only for Test RPC session.
     // Others through handle clicks on loginPage
     return replace({
@@ -90,8 +88,6 @@ const router = (
         <Route path='/login/recover-account' component={RecoverAccountPage} />
         <Route path='/login/import-methods' component={LoginWithOptions} />
         <Route path='/login/upload-wallet' component={WalletImportPage} />
-        <Route path='/login/trezor-login' component={LoginWithTrezor} />
-        <Route path='/login/ledger-login' component={LoginWithLedger} />
         <Route path='/login/plugin-login' component={LoginWithPlugin} />
         <Route path='/login/mnemonic-login' component={MnemonicImportPage} />
         <Route path='/login/private-key-login' component={PrivateKeyImportPage} />

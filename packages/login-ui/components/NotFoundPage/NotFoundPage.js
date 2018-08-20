@@ -4,13 +4,14 @@
  */
 
 import React, { PureComponent } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
 import {
   navigateToSelectWallet,
   navigateToCreateAccount,
-} from '../../redux/actions'
+} from '../../redux/navigation'
 
 import './NotFoundPage.scss'
 
@@ -22,6 +23,11 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 class NotFoundPage extends PureComponent {
+  static propTypes = {
+    navigateToCreateAccount: PropTypes.func,
+    navigateToSelectWallet: PropTypes.func,
+  }
+
   render () {
     const { navigateToCreateAccount, navigateToSelectWallet } = this.props
 

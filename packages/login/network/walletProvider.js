@@ -16,6 +16,7 @@ import WavesWallet from './WavesWallet'
 import EthereumWallet from './EthereumWallet'
 
 class WalletProvider {
+  // eslint-disable-next-line complexity
   getProvider (walletJson, password, { url, network } = {}) {
     const networkCode = byEthereumNetwork(network)
     const ethereumWallet = EthereumWallet.fromFile(walletJson, password, true)

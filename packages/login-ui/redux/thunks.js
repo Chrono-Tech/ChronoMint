@@ -30,7 +30,7 @@ import {
 import {
   isLocalNode,
 } from '@chronobank/login/network/settings'
-import * as LoginUIActions from './actions'
+import * as LoginNavigation from './navigation'
 import {
   FORM_LOGIN_PAGE,
   FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
@@ -43,7 +43,7 @@ import {
  */
 export const navigateToCreateAccountFromHW = (address) => (dispatch) => {
   dispatch(NetworkActions.networkSetAccounts(address))
-  dispatch(LoginUIActions.navigateToCreateHWAccount())
+  dispatch( LoginNavigation.navigateToCreateHWAccount())
 }
 
 /*
@@ -51,7 +51,7 @@ export const navigateToCreateAccountFromHW = (address) => (dispatch) => {
  * TODO: to add description
  */
 export const navigateToCreateAccountWithoutImport = () => (dispatch) => {
-  dispatch(LoginUIActions.navigateToCreateAccount())
+  dispatch( LoginNavigation.navigateToCreateAccount())
 }
 
 // #endregion
@@ -255,11 +255,11 @@ export const initLoginPage = () =>
     } = state.get(DUCK_PERSIST_ACCOUNT)
 
     if (walletsList && !walletsList.length) {
-      dispatch(LoginUIActions.navigateToCreateAccount())
+      dispatch( LoginNavigation.navigateToCreateAccount())
     }
 
     if (!selectedWallet) {
-      dispatch(LoginUIActions.navigateToSelectWallet())
+      dispatch( LoginNavigation.navigateToSelectWallet())
     }
   }
 
@@ -272,7 +272,7 @@ export const initLoginPage = () =>
  */
 export const onSubmitResetAccountPasswordSuccess = () => (dispatch) => {
   dispatch(NetworkActions.networkResetAccountRecoveryMode())
-  dispatch(LoginUIActions.navigateToLoginPage())
+  dispatch( LoginNavigation.navigateToLoginPage())
   dispatch(change(
     FORM_LOGIN_PAGE,
     FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
@@ -287,14 +287,14 @@ export const onSubmitResetAccountPasswordSuccess = () => (dispatch) => {
 export const selectProviderWithNetwork = (networkId, providerId) => (dispatch) => {
   dispatch(NetworkActions.selectProviderWithNetwork(networkId, providerId))
   if (isLocalNode(providerId, networkId)) {
-    dispatch(LoginUIActions.navigateToLoginLocal())
+    dispatch( LoginNavigation.navigateToLoginLocal())
   }
 }
 
 export const onWalletSelect = (wallet) => (dispatch) => {
 
   dispatch(PersistAccountActions.accountSelect(wallet))
-  dispatch(LoginUIActions.navigateToLoginPage())
+  dispatch( LoginNavigation.navigateToLoginPage())
 }
 
 // #endregion

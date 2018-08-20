@@ -5,16 +5,16 @@
 
 import { combineReducers } from 'redux-immutable'
 
-import ledger from './ledger/reducer'
+// import ledger from './ledger/reducer'
 import monitor from './monitor/reducer'
 import network from './network/reducer'
-import trezor from './trezor/reducer'
+// import trezor from './trezor/reducer'
 
 const loginReducers =  {
-  ledger,
+  // ledger,
   monitor,
   network,
-  trezor,
+  // trezor,
 }
 
 export default loginReducers

@@ -4,11 +4,26 @@
  */
 
 import * as CoreVotingThunks from '@chronobank/core/redux/voting/actions'
-import { navigateToWallets } from 'redux/ui/navigation'
-import type PollDetailsModel from '@chronobank/core/models/notices/PollDetailsModel'
+import { navigateToWallets, navigateToVoting } from 'redux/ui/navigation'
+import type PollDetailsModel from '@chronobank/core/models/PollDetailsModel'
+import {
+  createPoll,
+  removePoll,
+} from '@chronobank/core/redux/voting/thunks'
 
-// eslint-disable-next-line import/prefer-default-export
-export const createPoll = (poll: PollDetailsModel) => async (dispatch) => {
+export const createPollAndNavigateToWallets = (poll: PollDetailsModel) => (dispatch) => {
   dispatch(navigateToWallets())
   dispatch(CoreVotingThunks.createPoll(poll))
+}
+
+export const removePollAndNavigateToVoting = (pollObject) => (dispatch) => {
+  // TODO: there was a navigation action right in the middle of 'removeVoting' action,
+  // need to clarify correct order, navigate->remove or remove->navigate
+  dispatch(removePoll(pollObject))
+  dispatch(navigateToVoting())
+}
+
+export const createPollAndNavigateToVoting = (poll: PollDetailsModel) => (dispatch) => {
+  dispatch(navigateToVoting())
+  dispatch(createPoll(poll))
 }

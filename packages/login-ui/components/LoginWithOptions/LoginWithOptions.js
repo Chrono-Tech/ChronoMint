@@ -78,13 +78,21 @@ export default class ImportMethodsPage extends PureComponent {
         </div>
 
         <div styleName='methods'>
-          <Button styleName='button button-trezor' onClick={this.handleTrezorLogin}>
+          <Button
+            styleName='button button-trezor'
+            onClick={this.handleTrezorLogin}
+            disabled
+          >
             <img src={Trezor} alt='' />
             <br />
             Trezor
           </Button>
 
-          <Button styleName='button button-ledger' onClick={this.handleLedgerLogin}>
+          <Button
+            styleName='button button-ledger'
+            onClick={this.handleLedgerLogin}
+            disabled
+          >
             <img src={Ledger} alt='' />
             <br />
             LedgerNano
