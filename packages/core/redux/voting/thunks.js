@@ -10,7 +10,7 @@ import type PollNoticeModel from '../../models/notices/PollNoticeModel'
 import type PollDetailsModel from '../../models/PollDetailsModel'
 import { notify } from '../notifier/actions'
 import { PTPoll } from './types'
-import { getSelectedPollFromDuck, getVoting } from './selectors/models'
+import { getSelectedPollFromDuck, getVoting, getPolls, getLastVoting } from './selectors/models'
 import { daoByType } from '../daos/selectors'
 import PollModel from '../../models/PollModel'
 
@@ -32,9 +32,6 @@ import {
   EVENT_POLL_REMOVED,
   EVENT_POLL_VOTED,
 } from '../../dao/constants/PollEmitterDAO'
-import {
-  DUCK_VOTING,
-} from './constants'
 import { executeTransaction } from '../ethereum/actions'
 import * as VotingActions from './actions'
 
@@ -70,7 +67,8 @@ export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
 }
 
 export const updateVoteLimit = () => async (dispatch, getState) => {
-  const votingDAO = daoByType('VotingManager')(getState())
+  const state = getState()
+  const votingDAO = daoByType('VotingManager')(state)
   const [voteLimitInTIME, percentVoteLimit] = await Promise.all([
     votingDAO.getVoteLimit(),
     votingDAO.getVoteLimitInPercent(),
@@ -80,9 +78,10 @@ export const updateVoteLimit = () => async (dispatch, getState) => {
 }
 
 export const watchInitPolls = () => async (dispatch, getState) => {
+  const state = getState()
   const callback = (notice) => dispatch(watchPoll(notice))
-  const { account } = getState().get(DUCK_SESSION)
-  const votingManagerDAO = daoByType('VotingManager')(getState())
+  const { account } = state.get(DUCK_SESSION)
+  const votingManagerDAO = daoByType('VotingManager')(state)
   votingService
     .setVotingManager(votingManagerDAO)
   votingService
@@ -101,7 +100,8 @@ export const watchInitPolls = () => async (dispatch, getState) => {
 }
 
 export const createPoll = (poll: PollDetailsModel) => async (dispatch, getState) => {
-  const votingDAO = daoByType('VotingManager')(getState())
+  const state = getState()
+  const votingDAO = daoByType('VotingManager')(state)
 
   try {
     dispatch(goToVoting())
@@ -110,14 +110,14 @@ export const createPoll = (poll: PollDetailsModel) => async (dispatch, getState)
       dispatch(executeTransaction({ tx }))
     }
   } catch (e) {
-    // eslint-disable-next-line
+    // eslint-disable-next-line no-console
     console.error('createPoll error: ', e)
   }
 }
 
 export const removePoll = (pollObject: PTPoll) => async (dispatch, getState) => {
   const state = getState()
-  const votingDAO = daoByType('VotingManager')(getState())
+  const votingDAO = daoByType('VotingManager')(state)
 
   const poll = pollObject && pollObject.id
     ? getVoting(state).list().item(pollObject.id)
@@ -134,7 +134,7 @@ export const removePoll = (pollObject: PTPoll) => async (dispatch, getState) => 
     }
 
   } catch (e) {
-    // eslint-disable-next-line
+    // eslint-disable-next-line no-console
     console.error('removePoll error: ', e)
     dispatch(VotingActions.handlePollCreated(poll))
     throw e
@@ -142,9 +142,9 @@ export const removePoll = (pollObject: PTPoll) => async (dispatch, getState) => 
 }
 
 export const vote = (choice: Number) => async (dispatch, getState) => {
-
-  const poll = getSelectedPollFromDuck(getState())
-  const votingDAO = daoByType('VotingManager')(getState())
+  const state = getState()
+  const poll = getSelectedPollFromDuck(state)
+  const votingDAO = daoByType('VotingManager')(state)
 
   try {
     dispatch(VotingActions.handlePollUpdated(poll.isFetching(true)))
@@ -155,7 +155,7 @@ export const vote = (choice: Number) => async (dispatch, getState) => {
       dispatch(executeTransaction({ tx }))
     }
   } catch (e) {
-    // eslint-disable-next-line
+    // eslint-disable-next-line no-console
     console.error('Vote poll error: ', e)
     dispatch(VotingActions.handlePollUpdated(poll))
     throw e
@@ -163,10 +163,8 @@ export const vote = (choice: Number) => async (dispatch, getState) => {
 }
 
 export const activatePoll = (pollObject: PTPoll) => async (dispatch, getState) => {
-
   const state = getState()
-  const votingDAO = daoByType('VotingManager')(getState())
-
+  const votingDAO = daoByType('VotingManager')(state)
   const poll = pollObject && pollObject.id
     ? getVoting(state).list().item(pollObject.id)
     : getSelectedPollFromDuck(state)
@@ -180,16 +178,16 @@ export const activatePoll = (pollObject: PTPoll) => async (dispatch, getState) =
       dispatch(executeTransaction({ tx }))
     }
   } catch (e) {
-    // eslint-disable-next-line
+    // eslint-disable-next-line no-console
     console.error('Active poll error: ', e)
     dispatch(VotingActions.handlePollUpdated(poll))
   }
 }
 
 export const endPoll = (pollObject: PTPoll) => async (dispatch, getState) => {
-
-  const poll = getState().get(DUCK_VOTING).list().item(pollObject.id)
-  const votingDAO = daoByType('VotingManager')(getState())
+  const state = getState()
+  const poll = getPolls(state).item(pollObject.id)
+  const votingDAO = daoByType('VotingManager')(state)
 
   try {
     dispatch(VotingActions.handlePollUpdated(
@@ -208,7 +206,7 @@ export const endPoll = (pollObject: PTPoll) => async (dispatch, getState) => {
       dispatch(executeTransaction({ tx }))
     }
   } catch (e) {
-    // eslint-disable-next-line
+    // eslint-disable-next-line no-console
     console.error('End poll error: ', e)
     dispatch(VotingActions.handlePollUpdated(poll))
   }
@@ -220,10 +218,11 @@ export const listPolls = () => async (dispatch) => {
   dispatch(VotingActions.pollsList(list))
 }
 
+// FIXME: OMG, pagination via DAO!
 export const getNextPage = () => async (dispatch, getState) => {
-  const dao = daoByType('VotingManager')(getState())
+  const state = getState()
+  const dao = daoByType('VotingManager')(state)
+  const { account } = state.get(DUCK_SESSION)
 
-  const votingState = getState().get(DUCK_VOTING)
-  const { account } = getState().get(DUCK_SESSION)
-  return dao.getPollsPaginated(votingState.lastPoll(), PAGE_SIZE, account)
+  return dao.getPollsPaginated(getLastVoting(state), PAGE_SIZE, account)
 }
