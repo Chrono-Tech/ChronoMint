@@ -10,7 +10,7 @@ import { getNetworkName } from '@chronobank/login/redux/network/thunks'
 import { TOKEN_ICONS } from 'assets'
 import ProfileModel from '@chronobank/core/models/ProfileModel'
 import React, { PureComponent } from 'react'
-import { logout } from '@chronobank/core/redux/session/thunks'
+import { logoutAndGoToRoot } from 'redux/core/session/thunks'
 import { getBlockchainAddressesList } from '@chronobank/core/redux/session/selectors'
 import { modalsOpen } from 'redux/modals/actions'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
@@ -38,7 +38,7 @@ function mapDispatchToProps (dispatch) {
       componentName: 'UpdateProfileDialog',
       data,
     })),
-    handleLogout: () => dispatch(logout()),
+    handleLogout: () => dispatch(logoutAndGoToRoot()),
   }
 }
 

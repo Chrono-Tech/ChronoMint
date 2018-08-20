@@ -214,7 +214,6 @@ export const setProfilesForAccounts = (walletsList) => async (dispatch) => {
 export const logout = () => (dispatch) => {
   dispatch(accountSelect(null))
   dispatch(accountLoad(null))
-  // Router.pushRoute('/')
 }
 
 export const customNetworkCreate = (url, ws, alias) => (dispatch) => {

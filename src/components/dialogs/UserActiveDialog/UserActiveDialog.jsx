@@ -9,7 +9,7 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import userMonitorService from 'user/monitorService'
 import { connect } from 'react-redux'
-import { logout } from '@chronobank/core/redux/session/thunks'
+import { logoutAndGoToRoot } from 'redux/core/session/thunks'
 import { modalsClose } from 'redux/modals/actions'
 import { stopUserMonitor } from 'redux/ui/actions'
 import ModalDialog from 'components/dialogs/ModalDialog'
@@ -19,7 +19,7 @@ import './UserActiveDialog.scss'
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleLogout: () => dispatch(logout()),
+    handleLogout: () => dispatch(logoutAndGoToRoot()),
     modalsClose: () => {
       userMonitorService.start()
       dispatch(modalsClose())
