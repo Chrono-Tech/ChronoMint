@@ -13,21 +13,19 @@ import { TRANSACTION_DESCRIBERS_BY_TOPIC, decodeParameters, findFunctionABI } fr
 import { decodeTxData } from '../utils/DecodeUtils'
 import { ETH } from '../dao/constants'
 
-export const describeEvent = (data, context) => {
+export const describeEvent = (data, context = {}) => {
   const { log, block } = data
 
-  const array = EVENT_DESCRIBERS_BY_TOPIC[data.log.topics[0]]
+  const array = EVENT_DESCRIBERS_BY_TOPIC[log.topics[0]]
   if (array) {
     for (const describer of array) {
-      const { input, params } = decodeLog(describer.abi, data.log)
+      const { input, params } = decodeLog(describer.abi, log)
       const desc = describer.describe(data, context, { abi: describer.abi, input, params })
       if (desc) {
         return desc
       }
     }
   }
-
-  console.warn('Unknown event: ', log.topics[0], data.log)
 
   return new LogEventModel({
     key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
@@ -105,6 +103,10 @@ const defaultDescription = (entry, context) => {
 export const describeTx = (entry, context = {}) => {
   const { tx, receipt } = entry
   const { abi } = context
+
+  if (!abi) {
+    return defaultDescription(entry, context)
+  }
 
   let info
   if (!receipt) {

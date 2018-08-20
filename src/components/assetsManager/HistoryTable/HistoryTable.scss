@@ -163,12 +163,24 @@ $cell-padding: 24px 0px;
         }
       }
     }
+  }
 
-    .footer {
-      padding: 24px 16px;
-      text-align: center;
+  .footer {
+    padding: 24px 16px;
+    text-align: center;
+  }
+
+  .load-more {
+    display: flex;
+    justify-content: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    .load-more-button {
+
     }
   }
+
   .text-faded {
 
   }

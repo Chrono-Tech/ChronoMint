@@ -16,7 +16,7 @@ export const initialState = {}
 const mutations = {
   [LOGS_LOADING] (state, { address, historyKey, topics }) {
     address = address.toLowerCase()
-    const history = state[historyKey] || new LogListModel({ address, topics })
+    const history = state[historyKey] || new LogListModel({ address, topics, historyKey })
     return {
       ...state,
       [historyKey]: history.loading(),

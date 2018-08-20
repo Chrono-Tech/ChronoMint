@@ -12,6 +12,7 @@ const schemaFactory = () => ({
   isLoading: PropTypes.bool.isRequired,
   isLoaded: PropTypes.bool.isRequired,
   address: PropTypes.string.isRequired,
+  historyKey: PropTypes.string.isRequired,
   topics: PropTypes.arrayOf(PropTypes.string),
   cursor: PropTypes.number,
   entries: PropTypes.arrayOf(PropTypes.oneOfType([
@@ -26,6 +27,7 @@ export default class LogListModel extends AbstractModel {
       isLoading: false,
       isLoaded: false,
       address: null,
+      historyKey: null,
       cursor: null,
       topics: [],
       entries: [],

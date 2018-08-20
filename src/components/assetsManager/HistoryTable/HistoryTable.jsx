@@ -10,9 +10,10 @@ import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import { getHistoryEvents } from '@chronobank/core/redux/events/selectors'
+import { loadEvents } from '@chronobank/core/redux/events/actions'
+import { ASSET_TOPICS } from '@chronobank/core/describers/constants'
 import LogListModel from '@chronobank/core/models/LogListModel'
 import { getHistoryKey } from '@chronobank/core/utils/eventHistory'
-import { ASSET_TOPICS } from '@chronobank/core/describers/constants'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 
 import './HistoryTable.scss'
@@ -31,11 +32,18 @@ function mapStateToProps (state) {
   }
 }
 
-@connect(mapStateToProps)
+function mapDispatchToProps (dispatch) {
+  return {
+    loadMoreEvents: () => dispatch(loadEvents(ASSET_TOPICS)),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
 export default class HistoryTable extends PureComponent {
   static propTypes = {
     events: PropTypes.instanceOf(LogListModel),
     locale: PropTypes.string,
+    loadMoreEvents: PropTypes.func,
   }
 
   buildTableData (eventItems, locale) {
@@ -103,6 +111,11 @@ export default class HistoryTable extends PureComponent {
             )
           })}
         </div>
+        { !isLoading &&
+          <div styleName='load-more'>
+            <button styleName='load-more-button' onClick={this.props.loadMoreEvents} >Load more</button>
+          </div>
+        }
         { isLoading &&
           <div styleName='footer'>
             <CircularProgress

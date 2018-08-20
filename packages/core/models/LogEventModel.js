@@ -12,6 +12,7 @@ const schemaFactory = () => ({
   key: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
+  address: PropTypes.string,
   category: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(null)]),
   date: PropTypes.instanceOf(Date).isRequired,
   icon: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(null)]),

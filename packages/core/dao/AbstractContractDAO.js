@@ -10,6 +10,8 @@ import TxExecModel from '../models/TxExecModel'
 import web3Converter from '../utils/Web3Converter'
 import { DEFAULT_GAS } from './constants'
 
+import EventsService from '../services/EventsService'
+
 export default class AbstractContractDAO extends EventEmitter {
 
   /** @protected */
@@ -159,6 +161,8 @@ export default class AbstractContractDAO extends EventEmitter {
     if (!data.event) {
       return
     }
+
+    EventsService.emit('addEventToHistory', data)
     this.emit(data.event, data)
   }
 
@@ -166,6 +170,7 @@ export default class AbstractContractDAO extends EventEmitter {
     if (!data.event) {
       return
     }
+
     this.emit(data.event + '_error', data)
   }
 }
