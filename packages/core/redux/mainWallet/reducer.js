@@ -9,6 +9,7 @@ import * as a from './constants'
 
 const initialState = new MainWalletModel()
 
+// eslint-disable-next-line complexity
 export default (state = initialState, action) => {
   switch (action.type) {
     case a.WALLET_INIT:
