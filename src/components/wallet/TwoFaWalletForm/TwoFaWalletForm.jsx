@@ -7,12 +7,11 @@ import Button from 'components/common/ui/Button/Button'
 import web3Converter from '@chronobank/core/utils/Web3Converter'
 import React, { PureComponent } from 'react'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
-import { push } from 'react-router-redux'
 import { Field, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Slider } from 'redux-form-material-ui'
-import { goToWallets } from '@chronobank/core/redux/mainWallet/actions'
+import { navigateToWallets, navigateTo2Fa } from '@chronobank/login-ui/redux/navigation'
 import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
 import PropTypes from 'prop-types'
 import TWO_FA_LOGO_PNG from 'assets/img/2fa/2-fa.png'
@@ -50,8 +49,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleGoWallets: () => dispatch(goToWallets()),
-    handleGoTo2FA: () => dispatch(push('/2fa')),
+    handleGoWallets: () => dispatch(navigateToWallets()),
+    handleGoTo2FA: () => dispatch(navigateTo2Fa()),
   }
 }
 

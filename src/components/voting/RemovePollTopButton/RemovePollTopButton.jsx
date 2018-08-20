@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { getSelectedPoll } from '@chronobank/core/redux/voting/selectors'
-import { removePoll } from '@chronobank/core/redux/voting/actions'
+import { removePollAndNavigateToVoting } from 'redux/core/voting/thunks'
 import { isCBE } from '@chronobank/core/redux/session/selectors'
 import { PTPoll } from '@chronobank/core/redux/voting/types'
 import Button from 'components/common/ui/Button/Button'
@@ -28,7 +28,7 @@ function makeMapStateToProps () {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handlePollRemove: (poll) => dispatch(removePoll(poll)),
+    handlePollRemove: (poll) => dispatch(removePollAndNavigateToVoting(poll)),
   }
 }
 

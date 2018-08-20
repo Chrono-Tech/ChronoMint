@@ -5,10 +5,11 @@
 
 import uuid from 'uuid/v1'
 import {
-  profileImgJPG,
-} from '@chronobank/core-dependencies/assets'
+  DEFAULT_AVATAR,
+} from 'components/constants'
 import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
+import Accounts from 'web3-eth-accounts'
 import {
   AccountEntryModel,
 } from '../../models/wallet/persistAccount'
@@ -58,7 +59,7 @@ export const getAccountAvatarImg = (account) => {
 export const getAccountAvatar = (account: AccountEntryModel) => {
   const img = getAccountAvatarImg(account)
 
-  return img || profileImgJPG
+  return img || DEFAULT_AVATAR
 }
 
 export const createAccountEntry = (name, walletFileImportObject, profile = null) =>
@@ -86,4 +87,11 @@ export const validateMnemonicForAccount = (mnemonic, selectedWallet: AccountEntr
   const address = getAddressByMnemonic(mnemonic)
 
   return addressFromWallet === address
+}
+
+export const decryptAccount = (encrypted, password) => {
+  const accounts = new Accounts()
+  accounts.wallet.clear()
+
+  return accounts.wallet.decrypt(encrypted, password)
 }

@@ -9,7 +9,8 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { activatePoll, endPoll, removePoll, selectPoll } from '@chronobank/core/redux/voting/actions'
+import { activatePoll, endPoll, selectPoll } from '@chronobank/core/redux/voting/thunks'
+import {  removePollAndNavigateToVoting } from 'redux/core/voting/thunks'
 import { PTPoll } from '@chronobank/core/redux/voting/types'
 import BigNumber from 'bignumber.js'
 import { prefix } from './lang'
@@ -20,7 +21,7 @@ import PollStatus from '../PollStatus/PollStatus'
 function mapDispatchToProps (dispatch, props) {
   return {
     handlePollDetails: () => dispatch(selectPoll(props.poll.id)),
-    handlePollRemove: () => dispatch(removePoll(props.poll)),
+    handlePollRemove: () => dispatch( removePollAndNavigateToVoting(props.poll)),
     handlePollActivate: () => dispatch(activatePoll(props.poll)),
     handlePollEnd: () => dispatch(endPoll(props.poll)),
   }

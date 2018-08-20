@@ -6,7 +6,7 @@
 import { createSelector } from 'reselect'
 import { DUCK_NETWORK } from './constants'
 
-export const getProfileSignatureSelector = () => createSelector(
+const getProfileSignatureSelector = () => createSelector(
   (state) => state.get(DUCK_NETWORK),
   (network) => {
     const { profileSignature } = network
@@ -15,7 +15,8 @@ export const getProfileSignatureSelector = () => createSelector(
   },
 )
 
-export const getAccountProfileSummary = () => createSelector(
+// eslint-disable-next-line import/prefer-default-export
+export const selectAccountProfileSummary = () => createSelector(
   [getProfileSignatureSelector],
   (profile) => {
     if (profile){

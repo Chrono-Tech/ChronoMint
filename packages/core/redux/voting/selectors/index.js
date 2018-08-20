@@ -4,14 +4,14 @@
  */
 
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
-import { getPolls, getSelectedPollFromDuck, getVoting } from './models'
+import { selectPollsList, getSelectedPollFromDuck, selectVoting } from './models'
 import VotingCollection from '../../../models/voting/VotingCollection'
 import PollDetailsModel from '../../../models/PollDetailsModel'
 import VotingMainModel from '../../../models/voting/VotingMainModel'
 
 const getPollsDetailsFromDuck = createSelector(
   [
-    getPolls,
+    selectPollsList,
   ],
   (polls: VotingCollection) => {
     const pollsArray = polls
@@ -33,7 +33,7 @@ const getPollDetailsFromDuck = createSelector(
 
 const getVotingFlagsFromDuck = createSelector(
   [
-    getVoting,
+    selectVoting,
   ],
   (voting: VotingMainModel) => {
     return {

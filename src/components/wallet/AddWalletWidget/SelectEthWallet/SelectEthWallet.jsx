@@ -8,7 +8,8 @@ import classnames from 'classnames'
 import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
-import { goToWallets, resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
+import { resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
+import { navigateToWallets } from '@chronobank/login-ui/redux/navigation'
 import { createNewChildAddress } from '@chronobank/core/redux/wallets/actions'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import { prefix } from '../lang'
@@ -22,7 +23,7 @@ function mapDispatchToProps (dispatch) {
   return {
     onCreateWallet: () => {
       dispatch(createNewChildAddress({ blockchain: BLOCKCHAIN_ETHEREUM }))
-      dispatch(goToWallets())
+      dispatch(navigateToWallets())
       dispatch(resetWalletsForm())
     },
   }

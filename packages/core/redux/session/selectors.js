@@ -9,5 +9,5 @@ export {
   getAddressesList,
   getBlockchainAddressesList,
   isCBE,
-  getAccountProfileSummary,
+  selectAccountProfileSummary,
 } from './selectors/session'

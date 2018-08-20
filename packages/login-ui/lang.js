@@ -14,15 +14,11 @@ import * as GenerateWallet from './components/GenerateWallet/lang'
 import * as LoginForm from './components/LoginForm/lang'
 import * as LoginMetamask from './components/LoginMetamask/lang'
 import * as LoginUPort from './components/LoginUPort/lang'
-import * as LoginWithLedger from './components/LoginWithLedger/lang'
 import * as LoginWithMnemonic from './components/LoginWithMnemonic/lang'
 import * as LoginWithOptions from './components/LoginWithOptions/lang'
 import * as LoginWithPrivateKey from './components/LoginWithPrivateKey/lang'
-import * as LoginWithTrezor from './components/LoginWithTrezor/lang'
 import * as LoginWithWallet from './components/LoginWithWallet/lang'
-import * as NetworkSelector from './components/NetworkSelector/lang'
 import * as ProviderSelector from './components/ProviderSelector/lang'
-import * as ProviderSelectorSwitcher from './components/ProviderSelectorSwitcher/lang'
 import * as NetworkCreateModal from './components/NetworkCreateModal/lang'
 import * as NetworkCreateModalForm from './components/NetworkCreateModal/NetworkCreateModalForm/lang'
 import * as NetworkDeleteModal from './components/NetworkCreateModal/NetworkDeleteModal/lang'
@@ -36,15 +32,11 @@ export const en = {
   RecoverAccount: RecoverAccount.en,
   ResetPassword: ResetPassword.en,
   LoginForm: LoginForm.en,
-  LoginWithLedger: LoginWithLedger.en,
-  LoginWithTrezor: LoginWithTrezor.en,
   LoginMetamask: LoginMetamask.en,
   LoginWithMnemonic: LoginWithMnemonic.en,
   LoginWithOptions: LoginWithOptions.en,
   LoginWithPrivateKey: LoginWithPrivateKey.en,
   ProviderSelector: ProviderSelector.en,
-  NetworkSelector: NetworkSelector.en,
-  ProviderSelectorSwitcher: ProviderSelectorSwitcher.en,
   LoginWithWallet: LoginWithWallet.en,
   BackButton: BackButton.en,
   GenerateMnemonic: GenerateMnemonic.en,

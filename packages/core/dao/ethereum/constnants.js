@@ -3,4 +3,4 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export profileImgJPG from 'assets/img/profile-photo-1.jpg'
+export const DUCK_DAO_ETHEREUM = 'dao_ethereum'

@@ -10,7 +10,7 @@ import { change } from 'redux-form'
 import React, { Component } from 'react'
 import {
   FORM_CONFIRM_MNEMONIC,
-} from '@chronobank/login-ui/redux/constants'
+} from '../../redux/constants'
 
 import ConfirmMnemonic from './ConfirmMnemonic'
 

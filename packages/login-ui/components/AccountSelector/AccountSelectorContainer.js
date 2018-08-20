@@ -17,7 +17,7 @@ import './AccountSelector.scss'
 import {
   navigateToSelectImportMethod,
   navigateToCreateAccount,
-} from '../../redux/actions'
+} from '../../redux/navigation'
 import AccountSelector from './AccountSelector'
 
 function mapDispatchToProps (dispatch) {

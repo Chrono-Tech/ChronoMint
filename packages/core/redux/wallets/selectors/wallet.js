@@ -19,15 +19,21 @@ export const selectWallet = (blockchain, address) => createSelector(
   (wallet, ethMultisigWallet) => {
     const mainSymbol = getMainSymbolForBlockchain(blockchain)
 
+    const getWalletBalance = (wallet, mainSymbol: string): ?Amount => {
+      return wallet.balances &&
+        wallet.balances.hasOwnProperty(mainSymbol) &&
+        wallet.balances[mainSymbol]
+    }
+
     if (wallet) {
-      const balance: Amount = wallet ? wallet.balances[mainSymbol] : new Amount(0, mainSymbol)
+      const balance: ?Amount = getWalletBalance(wallet, mainSymbol)
       return new WalletModel({
         ...wallet,
         amount: balance,
       })
     }
     if (ethMultisigWallet) {
-      const balance: Amount = ethMultisigWallet ? ethMultisigWallet.balances[mainSymbol] : new Amount(0, mainSymbol)
+      const balance: ?Amount = getWalletBalance(ethMultisigWallet, mainSymbol)
       return new MultisigEthWalletModel({
         ...ethMultisigWallet,
         amount: balance,

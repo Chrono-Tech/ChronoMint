@@ -5,19 +5,13 @@
 
 import { DUCK_VOTING } from '../constants'
 
-/**
- * SIMPLE SELECTORS
- * ==============================================================================
- */
+export const selectVoting = (state) =>
+  state.get(DUCK_VOTING)
 
-export const getPolls = (state) => {
-  return state.get(DUCK_VOTING).list()
-}
-
-export const getVoting = (state) => {
-  return state.get(DUCK_VOTING)
-}
+export const selectPollsList = (state) =>
+  selectVoting(state).list()
 
 export const getSelectedPollFromDuck = (state) => {
-  return state.get(DUCK_VOTING).list().item(state.get(DUCK_VOTING).selectedPoll())
+  const selectedPoll = selectVoting(state).selectedPoll()
+  return selectPollsList(state).item(selectedPoll)
 }

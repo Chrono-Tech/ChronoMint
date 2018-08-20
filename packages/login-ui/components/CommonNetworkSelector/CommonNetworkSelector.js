@@ -3,8 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import web3Provider from '@chronobank/login/network/Web3Provider'
-import web3Utils from '@chronobank/login/network/Web3Utils'
 import { clearErrors } from '@chronobank/login/redux/network/actions'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import {
@@ -20,7 +18,6 @@ import { connect } from 'react-redux'
 import Button from 'components/common/ui/Button/Button'
 import { modalsOpen } from 'redux/modals/actions'
 import classnames from 'classnames'
-import Web3 from 'web3'
 import {
   initCommonNetworkSelector,
 } from '../../redux/thunks'
@@ -176,12 +173,6 @@ export default class CommonNetworkSelector extends PureComponent {
     } else {
       this.props.modalOpenAddNetwork()
     }
-  }
-
-  resolveNetwork (providerUrl) {
-    const web3 = new Web3()
-    web3Provider.reinit(web3, web3Utils.createStatusEngine(providerUrl))
-    web3Provider.resolve()
   }
 
   renderCustomNetworksGroup () {
