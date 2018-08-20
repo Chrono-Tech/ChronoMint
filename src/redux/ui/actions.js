@@ -5,7 +5,7 @@
 
 import moment from 'moment'
 import { setLocale } from '@chronobank/core-dependencies/i18n'
-import ls from '@chronobank/core-dependencies/utils/LocalStorage'
+import LocalStorage from '@chronobank/core-dependencies/utils/LocalStorage'
 import ipfs from '@chronobank/core-dependencies/utils/IPFS'
 import userMonitorService from 'user/monitorService'
 import { modalsOpen, modalsClose } from 'redux/modals/actions'
@@ -76,7 +76,7 @@ export const showConfirmTxModal = (estimateGas, localFeeMultiplier) => (dispatch
 
 export const changeMomentLocale = (locale) => (dispatch) => {
   moment.locale(locale)
-  ls.setLocale(locale)
+  LocalStorage.setLocale(locale)
   dispatch(setLocale(locale))
 }
 

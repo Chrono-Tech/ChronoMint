@@ -39,11 +39,11 @@ import RecoverAccountPage from 'components/login/RecoverAccountPage/RecoverAccou
 import AccountSelectorPage from 'components/login/AccountSelectorPage/AccountSelectorPage'
 import CreateAccountPage from 'components/login/CreateAccountPage/CreateAccountPage'
 import { store, history } from './redux/configureStore'
-import ls from '@chronobank/core-dependencies/utils/LocalStorage'
+import LocalStorage from '@chronobank/core-dependencies/utils/LocalStorage'
 import './styles/themes/default.scss'
 
 const requireAuth = (nextState, replace) => {
-  if (!ls.isSession()) {
+  if (!LocalStorage.isSession()) {
     // pass here only for Test RPC session.
     // Others through handle clicks on loginPage
     return replace({
