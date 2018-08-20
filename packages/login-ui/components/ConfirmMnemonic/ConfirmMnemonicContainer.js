@@ -49,14 +49,11 @@ export default class ConfirmMnemonicContainer extends Component {
     }
   }
 
-  handleClickWord = (word) => {
-    if (!this.state.confirmPhrase.includes(word)) {
-      this.setState(
-        { confirmPhrase: this.state.confirmPhrase.concat(word) },
-        this.refreshCurrentMnemonicForm
-      )
-      return true
-    }
+  handleClickWord = (wordItem) => {
+    this.setState(
+      { confirmPhrase: this.state.confirmPhrase.concat(wordItem) },
+      this.refreshConfirmMnemonicForm
+    )
   }
 
   handleSubmit = (values) => {
@@ -84,28 +81,35 @@ export default class ConfirmMnemonicContainer extends Component {
   handleClearMnemonic = () => {
     this.setState(
       { confirmPhrase: [] },
-      this.refreshCurrentMnemonicForm
+      this.refreshConfirmMnemonicForm
     )
   }
 
   handleClearLastWord = () => {
     this.setState(
       { confirmPhrase: this.state.confirmPhrase.slice(0, -1) },
-      this.refreshCurrentMnemonicForm
+      this.refreshConfirmMnemonicForm
     )
   }
 
-  refreshCurrentMnemonicForm = () => {
-    const confPhrase = this.state.confirmPhrase.join(' ')
-    this.props.change('mnemonic', confPhrase)
+  isWordAlreadyUsed = (wordItem) => {
+    return this.state.confirmPhrase
+      .findIndex((item) => item.index === wordItem.index) !== -1 // Not found by index equals to "word is not used yet"
+  }
+
+  refreshConfirmMnemonicForm = () => {
+    const confirmation = this.state.confirmPhrase
+      .map((item) => item.word)
+      .join(' ')
+    this.props.change('mnemonic', confirmation)
   }
 
   render () {
     return (
       <ConfirmMnemonic
+        isWordAlreadyUsed={this.isWordAlreadyUsed}
         confirmPhrase={this.state.confirmPhrase}
         currentWordsArray={this.state.currentWordsArray}
-        mnemonic={this.props.mnemonic}
         onClearLastWord={this.handleClearLastWord}
         onClearMnemonic={this.handleClearMnemonic}
         onClickWord={this.handleClickWord}
