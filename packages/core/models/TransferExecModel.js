@@ -23,12 +23,17 @@ export default class TransferExecModel extends abstractModel({
   // TODO @ipavlenko: This is "extra" field, token-specific
   feeMultiplier: 1,
   options: {},
+  blockchain: null,
 }) {
   constructor (data = {}) {
     super({
       id: (data && data.id) || uuid(),
       ...data,
     })
+  }
+
+  blockchain () {
+    return this.get('blockchain')
   }
 
   contract (): ?string {
