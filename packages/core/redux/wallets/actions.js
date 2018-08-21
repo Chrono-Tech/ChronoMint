@@ -208,6 +208,7 @@ export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amo
   const tokenDAO = tokenService.getDAO(token.id())
   const tx = tokenDAO.transfer(wallet.address, recipient, amount, token)
   console.log('tokenDAO', tokenDAO, tx, tokenDAO instanceof BitcoinDAO, advancedParams)
+  console.log('tokenDAO:wallet', wallet, wallet.derivedPath)
 
   if (tokenDAO instanceof BitcoinDAO) {
     await dispatch(executeTransactionBitcoin({ tx, options: { feeMultiplier, walletDerivedPath: wallet.derivedPath, advancedParams } }))

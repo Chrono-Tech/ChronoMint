@@ -9,6 +9,7 @@ import assetsHolder from './assetsHolder/reducer'
 import assetsManager from './assetsManager/reducer'
 import dao from './daos/reducer'
 import ethereum from './ethereum/reducer'
+import bitcoin from './bitcoin/reducer'
 import ethMultisigWallet from './multisigWallet/reducer'
 import mainWallet from './mainWallet/reducer'
 import market from './market/reducer'
@@ -28,6 +29,7 @@ const coreReducers = {
   assetsHolder,
   assetsManager,
   dao,
+  bitcoin,
   ethereum,
   ethMultisigWallet,
   mainWallet,
