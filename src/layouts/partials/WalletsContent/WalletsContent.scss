@@ -14,5 +14,10 @@
   background-color: $background-color;
   height: 100%;
   width: 100%;
+
+  @include xs-only {
+    align-items: initial;
+    width: auto;
+  }
 }
 
