@@ -59,8 +59,8 @@ export default class PollInterfaceDAO extends AbstractContractDAO {
     return this._tx(TX_ACTIVATE_POLL, [])
   }
 
-  vote (choice, choiceText, options) {
-    return this._tx(TX_VOTE, [choice + 1], new BigNumber(0), new BigNumber(0), { choice: choiceText.option, ...options }) // choice +1, because in SC, numbering starts from 1
+  vote (choice) {
+    return this._tx(TX_VOTE, [choice + 1])
   }
 
   removePoll () {

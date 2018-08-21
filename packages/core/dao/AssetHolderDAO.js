@@ -47,32 +47,16 @@ export default class AssetHolderDAO extends AbstractContractDAO {
     return this.contract.methods.wallet().call()
   }
 
-  deposit (tokenAddress, amount: Amount, from) {
-    return this._tx(
-      TX_DEPOSIT,
-      [
-        tokenAddress,
-        new BigNumber(amount),
-      ],
-      new BigNumber(0),
-      from,
-    )
+  deposit (tokenAddress, amount: Amount) {
+    return this._tx(TX_DEPOSIT, [tokenAddress, new BigNumber(amount)])
   }
 
   shareholdersCount (): Promise {
     return this.contract.methods.defaultShareholdersCount().call()
   }
 
-  withdraw (tokenAddress, amount: Amount, from) {
-    return this._tx(
-      TX_WITHDRAW_SHARES,
-      [
-        tokenAddress,
-        new BigNumber(amount),
-      ],
-      new BigNumber(0),
-      from,
-    )
+  withdraw (tokenAddress, amount: Amount) {
+    return this._tx(TX_WITHDRAW_SHARES, [tokenAddress, new BigNumber(amount)])
   }
 
   getDeposit (tokenAddress: string, account: string): Promise {

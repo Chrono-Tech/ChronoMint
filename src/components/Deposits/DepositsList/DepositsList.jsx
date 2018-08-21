@@ -28,11 +28,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return {}
-}
-
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(mapStateToProps)
 export default class DepositsList extends PureComponent {
   static propTypes = {
     deposit: PropTypes.instanceOf(Amount),
@@ -60,7 +56,7 @@ export default class DepositsList extends PureComponent {
               <IPFSImage
                 styleName='iconImg'
                 multihash={token.icon()}
-                fallback={TOKEN_ICONS[ token.symbol() ]}
+                fallback={TOKEN_ICONS[token.symbol()]}
               />
             </div>
           </div>

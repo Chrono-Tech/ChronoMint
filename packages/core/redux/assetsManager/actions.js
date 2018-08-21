@@ -5,13 +5,20 @@
 
 import uuid from 'uuid/v1'
 import Amount from '@chronobank/core/models/Amount'
+import { ASSET_TOPICS } from '@chronobank/core/describers/constants'
+import { loadEvents } from '@chronobank/core/redux/events/actions'
 import { notify } from '../notifier/actions'
 import web3Converter from '../../utils/Web3Converter'
 import ReissuableModel from '../../models/tokens/ReissuableModel'
 import TokenModel from '../../models/tokens/TokenModel'
 import OwnerCollection from '../../models/wallet/OwnerCollection'
 import OwnerModel from '../../models/wallet/OwnerModel'
-import { DUCK_TOKENS, TOKENS_FETCHED, TOKENS_UPDATE } from '../tokens/constants'
+import {
+  DUCK_TOKENS,
+  TOKENS_FETCHED,
+  TOKENS_UPDATE,
+} from '../tokens/constants'
+
 import AssetsManagerNoticeModel, {
   ASSET_PAUSED,
   ASSET_UNPAUSED,
@@ -35,8 +42,6 @@ import {
   GET_ASSETS_MANAGER_COUNTS,
   GET_ASSETS_MANAGER_COUNTS_START,
   GET_PLATFORMS,
-  GET_TRANSACTIONS_DONE,
-  GET_TRANSACTIONS_START,
   MIDDLEWARE_EVENT_PAUSED,
   MIDDLEWARE_EVENT_RESTRICTED,
   MIDDLEWARE_EVENT_UNPAUSED,
@@ -45,25 +50,30 @@ import {
   SELECT_TOKEN,
   SET_ASSETS,
 } from './constants'
+import { DAOS_REGISTER } from '../daos/constants'
+import ContractDAOModel from '../../models/contracts/ContractDAOModel'
+import { TOKEN_MANAGEMENT_EXTENSION_LIBRARY } from '../../dao/ContractList'
 import { getAccount } from '../session/selectors/models'
 import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from '../../dao/constants/ChronoBankPlatformDAO'
 
+// eslint-disable-next-line
 export const setTxFromMiddlewareForBlackList = (address, symbol) => async (dispatch, getState) => {
-  const state = getState()
-  const account = getAccount(state)
-  const assetsManagerDAO = daoByType('AssetsManager')(state)
-  const transactionsList = await assetsManagerDAO.getTransactionsForBlacklists(address, symbol, account)
+  // const state = getState()
+  // const account = getAccount(state)
+  // const assetsManagerDAO = daoByType('AssetsManager')(state)
+  // const transactionsList = await assetsManagerDAO.getTransactionsForBlacklists(address, symbol, account)
 
-  dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList } })
+  // dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList } })
 }
 
+// eslint-disable-next-line
 export const setTxFromMiddlewareForBlockAsset = (address, symbol) => async (dispatch, getState) => {
-  const state = getState()
-  const account = getAccount(state)
-  const assetsManagerDAO = daoByType('AssetsManager')(state)
-  const transactionsList = await assetsManagerDAO.getTransactionsForBlockAsset(address, symbol, account)
+  // const state = getState()
+  // const account = getAccount(state)
+  // const assetsManagerDAO = daoByType('AssetsManager')(state)
+  // const transactionsList = await assetsManagerDAO.getTransactionsForBlockAsset(address, symbol, account)
 
-  dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList } })
+  // dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList } })
 }
 
 export const getAssetsManagerData = () => async (dispatch, getState) => {
@@ -197,6 +207,15 @@ export const createAsset = (token: TokenModel) => async (dispatch, getState) => 
 
     const tokenManagementExtension =
       await platformsManagerDAO.tokenManagementExtensionManager.getTokenManagementExtensionDAO(tokenExtensionAddress)
+
+    await dispatch({
+      type: DAOS_REGISTER,
+      model: new ContractDAOModel({
+        contract: TOKEN_MANAGEMENT_EXTENSION_LIBRARY,
+        address: tokenManagementExtension.address.toLowerCase(),
+        dao: tokenManagementExtension,
+      }),
+    })
 
     if (token.withFee()) {
       tx = await tokenManagementExtension.createAssetWithFee(token)
@@ -339,25 +358,12 @@ export const checkIsReissuable = async (token: TokenModel, asset) => {
   }
 }
 
-export const getTransactions = () => async (dispatch, getState) => {
-  dispatch({ type: GET_TRANSACTIONS_START })
-  const state = getState()
-  const account = getAccount(state)
-  const tokens = state.get(DUCK_TOKENS)
-  const assetsManagerDAO = daoByType('AssetsManager')(state)
-  const transactionsList = await assetsManagerDAO.getTransactions(account, tokens)
-
-  dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList } })
-}
-
 export const setTx = (tx) => async (dispatch, getState) => {
   const state = getState()
   const account = getAccount(state)
   const assetsManagerDAO = daoByType('AssetsManager')(state)
   // eslint-disable-next-line
   const txModel = await assetsManagerDAO.getTxModel(tx, account)
-  //TODO convert tx to tx model
-  // dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList: new Immutable.Map().set(txModel.id, txModel) } })
 }
 
 export const setManagers = (tx) => async (dispatch, getState) => {
@@ -403,13 +409,14 @@ export const setManagers = (tx) => async (dispatch, getState) => {
 
 export const watchInitTokens = () => async (dispatch, getState) => {
   await dispatch(getAssetsManagerData())
-  dispatch(getTransactions())
+
   const state = getState()
   const account = getAccount(state)
-  const tokens =  state.get(DUCK_TOKENS)
+  const tokens = state.get(DUCK_TOKENS)
+
+  dispatch(loadEvents(ASSET_TOPICS, account))
 
   assetsManagerService.setPlatformTokenExtensionGatewayManagerEmitterDAO(daoByType('PlatformTokenExtensionGatewayManagerEmitterDAO')(state))
-
   await Promise.all([
     dispatch(subscribeToBlockAssetEvents()),
     dispatch(subscribeToRestrictedEvents()),

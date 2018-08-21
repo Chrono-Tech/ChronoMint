@@ -53,7 +53,7 @@ function mapDispatchToProps (dispatch) {
 function mapStateToProps (state, ownProps) {
 
   //region selectors
-  const walletInfo = walletInfoSelector(ownProps.wallet, true, state)
+  const walletInfo = walletInfoSelector(ownProps.wallet, false, state)
   const { selectedCurrency } = getMarket(state)
   const selector = formValueSelector(FORM_SEND_TOKENS)
   const formValues = getFormValues(FORM_SEND_TOKENS)
@@ -580,22 +580,6 @@ export default class SendTokensForm extends PureComponent {
           </span> &nbsp;
           {this.getTransactionFeeDescription()}
         </div>}
-        {/*<div styleName='template-container'>*/}
-        {/*<div styleName='template-checkbox'>*/}
-        {/*<Field*/}
-        {/*component={Checkbox}*/}
-        {/*name='isTemplateEnabled'*/}
-        {/*/>*/}
-        {/*</div>*/}
-        {/*<div styleName='template-name'>*/}
-        {/*<Field*/}
-        {/*component={TextField}*/}
-        {/*name='TemplateName'*/}
-        {/*label={<Translate value={'wallet.templateName'} />}*/}
-        {/*fullWidth*/}
-        {/*/>*/}
-        {/*</div>*/}
-        {/*</div>*/}
 
         <div styleName='actions-row'>
           <div styleName='advanced-simple'>
