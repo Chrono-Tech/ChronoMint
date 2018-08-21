@@ -43,10 +43,9 @@
   border-radius: 2px;
   box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
 
-  @include sm-only {
+  @include xs-only {
     flex: 1;
     width: 100%;
-    margin-left: 5px;
   }
 }
 
@@ -168,6 +167,11 @@
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
+
+  @include xs-only {
+    height: auto;
+    width: 100px;
+  }
 }
 
 .content-container {
