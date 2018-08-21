@@ -211,40 +211,8 @@ export class EthereumDAO extends AbstractTokenDAO {
     } catch (e) {
       // eslint-disable-next-line
       console.warn('Middleware API is not available, fallback to block-by-block scanning', e)
-      return this._getTransferFromBlocks(account, id)
     }
     return txs
-  }
-
-  /**
-   * Useful for TestRPC
-   * @param account
-   * @param id
-   * @private
-   */
-  async _getTransferFromBlocks (account, id): Array<TxModel> {
-    let [i, limit] = this._getFilterCache(id) || [await this.web3.eth.getBlockNumber(), 0]
-    if (limit === 0) {
-      limit = Math.max(i - 150, 0)
-    }
-    const result = []
-    while (i >= limit) {
-      try {
-        const block = await this.web3.eth.getBlock(i, true)
-        const txs = block.transactions || []
-        txs.forEach((tx) => {
-          if ((tx.to === account || tx.from === account) && tx.value > 0) {
-            result.push(this._getTxModel(tx, block.timestamp))
-          }
-        })
-      } catch (e) {
-        // eslint-disable-next-line
-        console.warn(e)
-      }
-      i--
-    }
-    this._setFilterCache(id, [i, limit])
-    return result
   }
 
   subscribeOnReset () {

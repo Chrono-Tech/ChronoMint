@@ -158,13 +158,16 @@ export default {
   },
   notices: require('./en-notices'),
   tx: {
+    title: 'New transaction',
     from: 'From',
     to: 'To',
+    amount: 'Amount',
     transactions: 'Transactions',
     blockNumber: 'Block Number',
     noTransactions: 'No transactions',
     confirm: 'Confirm Transaction',
     fee: 'Fee',
+    amountFee: 'Amount+Fee',
     balanceAfter: '%{symbol} balance after',
     feeLeft: 'Transaction fee left',
     notEnough: 'Not enough %{symbol}',
@@ -273,10 +276,12 @@ export default {
       [time.TX_DEPOSIT]: {
         title: 'Deposit TIME',
         amount: 'Amount',
+        from: 'From',
       },
       [time.TX_WITHDRAW_SHARES]: {
         title: 'Withdraw TIME',
         amount: 'Amount',
+        from: 'From',
       },
     },
     Rewards: {
@@ -291,7 +296,7 @@ export default {
     AssetDonator: {
       [assetDonator.TX_REQUIRE_TIME]: {
         title: 'Require TIME',
-        donation: 'Donation',
+        donation: 'Donation to',
       },
     },
     PlatformsManager: {
@@ -319,14 +324,15 @@ export default {
     ERC20Interface: {
       [erc20.TX_APPROVE]: {
         title: 'Approve to transfer your tokens',
-        account: 'Account',
+        from: 'From',
+        spender: 'Spender',
         amount: 'Amount',
       },
       [erc20.TX_TRANSFER]: {
         title: 'Transfer tokens',
-        account: 'Account',
+        from: 'From',
+        to: 'To',
         amount: 'Amount',
-        to: 'Address to',
       },
     },
     Wallet: {
@@ -368,20 +374,37 @@ export default {
     PollInterface: {
       [pollInterface.TX_ACTIVATE_POLL]: {
         title: 'Activate poll',
+        pollAddress: 'Poll address',
+        from: 'From',
       },
       [pollInterface.TX_REMOVE_POLL]: {
         title: 'Remove Poll',
+        pollAddress: 'Poll address',
+        from: 'From',
       },
       [pollInterface.TX_END_POLL]: {
         title: 'End Poll',
+        pollAddress: 'Poll address',
+        from: 'From',
       },
       [pollInterface.TX_VOTE]: {
         title: 'Vote',
+        pollAddress: 'Poll address',
+        from: 'From',
+        choiceNumber: 'Choice number',
       },
     },
     VotingManager: {
       [votingManager.TX_CREATE_POLL]: {
-        title: 'Create Poll',
+        modalTitle: 'Create Poll',
+        from: 'From',
+        to: 'To',
+        options: 'Options',
+        files: 'Files',
+        description: 'Description',
+        title: 'Title',
+        deadline: 'End Poll Date',
+        votelimit: 'End Poll by the most voted option',
       },
     },
     ChronoBankAsset: {

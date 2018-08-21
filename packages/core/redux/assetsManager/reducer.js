@@ -8,8 +8,6 @@ import {
   GET_ASSETS_MANAGER_COUNTS,
   GET_ASSETS_MANAGER_COUNTS_START,
   GET_PLATFORMS,
-  GET_TRANSACTIONS_DONE,
-  GET_TRANSACTIONS_START,
   SELECT_PLATFORM,
   SELECT_TOKEN,
   SET_ASSETS,
@@ -49,21 +47,6 @@ export default (state = initialState, action) => {
       return state.assets(action.payload.assets)
     case SET_NEW_MANAGERS_LIST:
       return state.managersCount(action.payload.managers.length)
-    case GET_TRANSACTIONS_START:
-      return state
-        .transactionsList(
-          state.transactionsList()
-            .isFetched(false)
-            .isFetching(true),
-        )
-    case GET_TRANSACTIONS_DONE:
-      return state
-        .transactionsList(
-          state.transactionsList()
-            .merge(action.payload.transactionsList)
-            .isFetched(true)
-            .isFetching(false),
-        )
     default:
       return state
   }

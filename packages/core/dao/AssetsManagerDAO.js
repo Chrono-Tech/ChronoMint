@@ -37,14 +37,6 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
       .on('data', this.handleEventsData)
   }
 
-  handleAllEventsData = (data) => {
-    if (!data.event) {
-      return
-    }
-
-    this.emit(data.event, data)
-  }
-
   /**
    *
    * @param state
@@ -165,72 +157,12 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     return formatManagersList
   }
 
-  // createTxModel (tx, account, block, time): TxModel {
-  //   const gasPrice = new BigNumber(tx.gasPrice || 0)
-  //   return new TxModel({
-  //     txHash: tx.transactionHash,
-  //     type: tx.event,
-  //     blockHash: tx.blockHash,
-  //     blockNumber: block,
-  //     transactionIndex: tx.transactionIndex,
-  //     from: tx.args.from,
-  //     by: tx.args.by,
-  //     to: tx.args.to,
-  //     value: tx.args.value,
-  //     gas: tx.gas,
-  //     gasPrice,
-  //     time,
-  //     symbol: tx.args.symbol && web3Converter.bytesToString(tx.args.symbol).toUpperCase(),
-  //     tokenAddress: tx.args.token,
-  //     args: tx.args,
-  //     blockchain: BLOCKCHAIN_ETHEREUM,
-  //   })
-  // }
-  //
-  // async getTxModel (tx, account, block = null, time = null): Promise<?TxModel> {
-  //   const txDetails = await web3Provider.getTransaction(tx.transactionHash)
-  //   tx.gasPrice = txDetails.gasPrice
-  //   tx.gas = txDetails.gas
-  //
-  //   if (block && time) {
-  //     return this.createTxModel(tx, account, block, time)
-  //   }
-  //   block = await web3Provider.getBlock(tx.blockHash)
-  //   return this.createTxModel(tx, account, tx.blockNumber, block.timestamp)
-  // }
-
   /**
    * Implement for transactions list
    * @returns {}
    */
   getTxModel () {
     return {}
-  }
-
-  /**
-   *
-   * @param account
-   * @returns {Promise<Immutable.Map>}
-   */
-  async getTransactions (account) {
-    const transactionsPromises = []
-
-    // transactionsPromises.push(this.platformTokenExtensionGatewayManagerEmitterDAO._get(TX_ASSET_CREATED, 0, 'latest', { by: account }))
-    // transactionsPromises.push(this.platformsManagerDAO._get(TX_PLATFORM_REQUESTED, 0, 'latest', { by: account }))
-    // transactionsPromises.push(this.platformsManagerDAO._get(TX_PLATFORM_ATTACHED, 0, 'latest', { by: account }))
-    // transactionsPromises.push(this.platformsManagerDAO._get(TX_PLATFORM_DETACHED, 0, 'latest', { by: account }))
-    // transactionsPromises.push(this.chronobankPlatformDAO._get(TX_ISSUE, 0, 'latest', { by: account }))
-    // transactionsPromises.push(this.chronobankPlatformDAO._get(TX_REVOKE, 0, 'latest', { by: account }))
-    // transactionsPromises.push(this.chronobankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', { to: account }))
-    // transactionsPromises.push(this.chronobankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', { from: account }))
-    const transactionsLists = await Promise.all(transactionsPromises)
-    const promises = []
-    transactionsLists.map((transactionsList) => transactionsList.map((tx) => promises.push(this.getTxModel(tx, account))))
-    const transactions = await Promise.all(promises)
-
-    let map = new Immutable.Map()
-    transactions.map((tx) => map = map.set(tx.id(), tx))
-    return map
   }
 
   subscribeOnMiddleware (event: string, callback) {

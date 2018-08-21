@@ -14,22 +14,20 @@ const initialState = () => ({
 })
 
 const mutations = {
-  [WEB3_UPDATE] (state, { web3 }) {
-    return {
-      ...state,
-      web3: new HolderModel({ value: web3 }),
-    }
-  },
-  [NONCE_UPDATE] (state, { address, nonce }) {
-    return {
-      ...state,
-      nonces: {
-        ...state.nonces,
-        [address]: nonce,
-      },
-    }
-  },
-  [TX_CREATE] (state, { entry }) {
+  [WEB3_UPDATE]: (state, { web3 }) => ({
+    ...state,
+    web3: new HolderModel({ value: web3 }),
+  }),
+
+  [NONCE_UPDATE]: (state, { address, nonce }) => ({
+    ...state,
+    nonces: {
+      ...state.nonces,
+      [address]: nonce,
+    },
+  }),
+
+  [TX_CREATE]: (state, { entry }) => {
     const address = entry.tx.from
     const pending = state.pending
     const scope = pending[address]
@@ -44,7 +42,7 @@ const mutations = {
       },
     }
   },
-  [TX_STATUS] (state, { key, address, props }) {
+  [TX_STATUS]: (state, { key, address, props }) => {
     const scope = state.pending[address]
     if (!scope) {
       return state
@@ -66,7 +64,7 @@ const mutations = {
       },
     }
   },
-  [TX_UPDATE] (state, { key, address, props }) {
+  [TX_UPDATE]: (state, { key, address, props }) => {
     const scope = state.pending[address]
     if (!scope) return state
     const entry = scope[key]
@@ -87,7 +85,7 @@ const mutations = {
       },
     }
   },
-  [TX_REMOVE] (state, { key, address }) {
+  [TX_REMOVE]: (state, { key, address }) => {
     const scope = state.pending[address]
     if (!scope) return state
     const entry = scope[key]
@@ -99,9 +97,8 @@ const mutations = {
   },
 }
 
-export default (state = initialState(), { type, ...other }) => {
-  // return [state, other]
+export default (state = initialState(), { type, ...payload }) => {
   return (type in mutations)
-    ? mutations[type](state, other)
+    ? mutations[type](state, payload)
     : state
 }

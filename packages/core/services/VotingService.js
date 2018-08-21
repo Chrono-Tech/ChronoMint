@@ -6,8 +6,6 @@
 import EventEmitter from 'events'
 import PollEmitter from '../dao/PollEmitterDAO'
 
-//#region CONSTANTS
-
 import {
   EVENT_POLL_ACTIVATED,
   EVENT_POLL_CREATED,
@@ -15,8 +13,6 @@ import {
   EVENT_POLL_REMOVED,
   EVENT_POLL_VOTED,
 } from '../dao/constants/PollEmitterDAO'
-
-//#endregion
 
 class VotingService extends EventEmitter {
 
@@ -52,6 +48,7 @@ class VotingService extends EventEmitter {
     }
 
     const dao = this.getPollEmitterDAO(address, web3, history)
+    this.emit('newPollDao', dao)
 
     return Promise.all([
       dao.watchVoted((result) => {

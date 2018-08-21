@@ -84,7 +84,7 @@ export const PLATFORMS_MANAGER_LIBRARY = new ContractModel({
   DAOClass: PlatformManagerDAO,
 })
 
-export const TOKEN_MANAGMENT_EXTENSION_LIBRARY = new ContractModel({
+export const TOKEN_MANAGEMENT_EXTENSION_LIBRARY = new ContractModel({
   type: 'TokenManagementInterface',
   abi: TokenManagementInterfaceABI,
   DAOClass: TokenManagementExtensionDAO,
