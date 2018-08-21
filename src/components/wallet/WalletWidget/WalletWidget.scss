@@ -43,8 +43,7 @@
 
   @include sm-only {
     flex: 1;
-    margin-left: 5px;
-    width: 390px;
+    width: auto;
   }
 }
 
@@ -193,8 +192,8 @@
   margin-left: 40px;
 
   @include xs-only {
-    margin-right: 20px;
-    margin-left: 20px;
+    margin-right: 15px;
+    margin-left: 15px;
   }
 
   :global {
@@ -340,6 +339,7 @@
 .addressWrapper {
   text-decoration: none;
   color: $color-primary-3;
+
   .address-address {
     color: $color-grey-2;
   }
@@ -361,6 +361,7 @@
   position: absolute;
   top: 20px;
   right: 75px;
+
   .pendings-icon {
     line-height: 14px;
     background-color: $color-red-2;
