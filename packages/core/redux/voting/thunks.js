@@ -5,7 +5,7 @@
 
 import BigNumber from 'bignumber.js'
 import votingService from '../../services/VotingService'
-import PollNoticeModel from '../../models/notices/PollNoticeModel'
+import type PollNoticeModel from '../../models/notices/PollNoticeModel'
 import PollDetailsModel from '../../models/PollDetailsModel'
 import { notify } from '../notifier/actions'
 import { PTPoll } from './types'
