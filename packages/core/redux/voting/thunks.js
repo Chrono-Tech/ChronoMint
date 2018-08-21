@@ -153,7 +153,7 @@ export const removePoll = (pollObject: PTPoll) => async (dispatch, getState) => 
   }
 }
 
-export const vote = (choice: Number) => async (dispatch, getState) => {
+export const vote = (choice: number) => async (dispatch, getState) => {
   const state = getState()
   const poll = getSelectedPollFromDuck(state)
   const votingDAO = daoByType('VotingManager')(state)

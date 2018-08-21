@@ -73,11 +73,11 @@ export default class TransferExecModel extends abstractModel({
     return this._getSet('feeToken', value)
   }
 
-  feeMultiplier (value: Number): Number {
+  feeMultiplier (value: number): number {
     return this._getSet('feeMultiplier', value)
   }
 
-  timestamp (value: Number): Number {
+  timestamp (value: number): number {
     return this._getSet('timestamp', value)
   }
 
