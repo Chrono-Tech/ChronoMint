@@ -4,6 +4,8 @@
  */
 
 export const en = {
+  title: 'Add an Address',
+  enterPath: 'Enter HD derivation path',
   login: 'Login',
   ethAddress: 'Ethereum address',
   isHttps: {

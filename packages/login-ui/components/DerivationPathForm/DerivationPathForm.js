@@ -10,12 +10,11 @@ import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
 import {
-  FORM_MNEMONIC_LOGIN_PAGE,
+  FORM_DERIVATION_PATH,
 } from '../../redux/constants'
-import validate from './validate'
-import './LoginWithMnemonic.scss'
+import './DerivationPathForm.scss'
 
-class LoginWithMnemonic extends PureComponent {
+class DerivationPathForm extends PureComponent {
   static propTypes = {
     previousPage: PropTypes.func,
   }
@@ -24,25 +23,19 @@ class LoginWithMnemonic extends PureComponent {
     const { handleSubmit, error, previousPage, submitting } = this.props
 
     return (
-      <form styleName='form' name={FORM_MNEMONIC_LOGIN_PAGE} onSubmit={handleSubmit}>
+      <form styleName='form' name={FORM_DERIVATION_PATH} onSubmit={handleSubmit}>
 
         <div styleName='page-title'>
-          <Translate value='LoginWithMnemonic.title' />
+          <Translate value='DerivationPathForm.title' />
         </div>
 
         <div styleName='field'>
           <Field
-            styleName='mnemonicField'
             component={TextField}
-            name='mnemonic'
+            name='path'
             type='text'
+            label={<Translate value='DerivationPathForm.path' />}
             fullWidth
-            multiline
-            InputProps={{
-              disableUnderline: true,
-            }}
-            rows={2}
-            rowsMax={2}
           />
         </div>
 
@@ -53,15 +46,15 @@ class LoginWithMnemonic extends PureComponent {
             type='submit'
             isLoading={submitting}
           >
-            <Translate value='LoginWithMnemonic.submit' />
+            <Translate value='DerivationPathForm.submit' />
           </Button>
 
           { error ? (<div styleName='form-error'>{error}</div>) : null }
 
-          <Translate value='LoginWithMnemonic.or' />
+          <Translate value='DerivationPathForm.or' />
           <br />
-          <button onClick={previousPage} type='button' styleName='link'>
-            <Translate value='LoginWithMnemonic.back' />
+          <button onClick={previousPage} styleName='link'>
+            <Translate value='DerivationPathForm.back' />
           </button>
         </div>
 
@@ -70,4 +63,4 @@ class LoginWithMnemonic extends PureComponent {
   }
 }
 
-export default reduxForm({ form: FORM_MNEMONIC_LOGIN_PAGE, validate })(LoginWithMnemonic)
+export default reduxForm({ form: FORM_DERIVATION_PATH })(DerivationPathForm)

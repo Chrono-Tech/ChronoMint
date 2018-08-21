@@ -7,7 +7,7 @@ export const en = {
   title: 'Upload a Wallet File',
   description: 'Upload a wallet file to add the login information to your browser.',
   descriptionExtra: 'We provide the file on New Account Creation.',
-  login: 'Proceed to login',
+  submit: 'Import wallet',
   generateNewWallet: 'Generate New Wallet',
   enterPassword: 'Enter password',
   uploading: 'Uploading',

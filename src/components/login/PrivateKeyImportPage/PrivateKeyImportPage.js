@@ -104,6 +104,7 @@ class PrivateKeyImportPage extends PureComponent {
   }
 
   async onSubmitPrivateKey ({ privateKey }) {
+    console.log('pk', privateKey, address)
     const address = getAddressByPrivateKey(privateKey)
 
     const data = await this.props.getUserInfo([address])
