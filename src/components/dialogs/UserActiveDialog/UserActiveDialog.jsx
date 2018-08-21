@@ -33,6 +33,7 @@ export default class UserActiveDialog extends PureComponent {
   static propTypes = {
     handleLogout: PropTypes.func,
     modalsClose: PropTypes.func,
+    stopUserMonitor: PropTypes.func,
   }
 
   componentDidMount () {

@@ -4,11 +4,9 @@
  */
 
 import { destroyNetworkSession, login, logout } from '@chronobank/core/redux/session/thunks'
-import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { change, formValueSelector } from 'redux-form/immutable'
 import { history } from 'redux/configureStore'
 import { navigateToVoting, navigateToRoot, navigateToWallets, navigateToPoll } from 'redux/ui/navigation'
-import { NETWORK_MAIN_ID } from '@chronobank/login/network/settings'
 import { PTPoll } from '@chronobank/core/redux/voting/types'
 import * as VotingThunks from '@chronobank/core/redux/voting/thunks'
 import { removeWallet } from '@chronobank/core/redux/multisigWallet/actions'

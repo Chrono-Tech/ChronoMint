@@ -116,8 +116,6 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
   const wallet = await accounts.wallet.create(numberOfAccounts)
   const account = accounts.privateKeyToAccount(hex)
   wallet.add(account)
-  // eslint-disable-next-line no-console
-  console.log(wallet.encrypt(password))
 
   const entry = new AccountEntryModel({
     key: uuid(),
