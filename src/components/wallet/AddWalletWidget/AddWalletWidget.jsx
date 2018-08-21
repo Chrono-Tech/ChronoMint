@@ -9,7 +9,8 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { change, formValueSelector } from 'redux-form/immutable'
-import { goToWallets, resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
+import { resetWalletsForm } from 'redux/ui/thunks'
+import { navigateToWallets } from 'redux/ui/navigation'
 import { FORM_ADD_NEW_WALLET } from '@chronobank/core/redux/mainWallet/constants'
 import WidgetContainer from 'components/WidgetContainer/WidgetContainer'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
@@ -97,7 +98,7 @@ export default class AddWalletWidget extends PureComponent {
     })
 
     dispatch(createWallet(wallet))
-    dispatch(goToWallets())
+    dispatch(navigateToWallets())
     dispatch(resetWalletsForm())
   }
 

@@ -15,7 +15,7 @@ import {
 import {
   navigateToSelectWallet,
   navigateToLoginPage,
-} from '@chronobank/login-ui/redux/actions'
+} from '@chronobank/login-ui/redux/navigation'
 import {
   ResetPasswordContainer,
   RecoverAccountContainer,

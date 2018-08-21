@@ -4,7 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
-import { integerWithDelimiter } from '@chronobank/core-dependencies/utils/formatter'
+import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { getMainSymbolForBlockchain } from '@chronobank/core/redux/tokens/selectors'

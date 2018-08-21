@@ -10,7 +10,8 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
-import { goToWallets, resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
+import { resetWalletsForm } from 'redux/ui/thunks'
+import { navigateToWallets } from 'redux/ui/navigation'
 import { createNewChildAddress } from '@chronobank/core/redux/wallets/actions'
 import { FORM_CUSTOM_WALLET_ADD } from 'components/constants'
 import { prefix } from './lang'
@@ -20,7 +21,7 @@ function mapDispatchToProps (dispatch) {
   return {
     onSubmit: (values: Map) => {
       dispatch(createNewChildAddress({ blockchain: values.get('blockchain'), name: values.get('name') }))
-      dispatch(goToWallets())
+      dispatch(navigateToWallets())
       dispatch(resetWalletsForm())
     },
   }

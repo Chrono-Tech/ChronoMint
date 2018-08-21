@@ -27,7 +27,7 @@ import {
   EE_SINGLE_TRANSACTION,
 } from '../../services/constants'
 import multisigWalletService from '../../services/MultisigWalletService'
-import { getTxList, goToWallets } from '../mainWallet/actions'
+import { getTxList } from '../mainWallet/actions'
 import { ETH } from '../../dao/constants'
 import { getMultisigWallets } from '../wallet/selectors/models'
 import { getEthMultisigWallet } from './selectors/models'
@@ -230,7 +230,6 @@ export const create2FAWallet = (wallet: MultisigEthWalletModel, feeMultiplier) =
 export const removeWallet = (wallet: MultisigEthWalletModel) => async (dispatch, getState) => {
   try {
     const { account } = getState().get(DUCK_SESSION)
-    dispatch(goToWallets())
     dispatch({ type: ETH_MULTISIG_REMOVE, id: wallet.id })
     const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address)
     const tx = dao.removeWallet(account)

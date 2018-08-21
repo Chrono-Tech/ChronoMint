@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import ls from '@chronobank/core-dependencies/utils/LocalStorage'
 import Immutable from 'immutable'
 import BalanceModel from '../tokens/BalanceModel'
 import BalancesCollection from '../tokens/BalancesCollection'
@@ -27,10 +26,6 @@ export default class MainWalletModel extends abstractFetchingModel({
   names: new Immutable.Map(),
   web3: null,
 }) {
-
-  address () {
-    return ls.getAccount()
-  }
 
   addresses (value) {
     return this._getSet('addresses', value)

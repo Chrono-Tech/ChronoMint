@@ -17,7 +17,7 @@ import { getNetworkName } from '@chronobank/login/redux/network/thunks'
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
-import { logout } from '@chronobank/core/redux/session/thunks'
+import { logoutAndNavigateToRoot } from 'redux/ui/thunks'
 import chronoWalletLogoSVG from 'assets/img/chronowallettext-white.svg'
 import ProfileImage from 'components/common/ProfileImage/ProfileImage'
 import exitSvg from 'assets/img/exit-white.svg'
@@ -52,7 +52,7 @@ function mapDispatchToProps (dispatch) {
   return {
     getNetworkName: () => dispatch(getNetworkName()),
     handleDrawerHide: () => dispatch(drawerHide()),
-    handleLogout: () => dispatch(logout()),
+    handleLogout: () => dispatch(logoutAndNavigateToRoot()),
     handleProfileEdit: () => dispatch(modalsOpen({
       componentName: 'UpdateProfileDialog'
     })),

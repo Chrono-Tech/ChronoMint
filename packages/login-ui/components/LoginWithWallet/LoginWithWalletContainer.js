@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import { stopSubmit } from 'redux-form'
 import {
   navigateBack,
-} from '../../redux/actions'
+} from '../../redux/navigation'
 import {
   FORM_WALLET_UPLOAD,
 } from '../../redux/constants'

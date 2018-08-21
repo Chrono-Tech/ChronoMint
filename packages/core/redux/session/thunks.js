@@ -3,13 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { getNetworkById, LOCAL_ID, LOCAL_PRIVATE_KEYS, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID } from '@chronobank/login/network/settings'
+import { getNetworkById, LOCAL_ID, LOCAL_PRIVATE_KEYS, LOCAL_PROVIDER_ID } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import { removeWatchersUserMonitor } from '@chronobank/core-dependencies/redux/ui/actions'
 import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
-import { push, replace } from '@chronobank/core-dependencies/router'
-import LocalStorage from '@chronobank/core-dependencies/utils/LocalStorage'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import setup from '@chronobank/login/network/EngineUtils'
 import metaMaskResolver from '@chronobank/login/network/metaMaskResolver'
@@ -117,45 +115,32 @@ export const restoreLocalSession = (account, wallets) => async (dispatch) => {
 export const changeGasSlideValue = (value, blockchain) => (dispatch) =>
   dispatch(SessionActions.gasSliderMultiplierChange(value, blockchain))
 
-export const destroyNetworkSession = (lastURL, isReset = true) => (dispatch) => {
+export const destroyNetworkSession = (isReset = true) => (dispatch) => {
   if (isReset) {
     // for tests
     web3Provider.beforeReset()
     web3Provider.afterReset()
   }
 
-  LocalStorage.setLastURL(lastURL)
-  LocalStorage.destroySession()
   dispatch(SessionActions.sessionDestroy())
 }
 
 export const createNetworkSession = (account, provider, network) => (dispatch) => {
-  // TODO: check it, maybe we do not need to set accounts here...
-  // if (!this._account) {
-  //   this._account = account
-  // }
-  dispatch(NetworkActions.networkSetAccounts([account]))
-
   if (!account || !provider || !network) {
     throw new Error(`Wrong session arguments: account: ${account}, provider: ${provider}, network: ${network}`)
   }
 
-  LocalStorage.createSession(account, provider, network)
+  dispatch(NetworkActions.networkSetAccounts([account]))
   dispatch(SessionActions.sessionCreate(account))
 }
 
-export const logout = () => async (dispatch, getState) => {
+export const logout = () => async (dispatch) => {
   try {
-    const { selectedNetworkId } = getState().get(DUCK_NETWORK)
     dispatch(removeWatchersUserMonitor())
     dispatch(watchStopMarket())
-    dispatch(destroyNetworkSession(`${window.location.pathname}${window.location.search}`))
-    dispatch(push('/'))
-    if (selectedNetworkId === NETWORK_MAIN_ID) {
-      location.reload()
-    }
+    dispatch(destroyNetworkSession())
   } catch (e) {
-    // eslint-disable-next-line
+    // eslint-disable-next-line no-console
     console.error('logout error:', e)
   }
 }
@@ -190,10 +175,8 @@ export const login = (account) => async (dispatch, getState) => {
   ])
 
   dispatch(SessionActions.sessionProfile(profile, isCBE))
-
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
-
-  dispatch(replace(LocalStorage.getLastURL() || defaultURL))
+  return defaultURL
 }
 
 export const bootstrap = () => async () => {
