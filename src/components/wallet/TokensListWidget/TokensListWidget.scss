@@ -38,18 +38,19 @@
           text-align: center;
           vertical-align: middle;
           border-right: 1px solid $button-color-3;
+          border-top: 1px solid $button-color-3;
 
           @include sm-only {
             padding: 5px 15px;
           }
 
           .table-image {
-            width: 40px;
+            width: auto;
             height: 40px;
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center center;
-            margin-right: 20px;
+            text-align: center;
 
             @include sm-only {
               width: auto;
@@ -67,6 +68,7 @@
           line-height: 17px;
           color: $color-primary-3;
           border-right: 1px solid $button-color-3;
+          border-top: 1px solid $button-color-3;
 
           @include sm-only {
             padding: 5px 15px;
@@ -81,6 +83,7 @@
           font-size: 14px;
           line-height: 17px;
           border-right: 1px solid $button-color-3;
+          border-top: 1px solid $button-color-3;
 
           @include sm-only {
             padding: 5px 15px;
