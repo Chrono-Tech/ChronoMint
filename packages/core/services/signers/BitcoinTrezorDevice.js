@@ -7,9 +7,10 @@ import EventEmitter from 'events'
 import bip39 from 'bip39'
 import bitcoin from 'bitcoinjs-lib'
 import coinselect from 'coinselect'
+import TrezorConnect from 'trezor-connect';
 import axios from 'axios'
 
-export default class BitcoinMemoryDevice extends EventEmitter {
+export default class BitcoinTrezorDevice extends EventEmitter {
   constructor ({seed}) {
     super()
     this.seed = seed
@@ -21,8 +22,13 @@ export default class BitcoinMemoryDevice extends EventEmitter {
   }
 
   // this method is a part of base interface
-  getAddress (path) {
-    return this._getDerivedWallet(path).getAddress()
+  async getAddress (path) {
+    const result =  await TrezorConnect.getAddress({
+    path: path,
+    showOnTrezor: false,
+});
+    console.log(result)
+  return result.payload.address
   }
 
   async buildTx(path) {
@@ -33,10 +39,11 @@ const BLOCK_EXPLORER = axios.create({
     baseURL: 'https://middleware-bitcoin-testnet-rest.chronobank.io'
   })
 
-const FROM_ADDRESS = 'mreoLKdNMwnKuGq5MPjxbWzjNuojJdHB9x'
-const TREZOR_ADDRESS = 'mnrJYbRVUbizQL2LXsvoqZra4MMpxkRTb2'
+const MEMORY_ADDRESS = 'mreoLKdNMwnKuGq5MPjxbWzjNuojJdHB9x'
+const FROM_ADDRESS = 'mnrJYbRVUbizQL2LXsvoqZra4MMpxkRTb2'
 const LEDGER_ADDRESS = 'mtnCZ2WsxjDqDzLn8EJTkQVugnbBanAhRz'
-  const VALUE = 1000000
+
+  const VALUE = 100000
   const feeRate = 200
 
   // ----------------------------------spend from multisig---------------------------
@@ -49,15 +56,13 @@ const LEDGER_ADDRESS = 'mtnCZ2WsxjDqDzLn8EJTkQVugnbBanAhRz'
   }))
 
   const targets = [{
-      address: TREZOR_ADDRESS,
-      value: VALUE
-  }, {
-      address: LEDGER_ADDRESS,
+      address: MEMORY_ADDRESS,
       value: VALUE
   }]
 
   const { inputs, outputs, fee } = coinselect(utxos, targets, feeRate)
-
+  console.log(inputs)
+  console.log(outputs)
   const txb = new bitcoin.TransactionBuilder(network)
   inputs.forEach(input => txb.addInput(input.txId, input.vout))
   outputs.forEach(output => {
@@ -69,12 +74,31 @@ const LEDGER_ADDRESS = 'mtnCZ2WsxjDqDzLn8EJTkQVugnbBanAhRz'
 
     txb.addOutput(output.address, output.value)
   })
+  console.log(txb.buildIncomplete().toHex())
 
-  // sign by platform key and 1 from secret key
-  txb.sign(0, this._getDerivedWallet(path).keyPair)
-  const tx = txb.build()
-  console.log(tx.toHex());
-  
+  const result =  await TrezorConnect.signTransaction({
+    inputs: [
+        {
+            address_n: [44 | 0x80000000, 1 | 0x80000000, 0 | 0x80000000, 0, 0],
+            prev_index: 0,
+            prev_hash: '9ede3800025dff4fcb90360f7fab81839b0660018109302f77566d7fd649cded'
+        }
+    ],
+    outputs: [
+        {
+            address: MEMORY_ADDRESS,
+            amount: '100000',
+            script_type: 'PAYTOADDRESS'
+        },
+        {
+            address_n: [44 | 0x80000000, 1 | 0x80000000, 0 | 0x80000000, 0, 0],
+            amount: '855000',
+            script_type: 'PAYTOADDRESS'
+        }, 
+    ],
+    coin: "Testnet"
+})
+   console.log(result)  
 
   }
 
@@ -85,7 +109,7 @@ const LEDGER_ADDRESS = 'mtnCZ2WsxjDqDzLn8EJTkQVugnbBanAhRz'
   static async init ({ seed, network }) {
     //todo add network selector 
     
-    return new BitcoinMemoryDevice({seed})
+    return new BitcoinTrezorDevice({seed})
 
     } 
 

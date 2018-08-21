@@ -15,16 +15,6 @@ const initialState = {
 export default (state = initialState, action) => {
   console.log(action)
   switch (action.type) {
-    case a.DEVICE_ADD :
-      console.log('wallet add')
-      console.log(action.wallet)
-      return {
-        ...state,
-        deviceList: [
-          ...state.deviceList,
-          action.wallet,
-        ],
-      }
 
     case a.DEVICE_SELECT :
       return {

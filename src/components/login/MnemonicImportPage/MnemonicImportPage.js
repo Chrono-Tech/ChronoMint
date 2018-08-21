@@ -97,7 +97,9 @@ class MnemonicImportPage extends PureComponent {
   }
 
   async onSubmitMnemonic ({ mnemonic }) {
+    console.log('mnemonic import')
     const address = getAddressByMnemonic(mnemonic)
+    console.log(address)
     const data = await this.props.getUserInfo([address])
 
     const profile = data[0]

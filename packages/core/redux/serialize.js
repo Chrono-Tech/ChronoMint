@@ -40,7 +40,6 @@ function serialize (Immutable, refs) {
   return {
     replacer: function (key, value) {
       if (value instanceof models.AccountModel) return null
-      if (value instanceof models.SignerMemoryModel) return null
       if (value instanceof Date) return mark(value, 'Date', 'toString')
       if (value instanceof models.WalletModel) return mark(value, 'WalletModel', 'transform')
       if (value instanceof models.MultisigEthWalletModel) return mark(value, 'MultisigEthWalletModel', 'transform')

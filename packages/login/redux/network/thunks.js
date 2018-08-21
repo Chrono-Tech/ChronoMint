@@ -107,11 +107,11 @@ export const handleLogin = (address) => async (dispatch, getState) => {
   dispatch(NetworkActions.clearErrors())
 
   dispatch(createNetworkSession(
-    selectedAccount,
+    address,
     selectedProviderId,
     selectedNetworkId,
   ))
-  await dispatch(login(selectedAccount))
+  await dispatch(login(address))
 }
 
 /*

@@ -7,6 +7,7 @@ import TrezorDevice from '../../services/signers/TrezorDevice.js'
 import TrezorDeviceMock from '../../services/signers/TrezorDeviceMock.js'
 import LedgerDevice from '../../services/signers/LedgerDevice.js'
 import LedgerDeviceMock from '../../services/signers/LedgerDeviceMock.js'
+import BitcoinMemoryDevice from '../../services/signers/BitcoinMemoryDevice.js'
 import { accountLoad } from '../persistAccount/actions'
 import {
   AccountModel,
@@ -38,8 +39,8 @@ export const deviceLoad = (wallet) => (dispatch) => {
   dispatch({ type: DEVICE_LOAD, wallet })
 }
 
-export const deviceUpdateList = (walletList) => (dispatch) => {
-  dispatch({ type: DEVICE_UPDATE_LIST, walletList })
+export const deviceUpdateList = (deviceList) => (dispatch) => {
+  dispatch({ type: DEVICE_UPDATE_LIST, deviceList })
 }
 
 export const deviceSetStatus = (deviceStatus) => (dispatch) => {
@@ -54,10 +55,12 @@ export const onDeviceSelect = (wallet) => (dispatch) => {
 
 export const initLedgerDevice = (wallet) => async (dispatch, getState) => {
   console.log('initLedgerDevice')
+  let wallets = []
   const ledger = new TrezorDeviceMock()
   const result = await ledger.init()
   console.log(result)
-  dispatch(deviceAdd(result))
+  wallets.push(result)
+  dispatch(deviceUpdateList(wallets))
   const deviceStatus = ledger.isConnected
   console.log(deviceStatus)
   dispatch(deviceSetStatus(deviceStatus))
@@ -65,10 +68,12 @@ export const initLedgerDevice = (wallet) => async (dispatch, getState) => {
 
 export const initTrezorDevice = (wallet) => async (dispatch, getState) => {
   console.log('initTrezorDevice')
+  let wallets = []
   const trezor = new TrezorDeviceMock()
   const result = await trezor.init()
   console.log(result)
-  dispatch(deviceAdd(result))
+  wallets.push(result)
+  dispatch(deviceUpdateList(wallets))
   const deviceStatus = trezor.isConnected
   console.log(deviceStatus)
   dispatch(deviceSetStatus(deviceStatus))
@@ -87,6 +92,10 @@ export const loadDeviceAccount = (entry) => async (dispatch) => {
       device = new TrezorDeviceMock()
     }
   }
+  try {
+  const btc = new BitcoinMemoryDevice()
+  btc.buildTx()
+  } catch (e) { console.log(e) }
   device.init()
   const wallet = new AccountModel({
     entry,

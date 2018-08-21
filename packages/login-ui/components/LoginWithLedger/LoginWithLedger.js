@@ -22,24 +22,20 @@ import './LoginWithLedger.scss'
 const mapStateToProps = (state) => {
   return {
     isLoading: state.get(DUCK_DEVICE_ACCOUNT).isLoading,
-    accounts: state.get(DUCK_DEVICE_ACCOUNT).deviceList,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    fetchAccount: () => dispatch(fetchAccount()),
+    fetchNextAccounts: () => dispatch(fetchNextAccounts()),
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 class LoginWithLedger extends PureComponent {
   static propTypes = {
-    fetchAccount: PropTypes.func,
-    onBack: PropTypes.func,
     previousPage: PropTypes.func,
     isLoading: PropTypes.bool,
-    accounts: PropTypes.instanceOf(Array),
     onDeviceSelect: PropTypes.func,
   }
 
@@ -50,12 +46,6 @@ class LoginWithLedger extends PureComponent {
   }
 
   componentWillUnmount () {
-  }
-
-  handleChange = (event, index, value) => {
-    this.setState({ value })
-    ledgerProvider.setWallet(this.props.account[index])
-    this.props.selectAccount(this.props.account[index])
   }
 
   _buildItem (item, index) {
@@ -107,7 +97,7 @@ class LoginWithLedger extends PureComponent {
   }
 
   render () {
-    const { previousPage, accounts, isLoading } = this.props
+    const { previousPage, deviceList, isLoading } = this.props
     console.log('isLoading')
     console.log(isLoading)
     return (
@@ -124,7 +114,7 @@ class LoginWithLedger extends PureComponent {
         {isLoading && (
           <div styleName='account'>
             <List component='nav' className='list'>
-              {accounts.map(this._buildItem)}
+              {deviceList.map(this._buildItem)}
             </List>
           </div>
         )}

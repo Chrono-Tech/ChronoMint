@@ -23,7 +23,6 @@ import LoginWithLedger from './LoginWithLedger'
 function mapDispatchToProps (dispatch) {
   return {
     navigateToCreateAccount: () => dispatch(navigateToCreateAccount()),
-    navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
     initLedgerDevice: () => dispatch(initLedgerDevice()),
   }
 }
@@ -57,7 +56,7 @@ class LoginWithLedgerContainer extends PureComponent {
 
   render () {
     const {
-      navigateToSelectImportMethod,
+      previousPage,
       navigateToCreateAccount,
       deviceList,
       onDeviceSelect,
@@ -65,9 +64,9 @@ class LoginWithLedgerContainer extends PureComponent {
 
     return (
       <LoginWithLedger
-        navigateToSelectImportMethod={navigateToSelectImportMethod}
         navigateToCreateAccount={navigateToCreateAccount}
         deviceList={deviceList}
+	previousPage={previousPage}
         onDeviceSelect={onDeviceSelect}
       />
     )

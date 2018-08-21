@@ -11,6 +11,7 @@ import {
 import {
   AccountEntryModel,
 } from '../../models/wallet/persistAccount'
+import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 
 export const replaceWallet = (wallet, walletList) => {
   const index = walletList.findIndex((item) => item.key === wallet.key)
@@ -90,4 +91,10 @@ export const validateMnemonicForAccount = (mnemonic, selectedWallet: AccountEntr
   const address = getAddressByMnemonic(mnemonic)
 
   return addressFromWallet === address
+}
+
+export const getAddressByMnemonic = (mnemonic) => {
+  return EthereumMemoryDevice
+    .getDerivedWallet(mnemonic,null)
+    .address
 }

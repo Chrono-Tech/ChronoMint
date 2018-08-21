@@ -10,7 +10,7 @@ import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
 import ChevronRight from '@material-ui/icons/ChevronRight'
 import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import {
@@ -22,25 +22,20 @@ import './LoginWithTrezor.scss'
 const mapStateToProps = (state) => {
   return {
     isLoading: state.get(DUCK_DEVICE_ACCOUNT).isLoading,
-    accounts: state.get(DUCK_DEVICE_ACCOUNT).deviceList,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    fetchAccount: () => dispatch(fetchAccount()),
+    fetchNextAccounts: () => dispatch(fetchNextAccounts()),
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-class LoginTrezor extends PureComponent {
+
+class LoginTrezor extends Component {
   static propTypes = {
-    fetchAccount: PropTypes.func,
-    onBack: PropTypes.func,
     previousPage: PropTypes.func,
-    isLoading: PropTypes.bool,
-    accounts: PropTypes.instanceOf(Array),
-    onDeviceSelect: PropTypes.func,
   }
 
   componentDidUpdate (prevProps) {
@@ -97,9 +92,10 @@ class LoginTrezor extends PureComponent {
   }
 
   render () {
-    const { previousPage, accounts, isLoading } = this.props
+    const { previousPage, deviceList, isLoading } = this.props
     console.log('isLoading')
-    console.log(isLoading)
+    console.log(deviceList)
+    console.log(previousPage)
     return (
       <div styleName='form'>
         <div styleName='page-title'>
@@ -114,7 +110,7 @@ class LoginTrezor extends PureComponent {
         {isLoading && (
           <div styleName='account'>
             <List component='nav' className='list'>
-              {accounts.map(this._buildItem)}
+              {deviceList.map(this._buildItem)}
             </List>
           </div>
         )}

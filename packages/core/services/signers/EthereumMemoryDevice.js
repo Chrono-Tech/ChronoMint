@@ -26,7 +26,7 @@ export default class EthereumMemoryDevice extends EventEmitter {
     if(!path || path == DEFAULT_PATH) {
       return this.wallet.privateKey
     }
-      return _getDerivedWallet(this.wallet.privateKey, path).address
+      return EthereumMemoryDevice.getDerivedWallet(this.wallet.privateKey, path).address
   }
 
   // this method is a part of base interface
@@ -34,21 +34,21 @@ export default class EthereumMemoryDevice extends EventEmitter {
     if(!path || path == DEFAULT_PATH) {
       return this.address
     }
-    return _getDerivedWallet(this.wallet.privateKey, path).address
+    return EthereumMemoryDevice.getDerivedWallet(this.wallet.privateKey, path).address
   }
 
   async signTransaction (tx, path) { // tx object
     if(!path || path == DEFAULT_PATH) {
       return this.wallet.signTransaction(tx)
     }
-    return _getDerivedWallet(this.wallet.privateKey, path).signTransaction(tx)
+    return EthereumMemoryDevice.getDerivedWallet(this.wallet.privateKey, path).signTransaction(tx)
   }
 
   async signData (data, path) { // data object
     if(!path || path == DEFAULT_PATH) {
       return this.wallet.sign(data)
     }
-    return _getDerivedWallet(this.wallet.privateKey, path).sign(data)
+    return EthereumMemoryDevice.getDerivedWallet(this.wallet.privateKey, path).sign(data)
   }
 
   static create ({ privateKey, mnemonic, password }) {
@@ -60,7 +60,7 @@ export default class EthereumMemoryDevice extends EventEmitter {
       wallet.add(account)
     }
     if (mnemonic) {
-      wallet = _getDerivedWallet(mnemonic,DEFAULT_PATH)
+      wallet = EthereumMemoryDevice.getDerivedWallet(mnemonic,null)
     }
     return wallet.encrypt(password) 
   }
@@ -72,13 +72,21 @@ export default class EthereumMemoryDevice extends EventEmitter {
     return new EthereumMemoryDevice({ wallet:wallet[0] })
   }
 
-  _getDerivedWallet (path, seed) {
+  static getDerivedWallet (seed, path) {
+    let _path
+    if(!path) {
+      _path = DEFAULT_PATH
+    } else {
+      _path = path
+    }
     const accounts = new Accounts()
     const wallet = accounts.wallet.create()
     const hdWallet = hdKey.fromMasterSeed(seed)
-    const w = hdWallet.derivePath(path).getWallet()
-    const account = accounts.privateKeyToAccount(`0x${hdWallet.getPrivateKey().toString('hex')}`)
-    wallet.add(account)
+    const w = hdWallet.derivePath(_path).getWallet()
+    const account = accounts.privateKeyToAccount(`0x${w.getPrivateKey().toString('hex')}`)
+    wallet.add(account)  
+    console.log('wallets')
+    console.log(wallet)
     return wallet[0]
   }
 

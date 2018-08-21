@@ -40,7 +40,6 @@ class TrezorLoginPage extends PureComponent {
 
   static propTypes = {
     getUserInfo: PropTypes.func,
-    navigateToSelectWallet: PropTypes.func,
     navigateBack: PropTypes.func,
     onCreateWalletFromDevice: PropTypes.func,
   }
@@ -121,8 +120,9 @@ class TrezorLoginPage extends PureComponent {
     navigateToSelectWallet()
   }
 
-  previousPage () {
-    if (this.state.page === TrezorLoginPage.PAGES.WALLET_UPLOAD_FORM){
+  previousPage () { 
+    console.log('previous page')
+    if (this.state.page === TrezorLoginPage.PAGES.DEVICE_SELECT_FORM){
       this.props.navigateBack()
     } else {
       this.setState ({ page: this.state.page - 1 })

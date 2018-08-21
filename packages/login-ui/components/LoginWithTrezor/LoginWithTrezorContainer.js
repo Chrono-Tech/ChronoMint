@@ -15,8 +15,8 @@ import {
 import { DeviceEntryModel } from '@chronobank/core/models'
 import './LoginWithTrezor.scss'
 import {
-  navigateToSelectImportMethod,
   navigateToCreateAccount,
+  navigateToSelectWallet,
 } from '../../redux/actions'
 import LoginWithTrezor from './LoginWithTrezor'
 
@@ -40,7 +40,7 @@ class LoginWithTrezorContainer extends PureComponent {
   static propTypes = {
     onDeviceSelect: PropTypes.func,
     deviceList: PropTypes.array,
-    navigateToSelectImportMethod: PropTypes.func,
+    previousPage: PropTypes.func,
     navigateToCreateAccount: PropTypes.func,
     initTrezorDevice: PropTypes.func,
   }
@@ -57,18 +57,18 @@ class LoginWithTrezorContainer extends PureComponent {
 
   render () {
     const {
-      navigateToSelectImportMethod,
       navigateToCreateAccount,
       deviceList,
       onDeviceSelect,
+      previousPage,
     } = this.props
 
     return (
       <LoginWithTrezor
-        navigateToSelectImportMethod={navigateToSelectImportMethod}
         navigateToCreateAccount={navigateToCreateAccount}
+        previousPage={previousPage}
         deviceList={deviceList}
-        onDeviceSelect={onDeviceSelect}
+	onDeviceSelect={onDeviceSelect}
       />
     )
   }
