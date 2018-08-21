@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import BigNumber from 'bignumber.js'
 import ethAbi from 'ethereumjs-abi'
 import BN from 'bn.js'
@@ -40,7 +45,6 @@ export const decodeParameters = (abi, tx) => {
             return `0x${node.toString('hex')}`
           }
         }
-        // returns undefined to handle recursive
       },
     ),
   }))

@@ -5,6 +5,8 @@
 
 export const DUCK_EVENTS = 'events'
 
-export const LOGS_LOADING = 'events/loading'
-export const LOGS_LOADED = 'events/loaded'
-export const LOGS_UPDATED = 'events/updated'
+export const EVENTS_LOGS_LOADING = 'events/loading'
+export const EVENTS_LOGS_LOADED = 'events/loaded'
+export const EVENTS_LOGS_UPDATED = 'events/updated'
+
+export const ADD_EVENT_TO_HISTORY = 'events/addToHistory'

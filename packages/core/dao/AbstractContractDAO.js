@@ -9,6 +9,9 @@ import BigNumber from 'bignumber.js'
 import TxExecModel from '../models/TxExecModel'
 import web3Converter from '../utils/Web3Converter'
 import { DEFAULT_GAS } from './constants'
+import { ADD_EVENT_TO_HISTORY } from '../redux/events/constants'
+
+import EventsService from '../services/EventsService'
 
 export default class AbstractContractDAO extends EventEmitter {
 
@@ -156,9 +159,11 @@ export default class AbstractContractDAO extends EventEmitter {
   }
 
   handleEventsData = (data) => {
-    if (!data.event) {
+    if (!data || !data.event) {
       return
     }
+
+    EventsService.emit(ADD_EVENT_TO_HISTORY, data)
     this.emit(data.event, data)
   }
 
@@ -166,6 +171,7 @@ export default class AbstractContractDAO extends EventEmitter {
     if (!data.event) {
       return
     }
+
     this.emit(data.event + '_error', data)
   }
 }

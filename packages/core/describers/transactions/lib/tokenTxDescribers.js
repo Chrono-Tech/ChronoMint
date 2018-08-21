@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import uuid from 'uuid/v1'
 import { findFunctionABI, TransactionDescriber } from '../TransactionDescriber'
 import { Amount, LogTxModel } from '../../../models'
@@ -9,6 +14,7 @@ export const FUNCTION_TRANSFER = new TransactionDescriber(
   ({ tx, block }, { address }, { params, token, abi }) => {
     const symbol = token.symbol()
     address = address.toLowerCase()
+
     if (symbol && (params._to.toLowerCase() === address || tx.from.toLowerCase() === address)) {
 
       const transferAmount = new Amount(params._value, symbol)
@@ -46,10 +52,10 @@ export const FUNCTION_APPROVE = new TransactionDescriber(
     if (symbol && (params._spender.toLowerCase() === address || tx.from.toLowerCase() === address)) {
       const value = new Amount(params._value, symbol)
 
-      const path = `tx.${abi.contractName}.transfer`
+      const path = `tx.${abi.contractName}.approve`
       return new LogTxModel({
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
-        name: 'transfer',
+        name: 'approve',
         date: new Date(block ? (block.timestamp * 1000) : null),
         title: `${path}.title`,
         from: '',
@@ -81,7 +87,7 @@ export const FUNCTION_REQUIRE_TIME = new TransactionDescriber(
     const path = `tx.${abi.contractName}.sendTime`
     return new LogTxModel({
       key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
-      name: 'transfer',
+      name: 'sendTime',
       date: new Date(block ? (block.timestamp * 1000) : null),
       title: `${path}.title`,
       fields: [

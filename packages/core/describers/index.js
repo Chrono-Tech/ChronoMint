@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import uuid from 'uuid/v1'
 import BigNumber from 'bignumber.js'
 import Web3ABI from 'web3-eth-abi'
@@ -8,13 +13,13 @@ import { TRANSACTION_DESCRIBERS_BY_TOPIC, decodeParameters, findFunctionABI } fr
 import { decodeTxData } from '../utils/DecodeUtils'
 import { ETH } from '../dao/constants'
 
-export const describeEvent = (data, context) => {
+export const describeEvent = (data, context = {}) => {
   const { log, block } = data
 
-  const array = EVENT_DESCRIBERS_BY_TOPIC[data.log.topics[0]]
+  const array = EVENT_DESCRIBERS_BY_TOPIC[log.topics[0]]
   if (array) {
     for (const describer of array) {
-      const { input, params } = decodeLog(describer.abi, data.log)
+      const { input, params } = decodeLog(describer.abi, log)
       const desc = describer.describe(data, context, { abi: describer.abi, input, params })
       if (desc) {
         return desc
@@ -59,16 +64,12 @@ const defaultDescription = (entry, context) => {
   const fee = new BigNumber(tx.gasPrice).mul(receipt ? receipt.cumulativeGasUsed : tx.gasLimit)
 
   let value = null
-  let amountTitle = null
   if (tx.from.toLowerCase() === address && tx.to.toLowerCase() === address) {
     value = fee.mul(-1)
-    amountTitle = 'tx.fee'
   } else if (tx.from.toLowerCase() === address) {
     value = v.minus(fee)
-    amountTitle = v.eq(0) ? 'tx.fee' : 'tx.amountFee'
   } else {
     value = v
-    amountTitle = 'tx.amount'
   }
 
   const amount = new Amount(value, ETH)
@@ -79,12 +80,9 @@ const defaultDescription = (entry, context) => {
     name: 'custom',
     date: new Date(block ? (block.timestamp * 1000) : null),
     icon: 'event',
-    title: `${path}.title`,
+    title: `Unknown transaction`,
     message: tx.to,
     target: null,
-    amountTitle,
-    isAmountSigned: true,
-    amount,
     fields: [
       {
         value: tx.from,
@@ -102,24 +100,37 @@ const defaultDescription = (entry, context) => {
   })
 }
 
-export const describeTx = (entry, context = {}) => {
-  const { tx, receipt } = entry
+export const describePendingTx = (entry, context = {}) => {
+  const { tx } = entry
   const { abi } = context
 
-  let info
-  if (!receipt) {
-    info = formatPendingTxData({ abi, tx })
-  } else {
-    info = {
-      topic: tx.input.substr(0, 10),
-      ...decodeParameters(abi, entry.tx),
-    }
+  if (!abi) {
+    return defaultDescription(entry, context)
   }
+
+  const info = formatPendingTxData({ abi, tx })
 
   const array = TRANSACTION_DESCRIBERS_BY_TOPIC[info.topic]
   if (array) {
     for (const describer of array) {
       const desc = describer.describe(entry, context, { abi: describer.abi, inputs: info.inputs, params: info.params, ...context })
+      if (desc) {
+        return desc
+      }
+    }
+  }
+
+  return defaultDescription(entry, context)
+}
+
+export const describeTx = (entry, context = {}) => {
+  const { tx } = entry
+
+  const array = TRANSACTION_DESCRIBERS_BY_TOPIC[tx.input.substr(0, 10)]
+  if (array) {
+    for (const describer of array) {
+      const { inputs, params } = decodeParameters(describer.abi, entry.tx)
+      const desc = describer.describe(entry, context, { abi: describer.abi, inputs, params, ...context })
       if (desc) {
         return desc
       }

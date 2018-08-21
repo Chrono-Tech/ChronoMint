@@ -5,4 +5,4 @@
 
 export const TX_DEPOSIT = 'deposit'
 export const TX_WITHDRAW_SHARES = 'withdrawShares'
-export const WITHDRAW = 'withdraw'
+export const ASSET_DEPOSIT_WITHDRAW = 'withdraw'

@@ -9,12 +9,12 @@ import { getAccount } from '../../redux/session/selectors'
 
 export const eventsSelector = () => (state) => state.get('events')
 
-export const currentAccountEvents = () => createSelector(
+export const getHistoryEvents = (historyKey) => createSelector(
   [
     eventsSelector(),
     getAccount,
   ],
   (history, account) => {
-    return history[account] || new LogListModel({ address: account })
+    return history[historyKey] || new LogListModel({ address: account })
   },
 )

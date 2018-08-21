@@ -30,7 +30,7 @@ import { ETH, BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
 import { estimateGasForDeposit, requireTIME } from '@chronobank/core/redux/mainWallet/actions'
 import { mainApprove, mainRevoke } from '@chronobank/core/redux/wallets/actions'
-import { TX_DEPOSIT, WITHDRAW } from '@chronobank/core/dao/constants/AssetHolderDAO'
+import { TX_DEPOSIT, ASSET_DEPOSIT_WITHDRAW } from '@chronobank/core/dao/constants/AssetHolderDAO'
 import { TX_APPROVE } from '@chronobank/core/dao/constants/ERC20DAO'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
@@ -142,7 +142,7 @@ export default class DepositTokensForm extends PureComponent {
       step = DEPOSIT_SECOND
     }
     if (this.props.isWithdraw) {
-      step = WITHDRAW
+      step = ASSET_DEPOSIT_WITHDRAW
     }
 
     this.state = { step }
@@ -164,8 +164,8 @@ export default class DepositTokensForm extends PureComponent {
         case DEPOSIT_SECOND:
           action = TX_DEPOSIT
           break
-        case WITHDRAW:
-          action = WITHDRAW
+        case ASSET_DEPOSIT_WITHDRAW:
+          action = ASSET_DEPOSIT_WITHDRAW
           break
       }
       this.handleGetGasPrice(action, newProps.amount, newProps.feeMultiplier, this.props.spender)
@@ -253,7 +253,7 @@ export default class DepositTokensForm extends PureComponent {
     const symbol = token.symbol()
     return (
       <div styleName='head'>
-        <div styleName='mainTitle'><Translate value={prefix(this.state.step === WITHDRAW ? 'withdraw' : 'depositTime')} /></div>
+        <div styleName='mainTitle'><Translate value={prefix(this.state.step === ASSET_DEPOSIT_WITHDRAW ? 'withdraw' : 'depositTime')} /></div>
         <div styleName='icon'>
           <div styleName='imgWrapper'>
             <IPFSImage
@@ -267,7 +267,7 @@ export default class DepositTokensForm extends PureComponent {
           <div styleName='headContent'>
 
             <div styleName='headItemWrapper'>
-              {this.state.step === DEPOSIT_FIRST || this.state.step === WITHDRAW ? (
+              {this.state.step === DEPOSIT_FIRST || this.state.step === ASSET_DEPOSIT_WITHDRAW ? (
                 <div styleName='headItem'>
                   <div styleName='headItemTitle'><Translate value={prefix('balanceAmount')} /></div>
                   <div styleName='balance'><TokenValue isInvert noRenderPrice value={balance} /></div>
@@ -275,7 +275,7 @@ export default class DepositTokensForm extends PureComponent {
                 </div>
               ) : null}
 
-              {this.state.step === DEPOSIT_SECOND || this.state.step === WITHDRAW ? (
+              {this.state.step === DEPOSIT_SECOND || this.state.step === ASSET_DEPOSIT_WITHDRAW ? (
                 <div styleName='headItem'>
                   <div styleName='headItemTitle'><Translate value={prefix('depositAmount')} /></div>
                   <div styleName='balance'>
@@ -283,7 +283,7 @@ export default class DepositTokensForm extends PureComponent {
                       isInvert
                       noRenderPrice
                       value={deposit}
-                      noRenderSymbol={this.state.step === WITHDRAW}
+                      noRenderSymbol={this.state.step === ASSET_DEPOSIT_WITHDRAW}
                     />
                   </div>
                   <div styleName='balanceFiat'><TokenValue isInvert renderOnlyPrice value={deposit} /></div>
@@ -299,7 +299,7 @@ export default class DepositTokensForm extends PureComponent {
               )}
             </div>
 
-            {this.state.step !== WITHDRAW && balance.gt(0) && (
+            {this.state.step !== ASSET_DEPOSIT_WITHDRAW && balance.gt(0) && (
               <div styleName='stepsWrapper'>
                 <div styleName={classnames('step', { 'active': this.state.step === DEPOSIT_FIRST })}>
                   <Translate value={prefix('firstStep')} />
@@ -474,7 +474,7 @@ export default class DepositTokensForm extends PureComponent {
             />
           </div>
         )}
-        {this.state.step === WITHDRAW && (
+        {this.state.step === ASSET_DEPOSIT_WITHDRAW && (
           <div styleName='action'>
             <Button
               styleName='actionButton'

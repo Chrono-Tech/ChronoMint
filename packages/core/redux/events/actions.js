@@ -5,22 +5,41 @@
 
 import { padStart, unionBy, uniq, sortBy } from 'lodash'
 import { describeEvent, describeTx } from '../../describers'
+import { DUCK_SESSION } from '../session/constants'
+import { getHistoryKey } from '../../utils/eventHistory'
 
 import { web3Selector } from '../ethereum/selectors'
 import { eventsSelector } from './selectors'
+import EventsHistory from '../../services/EventsService'
 
 import {
-  LOGS_LOADED,
-  LOGS_LOADING,
-  LOGS_UPDATED,
+  EVENTS_LOGS_LOADED,
+  EVENTS_LOGS_LOADING,
+  EVENTS_LOGS_UPDATED,
+  ADD_EVENT_TO_HISTORY,
 } from './constants'
 
-export const pushTx = (address, receipt) => async (dispatch, getState) => {
+export const watchEventsToHistory = () => async (dispatch, getState) => {
+
+  EventsHistory.on(ADD_EVENT_TO_HISTORY, (event) => {
+    const allHistory = eventsSelector()(getState())
+    const topic = event.raw.topics[0]
+
+    Object.entries(allHistory).map(([, history]) => {
+      const isTopicsExists = history.topics.some((t) => t === topic)
+      if (!isTopicsExists) {
+        return
+      }
+
+      dispatch(pushEvent(history.historyKey, { ...event, data: event.raw.data, topics: event.raw.topics }))
+    })
+  })
+}
+
+export const pushTx = (historyKey, receipt) => async (dispatch, getState) => {
   {
     const web3 = web3Selector()(getState())
-    const state = getState()
-
-    address = address.toLowerCase()
+    const allHistory = eventsSelector()(getState())
 
     const [tx, block] = await Promise.all([
       web3.eth.getTransaction(receipt.transactionHash),
@@ -28,22 +47,18 @@ export const pushTx = (address, receipt) => async (dispatch, getState) => {
     ])
 
     const desciption = describeTx(
-      { tx, receipt, block },
-      {
-        address,
-        agents: [],
-        // getters: rootGetters
-      }
+      { tx, receipt, block }
     )
 
     const entries = Array.isArray(desciption)
       ? desciption
       : [desciption]
 
-    const actualHistory = state.history[address]
+    const actualHistory = allHistory[historyKey]
 
-    dispatch(LOGS_UPDATED, {
-      address,
+    dispatch({
+      type: EVENTS_LOGS_UPDATED,
+      historyKey,
       cursor: actualHistory
         ? actualHistory.cursor
         : null,
@@ -54,11 +69,12 @@ export const pushTx = (address, receipt) => async (dispatch, getState) => {
   }
 }
 
-export const pushEvent = (address, log) => async (dispatch, getState) => {
-  const web3 = web3Selector()(getState())
-  const state = getState()
+export const pushEvent = (historyKey, log) => async (dispatch, getState) => {
 
-  address = address.toLowerCase()
+  const web3 = web3Selector()(getState())
+  const allHistory = eventsSelector()(getState())
+  const account = getState().get(DUCK_SESSION).account
+
   const [tx, receipt, block] = await Promise.all([
     web3.eth.getTransaction(log.transactionHash),
     web3.eth.getTransactionReceipt(log.transactionHash),
@@ -66,22 +82,19 @@ export const pushEvent = (address, log) => async (dispatch, getState) => {
   ])
 
   const desciption = describeEvent(
-    { log, tx, receipt, block },
-    {
-      address,
-      agents: [],
-      // getters: rootGetters
-    }
+    { log, tx, receipt, block: block || { timestamp: +new Date() } }
   )
 
   const entries = Array.isArray(desciption)
     ? desciption
     : [desciption]
 
-  const actualHistory = state.history[address]
+  const actualHistory = allHistory[historyKey]
 
-  dispatch(LOGS_UPDATED, {
-    address,
+  dispatch({
+    type: EVENTS_LOGS_UPDATED,
+    address: account,
+    historyKey,
     cursor: actualHistory
       ? actualHistory.cursor
       : null,
@@ -91,18 +104,22 @@ export const pushEvent = (address, log) => async (dispatch, getState) => {
   })
 }
 
-export const loadMoreEvents = (address, blockScanLimit = 100000, logScanLimit = 15) => async (dispatch, getState) => {
+export const loadEvents = (topics = null, address: string = null, blockScanLimit = 100000, logScanLimit = 10) => async (dispatch, getState) => {
 
   const web3 = web3Selector()(getState())
-  address = address.toLowerCase()
+  const account = getState().get(DUCK_SESSION).account
+  address = address ? address.toLowerCase() : account
+  const historyKey = getHistoryKey(topics, address)
 
   await dispatch({
-    type: LOGS_LOADING,
+    type: EVENTS_LOGS_LOADING,
     address,
+    historyKey,
+    topics,
   })
 
   const allHistory = eventsSelector()(getState())
-  const history = allHistory[address]
+  const history = allHistory[historyKey]
 
   const toBlock = await web3.eth.getBlock(
     history.cursor == null ? 'latest' : Math.max(0, history.cursor - 1)
@@ -116,11 +133,15 @@ export const loadMoreEvents = (address, blockScanLimit = 100000, logScanLimit = 
 
   const [logs1, logs2, logs3] = await Promise.all(
     [1, 2, 3].map(
-      (number) => web3.eth.getPastLogs({
-        toBlock: `0x${Number(toBlock.number).toString(16)}`,
-        fromBlock: `0x${Number(fromBlock.number).toString(16)}`,
-        topics: Array.from({ length: number + 1 }).map((n, i) => number === i ? topic : null)
-      })
+      (number) => {
+        const topicsArray = Array.from({ length: number + 1 }).map((n, i) => number === i ? topic : null)
+        topicsArray[0] = topics
+        return web3.eth.getPastLogs({
+          toBlock: `0x${Number(toBlock.number).toString(16)}`,
+          fromBlock: `0x${Number(fromBlock.number).toString(16)}`,
+          topics: topicsArray,
+        })
+      }
     )
   )
 
@@ -150,6 +171,13 @@ export const loadMoreEvents = (address, blockScanLimit = 100000, logScanLimit = 
   }
 
   if (logs.length === 0) {
+    dispatch({
+      type: EVENTS_LOGS_LOADED,
+      historyKey,
+      address,
+      entries: history.entries
+    })
+
     return
   }
 
@@ -213,8 +241,6 @@ export const loadMoreEvents = (address, blockScanLimit = 100000, logScanLimit = 
     for (const { tx, receipt, logs } of Object.values(transactions)) {
       const context = {
         address,
-        agents: [],
-        // getters: rootGetters
       }
 
       for (const log of logs) {
@@ -226,19 +252,20 @@ export const loadMoreEvents = (address, blockScanLimit = 100000, logScanLimit = 
         }
       }
 
-      // if (tx.from.toLowerCase() === address || tx.to.toLowerCase() === address) {
-      //   const description = describeTx({ tx, receipt, block }, context)
-      //   if (Array.isArray(description)) {
-      //     entries.push(...description)
-      //   } else {
-      //     entries.push(description)
-      //   }
-      // }
+      if (tx.from.toLowerCase() === address || tx.to.toLowerCase() === address) {
+        const description = describeTx({ tx, receipt, block }, context)
+        if (Array.isArray(description)) {
+          entries.push(...description)
+        } else {
+          entries.push(description)
+        }
+      }
     }
   }
 
   dispatch({
-    type: LOGS_LOADED,
+    type: EVENTS_LOGS_LOADED,
+    historyKey,
     address,
     cursor: fromBlock.number,
     entries: history

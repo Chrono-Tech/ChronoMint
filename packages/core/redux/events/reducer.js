@@ -6,39 +6,39 @@
 import LogListModel from '../../models/LogListModel'
 
 import {
-  LOGS_LOADING,
-  LOGS_LOADED,
-  LOGS_UPDATED,
+  EVENTS_LOGS_LOADING,
+  EVENTS_LOGS_LOADED,
+  EVENTS_LOGS_UPDATED,
 } from './constants'
 
 export const initialState = {}
 
 const mutations = {
-  [LOGS_LOADING] (state, { address }) {
+  [EVENTS_LOGS_LOADING] (state, { address, historyKey, topics }) {
     address = address.toLowerCase()
-    const history = state[address] || new LogListModel({ address })
+    const history = state[historyKey] || new LogListModel({ address, topics, historyKey })
     return {
       ...state,
-      [address]: history.loading(),
+      [historyKey]: history.loading(),
     }
   },
-  [LOGS_LOADED] (state, { address, cursor, entries }) {
+  [EVENTS_LOGS_LOADED] (state, { address, historyKey, cursor, entries }) {
     address = address.toLowerCase()
-    const history = state[address] || new LogListModel({ address })
+    const history = state[historyKey] || new LogListModel({ address })
     return {
       ...state,
-      [address]: history.loaded({
+      [historyKey]: history.loaded({
         entries,
         cursor,
       }),
     }
   },
-  [LOGS_UPDATED] (state, { address, cursor, entries }) {
+  [EVENTS_LOGS_UPDATED] (state, { address, historyKey, cursor, entries }) {
     address = address.toLowerCase()
-    const history = state[address] || new LogListModel({ address })
+    const history = state[historyKey] || new LogListModel({ address })
     return {
       ...state,
-      [address]: history.updated({
+      [historyKey]: history.updated({
         entries,
         cursor,
       }),

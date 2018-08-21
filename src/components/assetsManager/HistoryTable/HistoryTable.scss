@@ -33,149 +33,153 @@ $cell-padding: 24px 0px;
     padding: 0 8px;
     color: $color-primary-0;
 
-    .table {
+    @include md-only {
+      display: block;
+      overflow-x: scroll;
+    }
+
+    .row {
       display: flex;
-      flex: 1;
-      flex-direction: column;
-      width: 100%;
+      border-top: 1px solid #F2F2F2;
+      margin-left: 35px;
 
-      @include md-only {
-        display: block;
-        overflow-x: scroll;
-      }
-
-      .row {
+      .col-time {
         display: flex;
-        border-top: 1px solid #F2F2F2;
-        margin-left: 35px;
+        flex: 1;
+        padding: 15px 0;
+        line-height: 20px;
+        font-size: 14px;
+        color: #333333;
+        font-family: 'proxima-nova', sans-serif;
+        font-weight: 400;
+      }
 
-        .col-time {
+      .col-value {
+        display: flex;
+        flex: 3;
+        padding: 15px 0;
+
+        .col-value-container {
           display: flex;
-          flex: 1;
-          padding: $cell-padding;
-          padding-bottom: 8px;
-          line-height: 20px;
-          font-size: 14px;
-          color: #333333;
-          font-family: 'proxima-nova', sans-serif;
-          font-weight: 400;
-        }
+          flex-direction: column;
 
-        .col-value {
-          display: flex;
-          flex: 3;
-          padding: $cell-padding;
-          padding-bottom: 8px;
-
-          .col-value-container {
+          .event-title-container {
             display: flex;
-            flex-direction: column;
 
-            .event-title-container {
-              display: flex;
-
-              .event-title {
-                color: #333333;
-                font-family: proxima-nova, sans-serif;
-                font-weight: 400;
-                line-height: 20px;
-                text-align: left;
-                font-size: 14px;
-              }
+            .event-title {
+              color: #333333;
+              font-family: proxima-nova, sans-serif;
+              font-weight: 400;
+              line-height: 20px;
+              text-align: left;
+              font-size: 14px;
             }
-
-            .event-address-container {
-              display: flex;
-
-              .event-address {
-                color: #7F7F7F;
-                font-family: proxima-nova, sans-serif;
-                font-weight: 400;
-                line-height: 20px;
-              }
-            }
-
           }
+
+          .event-address-container {
+            display: flex;
+
+            .event-address {
+              color: #7F7F7F;
+              font-family: proxima-nova, sans-serif;
+              font-weight: 400;
+              line-height: 20px;
+              font-size: 14px;
+            }
+          }
+
         }
       }
+    }
 
-      @include md-only {
-
-        .section {
-          margin: 10px 0px;
-        }
-
-        .table {
-          display: block;
-          .table-head {
-            display: none;
-          }
-          .table-body {
-            margin: 5px 5px;
-            display: table;
-            width: 100%;
-            table-layout: fixed;
-
-            margin-top: 10px;
-            .row {
-              display: table-row-group;
-              padding: 0;
-              .col-time, .col-block, .col-type, .col-manager, .col-value {
-                display: table-row;
-              }
-              .label {
-                width: 70px;
-                display: table-cell;
-              }
-              .property {
-                display: table-cell;
-              }
-
-              .col-value {
-                .property {
-                  padding-bottom: 20px;
-                }
-              }
-            }
-          }
-        }
-      }
+    @include md-only {
 
       .section {
+        margin: 10px 0;
+      }
 
-        .section-header {
+      .table {
+        display: block;
+        .table-head {
+          display: none;
+        }
+        .table-body {
+          margin: 5px 5px;
+          display: table;
+          width: 100%;
+          table-layout: fixed;
 
-          h5 {
-            display: block;
-            text-align: left;
-            font-size: 14px;
-            line-height: 17px;
-            color: #333333;
-            font-family: proxima-nova, sans-serif;
-            font-weight: 500;
-            padding-left: 35px;
-            padding-top: 15px;
-            padding-bottom: 15px;
-            border-top: 1px solid #F2F2F2;
-          }
+          margin-top: 10px;
+          .row {
+            display: table-row-group;
+            padding: 0;
+            .col-time, .col-block, .col-type, .col-manager, .col-value {
+              display: table-row;
+            }
+            .label {
+              width: 70px;
+              display: table-cell;
+            }
+            .property {
+              display: table-cell;
+            }
 
-          .no-transactions {
-            line-height: 100px
-          }
-
-          .txs-loading {
-            text-align: center;
-            padding: 25px;
+            .col-value {
+              .property {
+                padding-bottom: 20px;
+              }
+            }
           }
         }
       }
     }
 
-    .footer {
-      padding: 24px 16px;
-      text-align: center;
+    .section {
+
+      .section-header {
+
+        h5 {
+          display: block;
+          text-align: left;
+          font-size: 14px;
+          line-height: 17px;
+          color: #333333;
+          font-family: proxima-nova, sans-serif;
+          font-weight: 500;
+          padding-left: 35px;
+          padding-top: 15px;
+          padding-bottom: 15px;
+          border-top: 1px solid #F2F2F2;
+        }
+
+        .no-transactions {
+          line-height: 100px
+        }
+
+        .txs-loading {
+          text-align: center;
+          padding: 25px;
+        }
+      }
     }
   }
+
+  .footer {
+    padding: 24px 16px;
+    text-align: center;
+  }
+
+  .load-more {
+    display: flex;
+    justify-content: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    .load-more-button {
+      cursor: pointer;
+    }
+  }
+
   .text-faded {
 
   }
