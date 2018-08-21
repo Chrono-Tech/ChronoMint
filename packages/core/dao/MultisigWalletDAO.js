@@ -233,7 +233,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     return this._tx('revoke', [tx.id])
   }
 
-  changeRequirement (newRequired: Number) {
+  changeRequirement (newRequired: number) {
     return this._tx('changeRequirement', [newRequired])
   }
 

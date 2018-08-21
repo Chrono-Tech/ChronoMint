@@ -298,7 +298,7 @@ export const confirmMultisigTx = (wallet, tx: MultisigWalletPendingTxModel) => a
   }
 }
 
-export const changeRequirement = (wallet, newRequired: Number) => async (dispatch) => {
+export const changeRequirement = (wallet, newRequired: number) => async (dispatch) => {
   try {
     const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address)
     await dao.changeRequirement(newRequired)
