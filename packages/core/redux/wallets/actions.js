@@ -29,6 +29,8 @@ import ethereumDAO from '../../dao/EthereumDAO'
 import { getMainEthWallet, getWallets } from './selectors/models'
 import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
+import { AllowanceCollection, SignerMemoryModel } from '../../models'
+import { executeWavesTransaction } from '../txWaves/thunks'
 import {
   AllowanceCollection,
   SignerMemoryModel,
@@ -216,6 +218,7 @@ export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amo
     const executeMap = {
       [BLOCKCHAIN_ETHEREUM]: executeTransaction,
       [BLOCKCHAIN_NEM]: executeNemTransaction,
+      [BLOCKCHAIN_WAVES]: executeWavesTransaction,
     }
 
     // execute
@@ -235,7 +238,7 @@ export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amo
   }
 }
 
-export const mainApprove = (token: TokenModel, amount: Amount, spender: string, feeMultiplier: Number) => async (dispatch, getState) => {
+export const mainApprove = (token: TokenModel, amount: Amount, spender: string, feeMultiplier: number) => async (dispatch, getState) => {
   const state = getState()
   const wallet = getMainEthWallet(state)
   const allowance = wallet.allowances.list[`${spender}-${token.id()}`]
@@ -254,7 +257,7 @@ export const mainApprove = (token: TokenModel, amount: Amount, spender: string, 
   }
 }
 
-export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Number = 1) => async (dispatch, getState) => {
+export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: number = 1) => async (dispatch, getState) => {
   const state = getState()
   const wallet = getMainEthWallet(state)
   const allowance = wallet.allowances.list[`${spender}-${token.id()}`]

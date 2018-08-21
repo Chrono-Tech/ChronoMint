@@ -96,28 +96,34 @@ export default class WavesDAO extends EventEmitter {
   }
 
   // TODO @ipavlenko: Replace with 'immediateTransfer' after all token DAOs will start using 'submit' method
-  transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
-    this.submit(from, to, amount, token, feeMultiplier)
-  }
-
-  submit (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
-    setImmediate(async () => {
-      this.emit('submit', new TransferExecModel({
-        title: `tx.Waves.${this._name ? 'Asset' : 'WAVES'}.transfer.title`,
-        from,
-        to,
-        blockchain: BLOCKCHAIN_WAVES,
-        amount: new Amount(amount, token.symbol()),
-        amountToken: token,
-        feeToken: this._wavesToken,
-        fee: new Amount(10000, this._wavesToken.symbol()),
-        feeMultiplier,
-      }))
+  transfer (from: string, to: string, amount: BigNumber) {
+    // this.submit(from, to, amount, token, feeMultiplier)
+    return ({
+      amount,
+      from,
+      to,
+      txType: 'waves',
     })
   }
 
+  // submit (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: number = 1) {
+  //   setImmediate(async () => {
+  //     this.emit('submit', new TransferExecModel({
+  //       title: `tx.Waves.${this._name ? 'Asset' : 'WAVES'}.transfer.title`,
+  //       from,
+  //       to,
+  //       blockchain: BLOCKCHAIN_WAVES,
+  //       amount: new Amount(amount, token.symbol()),
+  //       amountToken: token,
+  //       feeToken: this._wavesToken,
+  //       fee: new Amount(10000, this._wavesToken.symbol()),
+  //       feeMultiplier,
+  //     }))
+  //   })
+  // }
+
   // TODO @ipavlenko: Rename to 'transfer' after all token DAOs will start using 'submit' method and 'trans'
-  async immediateTransfer (from: string, to: string, amount: BigNumber /*token: TokenModel, feeMultiplier: Number = 1*/) {
+  async immediateTransfer (from: string, to: string, amount: BigNumber /*token: TokenModel, feeMultiplier: number = 1*/) {
     try {
       return await this._wavesProvider.transfer(from, to, amount, this._asset)
     } catch (e) {
