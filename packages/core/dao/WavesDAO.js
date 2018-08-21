@@ -106,6 +106,7 @@ export default class WavesDAO extends EventEmitter {
         title: `tx.Waves.${this._name ? 'Asset' : 'WAVES'}.transfer.title`,
         from,
         to,
+        blockchain: BLOCKCHAIN_WAVES,
         amount: new Amount(amount, token.symbol()),
         amountToken: token,
         feeToken: this._wavesToken,
