@@ -11,18 +11,6 @@ export const getPersistAccount = (state) => {
   return state.get(DUCK_PERSIST_ACCOUNT)
 }
 
-export const getSigner = (state) => {
-  console.log('get signer')
-  const { decryptedWallet } = getPersistAccount(state)
-  return decryptedWallet.signers.ethereum
-}
-
-export const getBtcSigner = (state) => {
-  console.log('get signer')
-  const { decryptedWallet } = getPersistAccount(state)
-  return decryptedWallet.signers.bitcoin
-}
-
 export const getSelectedNetwork = () => createSelector(
   (state) => state.get(DUCK_NETWORK),
   (network) => {

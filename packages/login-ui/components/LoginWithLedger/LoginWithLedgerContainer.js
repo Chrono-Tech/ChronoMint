@@ -37,11 +37,13 @@ function mapStateToProps (state) {
 
 class LoginWithLedgerContainer extends PureComponent {
   static propTypes = {
+    previousPage: PropTypes.func,
     onDeviceSelect: PropTypes.func,
     deviceList: PropTypes.array,
     navigateToSelectImportMethod: PropTypes.func,
     navigateToCreateAccount: PropTypes.func,
     initLedgerDevice: PropTypes.func,
+    navigateToDerivationPathForm: PropTypes.func,
   }
 
   static defaultProps = {
@@ -60,6 +62,7 @@ class LoginWithLedgerContainer extends PureComponent {
       navigateToCreateAccount,
       deviceList,
       onDeviceSelect,
+      navigateToDerivationPathForm,
     } = this.props
 
     return (
@@ -68,6 +71,8 @@ class LoginWithLedgerContainer extends PureComponent {
         deviceList={deviceList}
 	previousPage={previousPage}
         onDeviceSelect={onDeviceSelect}
+        navigateToDerivationPathForm={navigateToDerivationPathForm}
+        previousPage={previousPage}
       />
     )
   }

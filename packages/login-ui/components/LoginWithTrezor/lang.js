@@ -4,11 +4,12 @@
  */
 
 export const en = {
-  title: 'Import account from Trezor',
+  title: 'Add an Address',
   login: 'Login',
   or: 'or',
-  back: '',
+  back: 'back',
   ethAddress: 'Ethereum address',
+  enterPath: 'Enter HD derivation path',
   isHttps: {
     successTitle: 'HTTPS protocol provided',
     errorTitle: 'HTTPS protocol only',

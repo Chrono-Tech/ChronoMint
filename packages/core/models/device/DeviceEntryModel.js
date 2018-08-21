@@ -10,7 +10,7 @@ const schema = {
   address: PropTypes.string,
   path: PropTypes.string,
   type: PropTypes.string,
-  publicKey: PropTypes.array,
+  publicKey: PropTypes.string,
 }
 
 class DeviceEntryModel extends AbstractModel {

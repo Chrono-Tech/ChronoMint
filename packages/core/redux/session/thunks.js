@@ -191,7 +191,8 @@ export const getProfileSignature = (wallet) => async (dispatch) => {
   }
   try {
     const signDataString = ProfileService.getSignData()
-    const signData = wallet.signData(signDataString)
+    const signData = await wallet.signers.ethereum.signData(signDataString,wallet.entry.encrypted[0].path)
+    console.log(signData)
     const profileSignature = await dispatch(ProfileThunks.getUserProfile(signData.signature))
     dispatch(SessionActions.setProfileSignature(profileSignature))
 

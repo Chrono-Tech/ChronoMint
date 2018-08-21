@@ -3,12 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import Divider from '@material-ui/core/Divider'
-import Typography from '@material-ui/core/Typography'
-import ChevronRight from '@material-ui/icons/ChevronRight'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
@@ -19,23 +13,13 @@ import {
 
 import './LoginWithTrezor.scss'
 
-const mapStateToProps = (state) => {
-  return {
-    isLoading: state.get(DUCK_DEVICE_ACCOUNT).isLoading,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    fetchNextAccounts: () => dispatch(fetchNextAccounts()),
-  }
-}
-
-@connect(mapStateToProps, mapDispatchToProps)
-
 class LoginTrezor extends Component {
   static propTypes = {
     previousPage: PropTypes.func,
+    isLoading: PropTypes.bool,
+    deviceList: PropTypes.instanceOf(Array),
+    onDeviceSelect: PropTypes.func,
+    navigateToDerivationPathForm: PropTypes.func,
   }
 
   componentDidUpdate (prevProps) {
@@ -49,77 +33,73 @@ class LoginTrezor extends Component {
 
   renderStates () {
     return (
-          <div styleName='state' key='1'>
-            <div styleName='titleContent'>
-              <div styleName='title'>zzz</div>
-              <div styleName='subtitle'>zzz</div>
-            </div>
-          </div>
+      <div styleName='state' key='1'>
+        <div styleName='titleContent'>
+          <div styleName='title'>zzz</div>
+          <div styleName='subtitle'>zzz</div>
+        </div>
+      </div>
     )
   }
 
-  _buildItem = (item, index) => {
+  _buildItem = (item, i) => {
     return (
-      <div key={index}>
-        <ListItem
-          button
-          type='submit'
-          name='address'
-          value={item.address}
-          component='button'
-          disableGutters
-          style={{ margin: 0 }}
-          onClick={() => this.props.onDeviceSelect(item)}
-        >
-          <ListItemText
-            style={{ paddingLeft:"10px" }}
-            disableTypography
-            primary={
-              <Typography
-                type='body2'
-                style={{ color: 'black', fontWeight: 'bold' }}
-              >
-                {item.address}
-              </Typography>
-            }
-            secondary='eth 0'
-          />
-          <ChevronRight />
-        </ListItem>
-        <Divider light />
+      <div
+        key={i}
+        onClick={() => this.props.onDeviceSelect(item)}
+        styleName='account-item'
+      >
+        <div styleName='account-item-content'>
+          <div styleName='account-item-address'>
+            { item.address }
+          </div>
+          <div styleName='account-item-additional'>
+            {/* Wallet balance field*/}
+            ETH 1.00
+          </div>
+        </div>
+        <div styleName='account-item-icon'>
+          <div className='chronobank-icon'>next</div>
+        </div>
       </div>
     )
   }
 
   render () {
-    const { previousPage, deviceList, isLoading } = this.props
-    console.log('isLoading')
+    const { previousPage, deviceList, isLoading, navigateToDerivationPathForm } = this.props
     console.log(deviceList)
-    console.log(previousPage)
     return (
       <div styleName='form'>
         <div styleName='page-title'>
           <Translate value='LoginWithTrezor.title' />
         </div>
-        {!isLoading && (
-        <div styleName='states'>
-          {this.renderStates()}
-        </div>
-	)}
+        {
+          !deviceList.length && (
+            <div styleName='states'>
+              {this.renderStates()}
+            </div>
+          )
+        }
 
-        {isLoading && (
-          <div styleName='account'>
-            <List component='nav' className='list'>
+        {
+          deviceList.length && (
+            <div styleName='account'>
               {deviceList.map(this._buildItem)}
-            </List>
-          </div>
-        )}
+            </div>
+          )
+        }
 
         <div styleName='actions'>
-          <Translate value='LoginWithMnemonic.or' />
+          <button onClick={navigateToDerivationPathForm} styleName='link'>
+            <Translate value='LoginWithTrezor.enterPath' />
+          </button>
           <br />
+
+          <Translate value='LoginWithTrezor.or' />
+          <br />
+
           <button onClick={previousPage} styleName='link'>
-            <Translate value='LoginWithMnemonic.back' />
+            <Translate value='LoginWithTrezor.back' />
           </button>
         </div>
       </div>

@@ -18,6 +18,7 @@ import {
 import {
   LoginWithTrezorContainer,
   AccountNameContainer,
+  DerivationPathFormContainer,
 } from '@chronobank/login-ui/components'
 import { SubmissionError } from 'redux-form'
 import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
@@ -36,6 +37,7 @@ class TrezorLoginPage extends PureComponent {
   static PAGES = {
     DEVICE_SELECT_FORM: 1,
     ACCOUNT_NAME_FORM: 2,
+    DERIVATION_PATH_FORM: 3,
   }
 
   static propTypes = {
@@ -60,6 +62,7 @@ class TrezorLoginPage extends PureComponent {
           <LoginWithTrezorContainer
             previousPage={this.previousPage.bind(this)}
             onDeviceSelect={this.onSubmitDevice.bind(this)}
+            navigateToDerivationPathForm={this.navigateToDerivationPathForm.bind(this)}
           />
         )
 
@@ -68,6 +71,14 @@ class TrezorLoginPage extends PureComponent {
           <AccountNameContainer
             previousPage={this.previousPage.bind(this)}
             onSubmit={this.onSubmitAccountName.bind(this)}
+          />
+        )
+
+      case TrezorLoginPage.PAGES.DERIVATION_PATH_FORM:
+        return (
+          <DerivationPathFormContainer
+            previousPage={this.navigateToDeviceSelectForm.bind(this)}
+            onSubmit={this.onSubmitDerivationPath.bind(this)}
           />
         )
 
@@ -120,8 +131,26 @@ class TrezorLoginPage extends PureComponent {
     navigateToSelectWallet()
   }
 
-  previousPage () { 
-    console.log('previous page')
+  async onSubmitDerivationPath ({ path }) {
+    console.log('path', path)
+    this.setState({
+      page: TrezorLoginPage.PAGES.DEVICE_SELECT_FORM
+    })
+  }
+
+  navigateToDerivationPathForm () {
+    this.setState({
+      page: TrezorLoginPage.PAGES.DERIVATION_PATH_FORM,
+    })
+  }
+
+  navigateToDeviceSelectForm () {
+    this.setState({
+      page: TrezorLoginPage.PAGES.DEVICE_SELECT_FORM,
+    })
+  }
+
+  previousPage () {
     if (this.state.page === TrezorLoginPage.PAGES.DEVICE_SELECT_FORM){
       this.props.navigateBack()
     } else {

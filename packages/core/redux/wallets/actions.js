@@ -32,7 +32,7 @@ import {
   WALLETS_UPDATE_BALANCE,
   WALLETS_UPDATE_WALLET,
 } from './constants'
-import { getSigner } from '../persistAccount/selectors'
+import { getPersistAccount } from '../persistAccount/selectors'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -57,11 +57,12 @@ export const initWallets = () => (dispatch) => {
 const initWalletsFromKeys = () => (dispatch, getState) => {
   console.log('Init wallets from keys')
   const state = getState()
-  const signer = getSigner(state)
+  const account = getPersistAccount(state)
+  console.log(account)
 
     const wallet = new WalletModel({
-      address: signer.address,
-      blockchain: signer.type,
+      address: account.decryptedWallet.entry.encrypted[0].address,
+      blockchain: 'Ethereum',
       isMain: true,
     })
 

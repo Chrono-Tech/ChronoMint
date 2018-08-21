@@ -127,10 +127,6 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
           if (!(tx.from() === account || tx.to() === account)) {
             return
           }
-          // update donator
-          if (tx.from() === assetDonatorDAO.getInitAddress()) {
-            dispatch(updateIsTIMERequired())
-          }
         }
 
         if (walletsAccounts.includes(tx.from()) || walletsAccounts.includes(tx.to())) { // for derive wallets

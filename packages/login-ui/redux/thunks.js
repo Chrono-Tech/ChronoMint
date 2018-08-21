@@ -113,10 +113,10 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
       console.log('navigate to device login')
       try {
         const wallet = await dispatch(DeviceActions.loadDeviceAccount(wlt))
-        console.log(wallet.signers.ethereum.address)
-        dispatch(SessionThunks.getProfileSignature(wallet.signers.ethereum))
+        console.log(wallet.entry.encrypted[0].address)
+        dispatch(SessionThunks.getProfileSignature(wallet))
         
-        await dispatch(NetworkThunks.handleLogin(wallet.signers.ethereum.address))
+        await dispatch(NetworkThunks.handleLogin(wallet.entry.encrypted[0].address))
       } catch (e) {
         throw new SubmissionError({ password: e && e.message })
       }

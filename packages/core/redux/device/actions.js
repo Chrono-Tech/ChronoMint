@@ -56,27 +56,21 @@ export const onDeviceSelect = (wallet) => (dispatch) => {
 export const initLedgerDevice = (wallet) => async (dispatch, getState) => {
   console.log('initLedgerDevice')
   let wallets = []
-  const ledger = new TrezorDeviceMock()
+  const ledger = new LedgerDeviceMock()
   const result = await ledger.init()
   console.log(result)
   wallets.push(result)
-  dispatch(deviceUpdateList(wallets))
-  const deviceStatus = ledger.isConnected
+  dispatch(deviceUpdateList(result))
   console.log(deviceStatus)
   dispatch(deviceSetStatus(deviceStatus))
 }
 
 export const initTrezorDevice = (wallet) => async (dispatch, getState) => {
   console.log('initTrezorDevice')
-  let wallets = []
   const trezor = new TrezorDeviceMock()
-  const result = await trezor.init()
+  const result = await trezor.getAddressInfoList(0,5)
   console.log(result)
-  wallets.push(result)
-  dispatch(deviceUpdateList(wallets))
-  const deviceStatus = trezor.isConnected
-  console.log(deviceStatus)
-  dispatch(deviceSetStatus(deviceStatus))
+  dispatch(deviceUpdateList(result))
 
 }
 
@@ -85,21 +79,9 @@ export const initMemoryDevice = (wallet, password) => async (dispatch, getState)
 }
 
 export const loadDeviceAccount = (entry) => async (dispatch) => {
-  let device;
   console.log('load device account')
-  switch(entry.encrypted[0].type) {
-    case 'trezor_mock' : {
-      device = new TrezorDeviceMock()
-    }
-  }
-  try {
-  const btc = new BitcoinMemoryDevice()
-  btc.buildTx()
-  } catch (e) { console.log(e) }
-  device.init()
   const wallet = new AccountModel({
     entry,
-    signers: { ethereum: device },
   })
   await dispatch(accountLoad(wallet))
 

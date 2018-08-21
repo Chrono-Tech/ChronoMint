@@ -43,6 +43,7 @@ class LoginWithTrezorContainer extends PureComponent {
     previousPage: PropTypes.func,
     navigateToCreateAccount: PropTypes.func,
     initTrezorDevice: PropTypes.func,
+    navigateToDerivationPathForm: PropTypes.func,
   }
 
   static defaultProps = {
@@ -60,6 +61,7 @@ class LoginWithTrezorContainer extends PureComponent {
       navigateToCreateAccount,
       deviceList,
       onDeviceSelect,
+      navigateToDerivationPathForm,
       previousPage,
     } = this.props
 
@@ -68,7 +70,8 @@ class LoginWithTrezorContainer extends PureComponent {
         navigateToCreateAccount={navigateToCreateAccount}
         previousPage={previousPage}
         deviceList={deviceList}
-	onDeviceSelect={onDeviceSelect}
+        onDeviceSelect={onDeviceSelect}
+        navigateToDerivationPathForm={navigateToDerivationPathForm}
       />
     )
   }
