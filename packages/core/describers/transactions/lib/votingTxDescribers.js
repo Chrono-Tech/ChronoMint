@@ -82,7 +82,7 @@ export const FUNCTION_ACTIVATE_POLL = new TransactionDescriber(
 
 export const FUNCTION_VOTE = new TransactionDescriber(
   findFunctionABI(PollInterfaceABI, TX_VOTE),
-  ({ tx, block }, { address }, { abi }) => {
+  ({ tx, block }, { address }, { params, abi }) => {
     address = address.toLowerCase()
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {
 
@@ -99,7 +99,11 @@ export const FUNCTION_VOTE = new TransactionDescriber(
           },
           {
             value: tx.to,
-            description: `${path}.to`,
+            description: `${path}.pollAddress`,
+          },
+          {
+            value: params._choice,
+            description: `${path}.choiceNumber`,
           },
         ],
       })

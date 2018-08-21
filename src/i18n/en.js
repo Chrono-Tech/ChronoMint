@@ -391,6 +391,7 @@ export default {
         title: 'Vote',
         pollAddress: 'Poll address',
         from: 'From',
+        choiceNumber: 'Choice number',
       },
     },
     VotingManager: {

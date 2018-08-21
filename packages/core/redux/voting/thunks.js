@@ -5,8 +5,8 @@
 
 import BigNumber from 'bignumber.js'
 import votingService from '../../services/VotingService'
-import type PollNoticeModel from '../../models/notices/PollNoticeModel'
-import type PollDetailsModel from '../../models/PollDetailsModel'
+import PollNoticeModel from '../../models/notices/PollNoticeModel'
+import PollDetailsModel from '../../models/PollDetailsModel'
 import { notify } from '../notifier/actions'
 import { PTPoll } from './types'
 import { getSelectedPollFromDuck, getVoting, getPolls, getLastVoting } from './selectors/models'
@@ -33,6 +33,9 @@ import {
 } from '../../dao/constants/PollEmitterDAO'
 import { executeTransaction } from '../ethereum/actions'
 import * as VotingActions from './actions'
+import { registerDao } from '../daos/actions'
+import ContractDAOModel from '../../models/contracts/ContractDAOModel'
+import ContractModel from '../../models/contracts/ContractModel'
 
 const PAGE_SIZE = 20
 
@@ -88,6 +91,17 @@ export const watchInitPolls = () => async (dispatch, getState) => {
     .subscribeToVoting(account)
 
   votingService
+    .on('newPollDao', async (emitterDao) => {
+      const dao = await votingManagerDAO.pollInterfaceManagerDAO.getPollInterfaceDAO(emitterDao.address)
+      dispatch(registerDao(new ContractDAOModel({
+        contract: new ContractModel({
+          abi: dao.abi,
+          type: `${dao.getContractName()}-${dao.address}`,
+        }),
+        address: dao.address,
+        dao,
+      })))
+    })
     .on(EVENT_POLL_CREATED, callback)
     .on(EVENT_POLL_REMOVED, callback)
     .on(EVENT_POLL_ACTIVATED, callback)
@@ -145,10 +159,9 @@ export const vote = (choice: Number) => async (dispatch, getState) => {
   const votingDAO = daoByType('VotingManager')(state)
 
   try {
-    dispatch(VotingActions.handlePollUpdated(poll.isFetching(true)))
-    const options = poll.voteEntries()
+    dispatch(VotingActions.handlePollUpdated(new PollDetailsModel({ ...poll, isFetching: true })))
     const dao = await votingDAO.pollInterfaceManagerDAO.getPollInterfaceDAO(poll.id)
-    const tx = dao.vote(choice, options.get(choice), { symbol: 'TIME' })
+    const tx = dao.vote(choice)
     if (tx) {
       dispatch(executeTransaction({ tx }))
     }
