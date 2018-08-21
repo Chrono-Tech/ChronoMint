@@ -3,162 +3,161 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import networkService from '@chronobank/login/network/NetworkService'
-import { clearErrors, DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
-import { MD5 } from 'crypto-js'
-import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
-import { MuiThemeProvider } from 'material-ui'
-import { yellow800 } from 'material-ui/styles/colors'
-import WarningIcon from 'material-ui/svg-icons/alert/warning'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import { withStyles } from '@material-ui/core/styles'
+import compose from 'recompose/compose'
+import React from 'react'
+import { Field, formValueSelector, reduxForm } from 'redux-form/immutable'
+import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { login } from 'redux/session/actions'
-import inverted from 'styles/themes/inversed'
-import LoginWithOptions from '../LoginWithOptions/LoginWithOptions'
-import AutomaticProviderSelector from '../ProviderSelectorSwitcher/AutomaticProviderSelector'
-import ManualProviderSelector from '../ProviderSelectorSwitcher/ManualProviderSelector'
+import Button from 'components/common/ui/Button/Button'
+import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
+import {
+  getAccountAddress,
+  getAccountAvatarImg,
+  getAccountName,
+} from '@chronobank/core/redux/persistAccount/utils'
+import {
+  DUCK_NETWORK,
+} from '@chronobank/login/redux/network/constants'
+import {
+  navigateToSelectWallet,
+  navigateToRecoverAccountPage,
+} from '../../redux/navigation'
+import {
+  FORM_LOGIN_PAGE,
+  FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
+} from '../../redux/constants'
+import {
+  initLoginPage,
+  onSubmitLoginForm,
+  onSubmitLoginFormFail,
+} from '../../redux/thunks'
+import UserRow from '../UserRow/UserRow'
 
-import './LoginPage.scss'
+import styles from './styles'
+import './LoginForm.scss'
 
-const STRATEGY_MANUAL = 'manual'
-const STRATEGY_AUTOMATIC = 'automatic'
-
-const nextStrategy = {
-  [STRATEGY_AUTOMATIC]: STRATEGY_MANUAL,
-  [STRATEGY_MANUAL]: STRATEGY_AUTOMATIC,
-}
-
-const mapStateToProps = (state) => {
+function mapStateToProps (state) {
   const network = state.get(DUCK_NETWORK)
+  const selectedWallet = state.get(DUCK_PERSIST_ACCOUNT).selectedWallet
+  const formSelector = formValueSelector(FORM_LOGIN_PAGE)
+
   return {
-    errors: network.errors,
-    selectedAccount: network.selectedAccount,
-    selectedProviderId: network.selectedProviderId,
     selectedNetworkId: network.selectedNetworkId,
-    isLoading: network.isLoading,
+    selectedProvider: network.selectedProviderId,
+    selectedWallet: selectedWallet,
+    successMessage: formSelector(state, FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE),
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  checkNetwork: () => networkService.checkNetwork(),
-  createNetworkSession: (account, provider, network) => networkService.createNetworkSession(account, provider, network),
-  login: (account) => dispatch(login(account)),
-  clearErrors: () => dispatch(clearErrors()),
-})
+function mapDispatchToProps (dispatch) {
+  return {
+    onSubmit: async (values) => {
+      const password = values.get('password')
+      await dispatch(onSubmitLoginForm(password))
+    },
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitLoginFormFail(errors, submitErrors)),
+    initLoginPage: () => dispatch(initLoginPage()),
+    navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
+    navigateToRecoverAccountPage: () => dispatch(navigateToRecoverAccountPage()),
+  }
+}
 
-@connect(mapStateToProps, mapDispatchToProps)
-class LoginForm extends Component {
+class LoginPage extends React.Component {
   static propTypes = {
-    clearErrors: PropTypes.func,
-    checkNetwork: PropTypes.func,
-    createNetworkSession: PropTypes.func,
-    login: PropTypes.func,
-    selectedAccount: PropTypes.string,
-    selectedProviderId: PropTypes.number,
-    selectedNetworkId: PropTypes.number,
-    errors: PropTypes.arrayOf(PropTypes.string),
+    initLoginPage: PropTypes.func,
+    navigateToRecoverAccountPage: PropTypes.func,
+    handleSubmit: PropTypes.func,
+    navigateToSelectWallet: PropTypes.func,
+    selectedWallet: PropTypes.object,
+    successMessage: PropTypes.string,
+    classes: PropTypes.any,
+    error: PropTypes.string,
+    submitting: PropTypes.bool,
   }
 
-  constructor (props, context, updater) {
-    super(props, context, updater)
+  componentWillMount () {
+    this.props.initLoginPage()
+  }
 
-    // TODO replace with async arrow when class properties will work correctly
-    this.handleLogin = this.handleLogin.bind(this)
-    this.state = {
-      isShowProvider: true,
-      strategy: STRATEGY_AUTOMATIC,
+  renderSuccessMessage () {
+    const { successMessage } = this.props
+
+    if (!successMessage) {
+      return null
     }
-  }
 
-  async handleLogin () {
-    this.props.clearErrors()
-    const isPassed = await this.props.checkNetwork(
-      this.props.selectedAccount,
-      this.props.selectedProviderId,
-      this.props.selectedNetworkId,
-    )
-    if (isPassed) {
-      this.props.createNetworkSession(
-        this.props.selectedAccount,
-        this.props.selectedProviderId,
-        this.props.selectedNetworkId,
-      )
-      this.props.login(this.props.selectedAccount)
-    }
-  }
-
-  handleToggleProvider = (isShowProvider) => this.setState({ isShowProvider })
-
-  handleSelectorSwitch = (currentStrategy) => this.setState({ strategy: nextStrategy[currentStrategy] })
-
-  renderError = (error) => (
-    <div styleName='error' key={MD5(error)}>
-      <div styleName='errorIcon'><WarningIcon color={yellow800} /></div>
-      <div styleName='errorText'>{error}</div>
-    </div>
-  )
-
-  renderProviderSelector () {
-    switch (this.state.strategy) {
-      case STRATEGY_MANUAL:
-        return this.renderManualProviderSelector()
-      case STRATEGY_AUTOMATIC:
-        return this.renderAutomaticProviderSelector()
-      default:
-        return null
-    }
-  }
-
-  renderAutomaticProviderSelector () {
     return (
-      <AutomaticProviderSelector
-        currentStrategy={this.state.strategy}
-        onSelectorSwitch={this.handleSelectorSwitch}
-      />
-    )
-  }
-
-  renderManualProviderSelector () {
-    return (
-      <ManualProviderSelector
-        show={this.state.isShowProvider}
-        currentStrategy={this.state.strategy}
-        onSelectorSwitch={this.handleSelectorSwitch}
-      />
+      <div styleName='success-message'>
+        {successMessage}
+      </div>
     )
   }
 
   render () {
     const {
-      errors,
+      classes,
+      error,
+      handleSubmit,
+      navigateToSelectWallet,
+      navigateToRecoverAccountPage,
+      selectedWallet,
+      submitting,
     } = this.props
 
     return (
-      <MuiThemeProvider muiTheme={inverted}>
-        <div styleName='form'>
-          <div styleName='title'><Translate value='LoginPage.title' /></div>
-          <div styleName='subtitle'><Translate value='LoginPage.subTitle' /></div>
-          {this.renderProviderSelector()}
-          <LoginWithOptions
-            onLogin={this.handleLogin}
-            onToggleProvider={this.handleToggleProvider}
-          />
-          {errors && (
-            <div styleName='errors'>
-              {errors.map(this.renderError)}
-            </div>
-          )}
-          <ul styleName='actions'>
-            <li>
-              <LocaleDropDown />
-            </li>
-          </ul>
+      <form styleName='form' name={FORM_LOGIN_PAGE} onSubmit={handleSubmit}>
+        <div styleName='page-title'>
+          <Translate value='LoginForm.title' />
         </div>
-      </MuiThemeProvider>
+
+        {this.renderSuccessMessage()}
+
+        <input type='hidden' name={FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE} />
+
+        <div styleName='user-row'>
+          <UserRow
+            title={getAccountName(selectedWallet)}
+            subtitle={getAccountAddress(selectedWallet, true)}
+            avatar={getAccountAvatarImg(selectedWallet)}
+            onClick={navigateToSelectWallet}
+            linkTitle='My Accounts'
+          />
+
+          <div styleName='field'>
+            <Field
+              component={TextField}
+              name='password'
+              type='password'
+              label={<Translate value='LoginForm.enterPassword' />}
+              fullWidth
+              InputProps={{ className: classes.input }}
+            />
+          </div>
+
+          <div styleName='actions'>
+            <Button
+              styleName='button'
+              buttonType='login'
+              type='submit'
+              label={<Translate value='LoginForm.submitButton' />}
+              isLoading={submitting}
+            />
+
+            {error ? (<div styleName='form-error'>{error}</div>) : null}
+
+            <button onClick={navigateToRecoverAccountPage} styleName='link'>
+              <Translate value='LoginForm.forgotPassword' />
+            </button>
+          </div>
+        </div>
+
+      </form>
     )
   }
 }
 
-export default LoginForm
+const form = reduxForm({ form: FORM_LOGIN_PAGE })(LoginPage)
+export default compose(withStyles(styles), connect(mapStateToProps, mapDispatchToProps))(form)

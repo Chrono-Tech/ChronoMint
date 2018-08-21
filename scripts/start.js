@@ -72,6 +72,37 @@ compiler.plugin('invalid', function () {
   // eslint-disable-next-line
   console.log('Compiling...')
 })
+
+const decycle = (obj) => {
+  let pathArr = []
+  const recurs = (obj) => {
+    pathArr.push(obj)
+    for (let o in obj) {
+      if (obj.hasOwnProperty(o)) {
+        if (pathArr.includes(obj[o])) {
+          obj[o] = 'Circular'
+        } else {
+          recurs(obj[o])
+        }
+      }
+    }
+    pathArr.pop()
+  }
+  recurs(obj)
+}
+
+const showAddresses = (interfaces) => {
+  for (let k in interfaces) {
+    for (let k2 in interfaces[k]) {
+      let address = interfaces[k][k2]
+      if (address.family === 'IPv4' && !address.internal) {
+        // eslint-disable-next-line
+        console.log(`${baseSchema}://${address.address}:3000/`)
+      }
+    }
+  }
+}
+
 compiler.plugin('done', function (stats) {
   clearConsole()
   const hasErrors = stats.hasErrors()
@@ -81,24 +112,6 @@ compiler.plugin('done', function (stats) {
       arg.indexOf('--stats') > -1
     )
     if (showStats) {
-      let decycle = (obj) => {
-        let pathArr = []
-        let recurs = (obj) => {
-          pathArr.push(obj)
-          for (let o in obj) {
-            if (obj.hasOwnProperty(o)) {
-              if (pathArr.includes(obj[o])) {
-                obj[o] = 'Circular'
-              } else {
-                recurs(obj[o])
-              }
-            }
-          }
-          pathArr.pop()
-        }
-        recurs(obj)
-      }
-
       decycle(stats)
       let str = JSON.stringify(stats)
       // eslint-disable-next-line
@@ -114,15 +127,7 @@ compiler.plugin('done', function (stats) {
     console.log('External access:')
 
     const interfaces = os.networkInterfaces()
-    for (let k in interfaces) {
-      for (let k2 in interfaces[k]) {
-        let address = interfaces[k][k2]
-        if (address.family === 'IPv4' && !address.internal) {
-          // eslint-disable-next-line
-          console.log(`${baseSchema}://${address.address}:3000/`)
-        }
-      }
-    }
+    showAddresses(interfaces)
     return
   }
 

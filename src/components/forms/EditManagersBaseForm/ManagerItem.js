@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import OwnerModel from 'models/wallet/OwnerModel'
+import OwnerModel from '@chronobank/core/models/wallet/OwnerModel'
 import UserIcon from 'components/common/HashedIcon/UserIcon'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -30,9 +30,9 @@ class ManagerItem extends PureComponent {
         </div>
         <div styleName='address'>{address}</div>
         {address !== account && (
-          <div onClick={this.handleRemoveManager} styleName='action' role='button'>
+          <button onClick={this.handleRemoveManager} styleName='action'>
             <i className='material-icons'>delete</i>
-          </div>
+          </button>
         )}
       </div>
     )

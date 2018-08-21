@@ -1,0 +1,40 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.word {
+  width: 23%;
+  margin-bottom: 10px;
+
+  button {
+    white-space: nowrap;
+    width: 100%;
+    cursor: pointer;
+    user-select: none;
+    color: #FFFFFF;
+    background-color: #614DBA;
+    text-transform: lowercase;
+    line-height: 38px;
+    border-radius: 2px;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 12px 0;
+
+    &:disabled {
+      background: $background-color-1;
+    }
+
+    &:hover:not(:disabled) {
+      background-color: $button-color-2;
+      color: $background-color-1;
+    }
+  }
+
+  @include md-only {
+    width: 31%;
+  }
+}

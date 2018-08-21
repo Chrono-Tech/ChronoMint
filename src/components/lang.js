@@ -10,10 +10,11 @@ import UserActiveDialog from 'components/dialogs/UserActiveDialog/lang'
 import MultisigWalletForm from 'components/wallet/AddWalletWidget/MultisigWalletForm/lang'
 import TimeLockedWalletForm from 'components/wallet/AddWalletWidget/TimeLockedWalletForm/lang'
 import WalletSettingsForm from 'components/wallet/AddWalletWidget/WalletSettingsForm/lang'
+import CustomWalletForm from 'components/wallet/AddWalletWidget/CustomWalletForm/lang'
+import StandardWalletForm from 'components/wallet/AddWalletWidget/StandardWalletForm/lang'
 import UpdateProvideDialog from 'components/dialogs/UpdateProvideDialog/lang'
 import OwnersList from 'components/wallet/OwnersList/lang'
 import SignaturesList from 'components/wallet/SignaturesList/lang'
-import exchange from 'components/exchange/lang'
 import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog/lang'
 import SendTokens from 'components/dashboard/SendTokens/lang'
 import * as GasSlider from 'components/common/GasSlider/lang'
@@ -32,6 +33,14 @@ import TwoFaEnableForm from 'components/wallet/TwoFaEnableForm/lang'
 import TwoFaConfirmModal from 'components/wallet/TwoFaConfirmModal/lang'
 import WalletWidgetMini from 'components/wallet/WalletWidgetMini/lang'
 import WalletName from 'components/wallet/WalletName/lang'
+import DepositWarningWidget from 'components/Deposits/DepositWarningWidget/lang'
+import PollEditForm from 'components/voting/PollEditForm/lang'
+import Poll from 'components/voting/Poll/lang'
+import PollStatus from 'components/voting/PollStatus/lang'
+import PublishPollDialog from 'components/dialogs/PublishPollDialog/lang'
+import VotingWarningWidgets from 'components/voting/VotingWarningWidgets/lang'
+import TransactionsTable from 'components/dashboard/TransactionsTable/lang'
+import TransactionsListWidget from 'components/wallet/TransactionsListWidget/lang'
 
 export default {
   en: {
@@ -43,7 +52,6 @@ export default {
     SignaturesList: SignaturesList.en,
     // TODO @Abdulov refactor this
     components: {
-      exchange: exchange.en,
       GasSlider: GasSlider.en,
     },
     TwoFA: TwoFA.en,
@@ -67,5 +75,15 @@ export default {
     TwoFaConfirmModal: TwoFaConfirmModal.en,
     WalletWidgetMini: WalletWidgetMini.en,
     WalletName: WalletName.en,
+    DepositWarningWidget: DepositWarningWidget.en,
+    PollEditForm: PollEditForm.en,
+    Poll: Poll.en,
+    PollStatus: PollStatus.en,
+    PublishPollDialog: PublishPollDialog.en,
+    VotingWarningWidgets: VotingWarningWidgets.en,
+    TransactionsTable: TransactionsTable.en,
+    TransactionsListWidget: TransactionsListWidget.en,
+    CustomWalletForm: CustomWalletForm.en,
+    StandardWalletForm: StandardWalletForm.en,
   },
 }

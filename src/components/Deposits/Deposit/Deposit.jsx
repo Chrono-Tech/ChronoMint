@@ -5,23 +5,24 @@
 
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
-import Amount from 'models/Amount'
+import Amount from '@chronobank/core/models/Amount'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { DUCK_MAIN_WALLET, getTransactionsForWallet, TIME } from 'redux/mainWallet/actions'
-import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
-import MainWalletModel from 'models/wallet/MainWalletModel'
-import { DUCK_SESSION } from 'redux/session/actions'
-import { getDeposit } from 'redux/mainWallet/selectors'
-import { Button, IPFSImage, TokenValue } from 'components'
+import { TIME, BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
+import { getDeposit } from '@chronobank/core/redux/mainWallet/selectors'
+import Button from 'components/common/ui/Button/Button'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 import { modalsOpen } from 'redux/modals/actions'
-import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
-import TokenModel from 'models/tokens/TokenModel'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { TOKEN_ICONS } from 'assets'
-import { DUCK_ASSETS_HOLDER } from 'redux/assetsHolder/actions'
+import { DUCK_ASSETS_HOLDER } from '@chronobank/core/redux/assetsHolder/constants'
 import TransactionsTable from 'components/dashboard/TransactionsTable/TransactionsTable'
-import TransactionsCollection from 'models/wallet/TransactionsCollection'
+import TransactionsCollection from '@chronobank/core/models/wallet/TransactionsCollection'
+import { getWallet } from '@chronobank/core/redux/wallets/selectors/models'
+import WalletModel from '@chronobank/core/models/wallet/WalletModel'
+import { formatDataAndGetTransactionsForWallet } from '@chronobank/core/redux/wallet/actions'
 
 import { prefix } from './lang'
 import './Deposit.scss'
@@ -30,37 +31,33 @@ function mapStateToProps (state) {
   const tokens = state.get(DUCK_TOKENS)
   const assetHolder = state.get(DUCK_ASSETS_HOLDER)
   const spender = assetHolder.wallet()
-  const wallet = state.get(DUCK_MAIN_WALLET)
-  const { account } = state.get(DUCK_SESSION)
+  const wallet = getWallet(state)
   return {
     wallet,
     spender,
-    account,
     deposit: getDeposit(TIME)(state),
     token: tokens.item(TIME),
-    transactions: wallet.transactions({ blockchain: BLOCKCHAIN_ETHEREUM, address: spender }),
+    transactions: wallet.transactions.transactions,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    addDeposit: (props) => dispatch(modalsOpen({ component: DepositTokensModal, props })),
-    getTransactions: (params) => dispatch(getTransactionsForWallet(params)),
+    addDeposit: (props) => dispatch(modalsOpen({ componentName: 'DepositTokensModal', props })),
+    getTransactions: (params) => dispatch(formatDataAndGetTransactionsForWallet(params)),
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class Deposit extends PureComponent {
   static propTypes = {
-    wallet: PropTypes.instanceOf(MainWalletModel),
+    wallet: PropTypes.instanceOf(WalletModel),
     deposit: PropTypes.instanceOf(Amount),
     token: PropTypes.instanceOf(TokenModel),
     transactions: PropTypes.instanceOf(TransactionsCollection),
     spender: PropTypes.string,
     addDeposit: PropTypes.func,
     getTransactions: PropTypes.func,
-    onWithdrawDeposit: PropTypes.func,
-    account: PropTypes.string,
   }
 
   componentDidMount () {
@@ -68,8 +65,8 @@ export default class Deposit extends PureComponent {
   }
 
   handleGetTransactions = () => {
-    const { wallet, spender } = this.props
-    this.props.getTransactions({ wallet, address: spender, blockchain: BLOCKCHAIN_ETHEREUM })
+    const { wallet } = this.props
+    this.props.getTransactions({ wallet })
   }
 
   handleAddDeposit = () => {

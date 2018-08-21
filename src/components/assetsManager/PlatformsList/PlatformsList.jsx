@@ -3,18 +3,20 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { IPFSImage, TokenValue } from 'components'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
-import { detachPlatform, DUCK_ASSETS_MANAGER, selectPlatform, selectToken } from 'redux/assetsManager/actions'
+import { detachPlatform, selectPlatform, selectToken } from '@chronobank/core/redux/assetsManager/actions'
+import { DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/constants'
 import Preloader from 'components/common/Preloader/Preloader'
-import TokenModel from 'models/tokens/TokenModel'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
-import Amount from 'models/Amount'
-import TokensCollection from 'models/tokens/TokensCollection'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
+import Amount from '@chronobank/core/models/Amount'
+import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import WithLoader from 'components/common/Preloader/WithLoader'
 import blockedSVG from 'assets/img/blocked-white.svg'
 import tokenIconStubSVG from 'assets/img/asset_stub.svg'
@@ -28,8 +30,10 @@ function prefix (token) {
 function mapStateToProps (state) {
   const assetsManager = state.get(DUCK_ASSETS_MANAGER)
   const tokens = state.get(DUCK_TOKENS)
+  const platformList = assetsManager.platformsList()
+
   return {
-    platformsList: assetsManager.platformsList(),
+    platformsList: platformList,
     tokens,
     assets: assetsManager.assets(),
     selectedToken: assetsManager.selectedToken(),
@@ -107,7 +111,7 @@ export default class PlatformsList extends PureComponent {
                 {showTitle(token, asset)}
                 <div styleName='tokenBalance'>
                   {
-                    token.isFetched() &&
+                    token.isFetched() && asset.totalSupply &&
                     <TokenValue
                       style={{ fontSize: '24px' }}
                       value={new Amount(token ? asset.totalSupply : asset.totalSupply, token.symbol())}
@@ -123,7 +127,7 @@ export default class PlatformsList extends PureComponent {
     )
   }
 
-  renderPlatformsList = ({ selectedPlatform, platformsList, tokens, selectedToken, handleDetachPlatform, assets }) => {
+  renderPlatformsList = ({ selectedPlatform, platformsList, tokens, selectedToken, assets }) => {
     return (
       <div>
         {

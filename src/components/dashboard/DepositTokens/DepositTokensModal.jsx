@@ -3,16 +3,22 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Amount from 'models/Amount'
+import Amount from '@chronobank/core/models/Amount'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { change } from 'redux-form'
-import { depositAsset, initAssetsHolder, withdrawAsset } from 'redux/assetsHolder/actions'
+import { depositAsset, initAssetsHolder, withdrawAsset } from '@chronobank/core/redux/assetsHolder/actions'
 import { modalsClose } from 'redux/modals/actions'
-import { mainApprove } from 'redux/mainWallet/actions'
-import { ModalDialog } from 'components'
-import DepositTokensForm, { ACTION_APPROVE, ACTION_DEPOSIT, ACTION_WITHDRAW, FORM_DEPOSIT_TOKENS } from './DepositTokensForm'
+import { mainApprove } from '@chronobank/core/redux/wallets/actions'
+import ModalDialog from 'components/dialogs/ModalDialog'
+import {
+  ACTION_APPROVE,
+  ACTION_DEPOSIT,
+  ACTION_WITHDRAW,
+  FORM_DEPOSIT_TOKENS,
+} from 'components/constants'
+import DepositTokensForm from './DepositTokensForm'
 import './DepositTokensForm.scss'
 
 function mapDispatchToProps (dispatch) {
@@ -33,7 +39,7 @@ export default class DepositTokensModal extends PureComponent {
     mainApprove: PropTypes.func,
     depositAsset: PropTypes.func,
     withdrawAsset: PropTypes.func,
-    resetForm: PropTypes.func,
+    // resetForm: PropTypes.func,
     handleCloseModal: PropTypes.func,
     isWithdraw: PropTypes.bool,
   }

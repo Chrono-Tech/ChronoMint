@@ -7,10 +7,7 @@ export const en = {
   mnemonicKey: 'Mnemonic Key',
   walletFile: 'Wallet File',
   privateKey: 'Private Key',
-  ledgerNano: 'Ledger Nano Wallet',
-  local: 'Login to TestRPC',
-  metamask: 'Login to Metamask',
-  selectLoginOption: 'Select login option:',
-  trezor: 'Trezor Wallet',
-  uport: 'Login with uPort',
+  title: 'Add an Existing Account',
+  createAccount: 'Create New Account',
+  or: 'or',
 }

@@ -3,12 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import web3Provider from '@chronobank/login/network/Web3Provider'
-
-export const DUCK_MONITOR = 'monitor'
-
-export const CHANGE_NETWORK_STATUS = 'monitor/CHANGE_NETWORK_STATUS'
-export const CHANGE_SYNC_STATUS = 'monitor/CHANGE_SYNC_STATUS'
+import web3Provider from '../../network/Web3Provider'
+import {
+  CHANGE_NETWORK_STATUS,
+  CHANGE_SYNC_STATUS,
+} from './constants'
 
 export const changeNetworkStatus = (status) => ({ type: CHANGE_NETWORK_STATUS, status })
 

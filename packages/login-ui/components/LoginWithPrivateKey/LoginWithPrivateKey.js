@@ -3,86 +3,71 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
-import { CircularProgress, TextField } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
+import { reduxForm, Field } from 'redux-form/immutable'
 import { Translate } from 'react-redux-i18n'
-import BackButton from '../../components/BackButton/BackButton'
-import styles from '../../components/stylesLoginPage'
-
+import { TextField } from 'redux-form-material-ui'
+import Button from 'components/common/ui/Button/Button'
+import {
+  FORM_PRIVATE_KEY_LOGIN_PAGE,
+} from '../../redux/constants'
+import validate from './validate'
 import './LoginWithPrivateKey.scss'
-import { Button } from '../../settings'
 
-const mapStateToProps = (state) => ({
-  isLoading: state.get('network').isLoading,
-})
-
-@connect(mapStateToProps, null)
 class LoginWithPrivateKey extends PureComponent {
   static propTypes = {
-    isLoading: PropTypes.bool,
-    onBack: PropTypes.func.isRequired,
-    onLogin: PropTypes.func.isRequired,
-  }
-
-  constructor () {
-    super()
-    this.state = {
-      privateKey: '',
-      isValidated: false,
-    }
-  }
-
-  handlePrivateKeyChange = () => {
-    const privateKey = this.privateKey.getValue()
-    const isValidated = privateKeyProvider.validatePrivateKey(privateKey.trim())
-    this.setState({ privateKey, isValidated })
+    previousPage: PropTypes.func,
   }
 
   render () {
-    const { isValidated, privateKey } = this.state
-    const { isLoading } = this.props
+    const { handleSubmit, error, previousPage, submitting } = this.props
+
     return (
-      <div>
-        <div styleName='back'>
-          <BackButton
-            onClick={() => this.props.onBack()}
-            to='options'
+      <form styleName='form' name={FORM_PRIVATE_KEY_LOGIN_PAGE} onSubmit={handleSubmit}>
+
+        <div styleName='page-title'>
+          <Translate value='LoginWithPrivateKey.title' />
+        </div>
+
+        <div styleName='field'>
+          <Field
+            styleName='pkField'
+            component={TextField}
+            name='pk'
+            type='text'
+            fullWidth
+            multiline
+            InputProps={{
+              disableUnderline: true,
+            }}
+            rows={2}
+            rowsMax={2}
           />
         </div>
-        <TextField
-          ref={(input) => {
-            this.privateKey = input
-          }}
-          floatingLabelText={<Translate value='LoginWithPrivateKey.privateKey' />}
-          value={privateKey}
-          onChange={this.handlePrivateKeyChange}
-          errorText={(isValidated || privateKey === '') ? '' : <Translate value='LoginWithPrivateKey.wrongPrivateKey' />}
-          multiLine
-          fullWidth
-          spellCheck={false}
-          {...styles.textField}
-        />
 
         <div styleName='actions'>
-          <div styleName='action'>
-            <Button
-              label={isLoading
-                ? <CircularProgress
-                  style={{ verticalAlign: 'middle', marginTop: -2 }}
-                  size={24}
-                  thickness={1.5}
-                /> : <Translate value='LoginWithPrivateKey.loginWithPrivateKey' />}
-              disabled={!isValidated || isLoading}
-              onClick={() => this.props.onLogin(privateKey)}
-            />
-          </div>
+          <Button
+            styleName='button'
+            buttonType='login'
+            type='submit'
+            isLoading={submitting}
+          >
+            <Translate value='LoginWithPrivateKey.submit' />
+          </Button>
+
+          { error ? (<div styleName='form-error'>{error}</div>) : null }
+
+          <Translate value='LoginWithPrivateKey.or' />
+          <br />
+          <button onClick={previousPage} styleName='link'>
+            <Translate value='LoginWithPrivateKey.back' />
+          </button>
         </div>
-      </div>
+
+      </form>
     )
   }
 }
 
-export default LoginWithPrivateKey
+export default reduxForm({ form: FORM_PRIVATE_KEY_LOGIN_PAGE, validate })(LoginWithPrivateKey)

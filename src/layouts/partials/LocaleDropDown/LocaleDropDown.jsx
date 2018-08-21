@@ -3,14 +3,15 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Menu, MenuItem, Popover } from 'material-ui'
+import { Popover } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import { changeMomentLocale } from 'redux/ui/actions'
+import classnames from 'classnames'
 
-import './LocaleDropDown.scss'
+import styles from './LocaleDropDown.scss'
 
 function mapStateToProps (state) {
   return {
@@ -32,7 +33,12 @@ export default class LocaleDropDown extends PureComponent {
   static propTypes = {
     locale: PropTypes.string,
     onChangeLocale: PropTypes.func,
-    translations: PropTypes.arrayOf(PropTypes.object),
+    translations: PropTypes.object, // FIXME: at the moment it is fixed. But maybe more reliable fix is to replace data type. Or specify data type instead of .object
+    newButtonStyle: PropTypes.bool,
+  }
+
+  static defaultProps = {
+    newButtonStyle: false,
   }
 
   constructor (props) {
@@ -65,6 +71,7 @@ export default class LocaleDropDown extends PureComponent {
   }
 
   render () {
+    const { locale, newButtonStyle } = this.props
     const locales = Object.entries(this.props.translations).map(([ name, dictionary ]) => ({
       name,
       title: dictionary.title,
@@ -73,29 +80,35 @@ export default class LocaleDropDown extends PureComponent {
     return (
       <div styleName='root'>
         <Button
-          styleName='langButton'
+          styleName={newButtonStyle ? 'langButtonNewStyle' : 'langButton'}
           onClick={this.handleClick}
         >
-          {this.props.locale}
+          {locale}
         </Button>
 
         <Popover
           open={this.state.open}
           anchorEl={this.state.anchorEl}
-          anchorOrigin={{ horizontal: 'middle', vertical: 'bottom' }}
-          targetOrigin={{ horizontal: 'middle', vertical: 'top' }}
-          onRequestClose={this.handleRequestClose}
+          anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+          onClose={this.handleRequestClose}
+          classes={{
+            paper: styles.popover,
+          }}
         >
-          <Menu styleName='LocaleDropDown'>
-            {locales.map((item) => (
-              <MenuItem
+          <ul styleName='LocaleDropDown'>
+            {locales.map((item, i) => (
+              <li
+                key={i}
+                styleName={classnames({
+                  LocaleDropDownItem: true,
+                  LocaleDropDownItemActive: item.name === locale,
+                })}
                 onClick={() => this.handleChangeLocale(item.name)}
-                value={item.name}
-                key={item.name}
-                primaryText={item.title}
-              />
+              >
+                {item.title}
+              </li>
             ))}
-          </Menu>
+          </ul>
         </Popover>
       </div>
     )

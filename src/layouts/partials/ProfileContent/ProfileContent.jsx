@@ -4,42 +4,41 @@
  */
 
 import { Translate } from 'react-redux-i18n'
-import { connect } from "react-redux"
-import PropTypes from "prop-types"
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { getNetworkName } from '@chronobank/login/redux/network/thunks'
 import { TOKEN_ICONS } from 'assets'
-import ProfileModel from 'models/ProfileModel'
-import networkService from '@chronobank/login/network/NetworkService'
+import ProfileModel from '@chronobank/core/models/ProfileModel'
 import React, { PureComponent } from 'react'
-import { logout } from 'redux/session/actions'
-import { getBlockchainAddressesList } from 'redux/session/selectors'
-import { FontIcon } from 'material-ui'
+import { logoutAndNavigateToRoot } from 'redux/ui/thunks'
+import { getBlockchainAddressesList } from '@chronobank/core/redux/session/selectors'
 import { modalsOpen } from 'redux/modals/actions'
-import { IPFSImage, QRIcon, PKIcon, CopyIcon, UpdateProfileDialog } from 'components'
-
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
+import QRIcon from 'components/dashboard/MicroIcon/QRIcon'
+import PKIcon from 'components/dashboard/MicroIcon/PKIcon'
 import GasSlider from 'components/common/GasSlider/GasSlider'
 
 import './ProfileContent.scss'
 import { prefix } from './lang'
-
-export const PROFILE_SIDE_PANEL_KEY = 'ProfileSidePanelKey'
 
 function mapStateToProps (state) {
   const session = state.get('session')
   return {
     account: session.account,
     profile: session.profile,
-    networkName: networkService.getName(),
     tokens: getBlockchainAddressesList()(state),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
+    getNetworkName: () => dispatch(getNetworkName()),
     handleProfileEdit: (data) => dispatch(modalsOpen({
-      component: UpdateProfileDialog,
+      componentName: 'UpdateProfileDialog',
       data,
     })),
-    handleLogout: () => dispatch(logout()),
+    handleLogout: () => dispatch(logoutAndNavigateToRoot()),
   }
 }
 
@@ -47,16 +46,12 @@ function mapDispatchToProps (dispatch) {
 class ProfileContent extends PureComponent {
 
   static propTypes = {
-    isOpened: PropTypes.bool,
-    networkName: PropTypes.string,
     account: PropTypes.string,
-    profile: PropTypes.instanceOf(ProfileModel),
-    tokens: PropTypes.arrayOf(PropTypes.object),
-
     handleLogout: PropTypes.func,
     handleProfileEdit: PropTypes.func,
-    handleDrawerToggle: PropTypes.func,
     onProfileClose: PropTypes.func,
+    profile: PropTypes.instanceOf(ProfileModel),
+    tokens: PropTypes.arrayOf(PropTypes.object),
   }
 
   static defaultProps = {
@@ -73,12 +68,12 @@ class ProfileContent extends PureComponent {
       <div styleName='profile'>
 
         <div styleName='close-icon' onClick={this.handleProfileClose}>
-          <FontIcon color='white' className='material-icons'>clear</FontIcon>
+          <i className='chronobank-icon'>close</i>
         </div>
 
         <div styleName='network-name'>
           <div styleName='network-name-text'>
-            {this.props.networkName}
+            {this.props.getNetworkName()}
           </div>
         </div>
 
@@ -89,12 +84,12 @@ class ProfileContent extends PureComponent {
                 styleName='avatar-icon-content'
                 multihash={this.props.profile.icon()}
                 icon={
-                  <FontIcon
-                    style={{ fontSize: 60, cursor: 'default' }}
+                  <i
+                    styleName='default-icon'
                     color='white'
                     className='material-icons'
                   >account_circle
-                  </FontIcon>
+                  </i>
                 }
               />
             </div>
@@ -106,10 +101,10 @@ class ProfileContent extends PureComponent {
           </div>
           <div styleName='account-info-icons'>
             <div styleName='account-info-setting' onClick={this.props.handleProfileEdit}>
-              <FontIcon color='white' className='material-icons'>settings</FontIcon>
+              <i className='material-icons'>settings</i>
             </div>
             <div styleName='account-info-setting' onClick={this.props.handleLogout}>
-              <FontIcon color='white' className='material-icons'>power_settings_new</FontIcon>
+              <i className='material-icons'>power_settings_new</i>
             </div>
           </div>
         </div>
@@ -144,7 +139,7 @@ class ProfileContent extends PureComponent {
                   <div styleName='address-token'>
                     <IPFSImage
                       styleName='address-token-icon'
-                      fallback={TOKEN_ICONS[ token.symbol ]}
+                      fallback={TOKEN_ICONS[token.symbol]}
                     />
                   </div>
                   <div styleName='address-token-info'>

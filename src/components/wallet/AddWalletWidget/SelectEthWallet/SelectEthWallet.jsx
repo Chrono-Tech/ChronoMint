@@ -8,10 +8,12 @@ import classnames from 'classnames'
 import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
-import { createNewChildAddress, goToWallets, resetWalletsForm } from 'redux/mainWallet/actions'
-import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
-import './SelectEthWallet.scss'
+import { resetWalletsForm } from 'redux/ui/thunks'
+import { navigateToWallets } from 'redux/ui/navigation'
+import { createNewChildAddress } from '@chronobank/core/redux/wallets/actions'
+import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import { prefix } from '../lang'
+import './SelectEthWallet.scss'
 
 function mapStateToProps () {
   return {}
@@ -21,7 +23,7 @@ function mapDispatchToProps (dispatch) {
   return {
     onCreateWallet: () => {
       dispatch(createNewChildAddress({ blockchain: BLOCKCHAIN_ETHEREUM }))
-      dispatch(goToWallets())
+      dispatch(navigateToWallets())
       dispatch(resetWalletsForm())
     },
   }
@@ -51,7 +53,6 @@ export default class SelectEthWallet extends PureComponent {
         type: 'ST',
         icon: 'wallet-circle',
         description: `${prefix}.st.description`,
-        action: this.handleCreateWallet,
       },
       {
         title: `${prefix}.tl.title`,
@@ -64,6 +65,7 @@ export default class SelectEthWallet extends PureComponent {
         type: '2FA',
         icon: 'security-circle',
         description: `${prefix}.fa.description`,
+        disabled: true,
       },
       {
         title: `${prefix}.ms.title`,

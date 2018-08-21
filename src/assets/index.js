@@ -34,6 +34,8 @@ export const TX_CONFIRMATIONS = {
   [ 's_4' ]: require('./img/s-100.svg'),
 }
 
+export const SPINNING_WHEEL = require('./img/spinningwheel-1.gif')
+
 /* eslint-disable global-require */
 export default {
   TOKEN_ICONS,

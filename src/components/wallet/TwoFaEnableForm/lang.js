@@ -24,6 +24,6 @@ export default {
     done: 'done',
     confirmCodeWrong: 'Confirmation code incorrect. Please try again',
     successTitle: '2FA success enabled!',
-    goToWallets: 'go to wallets',
+    navigateToWallets: 'go to wallets',
   },
 }

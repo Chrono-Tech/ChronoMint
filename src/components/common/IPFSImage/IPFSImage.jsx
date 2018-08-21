@@ -5,8 +5,7 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-
-import IPFS from 'utils/IPFS'
+import IPFS from '@chronobank/core-dependencies/utils/IPFS'
 
 import './IPFSImage.scss'
 
@@ -95,11 +94,11 @@ export default class IPFSImage extends PureComponent {
       return this.renderIcon(imageURL)
     }
 
-    if (!icon && !multihash && fallbackComponent) {
+    if (!icon && !multihash) {
       return this.renderFallback()
     }
 
-    if (!icon && !multihash && !fallback && !fallbackComponent) {
+    if (!icon && !multihash && !fallback) {
       return <span>No icon</span>
     }
 

@@ -3,16 +3,15 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Paper } from 'material-ui'
-import { Button } from 'components'
+import { Paper } from '@material-ui/core'
+import Button from 'components/common/ui/Button/Button'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import { createPlatform, DUCK_ASSETS_MANAGER } from 'redux/assetsManager/actions'
+import { DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/constants'
+import { createPlatform } from '@chronobank/core/redux/assetsManager/actions'
 import { modalsOpen } from 'redux/modals/actions'
-import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
-import AddTokenDialog from 'components/assetsManager/AddTokenDialog/AddTokenDialog'
 import HistoryTable from 'components/assetsManager/HistoryTable/HistoryTable'
 import PlatformInfo from 'components/assetsManager/PlatformInfo/PlatformInfo'
 import PlatformsList from 'components/assetsManager/PlatformsList/PlatformsList'
@@ -43,10 +42,10 @@ function mapDispatchToProps (dispatch) {
   return {
     createPlatform: () => dispatch(createPlatform()),
     handleAddPlatformDialog: () => dispatch(modalsOpen({
-      component: AddPlatformDialog,
+      componentName: 'AddPlatformDialog',
     })),
     handleAddTokenDialog: () => dispatch(modalsOpen({
-      component: AddTokenDialog,
+      componentName: 'AddTokenDialog',
     })),
   }
 }
@@ -118,7 +117,6 @@ export default class AssetManager extends PureComponent {
                       </span>
                     </div>
                   </div>
-
                 </div>
               </div>
               <div className='col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6'>

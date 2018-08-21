@@ -55,7 +55,7 @@ class LedgerProvider extends EventEmitter {
   setupAndStart (providerURL) {
     this._engine.addProvider(new FilterSubprovider())
     this._engine.addProvider(this._ledgerSubprovider)
-    this._engine.addProvider(new RpcSubprovider({rpcUrl: providerURL}))
+    this._engine.addProvider(new RpcSubprovider({ rpcUrl: providerURL }))
     this._engine.start()
   }
 
@@ -108,17 +108,17 @@ class LedgerProvider extends EventEmitter {
 
   async fetchAccount () {
     return new Promise((resolve) => {
-        this._ledger.getAccounts((error, accounts) => {
-          if (error) {
-            resolve(null)
-          }
-          this._wallet = new HardwareWallet(accounts)
-          resolve(accounts)
-        })
+      this._ledger.getAccounts((error, accounts) => {
+        if (error) {
+          resolve(null)
+        }
+        this._wallet = new HardwareWallet(accounts)
+        resolve(accounts)
+      })
     })
   }
 
-  setWallet(account) {
+  setWallet (account) {
     this._wallet = new HardwareWallet(account)
   }
 

@@ -5,8 +5,11 @@
 
 import classnames from 'classnames'
 import React, { PureComponent } from 'react'
+import { SPINNING_WHEEL } from 'assets'
 import PropTypes from 'prop-types'
 import './Button.scss'
+
+const BUTTON_TYPE_PENDING = 'pending'
 
 export default class Button extends PureComponent {
   static propTypes = {
@@ -20,15 +23,16 @@ export default class Button extends PureComponent {
       PropTypes.string,
       PropTypes.number,
     ]),
-    onClick: PropTypes.func,
     className: PropTypes.string,
     type: PropTypes.string,
+    isLoading: PropTypes.bool,
   }
 
   static defaultProps = {
     buttonType: 'raised',
     type: 'button',
     disabled: false,
+    isLoading: false,
   }
 
   componentDidMount () {
@@ -54,35 +58,51 @@ export default class Button extends PureComponent {
     if (typeof this.props.onClick === 'function') {
       return this.props.onClick(e)
     }
-    if (typeof this.props.onClick === 'function') {
-      return this.props.onClick(e)
-    }
   }
 
   setRef = (el) => {
     this.button = el
   }
 
+  renderButtonText () {
+    const { children, label, isLoading } = this.props
+
+    if (isLoading) {
+      return (
+        <span styleName='spinner-wrapper'>
+          <img src={SPINNING_WHEEL} width={24} height={24} alt='' />
+        </span>
+      )
+    }
+
+    return children ? children : <span>{label}</span>
+  }
+
   render () {
-    let { buttonType, flat } = this.props
+    let { buttonType, flat, isLoading } = this.props
     if (flat) {
       buttonType = 'flat'
     }
+
+    const buttonClasses = classnames('button', buttonType)
+
     return (
       <div styleName='root' className={classnames('Button_root', this.props.className)}>
         <button
           ref={this.setRef}
-          disabled={this.props.disabled}
-          styleName={classnames('button', buttonType)}
+          disabled={this.props.disabled || isLoading}
+          styleName={buttonClasses}
           type={this.props.type}
           onClick={this.handleTouchTap}
         >
-          {this.props.children
-            ? this.props.children
-            : <span>{this.props.label}</span>
-
-          }
+          { this.renderButtonText() }
         </button>
+        { this.props.buttonType === BUTTON_TYPE_PENDING && <img
+          styleName='spinning-image'
+          src={SPINNING_WHEEL}
+          alt=''
+          onClick={this.handleTouchTap}
+        /> }
       </div>
     )
   }

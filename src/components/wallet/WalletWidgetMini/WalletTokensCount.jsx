@@ -6,20 +6,14 @@
 import PropTypes from 'prop-types'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
-import { tokensCountSelector } from 'redux/mainWallet/selectors'
-import { multisigTokensCountSelector } from 'redux/multisigWallet/selectors'
-import { PTWallet } from 'redux/wallet/types'
+import { tokensCountSelector } from '@chronobank/core/redux/wallets/selectors/balances'
+import { PTWallet } from '@chronobank/core/redux/wallet/types'
 import { connect } from 'react-redux'
 import { prefix } from './lang'
 
 function makeMapStateToProps (state, ownProps) {
   const { wallet } = ownProps
-  let getTokensCount
-  if (wallet.isMain) {
-    getTokensCount = tokensCountSelector(wallet.blockchain)
-  } else {
-    getTokensCount = multisigTokensCountSelector(wallet.address)
-  }
+  let getTokensCount = tokensCountSelector(wallet.id)
   const mapStateToProps = (ownState) => {
     return {
       tokensCount: getTokensCount(ownState),

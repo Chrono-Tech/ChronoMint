@@ -3,22 +3,20 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import OwnerCollection from 'models/wallet/OwnerCollection'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
-import { DUCK_SESSION } from 'redux/session/actions'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import UserIcon from 'components/common/HashedIcon/UserIcon'
-import BlacklistModel from 'models/tokens/BlacklistModel'
-import { Button } from 'components'
+import BlacklistModel from '@chronobank/core/models/tokens/BlacklistModel'
+import Button from 'components/common/ui/Button/Button'
+import { FORM_ASSET_MANAGER } from 'components/constants'
 import './BlacklistForm.scss'
 import validate from './validate'
 import { prefix } from './lang'
-
-export const FORM_ASSET_MANAGER = 'AssetManagerDialog'
 
 const onSubmit = (values) => {
   return values.get('userAddress')
@@ -35,7 +33,6 @@ function mapStateToProps (state) {
 export default class BlacklistForm extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
-    managers: PropTypes.instanceOf(OwnerCollection),
     onRemoveFromBlacklist: PropTypes.func,
     blacklist: PropTypes.instanceOf(BlacklistModel),
     ...formPropTypes,
