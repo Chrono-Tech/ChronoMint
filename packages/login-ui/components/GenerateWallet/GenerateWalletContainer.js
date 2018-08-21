@@ -12,7 +12,7 @@ import {
 } from '@chronobank/core/redux/persistAccount/actions'
 import {
   navigateToSelectWallet,
-} from '@chronobank/login-ui/redux/actions'
+} from '@chronobank/login-ui/redux/navigation'
 import GenerateWallet from './GenerateWallet'
 
 function mapDispatchToProps (dispatch) {

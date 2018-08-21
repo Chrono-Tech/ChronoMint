@@ -13,7 +13,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { drawerHide, drawerToggle } from 'redux/drawer/actions'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
-import { logout } from '@chronobank/core/redux/session/thunks'
+import { logoutAndNavigateToRoot } from 'redux/ui/thunks'
 import { getBlockchainAddressesList } from '@chronobank/core/redux/session/selectors'
 import { sidesCloseAll, sidesOpen } from 'redux/sides/actions'
 import { MENU_TOKEN_MORE_INFO_PANEL_KEY } from 'redux/sides/constants'
@@ -41,7 +41,7 @@ function mapDispatchToProps (dispatch) {
     getNetworkName: () => dispatch(getNetworkName()),
     handleDrawerToggle: () => dispatch(drawerToggle()),
     handleDrawerHide: () => dispatch(drawerHide()),
-    handleLogout: () => dispatch(logout()),
+    handleLogout: () => dispatch(logoutAndNavigateToRoot()),
     initTokenSide: (token) => dispatch(sidesOpen({
       componentName: 'MenuTokenMoreInfo',
       panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY + '_' + token.blockchain,

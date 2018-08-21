@@ -10,7 +10,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Checkbox, TextField } from 'redux-form-material-ui'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
-import { goToWallets } from '@chronobank/core/redux/mainWallet/actions'
+import { navigateToWallets } from 'redux/ui/navigation'
 import { confirm2FASecret, get2FAEncodedKey, setEthMultisig2FAConfirmed } from '@chronobank/core/redux/multisigWallet/actions'
 import PropTypes from 'prop-types'
 import TWO_FA_LOGO_PNG from 'assets/img/2fa/2-fa.png'
@@ -58,7 +58,7 @@ function mapDispatchToProps (dispatch) {
       dispatch(confirm2FASecret(account, confirmToken, callback))
     },
     handleSetTwoFAConfirmed: (twoFAConfirmed) => dispatch(setEthMultisig2FAConfirmed(twoFAConfirmed)),
-    handleGoToWallets: () => dispatch(goToWallets()),
+    handleGoToWallets: () => dispatch(navigateToWallets()),
   }
 }
 
@@ -201,7 +201,7 @@ export default class TwoFaEnableForm extends PureComponent {
         <div styleName='actions'>
           <Button
             onClick={this.props.handleGoToWallets}
-            label={<Translate value={`${prefix}.goToWallets`} />}
+            label={<Translate value={`${prefix}.navigateToWallets`} />}
           />
         </div>
       </div>

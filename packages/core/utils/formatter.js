@@ -10,6 +10,7 @@ import BigNumber from 'bignumber.js'
  * Useful in renders
  * \u00a0 = &nbsp;
  */
+// eslint-disable-next-line import/prefer-default-export
 export function integerWithDelimiter (value: any, withFraction = false, fractionPrecision = 2): string {
   //TODO @abdulov, check after release a new version of BigNumber
   // issue https://github.com/MikeMcl/bignumber.js/issues/148

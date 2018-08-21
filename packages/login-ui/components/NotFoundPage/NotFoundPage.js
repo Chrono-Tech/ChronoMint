@@ -10,7 +10,7 @@ import Button from 'components/common/ui/Button/Button'
 import {
   navigateToSelectWallet,
   navigateToCreateAccount,
-} from '../../redux/actions'
+} from '../../redux/navigation'
 
 import './NotFoundPage.scss'
 
