@@ -33,3 +33,6 @@ export const navigateToAddWallet = () => (dispatch) =>
 
 export const navigateToNewPoll = () => (dispatch) =>
   dispatch(push('/new-poll'))
+
+export const navigateToPoll = () => (dispatch) =>
+  dispatch(push('/poll'))

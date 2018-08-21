@@ -15,7 +15,7 @@ import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import Web3 from 'web3'
 import MarketSocket from '@chronobank/core/market/MarketSocket'
-import LocalStorage from '@chronobank/core-dependencies/utils/LocalStorage'
+import LocalStorage from 'utils/LocalStorage'
 
 Enzyme.configure({ adapter: new Adapter() })
 // we need enough time to test contract watch functionality

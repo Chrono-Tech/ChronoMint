@@ -5,7 +5,7 @@
 
 import { modalsOpen } from 'redux/modals/actions'
 import { navigateToAddWallet, navigateToNewPoll } from 'redux/ui/navigation'
-import { goBackForAddWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
+import { goBackForAddWalletsForm } from 'redux/ui/thunks'
 import { changeWalletView } from 'redux/ui/actions'
 import RemovePollTopButton from 'components/voting/RemovePollTopButton/RemovePollTopButton'
 import ActivatePollTopButton from 'components/voting/ActivatePollTopButton/ActivatePollTopButton'

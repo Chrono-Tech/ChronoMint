@@ -38,8 +38,8 @@ import WalletImportPage from 'components/login/WalletImportPage/WalletImportPage
 import RecoverAccountPage from 'components/login/RecoverAccountPage/RecoverAccountPage'
 import AccountSelectorPage from 'components/login/AccountSelectorPage/AccountSelectorPage'
 import CreateAccountPage from 'components/login/CreateAccountPage/CreateAccountPage'
+import LocalStorage from 'utils/LocalStorage'
 import { store, history } from './redux/configureStore'
-import LocalStorage from '@chronobank/core-dependencies/utils/LocalStorage'
 import './styles/themes/default.scss'
 
 const requireAuth = (nextState, replace) => {

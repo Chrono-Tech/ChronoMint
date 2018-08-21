@@ -13,7 +13,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import {
   handleLoginLocalAccountClick,
-} from '@chronobank/login/redux/network/thunks'
+} from '@chronobank/login-ui/redux/thunks'
 import { loadAccounts } from '@chronobank/core/redux/session/thunks'
 import {
   navigateToLoginPage,

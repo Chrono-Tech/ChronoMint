@@ -36,6 +36,9 @@ import * as VotingActions from './actions'
 
 const PAGE_SIZE = 20
 
+export const selectPoll = (id) => (dispatch) =>
+  dispatch(VotingActions.handlePollSelected(id))
+
 export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
   switch (notice.status()) {
     case IS_CREATED: {

@@ -10,7 +10,13 @@ import {
   stopSubmit,
   SubmissionError,
 } from 'redux-form'
+import { replace } from 'react-router-redux'
+import { DUCK_ETH_MULTISIG_WALLET } from '@chronobank/core/redux/multisigWallet/constants'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
+import walletProvider from '@chronobank/login/network/walletProvider'
+import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
+import setup from '@chronobank/login/network/EngineUtils'
+import LocalStorage from 'utils/LocalStorage'
 import {
   DUCK_NETWORK,
 } from '@chronobank/login/redux/network/constants'
@@ -28,6 +34,7 @@ import {
 } from '@chronobank/core/redux/persistAccount/utils'
 import {
   isLocalNode,
+  LOCAL_PRIVATE_KEYS,
 } from '@chronobank/login/network/settings'
 import * as LoginUINavActions from './navigation'
 import {
@@ -52,10 +59,6 @@ export const navigateToCreateAccountFromHW = (address) => (dispatch) => {
 export const navigateToCreateAccountWithoutImport = () => (dispatch) => {
   dispatch(LoginUINavActions.navigateToCreateAccount())
 }
-
-// #endregion
-
-// #region perform
 
 /*
  * Thunk dispatched by "" screen.
@@ -105,12 +108,39 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
     const privateKey = wallet && wallet[0] && wallet[0].privateKey
 
-    dispatch(SessionThunks.getProfileSignature(wallet[0]))
-
     if (privateKey) {
-      await dispatch(NetworkThunks.handleWalletLogin(selectedWallet.encrypted, password))
+      dispatch(SessionThunks.getProfileSignature(wallet[0]))
+      // Code below prevously was handleWalletLogin
+      dispatch(NetworkActions.loading())
+      dispatch(NetworkActions.clearErrors())
+      const providerSettings = dispatch(SessionThunks.getProviderSettings())
+      const provider = walletProvider.getProvider(
+        selectedWallet.encrypted[0],
+        password,
+        providerSettings,
+      )
+      dispatch(NetworkActions.selectAccount(provider.ethereum.getAddress()))
+      await setup(provider)
+      const state = getState()
+      const {
+        selectedAccount,
+        selectedProviderId,
+        selectedNetworkId,
+      } = state.get(DUCK_NETWORK)
+
+      dispatch(NetworkActions.clearErrors())
+      dispatch(SessionThunks.createNetworkSession(
+        selectedAccount,
+        selectedProviderId,
+        selectedNetworkId,
+      ))
+      LocalStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
+      const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
+      dispatch(replace(LocalStorage.getLastURL() || defaultURL))
     }
   } catch (e) {
+    // eslint-disable-next-line no-console
+    console.log('Error in onSubmitLoginForm:', e)
     throw new SubmissionError({ password: e && e.message })
   }
 }
@@ -155,7 +185,7 @@ export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKe
   async (dispatch) => {
 
     try {
-      let wallet = await dispatch(PersistAccountActions.createAccount({
+      const wallet = await dispatch(PersistAccountActions.createAccount({
         name,
         password,
         mnemonic,
@@ -338,4 +368,41 @@ export const onSubmitLoginTestRPCFail = (errors, submitErrors) => (dispatch) => 
   // FIXME: empty thunk
 }
 
-// #endregion
+/*
+ * Thunk dispatched by "" screen.
+ * TODO: to add description
+ * TODO: to rework it
+ */
+export const handleLoginLocalAccountClick = (account = '') =>
+  async (dispatch, getState) => {
+    let state = getState()
+    const { accounts } = state.get(DUCK_NETWORK)
+    const wallets = state.get(DUCK_ETH_MULTISIG_WALLET)
+    const providerSetting = dispatch(SessionThunks.getProviderSettings())
+    const index = Math.max(accounts.indexOf(account), 0)
+    const provider = privateKeyProvider.getPrivateKeyProvider(
+      LOCAL_PRIVATE_KEYS[index],
+      providerSetting,
+      wallets,
+    )
+    dispatch(NetworkActions.selectAccount(account))
+    await setup(provider)
+
+    state = getState()
+    const {
+      selectedAccount,
+      selectedProviderId,
+      selectedNetworkId,
+    } = state.get(DUCK_NETWORK)
+
+    dispatch(NetworkActions.clearErrors())
+
+    dispatch(SessionThunks.createNetworkSession(
+      selectedAccount,
+      selectedProviderId,
+      selectedNetworkId,
+    ))
+    LocalStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
+    const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
+    dispatch(replace(LocalStorage.getLastURL() || defaultURL))
+  }

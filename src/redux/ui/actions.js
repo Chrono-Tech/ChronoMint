@@ -5,7 +5,7 @@
 
 import moment from 'moment'
 import { setLocale } from '@chronobank/core-dependencies/i18n'
-import LocalStorage from '@chronobank/core-dependencies/utils/LocalStorage'
+import LocalStorage from 'utils/LocalStorage'
 import ipfs from '@chronobank/core-dependencies/utils/IPFS'
 import userMonitorService from 'user/monitorService'
 import { modalsOpen, modalsClose } from 'redux/modals/actions'

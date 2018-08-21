@@ -10,28 +10,36 @@ import {
   POLLS_LIST,
   POLLS_LOAD,
   POLLS_REMOVE,
+  POLLS_SELECTED,
   POLLS_UPDATE,
   POLLS_VOTE_LIMIT,
 } from './constants'
 
-export const handlePollCreated = (poll: PollDetailsModel) => async (dispatch) => {
+export const handlePollCreated = (poll: PollDetailsModel) => (dispatch) => {
   dispatch({
     type: POLLS_CREATE,
     poll,
   })
 }
 
-export const handlePollRemoved = (id: number) => async (dispatch) => {
+export const handlePollRemoved = (id: number) => (dispatch) => {
   dispatch({
     type: POLLS_REMOVE,
     id,
   })
 }
 
-export const handlePollUpdated = (poll: PollDetailsModel) => async (dispatch) => {
+export const handlePollUpdated = (poll: PollDetailsModel) => (dispatch) => {
   dispatch({
     type: POLLS_UPDATE,
     poll,
+  })
+}
+
+export const handlePollSelected = (id) => (dispatch) => {
+  dispatch({
+    type: POLLS_SELECTED,
+    id,
   })
 }
 

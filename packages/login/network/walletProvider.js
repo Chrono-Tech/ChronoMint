@@ -16,6 +16,7 @@ import WavesWallet from './WavesWallet'
 import EthereumWallet from './EthereumWallet'
 
 class WalletProvider {
+  // eslint-disable-next-line complexity
   getProvider (walletJson, password, { url, network } = {}) {
     const networkCode = byEthereumNetwork(network)
     const ethereumWallet = EthereumWallet.fromFile(walletJson, password, true)
@@ -26,7 +27,6 @@ class WalletProvider {
     const ltc = network && network.litecoin && bitcoin.HDNode.fromSeedBuffer(ethereumWallet.privKey, bitcoin.networks[network.litecoin])
     const nem = network && network.nem && NemWallet.fromPrivateKey(ethereumWallet.privKey.toString('hex'), nemSdk.model.network.data[network.nem])
     const waves = network && network.waves && WavesWallet.fromPrivateKey(ethereumWallet.privKey.toString('hex'), WavesApi[network.waves])
-
     return {
       networkCode,
       ethereum: engine, //new EthereumEngine(ethereumWallet, network, url),
