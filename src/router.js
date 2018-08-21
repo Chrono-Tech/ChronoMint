@@ -38,12 +38,12 @@ import WalletImportPage from 'components/login/WalletImportPage/WalletImportPage
 import RecoverAccountPage from 'components/login/RecoverAccountPage/RecoverAccountPage'
 import AccountSelectorPage from 'components/login/AccountSelectorPage/AccountSelectorPage'
 import CreateAccountPage from 'components/login/CreateAccountPage/CreateAccountPage'
-import LocalStorage from 'utils/LocalStorage'
+import localStorage from 'utils/LocalStorage'
 import { store, history } from './redux/configureStore'
 import './styles/themes/default.scss'
 
 const requireAuth = (nextState, replace) => {
-  if (!LocalStorage.isSession()) {
+  if (!localStorage.isSession()) {
     // pass here only for Test RPC session.
     // Others through handle clicks on loginPage
     return replace({

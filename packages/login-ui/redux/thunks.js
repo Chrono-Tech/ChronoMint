@@ -16,7 +16,7 @@ import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import walletProvider from '@chronobank/login/network/walletProvider'
 import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import setup from '@chronobank/login/network/EngineUtils'
-import LocalStorage from 'utils/LocalStorage'
+import localStorage from 'utils/LocalStorage'
 import {
   DUCK_NETWORK,
 } from '@chronobank/login/redux/network/constants'
@@ -134,9 +134,9 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         selectedProviderId,
         selectedNetworkId,
       ))
-      LocalStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
+      localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
       const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
-      dispatch(replace(LocalStorage.getLastURL() || defaultURL))
+      dispatch(replace(localStorage.getLastURL() || defaultURL))
     }
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -402,7 +402,7 @@ export const handleLoginLocalAccountClick = (account = '') =>
       selectedProviderId,
       selectedNetworkId,
     ))
-    LocalStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
+    localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
     const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
-    dispatch(replace(LocalStorage.getLastURL() || defaultURL))
+    dispatch(replace(localStorage.getLastURL() || defaultURL))
   }
