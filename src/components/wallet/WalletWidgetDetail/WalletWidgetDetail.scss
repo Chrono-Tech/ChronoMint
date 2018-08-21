@@ -154,6 +154,7 @@
 
 .actions-container {
   display: flex;
+  flex: 3
 }
 
 .action {
@@ -350,13 +351,15 @@
 }
 
 .footer {
-  display: grid;
-  grid-template-columns: 180px 1fr;
+  display: flex;
   margin-bottom: 40px;
+
   .pendingOperations {
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    flex: 2;
+
     .pendingOperationsCount {
       padding: 0 30px;
       background: $color-red-2;
@@ -370,6 +373,12 @@
       align-items: center;
       justify-content: center;
     }
+  }
+
+  .actions-container {
+    display: flex;
+    flex: 3;
+    justify-content: flex-end;
   }
 }
 
