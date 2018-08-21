@@ -8,11 +8,8 @@
 
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
-import { change, formValueSelector } from 'redux-form/immutable'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
-import { history } from '@chronobank/core-dependencies/configureStore'
-import { push } from '@chronobank/core-dependencies/router'
 import { getDeriveWalletsAddresses, getMultisigWallets } from '../wallet/selectors'
 import Amount from '../../models/Amount'
 import ApprovalNoticeModel from '../../models/notices/ApprovalNoticeModel'
@@ -62,7 +59,6 @@ import {
   XEM,
 } from '../../dao/constants'
 import {
-  FORM_ADD_NEW_WALLET,
   WALLET_ADDRESS,
   WALLET_ALLOWANCE,
   WALLET_ESTIMATE_GAS_FOR_DEPOSIT,
@@ -71,26 +67,6 @@ import {
   WALLET_TRANSACTION,
   WALLET_TRANSACTION_UPDATED,
 } from './constants'
-
-export const goToWallets = () => (dispatch) => dispatch(push('/wallets'))
-
-export const goBackForAddWalletsForm = () => (dispatch, getState) => {
-  const selector = formValueSelector(FORM_ADD_NEW_WALLET)
-  const state = getState()
-  const blockchain = selector(state, 'blockchain')
-  const ethWalletType = selector(state, 'ethWalletType')
-
-  if (ethWalletType) {
-    dispatch(change(FORM_ADD_NEW_WALLET, 'ethWalletType', null))
-    return
-  }
-
-  if (blockchain) {
-    dispatch(change(FORM_ADD_NEW_WALLET, 'blockchain', null))
-    return
-  }
-  history.goBack()
-}
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
@@ -260,7 +236,7 @@ export const initMainWallet = () => async (dispatch) => {
     wavesProvider,
     ethereumProvider,
   ]
-  providers.map((provider) => {
+  providers.forEach((provider) => {
     dispatch({
       type: WALLET_ADDRESS, address: new AddressModel({
         id: provider.id(),
@@ -354,11 +330,6 @@ export const getTokensBalancesAndWatch = (address, blockchain, customTokens: Arr
   }
   // const dao = tokenService.getDAO(token)
   // await dao.watch(address)
-}
-
-export const resetWalletsForm = () => (dispatch) => {
-  dispatch(change(FORM_ADD_NEW_WALLET, 'blockchain', null))
-  dispatch(change(FORM_ADD_NEW_WALLET, 'ethWalletType', null))
 }
 
 export const getTransactionsForMainWallet = ({ wallet, forcedOffset }) => async (dispatch, getState) => {

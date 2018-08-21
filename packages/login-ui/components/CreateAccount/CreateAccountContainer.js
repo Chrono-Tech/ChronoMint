@@ -10,7 +10,7 @@ import { connect } from 'react-redux'
 import AccountProfileModel from '@chronobank/core/models/wallet/persistAccount/AccountProfileModel'
 import {
   navigateToSelectWallet,
-} from '../../redux/actions'
+} from '../../redux/navigation'
 import {
   FORM_CREATE_ACCOUNT,
 } from '../../redux/constants'

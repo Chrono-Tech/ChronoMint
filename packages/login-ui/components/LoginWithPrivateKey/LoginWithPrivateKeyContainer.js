@@ -10,7 +10,7 @@ import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import { stopSubmit, SubmissionError } from 'redux-form'
 import {
   navigateBack,
-} from '../../redux/actions'
+} from '../../redux/navigation'
 import {
   FORM_PRIVATE_KEY_LOGIN_PAGE,
 } from '../../redux/constants'
