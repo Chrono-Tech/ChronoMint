@@ -18,6 +18,7 @@ import { LogTxModel } from '@chronobank/core/models'
 
 import './ConfirmTxDialog.scss'
 import Value from '../../common/Value/Value'
+import IPFSHash from './IPFSHash/IPFSHash'
 
 function mapDispatchToProps (dispatch, props) {
   return {
@@ -65,6 +66,9 @@ export default class ConfirmTxDialog extends PureComponent {
             <div styleName='paramsList'>
 
               {description.fields && description.fields.map((field, i) => {
+                if (field.type === "ipfsHash") {
+                  return <IPFSHash key={i} multihash={field.value} langPath={description.path} />
+                }
                 return (
                   <div styleName='param' key={i}>
                     <div styleName='label'>

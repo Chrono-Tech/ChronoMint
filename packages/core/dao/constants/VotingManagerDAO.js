@@ -3,6 +3,5 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+// eslint-disable-next-line import/prefer-default-export
 export const TX_CREATE_POLL = 'createPoll'
-export const TX_REMOVE_POLL = 'removePoll'
-export const TX_ACTIVATE_POLL = 'activatePoll'
