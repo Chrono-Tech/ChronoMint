@@ -6,7 +6,7 @@
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { push } from 'react-router-redux'
+import { navigateTo2Fa } from 'redux/ui/navigation'
 import PropTypes from 'prop-types'
 import Button from 'components/common/ui/Button/Button'
 import './TwoFAWarningWidget.scss'
@@ -18,7 +18,7 @@ function mapStateToProps (state, ownProps) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleGoTo2FA: () => dispatch(push('/2fa')),
+    handleGoTo2FA: () => dispatch(navigateTo2Fa()),
   }
 }
 

@@ -12,7 +12,7 @@ import classnames from 'classnames'
 import { connect } from 'react-redux'
 import menu from 'menu'
 import { drawerToggle, drawerHide } from 'redux/drawer/actions'
-import { logout } from '@chronobank/core/redux/session/thunks'
+import { logoutAndNavigateToRoot } from 'redux/ui/thunks'
 import styles from '../styles'
 
 import './DrawerPartial.scss'
@@ -97,6 +97,6 @@ function mapDispatchToProps (dispatch) {
   return {
     handleDrawerToggle: () => dispatch(drawerToggle()),
     handleDrawerHide: () => dispatch(drawerHide()),
-    handleLogout: () => dispatch(logout()),
+    handleLogout: () => dispatch(logoutAndNavigateToRoot()),
   }
 }

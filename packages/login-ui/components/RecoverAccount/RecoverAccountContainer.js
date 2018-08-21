@@ -10,7 +10,7 @@ import { stopSubmit, SubmissionError } from 'redux-form/immutable'
 import { validateMnemonicForAccount } from '@chronobank/core/redux/persistAccount/utils'
 import {
   navigateBack,
-} from '../../redux/actions'
+} from '../../redux/navigation'
 import {
   FORM_RECOVER_ACCOUNT,
 } from '../../redux/constants'

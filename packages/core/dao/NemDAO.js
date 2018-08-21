@@ -116,6 +116,7 @@ export default class NemDAO extends EventEmitter {
         title: `tx.Nem.${this._mosaic ? 'Mosaic' : 'Xem'}.transfer.title`,
         from,
         to,
+        blockchain: BLOCKCHAIN_NEM,
         amount: new Amount(amount, token.symbol()),
         amountToken: token,
         fee: new Amount(fee, feeToken.symbol()),

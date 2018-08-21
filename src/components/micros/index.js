@@ -3,4 +3,4 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export { default as BalanceSubscription } from './BalanceSubscription/BalanceSubscription'
+export BalanceSubscription from './BalanceSubscription/BalanceSubscription'

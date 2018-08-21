@@ -9,7 +9,7 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import userMonitorService from 'user/monitorService'
 import { connect } from 'react-redux'
-import { logout } from '@chronobank/core/redux/session/thunks'
+import { logoutAndNavigateToRoot } from 'redux/ui/thunks'
 import { modalsClose } from 'redux/modals/actions'
 import { stopUserMonitor } from 'redux/ui/actions'
 import ModalDialog from 'components/dialogs/ModalDialog'
@@ -19,7 +19,7 @@ import './UserActiveDialog.scss'
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleLogout: () => dispatch(logout()),
+    handleLogout: () => dispatch(logoutAndNavigateToRoot()),
     modalsClose: () => {
       userMonitorService.start()
       dispatch(modalsClose())
@@ -33,6 +33,7 @@ export default class UserActiveDialog extends PureComponent {
   static propTypes = {
     handleLogout: PropTypes.func,
     modalsClose: PropTypes.func,
+    stopUserMonitor: PropTypes.func,
   }
 
   componentDidMount () {
