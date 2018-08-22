@@ -12,7 +12,7 @@ import { SignerMemoryModel, TxEntryModel, TxExecModel } from '../../models'
 import { pendingEntrySelector, web3Selector } from './selectors'
 import { DUCK_ETHEREUM, NONCE_UPDATE, TX_CREATE, TX_STATUS, WEB3_UPDATE } from './constants'
 import { getSigner } from '../persistAccount/selectors'
-import { getBtcFee } from '../tokens/utils'
+import { getBtcFee, getProviderByBlockchain } from '../tokens/utils'
 import TokenModel from "../../models/tokens/TokenModel";
 import TransferExecModel from "../../models/TransferExecModel";
 import Amount from "../../models/Amount";
@@ -22,26 +22,6 @@ import { showConfirmTransferModal } from "../../../core-dependencies/redux/ui/ac
 import { notifyError } from "../notifier/actions";
 import TransferError from "../../models/TransferError";
 import { TRANSFER_CANCELLED } from "../../models/constants/TransferError";
-
-export const submit = (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1, advancedParams) => (dispatch, getState) => {
-  const tokenFeeRate = advancedParams && advancedParams.satPerByte ? advancedParams.satPerByte : token.feeRate()
-  setImmediate(async () => {
-    const fee = await dispatch(estimateFee(from, to, amount, tokenFeeRate)) // use feeMultiplier = 1 to estimate default fee
-    this.emit('submit', new TransferExecModel({
-      title: `tx.Bitcoin.${this._name}.transfer.title`,
-      from,
-      to,
-      amount: new Amount(amount, token.symbol()),
-      amountToken: token,
-      fee: new Amount(fee, token.symbol()),
-      feeToken: token,
-      feeMultiplier,
-      options: {
-        advancedParams,
-      },
-    }))
-  })
-}
 
 export const estimateFee = (from: string, to, amount: BigNumber, feeRate: Number) => async (dispatch, getState) => {
 
@@ -80,7 +60,7 @@ export const prepareTransaction = (tx, {
   wallet,
   token,
 }) => async (dispatch) => {
-  const tokenRate = satPerByte ? satPerByte : tx.token.feeRate()
+  const tokenRate = satPerByte ? satPerByte : feeMultiplier * tx.token.feeRate()
 
   const fee = await getBtcFee({
     address: tx.from,
@@ -122,9 +102,13 @@ const submitTransaction = (tx) => async (dispatch) => {
 }
 
 const acceptTransaction = (tx) => async (dispatch) => {
-  const { tokenRate } = tx.options()
+  const provider = getProviderByBlockchain(tx.blockchain())
 
-  // return await this._bitcoinProvider.transfer(tx.from(), tx.to(), tx.amount(), tokenRate)
+  console.log('acceptTransaction', provider, tx.blockchain(), tx.from(), tx.to(), tx.amount(), tx.fee())
+  if (provider) {
+    provider.transfer(tx.from(), tx.to(), tx.amount(), tx.fee())
+  }
+
 }
 
 const rejectTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
