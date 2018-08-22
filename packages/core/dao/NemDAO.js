@@ -84,9 +84,8 @@ export default class NemDAO extends EventEmitter {
     return this._nemProvider.getAccountBalances(this._namespace)
   }
 
-  async getAccountBalance () {
-    const balance = await this.getAccountBalances()
-    return balance ? balance.unconfirmed : null
+  getAccountBalance () {
+    return this.getAccountBalances()
   }
 
   accept (transfer: TransferExecModel) {
@@ -101,9 +100,12 @@ export default class NemDAO extends EventEmitter {
     })
   }
 
-  // TODO @ipavlenko: Replace with 'immediateTransfer' after all token DAOs will start using 'submit' method
-  transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: number = 1) {
-    this.submit(from, to, amount, token, feeMultiplier)
+  transfer (from: string, to: string, amount: BigNumber, token: TokenModel) {
+    return {
+      from,
+      to,
+      amount: new Amount(amount, token.symbol()),
+    }
   }
 
   submit (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: number = 1) {

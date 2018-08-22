@@ -38,6 +38,7 @@ import {
   WALLETS_UPDATE_WALLET,
 } from './constants'
 import { getSigner } from '../persistAccount/selectors'
+import { executeNemTransaction } from '../nem/thunks'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -115,7 +116,23 @@ const initDerivedWallets = () => async (dispatch, getState) => {
   })
 }
 
+const fallbackCallback = (wallet) => (dispatch) => {
+  const updateBalance = (token: TokenModel) => async () => {
+    if (token.blockchain() === wallet.blockchain) {
+      const dao = tokenService.getDAO(token)
+      const balance = await dao.getAccountBalance(wallet.address)
+      if (balance) {
+        dispatch(setWalletBalance(wallet.id, new Amount(balance, token.symbol(), true)))
+      }
+    }
+  }
+  dispatch(subscribeOnTokens(updateBalance))
+}
+
 const updateWalletBalance = ({ wallet }) => async (dispatch) => {
+  if (wallet.blockchain === BLOCKCHAIN_NEM) {
+    return dispatch(fallbackCallback(wallet))
+  }
   getWalletBalances({ wallet })
     .then((balancesResult) => {
       try {
@@ -134,16 +151,7 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
     .catch((e) => {
       // eslint-disable-next-line no-console
       console.log('call balances from middleware is failed', e)
-      const updateBalance = (token: TokenModel) => async () => {
-        if (token.blockchain() === wallet.blockchain) {
-          const dao = tokenService.getDAO(token)
-          const balance = await dao.getAccountBalance(wallet.address)
-          if (balance) {
-            dispatch(setWalletBalance(wallet.id, new Amount(balance, token.symbol(), true)))
-          }
-        }
-      }
-      dispatch(subscribeOnTokens(updateBalance))
+      dispatch(fallbackCallback(wallet))
     })
 }
 
@@ -202,8 +210,11 @@ export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amo
   const tokenDAO = tokenService.getDAO(token.id())
   const tx = tokenDAO.transfer(wallet.address, recipient, amount, token) // added token for btc like transfers
 
-  if (tx) {
-    await dispatch(executeTransaction({ tx, options: { feeMultiplier, walletDerivedPath: wallet.derivedPath } }))
+  if (wallet.blockchain === BLOCKCHAIN_NEM && tx) {
+    dispatch(executeNemTransaction({ tx, options: { feeMultiplier, walletDerivedPath: wallet.derivedPath } }))
+  }
+  if (wallet.blockchain === BLOCKCHAIN_ETHEREUM && tx) {
+    dispatch(executeTransaction({ tx, options: { feeMultiplier, walletDerivedPath: wallet.derivedPath } }))
   }
 }
 

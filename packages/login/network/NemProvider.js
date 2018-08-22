@@ -53,7 +53,7 @@ export class NemProvider extends AbstractProvider {
     if (mosaic) {
       balance = (mosaics && (mosaic in mosaics))
         ? mosaics[mosaic]
-        : { confirmed: new BigNumber(0) } // When no such mosaic specified
+        : { unconfirmed: new BigNumber(0) } // When no such mosaic specified
     }
 
     if (balance) {

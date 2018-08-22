@@ -82,7 +82,7 @@ export class NemEngine {
     transferTransaction.mosaics.push(mosaicAttachment)
 
     const transactionEntity = nem.model.transactions.prepare("mosaicTransferTransaction")(common, transferTransaction, {
-      [ `${mosaicDefinition.id.namespaceId}:${mosaicDefinition.id.name}` ]: {
+      [`${mosaicDefinition.id.namespaceId}:${mosaicDefinition.id.name}`]: {
         mosaicDefinition,
       },
     }, this._network.id)
