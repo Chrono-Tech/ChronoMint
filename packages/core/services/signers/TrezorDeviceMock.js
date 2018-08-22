@@ -1,7 +1,6 @@
 import EventEmitter from 'events'
 import EthereumTx from 'ethereumjs-tx'
 import hdkey from 'ethereumjs-wallet/hdkey'
-const stripHexPrefix = require('strip-hex-prefix')
 const BigNumber = require('bignumber.js')
 import Accounts from 'web3-eth-accounts'
 const DEFAULT_PATH = "m/44'/60'/0'/0"
@@ -15,10 +14,6 @@ export default class TrezorDeviceMock extends EventEmitter {
 
   get title () {
     return 'Trezor Device Mock'
-  }
-
-  get type () {
-    return 'Ethereum'
   }
 
  async getAddressInfoList (from: Number = 0, limit: Number = 5): String {

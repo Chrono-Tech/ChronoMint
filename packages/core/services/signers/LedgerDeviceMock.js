@@ -1,7 +1,6 @@
 import EventEmitter from 'events'
 import EthereumTx from 'ethereumjs-tx'
 import hdkey from 'ethereumjs-wallet/hdkey'
-const stripHexPrefix = require('strip-hex-prefix')
 const BigNumber = require('bignumber.js')
 import Accounts from 'web3-eth-accounts'
 const DEFAULT_PATH = "m/44'/60'/0'/0"
@@ -17,53 +16,45 @@ export default class LedgerDeviceMock extends EventEmitter {
     return 'Ledger Device Mock'
   }
 
-  async init () {
-    const hdWallet = hdkey.fromMasterSeed(MOCK_SEED)
-    const xpub = hdWallet.publicExtendedKey() 
-    this.xpubkey = xpub
-    const wallet = hdkey.fromExtendedKey(this.xpubkey).getWallet()
-    this.emit('connected')
-    return {
-          path: DEFAULT_PATH,
-          address: wallet.getAddress().toString('hex'),
-          publicKey: wallet.getPublicKey(),
-	  type: this.name,
-    }
+ async getAddressInfoList (from: Number = 0, limit: Number = 5): String {
+    return Array.from({ length: limit }).map((element, index) => {
+      return this.getAddressInfo(DEFAULT_PATH_FACTORY(from + index))
+      })
   }
 
-  stripAndPad (str) {
-    if (str !== undefined) {
-      const stripped = stripHexPrefix(str)
-      return stripped.length % 2 === 0 ? stripped : '0' + stripped
-    }
-    return null
+  getAddressInfo (path) {
+    console.log(path)
+    const hdKey = hdkey.fromMasterSeed(MOCK_SEED)
+     const wallet = hdKey.derivePath(path).getWallet()
+        return {
+          path: path,
+          address: `0x${wallet.getAddress().toString('hex')}`,
+          publicKey: wallet.getPublicKey().toString('hex'),
+          type: this.name,
+        }
   }
 
-  get isConnected () {
-    return !!this.xpubkey
-  }
-
-  async getAddress (path) {
+  getAddress (path) {
     if (this.isConnected) {
-      const hdKey = hdkey.fromExtendedKey(this.xpubkey)
+      const hdKey = hdkey.fromMasterSeed(MOCK_SEED)
       const wallet = hdKey.derivePath(path).getWallet()
         return `0x${wallet.getAddress().toString('hex')}`
     }
     return
   }
 
-  async signTransaction (path, txData) {
+  async signTransaction (txData, path) {
     const accounts = new Accounts()
-    const hdWallet = hdkey.fromMasterSeed(MOCK_SEED)
+    const hdWallet = hdkey.fromMasterSeed(MOCK_SEED).derivePath(path)
     const wallet = hdWallet.getWallet()
     const account = await accounts.privateKeyToAccount(`0x${wallet.getPrivateKey().toString('hex')}`)
     return await account.signTransaction(txData)
   }
 
-  async signData (path, data) {
+  async signData (data, path) {
     const accounts = new Accounts()
-    const hdWallet = hdkey.fromMasterSeed(MOCK_SEED)
-    const w = hdWallet.derivePath(DEFAULT_PATH).getWallet()
+    const hdWallet = hdkey.fromMasterSeed(MOCK_SEED).derivePath(path)
+    const w = hdWallet.getWallet()
     const account = await accounts.privateKeyToAccount(`0x${w.getPrivateKey().toString('hex')}`)
     return await account.sign(data)
   }

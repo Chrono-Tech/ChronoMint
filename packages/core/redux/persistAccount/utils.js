@@ -24,7 +24,7 @@ export const replaceWallet = (wallet, walletList) => {
 }
 
 export const getAddress = (address, hexFormat = false) => {
-  return `${ hexFormat ? '0x' : ''}${address}`
+  return address//`${ hexFormat ? '0x' : ''}${address}`
 }
 
 export const getAccountAddress = (account: AccountEntryModel, hexFormat = false) => {

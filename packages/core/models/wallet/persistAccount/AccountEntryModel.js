@@ -32,7 +32,7 @@ class AccountEntryModel extends AbstractAccountModel {
       case 'memory':
         return this.encrypted[0].address
       case 'device':
-        return `0x${this.encrypted[0].address}` 
+        return this.encrypted[0].address 
     }
   } 
 

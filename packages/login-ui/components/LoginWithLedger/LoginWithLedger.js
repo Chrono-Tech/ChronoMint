@@ -19,23 +19,9 @@ import {
 
 import './LoginWithLedger.scss'
 
-const mapStateToProps = (state) => {
-  return {
-    isLoading: state.get(DUCK_DEVICE_ACCOUNT).isLoading,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    fetchNextAccounts: () => dispatch(fetchNextAccounts()),
-  }
-}
-
-@connect(mapStateToProps, mapDispatchToProps)
 class LoginWithLedger extends PureComponent {
   static propTypes = {
     previousPage: PropTypes.func,
-    isLoading: PropTypes.bool,
     onDeviceSelect: PropTypes.func,
     deviceList: PropTypes.instanceOf(Array),
     onDeviceSelect: PropTypes.func,
@@ -86,14 +72,14 @@ class LoginWithLedger extends PureComponent {
   }
 
   render () {
-    const { previousPage, deviceList, isLoading, navigateToDerivationPathForm } = this.props
+    const { previousPage, deviceList, navigateToDerivationPathForm } = this.props
     return (
       <div styleName='form'>
         <div styleName='page-title'>
           <Translate value='LoginWithLedger.title' />
         </div>
         {
-          !isLoading && (
+          !deviceList.length && (
             <div styleName='states'>
               {this.renderStates()}
             </div>
@@ -101,7 +87,7 @@ class LoginWithLedger extends PureComponent {
         }
 
         {
-          isLoading && (
+          deviceList.length && (
             <div styleName='account'>
               {deviceList.map(this._buildItem)}
             </div>
