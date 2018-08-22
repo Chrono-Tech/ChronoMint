@@ -7,13 +7,13 @@ import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from '../../../dao/constants/AssetHold
 
 export const FUNCTION_DEPOSIT = new TransactionDescriber(
   findFunctionABI(AssetHolderABI, TX_DEPOSIT),
-  ({ tx, block }, { address }, { params, abi }) => {
+  ({ tx, block }, { address }, { params }) => {
     address = address.toLowerCase()
     if ((tx.to.toLowerCase() === address || tx.from.toLowerCase() === address)) {
 
       const transferAmount = new Amount(params._amount, TIME)
 
-      const path = `tx.${abi.contractName}.${TX_DEPOSIT}`
+      const path = `tx.${AssetHolderABI.contractName}.${TX_DEPOSIT}`
       return new LogTxModel({
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: 'transfer',
@@ -36,13 +36,13 @@ export const FUNCTION_DEPOSIT = new TransactionDescriber(
 
 export const FUNCTION_WITHDRAW = new TransactionDescriber(
   findFunctionABI(AssetHolderABI, TX_WITHDRAW_SHARES),
-  ({ tx, block }, { address }, { params, abi }) => {
+  ({ tx, block }, { address }, { params }) => {
     address = address.toLowerCase()
     if ((tx.to.toLowerCase() === address || tx.from.toLowerCase() === address)) {
 
       const transferAmount = new Amount(params._amount, TIME)
 
-      const path = `tx.${abi.contractName}.${TX_WITHDRAW_SHARES}`
+      const path = `tx.${AssetHolderABI.contractName}.${TX_WITHDRAW_SHARES}`
       return new LogTxModel({
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: 'transfer',

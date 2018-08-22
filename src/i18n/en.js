@@ -174,9 +174,13 @@ export default {
     TokenManagementInterface: {
       createAssetWithoutFee: {
         title: 'Confirm create token',
+        from: 'From',
+        to: 'To',
       },
       createAssetWithFee: {
         title: 'Confirm create token',
+        from: 'From',
+        to: 'To',
       },
     },
     ChronoBankPlatform: {

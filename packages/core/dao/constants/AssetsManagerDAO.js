@@ -3,5 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-// eslint-disable-next-line import/prefer-default-export
 export const TX_ASSET_CREATED = 'AssetCreated'
+export const TX_CREATE_ASSET_WITH_FEE = 'createAssetWithFee'
+export const TX_CREATE_ASSET_WITHOUT_FEE = 'createAssetWithoutFee'

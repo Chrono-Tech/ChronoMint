@@ -11,7 +11,7 @@ import { TIME } from '../../../dao/constants'
 
 export const FUNCTION_TRANSFER = new TransactionDescriber(
   findFunctionABI(ERC20DAODefaultABI, 'transfer'),
-  ({ tx, block }, { address }, { params, token, abi }) => {
+  ({ tx, block }, { address }, { params, token }) => {
     const symbol = token.symbol()
     address = address.toLowerCase()
 
@@ -19,7 +19,7 @@ export const FUNCTION_TRANSFER = new TransactionDescriber(
 
       const transferAmount = new Amount(params._value, symbol)
 
-      const path = `tx.${abi.contractName}.transfer`
+      const path = `tx.${ERC20DAODefaultABI.contractName}.transfer`
       return new LogTxModel({
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: 'transfer',
@@ -46,13 +46,13 @@ export const FUNCTION_TRANSFER = new TransactionDescriber(
 
 export const FUNCTION_APPROVE = new TransactionDescriber(
   findFunctionABI(ERC20DAODefaultABI, 'approve'),
-  ({ tx, block }, { address }, { params, token, abi }) => {
+  ({ tx, block }, { address }, { params, token }) => {
     const symbol = token.symbol()
     address = address.toLowerCase()
     if (symbol && (params._spender.toLowerCase() === address || tx.from.toLowerCase() === address)) {
       const value = new Amount(params._value, symbol)
 
-      const path = `tx.${abi.contractName}.approve`
+      const path = `tx.${ERC20DAODefaultABI.contractName}.approve`
       return new LogTxModel({
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: 'approve',
@@ -81,10 +81,10 @@ export const FUNCTION_APPROVE = new TransactionDescriber(
 
 export const FUNCTION_REQUIRE_TIME = new TransactionDescriber(
   findFunctionABI(AssetDonatorABI, 'sendTime'),
-  ({ tx, block }, context, { abi }) => {
+  ({ tx, block }) => {
     const symbol = TIME
     const transferAmount = new Amount(1000000000, symbol)
-    const path = `tx.${abi.contractName}.sendTime`
+    const path = `tx.${ERC20DAODefaultABI.contractName}.sendTime`
     return new LogTxModel({
       key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
       name: 'sendTime',

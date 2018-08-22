@@ -65,8 +65,6 @@ export const findFunctionABI = (abi, name) => {
   return abi.abi.find((entry) => entry.type === 'function' && entry.name === name)
 }
 
-// Helper functions
-
 export function ethFeeInfo ({ tx, receipt }, { address, symbol }) {
   const fee = new BigNumber(tx.gasPrice).mul(receipt ? receipt.cumulativeGasUsed : tx.gasLimit)
 

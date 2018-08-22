@@ -113,7 +113,7 @@ export const describePendingTx = (entry, context = {}) => {
   const array = TRANSACTION_DESCRIBERS_BY_TOPIC[info.topic]
   if (array) {
     for (const describer of array) {
-      const desc = describer.describe(entry, context, { abi: describer.abi, inputs: info.inputs, params: info.params, ...context })
+      const desc = describer.describe(entry, context, { inputs: info.inputs, params: info.params, ...context, abi: describer.abi })
       if (desc) {
         return desc
       }
