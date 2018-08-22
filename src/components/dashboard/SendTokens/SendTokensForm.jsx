@@ -283,6 +283,7 @@ export default class SendTokensForm extends PureComponent {
           formFee,
           blockchain,
         }
+        console.log('params', params)
         this.props.estimateFee(params, (error, { fee }) => {
           if (error) {
             this.setState({
@@ -580,22 +581,6 @@ export default class SendTokensForm extends PureComponent {
           </span> &nbsp;
           {this.getTransactionFeeDescription()}
         </div>}
-        {/*<div styleName='template-container'>*/}
-        {/*<div styleName='template-checkbox'>*/}
-        {/*<Field*/}
-        {/*component={Checkbox}*/}
-        {/*name='isTemplateEnabled'*/}
-        {/*/>*/}
-        {/*</div>*/}
-        {/*<div styleName='template-name'>*/}
-        {/*<Field*/}
-        {/*component={TextField}*/}
-        {/*name='TemplateName'*/}
-        {/*label={<Translate value={'wallet.templateName'} />}*/}
-        {/*fullWidth*/}
-        {/*/>*/}
-        {/*</div>*/}
-        {/*</div>*/}
 
         <div styleName='actions-row'>
           <div styleName='advanced-simple'>

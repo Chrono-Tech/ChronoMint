@@ -207,15 +207,25 @@ const updateAllowance = (allowance) => (dispatch, getState) => {
 export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1, advancedParams = null) => async (dispatch) => {
   const tokenDAO = tokenService.getDAO(token.id())
   const tx = tokenDAO.transfer(wallet.address, recipient, amount, token)
-  console.log('tokenDAO', tokenDAO, tx, tokenDAO instanceof BitcoinDAO, advancedParams)
-  console.log('tokenDAO:wallet', wallet, wallet.derivedPath)
+  console.log('tokenDAO', tokenDAO, tx, wallet, tokenDAO instanceof BitcoinDAO, advancedParams)
+  console.log('tokenDAO:token', token)
 
   if (tokenDAO instanceof BitcoinDAO) {
-    await dispatch(executeTransactionBitcoin({ tx, options: { feeMultiplier, walletDerivedPath: wallet.derivedPath, advancedParams } }))
+    await dispatch(executeTransactionBitcoin({
+      tx,
+      options: {
+        wallet,
+        token,
+        feeMultiplier,
+        satPerByte: advancedParams && advancedParams.satPerByte,
+      },
+    }))
+
     return
   }
 
   if (tx) {
+    console.log('ethereum transaction', tx)
     await dispatch(executeTransactionEthereum({ tx, options: { feeMultiplier, walletDerivedPath: wallet.derivedPath } }))
   }
 }

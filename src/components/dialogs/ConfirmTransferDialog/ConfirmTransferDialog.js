@@ -30,6 +30,7 @@ import './ConfirmTransferDialog.scss'
 const mapStateToProps = (state, ownProps) => {
   const { tx } = ownProps
   const wallet = getWallet(`${tx.blockchain()}-${tx.from()}`)(state)
+  console.log('mapState', tx, wallet)
   return ({
     amountBalance: wallet.balances[tx.amountToken().symbol()],
     feeBalance: wallet.balances[tx.feeToken().symbol()],

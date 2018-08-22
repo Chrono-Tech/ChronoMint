@@ -42,6 +42,7 @@ export const executeTransaction = ({ tx, options }) => async (dispatch, getState
 
   await dispatch({ type: TX_CREATE, entry })
 
+  console.log('execute ethereum transaction', tx, entry)
   dispatch(submitTransaction(entry))
 }
 

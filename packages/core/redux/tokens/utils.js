@@ -52,3 +52,30 @@ export const formatBalances = ({ balancesResult, blockchain }) => {
     }
   }
 }
+
+export const getBtcFee = async (
+  {
+    address,
+    recipient,
+    amount,
+    formFee,
+    blockchain,
+  }) => {
+  let fee
+  switch (blockchain) {
+    case BLOCKCHAIN_BITCOIN:
+      fee = await btcProvider.estimateFee(address, recipient, amount, formFee)
+      break
+    case BLOCKCHAIN_BITCOIN_CASH:
+      fee = await bccProvider.estimateFee(address, recipient, amount, formFee)
+      break
+    case BLOCKCHAIN_BITCOIN_GOLD:
+      fee = await btgProvider.estimateFee(address, recipient, amount, formFee)
+      break
+    case BLOCKCHAIN_LITECOIN:
+      fee = await ltcProvider.estimateFee(address, recipient, amount, formFee)
+      break
+  }
+
+  return fee
+}

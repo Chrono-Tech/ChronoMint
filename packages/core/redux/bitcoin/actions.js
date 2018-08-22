@@ -12,6 +12,7 @@ import { SignerMemoryModel, TxEntryModel, TxExecModel } from '../../models'
 import { pendingEntrySelector, web3Selector } from './selectors'
 import { DUCK_ETHEREUM, NONCE_UPDATE, TX_CREATE, TX_STATUS, WEB3_UPDATE } from './constants'
 import { getSigner } from '../persistAccount/selectors'
+import { getBtcFee } from '../tokens/utils'
 import TokenModel from "../../models/tokens/TokenModel";
 import TransferExecModel from "../../models/TransferExecModel";
 import Amount from "../../models/Amount";
@@ -19,6 +20,8 @@ import { nextNonce, sendSignedTransaction, signTransaction } from "../ethereum/a
 import { BLOCKCHAIN_ETHEREUM } from "../../dao/constants";
 import { showConfirmTransferModal } from "../../../core-dependencies/redux/ui/actions";
 import { notifyError } from "../notifier/actions";
+import TransferError from "../../models/TransferError";
+import { TRANSFER_CANCELLED } from "../../models/constants/TransferError";
 
 export const submit = (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1, advancedParams) => (dispatch, getState) => {
   const tokenFeeRate = advancedParams && advancedParams.satPerByte ? advancedParams.satPerByte : token.feeRate()
@@ -53,37 +56,80 @@ export const createTransaction = (entry) => ({
   entry
 })
 
-export const executeTransaction = ({ tx, options }) => async (dispatch, getState) => {
-  const entry = new TxEntryModel({
-    key: uuid(),
-    tx: tx,
-    receipt: null,
-    isSubmitted: true,
-    isAccepted: false,
-  })
+export const executeTransaction = ({ tx, options = null }) => async (dispatch, getState) => {
+  // const entry = new TxEntryModel({
+  //   key: uuid(),
+  //   tx: tx,
+  //   receipt: null,
+  //   isSubmitted: true,
+  //   isAccepted: false,
+  // })
+  console.log('before updateTx')
 
-  dispatch(createTransaction(entry))
+  const updatedTx = await dispatch(prepareTransaction(tx, options))
 
-  dispatch(submitTransaction(entry))
+  console.log('updateTx', updatedTx)
+  // dispatch(createTransaction(entry))
+
+  dispatch(submitTransaction(updatedTx))
 }
 
-const submitTransaction = (entry) => async (dispatch) => {
+export const prepareTransaction = (tx, {
+  feeMultiplier = 1,
+  satPerByte = null,
+  wallet,
+  token,
+}) => async (dispatch) => {
+  const tokenRate = satPerByte ? satPerByte : tx.token.feeRate()
+
+  const fee = await getBtcFee({
+    address: tx.from,
+    recipient: tx.to,
+    amount: tx.value,
+    formFee: tokenRate,
+    blockchain: wallet.blockchain
+  })
+
+  console.log('fee', fee, tx, tokenRate)
+  return new TransferExecModel({
+    title: `tx.Bitcoin.${wallet.blockchain}.transfer.title`,
+    blockchain: wallet.blockchain,
+    from: tx.from,
+    to: tx.to,
+    amount: new Amount(tx.value, token.symbol()),
+    amountToken: token,
+    fee: new Amount(fee, token.symbol()),
+    feeToken: token,
+    feeMultiplier,
+    options: {
+      advancedParams: {
+        satPerByte,
+      }
+
+    }
+  })
+}
+
+const submitTransaction = (tx) => async (dispatch) => {
   dispatch(modalsOpen({
-    componentName: 'ConfirmTxDialog',
+    componentName: 'ConfirmTransferDialog',
     props: {
-      entry,
-      accept: acceptTransaction,
-      reject: rejectTransaction,
+      tx,
+      confirm: (tx) => dispatch(acceptTransaction(tx)),
+      reject: (tx) => dispatch(rejectTxHandler(tx)),
     },
   }))
 }
 
-const acceptTransaction = (tx) => async (dispatch, getState) => {
-  const txOptions = tx.options()
+const acceptTransaction = (tx) => async (dispatch) => {
+  const { tokenRate } = tx.options()
 
-  const tokenRate = advancedParams && advancedParams.satPerByte ? advancedParams.satPerByte : feeMultiplier * token.feeRate()
+  // return await this._bitcoinProvider.transfer(tx.from(), tx.to(), tx.amount(), tokenRate)
+}
 
-  return await this._bitcoinProvider.transfer(tx.from(), tx.to(), tx.amount(), tokenRate)
+const rejectTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
+  const e = new TransferError('Rejected', TRANSFER_CANCELLED)
+  dispatch(notifyError(e, tx.funcTitle()))
 }
 
 export const processTransaction = ({ web3, entry, signer }) => async (dispatch, getState) => {

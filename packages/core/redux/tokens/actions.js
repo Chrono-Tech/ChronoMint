@@ -23,6 +23,7 @@ import { daoByType } from '../daos/selectors'
 import TxExecModel from '../../models/TxExecModel'
 import { web3Selector } from '../ethereum/selectors'
 import { estimateGas } from '../ethereum/actions'
+import { getBtcFee } from './utils'
 
 import { TRANSFER_CANCELLED } from '../../models/constants/TransferError'
 import { WATCHER_TX_SET } from '../watcher/constants'
@@ -276,23 +277,9 @@ export const estimateGasTransfer = (tokenId, params, callback, gasPriceMultiplie
 
 export const estimateBtcFee = (params, callback) => async () => {
   try {
-    const { address, recipient, amount, formFee, blockchain } = params
-    let fee
-    switch (blockchain) {
-      case BLOCKCHAIN_BITCOIN:
-        fee = await btcProvider.estimateFee(address, recipient, amount, formFee)
-        break
-      case BLOCKCHAIN_BITCOIN_CASH:
-        fee = await bccProvider.estimateFee(address, recipient, amount, formFee)
-        break
-      case BLOCKCHAIN_BITCOIN_GOLD:
-        fee = await btgProvider.estimateFee(address, recipient, amount, formFee)
-        break
-      case BLOCKCHAIN_LITECOIN:
-        fee = await ltcProvider.estimateFee(address, recipient, amount, formFee)
-        break
-    }
-    callback(null, { fee: fee })
+    callback(null, {
+      fee: await getBtcFee(params)
+    })
   } catch (e) {
     callback(e)
   }
