@@ -137,6 +137,7 @@ export default class BitcoinDAO extends EventEmitter {
   async immediateTransfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1, advancedParams = undefined) {
     try {
       const tokenRate = advancedParams && advancedParams.satPerByte ? advancedParams.satPerByte : feeMultiplier * token.feeRate()
+      console.log('BitcoinDAO:immediateTransfer', feeMultiplier)
       return await this._bitcoinProvider.transfer(from, to, amount, tokenRate)
     } catch (e) {
       // eslint-disable-next-line

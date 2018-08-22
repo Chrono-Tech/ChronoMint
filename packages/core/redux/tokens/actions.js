@@ -53,6 +53,7 @@ const tokensLoadingFailed = () => ({ type: TOKENS_FAILED })
 const setLatestBlock = (blockchain, block) => ({ type: TOKENS_UPDATE_LATEST_BLOCK, blockchain, block })
 
 const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
+  console.log('tokens:submitTxHandler')
   try {
     if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
       dispatch(modalsOpen({
@@ -73,6 +74,7 @@ const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExec
 }
 
 const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
+  console.log('tokens:acceptTxHandler')
   try {
     if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
       dispatch({ type: WATCHER_TX_SET, tx })
@@ -92,6 +94,7 @@ const rejectTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExec
 }
 
 export const alternateTxHandlingFlow = (dao) => (dispatch) => {
+  console.log('tokens:alternateTxHandlingFlow')
   dao
     .on('submit', submitTxHandler(dao, dispatch))
     .on('accept', acceptTxHandler(dao, dispatch))

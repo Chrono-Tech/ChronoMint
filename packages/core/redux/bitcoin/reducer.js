@@ -8,9 +8,12 @@ import { HolderModel, TxEntryModel, TxExecModel } from '../../models'
 import { NONCE_UPDATE, TX_CREATE, TX_REMOVE, TX_STATUS, TX_UPDATE, WEB3_UPDATE } from './constants'
 
 const initialState = () => ({
-  web3: null,
-  nonces: {},
+  isEnabled: true,
   pending: {},
+  fee: null,
+  from: null,
+  to: null,
+  amount: null,
 })
 
 const mutations = {
