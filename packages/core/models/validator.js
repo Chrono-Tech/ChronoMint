@@ -33,7 +33,7 @@ export const nemAddress = (value, required = true, blockchain = 'NEM') => {
   return null
 }
 
-export const wavesAddress = (value, required = true, blockchain = 'WAVES') => {
+export const wavesAddressValidator = (value, required = true, blockchain = 'WAVES') => {
   // TODO @mikefluff: Waves address validation
   if (!value && required) {
     return { value: 'errors.invalidAddress', blockchain }

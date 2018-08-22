@@ -5,18 +5,21 @@
 
 import * as WavesTxActionTypes from './constants'
 
-export const wavesTxCreate = () => ({
+export const wavesTxCreate = (txEntry) => ({
   type: WavesTxActionTypes.WAVES_TX_CREATE,
+  txEntry,
 })
 
 export const wavesTxReset = () => ({
   type: WavesTxActionTypes.WAVES_TX_RESET,
 })
 
-export const wavesTxStatus = () => ({
+export const wavesTxStatus = (payload) => ({
   type: WavesTxActionTypes.WAVES_TX_STATUS,
+  payload,
 })
 
-export const wavesTxUpdate = () => ({
+export const wavesTxUpdate = (payload) => ({
   type: WavesTxActionTypes.WAVES_TX_UPDATE,
+  payload,
 })
