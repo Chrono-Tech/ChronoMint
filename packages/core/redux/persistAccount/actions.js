@@ -68,19 +68,19 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
 }
 
 export const decryptAccount = (entry, password) => async (dispatch) => {
-  const signer = await EthereumMemoryDevice.init({ entry, password })
-  console.log(signer)
-  console.log(signer.wallet.privateKey)
-  const btcSigner = await BitcoinLedgerDevice.init({ seed: signer.wallet.privateKey })
+  console.log(entry)
+  const privateKey = EthereumMemoryDevice.decrypt({entry:entry.encrypted[0].wallet, password })
+  console.log(privateKey)
+//  const btcSigner = await BitcoinLedgerDevice.init({ seed: signer.wallet.privateKey })
  // const address = await btcSigner.getAddress("m/44'/1'/0'/0/0")
  // console.log(address) 
  // const address2 = await btcSigner.getAddress("m/44'/1'/0'/0/1")
  // console.log(address2)
-  console.log(btcSigner)
-  await btcSigner.buildTx("44'/1'/0'/0/0")
+ // console.log(btcSigner)
+//  await btcSigner.buildTx("44'/1'/0'/0/0")
   const account = new AccountModel({
     entry,
-    signers: { ethereum: signer, bitcoin: btcSigner },
+    privateKey,
   })
   
 
@@ -142,19 +142,6 @@ export const createMemoryAccount = ({name, password, mnemonic, privateKey}) => a
   return account
 
 }
-
-/*export const createDeviceAccount = ({ name }) => async (dispatch) => {
-  console.log('we are here')
-  const signer = await SignerDeviceModel.create({ device, address, path, publicKey })
-  console.log(signer)
-  const wallet = await signer.encrypt()
-  const account = dispatch(createAccount(name, wallet, 'device'))
-  console.log(account)
-  const btcSigner = await BitcoinMemoryDevice.init({ seed: signer.wallet.privateKey, network: '' })
-  console.log(btcSigner)
-  btcSigner.buildTx() 
-  return account
-}*/
 
 export const downloadWallet = () => (dispatch, getState) => {
   const state = getState()

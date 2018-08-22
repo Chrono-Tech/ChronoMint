@@ -8,11 +8,11 @@ import TrezorDeviceMock from '../../services/signers/TrezorDeviceMock.js'
 import LedgerDevice from '../../services/signers/LedgerDevice.js'
 import LedgerDeviceMock from '../../services/signers/LedgerDeviceMock.js'
 import BitcoinMemoryDevice from '../../services/signers/BitcoinMemoryDevice.js'
+import { getSigner } from '../persistAccount/selectors'
 import { accountLoad } from '../persistAccount/actions'
 import {
   AccountModel,
   DeviceEntryModel,
-  SignerModel,
 } from '../../models'
 import {
   DUCK_DEVICE_ACCOUNT,
@@ -55,27 +55,16 @@ export const onDeviceSelect = (wallet) => (dispatch) => {
 
 export const initLedgerDevice = (wallet) => async (dispatch, getState) => {
   console.log('initLedgerDevice')
-  let wallets = []
   const ledger = new LedgerDeviceMock()
-  const result = await ledger.init()
-  console.log(result)
-  wallets.push(result)
+  const result = await ledger.getAddressInfoList(0,5)
   dispatch(deviceUpdateList(result))
-  console.log(deviceStatus)
-  dispatch(deviceSetStatus(deviceStatus))
 }
 
 export const initTrezorDevice = (wallet) => async (dispatch, getState) => {
   console.log('initTrezorDevice')
   const trezor = new TrezorDeviceMock()
   const result = await trezor.getAddressInfoList(0,5)
-  console.log(result)
   dispatch(deviceUpdateList(result))
-
-}
-
-export const initMemoryDevice = (wallet, password) => async (dispatch, getState) => {
-
 }
 
 export const loadDeviceAccount = (entry) => async (dispatch) => {

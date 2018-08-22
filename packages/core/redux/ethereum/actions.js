@@ -89,7 +89,8 @@ export const signTransaction = ({ entry, signer }) => async (dispatch) => {
   console.log('sign Transaction')
   console.log(entry)
   try {
-    const signed = await signer.signTransaction(omitBy(entry.tx, isNil))
+    console.log(entry.walletDerivedPath)
+    const signed = await signer.signTransaction(omitBy(entry.tx, isNil), entry.walletDerivedPath)
     const raw = signed.rawTransaction
     dispatch({
       type: TX_STATUS,
@@ -192,11 +193,8 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
     },
   })
   const state = getState()
-  let signer = getSigner(state)
-  //TODO @mikefluff get rid of that shit
-  if (entry.walletDerivedPath) {
-    signer = await SignerMemoryModel.fromDerivedPath({ seed: signer.privateKey, derivedPath: entry.walletDerivedPath })
-  }
+  const signer = getSigner(state)
+  console.log(signer)
 
   return dispatch(processTransaction({
     web3: web3Selector()(state),

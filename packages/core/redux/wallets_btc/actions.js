@@ -4,7 +4,13 @@
  */
 
 import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_NEM,
+  BLOCKCHAIN_WAVES,
   WALLET_HD_PATH,
 } from '@chronobank/login/network/constants'
 import WalletModel from '../../models/wallet/WalletModel'
@@ -58,9 +64,8 @@ const initWalletsFromKeys = () => (dispatch, getState) => {
       address: account.decryptedWallet.entry.encrypted[0].address,
       blockchain: 'Ethereum',
       isMain: true,
-      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path 
     })
-    console.log(wallet)
+
     dispatch(setWallet(wallet))
     dispatch(updateWalletBalance({ wallet }))
 }
@@ -74,6 +79,27 @@ const initDerivedWallets = () => async (dispatch, getState) => {
     if (wallet.isDerived && !wallet.isMain && isOwner(wallet, account)) {
       dispatch(updateWalletBalance({ wallet }))
 
+      switch (wallet.blockchain) {
+        case BLOCKCHAIN_BITCOIN:
+          btcProvider.createNewChildAddress(wallet.deriveNumber)
+          btcProvider.subscribeNewWallet(wallet.address)
+          break
+        case BLOCKCHAIN_BITCOIN_CASH:
+          bccProvider.createNewChildAddress(wallet.deriveNumber)
+          bccProvider.subscribeNewWallet(wallet.address)
+          break
+        case BLOCKCHAIN_BITCOIN_GOLD:
+          btgProvider.createNewChildAddress(wallet.deriveNumber)
+          btgProvider.subscribeNewWallet(wallet.address)
+          break
+        case BLOCKCHAIN_LITECOIN:
+          ltcProvider.createNewChildAddress(wallet.deriveNumber)
+          ltcProvider.subscribeNewWallet(wallet.address)
+          break
+        case BLOCKCHAIN_ETHEREUM:
+          break
+        default:
+      }
     }
   })
 }
@@ -166,8 +192,7 @@ export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amo
   const tx = tokenDAO.transfer(wallet.address, recipient, amount)
 
   if (tx) {
-    console.log(wallet)
-    await dispatch(executeTransaction({ tx, options: { feeMultiplier, walletDerivedPath: wallet.walletDerivedPath } }))
+    await dispatch(executeTransaction({ tx, options: { feeMultiplier, walletDerivedPath: wallet.derivedPath } }))
   }
 }
 
@@ -211,7 +236,7 @@ export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Nu
 }
 
 // eslint-disable-next-line complexity
-export const createNewWallet = ({ name }) => async (dispatch, getState) => {
+export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }) => async (dispatch, getState) => {
   const state = getState()
   const signer = getSigner(state)
   const account = getState().get(DUCK_SESSION).account
@@ -232,12 +257,40 @@ export const createNewWallet = ({ name }) => async (dispatch, getState) => {
   let newWallet
   let address
 
+  switch (blockchain) {
+    case BLOCKCHAIN_ETHEREUM:
       if (newDeriveNumber === undefined || newDeriveNumber === null) {
         newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
       }
       derivedPath = `${WALLET_HD_PATH}/${newDeriveNumber}`
-      //const newWalletSigner = await SignerMemoryModel.fromDerivedPath({ seed: signer.privateKey, derivedPath })
-      //address = newWalletSigner.address
+      const newWalletSigner = await SignerMemoryModel.fromDerivedPath({ seed: signer.privateKey, derivedPath })
+      address = newWalletSigner.address
+
+      break
+    case BLOCKCHAIN_BITCOIN:
+      if (newDeriveNumber === undefined || newDeriveNumber === null) {
+        newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
+      }
+      derivedPath = `${WALLET_HD_PATH}/${newDeriveNumber}`
+      newWallet = btcProvider.createNewChildAddress(newDeriveNumber)
+      address = newWallet.getAddress()
+      btcProvider.subscribeNewWallet(address)
+      break
+    case BLOCKCHAIN_LITECOIN:
+      if (newDeriveNumber === undefined || newDeriveNumber === null) {
+        newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
+      }
+      derivedPath = `${WALLET_HD_PATH}/${newDeriveNumber}`
+      newWallet = ltcProvider.createNewChildAddress(newDeriveNumber)
+      address = newWallet.getAddress()
+      ltcProvider.subscribeNewWallet(address)
+      break
+    case BLOCKCHAIN_BITCOIN_GOLD:
+    case BLOCKCHAIN_NEM:
+    case BLOCKCHAIN_WAVES:
+    default:
+      return null
+  }
 
   const wallet = new WalletModel({
     name,

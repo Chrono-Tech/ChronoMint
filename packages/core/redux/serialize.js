@@ -122,8 +122,6 @@ function serialize (Immutable, refs) {
             return new models.MainWalletModel(data)
           case 'AccountModel':
             return null
-          case 'SignerMemoryModel':
-            return null
 
           // Immutable types
           case 'ImmutableMap':

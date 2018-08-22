@@ -11,7 +11,7 @@ import dao from './daos/reducer'
 import device from './device/reducer'
 import ethereum from './ethereum/reducer'
 import ethMultisigWallet from './multisigWallet/reducer'
-import mainWallet from './mainWallet/reducer'
+//import mainWallet from './mainWallet/reducer'
 import market from './market/reducer'
 import notifier from './notifier/reducer'
 import persistAccount from './persistAccount/reducer'
@@ -32,7 +32,7 @@ const coreReducers = {
   device,
   ethereum,
   ethMultisigWallet,
-  mainWallet,
+//  mainWallet,
   market,
   notifier,
   persistAccount,

@@ -254,7 +254,7 @@ export const initMainWallet = () => async (dispatch) => {
 //    btcProvider,
 //    nemProvider,
 //    wavesProvider,
-    ethereumProvider,
+//    ethereumProvider,
   ]
   providers.map((provider) => {
     dispatch({

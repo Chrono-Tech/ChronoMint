@@ -11,10 +11,15 @@ import Accounts from 'web3-eth-accounts'
 const DEFAULT_PATH = `m/44'/60'/0'/0/0`
 
 export default class EthereumMemoryDevice extends EventEmitter {
-  constructor ({ wallet }) {
+  constructor (privateKey) {
     super()
-    this.wallet = wallet
-    this.type = 'Ethereum'
+    const accounts = new Accounts()
+    const wallet = accounts.wallet.create()
+    console.log(privateKey)
+    const account = accounts.privateKeyToAccount(privateKey)
+    console.log(account)
+    wallet.add(account)
+    this.wallet = wallet[0]
     Object.freeze(this)
   }
 
@@ -58,18 +63,20 @@ export default class EthereumMemoryDevice extends EventEmitter {
       wallet = accounts.wallet.create()
       const account = accounts.privateKeyToAccount(`0x${privateKey}`)
       wallet.add(account)
+      wallet = wallet[0]
     }
     if (mnemonic) {
       wallet = EthereumMemoryDevice.getDerivedWallet(mnemonic,null)
     }
-    return wallet.encrypt(password) 
+    return { wallet: wallet.encrypt(password), path: DEFAULT_PATH, type: 'memory', address: wallet.address }
   }
 
   // Should be synchronous by design
-  static init ({ entry, password }) {
+  static decrypt ({ entry, password }) {
     const accounts = new Accounts()
-    const wallet = accounts.wallet.decrypt(entry.encrypted, password)
-    return new EthereumMemoryDevice({ wallet:wallet[0] })
+    const wallet = accounts.wallet.decrypt([entry], password)
+    const privateKey = wallet[0].privateKey
+    return privateKey
   }
 
   static getDerivedWallet (seed, path) {
@@ -85,7 +92,6 @@ export default class EthereumMemoryDevice extends EventEmitter {
     const w = hdWallet.derivePath(_path).getWallet()
     const account = accounts.privateKeyToAccount(`0x${w.getPrivateKey().toString('hex')}`)
     wallet.add(account)  
-    console.log('wallets')
     console.log(wallet)
     return wallet[0]
   }

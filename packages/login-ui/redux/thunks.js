@@ -99,13 +99,16 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
      case 'memory' : {
       try {
         const wallet = await dispatch(PersistAccountActions.decryptAccount(wlt, password))
-	console.log(wallet.signers.ethereum.address)
-        await dispatch(SessionThunks.getProfileSignature(wallet.signers.ethereum))
+	console.log(wallet.entry.encrypted[0].address)
+	const signer = getSigner(getState())
+	console.log(signer)
+        await dispatch(SessionThunks.getProfileSignature(signer,wallet.entry.encrypted[0].path))
 	      
-        await dispatch(NetworkThunks.handleLogin(wallet.signers.ethereum.address))
+        await dispatch(NetworkThunks.handleLogin(wallet.entry.encrypted[0].address))
       } catch (e) {
         throw new SubmissionError({ password: e && e.message })
       }
+      break
      }
 
      case 'device': {
@@ -114,12 +117,15 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
       try {
         const wallet = await dispatch(DeviceActions.loadDeviceAccount(wlt))
         console.log(wallet.entry.encrypted[0].address)
-        dispatch(SessionThunks.getProfileSignature(wallet))
+	const signer = getSigner(state)
+	console.log(signer)
+        dispatch(SessionThunks.getProfileSignature(signer,wallet.entry.encrypted[0].path))
         
         await dispatch(NetworkThunks.handleLogin(wallet.entry.encrypted[0].address))
       } catch (e) {
         throw new SubmissionError({ password: e && e.message })
       }
+      break
     }
    }
 }

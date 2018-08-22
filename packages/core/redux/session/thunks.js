@@ -185,13 +185,13 @@ export const bootstrap = () => async () => {
   return true //FIXME remove method
 }
 
-export const getProfileSignature = (wallet) => async (dispatch) => {
-  if (!wallet) {
+export const getProfileSignature = (signer,path) => async (dispatch) => {
+  if (!signer) {
     return
   }
   try {
     const signDataString = ProfileService.getSignData()
-    const signData = await wallet.signers.ethereum.signData(signDataString,wallet.entry.encrypted[0].path)
+    const signData = await signer.signData(signDataString,path)
     console.log(signData)
     const profileSignature = await dispatch(ProfileThunks.getUserProfile(signData.signature))
     dispatch(SessionActions.setProfileSignature(profileSignature))
