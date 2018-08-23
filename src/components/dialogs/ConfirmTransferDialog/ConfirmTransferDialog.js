@@ -52,12 +52,6 @@ export default class ConfirmTransferDialog extends PureComponent {
     modalsClear: PropTypes.func.isRequired,
     modalsClose: PropTypes.func.isRequired,
     tx: PropTypes.instanceOf(TransferExecModel),
-    // TODO @ipavlenko: Replace with redux binding when DAOs collection will be moved to the redux, use feeToken from props.tx to get DAO
-    dao: PropTypes.oneOfType([
-      PropTypes.instanceOf(BitcoinDAO),
-      PropTypes.instanceOf(NemDAO),
-      PropTypes.instanceOf(WavesDAO),
-    ]),
     amountBalance: PropTypes.instanceOf(Amount),
     feeBalance: PropTypes.instanceOf(Amount),
     feeMultiplier: PropTypes.number,
