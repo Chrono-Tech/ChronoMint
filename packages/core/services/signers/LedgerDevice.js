@@ -7,6 +7,7 @@ import TransportU2F from '@ledgerhq/hw-transport-u2f'
 import AppEth from '@ledgerhq/hw-app-eth'
 
 const DEFAULT_PATH = "44'/60'/0'"
+const DEFAULT_PATH_FACTORY = (index) => `${DEFAULT_PATH}/${index}`
 
 const LOCK = 'LedgerDevice'
 
@@ -28,11 +29,7 @@ export default class LedgerDevice extends EventEmitter {
     return 'Ledger Device'
   }
 
-  get isConnected () {
-    return !!this.address
-  }
-
-  async init () {
+/*  async init () {
     return this._safeExec(
       async () => {
         try {
@@ -57,6 +54,30 @@ export default class LedgerDevice extends EventEmitter {
         }
       }
     )
+  }*/
+
+  async getAddressInfoList (from: Number = 0, limit: Number = 5): String {
+    return this._safeExec(
+      async () => {
+          const addresses = []
+          for (let i = from; i < from + limit; i++) {
+            const path = DEFAULT_PATH_FACTORY(i)
+            const transport = await TransportU2F.create()
+            const app = new AppEth(transport)
+            const { address, publicKey } = await Promise.race([
+              this._getAddressInfo(app, path),
+              rejectOnTimeout(2000)
+            ])
+            addresses.push({
+              path,
+              address,
+              publicKey,
+	      type: this.name
+            })
+          }
+          return addresses
+        }
+    )
   }
 
   async getAddress (path) {
@@ -76,9 +97,10 @@ export default class LedgerDevice extends EventEmitter {
     )
   }
 
-  async signTransaction (path, txData) {
+  async signTransaction (txData, path) {
     return this._safeExec(
       async () => {
+	console.log(txData)
         const tx = new EthereumTx({
           ...txData,
           ...omitBy({
@@ -88,12 +110,15 @@ export default class LedgerDevice extends EventEmitter {
             fee: txData.fee == null // nil check
               ? null
               : Web3Utils.toBN(txData.fee),
-            gas: txData.gas == null // nil check
+            gasLimit: txData.gasLimit == null // nil check
               ? null
-              : Web3Utils.toBN(txData.gas),
+              : Web3Utils.toBN(txData.gasLimit),
             gasPrice: txData.gasPrice == null // nil check
               ? null
-              : Web3Utils.toBN(txData.gasPrice)
+              : Web3Utils.toBN(txData.gasPrice),
+            nonce: txData.nonce == null // nil check
+              ? null
+              : Web3Utils.toBN(txData.nonce)
           }, isNil)
         })
 
@@ -130,12 +155,14 @@ export default class LedgerDevice extends EventEmitter {
     )
   }
 
-  async signData (path, data) {
+  async signData (data, path) {
     return this._safeExec(
       async () => {
+	console.log(data)
         const transport = await TransportU2F.create()
         const app = new AppEth(transport)
         const result = await app.signPersonalMessage(path, Buffer.from(data).toString('hex'))
+	console.log(result)
         const v = parseInt(result.v, 10) - 27
         let vHex = v.toString(16)
         if (vHex.length < 2) {

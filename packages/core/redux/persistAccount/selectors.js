@@ -24,10 +24,18 @@ export const getSigner = (state) => {
     case 'trezor_mock': {
       return new TrezorDeviceMock()
     }
+    case 'ledger_mock': {
+      return new LedgerDeviceMock()
+    }
+    case 'trezor': {
+      return new TrezorDevice()
+    }
+    case 'ledger': {
+      return new LedgerDevice()
+    }
     case 'memory': {
       return new EthereumMemoryDevice(account.decryptedWallet.privateKey)
     }
-
   }
 }
 

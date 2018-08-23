@@ -119,7 +119,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         console.log(wallet.entry.encrypted[0].address)
 	const signer = getSigner(state)
 	console.log(signer)
-        dispatch(SessionThunks.getProfileSignature(signer,wallet.entry.encrypted[0].path))
+        await dispatch(SessionThunks.getProfileSignature(signer,wallet.entry.encrypted[0].path))
         
         await dispatch(NetworkThunks.handleLogin(wallet.entry.encrypted[0].address))
       } catch (e) {
