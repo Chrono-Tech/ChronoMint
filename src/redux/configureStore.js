@@ -23,6 +23,7 @@ import { DUCK_I18N } from 'redux/i18n/constants'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import { DUCK_WALLETS } from '@chronobank/core/redux/wallets/constants'
 import transformer from '@chronobank/core/redux/serialize'
+import { WebSocketService, ws } from '@chronobank/core/services/WebSocketService'
 import ducks from './ducks'
 import routingReducer from './routing'
 import createHistory, { historyMiddleware } from './browserHistoryStore'
@@ -38,6 +39,7 @@ const configureStore = () => {
     ...coreReducers,
     ...ducks,
     ...loginReducers,
+    ws,
     form: formReducer,
     i18n: i18nReducer,
     routing: routingReducer,
@@ -88,7 +90,8 @@ const configureStore = () => {
       // '@@router/',
       // 'MODALS/',
       // 'SIDES/'
-      // 'PROFILE/',
+      'PROFILE/',
+      'WEB_SOCKET',
     ]
     const logger = createLogger({
       collapsed: true,
@@ -100,9 +103,7 @@ const configureStore = () => {
         }
         return WHITE_LIST.includes(action.type) || (
           !IGNORED_ACTIONS.includes(action.type) &&
-          DOMAINS.some((domain) => {
-            return action.type.startsWith(domain)
-          })
+          DOMAINS.some((domain) => action.type.startsWith(domain))
         )
       },
     })
@@ -125,6 +126,8 @@ const configureStore = () => {
 
 export const store = configureStore()
 // store.dispatch(globalWatcher())
+
+WebSocketService.initWebSocketService(store)
 
 const persistorConfig = {
   key: 'root',

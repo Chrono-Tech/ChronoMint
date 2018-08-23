@@ -23,9 +23,11 @@
     "reselect": "^3.0.1",
     "socket.io-client": "^2.0.3",
     "trezor-connect": "^5.0.31",
+    "sockjs-client": "1.1.5",
     "uuid": "^3.3.0",
+    "web3-eth-abi": "^1.0.0-beta.33",
     "web3": "npm:web3@1.0.0-beta.33",
-    "web3-eth-abi": "^1.0.0-beta.33"
+    "webstomp-client": "^1.2.4"
   },
   "peerDependencies": {
     "@chronobank/core-dependencies": "*"

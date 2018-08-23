@@ -11,6 +11,7 @@ import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import setup from '@chronobank/login/network/EngineUtils'
 import metaMaskResolver from '@chronobank/login/network/metaMaskResolver'
+import { WebSocketService } from '../../services/WebSocketService'
 import * as SessionActions from './actions'
 import * as ProfileThunks from '../profile/thunks'
 import ProfileService from '../profile/service'
@@ -180,6 +181,7 @@ export const login = (account) => async (dispatch, getState) => {
 }
 
 export const bootstrap = () => async () => {
+  WebSocketService.connect()
   return true //FIXME remove method
 }
 
