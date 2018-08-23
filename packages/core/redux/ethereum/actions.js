@@ -11,6 +11,10 @@ import { SignerMemoryModel, TxEntryModel, TxExecModel } from '../../models'
 import { pendingEntrySelector, web3Selector } from './selectors'
 import { DUCK_ETHEREUM, NONCE_UPDATE, TX_CREATE, TX_STATUS, WEB3_UPDATE } from './constants'
 import { getSigner } from '../persistAccount/selectors'
+import ethereumDAO from '../../dao/EthereumDAO'
+import { describePendingTx } from '../../describers'
+import { daoByAddress } from '../daos/selectors'
+import { getAccount } from '../session/selectors/models'
 
 export const initEthereum = ({ web3 }) => (dispatch) => {
   dispatch({ type: WEB3_UPDATE, web3 })
@@ -171,11 +175,23 @@ export const sendSignedTransaction = ({ web3, entry }) => async (dispatch, getSt
   })
 }
 
-const submitTransaction = (entry) => async (dispatch) => {
+const submitTransaction = (entry) => async (dispatch, getState) => {
+
+  const state = getState()
+  const account = getAccount(state)
+  const dao = daoByAddress(entry.tx.to)(state) || ethereumDAO
+
+  const description = describePendingTx(entry, {
+    address: account,
+    abi: dao.abi,
+    token: dao.token,
+  })
+
   dispatch(modalsOpen({
     componentName: 'ConfirmTxDialog',
     props: {
       entry,
+      description,
       accept: acceptTransaction,
       reject: rejectTransaction,
     },

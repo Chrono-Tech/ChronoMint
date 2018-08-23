@@ -13,27 +13,29 @@ import './MnemonicButton.scss'
  */
 export default class MnemonicButton extends PureComponent {
   static propTypes = {
-    isWordSelected: PropTypes.bool,
-    mnemonicWord: PropTypes.string,
+    isWordUsed: PropTypes.bool,
+    mnemonicWordItem: PropTypes.shape({
+      index: PropTypes.number,
+      word: PropTypes.string,
+    }),
     onClick: PropTypes.func,
   }
 
-  handleClick = () => this.props.onClick(this.props.mnemonicWord)
+  handleClick = () => this.props.onClick(this.props.mnemonicWordItem)
 
   render () {
     const {
-      isWordSelected,
-      mnemonicWord,
+      isWordUsed,
+      mnemonicWordItem,
     } = this.props
 
     return (
       <Button
-        key={mnemonicWord}
         onClick={this.handleClick}
         styleName='word'
-        disabled={isWordSelected}
+        disabled={isWordUsed}
       >
-        { mnemonicWord }
+        { mnemonicWordItem.word }
       </Button>
     )
   }

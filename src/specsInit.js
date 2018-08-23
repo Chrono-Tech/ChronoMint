@@ -15,7 +15,7 @@ import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import Web3 from 'web3'
 import MarketSocket from '@chronobank/core/market/MarketSocket'
-import ls from '@chronobank/core-dependencies/utils/LocalStorage'
+import localStorage from 'utils/LocalStorage'
 
 Enzyme.configure({ adapter: new Adapter() })
 // we need enough time to test contract watch functionality
@@ -52,12 +52,12 @@ afterAll((done) => {
 
 beforeEach(() => {
   // NOTE: session is always as CBE
-  ls.createSession(accounts[0], LOCAL_ID, LOCAL_ID)
+  localStorage.createSession(accounts[0], LOCAL_ID, LOCAL_ID)
   store = mockStore()
 })
 
 afterEach(async (done) => {
-  ls.destroySession()
+  localStorage.destroySession()
   done()
 })
 

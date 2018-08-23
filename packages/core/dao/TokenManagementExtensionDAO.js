@@ -22,14 +22,6 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
       .on('error', this.handleEventsError)
   }
 
-  handleEventsData = (data) => {
-    if (!data.event) {
-      return
-    }
-
-    this.emit(data.event, data)
-  }
-
   async createAssetWithFee (token: TokenModel) {
     const fee = token.fee()
     const tx = this._tx(

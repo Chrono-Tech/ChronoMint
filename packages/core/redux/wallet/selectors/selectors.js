@@ -63,7 +63,7 @@ export const getWalletTokens = (walletId: string, isAmountGt: boolean) => {
       return arrWalletTokensAndBalanceByAddress
         .reduce((accumulator, tokenKeyValuePair) => {
           const { amount, symbol } = tokenKeyValuePair
-          if (!isAmountGt && amount <= 0) {
+          if (isAmountGt && amount <= 0) {
             return accumulator
           }
 

@@ -6,6 +6,7 @@
 import moment from 'moment'
 import BigNumber from 'bignumber.js'
 import web3Converter from '@chronobank/core/utils/Web3Converter'
+import { getTokens } from '@chronobank/core/redux/tokens/selectors'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import { change, Field, formPropTypes, formValueSelector, getFormSyncErrors, reduxForm } from 'redux-form/immutable'
 import Immutable from 'immutable'
@@ -24,7 +25,7 @@ import { daoByType } from '@chronobank/core/redux/daos/selectors'
 import VotingManagerDAO from '@chronobank/core/dao/VotingManagerDAO'
 import { TX_CREATE_POLL } from '@chronobank/core/dao/constants/VotingManagerDAO'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
-import { createPoll } from '@chronobank/core/redux/voting/actions'
+import { createPoll } from '@chronobank/core/redux/voting/thunks'
 import { DUCK_VOTING } from '@chronobank/core/redux/voting/constants'
 import { modalsClose } from 'redux/modals/actions'
 import Amount from '@chronobank/core/models/Amount'
@@ -51,8 +52,10 @@ function mapStateToProps (state) {
   const selector = formValueSelector(FORM_EDIT_POLL)
   const formErrors = getFormSyncErrors(FORM_EDIT_POLL)(state)
   const votingDao = daoByType('VotingManager')(state)
+  const tokens = getTokens(state)
 
   return {
+    timeToken: tokens.item(TIME),
     formErrors,
     votingDao,
     feeMultiplier: selector(state, 'feeMultiplier'),

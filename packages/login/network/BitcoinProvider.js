@@ -82,14 +82,14 @@ export class BitcoinProvider extends AbstractProvider {
     return balance0 || balance6
   }
 
-  async estimateFee (from: string, to, amount: BigNumber, feeRate: Number) {
+  async estimateFee (from: string, to, amount: BigNumber, feeRate: number) {
     const node = this._selectNode(this._engine)
     const utxos = await node.getAddressUTXOS(from || this._engine.getAddress())
     const { fee } = this._engine.describeTransaction(to, amount, feeRate, utxos)
     return fee
   }
 
-  async transfer (from: string, to, amount: BigNumber, feeRate: Number) {
+  async transfer (from: string, to, amount: BigNumber, feeRate: number) {
     const node = this._selectNode(this._engine)
     const utxos = await node.getAddressUTXOS(from || this._engine.getAddress())
     const options = {

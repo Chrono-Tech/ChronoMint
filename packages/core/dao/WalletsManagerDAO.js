@@ -46,6 +46,9 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
    * @param data
    */
   handleAllEventsData = (data) => {
+    if (!data || !data.event) {
+      return
+    }
     switch (data.event) {
       case 'WalletCreated' :
         this.handleWalletCreate(data)

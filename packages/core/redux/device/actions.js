@@ -55,14 +55,14 @@ export const onDeviceSelect = (wallet) => (dispatch) => {
 
 export const initLedgerDevice = (wallet) => async (dispatch, getState) => {
   console.log('initLedgerDevice')
-  const ledger = new LedgerDevice()
+  const ledger = new LedgerDeviceMock()
   const result = await ledger.getAddressInfoList(0,5)
   dispatch(deviceUpdateList(result))
 }
 
 export const initTrezorDevice = (wallet) => async (dispatch, getState) => {
   console.log('initTrezorDevice')
-  const trezor = new TrezorDevice()
+  const trezor = new TrezorDeviceMock()
   const result = await trezor.getAddressInfoList(0,5)
   dispatch(deviceUpdateList(result))
 }

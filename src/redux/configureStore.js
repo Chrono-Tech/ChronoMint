@@ -16,7 +16,7 @@ import { I18n, i18nReducer, loadTranslations, setLocale } from '@chronobank/core
 import moment from 'moment'
 import saveAccountMiddleWare from '@chronobank/core/redux/session/saveAccountMiddleWare'
 import thunk from 'redux-thunk'
-import ls from '@chronobank/core-dependencies/utils/LocalStorage'
+import localStorage from 'utils/LocalStorage'
 import coreReducers from '@chronobank/core/redux/ducks'
 import loginReducers from '@chronobank/login/redux/ducks'
 import { DUCK_I18N } from 'redux/i18n/constants'
@@ -141,7 +141,7 @@ export const history = createHistory(store)
 I18n.setTranslationsGetter(() => store.getState().get(DUCK_I18N).translations)
 I18n.setLocaleGetter(() => store.getState().get(DUCK_I18N).locale)
 
-const locale = ls.getLocale()
+const locale = localStorage.getLocale()
 // set moment locale
 moment.locale(locale)
 

@@ -12,14 +12,12 @@ import React, { PureComponent } from 'react'
 import Button from 'components/common/ui/Button/Button'
 
 import Amount from '@chronobank/core/models/Amount'
-import BalanceModel from '@chronobank/core/models/tokens/BalanceModel'
 import TransferExecModel from '@chronobank/core/models/TransferExecModel'
 import BitcoinDAO from '@chronobank/core/dao/BitcoinDAO'
 import NemDAO from '@chronobank/core/dao/NemDAO'
 import WavesDAO from '@chronobank/core/dao/WavesDAO'
 
 import { modalsClear, modalsClose } from 'redux/modals/actions'
-import { getWalletBalanceForSymbol } from '@chronobank/core/redux/wallet/selectors'
 import { getWallet } from '@chronobank/core/redux/wallets/selectors/models'
 
 import Value from 'components/common/Value/Value'
@@ -31,9 +29,9 @@ import './ConfirmTransferDialog.scss'
 
 const mapStateToProps = (state, ownProps) => {
   const { tx } = ownProps
-  const wallet = getWallet(`${tx.blockchain}-${tx.from}`)(state)
+  const wallet = getWallet(`${tx.blockchain()}-${tx.from()}`)(state)
   return ({
-    amountBalance: getWalletBalanceForSymbol(tx.from(), tx.amountToken().blockchain(), tx.amountToken().symbol())(state),
+    amountBalance: wallet.balances[tx.amountToken().symbol()],
     feeBalance: wallet.balances[tx.feeToken().symbol()],
   })
 }
@@ -59,8 +57,8 @@ export default class ConfirmTransferDialog extends PureComponent {
       PropTypes.instanceOf(NemDAO),
       PropTypes.instanceOf(WavesDAO),
     ]),
-    amountBalance: PropTypes.instanceOf(BalanceModel),
-    feeBalance: PropTypes.instanceOf(BalanceModel),
+    amountBalance: PropTypes.instanceOf(Amount),
+    feeBalance: PropTypes.instanceOf(Amount),
     feeMultiplier: PropTypes.number,
   }
 
@@ -137,21 +135,21 @@ export default class ConfirmTransferDialog extends PureComponent {
     const amount = tx.amount()
     const amountToken = tx.amountToken()
 
-    let amountBalanceAfter = amountBalance.amount().minus(amount)
+    let amountBalanceAfter = amountBalance.minus(amount)
     let feeBalanceAfter = null
     if (feeToken === amountToken) {
       feeBalanceAfter = amountBalanceAfter = amountBalanceAfter.minus(fee)
     } else {
-      feeBalanceAfter = feeBalance.amount().minus(fee)
+      feeBalanceAfter = feeBalance.minus(fee)
     }
 
     const details = this.getDetails({
       tx,
       amountToken,
-      amountBalance: amountBalance.amount(),
+      amountBalance,
       amountBalanceAfter,
       feeToken,
-      feeBalance: feeBalance.amount(),
+      feeBalance,
       feeBalanceAfter,
       feeMultiplier,
     })

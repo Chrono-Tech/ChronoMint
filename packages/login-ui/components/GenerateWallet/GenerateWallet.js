@@ -10,7 +10,7 @@ import React, { Component } from 'react'
 import Button from 'components/common/ui/Button/Button'
 import { downloadWallet } from '@chronobank/core/redux/persistAccount/actions'
 import Wallet from 'assets/img/icons/wallet-white.svg'
-import { navigateToLoginPage } from '../../redux/actions'
+import { navigateToLoginPage } from '../../redux/navigation'
 
 import './GenerateWallet.scss'
 

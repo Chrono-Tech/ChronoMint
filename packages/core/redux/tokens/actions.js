@@ -18,11 +18,29 @@ import TxExecModel from '../../models/TxExecModel'
 import { web3Selector } from '../ethereum/selectors'
 import { estimateGas } from '../ethereum/actions'
 
-import { TRANSFER_CANCELLED } from '../../models/constants/TransferError'
-import { WATCHER_TX_SET } from '../watcher/constants'
-import { DUCK_TOKENS, TOKENS_FAILED, TOKENS_FETCHED, TOKENS_FETCHING, TOKENS_INIT, TOKENS_UPDATE_LATEST_BLOCK } from './constants'
-import { EVENT_ERC20_TOKENS_COUNT, EVENT_NEW_ERC20_TOKEN } from '../../dao/constants/ERC20ManagerDAO'
-import { NEM_DECIMALS, NEM_XEM_NAME, NEM_XEM_SYMBOL } from '../../dao/constants/NemDAO'
+import {
+  TRANSFER_CANCELLED,
+} from '../../models/constants/TransferError'
+import {
+  WATCHER_TX_SET,
+} from '../watcher/constants'
+import {
+  DUCK_TOKENS,
+  TOKENS_FAILED,
+  TOKENS_FETCHED,
+  TOKENS_FETCHING,
+  TOKENS_INIT,
+  TOKENS_UPDATE_LATEST_BLOCK,
+} from './constants'
+import {
+  EVENT_ERC20_TOKENS_COUNT,
+  EVENT_NEW_ERC20_TOKEN,
+} from '../../dao/constants/ERC20ManagerDAO'
+import {
+  NEM_DECIMALS,
+  NEM_XEM_NAME,
+  NEM_XEM_SYMBOL,
+} from '../../dao/constants/NemDAO'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
@@ -34,7 +52,13 @@ import {
   EVENT_NEW_TOKEN,
   EVENT_UPDATE_LAST_BLOCK,
 } from '../../dao/constants'
-import { WAVES_DECIMALS, WAVES_WAVES_NAME, WAVES_WAVES_SYMBOL } from '../../dao/constants/WavesDAO'
+import {
+  WAVES_DECIMALS,
+  WAVES_WAVES_NAME,
+  WAVES_WAVES_SYMBOL,
+} from '../../dao/constants/WavesDAO'
+import { DAOS_REGISTER } from '../daos/constants'
+import { ContractDAOModel, ContractModel } from '../../models'
 
 const tokensInit = () => ({ type: TOKENS_INIT })
 
@@ -120,6 +144,19 @@ export const initTokens = () => async (dispatch, getState) => {
     .on(EVENT_NEW_ERC20_TOKEN, (token: TokenModel) => {
       dispatch(tokenFetched(token))
       const dao = tokenService.createDAO(token, web3)
+
+      dispatch({
+        type: DAOS_REGISTER,
+        model: new ContractDAOModel({
+          contract: new ContractModel({
+            abi: dao.abi,
+            type: token.symbol(),
+          }),
+          address: token.address(),
+          dao,
+        }),
+      })
+
       dispatch(alternateTxHandlingFlow(dao))
     })
     .fetchTokens()

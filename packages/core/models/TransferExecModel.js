@@ -23,12 +23,17 @@ export default class TransferExecModel extends abstractModel({
   // TODO @ipavlenko: This is "extra" field, token-specific
   feeMultiplier: 1,
   options: {},
+  blockchain: null,
 }) {
   constructor (data = {}) {
     super({
       id: (data && data.id) || uuid(),
       ...data,
     })
+  }
+
+  blockchain () {
+    return this.get('blockchain')
   }
 
   contract (): ?string {
@@ -68,11 +73,11 @@ export default class TransferExecModel extends abstractModel({
     return this._getSet('feeToken', value)
   }
 
-  feeMultiplier (value: Number): Number {
+  feeMultiplier (value: number): number {
     return this._getSet('feeMultiplier', value)
   }
 
-  timestamp (value: Number): Number {
+  timestamp (value: number): number {
     return this._getSet('timestamp', value)
   }
 

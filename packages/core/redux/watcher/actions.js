@@ -8,9 +8,10 @@ import { watchInitUserMonitor } from '@chronobank/core-dependencies/redux/ui/act
 import { watchInitTokens, watchPlatformManager } from '../assetsManager/actions'
 import { initMainWallet } from '../mainWallet/actions'
 import { watchInitMarket } from '../market/actions'
+import { watchEventsToHistory } from '../events/actions'
 import { initTokens } from '../tokens/actions'
 import { initDAOs } from '../daos/actions'
-import { watchInitPolls } from '../voting/actions'
+import { watchInitPolls } from '../voting/thunks'
 import { initMultisigWalletManager } from '../multisigWallet/actions'
 import { initWallets } from '../wallets/actions'
 import { WATCHER } from './constants'
@@ -33,5 +34,6 @@ export const watcher = ({ web3 }) => async (dispatch) => {
   dispatch(watchInitUserMonitor())
   dispatch(watchInitMarket())
   dispatch(watchInitPolls())
+  dispatch(watchEventsToHistory())
   dispatch({ type: WATCHER })
 }

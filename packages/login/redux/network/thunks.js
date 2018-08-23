@@ -7,9 +7,6 @@
 
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
 import {
-  createNetworkSession,
-  getProviderSettings,
-  login,
   selectProvider,
 } from '@chronobank/core/redux/session/thunks'
 import {
@@ -21,15 +18,12 @@ import {
   DUCK_NETWORK,
 } from './constants'
 import * as NetworkActions from './actions'
-import setup from '../../network/EngineUtils'
 import web3Provider from '../../network/Web3Provider'
 import {
   getNetworkById,
   getNetworksByProvider,
-  LOCAL_PRIVATE_KEYS,
   NETWORK_MAIN_ID,
 } from '../../network/settings'
-import { DUCK_ETH_MULTISIG_WALLET } from '@chronobank/core/redux/multisigWallet/constants'
 
 /*
  * Thunk dispatched by "" screen.
@@ -122,43 +116,6 @@ export const initRecoverAccountPage = () => (dispatch) => {
   dispatch(NetworkActions.networkResetNewMnemonic())
   dispatch(NetworkActions.networkSetAccountRecoveryMode())
 }
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to rework it
- */
-export const handleLoginLocalAccountClick = (account = '') =>
-  async (dispatch, getState) => {
-    let state = getState()
-    const { accounts } = state.get(DUCK_NETWORK)
-    const wallets = state.get(DUCK_ETH_MULTISIG_WALLET)
-    const providerSetting = dispatch(getProviderSettings())
-    const index = Math.max(accounts.indexOf(account), 0)
-    const provider = privateKeyProvider.getPrivateKeyProvider(
-      LOCAL_PRIVATE_KEYS[index],
-      providerSetting,
-      wallets,
-    )
-    dispatch(NetworkActions.selectAccount(account))
-    await setup(provider)
-
-    state = getState()
-    const {
-      selectedAccount,
-      selectedProviderId,
-      selectedNetworkId,
-    } = state.get(DUCK_NETWORK)
-
-    dispatch(NetworkActions.clearErrors())
-
-    dispatch(createNetworkSession(
-      selectedAccount,
-      selectedProviderId,
-      selectedNetworkId,
-    ))
-    dispatch(login(selectedAccount))
-  }
 
 /*
  * Thunk dispatched by "" screen.

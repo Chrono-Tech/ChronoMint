@@ -48,6 +48,10 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   handleAllEventsData = (data) => {
+    if (!data || !data.event) {
+      return
+    }
+
     this.emit(data.event, data)
   }
 
@@ -229,7 +233,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     return this._tx('revoke', [tx.id])
   }
 
-  changeRequirement (newRequired: Number) {
+  changeRequirement (newRequired: number) {
     return this._tx('changeRequirement', [newRequired])
   }
 

@@ -102,11 +102,11 @@ export default class NemDAO extends EventEmitter {
   }
 
   // TODO @ipavlenko: Replace with 'immediateTransfer' after all token DAOs will start using 'submit' method
-  transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
+  transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: number = 1) {
     this.submit(from, to, amount, token, feeMultiplier)
   }
 
-  submit (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
+  submit (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: number = 1) {
     setImmediate(async () => {
       const fee = await this._nemProvider.estimateFee(from, to, amount, this._mosaic) // use feeMultiplier = 1 to estimate default fee
       const feeToken = this._mosaic
@@ -116,6 +116,7 @@ export default class NemDAO extends EventEmitter {
         title: `tx.Nem.${this._mosaic ? 'Mosaic' : 'Xem'}.transfer.title`,
         from,
         to,
+        blockchain: BLOCKCHAIN_NEM,
         amount: new Amount(amount, token.symbol()),
         amountToken: token,
         fee: new Amount(fee, feeToken.symbol()),
@@ -126,7 +127,7 @@ export default class NemDAO extends EventEmitter {
   }
 
   // TODO @ipavlenko: Rename to 'transfer' after all token DAOs will start using 'submit' method and 'trans'
-  async immediateTransfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
+  async immediateTransfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: number = 1) {
     try {
       return await this._nemProvider.transfer(from, to, amount, this._mosaic, feeMultiplier)
     } catch (e) {

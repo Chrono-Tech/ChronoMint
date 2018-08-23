@@ -5,7 +5,7 @@
 
 import PropTypes from 'prop-types'
 import uuid from 'uuid/v1'
-import AbstractJsModel from './AbstractJsModel'
+import AbstractModel from './AbstractModel'
 
 const schemaFactory = () => ({
   id: PropTypes.string.isRequired,
@@ -21,7 +21,7 @@ const schemaFactory = () => ({
   })),
 })
 
-export default class CurrentTransactionNotificationModel extends AbstractJsModel {
+export default class CurrentTransactionNotificationModel extends AbstractModel {
   constructor (props) {
     const txDate = typeof props.date === 'number' ? new Date(props.date * 1000) : props.date
     const newProps = { ...props, id: props.id || uuid(), date: txDate }

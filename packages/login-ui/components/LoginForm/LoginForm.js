@@ -24,7 +24,7 @@ import {
 import {
   navigateToSelectWallet,
   navigateToRecoverAccountPage,
-} from '../../redux/actions'
+} from '../../redux/navigation'
 import {
   FORM_LOGIN_PAGE,
   FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,

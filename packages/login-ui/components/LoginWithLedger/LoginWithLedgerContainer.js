@@ -17,7 +17,7 @@ import './LoginWithLedger.scss'
 import {
   navigateToSelectImportMethod,
   navigateToCreateAccount,
-} from '../../redux/actions'
+} from '../../redux/navigation'
 import LoginWithLedger from './LoginWithLedger'
 
 function mapDispatchToProps (dispatch) {

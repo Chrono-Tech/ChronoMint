@@ -13,7 +13,7 @@ import { DUCK_WALLET } from '@chronobank/core/redux/wallet/constants'
 import WalletWidgetDetail from 'components/wallet/WalletWidgetDetail/WalletWidgetDetail'
 import TokensListWidget from 'components/wallet/TokensListWidget/TokensListWidget'
 import OwnersListWidget from 'components/wallet/OwnersListWidget/OwnersListWidget'
-import { goToWallets } from '@chronobank/core/redux/mainWallet/actions'
+import { navigateToWallets } from 'redux/ui/navigation'
 import { getWalletInfo } from '@chronobank/core/redux/wallets/selectors/wallet'
 import TransactionsListWidget from 'components/wallet/TransactionsListWidget/TransactionsListWidget'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
@@ -38,7 +38,7 @@ function makeMapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    goToWallets: () => dispatch(goToWallets()),
+    navigateToWallets: () => dispatch(navigateToWallets()),
     getTransactions: (params) => dispatch(formatDataAndGetTransactionsForWallet(params)),
   }
 }
@@ -49,7 +49,7 @@ export default class WalletContent extends Component {
     isTesting: PropTypes.bool,
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
-    goToWallets: PropTypes.func,
+    navigateToWallets: PropTypes.func,
     getTransactions: PropTypes.func,
     address: PropTypes.string,
     blockchain: PropTypes.string,
@@ -60,7 +60,7 @@ export default class WalletContent extends Component {
     super(props)
 
     if (!props.wallet || !props.wallet.blockchain || !props.wallet.address) {
-      props.goToWallets()
+      props.navigateToWallets()
     }
   }
 

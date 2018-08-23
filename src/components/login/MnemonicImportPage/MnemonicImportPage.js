@@ -17,7 +17,7 @@ import {
   navigateToSelectWallet,
   navigateToSelectImportMethod,
   navigateBack,
-} from '@chronobank/login-ui/redux/actions'
+} from '@chronobank/login-ui/redux/navigation'
 import {
   LoginWithMnemonicContainer,
   CreateAccountContainer,

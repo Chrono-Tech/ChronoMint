@@ -17,7 +17,7 @@ import './LoginWithTrezor.scss'
 import {
   navigateToCreateAccount,
   navigateToSelectWallet,
-} from '../../redux/actions'
+} from '../../redux/navigation'
 import LoginWithTrezor from './LoginWithTrezor'
 
 function mapDispatchToProps (dispatch) {

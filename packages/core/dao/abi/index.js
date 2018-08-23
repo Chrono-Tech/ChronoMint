@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-/* eslint-disable */
 export ChronoBankPlatformABI from 'chronobank-smart-contracts/build/contracts/ChronoBankPlatform.json'
 export MultiEventsHistoryABI from 'chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'
 export WalletABI from 'chronobank-smart-contracts/build/contracts/Wallet.json'
@@ -20,10 +19,12 @@ export AssetHolderABI from 'chronobank-smart-contracts/build/contracts/TimeHolde
 export TokenManagementInterfaceABI from 'chronobank-smart-contracts/build/contracts/TokenManagementInterface.json'
 export UserManagerABI from 'chronobank-smart-contracts/build/contracts/UserManager.json'
 export VotingManagerABI from 'chronobank-smart-contracts/build/contracts/VotingManager.json'
-export PollEmitterABI from 'chronobank-smart-contracts/build/contracts/PollEmitter'
+export PollEmitterABI from 'chronobank-smart-contracts/build/contracts/PollEmitter.json'
 export PollInterfaceABI from 'chronobank-smart-contracts/build/contracts/PollInterface.json'
 export WalletsManagerABI from 'chronobank-smart-contracts/build/contracts/WalletsManager.json'
 export AssetDonatorABI from 'chronobank-smart-contracts/build/contracts/AssetDonator.json'
 export ChronoBankAssetProxyABI from 'chronobank-smart-contracts/build/contracts/ChronoBankAssetProxy.json'
 export AssetsManagerABI from 'chronobank-smart-contracts/build/contracts/AssetsManager.json'
 export ChronoBankAssetABI from 'chronobank-smart-contracts/build/contracts/ChronoBankAsset.json'
+export ChronoBankPlatformEmitterABI  from 'chronobank-smart-contracts/build/contracts/ChronoBankPlatformEmitter.json'
+export ERC20DAODefaultABI  from './ERC20DAODefaultABI'

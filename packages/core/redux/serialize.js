@@ -38,6 +38,7 @@ function refer (data, type, isArray, refs) {
 
 function serialize (Immutable, refs) {
   return {
+    // eslint-disable-next-line complexity
     replacer: function (key, value) {
       if (value instanceof models.AccountModel) return null
       if (value instanceof Date) return mark(value, 'Date', 'toString')
@@ -73,7 +74,7 @@ function serialize (Immutable, refs) {
       if (Immutable.Stack.isStack(value)) return mark(value, 'ImmutableStack', 'toArray')
       return value
     },
-
+    // eslint-disable-next-line complexity
     reviver: function (key, value) {
       if (typeof value === 'object' && value !== null && '__serializedType__' in value) {
         const data = value.data

@@ -14,7 +14,7 @@ import {
   navigateToSelectImportMethod,
   navigateToLoginPage,
   navigateBack,
-} from '@chronobank/login-ui/redux/actions'
+} from '@chronobank/login-ui/redux/navigation'
 import {
   LoginWithTrezorContainer,
   AccountNameContainer,

@@ -9,7 +9,8 @@
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { change, formValueSelector } from 'redux-form/immutable'
 import { history } from '@chronobank/core-dependencies/configureStore'
-import { push } from '@chronobank/core-dependencies/router'
+import { nemProvider } from '@chronobank/login/network/NemProvider'
+import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import { getDeriveWalletsAddresses, getMultisigWallets } from '../wallet/selectors'
 import Amount from '../../models/Amount'
 import ApprovalNoticeModel from '../../models/notices/ApprovalNoticeModel'
@@ -33,7 +34,7 @@ import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import WalletModel from '../../models/wallet/WalletModel'
 import { daoByType } from '../daos/selectors'
 import { estimateGas, executeTransaction } from '../ethereum/actions'
-import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from '../../dao/constants/AssetHolderDAO'
+import { TX_DEPOSIT, ASSET_DEPOSIT_WITHDRAW } from '../../dao/constants/AssetHolderDAO'
 import { TX_APPROVE } from '../../dao/constants/ERC20DAO'
 import { DUCK_ETH_MULTISIG_WALLET, ETH_MULTISIG_BALANCE, ETH_MULTISIG_FETCHED } from '../multisigWallet/constants'
 import { WALLETS_SET_IS_TIME_REQUIRED, WALLETS_UPDATE_WALLET } from '../wallets/constants'
@@ -59,7 +60,6 @@ import {
   XEM,
 } from '../../dao/constants'
 import {
-  FORM_ADD_NEW_WALLET,
   WALLET_ADDRESS,
   WALLET_ALLOWANCE,
   WALLET_ESTIMATE_GAS_FOR_DEPOSIT,
@@ -68,26 +68,6 @@ import {
   WALLET_TRANSACTION,
   WALLET_TRANSACTION_UPDATED,
 } from './constants'
-
-export const goToWallets = () => (dispatch) => dispatch(push('/wallets'))
-
-export const goBackForAddWalletsForm = () => (dispatch, getState) => {
-  const selector = formValueSelector(FORM_ADD_NEW_WALLET)
-  const state = getState()
-  const blockchain = selector(state, 'blockchain')
-  const ethWalletType = selector(state, 'ethWalletType')
-
-  if (ethWalletType) {
-    dispatch(change(FORM_ADD_NEW_WALLET, 'ethWalletType', null))
-    return
-  }
-
-  if (blockchain) {
-    dispatch(change(FORM_ADD_NEW_WALLET, 'blockchain', null))
-    return
-  }
-  history.goBack()
-}
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
@@ -256,7 +236,7 @@ export const initMainWallet = () => async (dispatch) => {
 //    wavesProvider,
 //    ethereumProvider,
   ]
-  providers.map((provider) => {
+  providers.forEach((provider) => {
     dispatch({
       type: WALLET_ADDRESS, address: new AddressModel({
         id: provider.id(),
@@ -326,7 +306,7 @@ export const estimateGasForDeposit = (mode: string, params, callback, gasPriceMu
       tx = dao[TX_APPROVE](...params)
       break
     case TX_DEPOSIT:
-    case TX_WITHDRAW_SHARES:
+    case ASSET_DEPOSIT_WITHDRAW:
       dao = daoByType('TimeHolder')(getState())
       tx = dao[mode](...params)
       break
@@ -350,11 +330,6 @@ export const getTokensBalancesAndWatch = (address, blockchain, customTokens: Arr
   }
   // const dao = tokenService.getDAO(token)
   // await dao.watch(address)
-}
-
-export const resetWalletsForm = () => (dispatch) => {
-  dispatch(change(FORM_ADD_NEW_WALLET, 'blockchain', null))
-  dispatch(change(FORM_ADD_NEW_WALLET, 'ethWalletType', null))
 }
 
 export const getTransactionsForMainWallet = ({ wallet, forcedOffset }) => async (dispatch, getState) => {

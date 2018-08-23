@@ -3,17 +3,35 @@
  * Licensed under the AGPL Version 3 license.
  */
 @import '~styles/partials/variables';
+@import '~styles/partials/mixins';
 
 .header-container {
   width: 100%;
   margin-bottom: 30px;
   margin-top: 30px;
+
+  @include xs-only {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    width: 100%;
+  }
+
   .header-text {
     color: $color-white;
+
+    @include xs-only {
+      margin-left: 5px;
+    }
   }
+
   .wallet-list-container {
     display: flex;
     flex-direction: column;
+
+    @include xs-only {
+      width: 100%;
+    }
   }
 }
 
@@ -24,6 +42,11 @@
   background-color: $background-color-1;
   border-radius: 2px;
   box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+
+  @include xs-only {
+    flex: 1;
+    width: 100%;
+  }
 }
 
 .settings-container {
@@ -131,6 +154,7 @@
 
 .actions-container {
   display: flex;
+  flex: 3
 }
 
 .action {
@@ -147,6 +171,11 @@
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
+
+  @include xs-only {
+    height: auto;
+    width: 100px;
+  }
 }
 
 .content-container {
@@ -154,6 +183,13 @@
   flex-direction: column;
   padding-top: 50px;
   width: 370px;
+
+  @include xs-only {
+    flex: 1;
+    width: 100%;
+    max-width: 264px;
+  }
+
   :global {
     .WalletMainCoinBalance__root {
       color: $color-white;
@@ -170,6 +206,12 @@
   flex-direction: column;
   margin-right: 40px;
   margin-left: 40px;
+
+  @include xs-only {
+    margin-right: 20px;
+    margin-left: 20px;
+  }
+
   :global {
     .SubIconForWallet_root {
       position: absolute;
@@ -184,6 +226,11 @@
   width: 100px;
   height: 100px;
   margin-top: 50px;
+
+  @include xs-only {
+    width: 50px;
+    height: 50px;
+  }
 }
 
 .address-title {
@@ -307,14 +354,15 @@
 }
 
 .footer {
-  display: grid;
-  grid-template-columns: 180px 1fr;
-  margin-top: 30px;
+  display: flex;
   margin-bottom: 40px;
+
   .pendingOperations {
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    flex: 2;
+
     .pendingOperationsCount {
       padding: 0 30px;
       background: $color-red-2;
@@ -328,6 +376,12 @@
       align-items: center;
       justify-content: center;
     }
+  }
+
+  .actions-container {
+    display: flex;
+    flex: 3;
+    justify-content: flex-end;
   }
 }
 
