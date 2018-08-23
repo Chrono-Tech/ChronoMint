@@ -5,8 +5,9 @@
 
 import uuid from 'uuid/v1'
 import BigNumber from 'bignumber.js'
+import NemWallet from '@chronobank/login/network/NemWallet'
+import nemSdk from 'nem-sdk'
 import { TxEntryModel, TxExecModel } from '../../models'
-import nem from 'nem-sdk'
 
 export const DECIMALS = 1000000
 
@@ -20,16 +21,20 @@ export const createNemTxEntryModel = (tx, options) =>
     walletDerivedPath: options && options.walletDerivedPath,
   })
 
-export const describeXemTransaction = (tx, networkId) => {
+export const describeXemTransaction = (tx, networkId, pk) => {
   const value = tx.amount.div(DECIMALS).toNumber() // NEM-SDK works with Number data type
-  const common = nem.model.objects.get("common")
-  const transferTransaction = nem.model.objects.create("transferTransaction")(
+  // Get an empty common object to hold pass and key
+  const common = nemSdk.model.objects.get("common")
+  if (pk) {
+    common.privateKey = pk
+  }
+  const transferTransaction = nemSdk.model.objects.create("transferTransaction")(
     tx.to,
     value,
     'Tx from ChronoMint',
   )
 
-  const transactionEntity = nem.model.transactions.prepare("transferTransaction")(common, transferTransaction, networkId)
+  const transactionEntity = nemSdk.model.transactions.prepare("transferTransaction")(common, transferTransaction, networkId)
   return new TxExecModel({
     tx: transactionEntity,
     hash: null,
@@ -39,34 +44,35 @@ export const describeXemTransaction = (tx, networkId) => {
   })
 }
 
-export const createXemTransaction = (to, amount: BigNumber, networkId) => {
-  const transactionEntity = describeXemTransaction(to, amount, networkId)
-  const serialized = nem.utils.serialization.serializeTransaction(transactionEntity)
-  const signature = this._wallet.sign(serialized)
+export const createXemTransaction = (prepared, signer, network) => {
+  const pk = signer.privateKey.substring(2, 66) // remove 0x
+  const nemWallet = NemWallet.fromPrivateKey(pk, nemSdk.model.network.data[network.nem])
+  const serialized = nemSdk.utils.serialization.serializeTransaction({ ...prepared, signer: pk })
+  const signature = nemWallet.sign(serialized)
   return {
     tx: {
-      address: this._wallet.getAddress(),
-      data: nem.utils.convert.ua2hex(serialized),
+      address: nemWallet.getAddress(),
+      data: nemSdk.utils.convert.ua2hex(serialized),
       signature: signature.toString(),
     },
-    fee: transactionEntity.fee,
+    fee: prepared.fee,
   }
 }
 
 export const describeMosaicTransaction = (to, amount: BigNumber, mosaicDefinition) => {
   const value = amount.toNumber() // NEM-SDK works with Number data type
-  const common = nem.model.objects.get("common")
+  const common = nemSdk.model.objects.get("common")
   common.privateKey = this._wallet.getPrivateKey()
-  const transferTransaction = nem.model.objects.create("transferTransaction")(
+  const transferTransaction = nemSdk.model.objects.create("transferTransaction")(
     to,
     1, // works as a multiplier
     'Tx from ChronoMint',
   )
 
-  const mosaicAttachment = nem.model.objects.create("mosaicAttachment")(mosaicDefinition.id.namespaceId, mosaicDefinition.id.name, value)
+  const mosaicAttachment = nemSdk.model.objects.create("mosaicAttachment")(mosaicDefinition.id.namespaceId, mosaicDefinition.id.name, value)
   transferTransaction.mosaics.push(mosaicAttachment)
 
-  const transactionEntity = nem.model.transactions.prepare("mosaicTransferTransaction")(common, transferTransaction, {
+  const transactionEntity = nemSdk.model.transactions.prepare("mosaicTransferTransaction")(common, transferTransaction, {
     [`${mosaicDefinition.id.namespaceId}:${mosaicDefinition.id.name}`]: {
       mosaicDefinition,
     },
@@ -76,12 +82,12 @@ export const describeMosaicTransaction = (to, amount: BigNumber, mosaicDefinitio
 
 export const createMosaicTransaction = (to, amount: BigNumber, mosaicDefinition) => {
   const transactionEntity = describeMosaicTransaction(to, amount, mosaicDefinition)
-  const serialized = nem.utils.serialization.serializeTransaction(transactionEntity)
+  const serialized = nemSdk.utils.serialization.serializeTransaction(transactionEntity)
   const signature = this._wallet.sign(serialized)
   return {
     tx: {
       address: this._wallet.getAddress(),
-      data: nem.utils.convert.ua2hex(serialized),
+      data: nemSdk.utils.convert.ua2hex(serialized),
       signature: signature.toString(),
     },
     fee: transactionEntity.fee,

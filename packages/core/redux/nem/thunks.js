@@ -3,87 +3,95 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { isNil, omitBy } from 'lodash'
 import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
+import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { SignerMemoryModel } from '../../models'
-import { pendingEntrySelector, web3Selector } from './selectors'
-import { getSelectedNetworkId, getSigner } from '../persistAccount/selectors'
-import ethereumDAO from '../../dao/EthereumDAO'
-import { describePendingTx } from '../../describers'
-import { daoByAddress } from '../daos/selectors'
+import { pendingEntrySelector } from './selectors'
+import { getSelectedNetworkId, getSelectedNetwork, getSigner } from '../persistAccount/selectors'
+import { describePendingNemTx } from '../../describers'
 import { getAccount } from '../session/selectors/models'
 import * as Actions from './actions'
 import * as Utils from './utils'
+import { getToken } from '../tokens/selectors'
+import TxEntryModel from '../../models/TxEntryModel'
 
 export const executeNemTransaction = ({ tx, options }) => async (dispatch) => {
   const prepared = await dispatch(prepareTransaction({ tx, options }))
   const entry = Utils.createNemTxEntryModel(prepared, options)
 
   await dispatch(Actions.nemTxCreate(entry))
-  dispatch(submitTransaction(entry))
+  dispatch(submitTransaction(entry, options))
 }
 
 export const prepareTransaction = ({ tx }) => async (dispatch, getState) => {
+
   const networkId = getSelectedNetworkId(getState())
   return tx.mosaicDefinition
     ? Utils.describeMosaicTransaction(tx, networkId)
     : Utils.describeXemTransaction(tx, networkId)
 }
 
-export const processTransaction = ({ web3, entry, signer }) => async (dispatch, getState) => {
+export const processTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   await dispatch(signTransaction({ entry, signer }))
   return dispatch(sendSignedTransaction({
-    web3,
     entry: pendingEntrySelector(entry.tx.from, entry.key)(getState()),
   }))
 }
 
-export const signTransaction = ({ entry, signer }) => async (dispatch) => {
+export const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   try {
-    const signed = await signer.signTransaction(omitBy(entry.tx, isNil))
-    const raw = signed.rawTransaction
-    dispatch(Actions.nemTxStatus(entry.key, entry.tx.from, { isSigned: true, raw }))
+    const { tx } = entry
+    const signed = Utils.createXemTransaction(tx.tx, signer, getSelectedNetwork()(getState()))
+    dispatch(Actions.nemTxUpdate(entry.key, entry.tx.from, new TxEntryModel({
+      ...entry,
+      tx: {
+        ...entry.tx,
+        signed,
+      },
+    })))
+
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log('signTransaction error: ', error)
     dispatch(Actions.nemTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
     throw error
   }
 }
 
-export const sendSignedTransaction = ({ web3, entry }) => async (dispatch, getState) => {
+export const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
   dispatch(Actions.nemTxStatus(entry.key, entry.tx.from, { isPending: true }))
 
   // eslint-disable-next-line
   entry = pendingEntrySelector(entry.tx.from, entry.key)(getState())
 
-  return new Promise((resolve, reject) => {
-    web3.eth.sendSignedTransaction(entry.raw)
-      .on('transactionHash', (hash) => {
-        dispatch(Actions.nemTxStatus(entry.key, entry.tx.from, { isSent: true, hash }))
-      })
-      .on('receipt', (receipt) => {
-        dispatch(Actions.nemTxStatus(entry.key, entry.tx.from, { isMined: true, receipt }))
-        resolve(receipt)
-      })
-      .on('error', (error) => {
-        dispatch(Actions.nemTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
-        reject(error)
-      })
-  })
+  const node = nemProvider.getNode()
+  await node.send({ ...entry.tx.signed.tx, fee: entry.tx.signed.fee })
+  // TODO create result callback
+  // return new Promise((resolve, reject) => {
+  //   web3.eth.sendSignedTransaction(entry.raw)
+  //     .on('transactionHash', (hash) => {
+  //       dispatch(Actions.nemTxStatus(entry.key, entry.tx.from, { isSent: true, hash }))
+  //     })
+  //     .on('receipt', (receipt) => {
+  //       dispatch(Actions.nemTxStatus(entry.key, entry.tx.from, { isMined: true, receipt }))
+  //       resolve(receipt)
+  //     })
+  //     .on('error', (error) => {
+  //       dispatch(Actions.nemTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
+  //       reject(error)
+  //     })
+  // })
 }
 
-const submitTransaction = (entry) => async (dispatch, getState) => {
+const submitTransaction = (entry, options) => async (dispatch, getState) => {
 
   const state = getState()
   const account = getAccount(state)
-  const dao = daoByAddress(entry.tx.to)(state) || ethereumDAO
 
-  const description = describePendingTx(entry, {
-    address: account,
-    abi: dao.abi,
-    token: dao.token,
-  })
+  const description = describePendingNemTx(
+    entry,
+    {
+      address: account,
+      token: getToken(options.symbol)(state),
+    })
 
   dispatch(modalsOpen({
     componentName: 'ConfirmTxDialog',
@@ -109,7 +117,6 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
   }
 
   return dispatch(processTransaction({
-    web3: web3Selector()(state),
     entry: pendingEntrySelector(entry.tx.from, entry.key)(state),
     signer,
   }))

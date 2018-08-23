@@ -211,6 +211,13 @@ export const initNemTokens = () => async (dispatch, getState) => {
     const nem = await dao.fetchToken()
     tokenService.registerDAO(nem, dao)
     dispatch(tokenFetched(nem))
+    dispatch({
+      type: DAOS_REGISTER,
+      model: new ContractDAOModel({
+        address: nem.getInitAddress(),
+        dao,
+      }),
+    })
     dispatch(initNemMosaicTokens(nem))
   } catch (e) {
     dispatch(tokensLoadingFailed())

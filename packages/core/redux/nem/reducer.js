@@ -4,13 +4,8 @@
  */
 
 import { omit } from 'lodash'
-import { TxEntryModel, TxExecModel } from '../../models'
-import {
-  TX_CREATE,
-  TX_REMOVE,
-  TX_STATUS,
-  TX_UPDATE,
-} from './constants'
+import { TxEntryModel } from '../../models'
+import { TX_CREATE, TX_REMOVE, TX_STATUS, TX_UPDATE } from './constants'
 
 const initialState = () => ({
   pending: {},
@@ -54,23 +49,21 @@ const mutations = {
       },
     }
   },
-  [TX_UPDATE]: (state, { key, address, props }) => {
+  [TX_UPDATE]: (state, { key, address, tx }) => {
     const scope = state.pending[address]
-    if (!scope) return state
+    if (!scope) {
+      return state
+    }
     const entry = scope[key]
-    if (!entry) return state
+    if (!entry) {
+      return state
+    }
     return {
       ...state,
       pending: {
         [address]: {
           ...scope,
-          [key]: new TxEntryModel({
-            ...entry,
-            ...props,
-            tx: new TxExecModel({
-              ...entry.tx,
-            }),
-          }),
+          [key]: tx,
         },
       },
     }

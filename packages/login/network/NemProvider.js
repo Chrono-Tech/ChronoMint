@@ -76,7 +76,11 @@ export class NemProvider extends AbstractProvider {
     // TODO @ipavlenko: Implement for XEM and Mosaics
     const node = this._selectNode(this._engine)
     const { tx /*, fee*/ } = this._engine.createTransaction(to, amount, mosaicDefinition)
-    return node.send(from, tx)
+    return node.send(tx)
+  }
+
+  getNode () {
+    return this._selectNode(this._engine)
   }
 
   async onTransaction (tx: NemTx) {

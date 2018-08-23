@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export const DUCK_NEM = 'txNEM'
+export const DUCK_NEM = 'nem'
 
 export const NONCE_UPDATE = 'TX/NEM/NONCE_UPDATE'
 export const TX_CREATE = 'TX/NEM/CREATE'

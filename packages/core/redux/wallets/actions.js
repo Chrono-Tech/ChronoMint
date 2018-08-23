@@ -211,7 +211,7 @@ export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amo
   const tx = tokenDAO.transfer(wallet.address, recipient, amount, token) // added token for btc like transfers
 
   if (wallet.blockchain === BLOCKCHAIN_NEM && tx) {
-    dispatch(executeNemTransaction({ tx, options: { feeMultiplier, walletDerivedPath: wallet.derivedPath } }))
+    dispatch(executeNemTransaction({ tx, options: { feeMultiplier, walletDerivedPath: wallet.derivedPath, symbol: token.symbol() } }))
   }
   if (wallet.blockchain === BLOCKCHAIN_ETHEREUM && tx) {
     dispatch(executeTransaction({ tx, options: { feeMultiplier, walletDerivedPath: wallet.derivedPath } }))

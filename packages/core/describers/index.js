@@ -11,7 +11,7 @@ import LogEventModel from '../models/LogEventModel'
 import { EVENT_DESCRIBERS_BY_TOPIC, decodeLog } from './events'
 import { TRANSACTION_DESCRIBERS_BY_TOPIC, decodeParameters, findFunctionABI } from './transactions'
 import { decodeTxData } from '../utils/DecodeUtils'
-import { ETH } from '../dao/constants'
+import { ETH, XEM } from '../dao/constants'
 
 export const describeEvent = (data, context = {}) => {
   const { log, block } = data
@@ -138,4 +138,43 @@ export const describeTx = (entry, context = {}) => {
   }
 
   return defaultDescription(entry, context)
+}
+
+export const describePendingNemTx = (entry, context = {}) => {
+  const { tx, block } = entry
+  const { token } = context
+
+  const fee = new Amount(tx.tx.fee, XEM)
+
+  const amount = new Amount(tx.tx.amount, token.symbol())
+
+  const path = `tx.nem.transfer`
+  return new LogTxModel({
+    key: tx.block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
+    type: 'tx',
+    name: 'transfer',
+    date: new Date(tx.time ? (tx.time * 1000) : null),
+    icon: 'event',
+    title: `nemTransfer`,
+    message: tx.to,
+    target: null,
+    fields: [
+      {
+        value: tx.from,
+        description: `${path}.from`,
+      },
+      {
+        value: tx.to,
+        description: `${path}.to`,
+      },
+      {
+        value: amount,
+        description: `${path}.amount`,
+      },
+      {
+        value: fee,
+        description: `${path}.fee`,
+      },
+    ],
+  })
 }

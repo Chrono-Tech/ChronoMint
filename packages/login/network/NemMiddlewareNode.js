@@ -91,13 +91,9 @@ export default class NemMiddlewareNode extends NemAbstractNode {
     }
   }
 
-  async send (account, rawtx) {
+  async send (rawtx) {
     try {
       const { data } = await this._api.post('tx/send', rawtx)
-      // const model = createTxModel(data.transaction, account)
-      // setImmediate(() => {
-      //   this.emit('tx', model)
-      // })
       return data
     } catch (e) {
       this.trace(`send transaction failed`, e)
