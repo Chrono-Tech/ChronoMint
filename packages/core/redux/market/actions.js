@@ -14,6 +14,7 @@ import {
   MARKET_UPDATE_PRICES,
   MARKET_UPDATE_RATES,
 } from './constants'
+import { chunker } from './utils'
 
 const MARKET_REQUEST_DELAY = 30000
 
@@ -26,9 +27,20 @@ const watchMarket = (dispatch, getState) => async () => {
   if (tokens.length === 0 || currencies.length === 0) {
     return
   }
-  const response = await axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${tokens.join(',')}&tsyms=${currencies.join(',')}`)
-  const prices = response ? response.data : {}
-  dispatch({ type: MARKET_UPDATE_PRICES, prices })
+  let response = {}
+  const tokenList = tokens.join(',')
+  const currencyList = currencies.join(',')
+  if (tokenList.length > 300) {
+    const chunks = chunker(tokens)
+    const chunkedResponse = await Promise.all(
+      chunks.map((chunk) => axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${chunk.join(',')}&tsyms=${currencyList}`))
+    )
+    response['data'] = {}
+    chunkedResponse.forEach((cResponse) => response.data = { ...response.data, ...cResponse.data })
+  } else {
+    response = await axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${tokenList}&tsyms=${currencyList}`)
+  }
+  Object.keys(response.data).length && dispatch({ type: MARKET_UPDATE_PRICES, prices: response.data })
 }
 
 export const watchInitMarket = () => (dispatch, getState) => {
