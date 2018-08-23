@@ -11,7 +11,7 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 import { getHistoryEvents } from '@chronobank/core/redux/events/selectors'
 import { loadEvents } from '@chronobank/core/redux/events/actions'
-import { ASSET_TOPICS } from '@chronobank/core/describers/constants'
+import { ASSET_TOPICS } from '@chronobank/core/describers/topics'
 import LogListModel from '@chronobank/core/models/LogListModel'
 import { getHistoryKey } from '@chronobank/core/utils/eventHistory'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
@@ -46,6 +46,10 @@ export default class HistoryTable extends PureComponent {
     loadMoreEvents: PropTypes.func,
   }
 
+  getEventTypePath (eventType: string) {
+    return `tx.eventType.${eventType}`
+  }
+
   buildTableData (eventItems, locale) {
     moment.locale(locale)
     const groups = eventItems
@@ -74,13 +78,18 @@ export default class HistoryTable extends PureComponent {
 
         <div styleName='col-value'>
           <div styleName='col-value-container'>
+            <div styleName='event-type-container'>
+              <span styleName='event-type'>
+                <Translate value={this.getEventTypePath(event.type)} />
+              </span>
+            </div>
             <div styleName='event-title-container'>
               <span styleName='event-title'>
                 <Translate value={event.title} />
               </span>
             </div>
             <div styleName='event-address-container'>
-              <span styleName='event-address'>{event.address}</span>
+              <span styleName='event-address'>{event.subTitle}</span>
             </div>
           </div>
         </div>

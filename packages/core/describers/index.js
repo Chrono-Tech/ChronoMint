@@ -7,7 +7,7 @@ import uuid from 'uuid/v1'
 import BigNumber from 'bignumber.js'
 import Web3ABI from 'web3-eth-abi'
 import { Amount, LogTxModel } from '../models'
-import LogEventModel from '../models/LogEventModel'
+import LogEventModel from '../models/describers/LogEventModel'
 import { EVENT_DESCRIBERS_BY_TOPIC, decodeLog } from './events'
 import { TRANSACTION_DESCRIBERS_BY_TOPIC, decodeParameters, findFunctionABI } from './transactions'
 import { decodeTxData } from '../utils/DecodeUtils'
@@ -31,7 +31,6 @@ export const describeEvent = (data, context = {}) => {
 
   return new LogEventModel({
     key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
-    type: 'event',
     name: 'custom',
     date: new Date(block.timestamp * 1000),
     icon: 'event',

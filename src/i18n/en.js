@@ -171,6 +171,10 @@ export default {
     balanceAfter: '%{symbol} balance after',
     feeLeft: 'Transaction fee left',
     notEnough: 'Not enough %{symbol}',
+    eventType: {
+      event: 'event',
+      transaction: 'transaction',
+    },
     TokenManagementInterface: {
       createAssetWithoutFee: {
         title: 'Confirm create token',
