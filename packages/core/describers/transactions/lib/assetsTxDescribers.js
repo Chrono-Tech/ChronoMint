@@ -35,7 +35,7 @@ export const FUNCTION_CREATE_ASSET_WITH_FEE = new TransactionDescriber(
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: TX_CREATE_ASSET_WITH_FEE,
         date: new Date(block ? (block.timestamp * 1000) : null),
-        title: `${path}.modalTitle`,
+        title: `${path}.title`,
         path,
         fields: [
           {
@@ -64,7 +64,7 @@ export const FUNCTION_CREATE_ASSET_WITHOUT_FEE = new TransactionDescriber(
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: TX_CREATE_ASSET_WITHOUT_FEE,
         date: new Date(block ? (block.timestamp * 1000) : null),
-        title: `${path}.modalTitle`,
+        title: `${path}.title`,
         path,
         fields: [
           {
@@ -93,7 +93,7 @@ export const FUNCTION_CREATE_PLATFORM = new TransactionDescriber(
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: TX_CREATE_PLATFORM,
         date: new Date(block ? (block.timestamp * 1000) : null),
-        title: `${path}.modalTitle`,
+        title: `${path}.title`,
         path,
         fields: [
           {
@@ -122,7 +122,7 @@ export const FUNCTION_ATTACH_PLATFORM = new TransactionDescriber(
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: FUNCTION_ATTACH_PLATFORM,
         date: new Date(block ? (block.timestamp * 1000) : null),
-        title: `${path}.modalTitle`,
+        title: `${path}.title`,
         path,
         fields: [
           {
@@ -151,7 +151,7 @@ export const FUNCTION_DETACH_PLATFORM = new TransactionDescriber(
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: TX_DETACH_PLATFORM,
         date: new Date(block ? (block.timestamp * 1000) : null),
-        title: `${path}.modalTitle`,
+        title: `${path}.title`,
         path,
         fields: [
           {
@@ -180,7 +180,7 @@ export const FUNCTION_REISSUE_ASSET = new TransactionDescriber(
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: TX_REISSUE_ASSET,
         date: new Date(block ? (block.timestamp * 1000) : null),
-        title: `${path}.modalTitle`,
+        title: `${path}.title`,
         path,
         fields: [
           {
@@ -209,7 +209,7 @@ export const FUNCTION_REMOVE_ASSET_PART_OWNER = new TransactionDescriber(
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: TX_REMOVE_ASSET_PART_OWNER,
         date: new Date(block ? (block.timestamp * 1000) : null),
-        title: `${path}.modalTitle`,
+        title: `${path}.title`,
         path,
         fields: [
           {
@@ -238,7 +238,7 @@ export const FUNCTION_REVOKE_ASSET = new TransactionDescriber(
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: TX_REVOKE_ASSET,
         date: new Date(block ? (block.timestamp * 1000) : null),
-        title: `${path}.modalTitle`,
+        title: `${path}.title`,
         path,
         fields: [
           {

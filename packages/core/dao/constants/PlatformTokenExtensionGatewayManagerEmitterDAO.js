@@ -3,14 +3,4 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export const TX_ADD_ASSET_PART_OWNER = 'addAssetPartOwner'
-export const TX_IS_REISSUABLE = 'isReissuable'
-export const TX_ISSUE = 'Issue'
-export const TX_OWNERSHIP_CHANGE = 'OwnershipChange'
-export const TX_REISSUE_ASSET = 'reissueAsset'
-export const TX_REMOVE_ASSET_PART_OWNER = 'removeAssetPartOwner'
-export const TX_APPROVE = 'Approve'
-export const TX_RECOVERY = 'Recovery'
-export const TX_ASSET_TRANSFER = 'Transfer'
-export const TX_REVOKE = 'Revoke'
-export const TX_REVOKE_ASSET = 'revokeAsset'
+export const TX_ASSET_CREATED = 'AssetCreated'

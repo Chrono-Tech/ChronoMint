@@ -64,7 +64,7 @@ export const FUNCTION_ACTIVATE_POLL = new TransactionDescriber(
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: TX_ACTIVATE_POLL,
         date: new Date(block ? (block.timestamp * 1000) : null),
-        title: `${path}.title`,
+        title: `${path}.modalTitle`,
         fields: [
           {
             value: tx.from,
@@ -91,7 +91,7 @@ export const FUNCTION_VOTE = new TransactionDescriber(
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: TX_VOTE,
         date: new Date(block ? (block.timestamp * 1000) : null),
-        title: `${path}.title`,
+        title: `${path}.modalTitle`,
         fields: [
           {
             value: tx.from,
@@ -122,7 +122,7 @@ export const FUNCTION_REMOVE_POLL = new TransactionDescriber(
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: TX_REMOVE_POLL,
         date: new Date(block ? (block.timestamp * 1000) : null),
-        title: `${path}.title`,
+        title: `${path}.modalTitle`,
         fields: [
           {
             value: tx.from,
@@ -149,7 +149,7 @@ export const FUNCTION_END_POLL = new TransactionDescriber(
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: TX_END_POLL,
         date: new Date(block ? (block.timestamp * 1000) : null),
-        title: `${path}.title`,
+        title: `${path}.modalTitle`,
         fields: [
           {
             value: tx.from,

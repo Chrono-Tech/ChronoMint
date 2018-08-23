@@ -57,7 +57,7 @@ export const FUNCTION_APPROVE = new TransactionDescriber(
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: 'approve',
         date: new Date(block ? (block.timestamp * 1000) : null),
-        title: `${path}.title`,
+        title: `${path}.modalTitle`,
         from: '',
         to: '',
         fields: [
@@ -89,7 +89,7 @@ export const FUNCTION_REQUIRE_TIME = new TransactionDescriber(
       key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
       name: 'sendTime',
       date: new Date(block ? (block.timestamp * 1000) : null),
-      title: `${path}.title`,
+      title: `${path}.modalTitle`,
       fields: [
         {
           value: tx.from,

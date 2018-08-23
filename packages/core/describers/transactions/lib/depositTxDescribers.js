@@ -18,7 +18,7 @@ export const FUNCTION_DEPOSIT = new TransactionDescriber(
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: 'transfer',
         date: new Date(block ? (block.timestamp * 1000) : null),
-        title: `${path}.title`,
+        title: `${path}.modalTitle`,
         fields: [
           {
             value: tx.from,
@@ -47,7 +47,7 @@ export const FUNCTION_WITHDRAW = new TransactionDescriber(
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: 'transfer',
         date: new Date(block ? (block.timestamp * 1000) : null),
-        title: `${path}.title`,
+        title: `${path}.modalTitle`,
         fields: [
           {
             value: tx.from,

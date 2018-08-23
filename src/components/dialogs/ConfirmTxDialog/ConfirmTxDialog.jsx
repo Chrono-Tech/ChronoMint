@@ -69,6 +69,7 @@ export default class ConfirmTxDialog extends PureComponent {
                 if (field.type === "ipfsHash") {
                   return <IPFSHash key={i} multihash={field.value} langPath={description.path} />
                 }
+
                 return (
                   <div styleName='param' key={i}>
                     <div styleName='label'>

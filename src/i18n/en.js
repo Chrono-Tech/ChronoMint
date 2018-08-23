@@ -280,12 +280,10 @@ export default {
       [time.TX_DEPOSIT]: {
         title: 'Deposit TIME',
         amount: 'Amount',
-        from: 'From',
       },
       [time.TX_WITHDRAW_SHARES]: {
         title: 'Withdraw TIME',
         amount: 'Amount',
-        from: 'From',
       },
     },
     Rewards: {
@@ -328,14 +326,11 @@ export default {
     ERC20Interface: {
       [erc20.TX_APPROVE]: {
         title: 'Approve to transfer your tokens',
-        from: 'From',
         spender: 'Spender',
         amount: 'Amount',
       },
       [erc20.TX_TRANSFER]: {
         title: 'Transfer tokens',
-        from: 'From',
-        to: 'To',
         amount: 'Amount',
       },
     },
@@ -343,19 +338,16 @@ export default {
       transfer: {
         title: 'Transfer',
         value: 'Value',
-        to: 'To',
         symbol: 'Symbol',
       },
       confirm: {
         title: 'Confirm tx',
         value: 'Value',
-        to: 'To',
         symbol: 'Symbol',
       },
       revoke: {
         title: 'Revoke tx',
         value: 'Value',
-        to: 'To',
         symbol: 'Symbol',
       },
       addOwner: {
@@ -401,8 +393,6 @@ export default {
     VotingManager: {
       [votingManager.TX_CREATE_POLL]: {
         modalTitle: 'Create Poll',
-        from: 'From',
-        to: 'To',
         options: 'Options',
         files: 'Files',
         description: 'Description',

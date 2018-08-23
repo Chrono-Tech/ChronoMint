@@ -75,7 +75,9 @@ export default class HistoryTable extends PureComponent {
         <div styleName='col-value'>
           <div styleName='col-value-container'>
             <div styleName='event-title-container'>
-              <span styleName='event-title'>{event.title}</span>
+              <span styleName='event-title'>
+                <Translate value={event.title} />
+              </span>
             </div>
             <div styleName='event-address-container'>
               <span styleName='event-address'>{event.address}</span>

@@ -20,6 +20,8 @@ export const describeEvent = (data, context = {}) => {
   if (array) {
     for (const describer of array) {
       const { input, params } = decodeLog(describer.abi, log)
+      console.log('Decode log: ', input, params)
+
       const desc = describer.describe(data, context, { abi: describer.abi, input, params })
       if (desc) {
         return desc
