@@ -5,7 +5,7 @@
 
 import uuid from 'uuid/v1'
 import Amount from '@chronobank/core/models/Amount'
-import { ASSET_TOPICS } from '@chronobank/core/describers/constants'
+import { ASSET_TOPICS } from '@chronobank/core/describers/topics'
 import { loadEvents } from '@chronobank/core/redux/events/actions'
 import { notify } from '../notifier/actions'
 import web3Converter from '../../utils/Web3Converter'
@@ -34,7 +34,7 @@ import { web3Selector } from '../ethereum/selectors'
 import { executeTransaction } from '../ethereum/actions'
 import assetsManagerService from '../../services/AssetsManagerService'
 
-import { TX_PLATFORM_REQUESTED } from '../../dao/constants/PlatformsManagerDAO'
+import { EVENT_PLATFORM_REQUESTED } from '../../dao/constants/PlatformsManagerDAO'
 
 import {
   DUCK_ASSETS_MANAGER,
@@ -173,7 +173,7 @@ export const watchPlatformManager = () => async (dispatch, getState) => {
     dispatch(setTx(tx))
   }
 
-  platformsManagerDAO.on(TX_PLATFORM_REQUESTED, (data) => {
+  platformsManagerDAO.on(EVENT_PLATFORM_REQUESTED, (data) => {
     if (data.returnValues.by.toLowerCase() !== account) {
       return
     }
