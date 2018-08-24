@@ -143,19 +143,23 @@ export const describeTx = (entry, context = {}) => {
 export const describePendingNemTx = (entry, context = {}) => {
   const { tx, block } = entry
   const { token } = context
+  const { prepared } = tx
 
-  const fee = new Amount(tx.tx.fee, XEM)
+  const fee = new Amount(prepared.fee, XEM)
 
-  const amount = new Amount(tx.tx.amount, token.symbol())
+  const amount = prepared.mosaics
+    ? new Amount(prepared.mosaics[0].quantity, token.symbol())
+    : new Amount(prepared.amount, token.symbol()) // we can send only one mosaic
 
   const path = `tx.nem.transfer`
+
   return new LogTxModel({
     key: tx.block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
     type: 'tx',
     name: 'transfer',
     date: new Date(tx.time ? (tx.time * 1000) : null),
     icon: 'event',
-    title: `nemTransfer`,
+    title: `${path}.title`,
     message: tx.to,
     target: null,
     fields: [
