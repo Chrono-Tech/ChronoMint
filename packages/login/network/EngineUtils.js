@@ -7,6 +7,14 @@
 
 import { ethereumProvider } from './EthereumProvider'
 import networkProvider from './NetworkProvider'
+import {
+  bccProvider,
+  btcProvider,
+  btgProvider,
+  ltcProvider,
+} from './BitcoinProvider'
+import { nemProvider } from './NemProvider'
+import { wavesProvider } from './WavesProvider'
 
 // #endregion
 

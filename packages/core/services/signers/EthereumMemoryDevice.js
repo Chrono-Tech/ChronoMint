@@ -5,7 +5,6 @@
 
 import EventEmitter from 'events'
 import hdKey from 'ethereumjs-wallet/hdkey'
-import bip39 from 'bip39'
 import Accounts from 'web3-eth-accounts'
 
 const DEFAULT_PATH = `m/44'/60'/0'/0/0`

@@ -5,7 +5,6 @@
 
 import { getProviderURL } from '@chronobank/core/redux/session/thunks'
 import web3Provider from '@chronobank/login/network/Web3Provider'
-import web3Utils from '@chronobank/login/network/Web3Utils'
 import { clearErrors, networkSetNetwork } from '@chronobank/login/redux/network/actions'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { MenuItem, Select } from '@material-ui/core'
@@ -57,7 +56,7 @@ export default class NetworkSelector extends PureComponent {
 
   resolveNetwork = () => {
     const web3 = new Web3()
-    web3Provider.reinit(web3, web3Utils.createStatusEngine(this.props.getProviderURL()))
+    web3Provider.reinit(web3, null)
     web3Provider.resolve()
   }
 

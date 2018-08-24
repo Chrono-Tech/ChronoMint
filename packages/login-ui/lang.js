@@ -12,7 +12,6 @@ import * as RecoverAccount from './components/RecoverAccount/lang'
 import * as ResetPassword from './components/ResetPassword/lang'
 import * as GenerateWallet from './components/GenerateWallet/lang'
 import * as LoginForm from './components/LoginForm/lang'
-import * as LoginMetamask from './components/LoginMetamask/lang'
 import * as LoginUPort from './components/LoginUPort/lang'
 import * as LoginWithLedger from './components/LoginWithLedger/lang'
 import * as LoginWithMnemonic from './components/LoginWithMnemonic/lang'
@@ -38,7 +37,6 @@ export const en = {
   LoginForm: LoginForm.en,
   LoginWithLedger: LoginWithLedger.en,
   LoginWithTrezor: LoginWithTrezor.en,
-  LoginMetamask: LoginMetamask.en,
   LoginWithMnemonic: LoginWithMnemonic.en,
   LoginWithOptions: LoginWithOptions.en,
   LoginWithPrivateKey: LoginWithPrivateKey.en,

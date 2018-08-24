@@ -15,7 +15,6 @@ import {
 import { DeviceEntryModel } from '@chronobank/core/models'
 import './LoginWithLedger.scss'
 import {
-  navigateToSelectImportMethod,
   navigateToCreateAccount,
 } from '../../redux/navigation'
 import LoginWithLedger from './LoginWithLedger'
@@ -40,7 +39,6 @@ class LoginWithLedgerContainer extends PureComponent {
     previousPage: PropTypes.func,
     onDeviceSelect: PropTypes.func,
     deviceList: PropTypes.array,
-    navigateToSelectImportMethod: PropTypes.func,
     navigateToCreateAccount: PropTypes.func,
     initLedgerDevice: PropTypes.func,
     navigateToDerivationPathForm: PropTypes.func,

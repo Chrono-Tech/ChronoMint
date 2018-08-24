@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-//import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
+import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import solidityEvent from 'web3/lib/web3/event'
 import BigNumber from 'bignumber.js'
 import Amount from '../models/Amount'

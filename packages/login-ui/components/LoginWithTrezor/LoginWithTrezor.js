@@ -5,27 +5,15 @@
 
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import {
-  DUCK_DEVICE_ACCOUNT,
-} from '@chronobank/core/redux/device/constants'
-
 import './LoginWithTrezor.scss'
 
 class LoginTrezor extends Component {
   static propTypes = {
     previousPage: PropTypes.func,
-    isLoading: PropTypes.bool,
     deviceList: PropTypes.instanceOf(Array),
     onDeviceSelect: PropTypes.func,
     navigateToDerivationPathForm: PropTypes.func,
-  }
-
-  componentDidUpdate (prevProps) {
-    //if (!this.props.trezor.isFetched && !this.props.trezor.isFetching) {
-    //  this.props.fetchAccount()
-    //}
   }
 
   componentWillUnmount () {
@@ -35,8 +23,8 @@ class LoginTrezor extends Component {
     return (
       <div styleName='state' key='1'>
         <div styleName='titleContent'>
-          <div styleName='title'>zzz</div>
-          <div styleName='subtitle'>zzz</div>
+          <div styleName='title'>Trezor not found</div>
+          <div styleName='subtitle'>Connect your Trezor</div>
         </div>
       </div>
     )
@@ -66,8 +54,7 @@ class LoginTrezor extends Component {
   }
 
   render () {
-    const { previousPage, deviceList, isLoading, navigateToDerivationPathForm } = this.props
-    console.log(deviceList)
+    const { previousPage, deviceList, navigateToDerivationPathForm } = this.props
     return (
       <div styleName='form'>
         <div styleName='page-title'>

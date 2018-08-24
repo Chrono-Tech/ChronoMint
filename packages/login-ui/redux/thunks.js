@@ -11,10 +11,8 @@ import {
   SubmissionError,
 } from 'redux-form'
 import { replace } from 'react-router-redux'
-import { DUCK_ETH_MULTISIG_WALLET } from '@chronobank/core/redux/multisigWallet/constants'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import localStorage from 'utils/LocalStorage'
-import setup from '@chronobank/login/network/EngineUtils'
 import {
   DUCK_NETWORK,
 } from '@chronobank/login/redux/network/constants'
@@ -28,7 +26,6 @@ import * as DeviceActions from '@chronobank/core/redux/device/actions'
 import * as SessionThunks from '@chronobank/core/redux/session/thunks'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 import { AccountEntryModel } from '@chronobank/core/models'
-import { EthereumMemoryDevice } from '@chronobank/core/services/signers/EthereumMemoryDevice'
 import {
   createAccountEntry,
   createDeviceAccountEntry,
@@ -55,7 +52,6 @@ export const navigateToCreateAccountWithoutImport = () => (dispatch) => {
  */
 export const initCommonNetworkSelector = () => (dispatch, getState) => {
   const state = getState()
-  const { isLocal } = state.get(DUCK_NETWORK)
 
   dispatch(NetworkThunks.autoSelect())
 
@@ -86,72 +82,64 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   const state = getState()
   const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
   const wlt = new AccountEntryModel(selectedWallet)
-  console.log(wlt) 
     switch(wlt.type) {
      case 'memory' : {
-      try {
-        const wallet = await dispatch(PersistAccountActions.decryptAccount(wlt, password))
-	console.log(wallet.entry.encrypted[0].address)
-	const signer = getSigner(getState())
-	console.log(signer)
-        await dispatch(SessionThunks.getProfileSignature(signer,wallet.entry.encrypted[0].path))
+       try {
+         const wallet = await dispatch(PersistAccountActions.decryptAccount(wlt, password))
+	 const signer = getSigner(getState())
+         await dispatch(SessionThunks.getProfileSignature(signer,wallet.entry.encrypted[0].path))
 	      
-        //await dispatch(NetworkThunks.handleLogin(wallet.entry.encrypted[0].address))
-      dispatch(NetworkActions.selectAccount(wallet.entry.encrypted[0].address))
-      //await setup(provider)
-      const {
-        selectedAccount,
-        selectedProviderId,
-        selectedNetworkId,
-      } = getState().get(DUCK_NETWORK)
+         //await dispatch(NetworkThunks.handleLogin(wallet.entry.encrypted[0].address))
+         dispatch(NetworkActions.selectAccount(wallet.entry.encrypted[0].address))
+         //await setup(provider)
+         const {
+           selectedAccount,
+           selectedProviderId,
+           selectedNetworkId,
+         } = getState().get(DUCK_NETWORK)
 
-      dispatch(NetworkActions.clearErrors())
-      dispatch(SessionThunks.createNetworkSession(
-        selectedAccount,
-        selectedProviderId,
-        selectedNetworkId,
-      ))
-      localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
-      const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
-      dispatch(replace(localStorage.getLastURL() || defaultURL))
-      } catch (e) {
-        throw new SubmissionError({ password: e && e.message })
-      }
-      break
+         dispatch(NetworkActions.clearErrors())
+         dispatch(SessionThunks.createNetworkSession(
+           selectedAccount,
+           selectedProviderId,
+           selectedNetworkId,
+         ))
+         localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
+         const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
+         dispatch(replace(localStorage.getLastURL() || defaultURL))
+       } catch (e) {
+         throw new SubmissionError({ password: e && e.message })
+       }
+       break
      }
 
      case 'device': {
       
-      console.log('navigate to device login')
-      console.log(SessionThunks)
       try {
         const wallet = await dispatch(DeviceActions.loadDeviceAccount(wlt))
-        console.log(wallet.entry.encrypted[0].address)
 	const signer = getSigner(getState())
-	console.log(signer)
         await dispatch(SessionThunks.getProfileSignature(signer,wallet.entry.encrypted[0].path))
         
         //await dispatch(NetworkThunks.handleLogin(wallet.entry.encrypted[0].address))
-      dispatch(NetworkActions.selectAccount(wallet.entry.encrypted[0].address))
-      //await setup(provider)
+        dispatch(NetworkActions.selectAccount(wallet.entry.encrypted[0].address))
+        //await setup(provider)
         dispatch(NetworkActions.loading())
-  dispatch(NetworkActions.clearErrors())
-      const {
-        selectedAccount,
-        selectedProviderId,
-        selectedNetworkId,
-      } = getState().get(DUCK_NETWORK)
-      dispatch(NetworkActions.clearErrors())
-      dispatch(SessionThunks.createNetworkSession(
-        selectedAccount,
-        selectedProviderId,
-        selectedNetworkId,
-      ))
-      localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
-      const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
-      dispatch(replace(localStorage.getLastURL() || defaultURL))
+        dispatch(NetworkActions.clearErrors())
+        const {
+          selectedAccount,
+          selectedProviderId,
+          selectedNetworkId,
+        } = getState().get(DUCK_NETWORK)
+        dispatch(NetworkActions.clearErrors())
+        dispatch(SessionThunks.createNetworkSession(
+          selectedAccount,
+          selectedProviderId,
+          selectedNetworkId,
+        ))
+        localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
+        const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
+        dispatch(replace(localStorage.getLastURL() || defaultURL))
       } catch (e) {
-	console.log(e)
         throw new SubmissionError({ password: e && e.message })
       }
       break
@@ -289,13 +277,9 @@ export const onSubmitResetAccountPasswordSuccess = () => (dispatch) => {
  */
 export const selectProviderWithNetwork = (networkId, providerId) => (dispatch) => {
   dispatch(NetworkActions.selectProviderWithNetwork(networkId, providerId))
-  if (isLocalNode(providerId, networkId)) {
-    dispatch(LoginUINavActions.navigateToLoginLocal())
-  }
 }
 
 export const onWalletSelect = (wallet) => async (dispatch) => {
-  console.log(wallet)
   dispatch(PersistAccountActions.accountSelect(wallet))
   dispatch(LoginUINavActions.navigateToLoginPage())
 }

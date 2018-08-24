@@ -11,8 +11,6 @@ import {
 } from '@chronobank/login-ui/redux/thunks'
 import {
   navigateToSelectWallet,
-  navigateToSelectImportMethod,
-  navigateToLoginPage,
   navigateBack,
 } from '@chronobank/login-ui/redux/navigation'
 import {
@@ -20,7 +18,6 @@ import {
   AccountNameContainer,
   DerivationPathFormContainer,
 } from '@chronobank/login-ui/components'
-import { SubmissionError } from 'redux-form'
 import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
 import { getAddress } from '@chronobank/core/redux/persistAccount/utils'
 
@@ -52,7 +49,6 @@ class LedgerLoginPage extends PureComponent {
 
     this.state = {
       page: LedgerLoginPage.PAGES.DEVICE_SELECT_FORM,
-      walletJSON: null,
     }
   }
 
@@ -94,8 +90,6 @@ class LedgerLoginPage extends PureComponent {
   }
 
   async onSubmitDevice (device) {
-    console.log('submit device')
-    console.log(device)
     this.setState({
 	    device: device
     })
@@ -133,7 +127,6 @@ class LedgerLoginPage extends PureComponent {
   }
 
   async onSubmitDerivationPath ({ path }) {
-    console.log('path', path)
     this.setState({
       page: LedgerLoginPage.PAGES.DEVICE_SELECT_FORM
     })

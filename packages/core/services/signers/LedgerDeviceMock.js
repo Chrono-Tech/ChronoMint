@@ -1,5 +1,4 @@
 import EventEmitter from 'events'
-import EthereumTx from 'ethereumjs-tx'
 import hdkey from 'ethereumjs-wallet/hdkey'
 const BigNumber = require('bignumber.js')
 import Accounts from 'web3-eth-accounts'

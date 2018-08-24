@@ -16,14 +16,12 @@ import { DeviceEntryModel } from '@chronobank/core/models'
 import './LoginWithTrezor.scss'
 import {
   navigateToCreateAccount,
-  navigateToSelectWallet,
 } from '../../redux/navigation'
 import LoginWithTrezor from './LoginWithTrezor'
 
 function mapDispatchToProps (dispatch) {
   return {
     navigateToCreateAccount: () => dispatch(navigateToCreateAccount()),
-    navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
     initTrezorDevice: () => dispatch(initTrezorDevice()),
   }
 }

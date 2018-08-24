@@ -11,29 +11,22 @@ import TrezorConnect from 'trezor-connect';
 import axios from 'axios'
 
 export default class BitcoinTrezorDevice extends EventEmitter {
-  constructor ({seed}) {
+  constructor ({xpub, network}) {
     super()
-    this.seed = seed
+    this.xpub = xpub
+    this.network = network
     Object.freeze(this)
   }
 
-  privateKey (path) {
-    return this._getDerivedWallet(path).privateKey 
-  }
-
   // this method is a part of base interface
-  async getAddress (path) {
-    const result =  await TrezorConnect.getAddress({
-    path: path,
-    showOnTrezor: false,
-});
-    console.log(result)
-  return result.payload.address
+  getAddress (path) {
+    return  "mnrJYbRVUbizQL2LXsvoqZra4MMpxkRTb2"//bitcoin.HDNode
+            //.fromBase58(xpub, this.network)
+            //.derivePath(path).getAddress()
   }
 
   async buildTx(path) {
 
-const network = bitcoin.networks.testnet
 
 const BLOCK_EXPLORER = axios.create({
     baseURL: 'https://middleware-bitcoin-testnet-rest.chronobank.io'
@@ -63,7 +56,7 @@ const LEDGER_ADDRESS = 'mtnCZ2WsxjDqDzLn8EJTkQVugnbBanAhRz'
   const { inputs, outputs, fee } = coinselect(utxos, targets, feeRate)
   console.log(inputs)
   console.log(outputs)
-  const txb = new bitcoin.TransactionBuilder(network)
+  const txb = new bitcoin.TransactionBuilder(this.network)
   inputs.forEach(input => txb.addInput(input.txId, input.vout))
   outputs.forEach(output => {
     // watch out, outputs may have been added that you need to provide
@@ -74,53 +67,60 @@ const LEDGER_ADDRESS = 'mtnCZ2WsxjDqDzLn8EJTkQVugnbBanAhRz'
 
     txb.addOutput(output.address, output.value)
   })
-  console.log(txb.buildIncomplete().toHex())
-
-  const result =  await TrezorConnect.signTransaction({
-    inputs: [
-        {
-            address_n: [44 | 0x80000000, 1 | 0x80000000, 0 | 0x80000000, 0, 0],
-            prev_index: 0,
-            prev_hash: '9ede3800025dff4fcb90360f7fab81839b0660018109302f77566d7fd649cded'
-        }
-    ],
-    outputs: [
-        {
-            address: MEMORY_ADDRESS,
-            amount: '100000',
-            script_type: 'PAYTOADDRESS'
-        },
-        {
-            address_n: [44 | 0x80000000, 1 | 0x80000000, 0 | 0x80000000, 0, 0],
-            amount: '855000',
-            script_type: 'PAYTOADDRESS'
-        }, 
-    ],
-    coin: "Testnet"
-})
-   console.log(result)  
+  console.log(txb)
+  this.signTransaction(txb.buildIncomplete().toHex(), path)
 
   }
 
-  signTransaction (params) { // tx object
+  async signTransaction (rawTx, path) { // tx object
+    const txb = new bitcoin.TransactionBuilder.fromTransaction (
+	bitcoin.Transaction.fromHex (rawTx), this.network)
 
-  }
+    const localAddress = this.getAddress(path)
 
-  static async init ({ seed, network }) {
-    //todo add network selector 
-    
-    return new BitcoinTrezorDevice({seed})
-
-    } 
-
-  _getDerivedWallet(derivedPath) {
-    if(this.seed) {
-      const wallet = bitcoin.HDNode
-        .fromSeedBuffer(Buffer.from(this.seed.substring(2), 'hex'), bitcoin.networks.testnet)
-        .derivePath(derivedPath)
-      console.log(wallet)
-      return wallet
+    if(!localAddress) {
+      return
     }
+
+    const address_n = path.split('/').map(entry => entry[entry.length-1] === "'"
+      ? parseInt(entry.substring(0, entry.length - 1)) | 0x80000000
+      : parseInt(entry)
+    )
+
+    let inputs = []
+
+    txb.buildIncomplete().ins.forEach((input) => {
+      inputs.push({ address_n: address_n,
+	prev_index: input.index,
+	prev_hash: Buffer.from(input.hash).reverse().toString('hex'),
+      })
+    })
+
+    let outputs = []
+
+    txb.buildIncomplete().outs.forEach((out) => {
+    const address = bitcoin.address.fromOutputScript(out.script, this.network)
+    let output = { address: address,
+                   amount: out.value.toString(),
+	           script_type: 'PAYTOADDRESS',
+                 }
+    if (address == localAddress) {
+      output = { ...output, address_n: address_n }
+    }
+    outputs.push(output)
+    })
+
+    console.log(inputs)
+    console.log(outputs)
+
+    const result =  await TrezorConnect.signTransaction({
+      inputs: inputs,
+      outputs: outputs,
+      coin: "Testnet"
+    })
+
+    console.log(result)
+
   }
 
 }

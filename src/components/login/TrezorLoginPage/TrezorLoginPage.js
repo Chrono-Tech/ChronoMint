@@ -11,8 +11,6 @@ import {
 } from '@chronobank/login-ui/redux/thunks'
 import {
   navigateToSelectWallet,
-  navigateToSelectImportMethod,
-  navigateToLoginPage,
   navigateBack,
 } from '@chronobank/login-ui/redux/navigation'
 import {
@@ -20,7 +18,6 @@ import {
   AccountNameContainer,
   DerivationPathFormContainer,
 } from '@chronobank/login-ui/components'
-import { SubmissionError } from 'redux-form'
 import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
 import { getAddress } from '@chronobank/core/redux/persistAccount/utils'
 
@@ -51,7 +48,6 @@ class TrezorLoginPage extends PureComponent {
 
     this.state = {
       page: TrezorLoginPage.PAGES.DEVICE_SELECT_FORM,
-      walletJSON: null,
     }
   }
 
@@ -93,10 +89,8 @@ class TrezorLoginPage extends PureComponent {
   }
 
   async onSubmitDevice (device) {
-    console.log('submit device')
-    console.log(device)
     this.setState({
-	    device: device
+      device: device
     })
 
     let response = null, userName = null, profile = null
@@ -132,7 +126,6 @@ class TrezorLoginPage extends PureComponent {
   }
 
   async onSubmitDerivationPath ({ path }) {
-    console.log('path', path)
     this.setState({
       page: TrezorLoginPage.PAGES.DEVICE_SELECT_FORM
     })

@@ -20,5 +20,4 @@ export CommonNetworkSelector from './CommonNetworkSelector/CommonNetworkSelector
 export GenerateWalletContainer from './GenerateWallet/GenerateWalletContainer'
 export LoginWithWalletContainer from './LoginWithWallet/LoginWithWalletContainer'
 export AccountNameContainer from './AccountName/AccountNameContainer'
-export LoginLocal from './LoginLocal/LoginLocal'
 export NotFoundPage from './NotFoundPage/NotFoundPage'

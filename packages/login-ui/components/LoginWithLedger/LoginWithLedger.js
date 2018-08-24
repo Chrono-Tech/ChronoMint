@@ -3,19 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import Divider from '@material-ui/core/Divider'
-import Typography from '@material-ui/core/Typography'
-import ChevronRight from '@material-ui/icons/ChevronRight'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import {
-  DUCK_DEVICE_ACCOUNT,
-} from '@chronobank/core/redux/device/constants'
 
 import './LoginWithLedger.scss'
 
@@ -27,12 +17,6 @@ class LoginWithLedger extends PureComponent {
     navigateToDerivationPathForm: PropTypes.func,
   }
 
-  componentDidUpdate (prevProps) {
-    //if (!this.props.trezor.isFetched && !this.props.trezor.isFetching) {
-    //  this.props.fetchAccount()
-    //}
-  }
-
   componentWillUnmount () {
   }
 
@@ -40,8 +24,8 @@ class LoginWithLedger extends PureComponent {
     return (
       <div styleName='state' key='1'>
         <div styleName='titleContent'>
-          <div styleName='title'>zzz</div>
-          <div styleName='subtitle'>zzz</div>
+          <div styleName='title'>Ledger not found</div>
+          <div styleName='subtitle'>Connect your Ledger</div>
         </div>
       </div>
     )
