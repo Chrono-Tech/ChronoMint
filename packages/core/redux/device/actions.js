@@ -3,11 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import TrezorDevice from '../../services/signers/TrezorDevice.js'
-import TrezorDeviceMock from '../../services/signers/TrezorDeviceMock.js'
-import LedgerDevice from '../../services/signers/LedgerDevice.js'
-import LedgerDeviceMock from '../../services/signers/LedgerDeviceMock.js'
-import BitcoinMemoryDevice from '../../services/signers/BitcoinMemoryDevice.js'
+import TrezorDevice from '../../services/signers/TrezorDevice'
+import TrezorDeviceMock from '../../services/signers/TrezorDeviceMock'
+import LedgerDevice from '../../services/signers/LedgerDevice'
+import LedgerDeviceMock from '../../services/signers/LedgerDeviceMock'
+import BitcoinMemoryDevice from '../../services/signers/BitcoinMemoryDevice'
 import { getSigner } from '../persistAccount/selectors'
 import { accountLoad } from '../persistAccount/actions'
 import {
@@ -18,6 +18,7 @@ import {
   DUCK_DEVICE_ACCOUNT,
   DEVICE_ADD,
   DEVICE_SELECT,
+  DEVICE_DESELECT,
   DEVICE_UPDATE_LIST,
   DEVICE_LOAD,
   DEVICE_SET_STATUS,
@@ -45,12 +46,6 @@ export const deviceUpdateList = (deviceList) => (dispatch) => {
 
 export const deviceSetStatus = (deviceStatus) => (dispatch) => {
   dispatch({ type: DEVICE_SET_STATUS, deviceStatus})
-}
-
-export const onDeviceSelect = (wallet) => (dispatch) => {
-
-  dispatch(PersistAccountActions.accountSelect(wallet))
-  dispatch(LoginUIActions.navigateToLoginPage())
 }
 
 export const initLedgerDevice = (wallet) => async (dispatch, getState) => {

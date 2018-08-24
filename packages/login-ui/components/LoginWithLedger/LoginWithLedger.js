@@ -24,7 +24,6 @@ class LoginWithLedger extends PureComponent {
     previousPage: PropTypes.func,
     onDeviceSelect: PropTypes.func,
     deviceList: PropTypes.instanceOf(Array),
-    onDeviceSelect: PropTypes.func,
     navigateToDerivationPathForm: PropTypes.func,
   }
 

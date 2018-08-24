@@ -4,13 +4,9 @@
  */
 
 import AssetsContent from './AssetsContent/AssetsContent'
-import BrandPartial from './BrandPartial/BrandPartial'
 import DrawerPartial from './DrawerPartial/DrawerPartial'
-import ExchangeContent from './ExchangeContent/ExchangeContent'
 import FooterPartial from './FooterPartial/FooterPartial'
 import HeaderPartial from './HeaderPartial/HeaderPartial'
-import LOCContent from './LOCContent/LOCContent'
-import OperationsContent from './OperationsContent/OperationsContent'
 import RewardsContent from './RewardsContent/RewardsContent'
 import SettingsContent from './SettingsContent/SettingsContent'
 import VotingContent from './VotingContent/VotingContent'
@@ -29,17 +25,13 @@ import VoteHistoryContent from './VoteHistoryContent/VoteHistoryContent'
 
 export {
   HeaderPartial,
-  BrandPartial,
   FooterPartial,
   DrawerPartial,
-  ExchangeContent,
   RewardsContent,
   VotingContent,
   WalletsContent,
   WalletContent,
-  OperationsContent,
   SettingsContent,
-  LOCContent,
   AssetsContent,
   SidePanel,
   ProfileContent,
@@ -55,17 +47,13 @@ export {
 
 export default {
   HeaderPartial,
-  BrandPartial,
   FooterPartial,
   DrawerPartial,
-  ExchangeContent,
   RewardsContent,
   VotingContent,
   WalletsContent,
   WalletContent,
-  OperationsContent,
   SettingsContent,
-  LOCContent,
   AssetsContent,
   SidePanel,
   ProfileContent,

@@ -69,10 +69,9 @@ class LoginWithLedgerContainer extends PureComponent {
       <LoginWithLedger
         navigateToCreateAccount={navigateToCreateAccount}
         deviceList={deviceList}
-	previousPage={previousPage}
+        previousPage={previousPage}
         onDeviceSelect={onDeviceSelect}
         navigateToDerivationPathForm={navigateToDerivationPathForm}
-        previousPage={previousPage}
       />
     )
   }

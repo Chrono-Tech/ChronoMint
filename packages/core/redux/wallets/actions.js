@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import {
   BLOCKCHAIN_ETHEREUM,
   WALLET_HD_PATH,
@@ -14,11 +15,12 @@ import TokenModel from '../../models/tokens/TokenModel'
 import tokenService from '../../services/TokenService'
 import Amount from '../../models/Amount'
 import { getAccount } from '../session/selectors'
+import { updateEthMultisigWalletBalance } from '../multisigWallet/actions'
 import ethereumDAO from '../../dao/EthereumDAO'
 import { getMainEthWallet, getWallets } from './selectors/models'
 import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
-import { AllowanceCollection, SignerMemoryModel } from '../../models'
+import { AllowanceCollection } from '../../models'
 import { executeTransaction } from '../ethereum/actions'
 import {
   WALLETS_SET,

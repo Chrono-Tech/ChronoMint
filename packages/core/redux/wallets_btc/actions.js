@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
@@ -24,7 +25,7 @@ import ethereumDAO from '../../dao/EthereumDAO'
 import { getMainEthWallet, getWallets } from './selectors/models'
 import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
-import { AllowanceCollection, SignerMemoryModel } from '../../models'
+import { AllowanceCollection } from '../../models'
 import { executeTransaction } from '../ethereum/actions'
 import {
   WALLETS_SET,
@@ -144,17 +145,7 @@ export const subscribeWallet = ({ wallet }) => async (dispatch) => {
       if (wallet.isMain || wallet.isDerived) {
         dispatch(updateWalletBalance({ wallet }))
       }
-      if (wallet.isMultisig) {
-        dispatch(updateEthMultisigWalletBalance({ wallet }))
-      }
     }
-  }
-  switch (wallet.blockchain) {
-    case BLOCKCHAIN_ETHEREUM:
-      ethereumDAO.on('tx', listener)
-      return listener
-    default:
-      return
   }
 
 }

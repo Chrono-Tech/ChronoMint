@@ -6,6 +6,7 @@
 import uuid from 'uuid/v1'
 import hdkey from 'ethereumjs-wallet/hdkey'
 import bip39 from 'bip39'
+import Accounts from 'web3-eth-accounts'
 import * as ProfileThunks from '../profile/thunks'
 import * as AccountUtils from './utils'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
@@ -98,7 +99,7 @@ export const validateAccountName = (name) => (dispatch, getState) => {
 
   return !walletsList.find((item) => item.name === name)
 }
-
+//TODO move this to signer
 export const resetPasswordAccount = (wallet, mnemonic, password) => async (dispatch) => {
   const accounts = new Accounts()
   accounts.wallet.clear()

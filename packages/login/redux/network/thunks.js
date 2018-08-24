@@ -18,6 +18,7 @@ import {
   DUCK_NETWORK,
 } from './constants'
 import * as NetworkActions from './actions'
+import uportProvider from '../../network/uportProvider'
 import web3Provider from '../../network/Web3Provider'
 import {
   getNetworkById,
@@ -87,26 +88,6 @@ export const initAccountsSignature = () =>
     dispatch(updateSelectedAccount())
     dispatch(NetworkActions.resetLoadingAccountsSignatures())
   }
-
-export const handleLogin = (address) => async (dispatch, getState) => {
-  dispatch(NetworkActions.loading())
-  dispatch(NetworkActions.clearErrors())
-
-  const state = getState()
-  const {
-    selectedProviderId,
-    selectedNetworkId,
-  } = state.get(DUCK_NETWORK)
-
-  dispatch(NetworkActions.clearErrors())
-
-  dispatch(createNetworkSession(
-    address,
-    selectedProviderId,
-    selectedNetworkId,
-  ))
-  await dispatch(login(address))
-}
 
 /*
  * Thunk dispatched by "" screen.
