@@ -3,18 +3,20 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+// MAX_CHUNK_SIZE is 35 by default. Length of a token may be 3 or 6 characters (especially in testnet)
+// 3*35 or 6*35 = ~200 or ~300 characters in comma-separated string
+const MAX_CHUNK_SIZE = 35
+
 // eslint-disable-next-line import/prefer-default-export
 export const chunker = (tokens) => {
 
-  // chunkSize is 35 by default. Lenght of a token may be 3 or 6 characters (especially in testnet)
-  // 3*35 or 6*35 = ~200 or ~300 characters in comma separated string
-  const chunk = (list, requiredChunkSize = 35) => {
+  const chunk = (list, requiredChunkSize = MAX_CHUNK_SIZE) => {
     if (!list || !list.length) {
       return []
     }
 
     // Let's limit chunks size to 35 due to the reasons in comment above
-    const chunkSize = requiredChunkSize > 35 ? 35 : requiredChunkSize
+    const chunkSize = requiredChunkSize > MAX_CHUNK_SIZE ? MAX_CHUNK_SIZE : requiredChunkSize
     let chunkStartIndex, allTokensLength, singleChunk
     const chunks = [] // array of arrays (chunks)
 
