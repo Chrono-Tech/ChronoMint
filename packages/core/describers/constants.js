@@ -14,3 +14,6 @@ export const EVENT_TYPE = {
     title: EVENT_TYPE_TRANSACTION,
   },
 }
+
+// works only in rinkeby, default amount of TIME that could be required for test from contract
+export const REQUIRED_TIME_AMOUNT = 1000000000

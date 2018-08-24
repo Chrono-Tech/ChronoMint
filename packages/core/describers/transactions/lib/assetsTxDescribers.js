@@ -29,13 +29,14 @@ export const FUNCTION_CREATE_ASSET_WITH_FEE = new TransactionDescriber(
     address = address.toLowerCase()
 
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {
-
       const path = `tx.${TokenManagementInterfaceABI.contractName}.${TX_CREATE_ASSET_WITH_FEE}`
+
       return new LogTxModel({
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: TX_CREATE_ASSET_WITH_FEE,
         date: new Date(block ? (block.timestamp * 1000) : null),
         title: `${path}.title`,
+        eventTitle: `${path}.eventTitle`,
         path,
         fields: [
           {
@@ -58,13 +59,14 @@ export const FUNCTION_CREATE_ASSET_WITHOUT_FEE = new TransactionDescriber(
     address = address.toLowerCase()
 
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {
-
       const path = `tx.${TokenManagementInterfaceABI.contractName}.${TX_CREATE_ASSET_WITHOUT_FEE}`
+
       return new LogTxModel({
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: TX_CREATE_ASSET_WITHOUT_FEE,
         date: new Date(block ? (block.timestamp * 1000) : null),
         title: `${path}.title`,
+        eventTitle: `${path}.eventTitle`,
         path,
         fields: [
           {
@@ -87,13 +89,14 @@ export const FUNCTION_CREATE_PLATFORM = new TransactionDescriber(
     address = address.toLowerCase()
 
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {
-
       const path = `tx.${PlatformsManagerABI.contractName}.${TX_CREATE_PLATFORM}`
+
       return new LogTxModel({
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: TX_CREATE_PLATFORM,
         date: new Date(block ? (block.timestamp * 1000) : null),
         title: `${path}.title`,
+        eventTitle: `${path}.eventTitle`,
         path,
         fields: [
           {
@@ -116,13 +119,14 @@ export const FUNCTION_ATTACH_PLATFORM = new TransactionDescriber(
     address = address.toLowerCase()
 
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {
-
       const path = `tx.${PlatformsManagerABI.contractName}.${FUNCTION_ATTACH_PLATFORM}`
+
       return new LogTxModel({
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: FUNCTION_ATTACH_PLATFORM,
         date: new Date(block ? (block.timestamp * 1000) : null),
         title: `${path}.title`,
+        eventTitle: `${path}.eventTitle`,
         path,
         fields: [
           {
@@ -145,8 +149,8 @@ export const FUNCTION_DETACH_PLATFORM = new TransactionDescriber(
     address = address.toLowerCase()
 
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {
-
       const path = `tx.${TokenManagementInterfaceABI.contractName}.${TX_DETACH_PLATFORM}`
+
       return new LogTxModel({
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: TX_DETACH_PLATFORM,
@@ -174,8 +178,8 @@ export const FUNCTION_REISSUE_ASSET = new TransactionDescriber(
     address = address.toLowerCase()
 
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {
-
       const path = `tx.${TokenManagementInterfaceABI.contractName}.${TX_REISSUE_ASSET}`
+
       return new LogTxModel({
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: TX_REISSUE_ASSET,
@@ -203,8 +207,8 @@ export const FUNCTION_REMOVE_ASSET_PART_OWNER = new TransactionDescriber(
     address = address.toLowerCase()
 
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {
-
       const path = `tx.${TokenManagementInterfaceABI.contractName}.${TX_REMOVE_ASSET_PART_OWNER}`
+
       return new LogTxModel({
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: TX_REMOVE_ASSET_PART_OWNER,
@@ -232,8 +236,8 @@ export const FUNCTION_REVOKE_ASSET = new TransactionDescriber(
     address = address.toLowerCase()
 
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {
-
       const path = `tx.${TokenManagementInterfaceABI.contractName}.${TX_REVOKE_ASSET}`
+
       return new LogTxModel({
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: TX_REVOKE_ASSET,

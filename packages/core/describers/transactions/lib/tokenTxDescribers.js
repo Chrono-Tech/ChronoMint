@@ -8,6 +8,7 @@ import { findFunctionABI, TransactionDescriber } from '../TransactionDescriber'
 import { Amount, LogTxModel } from '../../../models'
 import { AssetDonatorABI, ERC20DAODefaultABI } from '../../../dao/abi'
 import { TIME } from '../../../dao/constants'
+import { REQUIRED_TIME_AMOUNT } from '../../constants'
 
 export const FUNCTION_TRANSFER = new TransactionDescriber(
   findFunctionABI(ERC20DAODefaultABI, 'transfer'),
@@ -16,15 +17,15 @@ export const FUNCTION_TRANSFER = new TransactionDescriber(
     address = address.toLowerCase()
 
     if (symbol && (params._to.toLowerCase() === address || tx.from.toLowerCase() === address)) {
-
       const transferAmount = new Amount(params._value, symbol)
-
       const path = `tx.${ERC20DAODefaultABI.contractName}.transfer`
+
       return new LogTxModel({
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: 'transfer',
         date: new Date(block ? (block.timestamp * 1000) : null),
         title: `${path}.title`,
+        eventTitle: `${path}.eventTitle`,
         fields: [
           {
             value: tx.from,
@@ -51,13 +52,14 @@ export const FUNCTION_APPROVE = new TransactionDescriber(
     address = address.toLowerCase()
     if (symbol && (params._spender.toLowerCase() === address || tx.from.toLowerCase() === address)) {
       const value = new Amount(params._value, symbol)
-
       const path = `tx.${ERC20DAODefaultABI.contractName}.approve`
+
       return new LogTxModel({
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: 'approve',
         date: new Date(block ? (block.timestamp * 1000) : null),
-        title: `${path}.modalTitle`,
+        title: `${path}.title`,
+        eventTitle: `${path}.eventTitle`,
         from: '',
         to: '',
         fields: [
@@ -83,13 +85,15 @@ export const FUNCTION_REQUIRE_TIME = new TransactionDescriber(
   findFunctionABI(AssetDonatorABI, 'sendTime'),
   ({ tx, block }) => {
     const symbol = TIME
-    const transferAmount = new Amount(1000000000, symbol)
+    const transferAmount = new Amount(REQUIRED_TIME_AMOUNT, symbol)
     const path = `tx.${ERC20DAODefaultABI.contractName}.sendTime`
+
     return new LogTxModel({
       key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
       name: 'sendTime',
       date: new Date(block ? (block.timestamp * 1000) : null),
-      title: `${path}.modalTitle`,
+      title: `${path}.title`,
+      eventTitle: `${path}.eventTitle`,
       fields: [
         {
           value: tx.from,

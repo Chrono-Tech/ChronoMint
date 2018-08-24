@@ -98,12 +98,11 @@ export const EVENT_ISSUE = new EventDescriber(
 
     const symbol = web3Converter.bytesToString(params.symbol).toUpperCase()
     const token = context.store.tokens.getBySymbol(symbol)
-    let value, mark
+
+    let value, mark = ''
     if (token) {
       value = token.removeDecimals(new BigNumber(params.value))
       mark = value > 0 ? '+' : '-'
-    } else {
-      value = 0
     }
 
     return new LogEventModel({
