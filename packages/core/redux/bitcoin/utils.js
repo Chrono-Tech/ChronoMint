@@ -36,7 +36,7 @@ export const describeTransaction = (to, amount: BigNumber, feeRate, utxos) => {
 
 export const signInputs = (txb, inputs, wallet) => {
   for (let i = 0; i < inputs.length; i++) {
-    txb.sign(i, wallet.keyPair)
+    txb.sign(i, wallet)
   }
 }
 
@@ -47,7 +47,7 @@ export const signInputsBitcoinGold = (txb, inputs, wallet) => {
   const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
 
   for (let i = 0; i < inputs.length; i++) {
-    txb.sign(i, wallet.keyPair, null, hashType, inputs[i].value)
+    txb.sign(i, wallet, null, hashType, inputs[i].value)
   }
 }
 
@@ -58,7 +58,7 @@ export const signInputsBitcoinCash = (txb, inputs, wallet) => {
   const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
 
   for (let i = 0; i < inputs.length; i++) {
-    txb.sign(i, wallet.keyPair, null, hashType, inputs[i].value)
+    txb.sign(i, wallet, null, hashType, inputs[i].value)
   }
 }
 
@@ -74,7 +74,7 @@ export const getEngine = (network, blockchain, privateKey) => {
 
       return {
         network: bitcoinNetwork,
-        signTransaction: (txb, inputs) => signInputs(txb, inputs, wallet),
+        signTransaction: signInputs,
         wallet,
         node,
       }
@@ -85,7 +85,7 @@ export const getEngine = (network, blockchain, privateKey) => {
 
       return {
         network: bitcoinCashNetwork,
-        signTransaction: (txb, inputs) => signInputsBitcoinCash(txb, inputs, wallet),
+        signTransaction: signInputsBitcoinCash,
         wallet,
         node,
       }
@@ -96,7 +96,7 @@ export const getEngine = (network, blockchain, privateKey) => {
 
       return {
         network: bitcoinGoldNetwork,
-        signTransaction: (txb, inputs) => signInputsBitcoinGold(txb, inputs, wallet),
+        signTransaction: signInputsBitcoinGold,
         wallet,
         node,
       }
@@ -107,7 +107,7 @@ export const getEngine = (network, blockchain, privateKey) => {
 
       return {
         network: litecoinNetwork,
-        signTransaction: (txb, inputs) => signInputs(txb, inputs, wallet),
+        signTransaction: signInputs,
         wallet,
         node,
       }

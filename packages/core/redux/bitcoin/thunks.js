@@ -131,6 +131,7 @@ const processTransaction = (entry: TxEntryModel) => async (dispatch, getState) =
 const createTransaction = (to, amount: BigNumber, utxos, options) => async (dispatch) => {
   const { from, feeRate, engine } = options
   const { inputs, outputs, fee } = BitcoinUtils.describeTransaction(to, amount, feeRate, utxos)
+  const signer = engine.wallet
 
   if (!inputs || !outputs) throw new Error('Bad transaction data')
 
@@ -146,10 +147,10 @@ const createTransaction = (to, amount: BigNumber, utxos, options) => async (disp
     txb.addOutput(output.address, output.value)
   }
 
-  engine.signTransaction(txb, inputs)
+  engine.signTransaction(txb, inputs, signer.keyPair)
 
   const buildTransaction = await txb.build()
-  console.log('en', engine, txb, buildTransaction, inputs, outputs, fee)
+  console.log('en', engine, txb, buildTransaction, inputs, outputs, fee, feeRate)
 
   return {
     tx: buildTransaction,
