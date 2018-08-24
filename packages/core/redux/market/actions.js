@@ -14,8 +14,10 @@ import {
   MARKET_UPDATE_PRICES,
   MARKET_UPDATE_RATES,
 } from './constants'
+import { chunker } from './utils'
 
 const MARKET_REQUEST_DELAY = 30000
+const MAX_FSYMS_LENGTH = 300 // Max length of a string of comma-spearated tokens. See API at https://min-api.cryptocompare.com/
 
 // TODO: to check, why we need this mutable variable exported
 // eslint-disable-next-line import/no-mutable-exports
@@ -26,9 +28,23 @@ const watchMarket = (dispatch, getState) => async () => {
   if (tokens.length === 0 || currencies.length === 0) {
     return
   }
-  const response = await axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${tokens.join(',')}&tsyms=${currencies.join(',')}`)
-  const prices = response ? response.data : {}
-  dispatch({ type: MARKET_UPDATE_PRICES, prices })
+  let response = {}
+  const tokenList = tokens.join(',')
+  const currencyList = currencies.join(',')
+  if (tokenList.length > MAX_FSYMS_LENGTH) {
+    const chunks = chunker(tokens)
+    const chunkedResponse = await Promise.all(
+      chunks.map((chunk) => axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${chunk.join(',')}&tsyms=${currencyList}`))
+    )
+    response['data'] = {}
+    chunkedResponse.forEach((cResponse) => response.data = { ...response.data, ...cResponse.data })
+  } else {
+    response = await axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${tokenList}&tsyms=${currencyList}`)
+  }
+
+  if (response.data && Object.keys(response.data).length) {
+    dispatch({ type: MARKET_UPDATE_PRICES, prices: response.data })
+  }
 }
 
 export const watchInitMarket = () => (dispatch, getState) => {
