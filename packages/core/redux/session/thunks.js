@@ -144,7 +144,7 @@ export const login = (account) => async (dispatch, getState) => {
     userManagerDAO.getMemberProfile(account, web3),
     userManagerDAO.getMemberId(account),
   ])
-
+  const isCBE = false
   dispatch(SessionActions.sessionProfile(profile, isCBE))
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
   return defaultURL
