@@ -12,10 +12,8 @@ import React, { PureComponent } from 'react'
 import Button from 'components/common/ui/Button/Button'
 
 import Amount from '@chronobank/core/models/Amount'
-import TransferExecModel from '@chronobank/core/models/TransferExecModel'
-import BitcoinDAO from '@chronobank/core/dao/BitcoinDAO'
-import NemDAO from '@chronobank/core/dao/NemDAO'
-import WavesDAO from '@chronobank/core/dao/WavesDAO'
+import TxExecModel from '@chronobank/core/models/TxExecModel'
+import TxEntryModel from '@chronobank/core/models/TxEntryModel'
 
 import { modalsClear, modalsClose } from 'redux/modals/actions'
 import { getWallet } from '@chronobank/core/redux/wallets/selectors/models'
@@ -28,12 +26,11 @@ import Preloader from 'components/common/Preloader/Preloader'
 import './ConfirmTransferDialog.scss'
 
 const mapStateToProps = (state, ownProps) => {
-  const { tx } = ownProps
-  const wallet = getWallet(`${tx.blockchain()}-${tx.from()}`)(state)
-  console.log('mapState', tx, wallet)
+  const { tx } = ownProps.entry
+  const wallet = getWallet(`${tx.blockchain}-${tx.from}`)(state)
   return ({
-    amountBalance: wallet.balances[tx.amountToken().symbol()],
-    feeBalance: wallet.balances[tx.feeToken().symbol()],
+    amountBalance: wallet.balances[tx.amountToken.symbol()],
+    feeBalance: wallet.balances[tx.feeToken.symbol()],
   })
 }
 
@@ -51,7 +48,7 @@ export default class ConfirmTransferDialog extends PureComponent {
     reject: PropTypes.func.isRequired,
     modalsClear: PropTypes.func.isRequired,
     modalsClose: PropTypes.func.isRequired,
-    tx: PropTypes.instanceOf(TransferExecModel),
+    entry: PropTypes.instanceOf(TxEntryModel),
     amountBalance: PropTypes.instanceOf(Amount),
     feeBalance: PropTypes.instanceOf(Amount),
     feeMultiplier: PropTypes.number,
@@ -59,21 +56,44 @@ export default class ConfirmTransferDialog extends PureComponent {
 
   constructor (props) {
     super(props)
+
+    const { tx } = props.entry
+
     this.state = {
-      feeMultiplier: props.tx.feeMultiplier(),
+      feeMultiplier: tx && tx.feeMultiplier,
     }
   }
 
   handleConfirm = () => {
+    const { entry } = this.props
+
     this.props.modalsClear()
-    const tx = this.props.tx.feeMultiplier(this.state.feeMultiplier)
-    this.props.confirm(tx)
+
+    const updatedEntry = new TxEntryModel({
+      ...entry,
+      tx: new TxExecModel({
+        ...entry.tx,
+        feeMultiplier: this.state.feeMultiplier
+      })
+    })
+
+    this.props.confirm(updatedEntry)
   }
 
   handleClose = () => {
+    const { entry } = this.props
+
     this.props.modalsClose()
-    const tx = this.props.tx.feeMultiplier(this.state.feeMultiplier)
-    this.props.reject(tx)
+
+    const updatedEntry = new TxEntryModel({
+      ...entry,
+      tx: new TxExecModel({
+        ...entry.tx,
+        feeMultiplier: this.state.feeMultiplier
+      })
+    })
+
+    this.props.reject(updatedEntry)
   }
 
   handleChangeFee = (feeMultiplier) => {
@@ -90,13 +110,13 @@ export default class ConfirmTransferDialog extends PureComponent {
     ]
 
     const basicDetails = [
-      { key: 'operation', type: 'String', label: 'tx.General.transfer.params.operation', value: tx.operation() },
-      { key: 'amount', type: 'TokenValue', label: 'tx.General.transfer.params.amount', value: new Amount(tx.amount(), tx.amountToken().symbol()) },
+      { key: 'operation', type: 'String', label: 'tx.General.transfer.params.operation', value: tx.operation },
+      { key: 'amount', type: 'TokenValue', label: 'tx.General.transfer.params.amount', value: new Amount(tx.amount, tx.amountToken.symbol()) },
       { key: 'amountBalance', type: 'TokenValue', label: 'tx.General.transfer.params.balance', value: amountBalance },
       { key: 'amountBalanceAfter', type: 'TokenValue', label: 'tx.General.transfer.params.balanceAfter', value: amountBalanceAfter },
-      { key: 'fee', type: 'TokenValue', label: 'tx.General.transfer.params.fee', value: new Amount(tx.fee().mul(feeMultiplier), tx.feeToken().symbol()) },
+      { key: 'fee', type: 'TokenValue', label: 'tx.General.transfer.params.fee', value: new Amount(tx.fee.mul(feeMultiplier), tx.feeToken.symbol()) },
       ...feeDetails,
-      { key: 'hash', type: 'String', label: 'tx.General.transfer.params.hash', value: tx.hash() },
+      { key: 'hash', type: 'String', label: 'tx.General.transfer.params.hash', value: tx.hash },
     ].filter(({ value }) => value != null) // nil check
 
     return [
@@ -122,13 +142,14 @@ export default class ConfirmTransferDialog extends PureComponent {
   }
 
   render () {
-    const { tx, amountBalance, feeBalance } = this.props
+    const { amountBalance, feeBalance, entry } = this.props
     const { feeMultiplier } = this.state
+    const { tx } = entry
 
-    const fee = tx.fee().mul(feeMultiplier)
-    const feeToken = tx.feeToken()
-    const amount = tx.amount()
-    const amountToken = tx.amountToken()
+    const fee = tx.fee.mul(feeMultiplier)
+    const feeToken = tx.feeToken
+    const amount = tx.amount
+    const amountToken = tx.amountToken
 
     let amountBalanceAfter = amountBalance.minus(amount)
     let feeBalanceAfter = null
@@ -152,7 +173,7 @@ export default class ConfirmTransferDialog extends PureComponent {
     const isValid = fee.gt(0) && feeBalanceAfter.gte(0) || amountBalanceAfter.gte(0)
 
     return (
-      <ModalDialog hideCloseIcon title={<Translate value={tx.title()} />}>
+      <ModalDialog hideCloseIcon title={<Translate value={tx.title} />}>
         <div styleName='root'>
           <div styleName='content'>
             <div styleName='paramsList'>

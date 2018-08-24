@@ -24,6 +24,7 @@ import {
 export class BitcoinProvider extends AbstractProvider {
   constructor (selectNode, id) {
     super(...arguments)
+    console.log('CONSTRUCTOR BitcoinProvider', this)
     this._handleTransaction = (tx) => this.onTransaction(tx)
     this._handleBalance = (balance) => this.onBalance(balance)
     this._handleLastBlock = (lastBlock) => this.onLastBlock(lastBlock)
@@ -99,6 +100,7 @@ export class BitcoinProvider extends AbstractProvider {
       feeRate,
     }
     const { tx /*, fee*/ } = this._engine.createTransaction(to, amount, utxos, options)
+    console.log('BITCOINDAO:transfer', this._engine, node, utxos, tx)
     return node.send(from, tx.toHex())
   }
 

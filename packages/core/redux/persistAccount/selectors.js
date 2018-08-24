@@ -28,3 +28,8 @@ export const getSelectedNetwork = () => createSelector(
     )
   },
 )
+
+export const getCustomNetworksList = createSelector(
+  (state) => state.get(DUCK_PERSIST_ACCOUNT),
+  (persistAccount) => persistAccount.customNetworksList
+)

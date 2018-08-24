@@ -32,7 +32,7 @@ import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { AllowanceCollection, SignerMemoryModel } from '../../models'
 import { executeTransaction as executeTransactionEthereum } from '../ethereum/actions'
-import { executeTransaction as executeTransactionBitcoin } from '../bitcoin/actions'
+import { executeTransaction as executeTransactionBitcoin } from '../bitcoin/thunks'
 import {
   WALLETS_SET,
   WALLETS_SET_NAME,
