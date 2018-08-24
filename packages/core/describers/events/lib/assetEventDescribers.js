@@ -36,7 +36,6 @@ export const EVENT_DESC_PLATFORM_REQUESTED = new EventDescriber(
   findEventABI(PlatformsManagerABI, EVENT_PLATFORM_REQUESTED),
   ({ log, block }, context, { params }) => {
 
-    console.log('Event log EVENT_DESC_PLATFORM_REQUESTED: ', log, params, context)
     const { platform } = params
 
     return new LogEventModel({
@@ -59,8 +58,6 @@ export const EVENT_DESC_PLATFORM_ATTACHED = new EventDescriber(
 
     const { platform } = params
 
-    console.log('Event log EVENT_DESC_PLATFORM_ATTACHED: ', log, params, context)
-
     return new LogEventModel({
       key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
       name: EVENT_PLATFORM_REQUESTED,
@@ -79,7 +76,6 @@ export const EVENT_DESC_PLATFORM_DETACHED = new EventDescriber(
   findEventABI(PlatformsManagerABI, EVENT_PLATFORM_DETACHED),
   ({ log, block }, context, { params }) => {
 
-    console.log('Event log EVENT_ISSUE: ', log, params, context)
     const { platform } = params
 
     return new LogEventModel({
@@ -109,7 +105,6 @@ export const EVENT_ISSUE = new EventDescriber(
     } else {
       value = 0
     }
-    console.log('Event log EVENT_ISSUE: ', log, params, context, token, value)
 
     return new LogEventModel({
       key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
@@ -128,7 +123,7 @@ export const EVENT_ISSUE = new EventDescriber(
 export const EVENT_REVOKE = new EventDescriber(
   findEventABI(ChronoBankPlatformEmitterABI, TX_REVOKE),
   ({ log, block }, context, { params }) => {
-    console.log('Event log EVENT_REVOKE: ', log, params)
+
     const symbol = web3Converter.bytesToString(params.symbol).toUpperCase()
 
     return new LogEventModel({
@@ -148,7 +143,7 @@ export const EVENT_REVOKE = new EventDescriber(
 export const EVENT_OWNERSHIP_CHANGE = new EventDescriber(
   findEventABI(ChronoBankPlatformEmitterABI, TX_OWNERSHIP_CHANGE),
   ({ log, block }, context, { params }) => {
-    console.log('Event log EVENT_OWNERSHIP_CHANGE: ', log, params)
+
     const symbol = web3Converter.bytesToString(params.symbol).toUpperCase()
 
     return new LogEventModel({
@@ -168,7 +163,6 @@ export const EVENT_OWNERSHIP_CHANGE = new EventDescriber(
 export const EVENT_APPROVE = new EventDescriber(
   findEventABI(ChronoBankPlatformEmitterABI, TX_APPROVE),
   ({ log, block }, context, { params }) => {
-    console.log('Event log EVENT_APPROVE: ', log, params)
 
     return new LogEventModel({
       key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
@@ -186,7 +180,6 @@ export const EVENT_APPROVE = new EventDescriber(
 export const EVENT_RECOVERY = new EventDescriber(
   findEventABI(ChronoBankPlatformEmitterABI, TX_RECOVERY),
   ({ log, block }, context, { params }) => {
-    console.log('Event log EVENT_RECOVERY: ', log, params)
 
     return new LogEventModel({
       key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
@@ -204,7 +197,6 @@ export const EVENT_RECOVERY = new EventDescriber(
 export const EVENT_TRANSFER = new EventDescriber(
   findEventABI(ChronoBankPlatformEmitterABI, TX_ASSET_TRANSFER),
   ({ log, block }, context, { params }) => {
-    console.log('Event log EVENT_TRANSFER: ', log, params)
 
     return new LogEventModel({
       key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
@@ -239,7 +231,7 @@ export const EVENT_ERROR = new EventDescriber(
 export const EVENT_ASSET_CREATED = new EventDescriber(
   findEventABI(PlatformTokenExtensionGatewayManagerEmitterABI, TX_ASSET_CREATED),
   ({ log, block }, context, { params }) => {
-    console.log('Event log EVENT_ASSET_CREATED: ', log)
+
     const symbol = web3Converter.bytesToString(params.symbol).toUpperCase()
 
     return new LogEventModel({
