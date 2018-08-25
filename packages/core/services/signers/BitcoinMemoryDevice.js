@@ -28,7 +28,7 @@ export default class BitcoinMemoryDevice extends EventEmitter {
     const txb = new bitcoin.TransactionBuilder.fromTransaction (
       bitcoin.Transaction.fromHex (txhex), this.network)
     for (let i = 0; i < txb.inputs.length; i++) {
-      txb.sign(i, wallet.keyPair)
+      txb.sign(i, _getDerivedWallet(path).keyPair)
     }
     const tx = txb.build ();
     const txhex = tx.toHex ();

@@ -25,53 +25,6 @@ export default class BitcoinTrezorDevice extends EventEmitter {
             //.derivePath(path).getAddress()
   }
 
-  async buildTx(path) {
-
-
-const BLOCK_EXPLORER = axios.create({
-    baseURL: 'https://middleware-bitcoin-testnet-rest.chronobank.io'
-  })
-
-const MEMORY_ADDRESS = 'mreoLKdNMwnKuGq5MPjxbWzjNuojJdHB9x'
-const FROM_ADDRESS = 'mnrJYbRVUbizQL2LXsvoqZra4MMpxkRTb2'
-const LEDGER_ADDRESS = 'mtnCZ2WsxjDqDzLn8EJTkQVugnbBanAhRz'
-
-  const VALUE = 100000
-  const feeRate = 200
-
-  // ----------------------------------spend from multisig---------------------------
-  const { data: utxosBE } = await BLOCK_EXPLORER.get(`/addr/${FROM_ADDRESS}/utxo`)
-
-  const utxos = utxosBE.map(e => ({
-    ...e,
-    value: Number.parseInt(e.satoshis),
-    txId: e.txid
-  }))
-
-  const targets = [{
-      address: MEMORY_ADDRESS,
-      value: VALUE
-  }]
-
-  const { inputs, outputs, fee } = coinselect(utxos, targets, feeRate)
-  console.log(inputs)
-  console.log(outputs)
-  const txb = new bitcoin.TransactionBuilder(this.network)
-  inputs.forEach(input => txb.addInput(input.txId, input.vout))
-  outputs.forEach(output => {
-    // watch out, outputs may have been added that you need to provide
-    // an output address/script for
-    if (!output.address) {
-      output.address = FROM_ADDRESS
-    }
-
-    txb.addOutput(output.address, output.value)
-  })
-  console.log(txb)
-  this.signTransaction(txb.buildIncomplete().toHex(), path)
-
-  }
-
   async signTransaction (rawTx, path) { // tx object
     const txb = new bitcoin.TransactionBuilder.fromTransaction (
 	bitcoin.Transaction.fromHex (rawTx), this.network)
@@ -106,6 +59,7 @@ const LEDGER_ADDRESS = 'mtnCZ2WsxjDqDzLn8EJTkQVugnbBanAhRz'
                  }
     if (address == localAddress) {
       output = { ...output, address_n: address_n }
+      delete output['address']
     }
     outputs.push(output)
     })
