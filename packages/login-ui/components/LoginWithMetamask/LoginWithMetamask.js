@@ -6,14 +6,13 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
-import './LoginWithTrezor.scss'
+import './LoginWithMetamask.scss'
 
-class LoginWithTrezor extends Component {
+class LoginWithMetamask extends Component {
   static propTypes = {
     previousPage: PropTypes.func,
     deviceList: PropTypes.instanceOf(Array),
     onDeviceSelect: PropTypes.func,
-    navigateToDerivationPathForm: PropTypes.func,
   }
 
   componentWillUnmount () {
@@ -23,8 +22,8 @@ class LoginWithTrezor extends Component {
     return (
       <div styleName='state' key='1'>
         <div styleName='titleContent'>
-          <div styleName='title'>Trezor not found</div>
-          <div styleName='subtitle'>Connect your Trezor</div>
+          <div styleName='title'>Metamask not found</div>
+          <div styleName='subtitle'>Connect your Metamask</div>
         </div>
       </div>
     )
@@ -54,11 +53,11 @@ class LoginWithTrezor extends Component {
   }
 
   render () {
-    const { previousPage, deviceList, navigateToDerivationPathForm } = this.props
+    const { previousPage, deviceList } = this.props
     return (
       <div styleName='form'>
         <div styleName='page-title'>
-          <Translate value='LoginWithTrezor.title' />
+          <Translate value='LoginWithMetamask.title' />
         </div>
         {
           !deviceList.length && (
@@ -77,16 +76,8 @@ class LoginWithTrezor extends Component {
         }
 
         <div styleName='actions'>
-          <button onClick={navigateToDerivationPathForm} styleName='link'>
-            <Translate value='LoginWithTrezor.enterPath' />
-          </button>
-          <br />
-
-          <Translate value='LoginWithTrezor.or' />
-          <br />
-
           <button onClick={previousPage} styleName='link'>
-            <Translate value='LoginWithTrezor.back' />
+            <Translate value='LoginWithMetamask.back' />
           </button>
         </div>
       </div>
@@ -94,4 +85,4 @@ class LoginWithTrezor extends Component {
   }
 }
 
-export default LoginWithTrezor
+export default LoginWithMetamask

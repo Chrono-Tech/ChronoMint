@@ -20,6 +20,7 @@ export default class MetamaskPlugin extends EventEmitter {
       const accounts = await web3.eth.getAccounts()
       if (accounts.length) {
         this.web3 = web3
+	this.address = accounts[0]
         this.emit('connected')
       }
     }
@@ -29,21 +30,22 @@ export default class MetamaskPlugin extends EventEmitter {
     if (this.isConnected) {
       const accounts = await this.web3.eth.getAccounts()
       return accounts.map(address => ({
-        address
+        address,
+	type: this.name,
       }))
     }
     return []
   }
 
-  async signTransaction (address, { gas, gasPrice, ...txData }) {
+  async signTransaction ({ gas, gasPrice, ...txData }) {
     const signed = await this.web3.eth.sendTransaction({
       ...txData
     })
     return signed
   }
 
-  async signData (address, data) {
-    const signature = await this.web3.eth.personal.sign(data, address)
+  async signData (data) {
+    const signature = await this.web3.eth.personal.sign(data, this.address)
     return {
       signature
     }

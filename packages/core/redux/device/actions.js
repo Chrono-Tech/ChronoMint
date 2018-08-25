@@ -8,6 +8,7 @@ import TrezorDeviceMock from '../../services/signers/TrezorDeviceMock'
 import LedgerDevice from '../../services/signers/LedgerDevice'
 import LedgerDeviceMock from '../../services/signers/LedgerDeviceMock'
 import BitcoinMemoryDevice from '../../services/signers/BitcoinMemoryDevice'
+import MetamaskPlugin from '../../services/signers/MetamaskPlugin'
 import { getSigner } from '../persistAccount/selectors'
 import { accountLoad } from '../persistAccount/actions'
 import {
@@ -59,6 +60,14 @@ export const initTrezorDevice = (wallet) => async (dispatch, getState) => {
   console.log('initTrezorDevice')
   const trezor = new TrezorDeviceMock()
   const result = await trezor.getAddressInfoList(0,5)
+  dispatch(deviceUpdateList(result))
+}
+
+export const initMetamaskPlugin = (wallet) => async (dispatch, getState) => {
+  console.log('initMetamaskPlugin')
+  const metamask = new MetamaskPlugin()
+  await metamask.init()
+  const result = await metamask.getAddressInfoList()
   dispatch(deviceUpdateList(result))
 }
 

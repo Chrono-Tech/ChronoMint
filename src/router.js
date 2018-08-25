@@ -11,9 +11,6 @@ import {
   NotFoundPage,
   LoginForm,
   LoginWithOptions,
-  CreateHWAccount,
-  LoginWithPlugin,
-  LoginLocal,
 } from '@chronobank/login-ui/components'
 import Splash from 'layouts/Splash/Splash'
 import {
@@ -35,6 +32,7 @@ import PrivateKeyImportPage from 'components/login/PrivateKeyImportPage/PrivateK
 import WalletImportPage from 'components/login/WalletImportPage/WalletImportPage'
 import TrezorLoginPage from 'components/login/TrezorLoginPage/TrezorLoginPage'
 import LedgerLoginPage from 'components/login/LedgerLoginPage/LedgerLoginPage'
+import MetamaskLoginPage from 'components/login/MetamaskLoginPage/MetamaskLoginPage'
 import RecoverAccountPage from 'components/login/RecoverAccountPage/RecoverAccountPage'
 import AccountSelectorPage from 'components/login/AccountSelectorPage/AccountSelectorPage'
 import CreateAccountPage from 'components/login/CreateAccountPage/CreateAccountPage'
@@ -92,11 +90,9 @@ const router = (
         <Route path='/login/upload-wallet' component={WalletImportPage} />
         <Route path='/login/trezor-login' component={TrezorLoginPage} />
         <Route path='/login/ledger-login' component={LedgerLoginPage} />
-        <Route path='/login/plugin-login' component={LoginWithPlugin} />
+        <Route path='/login/plugin-login' component={MetamaskLoginPage} />
         <Route path='/login/mnemonic-login' component={MnemonicImportPage} />
         <Route path='/login/private-key-login' component={PrivateKeyImportPage} />
-        <Route path='/login/create-hw-account' component={CreateHWAccount} />
-        <Route path='/login/local-login' component={LoginLocal} />
       </Route>
 
       <Route path='*' component={Splash}>

@@ -1,0 +1,176 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.state {
+  background: $color-red-2;
+  color: white;
+  padding: 30px;
+}
+
+.actions {
+  text-align: center;
+  margin-bottom: 45px;
+  color: #fff;
+  line-height: 30px;
+}
+
+.link {
+  color: $border-color;
+  margin:  0 auto 45px;
+  text-decoration: none;
+  font: 700 16px $font-proxima;
+  cursor: pointer;
+
+  &:hover {
+    color: #FFB54E;
+  }
+
+  @include md-only {
+    margin: 0 0 10px;
+  }
+}
+
+.title {
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  font: 14px $font-proxima;
+  font-weight: 500;
+}
+
+.list {
+ width: 380px;
+ margin: 0;
+}
+
+.form {
+  margin:0 auto;
+  width: 380px;
+
+  @include xs-only {
+    width: 100%;
+    padding: 0 20px;
+  }
+}
+
+.page-title {
+  color: $color-white;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 42px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.description {
+  font-weight: 400;
+  color: $color-description;
+  font-size: 16px;
+  line-height: 22px;
+  margin-bottom: 10px;
+  text-align: center;
+  max-width: 520px;
+}
+
+.states {
+  margin-top: 16px;
+}
+
+.state {
+  display: flex;
+  margin-bottom: 10px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.flag {
+  width: 16px;
+  height: 16px;
+  flex-grow: 0;
+  margin-right: 16px;
+}
+
+.flagDone {
+  color: $color-green;
+}
+
+.flagError {
+  color: $color-error;
+}
+
+.titleContent {
+  flex-grow: 1;
+}
+
+.account {
+  background-color: white;
+  padding: 0px;
+  margin: 25px 0 25px;
+  border-radius: $border-radius;
+}
+
+.accountValue {
+  margin-top: 3px;
+}
+
+.accountLabel {
+  font-size: 16px * 0.75;
+  opacity: 0.6;
+}
+
+
+.account-item {
+  padding: 20px 12px 20px 30px;
+  font-size: 14px;
+  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  min-height: 82px;
+  border-bottom: 1px solid $color-grey-1;
+  background: $color-white;
+
+
+  &:hover, &.providerItemActive {
+    background: $color-grey-3;
+  }
+}
+
+.account-item-content {
+  color: $color-primary-3;
+  text-overflow: ellipsis;
+  min-width: 0;
+  word-wrap: break-word;
+  margin-right: 10px;
+}
+
+.account-item-address {
+  font-weight: 500;
+  text-overflow: ellipsis;
+  min-width: 0;
+  margin-right: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.account-item-additional {
+  color: $color-grey-2;
+  font-weight: 500;
+}
+
+.account-item-icon {
+  display: flex;
+  align-items: center;
+  color: $color-grey-7;
+  font-size: 22px;
+}

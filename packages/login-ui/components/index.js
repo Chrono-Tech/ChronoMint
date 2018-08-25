@@ -8,6 +8,7 @@ export LoginWithMnemonicContainer from './LoginWithMnemonic/LoginWithMnemonicCon
 export LoginWithPrivateKeyContainer from './LoginWithPrivateKey/LoginWithPrivateKeyContainer'
 export LoginWithTrezorContainer from './LoginWithTrezor/LoginWithTrezorContainer'
 export LoginWithLedgerContainer from './LoginWithLedger/LoginWithLedgerContainer'
+export LoginWithMetamaskContainer from './LoginWithMetamask/LoginWithMetamaskContainer'
 export DerivationPathFormContainer from './DerivationPathForm/DerivationPathFormContainer'
 export LoginForm from './LoginForm/LoginForm'
 export LoginWithOptions from './LoginWithOptions/LoginWithOptions'
