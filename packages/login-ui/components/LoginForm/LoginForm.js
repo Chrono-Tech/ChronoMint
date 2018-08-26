@@ -62,6 +62,9 @@ function mapDispatchToProps (dispatch) {
     initLoginPage: () => dispatch(initLoginPage()),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
     navigateToRecoverAccountPage: () => dispatch(navigateToRecoverAccountPage()),
+    initialValues: {
+      password: 'QWEpoi123',
+    },
   }
 }
 

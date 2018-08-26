@@ -32,7 +32,7 @@ import {
   MODE_ADVANCED,
   MODE_SIMPLE,
 } from 'components/constants'
-import SendTokensForm from './SendTokensForm'
+import BTC from './type/BTC'
 
 function mapStateToProps (state) {
   return {
@@ -133,7 +133,7 @@ export default class SendTokens extends PureComponent {
     if (isModal) {
       return (
         <ModalDialog>
-          <SendTokensForm
+          <BTC
             initialValues={initialValues}
             onSubmit={this.handleSubmit}
             onSubmitSuccess={this.handleSubmitSuccess}
@@ -145,7 +145,7 @@ export default class SendTokens extends PureComponent {
     }
 
     return (
-      <SendTokensForm
+      <BTC
         initialValues={initialValues}
         onSubmit={this.handleSubmit}
         onSubmitSuccess={this.handleSubmitSuccess}
