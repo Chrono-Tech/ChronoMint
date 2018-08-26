@@ -3,22 +3,116 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import BigNumber from 'bignumber.js'
 import { EventDescriber, findEventABI } from '../EventDescriber'
-import LogEventModel from '../../../models/LogEventModel'
-import { ChronoBankPlatformEmitterABI,  PlatformTokenExtensionGatewayManagerEmitterABI } from '../../../dao/abi'
+import LogEventModel from '../../../models/describers/LogEventModel'
+import {
+  ChronoBankPlatformEmitterABI,
+  PlatformTokenExtensionGatewayManagerEmitterABI,
+  PlatformsManagerABI,
+} from '../../../dao/abi'
+import web3Converter from '../../../utils/Web3Converter'
 
-export const EVENT_ISSUE = new EventDescriber(
-  findEventABI(ChronoBankPlatformEmitterABI, 'Issue'),
+import {
+  EVENT_PLATFORM_REQUESTED,
+  EVENT_PLATFORM_ATTACHED,
+  EVENT_PLATFORM_DETACHED,
+} from '../../../dao/constants/PlatformsManagerDAO'
+
+import {
+  TX_ISSUE,
+  TX_REVOKE,
+  TX_APPROVE,
+  TX_OWNERSHIP_CHANGE,
+  TX_RECOVERY,
+  TX_ASSET_TRANSFER,
+} from '../../../dao/constants/ChronoBankPlatformDAO'
+
+import {
+  TX_ASSET_CREATED,
+} from '../../../dao/constants/PlatformTokenExtensionGatewayManagerEmitterDAO'
+
+export const EVENT_DESC_PLATFORM_REQUESTED = new EventDescriber(
+  findEventABI(PlatformsManagerABI, EVENT_PLATFORM_REQUESTED),
   ({ log, block }, context, { params }) => {
+
+    const { platform } = params
 
     return new LogEventModel({
       key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
-      type: 'event',
-      name: 'Issue',
+      name: EVENT_PLATFORM_REQUESTED,
       address: log.address,
       date: new Date(block.timestamp * 1000),
       icon: 'event',
-      title: 'Issue',
+      title: `Platform ${platform} created`,
+      subTitle: platform,
+      message: params.proxy,
+      target: null,
+    })
+  },
+)
+
+export const EVENT_DESC_PLATFORM_ATTACHED = new EventDescriber(
+  findEventABI(PlatformsManagerABI, EVENT_PLATFORM_ATTACHED),
+  ({ log, block }, context, { params }) => {
+
+    const { platform } = params
+
+    return new LogEventModel({
+      key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
+      name: EVENT_PLATFORM_REQUESTED,
+      address: log.address,
+      date: new Date(block.timestamp * 1000),
+      icon: 'event',
+      title: `Platform ${platform} attached`,
+      subTitle: platform,
+      message: params.proxy,
+      target: null,
+    })
+  },
+)
+
+export const EVENT_DESC_PLATFORM_DETACHED = new EventDescriber(
+  findEventABI(PlatformsManagerABI, EVENT_PLATFORM_DETACHED),
+  ({ log, block }, context, { params }) => {
+
+    const { platform } = params
+
+    return new LogEventModel({
+      key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
+      name: EVENT_PLATFORM_DETACHED,
+      address: log.address,
+      date: new Date(block.timestamp * 1000),
+      icon: 'event',
+      title: `Platform ${platform} detached`,
+      subTitle: platform,
+      message: params.proxy,
+      target: null,
+    })
+  },
+)
+
+export const EVENT_ISSUE = new EventDescriber(
+  findEventABI(ChronoBankPlatformEmitterABI, TX_ISSUE),
+  ({ log, block }, context, { params }) => {
+
+    const symbol = web3Converter.bytesToString(params.symbol).toUpperCase()
+    const token = context.store.tokens.getBySymbol(symbol)
+
+    let value, mark = ''
+    if (token) {
+      value = token.removeDecimals(new BigNumber(params.value))
+      mark = value > 0 ? '+' : '-'
+    }
+
+    return new LogEventModel({
+      key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
+      name: TX_ISSUE,
+      address: log.address,
+      date: new Date(block.timestamp * 1000),
+      icon: 'event',
+      title: `Issue ${mark}${value}`,
+      subTitle: symbol,
       message: params.proxy,
       target: null,
     })
@@ -26,17 +120,19 @@ export const EVENT_ISSUE = new EventDescriber(
 )
 
 export const EVENT_REVOKE = new EventDescriber(
-  findEventABI(ChronoBankPlatformEmitterABI, 'Revoke'),
+  findEventABI(ChronoBankPlatformEmitterABI, TX_REVOKE),
   ({ log, block }, context, { params }) => {
+
+    const symbol = web3Converter.bytesToString(params.symbol).toUpperCase()
 
     return new LogEventModel({
       key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
-      type: 'event',
-      name: 'Revoke',
+      name: TX_REVOKE,
       address: log.address,
       date: new Date(block.timestamp * 1000),
       icon: 'event',
-      title: 'Revoke',
+      title: TX_REVOKE,
+      subTitle: symbol,
       message: params.proxy,
       target: null,
     })
@@ -44,17 +140,19 @@ export const EVENT_REVOKE = new EventDescriber(
 )
 
 export const EVENT_OWNERSHIP_CHANGE = new EventDescriber(
-  findEventABI(ChronoBankPlatformEmitterABI, 'OwnershipChange'),
+  findEventABI(ChronoBankPlatformEmitterABI, TX_OWNERSHIP_CHANGE),
   ({ log, block }, context, { params }) => {
+
+    const symbol = web3Converter.bytesToString(params.symbol).toUpperCase()
 
     return new LogEventModel({
       key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
-      type: 'event',
-      name: 'OwnershipChange',
+      name: TX_OWNERSHIP_CHANGE,
       address: log.address,
       date: new Date(block.timestamp * 1000),
       icon: 'event',
-      title: 'OwnershipChange',
+      title: TX_OWNERSHIP_CHANGE,
+      subTitle: symbol,
       message: params.proxy,
       target: null,
     })
@@ -62,17 +160,16 @@ export const EVENT_OWNERSHIP_CHANGE = new EventDescriber(
 )
 
 export const EVENT_APPROVE = new EventDescriber(
-  findEventABI(ChronoBankPlatformEmitterABI, 'Approve'),
+  findEventABI(ChronoBankPlatformEmitterABI, TX_APPROVE),
   ({ log, block }, context, { params }) => {
 
     return new LogEventModel({
       key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
-      type: 'event',
-      name: 'Approve',
+      name: TX_APPROVE,
       address: log.address,
       date: new Date(block.timestamp * 1000),
       icon: 'event',
-      title: 'Approve',
+      title: TX_APPROVE,
       message: params.proxy,
       target: null,
     })
@@ -80,13 +177,12 @@ export const EVENT_APPROVE = new EventDescriber(
 )
 
 export const EVENT_RECOVERY = new EventDescriber(
-  findEventABI(ChronoBankPlatformEmitterABI, 'Recovery'),
+  findEventABI(ChronoBankPlatformEmitterABI, TX_RECOVERY),
   ({ log, block }, context, { params }) => {
 
     return new LogEventModel({
       key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
-      type: 'event',
-      name: 'Recovery',
+      name: TX_RECOVERY,
       address: log.address,
       date: new Date(block.timestamp * 1000),
       icon: 'event',
@@ -98,17 +194,16 @@ export const EVENT_RECOVERY = new EventDescriber(
 )
 
 export const EVENT_TRANSFER = new EventDescriber(
-  findEventABI(ChronoBankPlatformEmitterABI, 'Transfer'),
+  findEventABI(ChronoBankPlatformEmitterABI, TX_ASSET_TRANSFER),
   ({ log, block }, context, { params }) => {
 
     return new LogEventModel({
       key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
-      type: 'event',
-      name: 'Transfer',
+      name: TX_ASSET_TRANSFER,
       address: log.address,
       date: new Date(block.timestamp * 1000),
       icon: 'event',
-      title: 'Transfer',
+      title: TX_ASSET_TRANSFER,
       message: params.proxy,
       target: null,
     })
@@ -121,7 +216,6 @@ export const EVENT_ERROR = new EventDescriber(
 
     return new LogEventModel({
       key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
-      type: 'event',
       name: 'Error',
       address: log.address,
       date: new Date(block.timestamp * 1000),
@@ -134,17 +228,19 @@ export const EVENT_ERROR = new EventDescriber(
 )
 
 export const EVENT_ASSET_CREATED = new EventDescriber(
-  findEventABI(PlatformTokenExtensionGatewayManagerEmitterABI, 'AssetCreated'),
+  findEventABI(PlatformTokenExtensionGatewayManagerEmitterABI, TX_ASSET_CREATED),
   ({ log, block }, context, { params }) => {
+
+    const symbol = web3Converter.bytesToString(params.symbol).toUpperCase()
 
     return new LogEventModel({
       key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
-      type: 'event',
-      name: 'AssetCreated',
+      name: TX_ASSET_CREATED,
       address: log.address,
       date: new Date(block.timestamp * 1000),
       icon: 'event',
-      title: 'Asset created',
+      title: TX_ASSET_CREATED,
+      subTitle: symbol,
       message: params.proxy,
       target: null,
     })

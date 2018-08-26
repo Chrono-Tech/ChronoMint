@@ -4,5 +4,3 @@
  */
 
 export const TX_ASSET_CREATED = 'AssetCreated'
-export const TX_CREATE_ASSET_WITH_FEE = 'createAssetWithFee'
-export const TX_CREATE_ASSET_WITHOUT_FEE = 'createAssetWithoutFee'

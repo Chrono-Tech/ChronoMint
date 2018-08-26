@@ -5,8 +5,8 @@
 
 import PropTypes from 'prop-types'
 import AbstractModel from './AbstractModel'
-import LogTxModel from './describes/LogTxModel'
-import LogEventModel from './LogEventModel'
+import LogTxModel from './describers/LogTxModel'
+import LogEventModel from './describers/LogEventModel'
 
 const schemaFactory = () => ({
   isLoading: PropTypes.bool.isRequired,
