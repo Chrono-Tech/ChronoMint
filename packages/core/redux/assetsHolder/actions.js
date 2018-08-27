@@ -15,7 +15,7 @@ import { getWallet } from '../wallets/selectors/models'
 import { WALLETS_UPDATE_WALLET } from '../wallets/constants'
 import WalletModel from '../../models/wallet/WalletModel'
 import AllowanceCollection from '../../models/AllowanceCollection'
-import { executeTransaction } from '../ethereum/actions'
+import { executeTransaction } from '../ethereum/thunks'
 
 import {
   DUCK_ASSETS_HOLDER,

@@ -57,7 +57,7 @@ export default class ConfirmTxDialog extends PureComponent {
     const { entry, description } = this.props
 
     const tx = entry.tx
-    const gasFee = tx.gasPrice.mul(tx.gasLimit)
+    const gasFee = tx.gasPrice ? tx.gasPrice.mul(tx.gasLimit) : null
 
     return (
       <ModalDialog hideCloseIcon title={<Translate value={description.title} />}>
@@ -82,14 +82,16 @@ export default class ConfirmTxDialog extends PureComponent {
                 )
               })}
 
-              <div styleName='param'>
-                <div styleName='label'>
-                  <Translate value='tx.fee' />
+              {gasFee && (
+                <div styleName='param'>
+                  <div styleName='label'>
+                    <Translate value='tx.fee' />
+                  </div>
+                  <div styleName='value'>
+                    <TokenValue value={new Amount(gasFee, ETH)} />
+                  </div>
                 </div>
-                <div styleName='value'>
-                  <TokenValue value={new Amount(gasFee, ETH)} />
-                </div>
-              </div>
+              )}
             </div>
 
           </div>

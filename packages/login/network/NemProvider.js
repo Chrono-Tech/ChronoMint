@@ -53,7 +53,7 @@ export class NemProvider extends AbstractProvider {
     if (mosaic) {
       balance = (mosaics && (mosaic in mosaics))
         ? mosaics[mosaic]
-        : { confirmed: new BigNumber(0) } // When no such mosaic specified
+        : { unconfirmed: new BigNumber(0) } // When no such mosaic specified
     }
 
     if (balance) {
@@ -71,12 +71,8 @@ export class NemProvider extends AbstractProvider {
     return fee
   }
 
-  // eslint-disable-next-line
-  async transfer (from: string, to: string, amount: BigNumber, mosaicDefinition, feeMultiplier: number) {
-    // TODO @ipavlenko: Implement for XEM and Mosaics
-    const node = this._selectNode(this._engine)
-    const { tx /*, fee*/ } = this._engine.createTransaction(to, amount, mosaicDefinition)
-    return node.send(from, tx)
+  getNode () {
+    return this._selectNode(this._engine)
   }
 
   async onTransaction (tx: NemTx) {
