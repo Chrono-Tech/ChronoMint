@@ -130,7 +130,6 @@ export const initTokens = () => async (dispatch, getState) => {
   const web3 = web3Selector()(state)
   ethereumDAO.connect(web3)
 
-  dispatch(alternateTxHandlingFlow(ethereumDAO))
   dispatch(tokensInit())
   dispatch(setTokensFetchingCount(0))
   const erc20: ERC20ManagerDAO = daoByType('ERC20Manager')(state)
@@ -164,7 +163,6 @@ export const initTokens = () => async (dispatch, getState) => {
         }),
       })
 
-      dispatch(alternateTxHandlingFlow(dao))
     })
     .fetchTokens()
 
@@ -214,7 +212,6 @@ export const initNemTokens = () => async (dispatch, getState) => {
     const nem = await dao.fetchToken()
     tokenService.registerDAO(nem, dao)
     dispatch(tokenFetched(nem))
-    dispatch(alternateTxHandlingFlow(dao))
     dispatch(initNemMosaicTokens(nem))
   } catch (e) {
     dispatch(tokensLoadingFailed())
@@ -222,7 +219,6 @@ export const initNemTokens = () => async (dispatch, getState) => {
 }
 
 export const initNemMosaicTokens = (nem: TokenModel) => async (dispatch, getState) => {
-
   const mosaics = nemProvider.getMosaics()
   const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
   dispatch(setTokensFetchingCount(currentCount + mosaics.length))
@@ -234,8 +230,7 @@ export const initNemMosaicTokens = (nem: TokenModel) => async (dispatch, getStat
         try {
           const token = await dao.fetchToken()
           tokenService.registerDAO(token, dao)
-          dispatch(tokenFetched(nem))
-          dispatch(alternateTxHandlingFlow(dao))
+          dispatch(tokenFetched(token))
         } catch (e) {
           dispatch(tokensLoadingFailed())
         }
