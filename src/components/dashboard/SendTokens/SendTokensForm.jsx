@@ -91,11 +91,6 @@ function mapStateToProps (state, ownProps) {
     gasLimit,
     gweiPerGas,
     gasPriceMultiplier: getGasPriceMultiplier(token.blockchain())(state),
-    initialValues: { // TODO remove it
-      symbol: 'XEM',
-      recipient: 'TAHZD4PLMR4OX3OLNMJCC726PNLXCJMCFWR2JI3D',
-      amount: '0.001',
-    },
   }
 }
 
@@ -598,7 +593,7 @@ export default class SendTokensForm extends PureComponent {
           <div styleName='send'>
             <Button
               label={<Translate value={`${prefix}.send`} />}
-              disabled={/*pristine ||*/ invalid || isTimeLocked} //TODO uncomment
+              disabled={pristine || invalid || isTimeLocked}
               onClick={handleSubmit(this.handleTransfer)}
             />
           </div>

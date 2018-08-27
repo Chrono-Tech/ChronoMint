@@ -29,7 +29,10 @@ import ethereumDAO from '../../dao/EthereumDAO'
 import { getMainEthWallet, getWallets } from './selectors/models'
 import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
-import { AllowanceCollection, SignerMemoryModel } from '../../models'
+import {
+  AllowanceCollection,
+  SignerMemoryModel,
+} from '../../models'
 import { executeTransaction } from '../ethereum/actions'
 import {
   WALLETS_SET,
@@ -207,14 +210,28 @@ const updateAllowance = (allowance) => (dispatch, getState) => {
 }
 
 export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async (dispatch) => {
-  const tokenDAO = tokenService.getDAO(token.id())
-  const tx = tokenDAO.transfer(wallet.address, recipient, amount, token) // added token for btc like transfers
+  try {
+    const tokenDAO = tokenService.getDAO(token.id())
+    const tx = tokenDAO.transfer(wallet.address, recipient, amount, token) // added token for btc like transfers
+    const executeMap = {
+      [BLOCKCHAIN_ETHEREUM]: executeTransaction,
+      [BLOCKCHAIN_NEM]: executeNemTransaction,
+    }
 
-  if (wallet.blockchain === BLOCKCHAIN_NEM && tx) {
-    dispatch(executeNemTransaction({ tx, options: { feeMultiplier, walletDerivedPath: wallet.derivedPath, symbol: token.symbol() } }))
-  }
-  if (wallet.blockchain === BLOCKCHAIN_ETHEREUM && tx) {
-    dispatch(executeTransaction({ tx, options: { feeMultiplier, walletDerivedPath: wallet.derivedPath } }))
+    // execute
+    dispatch(executeMap[wallet.blockchian]({
+      tx,
+      options: {
+        feeMultiplier,
+        walletDerivedPath: wallet.derivedPath,
+        symbol: token.symbol(),
+      },
+    }))
+
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e)
+    dispatch(notifyError(e))
   }
 }
 

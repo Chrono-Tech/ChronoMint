@@ -72,6 +72,10 @@ export default class NemDAO extends EventEmitter {
     return this._nemProvider.getAccountBalances(this._namespace)
   }
 
+  /**
+   * wrapper for getAccountBalances, is required for uniformity os DAOs
+   * @returns {*|Promise<*>}
+   */
   getAccountBalance () {
     return this.getAccountBalances()
   }

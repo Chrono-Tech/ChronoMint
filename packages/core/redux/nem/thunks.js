@@ -5,17 +5,15 @@
 
 import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
-import { SignerMemoryModel, TransferNoticeModel } from '../../models'
+import { ErrorNoticeModel, SignerMemoryModel, TransferNoticeModel } from '../../models'
 import { nemPendingSelector, pendingEntrySelector } from './selectors'
 import { getSelectedNetwork, getSigner } from '../persistAccount/selectors'
 import { describePendingNemTx } from '../../describers'
 import { getAccount } from '../session/selectors/models'
-import * as Actions from './actions'
-import * as Utils from './utils'
+import * as NemActions from './actions'
+import * as NemUtils from './utils'
 import { getToken } from '../tokens/selectors'
-import TxEntryModel from '../../models/TxEntryModel'
 import { notify } from '../notifier/actions'
-import ErrorNoticeModel from '../../models/notices/ErrorNoticeModel'
 
 const notifyNemTransfer = (entry) => (dispatch, getState) => {
   const { tx } = entry
@@ -36,7 +34,7 @@ const notifyNemTransfer = (entry) => (dispatch, getState) => {
 
 const notifyNemError = (e) => notify(new ErrorNoticeModel({ message: e.message }))
 
-export const nemTxStatus = (key, address, props) => (dispatch, getState) => {
+const nemTxStatus = (key, address, props) => (dispatch, getState) => {
   const pending = nemPendingSelector()(getState())
   const scope = pending[address]
   if (!scope) {
@@ -47,42 +45,43 @@ export const nemTxStatus = (key, address, props) => (dispatch, getState) => {
     return null
   }
 
-  return dispatch(Actions.nemTxUpdate(
+  return dispatch(NemActions.nemTxUpdate(
     key,
     address,
-    new TxEntryModel({
+    NemUtils.createNemTxEntryModel({
       ...entry,
       ...props,
-    })))
+    }),
+  ))
 }
 
 export const executeNemTransaction = ({ tx, options }) => async (dispatch) => {
   const prepared = await dispatch(prepareTransaction({ tx, options }))
-  const entry = Utils.createNemTxEntryModel(prepared, options)
+  const entry = NemUtils.createNemTxEntryModel({ tx: prepared }, options)
 
-  await dispatch(Actions.nemTxCreate(entry))
+  await dispatch(NemActions.nemTxCreate(entry))
   dispatch(submitTransaction(entry, options))
 }
 
-export const prepareTransaction = ({ tx }) => async (dispatch, getState) => {
+const prepareTransaction = ({ tx }) => async (dispatch, getState) => {
   const network = getSelectedNetwork()(getState())
   return tx.mosaicDefinition
-    ? Utils.describeMosaicTransaction(tx, network)
-    : Utils.describeXemTransaction(tx, network)
+    ? NemUtils.describeMosaicTransaction(tx, network)
+    : NemUtils.describeXemTransaction(tx, network)
 }
 
-export const processTransaction = ({ entry, signer }) => async (dispatch, getState) => {
+const processTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   await dispatch(signTransaction({ entry, signer }))
   return dispatch(sendSignedTransaction({
     entry: pendingEntrySelector(entry.tx.from, entry.key)(getState()),
   }))
 }
 
-export const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
+const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   try {
     const { tx } = entry
-    const signed = Utils.createXemTransaction(tx.prepared, signer, getSelectedNetwork()(getState()))
-    dispatch(Actions.nemTxUpdate(entry.key, entry.tx.from, new TxEntryModel({
+    const signed = NemUtils.createXemTransaction(tx.prepared, signer, getSelectedNetwork()(getState()))
+    dispatch(NemActions.nemTxUpdate(entry.key, entry.tx.from, NemUtils.createNemTxEntryModel({
       ...entry,
       tx: {
         ...entry.tx,
@@ -96,7 +95,7 @@ export const signTransaction = ({ entry, signer }) => async (dispatch, getState)
   }
 }
 
-export const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
+const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
   dispatch(nemTxStatus(entry.key, entry.tx.from, { isPending: true }))
 
   // eslint-disable-next-line

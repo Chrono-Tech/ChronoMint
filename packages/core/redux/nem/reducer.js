@@ -28,13 +28,6 @@ const mutations = {
   },
   [TX_UPDATE]: (state, { key, address, tx }) => {
     const scope = state.pending[address]
-    if (!scope) {
-      return state
-    }
-    const entry = scope[key]
-    if (!entry) {
-      return state
-    }
     return {
       ...state,
       pending: {
@@ -47,9 +40,7 @@ const mutations = {
   },
   [TX_REMOVE]: (state, { key, address }) => {
     const scope = state.pending[address]
-    if (!scope) return state
-    const entry = scope[key]
-    if (!entry) return state
+    if (!scope || !scope[key]) return state
     return {
       ...state,
       pending: omit(state.pending, [key]),
