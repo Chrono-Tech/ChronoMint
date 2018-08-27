@@ -31,7 +31,7 @@ import {
   EVENT_POLL_REMOVED,
   EVENT_POLL_VOTED,
 } from '../../dao/constants/PollEmitterDAO'
-import { executeTransaction } from '../ethereum/actions'
+import { executeTransaction } from '../ethereum/thunks'
 import * as VotingActions from './actions'
 import { registerDao } from '../daos/actions'
 import ContractDAOModel from '../../models/contracts/ContractDAOModel'

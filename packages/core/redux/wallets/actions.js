@@ -30,7 +30,7 @@ import { getMainEthWallet, getWallets } from './selectors/models'
 import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { AllowanceCollection, SignerMemoryModel } from '../../models'
-import { executeTransaction } from '../ethereum/actions'
+import { executeTransaction } from '../ethereum/thunks'
 import {
   WALLETS_SET,
   WALLETS_SET_NAME,
