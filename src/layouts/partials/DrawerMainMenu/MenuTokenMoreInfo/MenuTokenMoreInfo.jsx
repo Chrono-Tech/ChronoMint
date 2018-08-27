@@ -210,7 +210,7 @@ export default class MenuTokenMoreInfo extends PureComponent {
 
           {wallets.map(this.renderWallet)}
 
-          {selectedToken && selectedToken.blockchain === BLOCKCHAIN_ETHEREUM && (
+          {selectedToken && (//selectedToken.blockchain === BLOCKCHAIN_ETHEREUM && (
             <div styleName='network'>
               <div styleName='networkTitle'>
                 <Translate value={`${prefix}.networkTitle`} />

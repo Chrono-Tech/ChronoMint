@@ -5,7 +5,7 @@
 
 import Immutable from 'immutable'
 import * as types from './constants'
-import ProfileModel from '../../models/ProfileModel'
+import { ProfileModel } from '../../models'
 
 const initialState = {
   account: null,

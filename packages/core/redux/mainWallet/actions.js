@@ -6,8 +6,9 @@
 // FIXME: to rework all methods below to avoid complexity
 /* eslint-disable complexity */
 
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
+import { change, formValueSelector } from 'redux-form/immutable'
+import { history } from '@chronobank/core-dependencies/configureStore'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import { getDeriveWalletsAddresses, getMultisigWallets } from '../wallet/selectors'
@@ -106,10 +107,6 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
           if (!(tx.from() === account || tx.to() === account)) {
             return
           }
-          // update donator
-          if (tx.from() === assetDonatorDAO.getInitAddress()) {
-            dispatch(updateIsTIMERequired())
-          }
         }
 
         if (walletsAccounts.includes(tx.from()) || walletsAccounts.includes(tx.to())) { // for derive wallets
@@ -152,6 +149,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
           }),
         })
       } else {
+	console.log('Main Eth Wallet update balance')
         const addresses = getMainEthWallet(getState())
         if (addresses.includes(account)) {
           dispatch({
@@ -211,6 +209,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
 }
 
 export const fetchTokenBalance = (token: TokenModel, account) => async (dispatch) => {
+  console.log('fetchTokenBalance')
   const tokenDAO = tokenService.getDAO(token.id())
   const balance = await tokenDAO.getAccountBalance(token.blockchain() === BLOCKCHAIN_ETHEREUM ? account : null)
   dispatch({
@@ -223,18 +222,19 @@ export const fetchTokenBalance = (token: TokenModel, account) => async (dispatch
 }
 
 export const initMainWallet = () => async (dispatch) => {
+  console.log('initMainWallet')
   dispatch({ type: WALLET_INIT, isInited: true })
 
   dispatch(subscribeOnTokens(handleToken))
 
   const providers = [
-    bccProvider,
-    btgProvider,
-    ltcProvider,
-    btcProvider,
-    nemProvider,
-    wavesProvider,
-    ethereumProvider,
+//    bccProvider,
+//    btgProvider,
+//    ltcProvider,
+//    btcProvider,
+//    nemProvider,
+//    wavesProvider,
+//    ethereumProvider,
   ]
   providers.forEach((provider) => {
     dispatch({

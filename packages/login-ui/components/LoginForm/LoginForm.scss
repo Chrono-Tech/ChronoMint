@@ -67,13 +67,11 @@ ul.actions {
   border-top: 1px solid $color-purpule;
 }
 
-.field {
-  margin-bottom: 50px;
-}
+.field {}
 
 .button {
   text-align: center;
-  margin-bottom: 30px;
+  margin: 50px 0 30px;
 
   button:disabled {
     background: $background-color-1;

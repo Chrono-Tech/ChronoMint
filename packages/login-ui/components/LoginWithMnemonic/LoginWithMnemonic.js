@@ -60,7 +60,7 @@ class LoginWithMnemonic extends PureComponent {
 
           <Translate value='LoginWithMnemonic.or' />
           <br />
-          <button onClick={previousPage} styleName='link'>
+          <button onClick={previousPage} type='button' styleName='link'>
             <Translate value='LoginWithMnemonic.back' />
           </button>
         </div>

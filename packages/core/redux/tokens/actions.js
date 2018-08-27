@@ -3,16 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
-import { nemProvider } from '@chronobank/login/network/NemProvider'
-import { wavesProvider } from '@chronobank/login/network/WavesProvider'
-import WavesDAO from '@chronobank/core/dao/WavesDAO'
 import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
 import { showConfirmTransferModal } from '@chronobank/core-dependencies/redux/ui/actions'
-import { bccDAO, btcDAO, btgDAO, ltcDAO } from '../../dao/BitcoinDAO'
 import ERC20ManagerDAO from '../../dao/ERC20ManagerDAO'
 import ethereumDAO from '../../dao/EthereumDAO'
-import NemDAO from '../../dao/NemDAO'
 import TokenModel from '../../models/tokens/TokenModel'
 import type TransferExecModel from '../../models/TransferExecModel'
 import TransferError from '../../models/TransferError'
@@ -123,6 +117,7 @@ export const alternateTxHandlingFlow = (dao) => (dispatch) => {
 }
 
 export const initTokens = () => async (dispatch, getState) => {
+  console.log('init tokens')
   if (getState().get(DUCK_TOKENS).isInited()) {
     return
   }
@@ -166,13 +161,13 @@ export const initTokens = () => async (dispatch, getState) => {
     })
     .fetchTokens()
 
-  dispatch(initBtcLikeTokens())
-  dispatch(initNemTokens())
-  dispatch(initWavesTokens())
-  dispatch(watchLatestBlock())
+//  dispatch(initBtcLikeTokens())
+//  dispatch(initNemTokens())
+//  dispatch(initWavesTokens())
+//  dispatch(watchLatestBlock())
 }
 
-export const initBtcLikeTokens = () => async (dispatch, getState) => {
+/*export const initBtcLikeTokens = () => async (dispatch, getState) => {
   const btcLikeTokens = [btcDAO, bccDAO, btgDAO, ltcDAO]
   const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
   dispatch(setTokensFetchingCount(currentCount + btcLikeTokens.length))
@@ -200,9 +195,9 @@ export const initBtcLikeTokens = () => async (dispatch, getState) => {
         }
       }),
   )
-}
+}*/
 
-export const initNemTokens = () => async (dispatch, getState) => {
+/*export const initNemTokens = () => async (dispatch, getState) => {
   try {
     const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
     dispatch(setTokensFetchingCount(currentCount + 1))
@@ -274,7 +269,7 @@ export const initWavesAssetTokens = (waves: TokenModel) => async (dispatch, getS
         }
       }),
   )
-}
+}*/
 
 export const subscribeOnTokens = (callback) => (dispatch, getState) => {
   const handleToken = (token) => dispatch(callback(token))
@@ -308,7 +303,7 @@ export const estimateGasTransfer = (tokenId, params, callback, gasPriceMultiplie
   }
 }
 
-export const estimateBtcFee = (params, callback) => async () => {
+/*export const estimateBtcFee = (params, callback) => async () => {
   try {
     const { address, recipient, amount, formFee, blockchain } = params
     let fee
@@ -330,4 +325,6 @@ export const estimateBtcFee = (params, callback) => async () => {
   } catch (e) {
     callback(e)
   }
-}
+<<<<<<< HEAD
+}*/
+

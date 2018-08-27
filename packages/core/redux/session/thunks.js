@@ -7,10 +7,8 @@ import { getNetworkById, LOCAL_ID, LOCAL_PRIVATE_KEYS, LOCAL_PROVIDER_ID } from 
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import { removeWatchersUserMonitor } from '@chronobank/core-dependencies/redux/ui/actions'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import setup from '@chronobank/login/network/EngineUtils'
-import metaMaskResolver from '@chronobank/login/network/metaMaskResolver'
 import * as SessionActions from './actions'
 import * as ProfileThunks from '../profile/thunks'
 import ProfileService from '../profile/service'
@@ -23,18 +21,6 @@ import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
 import { DEFAULT_CBE_URL, DEFAULT_USER_URL, DUCK_SESSION } from './constants'
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
-
-export const checkMetaMask = () => (dispatch) => {
-  const metaMaskHandler = (isMetaMask) => {
-    if (isMetaMask) {
-      dispatch(NetworkActions.setTestMetamask())
-    }
-  }
-
-  metaMaskResolver
-    .on('resolve', metaMaskHandler)
-    .start()
-}
 
 export const getAccounts = () => (dispatch, getState) => {
   const state = getState()
@@ -98,20 +84,6 @@ export const selectProvider = (selectedProviderId) => (dispatch) => {
   dispatch(NetworkActions.networkSetProvider(selectedProviderId))
 }
 
-export const restoreLocalSession = (account, wallets) => async (dispatch) => {
-  dispatch(selectProvider(LOCAL_PROVIDER_ID))
-  dispatch(NetworkActions.networkSetNetwork(LOCAL_ID))
-  dispatch(NetworkActions.selectAccount(account))
-
-  const accounts = await dispatch(loadAccounts())
-  const index = Math.max(accounts.indexOf(account), 0)
-  const providerSetting = dispatch(getProviderSettings())
-  const provider = privateKeyProvider.getPrivateKeyProvider(LOCAL_PRIVATE_KEYS[index], providerSetting, wallets)
-  await setup(provider)
-
-  return true
-}
-
 export const changeGasSlideValue = (value, blockchain) => (dispatch) =>
   dispatch(SessionActions.gasSliderMultiplierChange(value, blockchain))
 
@@ -168,12 +140,11 @@ export const login = (account) => async (dispatch, getState) => {
   await dispatch(watcher({ web3 }))
 
   const userManagerDAO = daoByType('UserManager')(getState())
-  const [isCBE, profile /*memberId*/] = await Promise.all([
-    userManagerDAO.isCBE(account),
+  const [profile /*memberId*/] = await Promise.all([
     userManagerDAO.getMemberProfile(account, web3),
     userManagerDAO.getMemberId(account),
   ])
-
+  const isCBE = false
   dispatch(SessionActions.sessionProfile(profile, isCBE))
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
   return defaultURL
@@ -183,13 +154,14 @@ export const bootstrap = () => async () => {
   return true //FIXME remove method
 }
 
-export const getProfileSignature = (wallet) => async (dispatch) => {
-  if (!wallet) {
+export const getProfileSignature = (signer,path) => async (dispatch) => {
+  if (!signer) {
     return
   }
   try {
     const signDataString = ProfileService.getSignData()
-    const signData = wallet.sign(signDataString)
+    const signData = await signer.signData(signDataString,path)
+    console.log(signData)
     const profileSignature = await dispatch(ProfileThunks.getUserProfile(signData.signature))
     dispatch(SessionActions.setProfileSignature(profileSignature))
 

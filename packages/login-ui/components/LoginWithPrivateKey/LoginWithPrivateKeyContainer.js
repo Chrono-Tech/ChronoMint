@@ -5,26 +5,15 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
-import { stopSubmit, SubmissionError } from 'redux-form'
-import {
-  navigateBack,
-} from '../../redux/navigation'
+import { stopSubmit } from 'redux-form'
 import {
   FORM_PRIVATE_KEY_LOGIN_PAGE,
 } from '../../redux/constants'
 import LoginWithPrivateKey from './LoginWithPrivateKey'
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    navigateBack: () => dispatch(navigateBack()),
-  }
-}
-
-class LoginWithPrivateKeyContainer extends PureComponent {
+export default class LoginWithPrivateKeyContainer extends PureComponent {
   static propTypes = {
-    navigateBack: PropTypes.func,
+    previousPage: PropTypes.func,
     onSubmitSuccess: PropTypes.func,
   }
 
@@ -35,9 +24,9 @@ class LoginWithPrivateKeyContainer extends PureComponent {
 
     privateKey = (privateKey || '').trim()
 
-    if (!privateKeyProvider.validatePrivateKey(privateKey)) {
-      throw new SubmissionError({ pk: 'Wrong private key' })
-    }
+    //if (privateKeyProvider.validatePrivateKey(privateKey)) {
+    //   throw new SubmissionError({ pk: 'Wrong private key' })
+    //}
 
     if (privateKey.slice(0, 2) === '0x') {
       privateKey = privateKey.slice(2)
@@ -62,10 +51,8 @@ class LoginWithPrivateKeyContainer extends PureComponent {
         onSubmit={this.handleSubmit.bind(this)}
         onSubmitSuccess={this.handleSubmitSuccess.bind(this)}
         onSubmitFail={this.handleSubmitFail.bind(this)}
-        previousPage={this.props.navigateBack}
+        previousPage={this.props.previousPage}
       />
     )
   }
 }
-
-export default connect(null, mapDispatchToProps)(LoginWithPrivateKeyContainer)

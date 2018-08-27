@@ -12,7 +12,6 @@ import * as RecoverAccount from './components/RecoverAccount/lang'
 import * as ResetPassword from './components/ResetPassword/lang'
 import * as GenerateWallet from './components/GenerateWallet/lang'
 import * as LoginForm from './components/LoginForm/lang'
-import * as LoginMetamask from './components/LoginMetamask/lang'
 import * as LoginUPort from './components/LoginUPort/lang'
 import * as LoginWithLedger from './components/LoginWithLedger/lang'
 import * as LoginWithMnemonic from './components/LoginWithMnemonic/lang'
@@ -24,6 +23,7 @@ import * as NetworkSelector from './components/NetworkSelector/lang'
 import * as NetworkCreateModal from './components/NetworkCreateModal/lang'
 import * as NetworkCreateModalForm from './components/NetworkCreateModal/NetworkCreateModalForm/lang'
 import * as NetworkDeleteModal from './components/NetworkCreateModal/NetworkDeleteModal/lang'
+import * as DerivationPathForm from './components/DerivationPathForm/lang'
 import * as Warning from './components/Warning/lang'
 import * as AccountName from './components/AccountName/lang'
 import * as NotFoundPage from './components/NotFoundPage/lang'
@@ -37,7 +37,6 @@ export const en = {
   LoginForm: LoginForm.en,
   LoginWithLedger: LoginWithLedger.en,
   LoginWithTrezor: LoginWithTrezor.en,
-  LoginMetamask: LoginMetamask.en,
   LoginWithMnemonic: LoginWithMnemonic.en,
   LoginWithOptions: LoginWithOptions.en,
   LoginWithPrivateKey: LoginWithPrivateKey.en,
@@ -54,4 +53,5 @@ export const en = {
   NetworkDeleteModal: NetworkDeleteModal.en,
   AccountName: AccountName.en,
   NotFoundPage: NotFoundPage.en,
+  DerivationPathForm: DerivationPathForm.en,
 }
