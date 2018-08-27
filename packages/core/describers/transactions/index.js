@@ -6,6 +6,7 @@
 import * as tokens from './lib/tokenTxDescribers'
 import * as deposit from './lib/depositTxDescribers'
 import * as voting from './lib/votingTxDescribers'
+import * as assets from './lib/assetsTxDescribers'
 
 export * from './TransactionDescriber'
 
@@ -13,6 +14,7 @@ export const TRANSACTION_DESCRIBERS = [
   ...Object.values(tokens),
   ...Object.values(deposit),
   ...Object.values(voting),
+  ...Object.values(assets),
 ]
 
 export const TRANSACTION_DESCRIBERS_BY_TOPIC = TRANSACTION_DESCRIBERS.reduce(
