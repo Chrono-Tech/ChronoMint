@@ -11,6 +11,7 @@
     "bitcoinjs-lib": "4.0.1",
     "bitcore-lib": "latest",
     "coinselect": "^3.1.11",
+    "dashcore-lib": "latest",
     "js-sha3": "^0.8.0",
     "eth-crypto": "^1.2.0",
     "ethereumjs-wallet": "0.6.0",

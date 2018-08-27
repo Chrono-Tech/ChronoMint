@@ -4,9 +4,9 @@
  */
 
 import EventEmitter from 'events'
-import bitcore from 'bitcore-lib'
+import dashcore from 'dashcore-lib'
 
-export default class BitcoinMemoryDevice extends EventEmitter {
+export default class DashMemoryDevice extends EventEmitter {
   constructor ({seed, network}) {
     super()
     this.seed = seed
@@ -25,7 +25,7 @@ export default class BitcoinMemoryDevice extends EventEmitter {
 
   _prepareSignedTransaction (unsignedTx) {
       const txobj = {} 
-      txobj.version    = unsignedTx.version
+      txobj.version = unsignedTx.version
       txobj.lock_time  = unsignedTx.lock_time
       txobj.ins  = []
       for (let i=0; i < unsignedTx.ins.length; i++) {
@@ -33,7 +33,7 @@ export default class BitcoinMemoryDevice extends EventEmitter {
               s: bitcore.util.EMPTY_BUFFER,
               q: unsignedTx.ins[i].q,
               o: unsignedTx.ins[i].o
-          });
+          })
       }  
       txobj.outs = unsignedTx.outs
       return new bitcore.Transaction(txobj)
