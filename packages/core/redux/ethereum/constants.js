@@ -3,11 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export const DUCK_ETHEREUM = 'ethereum'
+export const DUCK_ETHEREUM = 'txEthereum'
 
-export const WEB3_UPDATE = 'web3/update'
-export const TX_CREATE = 'tx/create'
-export const TX_STATUS = 'tx/status'
-export const TX_UPDATE = 'tx/update'
-export const TX_REMOVE = 'tx/remove'
-export const NONCE_UPDATE = 'nonce/update'
+export const NONCE_UPDATE = 'TX/ETH/NONCE_UPDATE'
+export const TX_CREATE = 'TX/ETH/CREATE'
+export const TX_REMOVE = 'TX/ETH/REMOVE'
+export const TX_STATUS = 'TX/ETH/STATUS'
+export const TX_UPDATE = 'TX/ETH/UPDATE'
+export const WEB3_UPDATE = 'TX/ETH/WEB3_UPDATE'

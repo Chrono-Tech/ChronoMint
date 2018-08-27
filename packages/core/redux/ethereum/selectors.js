@@ -9,7 +9,8 @@ import { getWallet } from '../wallets/selectors/models'
 import { getMainSymbolForBlockchain } from '../tokens/selectors'
 import { DUCK_ETHEREUM } from './constants'
 
-export const ethereumSelector = () => (state) => state.get(DUCK_ETHEREUM)
+export const ethereumSelector = () => (state) =>
+  state.get(DUCK_ETHEREUM)
 
 export const web3Selector = () => createSelector(
   ethereumSelector(),
@@ -99,5 +100,4 @@ export const getDataForConfirm = (tx: TxExecModel) => createSelector(
       feeBalanceAfter,
     }
   }
-  ,
 )

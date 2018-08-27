@@ -47,7 +47,7 @@ import {
 import { getAccount } from '../session/selectors/models'
 import { getTokens } from '../tokens/selectors'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
-import { executeTransaction } from '../ethereum/actions'
+import { executeTransaction } from '../ethereum/thunks'
 
 const updateEthMultisigWallet = (wallet: MultisigEthWalletModel) => ({ type: ETH_MULTISIG_UPDATE, wallet })
 

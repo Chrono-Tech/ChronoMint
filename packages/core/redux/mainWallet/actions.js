@@ -32,7 +32,7 @@ import { getMainAddresses, getMainEthWallet, getMainWalletForBlockchain, getWall
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import WalletModel from '../../models/wallet/WalletModel'
 import { daoByType } from '../daos/selectors'
-import { estimateGas, executeTransaction } from '../ethereum/actions'
+import { estimateGas, executeTransaction } from '../ethereum/thunks'
 import { TX_DEPOSIT, ASSET_DEPOSIT_WITHDRAW } from '../../dao/constants/AssetHolderDAO'
 import { TX_APPROVE } from '../../dao/constants/ERC20DAO'
 import { DUCK_ETH_MULTISIG_WALLET, ETH_MULTISIG_BALANCE, ETH_MULTISIG_FETCHED } from '../multisigWallet/constants'
