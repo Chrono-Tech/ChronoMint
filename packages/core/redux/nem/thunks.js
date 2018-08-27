@@ -72,8 +72,14 @@ const prepareTransaction = ({ tx }) => async (dispatch, getState) => {
 
 const processTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   await dispatch(signTransaction({ entry, signer }))
+  const signedEntry = pendingEntrySelector(entry.tx.from, entry.key)(getState())
+  if (!signedEntry) {
+    // eslint-disable-next-line no-console
+    console.error('signedEntry is null', entry)
+    return // stop execute
+  }
   return dispatch(sendSignedTransaction({
-    entry: pendingEntrySelector(entry.tx.from, entry.key)(getState()),
+    entry: signedEntry,
   }))
 }
 
@@ -100,6 +106,11 @@ const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
 
   // eslint-disable-next-line
   entry = pendingEntrySelector(entry.tx.from, entry.key)(getState())
+  if (!entry) {
+    // eslint-disable-next-line no-console
+    console.error('entry is null', entry)
+    return // stop execute
+  }
 
   const node = nemProvider.getNode()
   const res = await node.send({ ...entry.tx.signed.tx, fee: entry.tx.signed.fee })
@@ -151,8 +162,15 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
     })
   }
 
+  const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key)(getState())
+  if (!selectedEntry) {
+    // eslint-disable-next-line no-console
+    console.error('entry is null', entry)
+    return // stop execute
+  }
+
   return dispatch(processTransaction({
-    entry: pendingEntrySelector(entry.tx.from, entry.key)(state),
+    entry: selectedEntry,
     signer,
   }))
 }
