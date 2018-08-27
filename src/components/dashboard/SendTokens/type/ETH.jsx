@@ -115,7 +115,8 @@ export default class SendTokensForm extends PureComponent {
 
   constructor () {
     super(...arguments)
-    this.state = {gasFee: null,
+    this.state = {
+      gasFee: null,
       gasPrice: null,
       gasLimit: null,
       gasLimitEstimated: null,

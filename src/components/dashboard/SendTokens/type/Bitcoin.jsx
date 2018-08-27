@@ -16,7 +16,6 @@ import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import Slider from 'components/common/Slider'
 import {
@@ -93,7 +92,7 @@ function mapStateToProps (state, ownProps) {
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_SEND_TOKENS, validate })
-export default class BTC extends PureComponent {
+export default class Bitcoin extends PureComponent {
   static propTypes = {
     selectedCurrency: PropTypes.string,
     account: PropTypes.string,
@@ -110,7 +109,6 @@ export default class BTC extends PureComponent {
     transfer: PropTypes.func,
     onTransfer: PropTypes.func,
     onApprove: PropTypes.func,
-    gasPriceMultiplier: PropTypes.number,
     ...formPropTypes,
   }
 

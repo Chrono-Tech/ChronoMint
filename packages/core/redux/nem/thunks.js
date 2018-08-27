@@ -55,6 +55,11 @@ const nemTxStatus = (key, address, props) => (dispatch, getState) => {
   ))
 }
 
+export const estimateNemFee = ({ tx }) => async (dispatch) => {
+  const preparedTx = await dispatch(prepareTransaction({ tx }))
+  return NemUtils.formatFee(preparedTx.fee)
+}
+
 export const executeNemTransaction = ({ tx, options }) => async (dispatch) => {
   const prepared = await dispatch(prepareTransaction({ tx, options }))
   const entry = NemUtils.createNemTxEntryModel({ tx: prepared }, options)
