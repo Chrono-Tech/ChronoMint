@@ -31,7 +31,7 @@ import PausedModel from '../../models/tokens/PausedModel'
 import BlacklistModel from '../../models/tokens/BlacklistModel'
 import { daoByType } from '../daos/selectors'
 import { web3Selector } from '../ethereum/selectors'
-import { executeTransaction } from '../ethereum/actions'
+import { executeTransaction } from '../ethereum/thunks'
 import assetsManagerService from '../../services/AssetsManagerService'
 
 import { EVENT_PLATFORM_REQUESTED } from '../../dao/constants/PlatformsManagerDAO'

@@ -4,8 +4,13 @@
  */
 
 import { omit } from 'lodash'
-import { HolderModel, TxEntryModel, TxExecModel } from '../../models'
-import { NONCE_UPDATE, TX_CREATE, TX_REMOVE, TX_STATUS, TX_UPDATE, WEB3_UPDATE } from './constants'
+import {
+  NONCE_UPDATE,
+  TX_CREATE,
+  TX_REMOVE,
+  TX_UPDATE,
+  WEB3_UPDATE,
+} from './constants'
 
 const initialState = () => ({
   web3: null,
@@ -16,7 +21,7 @@ const initialState = () => ({
 const mutations = {
   [WEB3_UPDATE]: (state, { web3 }) => ({
     ...state,
-    web3: new HolderModel({ value: web3 }),
+    web3,
   }),
 
   [NONCE_UPDATE]: (state, { address, nonce }) => ({
@@ -42,45 +47,14 @@ const mutations = {
       },
     }
   },
-  [TX_STATUS]: (state, { key, address, props }) => {
+  [TX_UPDATE]: (state, { key, address, tx }) => {
     const scope = state.pending[address]
-    if (!scope) {
-      return state
-    }
-    const entry = scope[key]
-    if (!entry) {
-      return state
-    }
     return {
       ...state,
       pending: {
         [address]: {
           ...scope,
-          [key]: new TxEntryModel({
-            ...entry,
-            ...props,
-          }),
-        },
-      },
-    }
-  },
-  [TX_UPDATE]: (state, { key, address, props }) => {
-    const scope = state.pending[address]
-    if (!scope) return state
-    const entry = scope[key]
-    if (!entry) return state
-    return {
-      ...state,
-      pending: {
-        [address]: {
-          ...scope,
-          [key]: new TxEntryModel({
-            ...entry,
-            ...props,
-            tx: new TxExecModel({
-              ...entry.tx,
-            }),
-          }),
+          [key]: tx,
         },
       },
     }

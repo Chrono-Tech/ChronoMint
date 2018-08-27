@@ -11,6 +11,7 @@ import dao from './daos/reducer'
 import ethereum from './ethereum/reducer'
 import nem from './nem/reducer'
 import ethMultisigWallet from './multisigWallet/reducer'
+import events from './events/reducer'
 import mainWallet from './mainWallet/reducer'
 import market from './market/reducer'
 import notifier from './notifier/reducer'
@@ -20,11 +21,11 @@ import rewards from './rewards/reducer'
 import session from './session/reducer'
 import settingsErc20Tokens from './settings/erc20/tokens/reducer'
 import tokens from './tokens/reducer'
+import txEthereum from './ethereum/reducer'
 import voting from './voting/reducer'
 import wallet from './wallet/reducer'
 import wallets from './wallets/reducer'
 import watcher from './watcher/reducer'
-import events from './events/reducer'
 
 const coreReducers = {
   assetsHolder,
@@ -33,6 +34,7 @@ const coreReducers = {
   ethereum,
   nem,
   ethMultisigWallet,
+  events,
   mainWallet,
   market,
   notifier,
@@ -42,11 +44,11 @@ const coreReducers = {
   session,
   settingsErc20Tokens,
   tokens,
+  txEthereum,
   voting,
   wallet,
   wallets,
   watcher,
-  events,
 }
 
 export default coreReducers

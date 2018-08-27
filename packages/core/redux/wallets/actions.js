@@ -33,7 +33,7 @@ import {
   AllowanceCollection,
   SignerMemoryModel,
 } from '../../models'
-import { executeTransaction } from '../ethereum/actions'
+import { executeTransaction } from '../ethereum/thunks'
 import {
   WALLETS_SET,
   WALLETS_SET_NAME,
