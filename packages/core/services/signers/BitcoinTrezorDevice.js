@@ -4,14 +4,11 @@
  */
 
 import EventEmitter from 'events'
-import bip39 from 'bip39'
 import bitcoin from 'bitcoinjs-lib'
-import coinselect from 'coinselect'
-import TrezorConnect from 'trezor-connect';
-import axios from 'axios'
+import TrezorConnect from 'trezor-connect'
 
 export default class BitcoinTrezorDevice extends EventEmitter {
-  constructor ({xpub, network}) {
+  constructor ({ xpub, network }) {
     super()
     this.xpub = xpub
     this.network = network
@@ -19,62 +16,67 @@ export default class BitcoinTrezorDevice extends EventEmitter {
   }
 
   // this method is a part of base interface
-  getAddress (path) {
-    return  "mnrJYbRVUbizQL2LXsvoqZra4MMpxkRTb2"//bitcoin.HDNode
-            //.fromBase58(xpub, this.network)
-            //.derivePath(path).getAddress()
+  getAddress (/*path*/) {
+    return 'mnrJYbRVUbizQL2LXsvoqZra4MMpxkRTb2' //bitcoin.HDNode
+    //.fromBase58(xpub, this.network)
+    //.derivePath(path).getAddress()
   }
 
-  async signTransaction (rawTx, path) { // tx object
-    const txb = new bitcoin.TransactionBuilder.fromTransaction (
-	bitcoin.Transaction.fromHex (rawTx), this.network)
-
+  async signTransaction (rawTx, path) {
+    // tx object
+    const txb = new bitcoin.TransactionBuilder
+      .fromTransaction(bitcoin.Transaction.fromHex(rawTx), this.network)
     const localAddress = this.getAddress(path)
 
-    if(!localAddress) {
+    if (!localAddress) {
       return
     }
 
-    const address_n = path.split('/').map(entry => entry[entry.length-1] === "'"
-      ? parseInt(entry.substring(0, entry.length - 1)) | 0x80000000
-      : parseInt(entry)
+    const address_n = path.split('/').map((entry) =>
+      entry[entry.length - 1] === "'"
+        ? parseInt(entry.substring(0, entry.length - 1)) | 0x80000000
+        : parseInt(entry)
     )
-
-    let inputs = []
+    const inputs = []
 
     txb.buildIncomplete().ins.forEach((input) => {
-      inputs.push({ address_n: address_n,
-	prev_index: input.index,
-	prev_hash: Buffer.from(input.hash).reverse().toString('hex'),
+      inputs.push({
+        address_n: address_n,
+        prev_index: input.index,
+        prev_hash: Buffer.from(input.hash)
+          .reverse()
+          .toString('hex'),
       })
     })
 
-    let outputs = []
+    const outputs = []
 
     txb.buildIncomplete().outs.forEach((out) => {
-    const address = bitcoin.address.fromOutputScript(out.script, this.network)
-    let output = { address: address,
-                   amount: out.value.toString(),
-	           script_type: 'PAYTOADDRESS',
-                 }
-    if (address == localAddress) {
-      output = { ...output, address_n: address_n }
-      delete output['address']
-    }
-    outputs.push(output)
+      const address = bitcoin.address
+        .fromOutputScript(out.script, this.network)
+      let output = {
+        address: address,
+        amount: out.value.toString(),
+        script_type: 'PAYTOADDRESS',
+      }
+      if (address === localAddress) {
+        output = { ...output, address_n: address_n }
+        delete output['address']
+      }
+      outputs.push(output)
     })
 
-    console.log(inputs)
-    console.log(outputs)
+    // console.log(inputs)
+    // console.log(outputs)
 
-    const result =  await TrezorConnect.signTransaction({
+    const result = await TrezorConnect.signTransaction({
       inputs: inputs,
       outputs: outputs,
-      coin: "Testnet"
+      coin: 'Testnet',
     })
 
-    console.log(result)
+    return result
 
+    // console.log(result)
   }
-
 }

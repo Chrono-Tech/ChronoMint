@@ -8,7 +8,7 @@ import nem from 'nem-sdk'
 import bitcore from 'bitcore-lib'
 
 export default class NemMemoryDevice extends EventEmitter {
-  constructor ({seed, network}) {
+  constructor ({ seed, network }) {
     super()
     this.seed = seed
     this.network = network
@@ -20,21 +20,20 @@ export default class NemMemoryDevice extends EventEmitter {
   }
 
   sign (data, path) {
-    return this._getDerivedWallet(path).sign(data)
+    return this._getDerWallet(path).sign(data)
   }
 
-  _getDerivedWallet(derivedPath) {
-      if(this.seed.lengh > 64) {
-        const HDPrivateKey = bitcore.HDPrivateKey
+  _getDerivedWallet (derivedPath) {
+    if (this.seed.lengh > 64) {
+      const HDPrivateKey = bitcore.HDPrivateKey
 
-        const hdPrivateKey = new HDPrivateKey()
-        const retrieved = new HDPrivateKey(this.seed)
-        const derived = hdPrivateKey.derive(derivedPath)
-        return nem.crypto.keyPair.create(derived)
-      }
-      const PrivateKey = bitcore.PrivateKey
-      const imported = PrivateKey.fromWIF(this.seed)
-      return nem.crypto.keyPair.create(imported)
+      const hdPrivateKey = new HDPrivateKey()
+      // const retrieved = new HDPrivateKey(this.seed)
+      const derived = hdPrivateKey.derive(derivedPath)
+      return nem.crypto.keyPair.create(derived)
+    }
+    const PrivateKey = bitcore.PrivateKey
+    const imported = PrivateKey.fromWIF(this.seed)
+    return nem.crypto.keyPair.create(imported)
   }
-
 }
