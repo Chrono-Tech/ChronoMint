@@ -11,6 +11,7 @@ import { getHistoryKey } from '../../utils/eventHistory'
 import { web3Selector } from '../ethereum/selectors'
 import { eventsSelector } from './selectors'
 import EventsHistory from '../../services/EventsService'
+import { getTokens } from '../tokens/selectors'
 
 import {
   EVENTS_LOGS_LOADED,
@@ -237,10 +238,15 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
 
   const entries = []
 
+  const store = {
+    tokens: getTokens(getState())
+  }
+
   for (const { block, transactions } of sortBy(Object.values(tree), (v) => -v.block.timestamp)) {
     for (const { tx, receipt, logs } of Object.values(transactions)) {
       const context = {
         address,
+        store,
       }
 
       for (const log of logs) {

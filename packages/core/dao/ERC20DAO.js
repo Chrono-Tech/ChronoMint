@@ -46,10 +46,6 @@ export default class ERC20DAO extends AbstractTokenDAO {
 
   disconnect () {
     if (this.isConnected) {
-      // this.transferEmitter.removeAllListeners()
-      // this.approvalEmitter.removeAllListeners()
-      // this.transferEmitter = null
-      // this.approvalEmitter = null
       this.contract = null
     }
   }

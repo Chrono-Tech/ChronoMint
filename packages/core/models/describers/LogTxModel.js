@@ -6,10 +6,11 @@
 import PropTypes from 'prop-types'
 import AbstractModel from '../AbstractModel'
 import Amount from '../Amount'
+import { EVENT_TYPE_TRANSACTION } from '../../describers/constants'
 
 const schemaFactory = () => ({
   key: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   name: PropTypes.string.isRequired,
   category: PropTypes.string,
   date: PropTypes.instanceOf(Date).isRequired,
@@ -20,11 +21,17 @@ const schemaFactory = () => ({
   isAmountSigned: PropTypes.bool,
   amount: PropTypes.instanceOf(Amount),
   target: PropTypes.string,
+  fields: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.any,
+    description: PropTypes.string,
+  })),
 })
 
-export default class LogEventModel extends AbstractModel {
+export default class LogTxModel extends AbstractModel {
   constructor (data) {
-    super(data, schemaFactory())
+    super(Object.assign({
+      type: EVENT_TYPE_TRANSACTION,
+    }, data), schemaFactory())
     Object.freeze(this)
   }
 }

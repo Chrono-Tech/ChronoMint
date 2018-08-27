@@ -4,9 +4,9 @@
  */
 
 import PropTypes from 'prop-types'
-import Amount from './Amount'
-
-import AbstractModel from './AbstractModel'
+import Amount from '../Amount'
+import AbstractModel from '../AbstractModel'
+import { EVENT_TYPE_EVENT } from '../../describers/constants'
 
 const schemaFactory = () => ({
   key: PropTypes.string.isRequired,
@@ -25,8 +25,10 @@ const schemaFactory = () => ({
 })
 
 export default class LogEventModel extends AbstractModel {
-  constructor (data, options) {
-    super(data, schemaFactory(), options)
+  constructor (data) {
+    super(Object.assign({
+      type: EVENT_TYPE_EVENT,
+    }, data), schemaFactory())
     Object.freeze(this)
   }
 }

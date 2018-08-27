@@ -7,7 +7,7 @@ import uuid from 'uuid/v1'
 import BigNumber from 'bignumber.js'
 import Web3ABI from 'web3-eth-abi'
 import { Amount, LogTxModel } from '../models'
-import LogEventModel from '../models/LogEventModel'
+import LogEventModel from '../models/describers/LogEventModel'
 import { EVENT_DESCRIBERS_BY_TOPIC, decodeLog } from './events'
 import { TRANSACTION_DESCRIBERS_BY_TOPIC, decodeParameters, findFunctionABI } from './transactions'
 import { decodeTxData } from '../utils/DecodeUtils'
@@ -29,7 +29,6 @@ export const describeEvent = (data, context = {}) => {
 
   return new LogEventModel({
     key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
-    type: 'event',
     name: 'custom',
     date: new Date(block.timestamp * 1000),
     icon: 'event',
@@ -113,7 +112,17 @@ export const describePendingTx = (entry, context = {}) => {
   const array = TRANSACTION_DESCRIBERS_BY_TOPIC[info.topic]
   if (array) {
     for (const describer of array) {
-      const desc = describer.describe(entry, context, { abi: describer.abi, inputs: info.inputs, params: info.params, ...context })
+      const desc = describer.describe(
+        entry,
+        context,
+        {
+          inputs: info.inputs,
+          params: info.params,
+          ...context,
+          abi: describer.abi
+        }
+      )
+
       if (desc) {
         return desc
       }
@@ -130,7 +139,17 @@ export const describeTx = (entry, context = {}) => {
   if (array) {
     for (const describer of array) {
       const { inputs, params } = decodeParameters(describer.abi, entry.tx)
-      const desc = describer.describe(entry, context, { abi: describer.abi, inputs, params, ...context })
+      const desc = describer.describe(
+        entry,
+        context,
+        {
+          inputs,
+          params,
+          ...context,
+          abi: describer.abi,
+        }
+      )
+
       if (desc) {
         return desc
       }
