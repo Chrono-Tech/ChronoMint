@@ -16,8 +16,8 @@ const schemaFactory = () => ({
   topics: PropTypes.arrayOf(PropTypes.string),
   cursor: PropTypes.number,
   entries: PropTypes.arrayOf(PropTypes.oneOfType([
-    LogEventModel,
-    LogTxModel,
+    PropTypes.instanceOf(LogEventModel),
+    PropTypes.instanceOf(LogTxModel),
   ])),
 })
 

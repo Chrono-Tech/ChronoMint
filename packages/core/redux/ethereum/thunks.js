@@ -6,8 +6,8 @@
 import BigNumber from 'bignumber.js'
 import { isNil, omitBy } from 'lodash'
 import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
-import { SignerMemoryModel } from '../../models'
-import { pendingEntrySelector, web3Selector } from './selectors'
+import { SignerMemoryModel, TxEntryModel, HolderModel } from '../../models'
+import { ethereumPendingSelector, pendingEntrySelector, web3Selector } from './selectors'
 import { DUCK_ETHEREUM } from './constants'
 import { getSigner } from '../persistAccount/selectors'
 import ethereumDAO from '../../dao/EthereumDAO'
@@ -18,7 +18,27 @@ import * as ethActions from './actions'
 import * as Utils from './utils'
 
 export const initEthereum = ({ web3 }) => (dispatch) => {
-  dispatch(ethActions.ethWeb3Update(web3))
+  dispatch(ethActions.ethWeb3Update(new HolderModel({ value: web3 })))
+}
+
+const ethTxStatus = (key, address, props) => (dispatch, getState) => {
+  const pending = ethereumPendingSelector()(getState())
+  const scope = pending[address]
+  if (!scope) {
+    return null
+  }
+  const entry = scope[key]
+  if (!entry) {
+    return null
+  }
+  return dispatch(ethActions.ethTxUpdate(
+    key,
+    address,
+    new TxEntryModel({
+      ...entry,
+      ...props,
+    }),
+  ))
 }
 
 export const nextNonce = ({ web3, address }) => async (dispatch, getState) => {
@@ -48,9 +68,7 @@ export const prepareTransaction = ({ web3, tx, options }) => async (dispatch) =>
   const gasPrice = new BigNumber(await web3.eth.getGasPrice()).mul(feeMultiplier || 1)
   const chainId = await web3.eth.net.getId()
   const gasLimit = await Utils.estimateEthTxGas(web3, tx, gasPrice, nonce, chainId)
-  const execModel = Utils.createEthTxExecModel(tx, gasLimit, gasPrice, nonce, chainId)
-
-  return execModel
+  return Utils.createEthTxExecModel(tx, gasLimit, gasPrice, nonce, chainId)
 }
 
 export const processTransaction = ({ web3, entry, signer }) => async (dispatch, getState) => {
@@ -65,17 +83,17 @@ export const signTransaction = ({ entry, signer }) => async (dispatch) => {
   try {
     const signed = await signer.signTransaction(omitBy(entry.tx, isNil))
     const raw = signed.rawTransaction
-    dispatch(ethActions.ethTxStatus(entry.key, entry.tx.from, { isSigned: true, raw }))
+    dispatch(ethTxStatus(entry.key, entry.tx.from, { isSigned: true, raw }))
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log('signTransaction error: ', error)
-    dispatch(ethActions.ethTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
+    dispatch(ethTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
     throw error
   }
 }
 
 export const sendSignedTransaction = ({ web3, entry }) => async (dispatch, getState) => {
-  dispatch(ethActions.ethTxStatus(entry.key, entry.tx.from, { isPending: true }))
+  dispatch(ethTxStatus(entry.key, entry.tx.from, { isPending: true }))
 
   // eslint-disable-next-line
   entry = pendingEntrySelector(entry.tx.from, entry.key)(getState())
@@ -84,14 +102,14 @@ export const sendSignedTransaction = ({ web3, entry }) => async (dispatch, getSt
   return new Promise((resolve, reject) => {
     web3.eth.sendSignedTransaction(entry.raw)
       .on('transactionHash', (hash) => {
-        dispatch(ethActions.ethTxStatus(entry.key, entry.tx.from, { isSent: true, hash }))
+        dispatch(ethTxStatus(entry.key, entry.tx.from, { isSent: true, hash }))
       })
       .on('receipt', (receipt) => {
-        dispatch(ethActions.ethTxStatus(entry.key, entry.tx.from, { isMined: true, receipt }))
+        dispatch(ethTxStatus(entry.key, entry.tx.from, { isMined: true, receipt }))
         resolve(receipt)
       })
       .on('error', (error) => {
-        dispatch(ethActions.ethTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
+        dispatch(ethTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
         reject(error)
       })
   })
@@ -115,13 +133,13 @@ const submitTransaction = (entry) => async (dispatch, getState) => {
       entry,
       description,
       accept: acceptTransaction,
-      reject: () => dispatch(ethActions.ethTxStatus(entry.key, entry.tx.from, { isRejected: true })),
+      reject: () => dispatch(ethTxStatus(entry.key, entry.tx.from, { isRejected: true })),
     },
   }))
 }
 
 const acceptTransaction = (entry) => async (dispatch, getState) => {
-  dispatch(ethActions.ethTxStatus(entry.key, entry.tx.from, { isAccepted: true, isPending: true }))
+  dispatch(ethTxStatus(entry.key, entry.tx.from, { isAccepted: true, isPending: true }))
 
   const state = getState()
   let signer = getSigner(state)
@@ -153,5 +171,4 @@ export const estimateGas = (tx, feeMultiplier = 1) => async (dispatch, getState)
     gasFee,
     gasPrice,
   }
-
 }

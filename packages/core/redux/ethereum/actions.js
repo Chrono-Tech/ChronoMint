@@ -6,7 +6,7 @@
 import {
   NONCE_UPDATE,
   TX_CREATE,
-  TX_STATUS,
+  TX_UPDATE,
   WEB3_UPDATE,
 } from './constants'
 
@@ -15,11 +15,11 @@ export const ethTxCreate = (entry) => ({
   entry,
 })
 
-export const ethTxStatus = (key, address, props) => ({
-  type: TX_STATUS,
+export const ethTxUpdate = (key, address, tx) => ({
+  type: TX_UPDATE,
   address,
   key,
-  props,
+  tx,
 })
 
 export const ethNonceUpdate = (address, nonce) => ({
