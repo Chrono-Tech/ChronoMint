@@ -112,9 +112,8 @@ export default class BitcoinDAO extends EventEmitter {
     }
   }
 
-  submit (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1, advancedParams) {
+  submit (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: number = 1, advancedParams) {
     const tokenFeeRate = advancedParams && advancedParams.satPerByte ? advancedParams.satPerByte : token.feeRate()
-    console.log('BitcoinDAO:submit', token, advancedParams)
     setImmediate(async () => {
       const fee = await this._bitcoinProvider.estimateFee(from, to, amount, tokenFeeRate) // use feeMultiplier = 1 to estimate default fee
       this.emit('submit', new TransferExecModel({
@@ -135,10 +134,9 @@ export default class BitcoinDAO extends EventEmitter {
   }
 
   // TODO @ipavlenko: Rename to 'transfer' after all token DAOs will start using 'submit' method and 'trans'
-  async immediateTransfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1, advancedParams = undefined) {
+  async immediateTransfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: number = 1, advancedParams = undefined) {
     try {
       const tokenRate = advancedParams && advancedParams.satPerByte ? advancedParams.satPerByte : feeMultiplier * token.feeRate()
-      console.log('BitcoinDAO:immediateTransfer', feeMultiplier)
       return await this._bitcoinProvider.transfer(from, to, amount, tokenRate)
     } catch (e) {
       // eslint-disable-next-line

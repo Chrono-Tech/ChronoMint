@@ -6,6 +6,10 @@
 import TokenModel from '../models/tokens/TokenModel'
 import AbstractContractDAO from './AbstractContractDAO'
 import web3Converter from '../utils/Web3Converter'
+import {
+  TX_CREATE_ASSET_WITH_FEE,
+  TX_CREATE_ASSET_WITHOUT_FEE,
+} from './constants/AssetsManagerDAO'
 
 export default class TokenManagementExtensionDAO extends AbstractContractDAO {
 
@@ -22,18 +26,10 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
       .on('error', this.handleEventsError)
   }
 
-  handleEventsData = (data) => {
-    if (!data.event) {
-      return
-    }
-
-    this.emit(data.event, data)
-  }
-
   async createAssetWithFee (token: TokenModel) {
     const fee = token.fee()
     const tx = this._tx(
-      'createAssetWithFee',
+      TX_CREATE_ASSET_WITH_FEE,
       [
         this.web3.utils.fromAscii(token.symbol()),
         token.symbol(),
@@ -52,7 +48,7 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
 
   async createAssetWithoutFee (token: TokenModel) {
     const tx = this._tx(
-      'createAssetWithoutFee',
+      TX_CREATE_ASSET_WITHOUT_FEE,
       [
         this.web3.utils.fromAscii(token.symbol()),
         token.symbol(),

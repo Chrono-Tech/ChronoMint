@@ -15,7 +15,7 @@ import { getWallet } from '../wallets/selectors/models'
 import { WALLETS_UPDATE_WALLET } from '../wallets/constants'
 import WalletModel from '../../models/wallet/WalletModel'
 import AllowanceCollection from '../../models/AllowanceCollection'
-import { executeTransaction } from '../ethereum/actions'
+import { executeTransaction } from '../ethereum/thunks'
 
 import {
   DUCK_ASSETS_HOLDER,
@@ -70,6 +70,7 @@ export const fetchAssetDeposit = (token: TokenModel) => async (dispatch, getStat
   const asset = getState().get(DUCK_ASSETS_HOLDER).assets().item(token.address()).deposit(new Amount(
     deposit,
     token.symbol(),
+    true,
   ))
   dispatch({ type: ASSET_HOLDER_ASSET_UPDATE, asset })
 }
@@ -84,7 +85,7 @@ export const fetchAssetAllowance = (token: TokenModel) => async (dispatch, getSt
 
   const wallet = getWallet(`Ethereum-${account}`)(getState())
   const allowance = new AllowanceModel({
-    amount: new Amount(assetHolderWalletAllowance, token.id()),
+    amount: new Amount(assetHolderWalletAllowance, token.id(), true),
     spender: holderWallet,
     token: token.id(),
     isFetching: false,
@@ -135,7 +136,7 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
   dispatch(subscribeOnTokens(handleToken))
 }
 
-export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: Number = 1) => async (dispatch, getState) => {
+export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: number = 1) => async (dispatch, getState) => {
   try {
     const state = getState()
     const assetHolderDAO = daoByType('TimeHolder')(state)
@@ -152,7 +153,7 @@ export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: N
   }
 }
 
-export const withdrawAsset = (amount: Amount, token: TokenModel, feeMultiplier: Number = 1) => async (dispatch, getState) => {
+export const withdrawAsset = (amount: Amount, token: TokenModel, feeMultiplier: number = 1) => async (dispatch, getState) => {
   try {
     const state = getState()
     const assetHolderDAO = daoByType('TimeHolder')(state)

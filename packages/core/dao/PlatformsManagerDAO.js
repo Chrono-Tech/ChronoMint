@@ -10,9 +10,9 @@ import {
   TX_ATTACH_PLATFORM,
   TX_CREATE_PLATFORM,
   TX_DETACH_PLATFORM,
-  TX_PLATFORM_ATTACHED,
-  TX_PLATFORM_DETACHED,
-  TX_PLATFORM_REQUESTED,
+  EVENT_PLATFORM_ATTACHED,
+  EVENT_PLATFORM_DETACHED,
+  EVENT_PLATFORM_REQUESTED,
   TX_REISSUE_ASSET,
 } from './constants/PlatformsManagerDAO'
 
@@ -37,14 +37,6 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
       this.history = null
       this.web3 = null
     }
-  }
-
-  handleEventsData = (data) => {
-    if (!data.event) {
-      return
-    }
-
-    this.emit(data.event, data)
   }
 
   /**
@@ -109,9 +101,9 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
    * @param account
    */
   watchCreatePlatform (callback, account) {
-    this.on(TX_PLATFORM_REQUESTED, (tx) => callback(tx), { by: account })
-    this.on(TX_PLATFORM_ATTACHED, (tx) => callback(tx), { by: account })
-    this.on(TX_PLATFORM_DETACHED, (tx) => callback(tx), { by: account })
+    this.on(EVENT_PLATFORM_REQUESTED, (tx) => callback(tx), { by: account })
+    this.on(EVENT_PLATFORM_ATTACHED, (tx) => callback(tx), { by: account })
+    this.on(EVENT_PLATFORM_DETACHED, (tx) => callback(tx), { by: account })
   }
 
   async _decodeArgs (func, args: Object) {

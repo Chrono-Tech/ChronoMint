@@ -6,6 +6,7 @@
 import moment from 'moment'
 import BigNumber from 'bignumber.js'
 import web3Converter from '@chronobank/core/utils/Web3Converter'
+import { getTokens } from '@chronobank/core/redux/tokens/selectors'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import { change, Field, formPropTypes, formValueSelector, getFormSyncErrors, reduxForm } from 'redux-form/immutable'
 import Immutable from 'immutable'
@@ -51,8 +52,10 @@ function mapStateToProps (state) {
   const selector = formValueSelector(FORM_EDIT_POLL)
   const formErrors = getFormSyncErrors(FORM_EDIT_POLL)(state)
   const votingDao = daoByType('VotingManager')(state)
+  const tokens = getTokens(state)
 
   return {
+    timeToken: tokens.item(TIME),
     formErrors,
     votingDao,
     feeMultiplier: selector(state, 'feeMultiplier'),

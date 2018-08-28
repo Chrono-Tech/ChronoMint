@@ -27,6 +27,8 @@ import {
   DAOS_INITIALIZED,
 } from './constants'
 
+export const registerDao = (model) => ({ type: DAOS_REGISTER, model })
+
 // eslint-disable-next-line import/prefer-default-export
 export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
   let state = getState()

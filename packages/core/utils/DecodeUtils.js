@@ -6,7 +6,7 @@
 import { zipWith } from 'lodash'
 import Tx from 'ethereumjs-tx'
 import ethAbi from 'ethereumjs-abi'
-// import BN from 'bn.js'
+import BN from 'bn.js'
 import BigNumber from 'bignumber.js'
 
 export const decodeTxData = (abi, data) => {
@@ -32,7 +32,7 @@ export const decodeTxData = (abi, data) => {
           (name, type, value) => ({
             name,
             type,
-            value: (value instanceof BigNumber)
+            value: (value instanceof BN)
               ? new BigNumber(value.toString())
               : value,
           }),

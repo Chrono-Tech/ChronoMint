@@ -91,7 +91,8 @@ class Platform extends PureComponent {
     platform: PropTypes.instanceOf(Object),
     selectedPlatform: PropTypes.instanceOf(Object),
     onClick: PropTypes.func,
-    ...formPropTypes
+    formValues: PropTypes.instanceOf(Object),
+    formErrors: PropTypes.instanceOf(Object),
   }
 
   static defaultProps = {

@@ -30,8 +30,11 @@ import BitcoinDAO from '../../dao/BitcoinDAO'
 import { getMainEthWallet, getWallets } from './selectors/models'
 import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
-import { AllowanceCollection, SignerMemoryModel } from '../../models'
-import { executeTransaction as executeTransactionEthereum } from '../ethereum/actions'
+import {
+  AllowanceCollection,
+  SignerMemoryModel,
+} from '../../models'
+import { executeTransaction as executeTransactionEthereum } from '../ethereum/thunks'
 import { executeTransaction as executeTransactionBitcoin } from '../bitcoin/thunks'
 import {
   WALLETS_SET,
@@ -40,6 +43,7 @@ import {
   WALLETS_UPDATE_WALLET,
 } from './constants'
 import { getSigner } from '../persistAccount/selectors'
+import { executeNemTransaction } from '../nem/thunks'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -90,7 +94,6 @@ const initDerivedWallets = () => async (dispatch, getState) => {
 
   Object.values(wallets).forEach((wallet: WalletModel) => {
     if (wallet.isDerived && !wallet.isMain && isOwner(wallet, account)) {
-      console.log('initDerivedWallets', wallet, account)
       dispatch(updateWalletBalance({ wallet }))
 
       switch (wallet.blockchain) {
@@ -118,11 +121,25 @@ const initDerivedWallets = () => async (dispatch, getState) => {
   })
 }
 
+const fallbackCallback = (wallet) => (dispatch) => {
+  const updateBalance = (token: TokenModel) => async () => {
+    if (token.blockchain() === wallet.blockchain) {
+      const dao = tokenService.getDAO(token)
+      const balance = await dao.getAccountBalance(wallet.address)
+      if (balance) {
+        dispatch(setWalletBalance(wallet.id, new Amount(balance, token.symbol(), true)))
+      }
+    }
+  }
+  dispatch(subscribeOnTokens(updateBalance))
+}
+
 const updateWalletBalance = ({ wallet }) => async (dispatch) => {
+  if (wallet.blockchain === BLOCKCHAIN_NEM) {
+    return dispatch(fallbackCallback(wallet))
+  }
   getWalletBalances({ wallet })
     .then((balancesResult) => {
-      console.log('getWalletBalances', wallet, balancesResult)
-
       try {
         dispatch(setWallet(new WalletModel({
           ...wallet,
@@ -139,17 +156,7 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
     .catch((e) => {
       // eslint-disable-next-line no-console
       console.log('call balances from middleware is failed', e)
-      const updateBalance = (token: TokenModel) => async () => {
-        if (token.blockchain() === wallet.blockchain) {
-          const dao = tokenService.getDAO(token)
-          const balance = await dao.getAccountBalance(wallet.address)
-          if (balance) {
-            console.log('setWalletBalance', wallet, new Amount(balance, token.symbol(), true))
-            dispatch(setWalletBalance(wallet.id, new Amount(balance, token.symbol(), true)))
-          }
-        }
-      }
-      dispatch(subscribeOnTokens(updateBalance))
+      dispatch(fallbackCallback(wallet))
     })
 }
 
@@ -205,28 +212,41 @@ const updateAllowance = (allowance) => (dispatch, getState) => {
 }
 
 export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1, advancedParams = null) => async (dispatch) => {
-  const tokenDAO = tokenService.getDAO(token.id())
-  const tx = tokenDAO.transfer(wallet.address, recipient, amount, token)
-  console.log('tokenDAO', tokenDAO, tx, wallet, tokenDAO instanceof BitcoinDAO, advancedParams)
-  console.log('tokenDAO:token', token)
+  try {
+    const tokenDAO = tokenService.getDAO(token.id())
+    const tx = tokenDAO.transfer(wallet.address, recipient, amount, token) // added token for btc like transfers
+    const executeMap = {
+      [BLOCKCHAIN_ETHEREUM]: executeTransactionEthereum,
+      [BLOCKCHAIN_NEM]: executeNemTransaction,
+    }
 
-  if (tokenDAO instanceof BitcoinDAO) {
-    await dispatch(executeTransactionBitcoin({
+    if (tokenDAO instanceof BitcoinDAO) {
+      await dispatch(executeTransactionBitcoin({
+        tx,
+        options: {
+          wallet,
+          token,
+          feeMultiplier,
+          satPerByte: advancedParams && advancedParams.satPerByte,
+        },
+      }))
+
+      return
+    }
+    // execute
+    dispatch(executeMap[wallet.blockchian]({
       tx,
       options: {
-        wallet,
-        token,
         feeMultiplier,
-        satPerByte: advancedParams && advancedParams.satPerByte,
+        walletDerivedPath: wallet.derivedPath,
+        symbol: token.symbol(),
       },
     }))
 
-    return
-  }
-
-  if (tx) {
-    console.log('ethereum transaction', tx)
-    await dispatch(executeTransactionEthereum({ tx, options: { feeMultiplier, walletDerivedPath: wallet.derivedPath } }))
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e)
+    dispatch(notifyError(e))
   }
 }
 

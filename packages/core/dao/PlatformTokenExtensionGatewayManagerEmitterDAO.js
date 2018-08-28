@@ -19,8 +19,8 @@ export default class PlatformTokenExtensionGatewayManagerEmitterDAO extends Abst
     super.connect(web3, options)
 
     this.allEventsEmitter = this.history.events.allEvents({})
-      .on('data', this.handleEventsData.bind(this))
-      .on('error', this.handleEventsError.bind(this))
+      .on('data', this.handleEventsData)
+      .on('error', this.handleEventsError)
   }
 
   disconnect () {
@@ -30,18 +30,6 @@ export default class PlatformTokenExtensionGatewayManagerEmitterDAO extends Abst
       this.history = null
       this.web3 = null
     }
-  }
-
-  handleEventsData (data) {
-    if (!data.event) {
-      return
-    }
-
-    this.emit(data.event, data)
-  }
-
-  handleEventsError (data) {
-    this.emit(data.event + '_error', data)
   }
 
   watchAssetCreate (callback, account) {

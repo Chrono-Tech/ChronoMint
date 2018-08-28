@@ -46,10 +46,6 @@ export default class ERC20DAO extends AbstractTokenDAO {
 
   disconnect () {
     if (this.isConnected) {
-      // this.transferEmitter.removeAllListeners()
-      // this.approvalEmitter.removeAllListeners()
-      // this.transferEmitter = null
-      // this.approvalEmitter = null
       this.contract = null
     }
   }
@@ -98,7 +94,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this.contract.methods.allowance(account, spender).call()
   }
 
-  approve (account: string, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined): Promise {
+  approve (account: string, amount: Amount, feeMultiplier: number = 1, advancedOptions = undefined): Promise {
     return this._tx('approve', [
       account,
       new BigNumber(amount),
@@ -112,7 +108,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     })
   }
 
-  revoke (account: string, symbol: string, feeMultiplier: Number = 1, advancedOptions = undefined): Promise {
+  revoke (account: string, symbol: string, feeMultiplier: number = 1, advancedOptions = undefined): Promise {
     return this._tx('approve', [
       account,
       new BigNumber(0),
@@ -126,7 +122,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     })
   }
 
-  transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier: Number = 1, advancedOptions = undefined): Promise {
+  transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier: number = 1, advancedOptions = undefined): Promise {
     return this._tx(TX_TRANSFER, [
       to,
       new BigNumber(amount),

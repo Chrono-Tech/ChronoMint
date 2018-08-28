@@ -18,6 +18,7 @@ import * as user from '@chronobank/core/dao/constants/UserManagerDAO'
 import layouts from 'layouts/lang'
 import * as votingManager from '@chronobank/core/dao/constants/VotingManagerDAO'
 import * as chronoBankAsset from '@chronobank/core/dao/constants/ChronoBankAssetDAO'
+import nem from './en-tx-nem'
 
 export default {
   copyright: 'Copyright © 2018 LaborX Pty Ltd. All Rights Reserved.',
@@ -158,55 +159,72 @@ export default {
   },
   notices: require('./en-notices'),
   tx: {
+    title: 'New transaction',
     from: 'From',
     to: 'To',
+    amount: 'Amount',
     transactions: 'Transactions',
     blockNumber: 'Block Number',
     noTransactions: 'No transactions',
     confirm: 'Confirm Transaction',
     fee: 'Fee',
+    amountFee: 'Amount+Fee',
     balanceAfter: '%{symbol} balance after',
     feeLeft: 'Transaction fee left',
     notEnough: 'Not enough %{symbol}',
+    eventType: {
+      event: 'event',
+      transaction: 'transaction',
+    },
     TokenManagementInterface: {
       createAssetWithoutFee: {
         title: 'Confirm create token',
+        eventTitle: 'Created token without fee',
       },
       createAssetWithFee: {
         title: 'Confirm create token',
+        eventTitle: 'Created token with fee',
       },
     },
     ChronoBankPlatform: {
       reissueAsset: {
         title: 'Confirm reissue tokens',
+        eventTitle: 'Reissue asset',
       },
       revokeAsset: {
         title: 'Confirm revoke tokens',
+        eventTitle: 'Reissue asset',
       },
       addAssetPartOwner: {
         title: 'Confirm add manager',
+        eventTitle: 'Added manager',
       },
       removeAssetPartOwner: {
         title: 'Confirm remove manager',
+        eventTitle: 'Removed manager',
       },
     },
     UserManager: {
       [user.TX_ADD_CBE]: {
         title: 'Add CBE',
+        eventTitle: 'added CBE',
         name: 'Name',
         address: 'Address',
       },
       [user.TX_REVOKE_CBE]: {
         title: 'Revoke CBE',
+        eventTitle: 'Revoke CBE',
         name: 'Name',
         address: 'Address',
       },
       [user.TX_SET_REQUIRED_SIGNS]: {
         title: 'Set Required Signatures',
+        eventTitle: 'Set required signatures',
         _required: 'Quantity',
       },
       [user.TX_SET_OWN_HASH]: {
         title: 'Update profile',
+        eventTitle: 'Updated profile',
         name: 'Name',
         email: 'E-mail',
         company: 'Company',
@@ -214,6 +232,7 @@ export default {
       },
       [user.TX_SET_MEMBER_HASH]: {
         title: 'Update profile',
+        eventTitle: 'Updated profile',
         address: 'Address',
         name: 'Name',
         email: 'Email',
@@ -227,24 +246,27 @@ export default {
     Ethereum: {
       [eth.TX_TRANSFER]: {
         title: 'Transfer ETH',
+        eventTitle: 'Transfer ETH',
         to: 'Address to',
       },
     },
     /* eslint-disable global-require */
     General: require('./en-tx-general'),
     Bitcoin: require('./en-tx-bitcoin'),
-    Nem: require('./en-tx-nem'),
+    nem,
     Waves: require('./en-tx-waves'),
     /* eslint-enable global-require */
     ContractsManager: {},
     ChronoBankAssetProxy: {
       [erc20.TX_APPROVE]: {
         title: 'Approve TIME',
+        eventTitle: 'Approved TIME',
         account: 'Account',
         amount: 'Amount',
       },
       [erc20.TX_TRANSFER]: {
         title: 'Transfer TIME',
+        eventTitle: 'Transfer TIME',
         recipient: 'Recipient',
         amount: 'Amount',
       },
@@ -252,11 +274,13 @@ export default {
     ChronoBankAssetWithFeeProxy: {
       [erc20.TX_APPROVE]: {
         title: 'Approve LHT',
+        eventTitle: 'Approved LHT',
         account: 'Account',
         amount: 'Amount',
       },
       [erc20.TX_TRANSFER]: {
         title: 'Transfer LHT',
+        eventTitle: 'Transfer LHT',
         recipient: 'Recipient',
         amount: 'Amount',
       },
@@ -264,143 +288,185 @@ export default {
     PendingManager: {
       [operations.TX_CONFIRM]: {
         title: 'Confirm Operation',
+        eventTitle: 'Confirmed Operation',
       },
       [operations.TX_REVOKE]: {
         title: 'Revoke Operation',
+        eventTitle: 'Revoked Operation',
       },
     },
     TimeHolder: {
       [time.TX_DEPOSIT]: {
         title: 'Deposit TIME',
+        eventTitle: 'Deposit TIME',
         amount: 'Amount',
       },
       [time.TX_WITHDRAW_SHARES]: {
         title: 'Withdraw TIME',
+        eventTitle: 'Withdraw TIME',
         amount: 'Amount',
       },
     },
     Rewards: {
       [rewards.TX_WITHDRAW_REWARD]: {
         title: 'Withdraw Bonus',
+        eventTitle: 'Withdraw Bonus',
         amount: 'Amount',
       },
       [rewards.TX_CLOSE_PERIOD]: {
         title: 'Close Bonuses Period',
+        eventTitle: 'Close Bonuses Period',
       },
     },
     AssetDonator: {
       [assetDonator.TX_REQUIRE_TIME]: {
         title: 'Require TIME',
-        donation: 'Donation',
+        eventTitle: 'Require TIME',
+        donation: 'Donation to',
       },
     },
     PlatformsManager: {
       [platformsManager.TX_CREATE_PLATFORM]: {
         title: 'Confirm create platform',
+        eventTitle: 'Created platform',
       },
       [platformsManager.TX_ATTACH_PLATFORM]: {
         title: 'Confirm attach platform',
+        eventTitle: 'Attach platform',
       },
       [platformsManager.TX_DETACH_PLATFORM]: {
         title: 'Confirm detach platform',
+        eventTitle: 'Detach platform',
       },
     },
     ERC20Manager: {
       [erc20Manager.TX_MODIFY_TOKEN]: {
         title: 'Modify Token',
+        eventTitle: 'Modify Token',
       },
       [erc20Manager.TX_REMOVE_TOKEN]: {
         title: 'Remove Token',
+        eventTitle: 'Remove Token',
       },
       [erc20Manager.TX_ADD_TOKEN]: {
         title: 'Add Token',
+        eventTitle: 'Add Token',
       },
     },
     ERC20Interface: {
       [erc20.TX_APPROVE]: {
-        title: 'Approve to transfer your tokens',
-        account: 'Account',
+        title: 'Approve transfer of your tokens',
+        eventTitle: 'Approved transfer of your tokens',
+        spender: 'Spender',
         amount: 'Amount',
       },
       [erc20.TX_TRANSFER]: {
         title: 'Transfer tokens',
-        account: 'Account',
+        eventTitle: 'Transfer tokens',
         amount: 'Amount',
-        to: 'Address to',
       },
     },
     Wallet: {
       transfer: {
         title: 'Transfer',
+        eventTitle: 'Transfer',
         value: 'Value',
-        to: 'To',
         symbol: 'Symbol',
       },
       confirm: {
         title: 'Confirm tx',
+        eventTitle: 'Confirm tx',
         value: 'Value',
-        to: 'To',
         symbol: 'Symbol',
       },
       revoke: {
         title: 'Revoke tx',
+        eventTitle: 'Revoke tx',
         value: 'Value',
-        to: 'To',
         symbol: 'Symbol',
       },
       addOwner: {
         title: 'Add owner',
+        eventTitle: 'Add owner',
         owner: 'New Owner',
       },
       removeOwner: {
         title: 'Remove owner',
+        eventTitle: 'Remove owner',
         owner: 'Owner',
       },
       kill: {
         title: 'Kill wallet',
+        eventTitle: 'Kill wallet',
         to: 'Transfer tokens to',
       },
       changeRequirement: {
         title: 'Change required signatures',
+        eventTitle: 'Change required signatures',
         requiredSignatures: 'New value',
       },
     },
     PollInterface: {
       [pollInterface.TX_ACTIVATE_POLL]: {
         title: 'Activate poll',
+        eventTitle: 'Activate poll',
+        pollAddress: 'Poll address',
+        from: 'From',
       },
       [pollInterface.TX_REMOVE_POLL]: {
         title: 'Remove Poll',
+        eventTitle: 'Remove poll',
+        pollAddress: 'Poll address',
+        from: 'From',
       },
       [pollInterface.TX_END_POLL]: {
         title: 'End Poll',
+        eventTitle: 'End poll',
+        pollAddress: 'Poll address',
+        from: 'From',
       },
       [pollInterface.TX_VOTE]: {
         title: 'Vote',
+        eventTitle: 'Vote',
+        pollAddress: 'Poll address',
+        from: 'From',
+        choiceNumber: 'Choice number',
       },
     },
     VotingManager: {
       [votingManager.TX_CREATE_POLL]: {
-        title: 'Create Poll',
+        modalTitle: 'Create Poll',
+        eventTitle: 'Create Poll',
+        options: 'Options',
+        files: 'Files',
+        description: 'Description',
+        title: 'Title',
+        deadline: 'End Poll Date',
+        votelimit: 'End Poll by the most voted option',
       },
     },
     ChronoBankAsset: {
       [chronoBankAsset.TX_PAUSE]: {
         title: 'Block asset',
+        eventTitle: 'Block asset',
       },
       [chronoBankAsset.TX_UNPAUSE]: {
         title: 'Unblock asset',
+        eventTitle: 'Unblock asset',
       },
       [chronoBankAsset.TX_RESTRICT]: {
         title: 'Add user to blacklist',
+        eventTitle: 'Added user to blacklist',
       },
       [chronoBankAsset.TX_UNRESTRICT]: {
         title: 'Remove user from blacklist',
+        eventTitle: 'Removed user to blacklist',
       },
     },
     WalletsManager: {
       'createWallet': {
         title: 'Create multisignature wallet',
+        eventTitle: 'Created multisignature wallet',
         owners: 'Owners',
         requiredSignatures: 'Required signatures',
         releaseTime: 'Release time',
@@ -408,6 +474,7 @@ export default {
       },
       'create2FAWallet': {
         title: 'Create 2FA wallet',
+        eventTitle: 'Created 2FA wallet',
       },
     },
   },

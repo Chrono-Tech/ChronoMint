@@ -32,8 +32,8 @@ import { getMainAddresses, getMainEthWallet, getMainWalletForBlockchain, getWall
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import WalletModel from '../../models/wallet/WalletModel'
 import { daoByType } from '../daos/selectors'
-import { estimateGas, executeTransaction } from '../ethereum/actions'
-import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from '../../dao/constants/AssetHolderDAO'
+import { estimateGas, executeTransaction } from '../ethereum/thunks'
+import { TX_DEPOSIT, ASSET_DEPOSIT_WITHDRAW } from '../../dao/constants/AssetHolderDAO'
 import { TX_APPROVE } from '../../dao/constants/ERC20DAO'
 import { DUCK_ETH_MULTISIG_WALLET, ETH_MULTISIG_BALANCE, ETH_MULTISIG_FETCHED } from '../multisigWallet/constants'
 import { WALLETS_SET_IS_TIME_REQUIRED, WALLETS_UPDATE_WALLET } from '../wallets/constants'
@@ -306,7 +306,7 @@ export const estimateGasForDeposit = (mode: string, params, callback, gasPriceMu
       tx = dao[TX_APPROVE](...params)
       break
     case TX_DEPOSIT:
-    case TX_WITHDRAW_SHARES:
+    case ASSET_DEPOSIT_WITHDRAW:
       dao = daoByType('TimeHolder')(getState())
       tx = dao[mode](...params)
       break

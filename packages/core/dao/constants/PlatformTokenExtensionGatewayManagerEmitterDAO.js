@@ -3,6 +3,4 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export const en = {
-  provider: 'Provider',
-}
+export const TX_ASSET_CREATED = 'AssetCreated'

@@ -53,7 +53,7 @@ function mapDispatchToProps (dispatch) {
 function mapStateToProps (state, ownProps) {
 
   //region selectors
-  const walletInfo = walletInfoSelector(ownProps.wallet, true, state)
+  const walletInfo = walletInfoSelector(ownProps.wallet, false, state)
   const { selectedCurrency } = getMarket(state)
   const selector = formValueSelector(FORM_SEND_TOKENS)
   const formValues = getFormValues(FORM_SEND_TOKENS)

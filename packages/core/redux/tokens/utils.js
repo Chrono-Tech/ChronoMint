@@ -4,7 +4,6 @@
  */
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
-import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import { getMainSymbolForBlockchain } from './selectors'
 import { Amount } from '../../models'
@@ -14,7 +13,6 @@ import {
   BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LITECOIN,
-  BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
 } from '../../dao/constants'
 
@@ -25,7 +23,6 @@ export const providersMap = {
   [BLOCKCHAIN_BITCOIN_GOLD]: btgProvider,
   [BLOCKCHAIN_LITECOIN]: ltcProvider,
   [BLOCKCHAIN_WAVES]: wavesProvider,
-  [BLOCKCHAIN_NEM]: nemProvider,
 }
 
 export const getProviderByBlockchain = (blockchain) => {

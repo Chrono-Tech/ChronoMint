@@ -8,4 +8,14 @@
 
 .root {
   overflow-x: hidden;
+
+  @include xs-only {
+    padding: 0 10px;
+  }
+
+  :global {
+    .BrandPartial__root {
+      padding-bottom: 100px;
+    }
+  }
 }

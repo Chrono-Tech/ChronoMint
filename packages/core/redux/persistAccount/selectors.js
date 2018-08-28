@@ -16,8 +16,17 @@ export const getSigner = (state) => {
   return decryptedWallet
 }
 
+export const getNetwork = (state) => {
+  return state.get(DUCK_NETWORK)
+}
+
+export const getSelectedNetworkId = (state) => {
+  const { selectedNetworkId } = getNetwork(state)
+  return selectedNetworkId
+}
+
 export const getSelectedNetwork = () => createSelector(
-  (state) => state.get(DUCK_NETWORK),
+  getNetwork,
   (network) => {
     if (!network.selectedNetworkId) {
       return null
