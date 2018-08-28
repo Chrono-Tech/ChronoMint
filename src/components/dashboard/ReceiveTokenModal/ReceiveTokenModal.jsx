@@ -90,6 +90,10 @@ export default class ReceiveTokenModal extends PureComponent {
 
   componentDidMount () {
     QRCode.toDataURL(this.props.address, (err, qrData) => {
+      if (err) {
+        // eslint-disable-next-line no-console
+        console.log(err)
+      }
       this.setState({
         qrData,
       })
