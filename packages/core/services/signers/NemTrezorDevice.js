@@ -4,11 +4,10 @@
  */
 
 import EventEmitter from 'events'
-import nem from 'nem-sdk'
 import TrezorConnect from 'trezor-connect'
 
-export default class NemMemoryDevice extends EventEmitter {
-  constructor ({seed, network}) {
+export default class NemTrezorDevice extends EventEmitter {
+  constructor ({ seed, network }) {
     super()
     this.seed = seed
     this.network = network
@@ -19,17 +18,15 @@ export default class NemMemoryDevice extends EventEmitter {
     const result = await TrezorConnect.nemGetAddress({
       path: path,
       network: this.network,
-    }) 
-    return result.payload.address 
+    })
+    return result.payload.address
   }
 
   async sign (data, path) {
-    const result = await TrezorConnect.nemSignTransaction({       
+    const result = await TrezorConnect.nemSignTransaction({
       path: path,
       transaction: data,
     })
     return result.payload.signature
   }
-
-
 }
