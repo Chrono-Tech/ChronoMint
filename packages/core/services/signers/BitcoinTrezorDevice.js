@@ -4,9 +4,7 @@
  */
 
 import EventEmitter from 'events'
-import bip39 from 'bip39'
 import bitcoin from 'bitcoinjs-lib'
-import coinselect from 'coinselect'
 import TrezorConnect from 'trezor-connect';
 import axios from 'axios'
 
@@ -20,9 +18,9 @@ export default class BitcoinTrezorDevice extends EventEmitter {
 
   // this method is a part of base interface
   getAddress (path) {
-    return  "mnrJYbRVUbizQL2LXsvoqZra4MMpxkRTb2"//bitcoin.HDNode
-            //.fromBase58(xpub, this.network)
-            //.derivePath(path).getAddress()
+    return  bitcoin.HDNode
+            .fromBase58(xpub, this.network)
+            .derivePath(path).getAddress()
   }
 
   async signTransaction (rawTx, path) { // tx object

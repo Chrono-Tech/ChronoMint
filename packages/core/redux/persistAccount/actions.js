@@ -72,14 +72,6 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
 export const decryptAccount = (entry, password) => async (dispatch) => {
   console.log(entry)
   const privateKey = EthereumMemoryDevice.decrypt({entry:entry.encrypted[0].wallet, password })
-  console.log(privateKey)
-  const btcSigner = new BitcoinLedgerDevice({ network: bitcoin.networks.testnet })
- // const address = await btcSigner.getAddress("m/44'/1'/0'/0/0")
- // console.log(address) 
- // const address2 = await btcSigner.getAddress("m/44'/1'/0'/0/1")
- // console.log(address2)
- // console.log(btcSigner)
-  await btcSigner.buildTx("44'/1'/0'/0/0")
   const account = new AccountModel({
     entry,
     privateKey,

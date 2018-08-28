@@ -5,7 +5,6 @@
 
 import EventEmitter from 'events'
 import bitcoin from 'bitcoinjs-lib'
-import coinselect from 'coinselect'
 import TransportU2F from '@ledgerhq/hw-transport-u2f'
 import AppBTC from '@ledgerhq/hw-app-btc'
 import axios from 'axios'
