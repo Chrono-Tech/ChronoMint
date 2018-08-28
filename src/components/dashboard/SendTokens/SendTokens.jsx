@@ -74,6 +74,9 @@ export default class SendTokens extends PureComponent {
       mode,
     }
 
+    console.log('values: ', values, values.toJS())
+    console.log('symbol: ', symbol)
+
     const currentGasLimit = gasLimit || formState.gasLimitEstimated
 
     const token = tokens.item(symbol)
@@ -141,10 +144,12 @@ export default class SendTokens extends PureComponent {
     const { isModal, token } = this.props
     const initialValues = {
       feeMultiplier: 1,
-      symbol: token,
+      symbol: token.symbol(),
       mode: MODE_SIMPLE,
     }
     const SendTokenForm = this.getFormName(token.blockchain())
+
+    console.log('SendTokens wallet: ', this.props.wallet)
 
     if (isModal) {
       return (

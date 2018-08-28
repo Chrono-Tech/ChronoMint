@@ -19,7 +19,7 @@ import './TokensListWidget.scss'
 
 function makeMapStateToProps (state, props) {
   const { walletId } = props
-  let getTokensBalances = walletTokensAmountAndBalanceSelector(walletId)
+  const getTokensBalances = walletTokensAmountAndBalanceSelector(walletId)
   const mapStateToProps = (ownState) => {
     return {
       tokensBalances: getTokensBalances(ownState),

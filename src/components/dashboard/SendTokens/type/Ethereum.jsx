@@ -143,7 +143,6 @@ export default class Ethereum extends PureComponent {
         console.error(error)
       }
     }
-
     if (newProps.mode === MODE_SIMPLE && newProps.feeMultiplier !== this.props.feeMultiplier) {
       this.props.dispatch(change(FORM_SEND_TOKENS, 'gweiPerGas', this.getFormFee(newProps)))
     }
@@ -300,9 +299,9 @@ export default class Ethereum extends PureComponent {
                   <Field
                     component={Select}
                     name='symbol'
-                    value='ETH'
                     styleName='symbolSelector'
                     menu-symbol='symbolSelectorMenu'
+                    floatingLabelStyle={{ color: 'white' }}
                   >
                     {walletInfo.tokens
                       .map((tokenData) => {
@@ -310,7 +309,7 @@ export default class Ethereum extends PureComponent {
                         if (token.isLocked()) {
                           return null
                         }
-                        return (<MenuItem key={token.id()} value={token.id()}>{token.symbol()} </MenuItem>)
+                        return (<MenuItem  key={token.id()} value={token.id()}>{token.symbol()}</MenuItem>)
                       })}
                   </Field>
                 )
