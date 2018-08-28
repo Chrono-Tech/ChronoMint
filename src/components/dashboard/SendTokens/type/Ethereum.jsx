@@ -89,7 +89,7 @@ function mapStateToProps (state, ownProps) {
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_SEND_TOKENS, validate })
-export default class SendTokensForm extends PureComponent {
+export default class Ethereum extends PureComponent {
   static propTypes = {
     selectedCurrency: PropTypes.string,
     account: PropTypes.string,
@@ -300,6 +300,7 @@ export default class SendTokensForm extends PureComponent {
                   <Field
                     component={Select}
                     name='symbol'
+                    value='ETH'
                     styleName='symbolSelector'
                     menu-symbol='symbolSelectorMenu'
                   >
@@ -389,23 +390,27 @@ export default class SendTokensForm extends PureComponent {
         )}
 
         <div styleName='advanced-mode-container'>
-          <div styleName='field'>
-            <Field
-              component={TextField}
-              name='gweiPerGas'
-              label={<Translate value='wallet.gweiPerGas' />}
-              fullWidth
-            />
-          </div>
-          <div styleName='field'>
-            <Field
-              component={TextField}
-              name='gasLimit'
-              label={<Translate value='wallet.gasLimit' />}
-              fullWidth
-            />
-          </div>
-          {this.state.gasLimitEstimated && !this.props.gasLimit &&
+          {mode === MODE_ADVANCED &&
+            <div styleName='field'>
+              <Field
+                component={TextField}
+                name='gweiPerGas'
+                label={<Translate value='wallet.gweiPerGas' />}
+                fullWidth
+              />
+            </div>
+          }
+          {mode === MODE_ADVANCED &&
+            <div styleName='field'>
+              <Field
+                component={TextField}
+                name='gasLimit'
+                label={<Translate value='wallet.gasLimit' />}
+                fullWidth
+              />
+            </div>
+          }
+          {mode === MODE_ADVANCED && this.state.gasLimitEstimated && !this.props.gasLimit &&
           <div styleName='gas-limit-based-container'>
             <span styleName='gas-limit-based'><Translate value={`${prefix}.basedOnLimit`} limit={this.state.gasLimitEstimated} />
               <span
@@ -431,7 +436,7 @@ export default class SendTokensForm extends PureComponent {
               <span styleName='advanced-text'>
                 <Translate value={mode === MODE_SIMPLE ? 'wallet.modeAdvanced' : 'wallet.modeSimple'} />
               </span>
-            </div>)
+            </div>
           </div>
           <div styleName='send'>
             <Button

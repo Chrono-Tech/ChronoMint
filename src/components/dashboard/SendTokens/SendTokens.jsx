@@ -24,6 +24,7 @@ import { mainApprove, mainTransfer } from '@chronobank/core/redux/wallets/action
 import { multisigTransfer } from '@chronobank/core/redux/multisigWallet/actions'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { MultisigEthWalletModel } from '@chronobank/core/models'
 import {
   ACTION_APPROVE,
@@ -31,12 +32,16 @@ import {
   MODE_ADVANCED,
   MODE_SIMPLE,
 } from 'components/constants'
-
 import Bitcoin from './type/Bitcoin'
+import Ethereum from './type/Ethereum'
+import Nem from './type/Nem'
 
-function mapStateToProps (state) {
+function mapStateToProps (state, props) {
+  const token = state.get(DUCK_TOKENS).item(props.tokenSymbol)
+
   return {
     tokens: state.get(DUCK_TOKENS),
+    token,
   }
 }
 
@@ -57,7 +62,8 @@ export default class SendTokens extends PureComponent {
     mainTransfer: PropTypes.func,
     multisigTransfer: PropTypes.func,
     tokens: PropTypes.instanceOf(TokensCollection),
-    token: PropTypes.string,
+    tokenSymbol: PropTypes.string.isRequired,
+    token: PropTypes.instanceOf(TokenModel),
   }
 
   handleSubmit = (values, formState) => {
@@ -110,13 +116,13 @@ export default class SendTokens extends PureComponent {
       case BLOCKCHAIN_BITCOIN_CASH:
       case BLOCKCHAIN_BITCOIN_GOLD:
       case BLOCKCHAIN_LITECOIN:
-        return 'Bitcoin'
+        return Bitcoin
       case BLOCKCHAIN_ETHEREUM:
-        return 'Ethereum'
+        return Ethereum
       case BLOCKCHAIN_WAVES:
         return 'Waves'
       case BLOCKCHAIN_NEM:
-        return 'Nem'
+        return Nem
       default:
         return null
     }
