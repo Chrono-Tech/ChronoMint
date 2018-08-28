@@ -50,8 +50,8 @@ function mapStateToProps (state) {
     selectedWallet: selectedWallet,
     successMessage: formSelector(state, FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE),
     initialValues: {
-      password: 'pwd'
-    }
+      password: 'pwd',
+    },
   }
 }
 
@@ -85,8 +85,7 @@ class LoginPage extends React.Component {
     this.props.initLoginPage()
   }
 
-  componentDidMount() {
-    console.log('this.', this.props)
+  componentDidMount () {
     this.props.submit()
   }
 

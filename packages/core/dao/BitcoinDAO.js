@@ -50,7 +50,7 @@ export default class BitcoinDAO extends EventEmitter {
     return this._name
   }
 
-    getAddressValidator () {
+  getAddressValidator () {
     return bitcoinAddress(this._bitcoinProvider.isAddressValid.bind(this._bitcoinProvider), this._name)
   }
 
@@ -102,8 +102,7 @@ export default class BitcoinDAO extends EventEmitter {
   }
 
   // TODO @ipavlenko: Replace with 'immediateTransfer' after all token DAOs will start using 'submit' method
-  transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1, advancedParams = undefined) {
-    // this.submit(from, to, amount, token, feeMultiplier, advancedParams)
+  transfer (from: string, to: string, amount: BigNumber, token: TokenModel) {
     return {
       from,
       to,

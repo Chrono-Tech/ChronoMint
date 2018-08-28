@@ -6,12 +6,10 @@
 import uuid from 'uuid/v1'
 import type BigNumber from 'bignumber.js'
 import bitcoin from 'bitcoinjs-lib'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 import { TxEntryModel, TxExecModel } from '../../models'
-import { getBtcFee, getProviderByBlockchain } from '../tokens/utils'
-import TransferExecModel from '../../models/TransferExecModel'
+import { getBtcFee } from '../tokens/utils'
 import Amount from '../../models/Amount'
 import { notifyError } from '../notifier/actions'
 import TransferError from '../../models/TransferError'
@@ -20,9 +18,7 @@ import * as BitcoinActions from './actions'
 import * as BitcoinUtils from './utils'
 import { getSigner } from '../persistAccount/selectors'
 
-export const executeTransaction = ({ tx, options = null }) => async (dispatch, getState) => {
-
-  console.log('before updateTx', tx)
+export const executeTransaction = ({ tx, options = null }) => async (dispatch) => {
 
   const updatedTx = await dispatch(prepareTransaction(tx, options))
 
@@ -35,8 +31,6 @@ export const executeTransaction = ({ tx, options = null }) => async (dispatch, g
   })
 
   dispatch(BitcoinActions.createTransaction(entry))
-
-  console.log('updateTx', entry)
 
   dispatch(submitTransaction(entry))
 }
@@ -54,7 +48,7 @@ export const prepareTransaction = (tx, {
     recipient: tx.to,
     amount: tx.value,
     formFee: tokenRate,
-    blockchain: wallet.blockchain
+    blockchain: wallet.blockchain,
   })
 
   return new TxExecModel({
@@ -70,9 +64,9 @@ export const prepareTransaction = (tx, {
     options: {
       advancedParams: {
         satPerByte,
-      }
+      },
 
-    }
+    },
   })
 }
 
@@ -87,7 +81,7 @@ const submitTransaction = (entry: TxEntryModel) => async (dispatch) => {
   }))
 }
 
-const acceptTransaction = (entry: TxEntryModel) => async (dispatch, getState) => {
+const acceptTransaction = (entry: TxEntryModel) => async (dispatch) => {
   dispatch(BitcoinActions.acceptTransaction(entry))
 
   dispatch(processTransaction(entry))
@@ -112,9 +106,7 @@ const processTransaction = (entry: TxEntryModel) => async (dispatch, getState) =
     privateKey = privateKey.slice(2)
   }
 
-  console.log('processTransaction', privateKey, network)
   const engine = BitcoinUtils.getEngine(network, blockchain, privateKey)
-  console.log('processTransaction:engine', engine)
   const utxos = await engine.node.getAddressUTXOS(from)
   const options = {
     from,
@@ -123,12 +115,11 @@ const processTransaction = (entry: TxEntryModel) => async (dispatch, getState) =
     feeRate: fee,
   }
   const { tx } = await dispatch(createTransaction(to, amount, utxos, options))
-  console.log('createTx', tx, entry)
   return engine.node.send(from, tx.toHex())
 
 }
 
-const createTransaction = (to, amount: BigNumber, utxos, options) => async (dispatch) => {
+const createTransaction = (to, amount: BigNumber, utxos, options) => async () => {
   const { from, feeRate, engine } = options
   const { inputs, outputs, fee } = BitcoinUtils.describeTransaction(to, amount, feeRate, utxos)
   const signer = engine.wallet
@@ -150,7 +141,6 @@ const createTransaction = (to, amount: BigNumber, utxos, options) => async (disp
   engine.signTransaction(txb, inputs, signer.keyPair)
 
   const buildTransaction = await txb.build()
-  console.log('en', engine, txb, buildTransaction, inputs, outputs, fee, feeRate)
 
   return {
     tx: buildTransaction,

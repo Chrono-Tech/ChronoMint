@@ -83,7 +83,6 @@ export class BitcoinEngine {
 
     // const pk = this._wallet.keyPair.getPublicKeyBuffer()
     // const spk = bitcoin.script.pubKey.output.encode(pk)
-    console.log('asd')
 
     const txb = new bitcoin.TransactionBuilder(this._network)
     for (const input of inputs) {

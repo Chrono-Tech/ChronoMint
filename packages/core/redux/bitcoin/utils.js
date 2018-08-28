@@ -3,18 +3,17 @@ import coinselect from 'coinselect'
 import bitcoin from 'bitcoinjs-lib'
 import bigi from 'bigi'
 import {
-  COIN_TYPE_BTC_MAINNET,
-  COIN_TYPE_BTC_TESTNET, COIN_TYPE_BTG_MAINNET, COIN_TYPE_BTG_TESTNET,
-  COIN_TYPE_LTC_MAINNET,
-  COIN_TYPE_LTC_TESTNET
-} from '@chronobank/login/network/constants'
-import { selectBCCNode, selectBTCNode, selectBTGNode, selectLTCNode } from '@chronobank/login/network/BitcoinNode'
+  selectBCCNode,
+  selectBTCNode,
+  selectBTGNode,
+  selectLTCNode,
+} from '@chronobank/login/network/BitcoinNode'
 
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_LITECOIN
+  BLOCKCHAIN_LITECOIN,
 } from '../../dao/constants'
 
 export const describeTransaction = (to, amount: BigNumber, feeRate, utxos) => {
@@ -64,9 +63,8 @@ export const signInputsBitcoinCash = (txb, inputs, wallet) => {
 
 export const getEngine = (network, blockchain, privateKey) => {
   let wallet, node
-  console.log('getEngine', network, blockchain, privateKey)
 
-  switch (blockchain){
+  switch (blockchain) {
     case BLOCKCHAIN_BITCOIN:
       const bitcoinNetwork = bitcoin.networks[network.bitcoin]
       wallet = createBitcoinWalletFromPK(privateKey, bitcoinNetwork)
@@ -118,7 +116,6 @@ export const getEngine = (network, blockchain, privateKey) => {
 
 // Method was moved from privateKeyProvider
 export const createBitcoinWalletFromPK = (privateKey, network) => {
-  console.log('privateKey', privateKey, network, bigi.fromBuffer(Buffer.from(privateKey, 'hex')), Buffer.from(privateKey, 'hex'))
   const keyPair = new bitcoin.ECPair(bigi.fromBuffer(Buffer.from(privateKey, 'hex')), null, {
     network,
   })

@@ -24,7 +24,6 @@ import {
 export class BitcoinProvider extends AbstractProvider {
   constructor (selectNode, id) {
     super(...arguments)
-    console.log('CONSTRUCTOR BitcoinProvider', this)
     this._handleTransaction = (tx) => this.onTransaction(tx)
     this._handleBalance = (balance) => this.onBalance(balance)
     this._handleLastBlock = (lastBlock) => this.onLastBlock(lastBlock)
@@ -80,7 +79,6 @@ export class BitcoinProvider extends AbstractProvider {
   async getAccountBalances (address) {
     const node = this._selectNode(this._engine)
     const result = await node.getAddressInfo(address || this._engine.getAddress())
-    console.log('res', node, this._engine, result.balance0.toString(), result.balance6.toString())
     const { balance0, balance6 } = result
     return balance0 || balance6
   }
@@ -100,7 +98,6 @@ export class BitcoinProvider extends AbstractProvider {
       feeRate,
     }
     const { tx /*, fee*/ } = this._engine.createTransaction(to, amount, utxos, options)
-    console.log('BITCOINDAO:transfer', this._engine, node, utxos, tx)
     return node.send(from, tx.toHex())
   }
 

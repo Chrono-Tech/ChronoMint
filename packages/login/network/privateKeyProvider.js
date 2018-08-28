@@ -37,7 +37,6 @@ class PrivateKeyProvider {
     const nem = network && network.nem && NemWallet.fromPrivateKey(privateKey, nemSdk.model.network.data[network.nem])
     const waves = network && network.waves && WavesWallet.fromPrivateKey(privateKey, WavesApi[network.waves])
 
-    console.log('privateKeyProvider', privateKey, btc, bcc, btg, ltc, network, bitcoin.networks)
     return {
       networkCode,
       ethereum: engine,//new EthereumEngine(ethereumWallet, network, url, null, lastDeriveNumbers),
@@ -51,7 +50,6 @@ class PrivateKeyProvider {
   }
 
   createBitcoinWalletFromPK (privateKey, network) {
-    console.log('createBitcoinWalletFromPK', network)
     const keyPair = new bitcoin.ECPair(bigi.fromBuffer(Buffer.from(privateKey, 'hex')), null, {
       network,
     })

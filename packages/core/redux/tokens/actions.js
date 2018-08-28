@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import WavesDAO from '@chronobank/core/dao/WavesDAO'
@@ -25,12 +24,8 @@ import { web3Selector } from '../ethereum/selectors'
 import { estimateGas } from '../ethereum/thunks'
 import { getBtcFee } from './utils'
 
-import {
-  TRANSFER_CANCELLED,
-} from '../../models/constants/TransferError'
-import {
-  WATCHER_TX_SET,
-} from '../watcher/constants'
+import { TRANSFER_CANCELLED } from '../../models/constants/TransferError'
+import { WATCHER_TX_SET } from '../watcher/constants'
 import {
   DUCK_TOKENS,
   TOKENS_FAILED,
@@ -43,17 +38,14 @@ import {
   EVENT_ERC20_TOKENS_COUNT,
   EVENT_NEW_ERC20_TOKEN,
 } from '../../dao/constants/ERC20ManagerDAO'
-import {
+import
+{
   NEM_DECIMALS,
   NEM_XEM_NAME,
   NEM_XEM_SYMBOL,
 } from '../../dao/constants/NemDAO'
 import {
-  BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_ETHEREUM,
-  BLOCKCHAIN_LITECOIN,
   ETH,
   EVENT_NEW_BLOCK,
   EVENT_NEW_TOKEN,
@@ -310,7 +302,7 @@ export const estimateGasTransfer = (tokenId, params, callback, gasPriceMultiplie
 export const estimateBtcFee = (params, callback) => async () => {
   try {
     callback(null, {
-      fee: await getBtcFee(params)
+      fee: await getBtcFee(params),
     })
   } catch (e) {
     callback(e)
