@@ -119,8 +119,8 @@ export const describePendingTx = (entry, context = {}) => {
           inputs: info.inputs,
           params: info.params,
           ...context,
-          abi: describer.abi
-        }
+          abi: describer.abi,
+        },
       )
 
       if (desc) {
@@ -147,7 +147,7 @@ export const describeTx = (entry, context = {}) => {
           params,
           ...context,
           abi: describer.abi,
-        }
+        },
       )
 
       if (desc) {
@@ -171,6 +171,46 @@ export const describePendingNemTx = (entry, context = {}) => {
     : new Amount(prepared.amount, token.symbol()) // we can send only one mosaic
 
   const path = `tx.nem.transfer`
+
+  return new LogTxModel({
+    key: tx.block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
+    type: 'tx',
+    name: 'transfer',
+    date: new Date(tx.time ? (tx.time * 1000) : null),
+    icon: 'event',
+    title: `${path}.title`,
+    message: tx.to,
+    target: null,
+    fields: [
+      {
+        value: tx.from,
+        description: `${path}.from`,
+      },
+      {
+        value: tx.to,
+        description: `${path}.to`,
+      },
+      {
+        value: amount,
+        description: `${path}.amount`,
+      },
+      {
+        value: fee,
+        description: `${path}.fee`,
+      },
+    ],
+  })
+}
+
+export const describePendingBitcoinTx = (entry, context = {}) => {
+  const { tx, block } = entry
+  const { token } = context
+
+  const fee = new Amount(tx.fee, token.symbol())
+
+  const amount = new Amount(tx.amount, token.symbol())
+
+  const path = `tx.${token.blockchain()}.transfer`
 
   return new LogTxModel({
     key: tx.block ? `${block.hash}/${tx.transactionIndex}` : uuid(),

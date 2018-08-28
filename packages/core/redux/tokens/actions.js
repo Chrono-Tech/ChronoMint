@@ -22,7 +22,7 @@ import { daoByType } from '../daos/selectors'
 import TxExecModel from '../../models/TxExecModel'
 import { web3Selector } from '../ethereum/selectors'
 import { estimateGas } from '../ethereum/thunks'
-import { getBtcFee } from './utils'
+import { getBtcFee } from '../bitcoin/utils'
 
 import { TRANSFER_CANCELLED } from '../../models/constants/TransferError'
 import { WATCHER_TX_SET } from '../watcher/constants'

@@ -165,6 +165,10 @@ export class BitcoinProvider extends AbstractProvider {
 
     return this._engine && coinType ? this._engine.createNewChildAddress(deriveNumber, coinType) : null
   }
+
+  getNode () {
+    return this._selectNode(this._engine)
+  }
 }
 
 export const btcProvider = new BitcoinProvider(selectBTCNode, BLOCKCHAIN_BITCOIN)

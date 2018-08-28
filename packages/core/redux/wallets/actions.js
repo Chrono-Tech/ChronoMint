@@ -26,7 +26,6 @@ import Amount from '../../models/Amount'
 import { getAccount } from '../session/selectors'
 import { updateEthMultisigWalletBalance } from '../multisigWallet/actions'
 import ethereumDAO from '../../dao/EthereumDAO'
-import BitcoinDAO from '../../dao/BitcoinDAO'
 import { getMainEthWallet, getWallets } from './selectors/models'
 import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
@@ -34,8 +33,8 @@ import {
   AllowanceCollection,
   SignerMemoryModel,
 } from '../../models'
-import { executeTransaction as executeTransactionEthereum } from '../ethereum/thunks'
-import { executeTransaction as executeTransactionBitcoin } from '../bitcoin/thunks'
+import { executeTransaction } from '../ethereum/thunks'
+import { executeBitccoinTransaction } from '../bitcoin/thunks'
 import {
   WALLETS_SET,
   WALLETS_SET_NAME,
@@ -216,30 +215,19 @@ export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amo
     const tokenDAO = tokenService.getDAO(token.id())
     const tx = tokenDAO.transfer(wallet.address, recipient, amount, token) // added token for btc like transfers
     const executeMap = {
-      [BLOCKCHAIN_ETHEREUM]: executeTransactionEthereum,
+      [BLOCKCHAIN_ETHEREUM]: executeTransaction,
       [BLOCKCHAIN_NEM]: executeNemTransaction,
+      [BLOCKCHAIN_BITCOIN]: executeBitccoinTransaction,
     }
 
-    if (tokenDAO instanceof BitcoinDAO) {
-      await dispatch(executeTransactionBitcoin({
-        tx,
-        options: {
-          wallet,
-          token,
-          feeMultiplier,
-          satPerByte: advancedParams && advancedParams.satPerByte,
-        },
-      }))
-
-      return
-    }
     // execute
-    dispatch(executeMap[wallet.blockchian]({
+    dispatch(executeMap[wallet.blockchain]({
       tx,
       options: {
         feeMultiplier,
         walletDerivedPath: wallet.derivedPath,
         symbol: token.symbol(),
+        ...advancedParams,
       },
     }))
 
@@ -261,7 +249,7 @@ export const mainApprove = (token: TokenModel, amount: Amount, spender: string, 
     const tokenDAO = tokenService.getDAO(token)
     const tx = tokenDAO.approve(spender, amount, account)
     if (tx) {
-      await dispatch(executeTransactionEthereum({ tx, options: { feeMultiplier } }))
+      await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
     }
   } catch (e) {
     dispatch(notifyError(e, 'mainApprove'))
@@ -281,7 +269,7 @@ export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Nu
     const tokenDAO = tokenService.getDAO(token)
     const tx = tokenDAO.revoke(spender, token.symbol(), account)
     if (tx) {
-      await dispatch(executeTransactionEthereum({ tx, options: { feeMultiplier } }))
+      await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
     }
   } catch (e) {
     dispatch(notifyError(e, 'mainRevoke'))

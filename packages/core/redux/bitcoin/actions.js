@@ -7,7 +7,7 @@ import * as BitcoinConstants from './constants'
 
 export const createTransaction = (entry) => ({
   type: BitcoinConstants.TX_CREATE,
-  entry
+  entry,
 })
 
 export const acceptTransaction = (entry) => ({
