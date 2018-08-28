@@ -6,7 +6,6 @@
 import bitcoin from 'bitcoinjs-lib'
 import nemSdk from 'nem-sdk'
 import * as WavesApi from '@waves/waves-api'
-import bigi from 'bigi'
 import { byEthereumNetwork } from './NetworkProvider'
 import { createBCCEngine, createBTCEngine, createBTGEngine, createLTCEngine } from './BitcoinUtils'
 import EthereumEngine from './EthereumEngine'
@@ -50,16 +49,20 @@ class PrivateKeyProvider {
   }
 
   createBitcoinWalletFromPK (privateKey, network) {
-    const keyPair = new bitcoin.ECPair(bigi.fromBuffer(Buffer.from(privateKey, 'hex')), null, {
-      network,
-    })
+    const keyPair = new bitcoin.ECPair.fromPrivateKey(
+      Buffer.from(privateKey, 'hex'),
+      {
+        network,
+      }
+    )
     return {
       keyPair,
       getNetwork () {
-        return keyPair.getNetwork()
+        return keyPair.network
       },
       getAddress () {
-        return keyPair.getAddress()
+        const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network })
+        return address
       },
     }
   }
