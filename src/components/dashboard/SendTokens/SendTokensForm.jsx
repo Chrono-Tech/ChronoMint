@@ -89,12 +89,6 @@ function mapStateToProps (state, ownProps) {
     gasLimit,
     gweiPerGas,
     gasPriceMultiplier: getGasPriceMultiplier(token.blockchain())(state),
-    initialValues: {//todo REMOVE
-      mode: MODE_SIMPLE,
-      symbol: 'BTC',
-      amount: '0.0001',
-      recipient: 'n1TybqwaLjBLJ6foVwtV9m8uQmVEjBBuQD',
-    },
   }
 }
 

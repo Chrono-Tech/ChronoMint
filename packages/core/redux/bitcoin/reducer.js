@@ -3,50 +3,49 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { omit } from 'lodash'
-import { TX_CREATE, TX_REMOVE, TX_UPDATE } from './constants'
+import { TX_UPDATE } from './constants'
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_LITECOIN,
+} from '../../dao/constants'
+
+const initialSubState = { pending: {} }
 
 const initialState = () => ({
-  pending: {},
+  [BLOCKCHAIN_BITCOIN]: {
+    ...initialSubState,
+  },
+  [BLOCKCHAIN_BITCOIN_CASH]: {
+    ...initialSubState,
+  },
+  [BLOCKCHAIN_BITCOIN_GOLD]: {
+    ...initialSubState,
+  },
+  [BLOCKCHAIN_LITECOIN]: {
+    ...initialSubState,
+  },
 })
 
 const mutations = {
-  [TX_CREATE] (state, { entry }) {
+  [TX_UPDATE] (state, { entry }) {
     const address = entry.tx.from
-    const pending = state.pending
+    const blockchainScope = state[entry.blockchain]
+    const pending = blockchainScope.pending
     const scope = pending[address]
     return {
       ...state,
-      pending: {
-        ...pending,
-        [address]: {
-          ...scope,
-          [entry.key]: entry,
+      [entry.blockchain]: {
+        ...blockchainScope,
+        pending: {
+          ...pending,
+          [address]: {
+            ...scope,
+            [entry.key]: entry,
+          },
         },
       },
-    }
-  },
-  [TX_UPDATE] (state, { key, address, entry }) {
-    const scope = state.pending[address]
-    if (!scope || !scope[key]) return state
-    return {
-      ...state,
-      pending: {
-        [address]: {
-          ...scope,
-          [key]: entry,
-        },
-      },
-    }
-  },
-  [TX_REMOVE] (state, { key, address }) {
-    const scope = state.pending[address]
-    if (!scope) return state
-    const entry = scope[key]
-    if (!entry) return state
-    return {
-      ...state,
-      pending: omit(state.pending, [key]),
     }
   },
 }

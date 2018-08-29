@@ -7,9 +7,9 @@ import BigNumber from 'bignumber.js'
 import bitcoin from 'bitcoinjs-lib'
 import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
 import {
-  TxExecModel,
-  TransferNoticeModel,
   ErrorNoticeModel,
+  TransferNoticeModel,
+  TxExecModel,
 } from '../../models'
 import * as BitcoinActions from './actions'
 import * as BitcoinUtils from './utils'
@@ -18,27 +18,6 @@ import { describePendingBitcoinTx } from '../../describers'
 import { getToken } from '../tokens/selectors'
 import { pendingEntrySelector } from './selectors'
 import { notify } from '../notifier/actions'
-
-const bitcoinTxStatus = (key, address, props) => (dispatch, getState) => {
-  const pending = pendingEntrySelector()(getState())
-  const scope = pending[address]
-  if (!scope) {
-    return null
-  }
-  const entry = scope[key]
-  if (!entry) {
-    return null
-  }
-
-  return dispatch(BitcoinActions.bitcoinTxUpdate(
-    key,
-    address,
-    BitcoinUtils.createBitcoinTxEntryModel({
-      ...entry,
-      ...props,
-    }),
-  ))
-}
 
 export const executeBitccoinTransaction = ({ tx, options = null }) => async (dispatch, getState) => {
   const token = getToken(options.symbol)(getState())
@@ -105,7 +84,7 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
   const state = getState()
   const signer = getSigner(state)
 
-  const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key)(getState())
+  const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key, entry.blockchain)(getState())
 
   if (!selectedEntry) {
     // eslint-disable-next-line no-console
@@ -123,7 +102,7 @@ const rejectTransaction = (entry) => (dispatch) => dispatch(BitcoinActions.rejec
 
 const processTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   await dispatch(signTransaction({ entry, signer }))
-  const signedEntry = pendingEntrySelector(entry.tx.from, entry.key)(getState())
+  const signedEntry = pendingEntrySelector(entry.tx.from, entry.key, entry.blockchain)(getState())
   if (!signedEntry) {
     // eslint-disable-next-line no-console
     console.error('signedEntry is null', entry)
@@ -173,7 +152,7 @@ const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
   })))
 
   // eslint-disable-next-line
-  entry = pendingEntrySelector(entry.tx.from, entry.key)(getState())
+  entry = pendingEntrySelector(entry.tx.from, entry.key, entry.blockchain)(getState())
   if (!entry) {
     // eslint-disable-next-line no-console
     console.error('entry is null', entry)
@@ -192,27 +171,38 @@ const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
   const res = await node.send(entry.tx.from, entry.tx.signed.toHex())
 
   if (res && res.hash) {
-    dispatch(bitcoinTxStatus(entry.key, entry.tx.from, { isSent: true, isMined: false, hash: res.hash }))
+    dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
+      ...entry,
+      tx: {
+        ...entry.tx,
+        isSent: true,
+        isMined: false,
+        hash: res.hash,
+      },
+    })))
+
     dispatch(notifyBitcoinTransfer(entry))
   }
 
   if (res.code === 0) {
-    dispatch(bitcoinTxStatus(entry.key, entry.tx.from, { isErrored: true, error: res.message }))
+    dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
+      ...entry,
+      tx: {
+        ...entry.tx,
+        isErrored: true,
+        error: res.message,
+      },
+    })))
     dispatch(notifyBitcoinError(res))
   }
 }
 
 const notifyBitcoinTransfer = (entry) => (dispatch, getState) => {
   const { tx } = entry
-  const { prepared } = tx
   const token = getToken(entry.symbol)(getState())
 
-  const amount = prepared.mosaics
-    ? prepared.mosaics[0].quantity  // we can send only one mosaic
-    : prepared.amount
-
   dispatch(notify(new TransferNoticeModel({
-    value: token.removeDecimals(amount),
+    value: token.removeDecimals(tx.amount),
     symbol: token.symbol(),
     from: entry.tx.from,
     to: entry.tx.to,

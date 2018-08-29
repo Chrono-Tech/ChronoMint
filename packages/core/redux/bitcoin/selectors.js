@@ -8,13 +8,13 @@ import { DUCK_BITCOIN } from './constants'
 
 export const bitcoinSelector = () => (state) => state.get(DUCK_BITCOIN)
 
-export const bitcoinPendingSelector = () => createSelector(
+export const bitcoinPendingSelector = (blockchain) => createSelector(
   bitcoinSelector(),
-  (nem) => nem.pending,
+  (scope) => scope[blockchain].pending,
 )
 
-export const pendingEntrySelector = (address, key) => createSelector(
-  bitcoinPendingSelector(),
+export const pendingEntrySelector = (address, key, blockchain) => createSelector(
+  bitcoinPendingSelector(blockchain),
   (pending) => {
     if (address in pending) {
       return pending[address][key] || null

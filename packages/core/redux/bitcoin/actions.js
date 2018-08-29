@@ -5,17 +5,15 @@
 
 import * as BitcoinConstants from './constants'
 
-export const createTransaction = (entry) => ({
-  type: BitcoinConstants.TX_CREATE,
-  entry,
-})
-
 export const bitcoinTxUpdate = (entry) => ({
   type: BitcoinConstants.TX_UPDATE,
   key: entry.key,
   address: entry.tx.from,
   entry,
 })
+
+export const createTransaction = (entry) =>
+  bitcoinTxUpdate(entry)
 
 export const acceptTransaction = (entry) =>
   bitcoinTxUpdate({ ...entry, isAccepted: true, isPending: true })
