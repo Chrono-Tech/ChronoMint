@@ -27,12 +27,12 @@ export class BitcoinEngine {
   }
 
   getPrivateKey () {
-    return this._wallet.keyPair.d.toBuffer().toString('hex')
+    return Buffer.from(this._wallet.keyPair.privateKey, 'hex').toString('hex')
   }
 
   createNewChildAddress (deriveNumber = 0, coinType) {
     const wallet = bitcoin.HDNode
-      .fromSeedBuffer(this._wallet.keyPair.d.toBuffer(), this._network)
+      .fromSeedBuffer(Buffer.from(this._wallet.keyPair.privateKey, 'hex'), this._network)
       .derivePath(`m/44'/${coinType}'/0'/0/0/${deriveNumber}`)
 
     this._walletsMap[wallet.getAddress()] = wallet

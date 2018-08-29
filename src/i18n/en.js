@@ -719,6 +719,7 @@ export default {
       receivingTitle: 'Your receiving %{symbol} address',
       qrTitle: 'Your QR code for the %{symbol} address',
       buyTitle: 'Also, you can buy %{symbol} in exchanges',
+      error: 'Something wrong.',
     },
     RewardsPeriod: {
       rewardsPeriodIndex: 'Bonus period #%{index}',

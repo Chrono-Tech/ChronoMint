@@ -48,6 +48,12 @@ export default class Snackbar extends PureComponent {
     }
   }
 
+  handleRequestClose () {
+    if (typeof this.props.onRequestClose === 'function') {
+      this.props.onRequestClose()
+    }
+  }
+
   render () {
     const notice = this.props.notice
     const address = notice.address()
@@ -71,11 +77,5 @@ export default class Snackbar extends PureComponent {
         }
       </div>
     )
-  }
-
-  handleRequestClose () {
-    if (this.props.onRequestClose) {
-      this.props.onRequestClose()
-    }
   }
 }
