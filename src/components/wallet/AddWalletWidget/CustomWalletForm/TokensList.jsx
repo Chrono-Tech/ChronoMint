@@ -6,7 +6,7 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Checkbox, TextField } from 'redux-form-material-ui'
-import { I18n } from '@chronobank/core-dependencies/i18n'
+import { I18n } from 'react-redux-i18n'
 import { Field } from 'redux-form/immutable'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'

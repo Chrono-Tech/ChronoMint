@@ -4,7 +4,7 @@
  */
 
 import moment from 'moment'
-import { setLocale } from '@chronobank/core-dependencies/i18n'
+import { setLocale } from 'react-redux-i18n'
 import localStorage from 'utils/LocalStorage'
 import ipfs from '@chronobank/core-dependencies/utils/IPFS'
 import userMonitorService from 'user/monitorService'
