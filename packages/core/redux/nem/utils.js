@@ -22,7 +22,8 @@ export const createNemTxEntryModel = (entry, options = {}) =>
   })
 
 export const formatFee = (fee) => {
-  return nemSdk.model.format.nemValue(fee)[0] + "." + nemSdk.model.nemValue(fee)[1]
+  const [integer, fractional] = nemSdk.utils.format.nemValue(fee)
+  return parseFloat(integer + "." + fractional)
 }
 
 export const describeXemTransaction = (tx, network) => {

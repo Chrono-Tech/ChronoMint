@@ -14,6 +14,7 @@ import * as NemActions from './actions'
 import * as NemUtils from './utils'
 import { getToken } from '../tokens/selectors'
 import { notify } from '../notifier/actions'
+import tokenService from '../../services/TokenService'
 
 const notifyNemTransfer = (entry) => (dispatch, getState) => {
   const { tx } = entry
@@ -55,9 +56,16 @@ const nemTxStatus = (key, address, props) => (dispatch, getState) => {
   ))
 }
 
-export const estimateNemFee = ({ tx }) => async (dispatch) => {
-  const preparedTx = await dispatch(prepareTransaction({ tx }))
-  return NemUtils.formatFee(preparedTx.fee)
+export const estimateNemFee = (params, callback) => async (dispatch) => {
+  try {
+    const { from, to, amount, token } = params
+    const nemDao = tokenService.getDAO(token.symbol())
+    const tx = nemDao.transfer(from, to, amount, token)
+    const preparedTx = await dispatch(prepareTransaction({ tx }))
+    callback(null, { fee: NemUtils.formatFee(preparedTx.prepared.fee) })
+  } catch (e) {
+    callback(e)
+  }
 }
 
 export const executeNemTransaction = ({ tx, options }) => async (dispatch) => {

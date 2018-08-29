@@ -18,7 +18,6 @@ import TokenValue from 'components/common/TokenValue/TokenValue'
 import {
   ACTION_TRANSFER,
   FORM_SEND_TOKENS,
-  MODE_SIMPLE,
 } from 'components/constants'
 
 import { TOKEN_ICONS } from 'assets'
@@ -44,9 +43,8 @@ import validate from '../validate'
 
 function mapDispatchToProps (dispatch) {
   return {
-    estimateFee: async (params, callback) => {
-      const fee = await dispatch(estimateNemFee(params, callback))
-      return fee
+    estimateFee: (params, callback) => {
+      dispatch(estimateNemFee(params, callback))
     },
   }
 }
@@ -65,6 +63,8 @@ function mapStateToProps (state, ownProps) {
   const mode = selector(state, 'mode')
   const formErrors = getFormSyncErrors(FORM_SEND_TOKENS)(state)
   const token = state.get(DUCK_TOKENS).item(tokenId)
+
+  console.log('NEM send token: ', token, token.toJSON())
 
   return {
     selectedCurrency,
@@ -116,16 +116,17 @@ export default class Nem extends PureComponent {
 
   componentWillReceiveProps (newProps) {
 
+    console.log('componentWillReceiveProps: ', newProps, newProps.address)
+
     if ((newProps.formValues !== this.props.formValues) &&
       newProps.amount > 0) {
       try {
         const value = new Amount(newProps.token.addDecimals(new BigNumber(newProps.amount)), newProps.symbol)
         this.handleEstimateFee(
-          newProps.address,
+          newProps.wallet.address,
           newProps.recipient,
           value,
-          this.getFormFee(newProps),
-          newProps.token.blockchain(),
+          newProps.token,
         )
       } catch (error) {
         // eslint-disable-next-line
@@ -150,20 +151,20 @@ export default class Nem extends PureComponent {
     })
   }
 
-  handleEstimateFee = (address, recipient, amount, formFee, blockchain) => {
+  handleEstimateFee = (address, recipient, amount, token) => {
     clearTimeout(this.timeout)
     this.setState({
       feeLoading: true,
     }, () => {
       this.timeout = setTimeout(() => {
         const params = {
-          address,
-          recipient,
+          from: address,
+          to: recipient,
           amount,
-          formFee,
-          blockchain,
+          token,
         }
-        this.props.estimateFee(params, (error, { fee }) => {
+        this.props.estimateFee(params, (error, result) => {
+          const { fee } = result
           if (error) {
             this.setState({
               feeError: true,
@@ -178,10 +179,6 @@ export default class Nem extends PureComponent {
         })
       }, 1000)
     })
-  }
-
-  getFormFee = (props = this.props) => {
-    return this.props.mode === MODE_SIMPLE ? Number(((props.feeMultiplier) * props.token.feeRate()).toFixed(1)) : props.satPerByte
   }
 
   getTransactionFeeDescription = () => {
@@ -203,10 +200,11 @@ export default class Nem extends PureComponent {
     }
 
     if (this.state.fee) {
+      console.log('this.state.fee: ', this.state.fee)
       return (
         <span styleName='description'>
-          {`${this.props.token.symbol()}  ${this.state.fee}`}
-          <TokenValue renderOnlyPrice onlyPriceValue value={new Amount(this.state.fee, this.props.token.symbol())} />
+          {`${this.props.token.symbol()}  ${this.state.fee} (≈${this.props.selectedCurrency} `}
+          <TokenValue renderOnlyPrice onlyPriceValue value={new Amount(this.state.fee, this.props.token.symbol())} />{')'}
         </span>)
     }
 
@@ -215,6 +213,8 @@ export default class Nem extends PureComponent {
 
   renderHead () {
     const { token, wallet, tokenInfo } = this.props
+
+    console.log('selectedCurrency: ', this.props.selectedCurrency)
 
     return (
       <div styleName='head'>

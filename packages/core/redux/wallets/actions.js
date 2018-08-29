@@ -211,8 +211,7 @@ const updateAllowance = (allowance) => (dispatch, getState) => {
 export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async (dispatch) => {
   try {
     const tokenDAO = tokenService.getDAO(token.id())
-    console.log('tokenDAO: ', tokenDAO, wallet)
-    const tx = tokenDAO.transfer(wallet.address, recipient, amount, token) // added token for btc like transfers
+    const tx = tokenDAO.transfer(wallet.address, recipient, amount, token)
     const executeMap = {
       [BLOCKCHAIN_BITCOIN]: () => {}, // wait bitcoin Tx
       [BLOCKCHAIN_ETHEREUM]: executeTransaction,

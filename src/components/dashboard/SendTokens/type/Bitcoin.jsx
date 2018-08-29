@@ -197,7 +197,8 @@ export default class Bitcoin extends PureComponent {
           formFee,
           blockchain,
         }
-        this.props.estimateFee(params, (error, { fee }) => {
+        this.props.estimateFee(params, (error, result) => {
+          const { fee } = result
           if (error) {
             this.setState({
               feeError: true,
