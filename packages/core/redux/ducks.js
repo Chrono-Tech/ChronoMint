@@ -7,10 +7,10 @@ import { combineReducers } from 'redux-immutable'
 
 import assetsHolder from './assetsHolder/reducer'
 import assetsManager from './assetsManager/reducer'
+import bitcoin from './bitcoin/reducer'
 import dao from './daos/reducer'
 import device from './device/reducer'
 import ethereum from './ethereum/reducer'
-import bitcoin from './bitcoin/reducer'
 import ethMultisigWallet from './multisigWallet/reducer'
 import events from './events/reducer'
 import mainWallet from './mainWallet/reducer'
@@ -31,9 +31,9 @@ import watcher from './watcher/reducer'
 const coreReducers = {
   assetsHolder,
   assetsManager,
+  bitcoin,
   dao,
   device,
-  bitcoin,
   ethereum,
   ethMultisigWallet,
   events,

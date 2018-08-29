@@ -2,7 +2,6 @@ import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/
 import type BigNumber from 'bignumber.js'
 import coinselect from 'coinselect'
 import bitcoin from 'bitcoinjs-lib'
-import bigi from 'bigi'
 import {
   selectBCCNode,
   selectBTCNode,
@@ -117,16 +116,15 @@ export const getEngine = (network, blockchain, privateKey) => {
 
 // Method was moved from privateKeyProvider
 export const createBitcoinWalletFromPK = (privateKey, network) => {
-  const keyPair = new bitcoin.ECPair(bigi.fromBuffer(Buffer.from(privateKey, 'hex')), null, {
-    network,
-  })
+  const keyPair = new bitcoin.ECPair.fromPrivateKey(Buffer.from(privateKey, 'hex'), { network })
   return {
     keyPair,
     getNetwork () {
-      return keyPair.getNetwork()
+      return keyPair.network
     },
     getAddress () {
-      return keyPair.getAddress()
+      const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network })
+      return address
     },
   }
 }

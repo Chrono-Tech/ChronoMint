@@ -287,7 +287,6 @@ export default class SendTokensForm extends PureComponent {
           formFee,
           blockchain,
         }
-        console.log('params', params)
         this.props.estimateFee(params, (error, { fee }) => {
           if (error) {
             this.setState({
@@ -600,7 +599,7 @@ export default class SendTokensForm extends PureComponent {
           <div styleName='send'>
             <Button
               label={<Translate value={`${prefix}.send`} />}
-              disabled={/*pristine ||*/ invalid || isTimeLocked} // todo REMOVE
+              disabled={pristine || invalid || isTimeLocked} // todo REMOVE
               onClick={handleSubmit(this.handleTransfer)}
             />
           </div>

@@ -98,8 +98,6 @@ export default class SendTokens extends PureComponent {
 
     const value = new Amount(token.addDecimals(amount), symbol)
 
-    console.log('handleSubmit', wallet, token, value, recipient, feeMultiplier, advancedModeParams)
-
     switch (action) {
       case ACTION_APPROVE:
         !wallet.isMultisig && this.props.mainApprove(token, value, recipient, feeMultiplier)
