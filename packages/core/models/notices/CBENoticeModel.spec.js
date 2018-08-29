@@ -20,7 +20,7 @@ const model = new CBENoticeModel({
 
 describe('cbe notice', () => {
   it('should return message', () => {
-    expect(model.message().length).toBeGreaterThan(3)
+    expect(model.message().value.length).toBeGreaterThan(3)
   })
 
   it('should return date', () => {
