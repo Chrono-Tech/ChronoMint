@@ -6,6 +6,5 @@
 export const DUCK_BITCOIN = 'bitcoin'
 
 export const TX_CREATE = 'tx/create'
-export const TX_STATUS = 'tx/status'
 export const TX_UPDATE = 'tx/update'
 export const TX_REMOVE = 'tx/remove'

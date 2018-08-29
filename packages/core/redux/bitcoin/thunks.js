@@ -3,30 +3,50 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import uuid from 'uuid/v1'
 import BigNumber from 'bignumber.js'
-// import bitcoin from 'bitcoinjs-lib'
+import bitcoin from 'bitcoinjs-lib'
 import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
-// import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
-import { TxEntryModel, TxExecModel } from '../../models'
+import {
+  TxExecModel,
+  TransferNoticeModel,
+  ErrorNoticeModel,
+} from '../../models'
 import * as BitcoinActions from './actions'
 import * as BitcoinUtils from './utils'
-import { /*getSelectedNetwork,*/ getSigner } from '../persistAccount/selectors'
+import { getSelectedNetwork, getSigner } from '../persistAccount/selectors'
 import { describePendingBitcoinTx } from '../../describers'
 import { getToken } from '../tokens/selectors'
-import SignerMemoryModel from '../../models/SignerMemoryModel'
 import { pendingEntrySelector } from './selectors'
+import { notify } from '../notifier/actions'
 
-export const executeBitccoinTransaction = ({ tx, options = null }) => async (dispatch) => {
+const bitcoinTxStatus = (key, address, props) => (dispatch, getState) => {
+  const pending = pendingEntrySelector()(getState())
+  const scope = pending[address]
+  if (!scope) {
+    return null
+  }
+  const entry = scope[key]
+  if (!entry) {
+    return null
+  }
+
+  return dispatch(BitcoinActions.bitcoinTxUpdate(
+    key,
+    address,
+    BitcoinUtils.createBitcoinTxEntryModel({
+      ...entry,
+      ...props,
+    }),
+  ))
+}
+
+export const executeBitccoinTransaction = ({ tx, options = null }) => async (dispatch, getState) => {
+  const token = getToken(options.symbol)(getState())
   const prepared = await dispatch(prepareTransaction(tx, options))
-  const entry = new TxEntryModel({
-    key: uuid(),
+  const entry = BitcoinUtils.createBitcoinTxEntryModel({
     tx: prepared,
-    symbol: options.symbol,
-    receipt: null,
-    isSubmitted: true,
-    isAccepted: false,
-  })
+    blockchain: token.blockchain(),
+  }, options)
 
   dispatch(BitcoinActions.createTransaction(entry))
   dispatch(submitTransaction(entry))
@@ -36,30 +56,25 @@ export const prepareTransaction = (tx, { feeMultiplier = 1, satPerByte = null, s
   const state = getState()
   const token = getToken(symbol)(state)
   const tokenRate = satPerByte ? satPerByte : token.feeRate()
-  // const network = getSelectedNetwork()(state)
-  // const prepared = BitcoinUtils.describeBitcoinTransaction(
-  //   tx.to,
-  //   tx.value,
-  //   {
-  //     from: tx.from,
-  //     feeRate: new BigNumber(tokenRate).mul(feeMultiplier),
-  //     blockchain: token.blockchain(),
-  //     network,
-  //   })
-
-  const fee = await BitcoinUtils.getBtcFee({
-    address: tx.from,
-    recipient: tx.to,
-    amount: tx.value,
-    formFee: new BigNumber(tokenRate).mul(feeMultiplier),
-    blockchain: token.blockchain(),
-  })
+  const network = getSelectedNetwork()(state)
+  const prepared = await BitcoinUtils.describeBitcoinTransaction(
+    tx.to,
+    tx.value,
+    {
+      from: tx.from,
+      feeRate: new BigNumber(tokenRate).mul(feeMultiplier),
+      blockchain: token.blockchain(),
+      network,
+    })
 
   return new TxExecModel({
     from: tx.from,
     to: tx.to,
     amount: new BigNumber(tx.value),
-    fee: new BigNumber(fee),
+    fee: new BigNumber(prepared.fee),
+    prepared: prepared.tx,
+    inputs: prepared.inputs,
+    outputs: prepared.outputs,
   })
 }
 
@@ -88,13 +103,7 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
   dispatch(BitcoinActions.acceptTransaction(entry))
 
   const state = getState()
-  let signer = getSigner(state)
-  if (entry.walletDerivedPath) {
-    signer = await SignerMemoryModel.fromDerivedPath({
-      seed: signer.privateKey,
-      derivedPath: entry.walletDerivedPath,
-    })
-  }
+  const signer = getSigner(state)
 
   const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key)(getState())
 
@@ -118,36 +127,50 @@ const processTransaction = ({ entry, signer }) => async (dispatch, getState) => 
   if (!signedEntry) {
     // eslint-disable-next-line no-console
     console.error('signedEntry is null', entry)
-    return // stop execute
+    return null // stop execute
   }
-  // return dispatch(sendSignedTransaction({
-  //   entry: signedEntry,
-  // }))
+  return dispatch(sendSignedTransaction({
+    entry: signedEntry,
+  }))
 }
 
-const signTransaction = (/*{ entry, signer }*/) => async (/*dispatch, getState*/) => {
-  /*
+const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   try {
     const { tx } = entry
-    const signed = NemUtils.createXemTransaction(tx.prepared, signer, getSelectedNetwork()(getState()))
-    dispatch(NemActions.nemTxUpdate(entry.key, entry.tx.from, NemUtils.createNemTxEntryModel({
+    const txb = tx.prepared
+    const signInputs = BitcoinUtils.signInputsMap[entry.blockchain]
+    const state = getState()
+
+    if (typeof signInputs === 'function') {
+      const network = getSelectedNetwork()(state)
+      const pk = signer.privateKey.substring(2, 66) // remove 0x
+      const bitcoinNetwork = bitcoin.networks[network[entry.blockchain]]
+      const bitcoinSigner = BitcoinUtils.createBitcoinWalletFromPK(pk, bitcoinNetwork)
+      signInputs(txb, tx.inputs, bitcoinSigner)
+    }
+
+    dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
       ...entry,
       tx: {
         ...entry.tx,
-        signed,
+        signed: txb.build(),
       },
     })))
-
   } catch (error) {
-    dispatch(nemTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
+    dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
+      ...entry,
+      isErrored: true,
+      error,
+    })))
     throw error
   }
-  */
 }
 
-/*
 const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
-  dispatch(nemTxStatus(entry.key, entry.tx.from, { isPending: true }))
+  dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
+    ...entry,
+    isPending: true,
+  })))
 
   // eslint-disable-next-line
   entry = pendingEntrySelector(entry.tx.from, entry.key)(getState())
@@ -157,91 +180,43 @@ const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
     return // stop execute
   }
 
-  const node = nemProvider.getNode()
-  const res = await node.send({ ...entry.tx.signed.tx, fee: entry.tx.signed.fee })
-
-  if (res && res.meta && res.meta.hash) {
-    const hash = res.meta.hash.data
-    dispatch(nemTxStatus(entry.key, entry.tx.from, { isSent: true, isMined: true, hash }))
-    dispatch(notifyNemTransfer(entry))
-  }
-
-  if (res.code === 0) {
-    dispatch(nemTxStatus(entry.key, entry.tx.from, { isErrored: true, error: res.message }))
-    dispatch(notifyNemError(res))
-  }
-}
-*/
-
-/*
-const createTransaction = (to, amount: BigNumber, utxos, options) => async () => {
-  const { from, feeRate, engine } = options
-  const { inputs, outputs, fee } = BitcoinUtils.describeTransaction(to, amount, feeRate, utxos)
-  const signer = engine.wallet
-
-  if (!inputs || !outputs) throw new Error('Bad transaction data')
-
-  const txb = new bitcoin.TransactionBuilder(engine.network)
-  for (const input of inputs) {
-    txb.addInput(input.txId, input.vout)
-  }
-
-  for (const output of outputs) {
-    if (!output.address) {
-      output.address = from
-    }
-    txb.addOutput(output.address, output.value)
-  }
-
-  engine.signTransaction(txb, inputs, signer.keyPair)
-
-  const buildTransaction = await txb.build()
-
-  return {
-    tx: buildTransaction,
-    fee,
-  }
-}
-*/
-
-/*
-export const processTransaction = ({ entry, signer }) => async (dispatch, getState) => {
-  await dispatch(signTransaction({ entry, signer }))
-  return dispatch(sendSignedTransaction({
-    entry: pendingEntrySelector(entry.tx.from, entry.key)(getState()),
-  }))
-}
-
-export const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
-  try {
-    const { tx } = entry
-    const signed = Utils.createXemTransaction(tx.prepared, signer, getSelectedNetwork()(getState()))
-    dispatch(Actions.nemTxUpdate(entry.key, entry.tx.from, new TxEntryModel({
+  const node = BitcoinUtils.getNodeByBlockchain(entry.blockchain)
+  if (!node) {
+    dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
       ...entry,
-      tx: {
-        ...entry.tx,
-        signed,
-      },
+      isErrored: true,
     })))
-  } catch (error) {
-    dispatch(nemTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
-    throw error
+    return null
   }
-}
-export const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
-  dispatch(nemTxStatus(entry.key, entry.tx.from, { isPending: true }))
-  // eslint-disable-next-line
-  entry = pendingEntrySelector(entry.tx.from, entry.key)(getState())
-  const node = nemProvider.getNode()
-  const res = await node.send({ ...entry.tx.signed.tx, fee: entry.tx.signed.fee })
-  if (res && res.meta && res.meta.hash) {
-    const hash = res.meta.hash.data
-    dispatch(nemTxStatus(entry.key, entry.tx.from, { isSent: true, isMined: true, hash }))
-    dispatch(notifyNemTransfer(entry))
+
+  const res = await node.send(entry.tx.from, entry.tx.signed.toHex())
+
+  if (res && res.hash) {
+    dispatch(bitcoinTxStatus(entry.key, entry.tx.from, { isSent: true, isMined: false, hash: res.hash }))
+    dispatch(notifyBitcoinTransfer(entry))
   }
+
   if (res.code === 0) {
-    dispatch(nemTxStatus(entry.key, entry.tx.from, { isErrored: true, error: res.message }))
-    dispatch(notifyNemError(res))
+    dispatch(bitcoinTxStatus(entry.key, entry.tx.from, { isErrored: true, error: res.message }))
+    dispatch(notifyBitcoinError(res))
   }
 }
-*/
+
+const notifyBitcoinTransfer = (entry) => (dispatch, getState) => {
+  const { tx } = entry
+  const { prepared } = tx
+  const token = getToken(entry.symbol)(getState())
+
+  const amount = prepared.mosaics
+    ? prepared.mosaics[0].quantity  // we can send only one mosaic
+    : prepared.amount
+
+  dispatch(notify(new TransferNoticeModel({
+    value: token.removeDecimals(amount),
+    symbol: token.symbol(),
+    from: entry.tx.from,
+    to: entry.tx.to,
+  })))
+}
+
+const notifyBitcoinError = (e) => notify(new ErrorNoticeModel({ message: e.message }))

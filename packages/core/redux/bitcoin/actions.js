@@ -10,21 +10,15 @@ export const createTransaction = (entry) => ({
   entry,
 })
 
-export const acceptTransaction = (entry) => ({
-  type: BitcoinConstants.TX_STATUS,
+export const bitcoinTxUpdate = (entry) => ({
+  type: BitcoinConstants.TX_UPDATE,
   key: entry.key,
   address: entry.tx.from,
-  props: {
-    isAccepted: true,
-    isPending: true,
-  },
+  entry,
 })
 
-export const rejectTransaction = (entry) => ({
-  type: BitcoinConstants.TX_STATUS,
-  key: entry.key,
-  address: entry.tx.from,
-  props: {
-    isRejected: true,
-  },
-})
+export const acceptTransaction = (entry) =>
+  bitcoinTxUpdate({ ...entry, isAccepted: true, isPending: true })
+
+export const rejectTransaction = (entry) =>
+  bitcoinTxUpdate({ ...entry, isRejected: true })

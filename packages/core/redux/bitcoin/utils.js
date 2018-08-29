@@ -1,3 +1,4 @@
+import uuid from 'uuid/v1'
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import type BigNumber from 'bignumber.js'
 import coinselect from 'coinselect'
@@ -8,13 +9,23 @@ import {
   selectBTGNode,
   selectLTCNode,
 } from '@chronobank/login/network/BitcoinNode'
-
+import { TxEntryModel } from '../../models'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_LITECOIN,
 } from '../../dao/constants'
+
+export const createBitcoinTxEntryModel = (entry, options = {}) =>
+  new TxEntryModel({
+    key: uuid(),
+    isSubmitted: true,
+    isAccepted: false,
+    walletDerivedPath: options && options.walletDerivedPath,
+    symbol: options.symbol,
+    ...entry,
+  })
 
 export const describeTransaction = (to, amount: BigNumber, feeRate, utxos) => {
   const targets = [
@@ -142,7 +153,7 @@ export const getBtcFee = async (
   return fee
 }
 
-const getNodeByBlockchain = (blockchain) => {
+export const getNodeByBlockchain = (blockchain) => {
   switch (blockchain) {
     case BLOCKCHAIN_BITCOIN:
       return btcProvider.getNode()
@@ -192,6 +203,39 @@ export const describeBitcoinTransaction = async (to, amount: BigNumber, options)
 
   return {
     tx: txb,
+    inputs,
+    outputs,
     fee,
   }
+}
+
+export const signInputsMap = {
+  [BLOCKCHAIN_BITCOIN]: (txb, inputs, signer) => {
+    for (let i = 0; i < inputs.length; i++) {
+      txb.sign(i, signer.keyPair)
+    }
+  },
+  [BLOCKCHAIN_BITCOIN_CASH]: (txb, inputs, from) => {
+    txb.enableBitcoinCash(true)
+    txb.setVersion(2)
+
+    const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
+    const wallet = this._walletsMap[from] || this._wallet
+
+    for (let i = 0; i < inputs.length; i++) {
+      txb.sign(i, wallet.keyPair, null, hashType, inputs[i].value)
+    }
+  },
+  [BLOCKCHAIN_BITCOIN_GOLD]: (txb, inputs, from) => {
+    txb.enableBitcoinGold(true)
+    txb.setVersion(2)
+
+    const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
+    const wallet = this._walletsMap[from] || this._wallet
+
+    for (let i = 0; i < inputs.length; i++) {
+      txb.sign(i, wallet.keyPair, null, hashType, inputs[i].value)
+    }
+  },
+  BLOCKCHAIN_LITECOIN: null, // not specified
 }

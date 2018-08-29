@@ -599,7 +599,7 @@ export default class SendTokensForm extends PureComponent {
           <div styleName='send'>
             <Button
               label={<Translate value={`${prefix}.send`} />}
-              disabled={pristine || invalid || isTimeLocked} // todo REMOVE
+              disabled={pristine || invalid || isTimeLocked}
               onClick={handleSubmit(this.handleTransfer)}
             />
           </div>
