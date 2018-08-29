@@ -9,8 +9,10 @@ import TransportU2F from '@ledgerhq/hw-transport-u2f'
 import AppBTC from '@ledgerhq/hw-app-btc'
 import axios from 'axios'
 
+const BASE_URL = 'https://test-insight.bitpay.com/api/'
+
 export const API = axios.create({
-  baseURL: 'https://test-insight.bitpay.com/api/',
+  baseURL: BASE_URL,
 })
 
 export default class BitcoinLedgerDevice extends EventEmitter {

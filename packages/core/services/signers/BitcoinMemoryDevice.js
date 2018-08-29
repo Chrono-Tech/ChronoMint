@@ -71,7 +71,7 @@ export default class BitcoinMemoryDevice extends EventEmitter {
         address: address,
         scriptPubKey: scriptPubKey,
         scriptType: scriptPubKey.classify(),
-        i: i,
+        i,
       }
 
       // generating hash for signature
@@ -83,8 +83,12 @@ export default class BitcoinMemoryDevice extends EventEmitter {
       // inject signed script in transaction object
       if (ret && ret.script) {
         signedTx.tx.ins[i].s = ret.script
-        if (ret.inputFullySigned) signedTx.inputsSigned++
-        if (ret.signaturesAdded) signedTx.signaturesAdded += ret.signaturesAdded
+        if (ret.inputFullySigned) {
+          signedTx.inputsSigned++
+        }
+        if (ret.signaturesAdded) {
+          signedTx.signaturesAdded += ret.signaturesAdded
+        }
       }
     }
 

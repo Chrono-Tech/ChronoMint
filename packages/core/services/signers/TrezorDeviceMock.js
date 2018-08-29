@@ -16,9 +16,10 @@ export default class TrezorDeviceMock extends EventEmitter {
   }
 
   async getAddressInfoList (from: number = 0, limit: number = 5): String {
-    return Array.from({ length: limit }).map((element, index) => {
-      return this.getAddressInfo(DEFAULT_PATH_FACTORY(from + index))
-    })
+    return Array.from({ length: limit })
+      .map((element, index) => {
+        return this.getAddressInfo(DEFAULT_PATH_FACTORY(from + index))
+      })
   }
 
   getAddressInfo (path) {
