@@ -3,17 +3,17 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-let path = require('path')
-let fs = require('fs')
+const path = require('path')
+const fs = require('fs')
 
 process.traceDeprecation = true
 
 // TODO: hide this behind a flag and eliminate dead code on eject.
 // This shouldn't be exposed to the user.
-let isInNodeModules = path.basename(path.resolve(path.join(__dirname, '..', '..'))) === 'node_modules'
+const isInNodeModules = path.basename(path.resolve(path.join(__dirname, '..', '..'))) === 'node_modules'
 let relativePath = isInNodeModules ? '../../..' : '..'
 
-let isInDebugMode = process.argv.some((arg) =>
+const isInDebugMode = process.argv.some((arg) =>
   arg.indexOf('--debug-template') > -1
 )
 
@@ -21,13 +21,13 @@ if (isInDebugMode) {
   relativePath = '../template'
 }
 
-let srcPath = path.resolve(__dirname, relativePath, 'src')
-let modulesPath = path.resolve(__dirname, relativePath, 'node_modules')
-let packagesPath = path.resolve(__dirname, relativePath, 'packages')
-let indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html')
-let indexPresentationHtmlPath = path.resolve(__dirname, relativePath, 'index-presentation.html')
-let faviconPath = path.resolve(__dirname, relativePath, 'favicon.png')
-let buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
+const srcPath = path.resolve(__dirname, relativePath, 'src')
+const modulesPath = path.resolve(__dirname, relativePath, 'node_modules')
+const packagesPath = path.resolve(__dirname, relativePath, 'packages')
+const indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html')
+const indexPresentationHtmlPath = path.resolve(__dirname, relativePath, 'index-presentation.html')
+const faviconPath = path.resolve(__dirname, relativePath, 'favicon.png')
+const buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
 
 // creating i18nJson empty file for i18n
 if (!fs.existsSync(buildPath)) {
@@ -37,7 +37,7 @@ fs.writeFileSync(buildPath + '/i18nJson.js', 'var i18nJson = {}')
 
 const buildConfig = (factory) => {
 
-  let {
+  const {
     entry,
     output,
     babel,
@@ -118,8 +118,18 @@ const buildConfig = (factory) => {
           ],
         },
         {
-          test: /\.json$/,
+          test: /(?!node_modules\/chronobank-smart-contracts\/build\/contracts\/).+\.json$/, // all JSON files except contracts
           loader: 'json-loader',
+          exclude: [
+            path.resolve('node_modules/chronobank-smart-contracts/build/contracts')
+          ]
+        },
+        {
+          test: /node_modules\/chronobank-smart-contracts\/build\/contracts\/.+\.json$/, // only ABI contracts
+          loader: path.resolve('./config/abi-loader'),
+          include: [
+            path.resolve('node_modules/chronobank-smart-contracts/build/contracts')
+          ]
         },
         {
           test: /\.(jpg|png|gif)$/,
@@ -130,10 +140,6 @@ const buildConfig = (factory) => {
         { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, use: [ { loader: 'url-loader', options: { limit: '10000', mimetype: 'application/font-woff' } } ] },
         { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, use: [ { loader: 'url-loader', options: { limit: '10000', mimetype: 'octet-stream' } } ] },
         { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, use: [ { loader: 'url-loader', options: { limit: '10000', mimetype: 'image/svg+xml' } } ] },
-        // {
-        //   test: /\.sol/,
-        //   loader: 'truffle-solidity'
-        // }
       ],
     },
   }
