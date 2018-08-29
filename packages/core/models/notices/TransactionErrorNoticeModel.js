@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { I18n } from '@chronobank/core-dependencies/i18n'
 import TxError from '../TxError'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type TxExecModel from '../TxExecModel'
@@ -29,13 +28,16 @@ export default class TransactionErrorNoticeModel extends abstractNoticeModel({
   }
 
   message () {
-    const message = `errorCodes.${this.error().code}`
-    return I18n.t(message)
+    const value = `errorCodes.${this.error().code}`
+
+    return {
+      value,
+    }
   }
 
   details () {
     const details = [
-      { label: 'Operation', value: I18n.t(this.tx().func()) },
+      { label: 'Operation', value: this.tx().func() },
       ...this.tx().details(),
     ]
     const hash = this.tx().hash()
