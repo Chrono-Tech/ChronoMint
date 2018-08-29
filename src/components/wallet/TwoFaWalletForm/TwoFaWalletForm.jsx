@@ -88,9 +88,9 @@ export default class TwoFaWalletForm extends PureComponent {
       this.props.dispatch(estimateGasFor2FAForm(
         account,
         feeMultiplier,
-        (error, { gasFee, gasPrice }) => {
+        (error, { gasFee }) => {
           if (!error) {
-            this.setState({ gasFee, gasPrice, isFeeLoading: false })
+            this.setState({ gasFee, isFeeLoading: false })
           } else {
             // eslint-disable-next-line
             console.error(error)

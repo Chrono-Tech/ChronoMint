@@ -19,8 +19,9 @@ module.exports = {
     "import/prefer-default-export": "warn",
     "indent": "warn",
     "jsx-a11y/alt-text": "warn",
-    "jsx-a11y/anchor-is-valid": ["warn", { "components": ["Link"], "specialLink": ["to"], }],
+    "jsx-a11y/anchor-is-valid": ["warn", { "components": ["Link"], "specialLink": ["to"] }],
     "jsx-a11y/click-events-have-key-events": "warn",
+    "jsx-a11y/no-noninteractive-element-interactions": "warn",
     "jsx-a11y/no-static-element-interactions": "warn",
     "monorepo/no-internal-import": "off",
     "monorepo/no-relative-import": "error",
@@ -42,4 +43,4 @@ module.exports = {
     "semi": "warn",
     "space-before-function-paren": ["error", "always"],
   },
-};
+}

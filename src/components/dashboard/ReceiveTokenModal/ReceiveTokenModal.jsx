@@ -89,7 +89,14 @@ export default class ReceiveTokenModal extends PureComponent {
   }
 
   componentDidMount () {
-    QRCode.toDataURL(this.props.address, (err, qrData) => {
+    QRCode.toDataURL(this.props.address, (error, qrData) => {
+      if (error) {
+        // eslint-disable-next-line no-console
+        console.log(error)
+        this.setState({
+          error,
+        })
+      }
       this.setState({
         qrData,
       })
@@ -167,6 +174,7 @@ export default class ReceiveTokenModal extends PureComponent {
         </div>
         <div styleName='qrWrapper'>
           <div styleName='title'><Translate value={prefix('qrTitle')} symbol={token.symbol()} /></div>
+          {this.state.error && <div styleName='error'><Translate value={prefix('error')} /></div>}
           <div styleName='qrCode'><img alt='qr code' src={this.state.qrData} /></div>
         </div>
         {token.id() === TIME && (

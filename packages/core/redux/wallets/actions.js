@@ -219,7 +219,7 @@ export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amo
     }
 
     // execute
-    dispatch(executeMap[wallet.blockchian]({
+    dispatch(executeMap[wallet.blockchain]({
       tx,
       options: {
         feeMultiplier,
