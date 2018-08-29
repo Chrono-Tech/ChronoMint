@@ -3,8 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { I18n } from '@chronobank/core-dependencies/i18n'
-import { Icons } from '@chronobank/core-dependencies/icons'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 export const MANAGER_ADDED = 'managerAdded'
@@ -22,11 +20,11 @@ export default class AssetsManagerNoticeModel extends abstractNoticeModel({
   replacements: {},
 }) {
   icon () {
-    return Icons.get('notices.transfer.icon')
+    return 'notices.transfer.icon'
   }
 
   title () {
-    return I18n.t('notices.assetsManager.title')
+    return 'notices.assetsManager.title'
   }
 
   status () {
@@ -41,7 +39,11 @@ export default class AssetsManagerNoticeModel extends abstractNoticeModel({
   }
 
   message () {
-    const message = `notices.assetsManager.${this.get('status')}`
-    return I18n.t(message, this.get('replacements'))
+    const value = `notices.assetsManager.${this.get('status')}`
+
+    return {
+      value,
+      ...this.get('replacements'),
+    }
   }
 }
