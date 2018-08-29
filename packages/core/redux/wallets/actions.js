@@ -33,11 +33,6 @@ import { AllowanceCollection, SignerMemoryModel } from '../../models'
 import { executeTransaction } from '../ethereum/thunks'
 import { executeTransactionWaves } from '../txWaves/thunks'
 import {
-  AllowanceCollection,
-  SignerMemoryModel,
-} from '../../models'
-import { executeTransaction } from '../ethereum/thunks'
-import {
   WALLETS_SET,
   WALLETS_SET_NAME,
   WALLETS_UPDATE_BALANCE,
@@ -219,7 +214,7 @@ export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amo
     const executeMap = {
       [BLOCKCHAIN_ETHEREUM]: executeTransaction,
       [BLOCKCHAIN_NEM]: executeNemTransaction,
-      [BLOCKCHAIN_WAVES]: executeWavesTransaction,
+      [BLOCKCHAIN_WAVES]: executeTransactionWaves,
     }
 
     // execute
