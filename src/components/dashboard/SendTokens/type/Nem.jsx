@@ -64,8 +64,6 @@ function mapStateToProps (state, ownProps) {
   const formErrors = getFormSyncErrors(FORM_SEND_TOKENS)(state)
   const token = state.get(DUCK_TOKENS).item(tokenId)
 
-  console.log('NEM send token: ', token, token.toJSON())
-
   return {
     selectedCurrency,
     tokens: state.get(DUCK_TOKENS),
@@ -115,9 +113,6 @@ export default class Nem extends PureComponent {
   }
 
   componentWillReceiveProps (newProps) {
-
-    console.log('componentWillReceiveProps: ', newProps, newProps.address)
-
     if ((newProps.formValues !== this.props.formValues) &&
       newProps.amount > 0) {
       try {
@@ -200,7 +195,6 @@ export default class Nem extends PureComponent {
     }
 
     if (this.state.fee) {
-      console.log('this.state.fee: ', this.state.fee)
       return (
         <span styleName='description'>
           {`${this.props.token.symbol()}  ${this.state.fee} (≈${this.props.selectedCurrency} `}
@@ -213,8 +207,6 @@ export default class Nem extends PureComponent {
 
   renderHead () {
     const { token, wallet, tokenInfo } = this.props
-
-    console.log('selectedCurrency: ', this.props.selectedCurrency)
 
     return (
       <div styleName='head'>

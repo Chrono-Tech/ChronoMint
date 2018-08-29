@@ -74,9 +74,6 @@ export default class SendTokens extends PureComponent {
       mode,
     }
 
-    console.log('values: ', values, values.toJS())
-    console.log('symbol: ', symbol)
-
     const currentGasLimit = gasLimit || formState.gasLimitEstimated
 
     const token = tokens.item(symbol)
@@ -151,7 +148,7 @@ export default class SendTokens extends PureComponent {
     const SendTokenForm = this.getFormName(token.blockchain())
 
     return (
-      <SendTokensForm
+      <SendTokenForm
         initialValues={initialValues}
         onSubmit={this.handleSubmit}
         onSubmitSuccess={this.handleSubmitSuccess}

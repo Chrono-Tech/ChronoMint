@@ -214,7 +214,6 @@ export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amo
     const tokenDAO = tokenService.getDAO(token.id())
     const tx = tokenDAO.transfer(wallet.address, recipient, amount, token)
     const executeMap = {
-      [BLOCKCHAIN_BITCOIN]: () => {}, // wait bitcoin Tx
       [BLOCKCHAIN_ETHEREUM]: executeTransaction,
       [BLOCKCHAIN_NEM]: executeNemTransaction,
       [BLOCKCHAIN_BITCOIN]: executeBitccoinTransaction,
