@@ -1,5 +1,4 @@
 import uuid from 'uuid/v1'
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import type BigNumber from 'bignumber.js'
 import coinselect from 'coinselect'
 import bitcoin from 'bitcoinjs-lib'
@@ -44,87 +43,6 @@ export const describeTransaction = (to, amount: BigNumber, feeRate, utxos) => {
   return { inputs, outputs, fee }
 }
 
-export const signInputs = (txb, inputs, wallet) => {
-  for (let i = 0; i < inputs.length; i++) {
-    txb.sign(i, wallet)
-  }
-}
-
-export const signInputsBitcoinGold = (txb, inputs, wallet) => {
-  txb.enableBitcoinGold(true)
-  txb.setVersion(2)
-
-  const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
-
-  for (let i = 0; i < inputs.length; i++) {
-    txb.sign(i, wallet, null, hashType, inputs[i].value)
-  }
-}
-
-export const signInputsBitcoinCash = (txb, inputs, wallet) => {
-  txb.enableBitcoinCash(true)
-  txb.setVersion(2)
-
-  const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
-
-  for (let i = 0; i < inputs.length; i++) {
-    txb.sign(i, wallet, null, hashType, inputs[i].value)
-  }
-}
-
-export const getEngine = (network, blockchain, privateKey) => {
-  let wallet, node
-
-  switch (blockchain) {
-    case BLOCKCHAIN_BITCOIN:
-      const bitcoinNetwork = bitcoin.networks[network.bitcoin]
-      wallet = createBitcoinWalletFromPK(privateKey, bitcoinNetwork)
-      node = selectBTCNode(wallet)
-
-      return {
-        network: bitcoinNetwork,
-        signTransaction: signInputs,
-        wallet,
-        node,
-      }
-    case BLOCKCHAIN_BITCOIN_CASH:
-      const bitcoinCashNetwork = bitcoin.networks[network.bitcoinCash]
-      wallet = createBitcoinWalletFromPK(privateKey, bitcoinCashNetwork)
-      node = selectBCCNode(wallet)
-
-      return {
-        network: bitcoinCashNetwork,
-        signTransaction: signInputsBitcoinCash,
-        wallet,
-        node,
-      }
-    case BLOCKCHAIN_BITCOIN_GOLD:
-      const bitcoinGoldNetwork = bitcoin.networks[network.bitcoinGold]
-      wallet = createBitcoinWalletFromPK(privateKey, bitcoinGoldNetwork)
-      node = selectBTGNode(wallet)
-
-      return {
-        network: bitcoinGoldNetwork,
-        signTransaction: signInputsBitcoinGold,
-        wallet,
-        node,
-      }
-    case BLOCKCHAIN_LITECOIN:
-      const litecoinNetwork = bitcoin.networks[network.litecoin]
-      wallet = createBitcoinWalletFromPK(privateKey, litecoinNetwork)
-      node = selectLTCNode(wallet)
-
-      return {
-        network: litecoinNetwork,
-        signTransaction: signInputs,
-        wallet,
-        node,
-      }
-    default:
-      return
-  }
-}
-
 // Method was moved from privateKeyProvider
 export const createBitcoinWalletFromPK = (privateKey, network) => {
   const keyPair = new bitcoin.ECPair.fromPrivateKey(Buffer.from(privateKey, 'hex'), { network })
@@ -156,13 +74,13 @@ export const getBtcFee = async (
 export const getNodeByBlockchain = (blockchain) => {
   switch (blockchain) {
     case BLOCKCHAIN_BITCOIN:
-      return btcProvider.getNode()
+      return selectBTCNode
     case BLOCKCHAIN_BITCOIN_CASH:
-      return bccProvider.getNode()
+      return selectBCCNode
     case BLOCKCHAIN_BITCOIN_GOLD:
-      return btgProvider.getNode()
+      return selectBTGNode
     case BLOCKCHAIN_LITECOIN:
-      return ltcProvider.getNode()
+      return selectLTCNode
   }
   return null
 }
