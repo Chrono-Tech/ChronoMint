@@ -15,10 +15,10 @@ import {
 export default {
   approval: {
     title: 'Approval',
-    message: '%{value} %{symbol} approved to transfer for %{contractName} contract',
+    message: '%{amount} %{symbol} approved to transfer for %{contractName} contract',
     details: {
       contractName: 'Contract Name',
-      value: 'Value',
+      amount: 'Value',
     },
   },
   arbitrary: {
@@ -42,8 +42,8 @@ export default {
   },
   transfer: {
     title: 'Transfer',
-    receivedFrom: '%{value} %{symbol} received from %{address}',
-    sentTo: '%{value} %{symbol} sent to %{address}',
+    receivedFrom: '%{amount} %{symbol} received from %{address}',
+    sentTo: '%{amount} %{symbol} sent to %{address}',
     errors: {
       TRANSFER_CANCELLED: 'Cancelled by user from tx confirmation modal',
       TRANSFER_UNKNOWN: 'Unknown transaction error',
