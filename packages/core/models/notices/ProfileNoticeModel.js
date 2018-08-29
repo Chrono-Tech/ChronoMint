@@ -3,8 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 import PropTypes from 'prop-types'
-import { I18n } from '@chronobank/core-dependencies/i18n'
-import { Icons } from '@chronobank/core-dependencies/icons'
 import ProfileModel from '../ProfileModel'
 import AbstractModel from '../AbstractModelOld'
 
@@ -24,15 +22,17 @@ class ProfileNoticeModel extends AbstractModel {
   }
 
   icon () {
-    return Icons.get('notices.settings.icon')
+    return 'notices.settings.icon'
   }
 
   title () {
-    return I18n.t('notices.settings.title')
+    return 'notices.settings.title'
   }
 
   message () {
-    return I18n.t('notices.profile.changed')
+    return {
+      value: 'notices.profile.changed',
+    }
   }
 }
 
