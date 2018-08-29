@@ -3,8 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { I18n } from '@chronobank/core-dependencies/i18n'
-import { Icons } from '@chronobank/core-dependencies/icons'
 import moment from 'moment'
 import uuid from 'uuid/v1'
 import { abstractModel } from '../AbstractModelOld'
@@ -21,11 +19,11 @@ export const abstractNoticeModel = (defaultValues) => class AbstractNoticeModel 
   }
 
   title () {
-    return I18n.t('notices.arbitrary.title')
+    return 'notices.arbitrary.title'
   }
 
   icon () {
-    return Icons.get('notices.arbitrary.icon')
+    return 'notices.arbitrary.icon'
   }
 
   address () {
