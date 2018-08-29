@@ -4,7 +4,6 @@
  */
 
 import PropTypes from 'prop-types'
-import { I18n } from '@chronobank/core-dependencies/i18n'
 import BigNumber from 'bignumber.js'
 import uuid from 'uuid/v1'
 import AbstractModel from './AbstractModel'
@@ -63,14 +62,14 @@ export default class TxExecModel extends AbstractModel {
   }
 
   title () {
-    return I18n.t(this.func)
+    return this.func
   }
 
   details () {
     const details = []
     Object.entries(this.fields).forEach(([, field]) => {
       details.push({
-        label: I18n.t(`${this.i18nFunc()}${field.description}`),
+        label: `${this.i18nFunc()}${field.description}`,
         value: field.value,
       })
     })

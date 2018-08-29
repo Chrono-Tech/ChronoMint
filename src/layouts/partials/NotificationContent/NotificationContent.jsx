@@ -145,7 +145,7 @@ class NotificationContent extends PureComponent {
           {details && details.map((item, index) => {
             return (
               <div key={index} styleName='infoRow'>
-                <div styleName='infoLabel'>{item.label}:</div>
+                <div styleName='infoLabel'><Translate value={item.label} />:</div>
                 <div styleName='infoValue'><Value value={item.value} /></div>
               </div>
             )
@@ -173,7 +173,7 @@ class NotificationContent extends PureComponent {
           </div>
           {details && details.map((item, index) => (
             <div key={index} styleName='infoRow'>
-              <div styleName='infoLabel'>{item.label}:</div>
+              <div styleName='infoLabel'><Translate value={item.label} />:</div>
               &nbsp;
               <div styleName='infoValue'><Value value={item.value} /></div>
             </div>
