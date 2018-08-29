@@ -91,10 +91,13 @@ export default class TwoFaEnableForm extends PureComponent {
   componentWillReceiveProps (newProps) {
     if (newProps.code && newProps.code !== this.props.code) {
       const code = `otpauth://totp/${newProps.account}?secret=${newProps.code}&issuer=ChronoWallet-2FA`
-      QRCode.toDataURL(code, (err, qrData) => {
-        if (err) {
+      QRCode.toDataURL(code, (error, qrData) => {
+        if (error) {
           // eslint-disable-next-line no-console
-          console.log(err)
+          console.log(error)
+          this.setState({
+            error,
+          })
         }
         this.setState({
           qrData,
@@ -158,6 +161,7 @@ export default class TwoFaEnableForm extends PureComponent {
             <div styleName='stepNumber'>2</div>
             <div styleName='title'><Translate value={`${prefix}.secondStepTitle`} /></div>
             <div styleName='description'><Translate value={`${prefix}.secondStepDescription`} /></div>
+            {this.state.error && <div styleName='error'><Translate value={`${prefix}.error`} /></div>}
             <div styleName='qrCode'><img alt='qr code' src={this.state.qrData} /></div>
           </div>
           <div styleName='step'>

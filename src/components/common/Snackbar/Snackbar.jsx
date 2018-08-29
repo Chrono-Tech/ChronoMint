@@ -49,7 +49,7 @@ export default class Snackbar extends PureComponent {
   }
 
   handleRequestClose () {
-    if (this.props.onRequestClose) {
+    if (typeof this.props.onRequestClose === 'function') {
       this.props.onRequestClose()
     }
   }
