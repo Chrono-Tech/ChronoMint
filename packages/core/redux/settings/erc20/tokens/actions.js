@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { I18n } from '@chronobank/core-dependencies/i18n'
 import type AbstractFetchingModel from '../../../../models/AbstractFetchingModel'
 import type TokenNoticeModel from '../../../../models/notices/TokenNoticeModel'
 import type TokenModel from '../../../../models/tokens/TokenModel'
@@ -56,11 +55,11 @@ export const formTokenLoadMetaData = (token: TokenModel, ownProps) => async (dis
   const symbolAddress = token.symbol() && await managerDAO.getTokenAddressBySymbol(token.symbol())
 
   if (ownProps.tokens.getByAddress(token.address()).isFetched() && !ownProps.isModify) {
-    errors.address = I18n.t('settings.erc20.tokens.errors.addressInUse')
+    errors.address = 'settings.erc20.tokens.errors.addressInUse'
   }
 
   if ((symbolAddress !== null && token.address() !== symbolAddress) || (token.symbol() && token.symbol().toUpperCase() === 'ETH')) {
-    errors.symbol = I18n.t('settings.erc20.tokens.errors.symbolInUse')
+    errors.symbol = 'settings.erc20.tokens.errors.symbolInUse'
   }
 
   dispatch({ type: TOKENS_FORM_FETCH, end: true })
