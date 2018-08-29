@@ -4,13 +4,11 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { I18n } from '@chronobank/core-dependencies/i18n'
-import { Icons } from '@chronobank/core-dependencies/icons'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type TxModel from '../TxModel'
 
 export default class TransferNoticeModel extends abstractNoticeModel({
-  value: new BigNumber(0), // with decimals
+  amount: new BigNumber(0), // with decimals
   symbol: null,
   from: null, // address
   to: null, // address
@@ -21,26 +19,27 @@ export default class TransferNoticeModel extends abstractNoticeModel({
   }
 
   icon () {
-    return Icons.get('notices.transfer.icon')
+    return 'notices.transfer.icon'
   }
 
   title () {
-    return I18n.t('notices.transfer.title')
+    return 'notices.transfer.title'
   }
 
   message () {
     const isDeposited = this.get('credited')
-    const message = isDeposited
+    const value = isDeposited
       ? 'notices.transfer.receivedFrom'
       : 'notices.transfer.sentTo'
     const address = isDeposited
       ? this.get('from')
       : this.get('to')
 
-    return I18n.t(message, {
-      value: this.get('value'),
+    return {
+      value,
+      amount: this.get('amount'),
       symbol: this.get('symbol'),
       address,
-    })
+    }
   }
 }
