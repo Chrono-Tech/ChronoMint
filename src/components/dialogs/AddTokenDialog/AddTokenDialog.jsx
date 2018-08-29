@@ -139,7 +139,6 @@ export default class AddTokenDialog extends PureComponent {
               name='icon'
               fullWidth
               label='wallet.selectTokenIcon'
-              label='Token icon'
               accept={ACCEPT_IMAGES}
             />
           </div>

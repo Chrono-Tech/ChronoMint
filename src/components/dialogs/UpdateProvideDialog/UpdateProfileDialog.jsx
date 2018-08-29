@@ -75,7 +75,7 @@ export default class UpdateProfileDialog extends PureComponent {
   }
 
   render () {
-    const { selectedAccount, handleSubmit, token, avatar, userName, company, account } = this.props
+    const { selectedAccount, handleSubmit, avatar, userName, company, account } = this.props
 
     return (
       <ModalDialog title={<Translate value={`${prefix}.title`} />}>
@@ -99,7 +99,7 @@ export default class UpdateProfileDialog extends PureComponent {
                 </div>
               </div>
               <div styleName='right'>
-                <div styleName='name'>{ userName || getAccountName(selectedAccount) || <Translate value={`${prefix}.yourName`} />}</div>
+                <div styleName='name'>{userName || getAccountName(selectedAccount) || <Translate value={`${prefix}.yourName`} />}</div>
                 <div styleName='company'>{company || ''}</div>
                 <div styleName='account'>{account || <Translate value={`${prefix}.accountAddress`} />}</div>
                 <div styleName='micros'>
