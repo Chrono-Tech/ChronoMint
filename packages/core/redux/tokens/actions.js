@@ -186,7 +186,6 @@ export const initBtcLikeTokens = () => async (dispatch, getState) => {
           const token = await dao.fetchToken()
           tokenService.registerDAO(token, dao)
           dispatch(tokenFetched(token))
-          dispatch(alternateTxHandlingFlow(dao))
           const currentBlock = await dao.getCurrentBlockHeight()
           dispatch(setLatestBlock(token.blockchain(), { blockNumber: currentBlock.currentBlock }))
         } catch (e) {
