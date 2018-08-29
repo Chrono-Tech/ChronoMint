@@ -24,6 +24,7 @@ import { IconButton } from '@material-ui/core'
 import { ethereumPendingFormatSelector } from '@chronobank/core/redux/ethereum/selectors'
 import TxEntryModel from '@chronobank/core/models/TxEntryModel'
 import { sidesCloseAll } from 'redux/sides/actions'
+import { Icons } from 'components/icons'
 import { prefix } from './lang'
 import './NotificationContent.scss'
 
@@ -162,14 +163,20 @@ class NotificationContent extends PureComponent {
     return (
       <div key={notice.id()} styleName='tableItem'>
         <div styleName={classnames('itemLeft', { 'error': !!notice.error })}>
-          {notice.icon()}
+          {Icons.get(notice.icon())}
         </div>
         <div styleName='itemInfo'>
           <div styleName='infoRow'>
-            <div styleName='infoTitle'>{notice.title()}</div>
+            <Translate
+              styleName='infoTitle'
+              value={notice.title()}
+            />
           </div>
           <div styleName='infoRow'>
-            <div styleName='infoLabel'>{notice.message()}</div>
+            <Translate
+              styleName='infoTitle'
+              {...notice.message()}
+            />
           </div>
           {details && details.map((item, index) => (
             <div key={index} styleName='infoRow'>
