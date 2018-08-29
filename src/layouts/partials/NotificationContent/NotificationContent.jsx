@@ -4,7 +4,7 @@
  */
 
 import classnames from 'classnames'
-import { Translate } from 'react-redux-i18n'
+import I18n, { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { DUCK_WATCHER } from '@chronobank/core/redux/watcher/constants'
 import { DUCK_NOTIFIER } from '@chronobank/core/redux/notifier/constants'
@@ -166,7 +166,7 @@ class NotificationContent extends PureComponent {
         </div>
         <div styleName='itemInfo'>
           <div styleName='infoRow'>
-            <div styleName='infoTitle'>{notice.title()}</div>
+            <div styleName='infoTitle'>{I18n.t(notice.title())}</div>
           </div>
           <div styleName='infoRow'>
             <div styleName='infoLabel'>{notice.message()}</div>
