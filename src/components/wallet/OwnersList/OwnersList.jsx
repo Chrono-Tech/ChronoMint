@@ -4,7 +4,6 @@
  */
 
 import OwnerItem from 'components/wallet/OwnersList/OwnerItem'
-import globalStyles from 'layouts/partials/styles'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'

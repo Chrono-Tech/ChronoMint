@@ -16,15 +16,20 @@ import {
   BLOCKCHAIN_WAVES,
 } from '../../dao/constants'
 
+export const providersMap = {
+  [BLOCKCHAIN_ETHEREUM]: ethereumProvider,
+  [BLOCKCHAIN_BITCOIN]: btcProvider,
+  [BLOCKCHAIN_BITCOIN_CASH]: bccProvider,
+  [BLOCKCHAIN_BITCOIN_GOLD]: btgProvider,
+  [BLOCKCHAIN_LITECOIN]: ltcProvider,
+  [BLOCKCHAIN_WAVES]: wavesProvider,
+}
+
+export const getProviderByBlockchain = (blockchain) => {
+  return providersMap[blockchain] || null
+}
+
 export const getWalletBalances = ({ wallet }) => {
-  const providersMap = {
-    [BLOCKCHAIN_ETHEREUM]: ethereumProvider,
-    [BLOCKCHAIN_BITCOIN]: btcProvider,
-    [BLOCKCHAIN_BITCOIN_CASH]: bccProvider,
-    [BLOCKCHAIN_BITCOIN_GOLD]: btgProvider,
-    [BLOCKCHAIN_LITECOIN]: ltcProvider,
-    [BLOCKCHAIN_WAVES]: wavesProvider,
-  }
   return providersMap[wallet.blockchain].getAccountBalances(wallet.address)
 }
 

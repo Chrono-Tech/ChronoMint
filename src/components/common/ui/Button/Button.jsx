@@ -95,14 +95,16 @@ export default class Button extends PureComponent {
           type={this.props.type}
           onClick={this.handleTouchTap}
         >
-          { this.renderButtonText() }
+          {this.renderButtonText()}
         </button>
-        { this.props.buttonType === BUTTON_TYPE_PENDING && <img
-          styleName='spinning-image'
-          src={SPINNING_WHEEL}
-          alt=''
-          onClick={this.handleTouchTap}
-        /> }
+        {this.props.buttonType === BUTTON_TYPE_PENDING && (
+          <img
+            styleName='spinning-image'
+            src={SPINNING_WHEEL}
+            alt=''
+            onClick={this.handleTouchTap}
+          />
+        )}
       </div>
     )
   }

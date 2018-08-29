@@ -51,9 +51,9 @@ export default class BlacklistForm extends PureComponent {
         </div>
         <div styleName='address'>{address}</div>
         {address !== account && (
-          <div onClick={this.handleRemoveFromBlacklist(address)} styleName='action' role='button'>
+          <button onClick={this.handleRemoveFromBlacklist(address)} styleName='action'>
             <i className='material-icons'>delete</i>
-          </div>
+          </button>
         )}
       </div>
     )

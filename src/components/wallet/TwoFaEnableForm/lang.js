@@ -25,5 +25,6 @@ export default {
     confirmCodeWrong: 'Confirmation code incorrect. Please try again',
     successTitle: '2FA success enabled!',
     navigateToWallets: 'go to wallets',
+    error: 'Something wrong.',
   },
 }

@@ -102,8 +102,13 @@ export default class BitcoinDAO extends EventEmitter {
   }
 
   // TODO @ipavlenko: Replace with 'immediateTransfer' after all token DAOs will start using 'submit' method
-  transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: number = 1, advancedParams = undefined) {
-    this.submit(from, to, amount, token, feeMultiplier, advancedParams)
+  transfer (from: string, to: string, amount: BigNumber, token: TokenModel) {
+    return {
+      from,
+      to,
+      value: new BigNumber(amount),
+      token,
+    }
   }
 
   submit (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: number = 1, advancedParams) {
