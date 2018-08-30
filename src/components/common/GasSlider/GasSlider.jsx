@@ -29,9 +29,7 @@ function mapStateToProps (state, ownProps) {
 function mapDispatchToProps (dispatch, ownProps) {
   return {
     handleChange: (value, token) => {
-      if (!ownProps.isLocal) {
-        dispatch(changeGasSlideValue(value, token.blockchain()))
-      }
+      dispatch(changeGasSlideValue(value, token.blockchain()))
       if (timoutId) {
         clearTimeout(timoutId)
       }
