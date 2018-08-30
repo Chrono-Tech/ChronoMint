@@ -3,8 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { I18n } from '@chronobank/core-dependencies/i18n'
-import { Icons } from '@chronobank/core-dependencies/icons'
 import type PollDetailsModel from '../PollDetailsModel'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
@@ -15,11 +13,11 @@ export default class PollNoticeModel extends abstractNoticeModel({
   transactionHash: null,
 }) {
   icon () {
-    return Icons.get('notices.polls.icon')
+    return 'notices.polls.icon'
   }
 
   title () {
-    return I18n.t('notices.polls.title')
+    return 'notices.polls.title'
   }
 
   status () {
@@ -42,7 +40,8 @@ export default class PollNoticeModel extends abstractNoticeModel({
   }
 
   message () {
-    const message = `notices.polls.${this.get('status')}`
-    return I18n.t(message)
+    return {
+      value: `notices.polls.${this.get('status')}`,
+    }
   }
 }

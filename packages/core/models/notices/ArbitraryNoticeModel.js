@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { I18n } from '@chronobank/core-dependencies/i18n'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 export default class ArbitraryNoticeModel extends abstractNoticeModel({
@@ -11,6 +10,9 @@ export default class ArbitraryNoticeModel extends abstractNoticeModel({
   params: {},
 }) {
   message () {
-    return I18n.t(this.get('key'), this.get('params'))
+    return {
+      value: this.get('key'),
+      ...this.get('params'),
+    }
   }
 }
