@@ -99,15 +99,80 @@ class LoginPage extends React.Component {
     )
   }
 
+  renderDefaultTypeForm () {
+    const { classes, submitting, error } = this.props
+
+    return (
+      <div>
+        <div styleName='field'>
+          <Field
+            component={TextField}
+            name='password'
+            type='password'
+            label={<Translate value='LoginForm.enterPassword' />}
+            fullWidth
+            InputProps={{ className: classes.input }}
+          />
+        </div>
+
+        <div styleName='actions'>
+          <Button
+            styleName='button'
+            buttonType='login'
+            type='submit'
+            label={<Translate value='LoginForm.submitButton' />}
+            isLoading={submitting}
+          />
+
+          {error ? (<div styleName='form-error'>{error}</div>) : null}
+
+          <button onClick={navigateToRecoverAccountPage} styleName='link'>
+            <Translate value='LoginForm.forgotPassword' />
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  renderDeviceTypeForm () {
+    const { error, submitting } = this.props
+
+    return (
+      <div styleName='actions'>
+        <Button
+          styleName='button'
+          buttonType='login'
+          type='submit'
+          label={<Translate value='LoginForm.submitButton' />}
+          isLoading={submitting}
+        />
+
+        {error ? (<div styleName='form-error'>{error}</div>) : null}
+      </div>
+    )
+  }
+
+  renderType () {
+    const { selectedWallet } = this.props
+
+    switch (selectedWallet.type) {
+      case 'memory': {
+        return this.renderDefaultTypeForm()
+      }
+      case 'device': {
+        return this.renderDeviceTypeForm()
+      }
+      default: {
+        return this.renderDefaultTypeForm()
+      }
+    }
+  }
+
   render () {
     const {
-      classes,
-      error,
       handleSubmit,
       navigateToSelectWallet,
-      navigateToRecoverAccountPage,
       selectedWallet,
-      submitting,
     } = this.props
 
     return (
@@ -129,32 +194,8 @@ class LoginPage extends React.Component {
             linkTitle='My Accounts'
           />
 
-          <div styleName='field'>
-            <Field
-              component={TextField}
-              name='password'
-              type='password'
-              label={<Translate value='LoginForm.enterPassword' />}
-              fullWidth
-              InputProps={{ className: classes.input }}
-            />
-          </div>
+          {this.renderType()}
 
-          <div styleName='actions'>
-            <Button
-              styleName='button'
-              buttonType='login'
-              type='submit'
-              label={<Translate value='LoginForm.submitButton' />}
-              isLoading={submitting}
-            />
-
-            {error ? (<div styleName='form-error'>{error}</div>) : null}
-
-            <button onClick={navigateToRecoverAccountPage} styleName='link'>
-              <Translate value='LoginForm.forgotPassword' />
-            </button>
-          </div>
         </div>
 
       </form>

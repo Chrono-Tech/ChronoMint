@@ -9,7 +9,6 @@ export const en = {
   or: 'or',
   back: 'back',
   ethAddress: 'Ethereum address',
-  enterPath: 'Enter HD derivation path',
   isConnected: {
     successTitle: 'Trezor plugged',
     errorTitle: 'Plug in your device',

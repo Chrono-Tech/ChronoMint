@@ -7,36 +7,40 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { stopSubmit } from 'redux-form'
 import {
-  FORM_WALLET_UPLOAD,
+  FORM_DERIVATION_PATH,
 } from '../../redux/constants'
-import LoginWithWallet from './LoginWithWallet'
+import DerivationPathForm from './DerivationPathForm'
 
-export default class LoginWithWalletContainer extends PureComponent {
+export default class DerivationPathFormContainer extends PureComponent {
   static propTypes = {
     previousPage: PropTypes.func,
-    onSubmit: PropTypes.func,
     onSubmitSuccess: PropTypes.func,
   }
 
-  async handleSubmit (walletString) {
+  static defaultProps = {
+    previousPage: () => {}
+  }
+
+  async handleSubmit (values) {
     const { onSubmit } = this.props
 
-    return onSubmit && onSubmit(walletString)
+    const path = values.get('path')
+
+    return onSubmit({ path })
   }
 
   handleSubmitSuccess (result) {
     const { onSubmitSuccess } = this.props
-
     onSubmitSuccess && onSubmitSuccess(result)
   }
 
   handleSubmitFail (errors, dispatch, submitErrors) {
-    dispatch(stopSubmit(FORM_WALLET_UPLOAD, submitErrors && submitErrors.errors))
+    dispatch(stopSubmit(FORM_DERIVATION_PATH, submitErrors && submitErrors.errors))
   }
 
   render () {
     return (
-      <LoginWithWallet
+      <DerivationPathForm
         onSubmit={this.handleSubmit.bind(this)}
         onSubmitSuccess={this.handleSubmitSuccess.bind(this)}
         onSubmitFail={this.handleSubmitFail.bind(this)}
