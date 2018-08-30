@@ -58,6 +58,7 @@ import {
 } from '../../dao/constants/WavesDAO'
 import { DAOS_REGISTER } from '../daos/constants'
 import { ContractDAOModel, ContractModel } from '../../models'
+import { getSelectedNetwork } from '../persistAccount/selectors'
 
 const tokensInit = () => ({ type: TOKENS_INIT })
 
@@ -67,7 +68,7 @@ const tokenFetched = (token) => ({ type: TOKENS_FETCHED, token })
 
 const tokensLoadingFailed = () => ({ type: TOKENS_FAILED })
 
-const setLatestBlock = (blockchain, block) => ({ type: TOKENS_UPDATE_LATEST_BLOCK, blockchain, block })
+export const setLatestBlock = (blockchain, block) => ({ type: TOKENS_UPDATE_LATEST_BLOCK, blockchain, block })
 
 const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
@@ -298,10 +299,11 @@ export const estimateGasTransfer = (tokenId, params, callback, gasPriceMultiplie
   }
 }
 
-export const estimateBtcFee = (params, callback) => async () => {
+export const estimateBtcFee = (params, callback) => async (dispatch, getState) => {
+  const network = getSelectedNetwork()(getState())
   try {
     callback(null, {
-      fee: await getBtcFee(params),
+      fee: await getBtcFee({ ...params, network }),
     })
   } catch (e) {
     callback(e)
