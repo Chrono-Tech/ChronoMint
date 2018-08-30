@@ -42,11 +42,9 @@ export default class WalletNoticeModel extends abstractNoticeModel({
   }
 
   message () {
-    return [
-      this.get('action'),
-      {
-        address: this.get('address'),
-      },
-    ]
+    return {
+      value: this.get('action'),
+      address: this.get('address'),
+    }
   }
 }
