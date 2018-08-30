@@ -28,9 +28,8 @@ export default class TransferErrorNoticeModel extends abstractNoticeModel({
   }
 
   message () {
-    const value = `notices.transfer.errors.${this.error().code}`
     return {
-      value,
+      value: `notices.transfer.errors.${this.error().code}`,
     }
   }
 

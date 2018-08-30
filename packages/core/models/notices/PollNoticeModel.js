@@ -40,10 +40,8 @@ export default class PollNoticeModel extends abstractNoticeModel({
   }
 
   message () {
-    const value = `notices.polls.${this.get('status')}`
-
     return {
-      value,
+      value: `notices.polls.${this.get('status')}`,
     }
   }
 }

@@ -28,10 +28,8 @@ export default class TransactionErrorNoticeModel extends abstractNoticeModel({
   }
 
   message () {
-    const value = `errorCodes.${this.error().code}`
-
     return {
-      value,
+      value: `errorCodes.${this.error().code}`,
     }
   }
 

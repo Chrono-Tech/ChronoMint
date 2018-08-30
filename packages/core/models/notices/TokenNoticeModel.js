@@ -50,10 +50,8 @@ export default class TokenNoticeModel extends abstractNoticeModel({
   }
 
   message () {
-    const value = `notices.settings.erc20.tokens.${this.get('status')}`
-
     return {
-      value,
+      value: `notices.settings.erc20.tokens.${this.get('status')}`,
       symbol: this.token().symbol(),
       name: this.token().name(),
     }

@@ -39,10 +39,8 @@ export default class AssetsManagerNoticeModel extends abstractNoticeModel({
   }
 
   message () {
-    const value = `notices.assetsManager.${this.get('status')}`
-
     return {
-      value,
+      value: `notices.assetsManager.${this.get('status')}`,
       ...this.get('replacements'),
     }
   }
