@@ -116,7 +116,7 @@ export default class Bitcoin extends PureComponent {
     this.state = {
       fee: null,
       feeMultiplier: this.props.feeMultiplier,
-      feeError: false,
+      feeError: null,
     }
 
     this.timeout = null
@@ -129,7 +129,7 @@ export default class Bitcoin extends PureComponent {
       try {
         const value = new Amount(newProps.token.addDecimals(new BigNumber(newProps.amount)), newProps.symbol)
         this.handleEstimateFee(
-          newProps.address,
+          newProps.wallet.address,
           newProps.recipient,
           value,
           this.getFormFee(newProps),
@@ -197,16 +197,21 @@ export default class Bitcoin extends PureComponent {
           blockchain,
         }
         this.props.estimateFee(params, (error, result) => {
-          const { fee } = result
           if (error) {
             this.setState({
-              feeError: true,
+              feeError: error,
+              feeLoading: false,
+            })
+          } else if (result && result.fee) {
+            this.setState({
+              fee: result.fee,
+              feeMultiplier: this.props.feeMultiplier,
+              feeError: null,
+              feeLoading: false,
             })
           } else {
             this.setState({
-              fee,
-              feeMultiplier: this.props.feeMultiplier,
-              feeError: false,
+              feeError: new Error(`${prefix}.errorCalculationFee`),
               feeLoading: false,
             })
           }
@@ -227,7 +232,6 @@ export default class Bitcoin extends PureComponent {
   }
 
   getTransactionFeeDescription = () => {
-
     if (this.props.invalid) {
       return (
         <span styleName='description'>
@@ -243,7 +247,7 @@ export default class Bitcoin extends PureComponent {
     if (this.state.feeError) {
       return (
         <span styleName='description'>
-          <Translate value={`${prefix}.errorEstimateFee`} />
+          <Translate value={this.state.feeError.message} />
         </span>)
     }
 

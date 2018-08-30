@@ -301,10 +301,17 @@ export const estimateGasTransfer = (tokenId, params, callback, gasPriceMultiplie
 
 export const estimateBtcFee = (params, callback) => async () => {
   try {
+    const feeResult = await getBtcFee(params)
+    const fee = feeResult.fee
+    if (typeof fee === 'undefined') {
+      throw new Error('Fee is undefined: ' + JSON.stringify(feeResult))
+    }
     callback(null, {
-      fee: await getBtcFee(params),
+      fee,
     })
   } catch (e) {
-    callback(e)
+    //eslint-disable-next-line
+    console.warn('estimateBtcFee error: ', e)
+    callback(new Error('SendTokens.errorCalculationFee'))
   }
 }

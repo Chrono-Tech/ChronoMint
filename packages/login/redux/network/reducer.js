@@ -22,8 +22,8 @@ const initialState = {
     providerMap.giveth,
   ],
   priority: [
-    providerMap.chronoBank.id,
     providerMap.infura.id,
+    providerMap.chronoBank.id,
     providerMap.mew.id,
     providerMap.giveth.id,
   ],

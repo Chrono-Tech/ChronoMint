@@ -149,8 +149,7 @@ export const getBtcFee = async (
     blockchain,
   }) => {
   const utxos = await getUtxos(blockchain, address)
-  const { fee } = describeTransaction(recipient, amount, formFee, utxos)
-  return fee
+  return describeTransaction(recipient, amount, formFee, utxos)
 }
 
 export const getNodeByBlockchain = (blockchain) => {
