@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import ErrorList from '@chronobank/core-dependencies/ErrorList'
 import validator from './validator'
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import ProfileModel from './ProfileModel'
@@ -41,8 +40,8 @@ class CBEModel extends abstractFetchingModel({
 
 export const validate = (values) => {
   const errors = {}
-  errors.address = ErrorList.toTranslate(validator.address(values.get('address')))
-  errors.name = ErrorList.toTranslate(validator.name(values.get('name')))
+  errors.address = validator.address(values.get('address'))
+  errors.name = validator.name(values.get('name'))
   return errors
 }
 
