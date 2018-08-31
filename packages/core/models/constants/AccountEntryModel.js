@@ -3,42 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import PropTypes from 'prop-types'
-import AbstractAccountModel from './AbstractAccountModel'
+export const WALLET_TYPE_MEMORY = 'memory'
+export const WALLET_TYPE_DEVICE = 'device'
 
-const schema = {
-  key: PropTypes.string,
-  name: PropTypes.string,
-  type: PropTypes.string,
-  encrypted: PropTypes.array,
-  profile: PropTypes.object,
-}
+export const WALLET_TYPE_TREZOR = 'trezor'
+export const WALLET_TYPE_TREZOR_MOCK = 'trezor_mock'
 
-class AccountEntryModel extends AbstractAccountModel {
-  constructor (props) {
-    super(props, schema)
-    Object.assign(this, {
-      key: '',
-      name: '',
-      type: '',
-      encrypted: [],
-      profile: null,
-    }, props)
-    Object.freeze(this)
-  }
-
-  get address () {
-    switch (this.type) {
-      case 'memory':
-        return this.encrypted[0].address
-      case 'device':
-        return this.encrypted[0].address 
-    }
-  } 
-
-  isMemoryWallet () {
-    return !this.type || this.type === 'memory'
-  }
-}
-
-export default AccountEntryModel
+export const WALLET_TYPE_LEDGER = 'ledger'
+export const WALLET_TYPE_LEDGER_MOCK = 'ledger_mock'

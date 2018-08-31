@@ -14,6 +14,11 @@ import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import {
+  WALLET_TYPE_MEMORY,
+  WALLET_TYPE_DEVICE,
+} from '@chronobank/core/models/constants/AccountEntryModel'
+
+import {
   getAccountAddress,
   getAccountAvatarImg,
   getAccountName,
@@ -156,10 +161,10 @@ class LoginPage extends React.Component {
     const { selectedWallet } = this.props
 
     switch (selectedWallet.type) {
-      case 'memory': {
+      case WALLET_TYPE_MEMORY: {
         return this.renderDefaultTypeForm()
       }
-      case 'device': {
+      case WALLET_TYPE_DEVICE: {
         return this.renderDeviceTypeForm()
       }
       default: {

@@ -56,15 +56,12 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
   const state = getState()
 
   const { walletsList } = state.get(DUCK_PERSIST_ACCOUNT)
-
   const index = walletsList.findIndex((item) => item.key === wallet.key)
-
   const copyWalletList = [...walletsList]
 
   copyWalletList.splice(index, 1, wallet)
 
   dispatch({ type: WALLETS_UPDATE_LIST, walletsList: copyWalletList })
-
 }
 
 export const decryptAccount = (encrypted, password) => () => {
@@ -76,7 +73,6 @@ export const decryptAccount = (encrypted, password) => () => {
 
 export const validateAccountName = (name) => (dispatch, getState) => {
   const state = getState()
-
   const { walletsList } = state.get(DUCK_PERSIST_ACCOUNT)
 
   return !walletsList.find((item) => item.name === name)
@@ -87,26 +83,25 @@ export const resetPasswordAccount = (wallet, mnemonic, password) => async (dispa
   accounts.wallet.clear()
 
   const newCopy = await dispatch(createAccount({ name: wallet.name, mnemonic, password }))
-
   const newWallet = {
     ...wallet,
     encrypted: newCopy.encrypted,
   }
 
   dispatch(accountUpdate(newWallet))
-
   dispatch(accountSelect(newWallet))
-
 }
 
-export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => async (dispatch) => {
+export const createAccount = ({ name, password, privateKey, mnemonic, type, numberOfAccounts = 0, types = {} }) => async (dispatch) => {
   let hex = ''
 
-  if (privateKey){
+  console.log('createAccount: ', name, password, privateKey, mnemonic, numberOfAccounts, types )
+
+  if (privateKey) {
     hex = `0x${privateKey}`
   }
 
-  if (mnemonic){
+  if (mnemonic) {
     const hdKeyWallet = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic)).derivePath(WALLET_HD_PATH).getWallet()
     hex = hdKeyWallet.getPrivateKeyString()
   }
@@ -121,6 +116,7 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
     key: uuid(),
     name,
     types,
+    type,
     encrypted: wallet && wallet.encrypt(password),
     profile: null,
   })
@@ -128,13 +124,12 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
   const newAccounts = await dispatch(setProfilesForAccounts([entry]))
 
   return newAccounts[0] || entry
-
 }
 
 export const createHWAccount = ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => async (dispatch) => {
   let hex = ''
 
-  if (privateKey){
+  if (privateKey) {
     hex = `0x${privateKey}`
   }
 
@@ -161,7 +156,6 @@ export const createHWAccount = ({ name, password, privateKey, mnemonic, numberOf
   const newAccounts = await dispatch(setProfilesForAccounts([entry]))
 
   return newAccounts[0] || entry
-
 }
 
 export const downloadWallet = () => (dispatch, getState) => {
@@ -187,19 +181,22 @@ export const setProfilesForAccounts = (walletsList) => async (dispatch) => {
   const addresses = getWalletsListAddresses(walletsList)
   const data = await dispatch(ProfileThunks.getUserInfo(addresses))
 
+  console.log('setProfilesForAccounts: ', data)
+
   if (Array.isArray(data)) {
     return data.reduce((prev, profile) => {
+      console.log('setProfilesForAccounts map: ', prev, profile)
 
       const updatedProfileAccounts =
         walletsList
           .filter((wallet) => getAccountAddress(wallet, true) === profile.address)
           .map((account) => {
+            console.log('setProfilesForAccounts map account: ', account)
             const profileModel = profile && new AccountProfileModel(profile) || null
             return new AccountEntryModel({
               ...account,
               profile: profileModel,
             })
-
           })
 
       return [].concat(prev, updatedProfileAccounts)
@@ -229,14 +226,11 @@ export const customNetworkEdit = (network: AccountCustomNetwork) => (dispatch, g
   const state = getState()
 
   const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
-
   const foundNetworkIndex = customNetworksList.findIndex((item) => network.id === item.id)
 
   if (foundNetworkIndex !== -1) {
     const copyNetworksList = [...customNetworksList]
-
     copyNetworksList.splice(foundNetworkIndex, 1, network)
-
     dispatch(customNetworksListUpdate(copyNetworksList))
   }
 }
@@ -247,9 +241,7 @@ export const customNetworksListAdd = (network: AccountCustomNetwork) => (dispatc
 
 export const customNetworksDelete = (network) => (dispatch, getState) => {
   const state = getState()
-
   const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
-
   const updatedNetworkList = customNetworksList.filter((item) => item.id !== network.id)
 
   dispatch(customNetworksListUpdate(updatedNetworkList))

@@ -56,7 +56,6 @@ export const getProfileSignature = createSelector(
   (state) => state.get(DUCK_SESSION),
   (session) => {
     const { profileSignature } = session
-
     return profileSignature && profileSignature.profile
   },
 )

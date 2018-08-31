@@ -5,6 +5,7 @@
 
 import { createSelector } from 'reselect'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
+import { WALLET_TYPE_MEMORY, WALLET_TYPE_TREZOR_MOCK } from '@chronobank/core/models/constants/AccountEntryModel'
 import { DUCK_PERSIST_ACCOUNT } from './constants'
 import BitcoinMemoryDevice from '../../services/signers/BitcoinMemoryDevice'
 import BitcoinTrezorDeviceMock from '../../services/signers/BitcoinTrezorDeviceMock'
@@ -13,7 +14,7 @@ export const getPersistAccount = (state) => {
   return state.get(DUCK_PERSIST_ACCOUNT)
 }
 
-export const getSigner = (state) => {
+export const getEthereumSigner = (state) => {
   const { decryptedWallet } = getPersistAccount(state)
   return decryptedWallet
 }
@@ -47,12 +48,16 @@ export const getCustomNetworksList = createSelector(
 
 export const getBtcSigner = (state) => {
   const account = getPersistAccount(state)
+  console.log('getBtcSigner: ', account, )
   switch (account.decryptedWallet.entry.encrypted[0].type) {
-    case 'trezor_mock': {
+    case WALLET_TYPE_TREZOR_MOCK: {
       return new BitcoinTrezorDeviceMock()
     }
-    case 'memory': {
+    case WALLET_TYPE_MEMORY: {
       return new BitcoinMemoryDevice(account.decryptedWallet.privateKey)
     }
+    default:
+      //eslint-disable-next-line
+      console.warn('Unknown wallet type')
   }
 }

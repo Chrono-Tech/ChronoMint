@@ -34,14 +34,14 @@ import {
   SignerMemoryModel,
 } from '../../models'
 import { executeTransaction } from '../ethereum/thunks'
-import { executeBitccoinTransaction } from '../bitcoin/thunks'
+import { executeBitcoinTransaction } from '../bitcoin/thunks'
 import {
   WALLETS_SET,
   WALLETS_SET_NAME,
   WALLETS_UPDATE_BALANCE,
   WALLETS_UPDATE_WALLET,
 } from './constants'
-import { getSigner } from '../persistAccount/selectors'
+import { getEthereumSigner } from '../persistAccount/selectors'
 import { executeNemTransaction } from '../nem/thunks'
 
 const isOwner = (wallet, account) => {
@@ -216,7 +216,7 @@ export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amo
     const executeMap = {
       [BLOCKCHAIN_ETHEREUM]: executeTransaction,
       [BLOCKCHAIN_NEM]: executeNemTransaction,
-      [BLOCKCHAIN_BITCOIN]: executeBitccoinTransaction,
+      [BLOCKCHAIN_BITCOIN]: executeBitcoinTransaction,
     }
 
     // execute
@@ -279,7 +279,7 @@ export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Nu
 // eslint-disable-next-line complexity
 export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }) => async (dispatch, getState) => {
   const state = getState()
-  const signer = getSigner(state)
+  const signer = getEthereumSigner(state)
   const account = getState().get(DUCK_SESSION).account
   const wallets = getWallets(state)
 

@@ -170,6 +170,7 @@ export const getProfileSignature = (wallet) => async (dispatch) => {
   if (!wallet) {
     return
   }
+
   try {
     const signDataString = ProfileService.getSignData()
     const signData = wallet.sign(signDataString)

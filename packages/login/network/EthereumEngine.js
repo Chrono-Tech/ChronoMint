@@ -8,6 +8,7 @@ import Web3 from 'web3'
 import hdKey from 'ethereumjs-wallet/hdkey'
 import Web3Utils from './Web3Utils'
 import { WALLET_HD_PATH } from './constants'
+import { WALLET_TYPE_MEMORY } from '@chronobank/core/models/constants/AccountEntryModel'
 
 export default class EthereumEngine {
   constructor (wallet, network, url, engine, deriveNumber) {
@@ -73,7 +74,7 @@ export default class EthereumEngine {
 
   signTx (tx: Tx, signerAddress) {
     switch (this._wallet.type) {
-      case  'memory':
+      case  WALLET_TYPE_MEMORY:
         tx.sign(this.getPrivateKeyBufer(signerAddress))
 
         const wallet = this.getWallet(signerAddress)

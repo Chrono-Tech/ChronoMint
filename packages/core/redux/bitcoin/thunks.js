@@ -13,13 +13,13 @@ import {
 } from '../../models'
 import * as BitcoinActions from './actions'
 import * as BitcoinUtils from './utils'
-import { getSelectedNetwork, getSigner } from '../persistAccount/selectors'
+import { getSelectedNetwork, getBtcSigner } from '../persistAccount/selectors'
 import { describePendingBitcoinTx } from '../../describers'
 import { getToken } from '../tokens/selectors'
 import { pendingEntrySelector } from './selectors'
 import { notify } from '../notifier/actions'
 
-export const executeBitccoinTransaction = ({ tx, options = null }) => async (dispatch, getState) => {
+export const executeBitcoinTransaction = ({ tx, options = null }) => async (dispatch, getState) => {
   const token = getToken(options.symbol)(getState())
   const prepared = await dispatch(prepareTransaction(tx, options))
   const entry = BitcoinUtils.createBitcoinTxEntryModel({
@@ -60,12 +60,13 @@ export const prepareTransaction = (tx, { feeMultiplier = 1, satPerByte = null, s
 const submitTransaction = (entry) => async (dispatch, getState) => {
 
   const state = getState()
-
   const description = describePendingBitcoinTx(
     entry,
     {
       token: getToken(entry.symbol)(state),
     })
+
+  console.log('submitTransaction: ', entry)
 
   dispatch(modalsOpen({
     componentName: 'ConfirmTxDialog',
@@ -79,11 +80,13 @@ const submitTransaction = (entry) => async (dispatch, getState) => {
 }
 
 const acceptTransaction = (entry) => async (dispatch, getState) => {
+  console.log('acceptTransaction: ', entry)
+
   dispatch(BitcoinActions.acceptTransaction(entry))
 
   const state = getState()
-  const signer = getSigner(state)
-
+  const signer = getBtcSigner(state)
+  console.log('acceptTransaction signer: ', signer)
   const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key, entry.blockchain)(getState())
 
   if (!selectedEntry) {
@@ -101,8 +104,12 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
 const rejectTransaction = (entry) => (dispatch) => dispatch(BitcoinActions.rejectTransaction(entry))
 
 const processTransaction = ({ entry, signer }) => async (dispatch, getState) => {
+  console.log('processTransaction: ', entry, signer)
+
   await dispatch(signTransaction({ entry, signer }))
   const signedEntry = pendingEntrySelector(entry.tx.from, entry.key, entry.blockchain)(getState())
+  console.log('processTransaction pendingEntrySelector: ', signedEntry)
+
   if (!signedEntry) {
     // eslint-disable-next-line no-console
     console.error('signedEntry is null', entry)
@@ -114,6 +121,8 @@ const processTransaction = ({ entry, signer }) => async (dispatch, getState) => 
 }
 
 const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
+  console.log('signTransaction: ', entry, signer)
+
   try {
     const { tx } = entry
     const txb = tx.prepared
@@ -146,6 +155,8 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
 }
 
 const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
+  console.log('sendSignedTransaction: ', entry)
+
   dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
     ...entry,
     isPending: true,

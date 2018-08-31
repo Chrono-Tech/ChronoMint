@@ -96,7 +96,7 @@ export default class BitcoinMemoryDevice extends EventEmitter {
   }
 
   _getDerivedWallet (derivedPath) {
-    if (this.seed.lengh > 64) {
+    if (this.seed.length > 64) {
       const HDPrivateKey = bitcore.HDPrivateKey
 
       const hdPrivateKey = new HDPrivateKey()
