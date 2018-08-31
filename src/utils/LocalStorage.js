@@ -3,11 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { LOCAL_ID, LOCAL_PROVIDER_ID } from '@chronobank/login/network/settings'
-
 const isW = window.hasOwnProperty('localStorage')
 
-const TEST_RPC_ACCOUNT = 'testRPCAccount'
 const LOCALE = 'locale'
 const LAST_URL = 'lastURL'
 
@@ -21,9 +18,6 @@ class LocalStorage {
     this.token = `${this.account}-${this.provider}-${this.network}`
     this.localAccount = null
     this.locale = this.getLocale()
-    if (provider === LOCAL_PROVIDER_ID && network === LOCAL_ID) {
-      this.setLocalAccount(account)
-    }
     this._memoryWithToken = LocalStorage._getFromLS(this.token) || {}
   }
 
@@ -50,16 +44,14 @@ class LocalStorage {
     this.token = null
     this._memoryWithToken = {}
     this.localAccount = null
-    LocalStorage._removeFromLS(TEST_RPC_ACCOUNT)
   }
 
   setLocalAccount (account) {
     this.localAccount = account
-    LocalStorage._setToLS(TEST_RPC_ACCOUNT, account)
   }
 
   getLocalAccount () {
-    return this.localAccount || LocalStorage._getFromLS(TEST_RPC_ACCOUNT)
+    return this.localAccount
   }
 
   /**

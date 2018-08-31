@@ -11,10 +11,8 @@ import {
   SubmissionError,
 } from 'redux-form'
 import { replace } from 'react-router-redux'
-import { DUCK_ETH_MULTISIG_WALLET } from '@chronobank/core/redux/multisigWallet/constants'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import walletProvider from '@chronobank/login/network/walletProvider'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import setup from '@chronobank/login/network/EngineUtils'
 import localStorage from 'utils/LocalStorage'
 import {
@@ -28,14 +26,9 @@ import * as SessionThunks from '@chronobank/core/redux/session/thunks'
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 import { SignerMemoryModel } from '@chronobank/core/models'
-import { checkTestRPC } from '@chronobank/login/redux/network/utils'
 import {
   createAccountEntry,
 } from '@chronobank/core/redux/persistAccount/utils'
-import {
-  isLocalNode,
-  LOCAL_PRIVATE_KEYS,
-} from '@chronobank/login/network/settings'
 import * as LoginUINavActions from './navigation'
 import {
   FORM_LOGIN_PAGE,
@@ -65,15 +58,9 @@ export const navigateToCreateAccountWithoutImport = () => (dispatch) => {
  * TODO: to add description
  * TODO: to dispatch something, this is not a thunk or action. Really..
  */
-export const initCommonNetworkSelector = () => (dispatch, getState) => {
-  const state = getState()
-  const { isLocal } = state.get(DUCK_NETWORK)
+export const initCommonNetworkSelector = () => (dispatch) => {
 
   dispatch(NetworkThunks.autoSelect())
-
-  if (!isLocal) {
-    checkTestRPC()
-  }
 
 }
 
@@ -309,17 +296,6 @@ export const onSubmitResetAccountPasswordSuccess = () => (dispatch) => {
   ))
 }
 
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
-export const selectProviderWithNetwork = (networkId, providerId) => (dispatch) => {
-  dispatch(NetworkActions.selectProviderWithNetwork(networkId, providerId))
-  if (isLocalNode(providerId, networkId)) {
-    dispatch(LoginUINavActions.navigateToLoginLocal())
-  }
-}
-
 export const onWalletSelect = (wallet) => (dispatch) => {
 
   dispatch(PersistAccountActions.accountSelect(wallet))
@@ -349,60 +325,3 @@ export const onSubmitLoginFormFail = (errors, submitErrors) => (dispatch) => {
   dispatch(stopSubmit(FORM_LOGIN_PAGE, submitErrors && submitErrors.errors))
   dispatch(NetworkActions.networkResetLoginSubmitting())
 }
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
-// eslint-disable-next-line no-unused-vars
-export const onSubmitLoginTestRPC = () => (dispatch) => {
-  // FIXME: empty thunk
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
-// eslint-disable-next-line no-unused-vars
-export const onSubmitLoginTestRPCFail = (errors, submitErrors) => (dispatch) => {
-  // FIXME: empty thunk
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to rework it
- */
-export const handleLoginLocalAccountClick = (account = '') =>
-  async (dispatch, getState) => {
-    let state = getState()
-    const { accounts } = state.get(DUCK_NETWORK)
-    const wallets = state.get(DUCK_ETH_MULTISIG_WALLET)
-    const providerSetting = dispatch(SessionThunks.getProviderSettings())
-    const index = Math.max(accounts.indexOf(account), 0)
-    const provider = privateKeyProvider.getPrivateKeyProvider(
-      LOCAL_PRIVATE_KEYS[index],
-      providerSetting,
-      wallets,
-    )
-    dispatch(NetworkActions.selectAccount(account))
-    await setup(provider)
-
-    state = getState()
-    const {
-      selectedAccount,
-      selectedProviderId,
-      selectedNetworkId,
-    } = state.get(DUCK_NETWORK)
-
-    dispatch(NetworkActions.clearErrors())
-
-    dispatch(SessionThunks.createNetworkSession(
-      selectedAccount,
-      selectedProviderId,
-      selectedNetworkId,
-    ))
-    localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
-    const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
-    dispatch(replace(localStorage.getLastURL() || defaultURL))
-  }

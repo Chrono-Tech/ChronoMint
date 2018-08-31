@@ -4,7 +4,7 @@
  */
 
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
-import { getNetworkById, LOCAL_ID, providerMap } from '@chronobank/login/network/settings'
+import { getNetworkById, providerMap } from '@chronobank/login/network/settings'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import { networkSetNetwork, addError } from '@chronobank/login/redux/network/actions'
 import Web3 from 'web3'
@@ -48,7 +48,7 @@ class LoginMetamask extends PureComponent {
       if (error) {
         this.props.addError(<Translate value='LoginMetamask.wrongMetaMask' />)
       }
-      this.props.selectNetwork(Math.min(+currentNetworkId, LOCAL_ID))
+      this.props.selectNetwork(+currentNetworkId)
     })
   }
 

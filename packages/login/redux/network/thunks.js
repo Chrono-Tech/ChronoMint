@@ -136,8 +136,8 @@ export const loginUport = () => async (dispatch) => {
 export const getNetworkName = () => (dispatch, getState) => {
   const state = getState()
   const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
-  const { selectedNetworkId, selectedProviderId, isLocal } = state.get(DUCK_NETWORK)
-  const network = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
+  const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
+  const network = getNetworkById(selectedNetworkId, selectedProviderId)
   const { name } = network
 
   if (!network.host) {
