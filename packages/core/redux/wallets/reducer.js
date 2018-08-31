@@ -10,6 +10,7 @@ import WalletModel from '../../models/wallet/WalletModel'
 const initialState = {
   list: {},
   twoFAConfirmed: null,
+  rehydrated: false,
 }
 
 export default (state = initialState, action) => {
@@ -18,6 +19,7 @@ export default (state = initialState, action) => {
       const incoming = action.payload.wallets
       if (incoming) {
         return {
+          ...state,
           list: Object.entries(incoming.list)
             .reduce((accumulator, [key, wallet]) => {
               if (wallet.isDerived) {
@@ -25,9 +27,13 @@ export default (state = initialState, action) => {
               }
               return accumulator
             }, {}),
+          rehydrated: true,
         }
       }
-      return state
+      return {
+        ...state,
+        rehydrated: true,
+      }
     }
     case a.WALLETS_SET:
       return {

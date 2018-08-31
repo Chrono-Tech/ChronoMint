@@ -10,11 +10,9 @@ import {
   stopSubmit,
   SubmissionError,
 } from 'redux-form'
-import { replace } from 'react-router-redux'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import walletProvider from '@chronobank/login/network/walletProvider'
 import setup from '@chronobank/login/network/EngineUtils'
-import localStorage from 'utils/LocalStorage'
 import {
   DUCK_NETWORK,
 } from '@chronobank/login/redux/network/constants'
@@ -121,9 +119,6 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         selectedProviderId,
         selectedNetworkId,
       ))
-      localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
-      const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
-      dispatch(replace(localStorage.getLastURL() || defaultURL))
     }
   } catch (e) {
     // eslint-disable-next-line no-console

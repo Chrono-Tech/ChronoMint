@@ -10,12 +10,13 @@ import { connect } from 'react-redux'
 import Button from 'components/common/ui/Button/Button'
 import { changeMomentLocale } from 'redux/ui/actions'
 import classnames from 'classnames'
+import { DUCK_UI } from 'redux/ui/constants'
 
 import styles from './LocaleDropDown.scss'
 
 function mapStateToProps (state) {
   return {
-    locale: state.get('i18n').locale,
+    locale: state.get(DUCK_UI).locale,
     translations: state.get('i18n').translations,
   }
 }
