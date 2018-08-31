@@ -15,6 +15,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { closeNotifier } from '@chronobank/core/redux/notifier/actions'
 import { DUCK_NOTIFIER } from '@chronobank/core/redux/notifier/constants'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import theme from 'styles/themes/default'
 import { DUCK_SIDES } from 'redux/sides/constants'
 import { DUCK_MODALS } from 'redux/modals/constants'
@@ -23,6 +24,7 @@ import IconButton from '@material-ui/core/es/IconButton/IconButton'
 import DrawerMainMenu from 'layouts/partials/DrawerMainMenu/DrawerMainMenu'
 import HeaderPartial from 'layouts/partials/HeaderPartial/HeaderPartial'
 import { toggleMainMenu } from 'redux/sides/actions'
+import { navigateToLoginPage } from '@chronobank/login-ui/redux/navigation'
 
 import './Markup.scss'
 
@@ -31,11 +33,13 @@ function mapStateToProps (state) {
     notice: state.get(DUCK_NOTIFIER).notice,
     mainMenuIsOpen: state.get(DUCK_SIDES).mainMenuIsOpen,
     modalStackSize: state.get(DUCK_MODALS).stack.length,
+    isLoggedIn: state.get(DUCK_SESSION).isSession,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
+    navigateToLoginPage: () => dispatch(navigateToLoginPage()),
     handleCloseNotifier: () => dispatch(closeNotifier()),
     onToggleMainMenu: (mainMenuIsOpen) => dispatch(toggleMainMenu(mainMenuIsOpen)),
   }
@@ -44,9 +48,11 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class Markup extends PureComponent {
   static propTypes = {
+    isLoggedIn: PropTypes.bool,
     modalStackSize: PropTypes.number,
     notice: PropTypes.instanceOf(Object),
     handleCloseNotifier: PropTypes.func,
+    navigateToLoginPage: PropTypes.func,
     children: PropTypes.node,
     location: PropTypes.shape({
       action: PropTypes.string,
@@ -59,6 +65,17 @@ export default class Markup extends PureComponent {
     }),
     onToggleMainMenu: PropTypes.func,
     mainMenuIsOpen: PropTypes.bool,
+  }
+
+  componentDidMount () {
+    // const { dispatch, currentURL } = this.props
+
+    if (!this.props.isLoggedIn) {
+      // set the current url/path for future redirection (we use a Redux action)
+      // then redirect (we use a React Router method)
+      // dispatch(setRedirectUrl(currentURL))
+      this.props.navigateToLoginPage()
+    }
   }
 
   handleToggleMainMenu = () => {

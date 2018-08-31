@@ -5,12 +5,11 @@
 
 import moment from 'moment'
 import { setLocale } from 'react-redux-i18n'
-import localStorage from 'utils/LocalStorage'
 import ipfs from '@chronobank/core-dependencies/utils/IPFS'
 import userMonitorService from 'user/monitorService'
 import { modalsOpen, modalsClose } from 'redux/modals/actions'
 import { DUCK_WATCHER, WATCHER_TX_SET } from '@chronobank/core/redux/watcher/constants'
-import { CHANGE_WALLET_VIEW } from './constants'
+import { CHANGE_WALLET_VIEW, UI_SET_LOCALE } from './constants'
 
 export const startUserMonitorAndCloseModals = () => (dispatch) => {
   userMonitorService.start()
@@ -76,7 +75,10 @@ export const showConfirmTxModal = (estimateGas, localFeeMultiplier) => (dispatch
 
 export const changeMomentLocale = (locale) => (dispatch) => {
   moment.locale(locale)
-  localStorage.setLocale(locale)
+  dispatch({
+    type: UI_SET_LOCALE,
+    locale,
+  })
   dispatch(setLocale(locale))
 }
 

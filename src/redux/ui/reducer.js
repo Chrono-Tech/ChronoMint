@@ -3,27 +3,38 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { REHYDRATE } from 'redux-persist'
 import {
-  OPEN_BRAND_PARTIAL,
   CHANGE_WALLET_VIEW,
+  UI_SET_LOCALE,
 } from './constants'
 
 const initialState = {
-  open: false,
   isCompactWalletView: false,
+  locale: 'en',
+  rehydrated: false,
 }
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case OPEN_BRAND_PARTIAL:
+    case REHYDRATE: {
+      console.log('UI REHYDRATE action', action)
       return {
         ...state,
-        open: action.payload.open,
+        locale: action.locale || 'en',
+        isCompactWalletView: action.isCompactWalletView || false,
+        rehydrated: true,
       }
+    }
     case CHANGE_WALLET_VIEW:
       return {
         ...state,
         isCompactWalletView: !state.isCompactWalletView,
+      }
+    case UI_SET_LOCALE:
+      return {
+        ...state,
+        locale: action.locale,
       }
     default:
       return state

@@ -6,7 +6,7 @@
 import PropTypes from 'prop-types'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
-import { history } from 'redux/configureStore'
+import { navigateBack } from 'redux/ui/navigation'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
 import { DUCK_SIDES } from 'redux/sides/constants'
@@ -23,6 +23,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     handleAction: (action) => dispatch(action()),
+    navigateBack: () => dispatch(navigateBack()),
   }
 }
 
@@ -30,6 +31,7 @@ function mapDispatchToProps (dispatch) {
 export default class TopButtons extends PureComponent {
   static propTypes = {
     handleAction: PropTypes.func,
+    navigateBack: PropTypes.func,
     location: PropTypes.shape({
       action: PropTypes.string,
       hash: PropTypes.string,
@@ -58,7 +60,10 @@ export default class TopButtons extends PureComponent {
       <div styleName='root'>
         <div styleName='backButtonWrapper'>
           {page && page.backButton ? (
-            <Button styleName='backButton' onClick={page.backButtonAction ? this.handleAction(page.backButtonAction) : history.goBack}>
+            <Button
+              styleName='backButton'
+              onClick={page.backButtonAction ? this.handleAction(page.backButtonAction) : this.props.navigateBack}
+            >
               <i styleName='backIcon' className='chronobank-icon'>back</i>
             </Button>
           ) : null}

@@ -12,8 +12,9 @@ import {
 
 // eslint-disable-next-line import/prefer-default-export
 export const loadI18n = (locale) => async (dispatch, getState) => {
+  console.log('>>>>>>>>>>>>>>> LOCALE loadI18n', locale)
   const publicBackendProvider = new PublicBackendProvider()
-  let translations = await publicBackendProvider.get('/api/v1/mintTranslations/')
+  const translations = await publicBackendProvider.get('/api/v1/mintTranslations/')
   const currentI18n = getState().get(DUCK_I18N)
 
   if (translations) {
