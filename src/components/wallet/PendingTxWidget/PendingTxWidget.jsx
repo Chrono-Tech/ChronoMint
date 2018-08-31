@@ -5,34 +5,21 @@
 
 import PropTypes from 'prop-types'
 import { Translate } from 'react-redux-i18n'
-import { Button, TokenValue } from 'components'
+import Button from 'components/common/ui/Button/Button'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 import React, { PureComponent } from 'react'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
-import TokensCollection from 'models/tokens/TokensCollection'
-import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import Preloader from 'components/common/Preloader/Preloader'
-import MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxModel'
-import Amount from 'models/Amount'
-import { confirmMultisigTx, getPendingData, revokeMultisigTx } from 'redux/multisigWallet/actions'
-import { DUCK_I18N } from 'redux/i18n/actions'
+import MultisigWalletPendingTxModel from '@chronobank/core/models/wallet/MultisigWalletPendingTxModel'
+import Amount from '@chronobank/core/models/Amount'
+import { confirmMultisigTx, revokeMultisigTx } from '@chronobank/core/redux/multisigWallet/actions'
 import { modalsOpen } from 'redux/modals/actions'
-import TwoFaConfirmModal from 'components/wallet/TwoFaConfirmModal/TwoFaConfirmModal'
-import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
-import { getMultisigWallets } from 'redux/wallet/selectors/models'
-import { PTWallet } from 'redux/wallet/types'
+import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
+import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 
 import { prefix } from './lang'
 import './PendingTxWidget.scss'
-
-function mapStateToProps (state, ownProps) {
-  return {
-    wallet: !ownProps.walletInfo.isMain ? getMultisigWallets(state).item(ownProps.walletInfo.address) : null,
-    tokens: state.get(DUCK_TOKENS),
-    locale: state.get(DUCK_I18N).locale,
-  }
-}
 
 function mapDispatchToProps (dispatch) {
 
@@ -40,38 +27,22 @@ function mapDispatchToProps (dispatch) {
     revoke: (wallet, tx) => dispatch(revokeMultisigTx(wallet, tx)),
     confirm: (wallet, tx) => dispatch(confirmMultisigTx(wallet, tx)),
     enterCode: (wallet, tx) => dispatch(modalsOpen({
-      component: TwoFaConfirmModal,
+      componentName: 'TwoFaConfirmModal',
       props: {
         wallet,
         tx,
       },
     })),
-    getPendingData: (wallet, pending) => dispatch(getPendingData(wallet, pending)),
   }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(null, mapDispatchToProps)
 export default class PendingTxWidget extends PureComponent {
   static propTypes = {
-    wallet: PropTypes.oneOfType([
-      PropTypes.instanceOf(MultisigWalletModel),
-      PropTypes.instanceOf(DerivedWalletModel),
-    ]),
+    wallet: PropTypes.oneOfType([PropTypes.instanceOf(WalletModel), PropTypes.instanceOf(MultisigEthWalletModel)]),
     revoke: PropTypes.func,
     confirm: PropTypes.func,
-    getPendingData: PropTypes.func,
-    tokens: PropTypes.instanceOf(TokensCollection),
-    locale: PropTypes.string,
     enterCode: PropTypes.func,
-    walletInfo: PTWallet,
-  }
-
-  componentDidMount () {
-    this.checkAndFetchPendings(this.props.wallet)
-  }
-
-  componentWillReceiveProps ({ wallet }) {
-    this.checkAndFetchPendings(wallet)
   }
 
   handleRevoke = (wallet, item) => () => {
@@ -86,21 +57,8 @@ export default class PendingTxWidget extends PureComponent {
     this.props.enterCode(wallet, item)
   }
 
-  checkAndFetchPendings (wallet) {
-    if (!wallet || (!wallet.is2FA() && !wallet.isMultisig()) || wallet.pendingTxList().isFetched() || wallet.pendingTxList().isFetching()) {
-      return
-    }
-
-    wallet.pendingTxList().items().forEach((item) => {
-      if (item.isFetched() || item.isFetching()) {
-        return
-      }
-      this.props.getPendingData(wallet, item)
-    })
-  }
-
   renderIcon (tx: MultisigWalletPendingTxModel) {
-    const func = tx.decodedTx().funcName()
+    const func = tx.decodedTx.funcName()
     let icon = null
     let styleName = ''
     switch (func) {
@@ -129,10 +87,10 @@ export default class PendingTxWidget extends PureComponent {
   }
 
   renderRow (wallet, item: MultisigWalletPendingTxModel) {
-    const isConfirmed = item.isConfirmed()
+    const isConfirmed = item.isConfirmed
 
     return (
-      <div styleName='row' key={item.id()}>
+      <div styleName='row' key={item.id}>
         <div styleName='rowTable'>
           {this.renderIcon(item)}
           <div styleName='values'>
@@ -143,16 +101,16 @@ export default class PendingTxWidget extends PureComponent {
                 : item.value
               return (
                 <div key={index}>
-                  <span>{item.label}:&nbsp;</span>
+                  <span><Translate value={item.label} />:&nbsp;</span>
                   <span>{value}</span>
                 </div>
               )
             })}
           </div>
-          {wallet.is2FA()
+          {wallet.is2FA
             ? (
               <div styleName='actions'>
-                {item.isPending()
+                {item.isPending
                   ? <Preloader />
                   : (
                     <Button
@@ -167,18 +125,12 @@ export default class PendingTxWidget extends PureComponent {
                   flat
                   label={<Translate value='wallet.revoke' />}
                   disabled={!isConfirmed}
-                  onClick={isConfirmed
-                    ? this.handleRevoke(wallet, item)
-                    : undefined
-                  }
+                  onClick={this.handleRevoke(wallet, item)}
                 />
                 <Button
                   label={<Translate value='wallet.sign' />}
                   disabled={isConfirmed}
-                  onClick={!isConfirmed
-                    ? this.handleConfirm(wallet, item)
-                    : undefined
-                  }
+                  onClick={this.handleConfirm(wallet, item)}
                 />
               </div>
             )}
@@ -188,11 +140,12 @@ export default class PendingTxWidget extends PureComponent {
   }
 
   render () {
-    const { wallet, walletInfo } = this.props
+    const { wallet } = this.props
 
-    if (!walletInfo || !walletInfo.isMultisig || !walletInfo.is2FA) {
-      return null
+    if (!wallet.isMultisig) {
+      return false
     }
+    const showProloader = !wallet
 
     return (
       <div styleName='root' className='PendingTxWidget__root'>
@@ -200,11 +153,10 @@ export default class PendingTxWidget extends PureComponent {
           <Translate value={`${prefix}.title`} />
         </div>
         <div styleName='body'>
-          {!wallet
-            ? <Preloader />
-            : wallet.pendingTxList().size() > 0
-              ? wallet.pendingTxList().items().map((item) => this.renderRow(wallet, item))
-              : <Translate value={`${prefix}.noTransfers`} />
+          {showProloader && <Preloader />}
+          {wallet && wallet.pendingCount > 0
+            ? Object.values(wallet.pendingTxList).map((item) => this.renderRow(wallet, item))
+            : <Translate value={`${prefix}.noTransfers`} />
           }
         </div>
       </div>

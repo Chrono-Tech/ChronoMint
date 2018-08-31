@@ -4,6 +4,9 @@
  */
 
 export const en = {
-  title: 'Login',
+  title: 'Log In',
   subTitle: 'Welcome back!',
+  enterPassword: 'Enter Password',
+  submitButton: 'Log In',
+  forgotPassword: 'Forgot you password?',
 }

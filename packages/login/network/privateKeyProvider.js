@@ -6,9 +6,6 @@
 import bitcoin from 'bitcoinjs-lib'
 import nemSdk from 'nem-sdk'
 import * as WavesApi from '@waves/waves-api'
-import bigi from 'bigi'
-import wallet from 'ethereumjs-wallet'
-import hdKey from 'ethereumjs-wallet/hdkey'
 import { byEthereumNetwork } from './NetworkProvider'
 import { createBCCEngine, createBTCEngine, createBTGEngine, createLTCEngine } from './BitcoinUtils'
 import EthereumEngine from './EthereumEngine'
@@ -24,13 +21,14 @@ import {
   COIN_TYPE_BTG_TESTNET,
   COIN_TYPE_LTC_MAINNET,
   COIN_TYPE_LTC_TESTNET,
-  WALLET_HD_PATH,
-} from './mnemonicProvider'
+} from './constants'
+import EthereumWallet from './EthereumWallet'
 
 class PrivateKeyProvider {
-  getPrivateKeyProvider (privateKey, { url, network } = {}, wallets) {
+  getPrivateKeyProvider (privateKey, { url, network } = {}) {
     const networkCode = byEthereumNetwork(network)
     const ethereumWallet = this.createEthereumWallet(privateKey)
+    const engine = new EthereumEngine(ethereumWallet, network, url)
     const btc = network && network.bitcoin && this.createBitcoinWallet(privateKey, bitcoin.networks[network.bitcoin])
     const bcc = network && network.bitcoinCash && this.createBitcoinWallet(privateKey, bitcoin.networks[network.bitcoinCash])
     const btg = network && network.bitcoinGold && this.createBitcoinGoldWallet(privateKey, bitcoin.networks[network.bitcoinGold])
@@ -38,19 +36,9 @@ class PrivateKeyProvider {
     const nem = network && network.nem && NemWallet.fromPrivateKey(privateKey, nemSdk.model.network.data[network.nem])
     const waves = network && network.waves && WavesWallet.fromPrivateKey(privateKey, WavesApi[network.waves])
 
-    let lastDeriveNumbers = 0
-
-    wallets && wallets
-      .items()
-      .map((wallet) => {
-        if (wallet.owners().items().filter((owner) => owner.address() === ethereumWallet.getAddressString()).length > 0 && wallet.constructor.name === 'DerivedWalletModel') {
-          lastDeriveNumbers++
-        }
-      })
-
     return {
       networkCode,
-      ethereum: new EthereumEngine(ethereumWallet, network, url, null, lastDeriveNumbers),
+      ethereum: engine,//new EthereumEngine(ethereumWallet, network, url, null, lastDeriveNumbers),
       btc: network && network.bitcoin && createBTCEngine(btc, bitcoin.networks[network.bitcoin]),
       bcc: network && network.bitcoinCash && createBCCEngine(bcc, bitcoin.networks[network.bitcoinCash]),
       btg: network && network.bitcoinGold && createBTGEngine(btg, bitcoin.networks[network.bitcoinGold]),
@@ -58,20 +46,23 @@ class PrivateKeyProvider {
       nem: network && network.nem && createNEMEngine(nem, nemSdk.model.network.data[network.nem]),
       waves: network && network.waves && createWAVESEngine(waves, WavesApi[network.waves]),
     }
-
   }
 
   createBitcoinWalletFromPK (privateKey, network) {
-    const keyPair = new bitcoin.ECPair(bigi.fromBuffer(Buffer.from(privateKey, 'hex')), null, {
-      network,
-    })
+    const keyPair = new bitcoin.ECPair.fromPrivateKey(
+      Buffer.from(privateKey, 'hex'),
+      {
+        network,
+      }
+    )
     return {
       keyPair,
       getNetwork () {
-        return keyPair.getNetwork()
+        return keyPair.network
       },
       getAddress () {
-        return keyPair.getAddress()
+        const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network })
+        return address
       },
     }
   }
@@ -113,12 +104,7 @@ class PrivateKeyProvider {
   }
 
   createEthereumWallet (privateKey) {
-    if (privateKey.length <= 64) {
-      return wallet.fromPrivateKey(Buffer.from(privateKey, 'hex'))
-    }
-
-    const hdWallet = hdKey.fromMasterSeed(Buffer.from(privateKey, 'hex'))
-    return hdWallet.derivePath(WALLET_HD_PATH).getWallet()
+    return EthereumWallet.createWallet({ type: 'memory', pk: privateKey })
   }
 
   validatePrivateKey (privateKey: string): boolean {

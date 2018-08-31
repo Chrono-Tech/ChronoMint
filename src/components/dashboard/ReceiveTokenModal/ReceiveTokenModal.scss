@@ -85,7 +85,6 @@
     }
     .address {
       font-size: 14px;
-      word-break: break-all;
     }
     .copyIcon {
       flex-grow: 0;
@@ -154,3 +153,12 @@
   }
 }
 
+:global {
+  #menu-tokenId {
+    z-index: 9999;
+  }
+}
+
+.error {
+  color: $color-red;
+}

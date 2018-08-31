@@ -10,10 +10,10 @@ import ModalDialog from 'components/dialogs/ModalDialog'
 import { modalsClose } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 import BlacklistForm from 'components/assetsManager/BlacklistForm/BlacklistForm'
-import { restrictUser, unrestrictUser } from 'redux/assetsManager/actions'
-import TokenModel from 'models/tokens/TokenModel'
-import './BlacklistDialog.scss'
+import { restrictUser, unrestrictUser } from '@chronobank/core/redux/assetsManager/actions'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { prefix } from './lang'
+import './BlacklistDialog.scss'
 
 function mapDispatchToProps (dispatch) {
   return {

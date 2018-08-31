@@ -5,6 +5,8 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
+import { Translate } from 'react-redux-i18n'
+import classnames from 'classnames'
 
 import './Snackbar.scss'
 
@@ -47,17 +49,30 @@ export default class Snackbar extends PureComponent {
     }
   }
 
+  handleRequestClose () {
+    if (typeof this.props.onRequestClose === 'function') {
+      this.props.onRequestClose()
+    }
+  }
+
   render () {
     const notice = this.props.notice
     const address = notice.address()
+    const isErrorNotice = notice.constructor.name.toLowerCase().indexOf('error') >= 0
 
     return (
-      <div styleName='snackbar'>
+      <div styleName={classnames('snackbar', { 'error-notice': isErrorNotice })}>
         <span styleName='snackbar-entry'>
-          <span styleName='entry-status'>{notice.title()}</span>
+          <Translate
+            styleName='entry-status'
+            value={notice.title()}
+          />
         </span>
         <span styleName='snackbar-entry'>
-          <span styleName='entry-value'>{notice.message()}</span>
+          <Translate
+            styleName='entry-value'
+            {...notice.message()}
+          />
         </span>
         {address
           ? (
@@ -69,11 +84,5 @@ export default class Snackbar extends PureComponent {
         }
       </div>
     )
-  }
-
-  handleRequestClose () {
-    if (this.props.onRequestClose) {
-      this.props.onRequestClose()
-    }
   }
 }

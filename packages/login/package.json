@@ -1,9 +1,30 @@
 {
   "name": "@chronobank/login",
-  "version": "0.6.1",
+  "version": "1.0.0",
   "author": "chronobank",
   "license": "AGPL-3.0",
   "dependencies": {
-    "ledger-wallet-provider": "github:mikefluff/ledger-wallet-provider"
+    "@waves/waves-api": "0.28.2",
+    "axios": "^0.16.2",
+    "bignumber.js": "^4.1.0",
+    "bip39": "^2.3.0",
+    "bitcoinjs-lib": "4.0.1",
+    "bitcore-lib": "^0.15.0",
+    "coinselect": "^3.1.11",
+    "dashcore-lib": "^8.2.3",
+    "eth-crypto": "^1.2.0",
+    "ethereumjs-wallet": "0.6.0",
+    "immutable": ">=3",
+    "js-sha3": "^0.8.0",
+    "keythereum": "^1.0.4",
+    "ledger-wallet-provider": "^2.0.1-beta.3",
+    "mnid": "^0.1.1",
+    "nem-sdk": "^1.6.7",
+    "promisify-node-callback": "^1.0.2",
+    "sockjs-client": "1.0.3",
+    "uport-connect": "^0.7.3",
+    "web3": "1.0.0-beta.33",
+    "web3-eth-accounts": "^1.0.0-beta.33",
+    "webstomp-client": "^1.2.0"
   }
 }

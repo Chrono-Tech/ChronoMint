@@ -4,7 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
-import { TextField } from 'material-ui'
+import { TextField } from 'redux-form-material-ui'
 import Button from 'components/common/ui/Button/Button'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -39,7 +39,8 @@ export default class CopyDialog extends PureComponent {
   }
 
   componentDidMount () {
-    this.inputElement.select()
+    // new material-ui has no select method anymore, so we are using direct access via id
+    document.getElementById('copying-address').select()
   }
 
   handleClose = () => {
@@ -59,13 +60,11 @@ export default class CopyDialog extends PureComponent {
                 {this.props.description}
               </div>
               <TextField
-                ref={(el) => {
-                this.inputElement = el
-              }}
+                id='copying-address'
                 name='value'
                 value={this.props.copyValue}
                 fullWidth
-                floatingLabelText={this.props.controlTitle}
+                label={this.props.controlTitle}
               />
             </div>
             <div styleName='footer'>

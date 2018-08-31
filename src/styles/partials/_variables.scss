@@ -4,7 +4,7 @@
  */
 @import '~material-colors-scss/function';
 
-$color-primary-0: #00005f;
+$color-primary-0: #333333;
 $color-primary-05: rgba($color-primary-0, 0.5);
 $color-primary-1: #768fff;
 $color-primary-2: #0e4a95;
@@ -13,8 +13,11 @@ $color-primary-light: #e9efff;
 $color-primary-light-1: #f5f5ff;
 $color-secondary: #2962ff;
 
+$color-description: #9997B2;
+
 $color-white: #FFFFFF;
 $color-blue: #2962FF;
+$color-light-blue: #5DB3ED;
 $color-blue-2: #758EFF;
 $color-blue-2-hover: #6980E5;
 $color-blue405: #4058b8;
@@ -27,6 +30,7 @@ $color-red: #FF1744;
 $error-color: #F44336;
 $color-red-1: #FF1645;
 $color-red-1-hover: #E51441;
+$color-orange: #E2A864;
 $color-black: #222;
 
 $color-error: $color-red;
@@ -81,8 +85,8 @@ $highlight-green: $color-green;
 $highlight-red: #{material-color('red', 'a400')};
 
 // fonts
-$font-family-main: 'Roboto',
-sans-serif;
+$font-family-main: 'Roboto', sans-serif;
+$font-proxima: 'proxima nova', sans-serif;
 $font-size-base: 16px;
 $font-weight-bold: 600;
 
@@ -118,13 +122,16 @@ $color-grey-3: #F2F2F2;
 $color-grey-4: #CDCDCD;
 $color-red-3: #b65a55;
 $color-blue-5: #6671AE;
+$color-blue-6: #5DB3ED;
 $color-gradient: #3023ae;
 $color-gradient-1: #c96dd8;
 $color-gradient-2: #3124ae;
 $color-yelow: #fbda61;
 $color-orange: #f98019;
+$color-orange-1: #E2A864;
 $color-green-2: #00c853;
 $color-green-3: #009688;
+$color-green-3: #62B27F;
 $color-grey-5: #9E9E9E;
 $color-grey-6: #AAAAAA;
 $color-grey-7: #bfbfbf;

@@ -3,22 +3,31 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { ActionDone, AlertError, EditorAttachFile, NavigationClose } from 'material-ui/svg-icons'
-import { CircularProgress, IconButton, TextField } from 'material-ui'
+import {
+  CircularProgress,
+  IconButton,
+  TextField,
+} from '@material-ui/core'
+import {
+  Done,
+  Error,
+  AttachFile,
+  Close,
+} from '@material-ui/icons'
 import Button from 'components/common/ui/Button/Button'
-import IconAttach from 'assets/file-select/icon-attach.svg'
 import Immutable from 'immutable'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import globalStyles from 'styles'
-import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
-import FileCollection from 'models/FileSelect/FileCollection'
-import FileModel, { fileConfig } from 'models/FileSelect/FileModel'
-import ipfs from 'utils/IPFS'
+import { ACCEPT_ALL } from '@chronobank/core/models/FileSelect/FileExtension'
+import FileCollection from '@chronobank/core/models/FileSelect/FileCollection'
+import FileModel, { fileConfig } from '@chronobank/core/models/FileSelect/FileModel'
+import ipfs from '@chronobank/core-dependencies/utils/IPFS'
 import FileItem from './FileItem'
 
 import './FileSelect.scss'
+import Preloader from '../Preloader/Preloader'
 
 // defaults
 const DEFAULT_MAX_FILE_SIZE = 2 * 1024 * 1024 // 2Mb
@@ -28,21 +37,16 @@ const DEFAULT_MAX_FILES = 10
 
 class FileSelect extends PureComponent {
   static propTypes = {
-    value: PropTypes.string,
-    mode: PropTypes.string,
-    // eslint-disable-next-line
-    meta: PropTypes.object,
+    meta: PropTypes.instanceOf(PropTypes.object),
     label: PropTypes.string,
-    // eslint-disable-next-line
-    accept: PropTypes.array,
+    accept: PropTypes.arrayOf(PropTypes.any),
     multiple: PropTypes.bool,
     maxFileSize: PropTypes.number,
-    // eslint-disable-next-line
-    input: PropTypes.object,
+    input: PropTypes.instanceOf(PropTypes.object),
     aspectRatio: PropTypes.number,
     maxFiles: PropTypes.number,
     returnCollection: PropTypes.bool,
-    floatingLabelText: PropTypes.string,
+    floatingLabelText: PropTypes.node,
   }
 
   constructor (props, context, updater) {
@@ -93,7 +97,7 @@ class FileSelect extends PureComponent {
       : new FileCollection()
     fileCollection = fileCollection.uploading(true)
     let fileModel
-    const uploadedFiles = [ ...e.target.files ].slice(0, this.getFilesLeft())
+    const uploadedFiles = [...e.target.files].slice(0, this.getFilesLeft())
     for (const file of uploadedFiles) {
       fileModel = new FileModel({
         file,
@@ -171,33 +175,25 @@ class FileSelect extends PureComponent {
   renderStatus () {
     const { fileCollection } = this.state
     if (fileCollection.hasErrors()) {
-      return <AlertError color={globalStyles.colors.error} />
+      return <Error color={globalStyles.colors.error} />
     }
     if (fileCollection.uploading()) {
       return <CircularProgress size={16} thickness={1.5} />
     }
     if (fileCollection.uploaded()) {
-      return <ActionDone color={globalStyles.colors.success} />
+      return <Done color={globalStyles.colors.success} />
     }
     return null
   }
 
   renderMultiple () {
-    const { config, fileCollection } = this.state
+    const { fileCollection } = this.state
     const { meta } = this.props
 
     return (
       <div>
         {this.renderFiles()}
         <div styleName='attach'>
-          <div styleName='attachCounter'>
-            <Translate
-              value='fileSelect.filesLimit'
-              files={fileCollection.size()}
-              limit={config.maxFiles}
-            />
-          </div>
-          <div styleName='attachStatus'>{this.renderStatus()}</div>
           <div styleName='attachAction'>
             <Button
               flat
@@ -205,7 +201,7 @@ class FileSelect extends PureComponent {
               disabled={this.getFilesLeft() === 0}
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Translate value={this.props.label || 'fileSelect.addAttachments'} />
+                <Translate value={this.props.label || 'fileSelect.attachNew'} />
               </div>
             </Button>
           </div>
@@ -227,7 +223,7 @@ class FileSelect extends PureComponent {
             onClick={this.handleOpenFileDialog}
             fullWidth
             name='singleUpload'
-            floatingLabelText={<Translate value={this.props.floatingLabelText || 'fileSelect.selectFile'} />}
+            label={<Translate value={this.props.floatingLabelText || 'fileSelect.selectFile'} />}
             defaultValue={selectedFile && selectedFile.name() || ''}
             readOnly
           />
@@ -244,7 +240,7 @@ class FileSelect extends PureComponent {
         {fileCollection.uploading()
           ? (
             <div styleName='spinner'>
-              <CircularProgress size={18} thickness={1.5} />
+              <Preloader size={18} thickness={1.5} />
             </div>
           )
           : (
@@ -252,7 +248,7 @@ class FileSelect extends PureComponent {
               <IconButton
                 onClick={fileCollection.uploaded() ? this.handleReset : this.handleOpenFileDialog}
               >
-                {fileCollection.uploaded() ? <NavigationClose /> : <EditorAttachFile />}
+                {fileCollection.uploaded() ? <Close /> : <AttachFile />}
               </IconButton>
             </div>
           )}
@@ -265,17 +261,15 @@ class FileSelect extends PureComponent {
     const { multiple } = this.props
 
     return (
-      <div>
+      <div styleName='root'>
         {multiple
           ? this.renderMultiple()
           : this.renderSingle()
         }
 
         <input
-          // eslint-disable-next-line
           ref={(input) => this.input = input}
           type='file'
-          // eslint-disable-next-line
           onChange={(e) => this.handleChange(e)}
           styleName='hide'
           multiple={multiple}

@@ -3,22 +3,18 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Amount from 'models/Amount'
-import { CircularProgress } from 'material-ui'
+import { CircularProgress } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import { DUCK_ASSETS_MANAGER } from 'redux/assetsManager/actions'
-import Moment from 'components/common/Moment/index'
-import { SHORT_DATE } from 'models/constants'
-import TokenValue from 'components/common/TokenValue/TokenValue'
-import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from 'dao/ChronoBankPlatformDAO'
-import { TX_PLATFORM_ATTACHED, TX_PLATFORM_DETACHED, TX_PLATFORM_REQUESTED } from 'dao/PlatformsManagerDAO'
-import { TX_ASSET_CREATED } from 'dao/AssetsManagerDAO'
-import TransactionsCollection from 'models/wallet/TransactionsCollection'
-import { TX_PAUSED, TX_RESTRICTED, TX_UNPAUSED, TX_UNRESTRICTED } from 'dao/ChronoBankAssetDAO'
+import { getHistoryEvents } from '@chronobank/core/redux/events/selectors'
+import { loadEvents } from '@chronobank/core/redux/events/actions'
+import { ASSET_TOPICS } from '@chronobank/core/describers/topics'
+import LogListModel from '@chronobank/core/models/LogListModel'
+import { getHistoryKey } from '@chronobank/core/utils/eventHistory'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 
 import './HistoryTable.scss'
 
@@ -27,71 +23,73 @@ function prefix (token) {
 }
 
 function mapStateToProps (state) {
-  const assetsManager = state.get(DUCK_ASSETS_MANAGER)
+  const account = state.get(DUCK_SESSION).account
+  const historyKey = getHistoryKey(ASSET_TOPICS, account)
+
   return {
     locale: state.get('i18n').locale,
-    transactionsList: assetsManager.transactionsList(),
+    events: getHistoryEvents(historyKey)(state),
   }
 }
 
-@connect(mapStateToProps)
+function mapDispatchToProps (dispatch) {
+  return {
+    loadMoreEvents: () => dispatch(loadEvents(ASSET_TOPICS)),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
 export default class HistoryTable extends PureComponent {
   static propTypes = {
-    transactionsList: PropTypes.instanceOf(TransactionsCollection),
+    events: PropTypes.instanceOf(LogListModel),
     locale: PropTypes.string,
+    loadMoreEvents: PropTypes.func,
   }
 
-  buildTableData (historyItems, locale) {
+  getEventTypePath (eventType: string) {
+    return `tx.eventType.${eventType}`
+  }
+
+  buildTableData (eventItems, locale) {
     moment.locale(locale)
-    const groups = historyItems
-      .reduce((data, trx) => {
-        const groupBy = trx.date('YYYY-MM-DD')
-        data[ groupBy ] = data[ groupBy ] || {
-          dateBy: trx.date('YYYY-MM-DD'),
-          dateTitle: <Moment date={trx.date('YYYY-MM-DD')} format={SHORT_DATE} />,
-          transactions: [],
+    const groups = eventItems
+      .reduce((data, event) => {
+        const group = moment(event.date).format('YYYY-MM-DD')
+
+        data[group] = data[group] || {
+          dateBy: group,
+          dateTitle: moment(event.date).format('DD MMMM, YYYY'),
+          eventList: [],
         }
-        data[ groupBy ].transactions.push({
-          trx,
-          timeBy: trx.date('HH:mm:ss'),
-          timeTitle: trx.date('HH:mm'),
-        })
+        data[group].eventList.push(event)
+
         return data
       }, {})
 
     return Object.values(groups)
-      .sort((a, b) => a.dateBy > b.dateBy ? -1 : a.dateBy < b.dateBy)
-      .map((group) => ({
-        ...group,
-        transactions: group.transactions.sort((a, b) => a.timeBy > b.timeBy ? -1 : a.timeBy < b.timeBy),
-      }))
   }
 
-  renderRow ({ trx, timeTitle }, index) {
+  renderRow (event, index) {
     return (
       <div styleName='row' key={index}>
         <div styleName='col-time'>
-          <div styleName='property'>
-            <div styleName='text-faded'>{timeTitle}</div>
-          </div>
-        </div>
-
-        <div styleName='col-type'>
-          <div styleName='property'>
-            <span styleName='badge-in'>{trx.type()}</span>
-          </div>
-        </div>
-
-        <div styleName='col-manager'>
-          <div styleName='property'>
-            <div styleName='text-faded'>{trx.by()}</div>
-          </div>
+          <div styleName='text-faded'>{moment(event.date).format('hh:mm A')}</div>
         </div>
 
         <div styleName='col-value'>
-          <div styleName='property'>
-            <div styleName='value'>
-              {this.renderValue(trx)}
+          <div styleName='col-value-container'>
+            <div styleName='event-type-container'>
+              <span styleName='event-type'>
+                <Translate value={this.getEventTypePath(event.type)} />
+              </span>
+            </div>
+            <div styleName='event-title-container'>
+              <span styleName='event-title'>
+                <Translate value={event.eventTitle || event.title} />
+              </span>
+            </div>
+            <div styleName='event-address-container'>
+              <span styleName='event-address'>{event.subTitle}</span>
             </div>
           </div>
         </div>
@@ -99,72 +97,11 @@ export default class HistoryTable extends PureComponent {
     )
   }
 
-  renderValue (trx) {
-    let value
-    switch (trx.type()) {
-      case TX_PAUSED:
-      case TX_UNPAUSED:
-        value = (<div><Translate value={prefix('token')} />: {trx.symbol()}</div>)
-        break
-      case TX_RESTRICTED:
-        value = (
-          <div>
-            <div><Translate value={prefix('token')} />: {trx.symbol()}</div>
-            <div><Translate value={prefix('user')} />: {trx.args().restricted} </div>
-          </div>
-        )
-        break
-      case TX_UNRESTRICTED:
-        value = (
-          <div>
-            <div><Translate value={prefix('token')} />: {trx.symbol()}</div>
-            <div><Translate value={prefix('user')} />: {trx.args().unrestricted} </div>
-          </div>
-        )
-        break
-      case TX_ISSUE:
-      case TX_REVOKE:
-        if (trx.symbol()) {
-          value = (
-            <TokenValue value={new Amount(trx.value(), trx.symbol())} />
-          )
-        } else {
-          value = ''
-        }
-        break
-      case TX_PLATFORM_ATTACHED:
-      case TX_PLATFORM_DETACHED:
-      case TX_PLATFORM_REQUESTED:
-        value = trx.args().platform
-        break
-      case TX_OWNERSHIP_CHANGE:
-        value = (
-          <div>
-            <div><Translate value={prefix('token')} />: {trx.symbol()}</div>
-            {
-              trx.isFromEmpty()
-                ? <span><Translate value={prefix('added')} />: {trx.to()}</span>
-                : <span><Translate value={prefix('deleted')} />: {trx.from()}</span>
-            }
-          </div>
-        )
-        break
-      case TX_ASSET_CREATED:
-        value = (
-          <div>
-            <div><Translate value={prefix('token')} />: {trx.symbol()}</div>
-            <div><Translate value={prefix('platform')} />: {trx.args().platform} </div>
-          </div>
-        )
-        break
-      default:
-        value = ''
-    }
-    return value
-  }
-
   render () {
-    const data = this.buildTableData(this.props.transactionsList.items(), this.props.locale)
+    const { events } = this.props
+    const isLoading = events && events.isLoading
+    const eventsList = Array.isArray(events.entries) ? events.entries : []
+    const data = this.buildTableData(eventsList)
 
     return (
       <div styleName='root'>
@@ -172,35 +109,25 @@ export default class HistoryTable extends PureComponent {
           <h3><Translate value={prefix('title')} /></h3>
         </div>
         <div styleName='content'>
-          {data.length ?
-            (
-              <div styleName='table'>
-                <div styleName='table-head'>
-                  <div styleName='row'>
-                    <div styleName='col-time'><Translate value={prefix('time')} /></div>
-                    <div styleName='col-type'><Translate value={prefix('type')} /></div>
-                    <div styleName='col-manager'><Translate value={prefix('manager')} /></div>
-                    <div styleName='col-value'><Translate value={prefix('value')} /></div>
-                  </div>
+          {data.map((group) => {
+            return (
+              <div styleName='section' key={group.dateBy}>
+                <div styleName='section-header'>
+                  <h5>{group.dateTitle}</h5>
+                </div>
+                <div styleName='table'>
+                  {group.eventList.map((item, index) => this.renderRow(item, index))}
                 </div>
               </div>
             )
-            : ''}
-          {data.map((group) => (
-            <div styleName='section' key={group.dateBy}>
-              <div styleName='section-header'>
-                <h5>{group.dateTitle}</h5>
-              </div>
-              <div styleName='table'>
-                <div styleName='table-body'>
-                  {group.transactions.map((item, index) => this.renderRow(item, index))}
-                </div>
-              </div>
-            </div>
-          ))}
+          })}
         </div>
-        {
-          this.props.transactionsList.isFetching() &&
+        { !isLoading &&
+          <div styleName='load-more'>
+            <button styleName='load-more-button' onClick={this.props.loadMoreEvents}>Load more</button>
+          </div>
+        }
+        { isLoading &&
           <div styleName='footer'>
             <CircularProgress
               style={{ verticalAlign: 'middle', marginTop: -2 }}

@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import ErrorList from 'platform/ErrorList'
-import * as validator from 'models/validator'
+import ErrorList from '@chronobank/core-dependencies/ErrorList'
+import * as validator from '@chronobank/core/models/validator'
 
 export default (values, props) => {
   const requiredSignatures = values.get('requiredSignatures')

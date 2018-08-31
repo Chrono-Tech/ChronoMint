@@ -3,38 +3,37 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import resultCodes from 'chronobank-smart-contracts/common/errors'
 import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
-import customSerializer from 'utils/CustomSerializer'
+import customSerializer from '@chronobank/core-dependencies/utils/CustomSerializer'
 import Enzyme from 'enzyme'
-import Adapter from 'enzyme-adapter-react-15'
+import Adapter from 'enzyme-adapter-react-16'
 import 'jest-enzyme'
 import { BTC_TESTNET_NODE } from '@chronobank/login/network/BitcoinNode'
 import { LOCAL_ID } from '@chronobank/login/network/settings'
 import web3provider from '@chronobank/login/network/Web3Provider'
-import networkService from '@chronobank/login/network/NetworkService'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import Web3 from 'web3'
-import AbstractContractDAO from './dao/AbstractContractDAO'
-import MarketSocket from './market/MarketSocket'
-import ls from './utils/LocalStorage'
+import MarketSocket from '@chronobank/core/market/MarketSocket'
+import localStorage from 'utils/LocalStorage'
 
 Enzyme.configure({ adapter: new Adapter() })
 // we need enough time to test contract watch functionality
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000
 
+// @todo Check tests using new Web3
 const web3 = new Web3()
-
 web3provider.reinit(web3, new web3.providers.HttpProvider('http://localhost:8545'))
 web3provider.resolve()
 export const accounts = web3.eth.accounts
 
-AbstractContractDAO.setup(accounts[ 0 ], [ resultCodes.OK, true ], resultCodes)
+// FIXME revive somehow
+// AbstractContractDAO.setup(accounts[0], [resultCodes.OK, true], resultCodes)
 
 const reverter = new Reverter(web3provider.getWeb3instance())
 
-export const mockStore = configureMockStore([ thunk ])
+export const mockStore = configureMockStore([thunk])
+// eslint-disable-next-line import/no-mutable-exports
 export let store = null
 
 beforeAll((done) => {
@@ -53,14 +52,12 @@ afterAll((done) => {
 
 beforeEach(() => {
   // NOTE: session is always as CBE
-  ls.createSession(accounts[ 0 ], LOCAL_ID, LOCAL_ID)
+  localStorage.createSession(accounts[0], LOCAL_ID, LOCAL_ID)
   store = mockStore()
-  networkService.connectStore(store)
 })
 
 afterEach(async (done) => {
-  ls.destroySession()
-  await AbstractContractDAO.stopWholeWatching()
+  localStorage.destroySession()
   done()
 })
 

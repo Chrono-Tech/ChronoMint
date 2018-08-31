@@ -6,23 +6,19 @@
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { push } from 'react-router-redux'
+import { navigateTo2Fa } from 'redux/ui/navigation'
 import PropTypes from 'prop-types'
 import Button from 'components/common/ui/Button/Button'
 import './TwoFAWarningWidget.scss'
 import { prefix } from './lang'
 
-function mapStateToProps (state, ownProps) {
-  return {}
-}
-
 function mapDispatchToProps (dispatch) {
   return {
-    handleGoTo2FA: () => dispatch(push('/2fa')),
+    handleGoTo2FA: () => dispatch(navigateTo2Fa()),
   }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(null, mapDispatchToProps)
 export default class TwoFAWarningWidget extends PureComponent {
   static propTypes = {
     handleGoTo2FA: PropTypes.func,

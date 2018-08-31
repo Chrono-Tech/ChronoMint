@@ -3,12 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export const prefix = 'Dashboard.TransactionsTable'
+export const prefix = 'TransactionsTable'
 
 export default {
   en: {
     receiving: 'Receiving from',
     sending: 'Sending to',
+    noTransactionsFound: 'No transactions found.',
   },
 }
 

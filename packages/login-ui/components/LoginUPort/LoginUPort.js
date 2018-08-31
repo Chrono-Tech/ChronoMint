@@ -3,9 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import networkService from '@chronobank/login/network/NetworkService'
+import { loginUport } from '@chronobank/login/redux/network/thunks'
 import { addError } from '@chronobank/login/redux/network/actions'
-import { CircularProgress } from 'material-ui'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
+import { CircularProgress } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -15,11 +16,11 @@ import './LoginUPort.scss'
 import { Button } from '../../settings'
 
 const mapStateToProps = (state) => ({
-  isLoading: state.get('network').isLoading,
+  isLoading: state.get(DUCK_NETWORK).isLoading,
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  loginUport: () => networkService.loginUport(),
+  loginUport: () => dispatch(loginUport()),
   addError: (e) => dispatch(addError(e)),
 })
 

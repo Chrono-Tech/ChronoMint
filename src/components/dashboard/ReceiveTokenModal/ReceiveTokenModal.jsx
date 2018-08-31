@@ -3,29 +3,29 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { CopyIcon, IPFSImage } from 'components'
+import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import QRCode from 'qrcode'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { Link } from 'react-router'
 import { TOKEN_ICONS } from 'assets'
-import { SelectField } from 'redux-form-material-ui'
+import Select from 'redux-form-material-ui/es/Select'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import ModalDialog from 'components/dialogs/ModalDialog'
-import { DUCK_MAIN_WALLET, TIME } from 'redux/mainWallet/actions'
-import MainWalletModel from 'models/wallet/MainWalletModel'
+import { TIME } from '@chronobank/core/dao/constants'
 import HITBTC_PNG from 'assets/img/marketsLogos/hitbtc.png'
 import LIVECOIN_PNG from 'assets/img/marketsLogos/livecoin.png'
 import LIQUI_PNG from 'assets/img/marketsLogos/liqui.png'
 import KUCOIN_PNG from 'assets/img/marketsLogos/kucoin.png'
-import TokenModel from 'models/tokens/TokenModel'
-import { getTokensForBlockchain } from 'redux/tokens/selectors'
-import { MenuItem } from 'material-ui'
-import styles from '../styles'
-
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
+import { getTokensForBlockchain } from '@chronobank/core/redux/tokens/selectors'
+import { MenuItem, MuiThemeProvider } from '@material-ui/core'
+import { FORM_RECEIVE_TOKENS } from 'components/constants'
+import inversedTheme from 'styles/themes/inversed'
 import './ReceiveTokenModal.scss'
 
 const marketsTIME = [
@@ -55,28 +55,21 @@ function prefix (token) {
   return `components.ReceiveTokenModal.${token}`
 }
 
-export const FORM_RECEIVE_TOKENS = 'FormReceiveTokens'
-
 function mapStateToProps (state, ownProps) {
-  const wallet: MainWalletModel = state.get(DUCK_MAIN_WALLET)
   const selector = formValueSelector(FORM_RECEIVE_TOKENS)
-  const tokens = getTokensForBlockchain(ownProps.blockchain)(state)
+  const tokens = getTokensForBlockchain(ownProps.wallet.blockchain)(state)
 
   return {
     token: state.get(DUCK_TOKENS).item(selector(state, 'tokenId') || ownProps.tokenId),
     tokens,
-    address: wallet.addresses().item(ownProps.blockchain).address(),
+    address: ownProps.wallet.address,
     initialValues: {
       tokenId: ownProps.tokenId || tokens[0].id(),
     },
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return {}
-}
-
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(mapStateToProps)
 @reduxForm({ form: FORM_RECEIVE_TOKENS })
 export default class ReceiveTokenModal extends PureComponent {
   static propTypes = {
@@ -84,7 +77,6 @@ export default class ReceiveTokenModal extends PureComponent {
     token: PropTypes.instanceOf(TokenModel),
     tokens: PropTypes.arrayOf(PropTypes.instanceOf(TokenModel)),
     address: PropTypes.string,
-    blockchain: PropTypes.string.isRequired,
     dispatch: PropTypes.func,
     ...formPropTypes,
   }
@@ -97,7 +89,14 @@ export default class ReceiveTokenModal extends PureComponent {
   }
 
   componentDidMount () {
-    QRCode.toDataURL(this.props.address, (err, qrData) => {
+    QRCode.toDataURL(this.props.address, (error, qrData) => {
+      if (error) {
+        // eslint-disable-next-line no-console
+        console.log(error)
+        this.setState({
+          error,
+        })
+      }
       this.setState({
         qrData,
       })
@@ -129,22 +128,27 @@ export default class ReceiveTokenModal extends PureComponent {
         </div>
         {this.props.tokens.length > 1 && (
           <div styleName='tokenSelector'>
-            <Field
-              fullWidth
-              component={SelectField}
-              name='tokenId'
-              {...styles.whiteselectorstyle}
-            >
-              {
-                this.props.tokens
-                  .map((token: TokenModel) => {
-                    return (<MenuItem
-                      key={token.symbol()}
-                      value={token.id()}
-                      primaryText={<span>{token.symbol()}</span>}
-                    />)
-                  })}
-            </Field>
+            <MuiThemeProvider theme={inversedTheme}>
+              <Field
+                fullWidth
+                component={Select}
+                name='tokenId'
+                menu-symbol='symbolSelectorMenu'
+              >
+                {
+                  this.props.tokens
+                    .map((token: TokenModel) => {
+                      return (
+                        <MenuItem
+                          key={token.symbol()}
+                          value={token.id()}
+                        >
+                          {token.symbol()}
+                        </MenuItem>
+                      )
+                    })}
+              </Field>
+            </MuiThemeProvider>
           </div>
         )}
       </div>
@@ -170,6 +174,7 @@ export default class ReceiveTokenModal extends PureComponent {
         </div>
         <div styleName='qrWrapper'>
           <div styleName='title'><Translate value={prefix('qrTitle')} symbol={token.symbol()} /></div>
+          {this.state.error && <div styleName='error'><Translate value={prefix('error')} /></div>}
           <div styleName='qrCode'><img alt='qr code' src={this.state.qrData} /></div>
         </div>
         {token.id() === TIME && (

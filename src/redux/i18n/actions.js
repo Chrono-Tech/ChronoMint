@@ -3,12 +3,14 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { loadTranslations, setLocale } from 'platform/i18n'
+import { loadTranslations, setLocale } from 'react-redux-i18n'
 import { merge } from 'lodash'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
+import {
+  DUCK_I18N,
+} from './constants'
 
-export const DUCK_I18N = 'i18n'
-
+// eslint-disable-next-line import/prefer-default-export
 export const loadI18n = (locale) => async (dispatch, getState) => {
   const publicBackendProvider = new PublicBackendProvider()
   let translations = await publicBackendProvider.get('/api/v1/mintTranslations/')

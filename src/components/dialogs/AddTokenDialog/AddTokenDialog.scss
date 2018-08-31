@@ -2,7 +2,6 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import '~styles/partials/mixins';
 @import '~styles/partials/variables';
 
@@ -18,7 +17,7 @@
   height: 144px;
   display: flex;
   position: relative;
-  padding: 50px 8px 24px 8px;
+  padding: 30px;
   align-items: center;
   box-sizing: border-box;
 }
@@ -65,14 +64,14 @@
 }
 
 .body {
-  padding: 0 16px;
+  padding: 0 30px;
   background: $color-white;
   border-radius: 2px 2px 0 0;
   overflow: hidden;
 }
 
 .footer {
-  padding: 24px 16px;
+  padding: 30px;
   text-align: right;
   background: $color-white;
   border-radius: 0 0 2px 2px;

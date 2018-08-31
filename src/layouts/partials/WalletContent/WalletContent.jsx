@@ -4,19 +4,21 @@
  */
 
 import { isTestingNetwork } from '@chronobank/login/network/settings'
-import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { DUCK_WALLET } from 'redux/wallet/actions'
+import { formatDataAndGetTransactionsForWallet } from '@chronobank/core/redux/wallet/actions'
+import { DUCK_WALLET } from '@chronobank/core/redux/wallet/constants'
 import WalletWidgetDetail from 'components/wallet/WalletWidgetDetail/WalletWidgetDetail'
 import TokensListWidget from 'components/wallet/TokensListWidget/TokensListWidget'
 import PendingTxWidget from 'components/wallet/PendingTxWidget/PendingTxWidget'
 import OwnersListWidget from 'components/wallet/OwnersListWidget/OwnersListWidget'
-import { getTransactionsForWallet, goToWallets } from 'redux/mainWallet/actions'
-import { getWalletInfo } from 'components/wallet/WalletWidgetMini/selectors'
+import { navigateToWallets } from 'redux/ui/navigation'
+import { getWalletInfo } from '@chronobank/core/redux/wallets/selectors/wallet'
 import TransactionsListWidget from 'components/wallet/TransactionsListWidget/TransactionsListWidget'
-import { PTWallet } from 'redux/wallet/types'
+import WalletModel from '@chronobank/core/models/wallet/WalletModel'
+import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 
 import './WalletContent.scss'
 
@@ -37,8 +39,8 @@ function makeMapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    goToWallets: () => dispatch(goToWallets()),
-    getTransactions: (params) => dispatch(getTransactionsForWallet(params)),
+    navigateToWallets: () => dispatch(navigateToWallets()),
+    getTransactions: (params) => dispatch(formatDataAndGetTransactionsForWallet(params)),
   }
 }
 
@@ -48,16 +50,18 @@ export default class WalletContent extends Component {
     isTesting: PropTypes.bool,
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
-    goToWallets: PropTypes.func,
+    navigateToWallets: PropTypes.func,
     getTransactions: PropTypes.func,
-    wallet: PTWallet,
+    address: PropTypes.string,
+    blockchain: PropTypes.string,
+    wallet: PropTypes.oneOfType([PropTypes.instanceOf(WalletModel), PropTypes.instanceOf(MultisigEthWalletModel)]),
   }
 
   constructor (props) {
     super(props)
 
-    if (!props.wallet.blockchain || !props.wallet.address) {
-      props.goToWallets()
+    if (!props.wallet || !props.wallet.blockchain || !props.wallet.address) {
+      props.navigateToWallets()
     }
   }
 
@@ -73,13 +77,17 @@ export default class WalletContent extends Component {
   render () {
     const { wallet } = this.props
 
+    if (!wallet) {
+      return null
+    }
+
     return (
       <div styleName='root'>
         <WalletWidgetDetail wallet={wallet} />
 
-        <TokensListWidget wallet={wallet} />
+        <TokensListWidget walletId={wallet.id} />
 
-        <PendingTxWidget walletInfo={wallet} />
+        <PendingTxWidget wallet={wallet} />
 
         <OwnersListWidget wallet={wallet} />
 

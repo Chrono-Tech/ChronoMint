@@ -4,24 +4,21 @@
  */
 
 import classnames from 'classnames'
-import { Button, IPFSImage, TokenValue } from 'components'
-import Amount from 'models/Amount'
-import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
-import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
-import RevokeDialog from 'components/assetsManager/RevokeDialog/RevokeDialog'
+import Button from 'components/common/ui/Button/Button'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+import Amount from '@chronobank/core/models/Amount'
 import Preloader from 'components/common/Preloader/Preloader'
-import { RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { DUCK_ASSETS_MANAGER, getFee, getManagersForAssetSymbol } from 'redux/assetsManager/actions'
+import { getFee, getManagersForAssetSymbol } from '@chronobank/core/redux/assetsManager/actions'
+import { DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/constants'
 import { modalsOpen } from 'redux/modals/actions'
-import BlockAssetDialog from 'components/assetsManager/BlockAssetDialog/BlockAssetDialog'
 import ReissueAssetForm from 'components/assetsManager/ReissueAssetForm/ReissueAssetForm'
-import { getSelectedToken } from 'redux/assetsManager/selectors'
-import BlacklistDialog from 'components/assetsManager/BlacklistDialog/BlacklistDialog'
-import TokenModel from 'models/tokens/TokenModel'
+import { getSelectedToken } from '@chronobank/core/redux/assetsManager/selectors'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import tokenIconStubSVG from 'assets/img/asset_stub.svg'
 import blockedSVG from 'assets/img/blocked-white.svg'
 
@@ -44,20 +41,17 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleCrowdsaleDialog: () => dispatch(modalsOpen({
-      component: CrowdsaleDialog,
-    })),
     handleAddManagerDialog: () => dispatch(modalsOpen({
-      component: AssetManagerDialog,
+      componentName: 'AssetManagerDialog',
     })),
     openBlockAssetDialog: (token) => dispatch(modalsOpen({
-      component: BlockAssetDialog,
+      componentName: 'BlockAssetDialog',
       props: {
         token,
       },
     })),
     openBlacklistDialog: (token) => dispatch(modalsOpen({
-      component: BlacklistDialog,
+      componentName: 'BlacklistDialog',
       props: {
         token,
       },
@@ -65,7 +59,7 @@ function mapDispatchToProps (dispatch) {
     getManagersForAssetSymbol: (symbol) => dispatch(getManagersForAssetSymbol(symbol)),
     getFee: (symbol) => dispatch(getFee(symbol)),
     handleRevokeDialog: () => dispatch(modalsOpen({
-      component: RevokeDialog,
+      componentName: 'RevokeDialog',
     })),
   }
 }
@@ -75,13 +69,9 @@ export default class PlatformInfo extends PureComponent {
   static propTypes = {
     selectedToken: PropTypes.instanceOf(TokenModel),
     selectedPlatform: PropTypes.string,
-    handleCrowdsaleDialog: PropTypes.func,
     handleAddManagerDialog: PropTypes.func,
     openBlockAssetDialog: PropTypes.func,
-    getManagersForAssetSymbol: PropTypes.func,
-    reissueAsset: PropTypes.func,
     handleRevokeDialog: PropTypes.func,
-    getFee: PropTypes.func,
     platformsList: PropTypes.arrayOf(PropTypes.object),
     usersPlatforms: PropTypes.arrayOf(PropTypes.object),
     assets: PropTypes.objectOf(PropTypes.object),
@@ -225,7 +215,7 @@ export default class PlatformInfo extends PureComponent {
       return this.renderInstructions()
     }
 
-    const totalSupply = this.props.assets[ selectedToken.address() ].totalSupply
+    const totalSupply = this.props.assets[selectedToken.address()].totalSupply
     const isPaused = selectedToken.isPaused()
 
     return (
@@ -242,10 +232,12 @@ export default class PlatformInfo extends PureComponent {
               <div styleName='balanceWrap'>
                 <div styleName='balance'>
                   <div styleName='title'><Translate value={prefix('issuedAmount')} />:</div>
-                  <TokenValue
-                    style={{ fontSize: '24px' }}
-                    value={new Amount(totalSupply, selectedToken.symbol())}
-                  />
+                  {totalSupply && (
+                    <TokenValue
+                      style={{ fontSize: '24px' }}
+                      value={new Amount(totalSupply, selectedToken.symbol())}
+                    />
+                  )}
                 </div>
                 {this.renderFee()}
               </div>

@@ -1,0 +1,26 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.left {
+  left: 300px;
+  width: 300px;
+  right: auto;
+  position: absolute;
+  height: 100%;
+}
+
+.notifications {
+  width: 300px;
+  right: 0;
+  left: auto;
+  position: absolute;
+  height: 100vh;
+}
+
+.drawer {
+}
+

@@ -4,82 +4,80 @@
  */
 
 import { Link } from 'react-router'
-import networkService from '@chronobank/login/network/NetworkService'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { I18n } from 'platform/i18n'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
 import menu from 'menu'
-import { multisigWalletsSelector } from 'redux/wallet/selectors'
-import { drawerHide, drawerToggle } from 'redux/drawer/actions'
-import { DUCK_SESSION, logout } from 'redux/session/actions'
-import chronWalletLogoSVG from 'assets/img/chronowallettext-white.svg'
-import ProfileModel from 'models/ProfileModel'
-import profileImgJPG from 'assets/img/profile-photo-1.jpg'
-import { IPFSImage } from 'components'
+import { drawerHide } from 'redux/drawer/actions'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
+import { getNetworkName } from '@chronobank/login/redux/network/thunks'
+import {
+  DUCK_PERSIST_ACCOUNT,
+} from '@chronobank/core/redux/persistAccount/constants'
+import { logoutAndNavigateToRoot } from 'redux/ui/thunks'
+import chronoWalletLogoSVG from 'assets/img/chronowallettext-white.svg'
+import ProfileImage from 'components/common/ProfileImage/ProfileImage'
 import exitSvg from 'assets/img/exit-white.svg'
-import { SIDES_CLOSE_ALL, sidesPush } from 'redux/sides/actions'
+import { sidesCloseAll, sidesOpen } from 'redux/sides/actions'
 import { modalsOpen } from 'redux/modals/actions'
-import UpdateProfileDialog from 'components/dialogs/UpdateProvideDialog/UpdateProfileDialog'
-import MenuAssetsManagerMoreInfo from './MenuAssetsManagerMoreInfo/MenuAssetsManagerMoreInfo'
-import { MENU_TOKEN_MORE_INFO_PANEL_KEY } from './MenuTokenMoreInfo/MenuTokenMoreInfo'
+import { getAccountAvatar, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
+import { MENU_TOKEN_MORE_INFO_PANEL_KEY } from 'redux/sides/constants'
+import { getWalletsLength } from '@chronobank/core/redux/wallets/selectors/wallets'
+import { getAccountProfileSummary } from '@chronobank/core/redux/session/selectors'
 import MenuTokensList from './MenuTokensList/MenuTokensList'
 import { prefix } from './lang'
+
 import './DrawerMainMenu.scss'
 
-function mapStateToProps (state, ownProps) {
+function mapStateToProps (state) {
   const { isCBE, profile } = state.get(DUCK_SESSION)
+  const selectedAccount = state.get(DUCK_PERSIST_ACCOUNT).selectedWallet
+  const accountProfileSummary = getAccountProfileSummary(state)
 
   return {
-    walletsCount: multisigWalletsSelector()(state, ownProps).length,
+    selectedAccount: selectedAccount,
+    walletsCount: getWalletsLength(state),
     isCBE,
     profile,
     isDrawerOpen: state.get('drawer').isOpen,
-    networkName: networkService.getName(),
+    avatar: accountProfileSummary.avatar,
+    userName: accountProfileSummary.userName,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleDrawerToggle: () => dispatch(drawerToggle()),
+    getNetworkName: () => dispatch(getNetworkName()),
     handleDrawerHide: () => dispatch(drawerHide()),
-    handleLogout: () => dispatch(logout()),
-    handleProfileEdit: () => dispatch(modalsOpen({ component: UpdateProfileDialog })),
+    handleLogout: () => dispatch(logoutAndNavigateToRoot()),
+    handleProfileEdit: () => dispatch(modalsOpen({
+      componentName: 'UpdateProfileDialog'
+    })),
     handle: (handleClose) => {
-      dispatch({ type: SIDES_CLOSE_ALL })
-      dispatch(sidesPush({
-        component: MenuAssetsManagerMoreInfo,
+      dispatch(sidesCloseAll())
+      dispatch(sidesOpen({
+        componentName: 'MenuAssetsManagerMoreInfo',
         panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY,
         isOpened: true,
-        direction: 'left',
+        anchor: 'left',
         preCloseAction: handleClose,
         drawerProps: {
-          containerClassName: 'containerTokenSideMenu',
-          overlayClassName: 'overlayTokenSideMenu',
-          containerStyle: {
-            width: '300px',
-          },
           width: 300,
         },
       }))
     },
 
     handleAssetsManagerMoreInfo: (handleClose) => {
-      dispatch({ type: SIDES_CLOSE_ALL })
-      dispatch(sidesPush({
-        component: MenuAssetsManagerMoreInfo,
+      dispatch(sidesCloseAll())
+      dispatch(sidesOpen({
+        componentName: 'MenuAssetsManagerMoreInfo',
         panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY,
         isOpened: true,
-        direction: 'left',
+        anchor: 'left',
         preCloseAction: handleClose,
         drawerProps: {
-          containerClassName: 'containerTokenSideMenu',
-          overlayClassName: 'overlayTokenSideMenu',
-          containerStyle: {
-            width: '300px',
-          },
           width: 300,
         },
       }))
@@ -91,15 +89,13 @@ function mapDispatchToProps (dispatch) {
 export default class DrawerMainMenu extends PureComponent {
   static propTypes = {
     isCBE: PropTypes.bool,
-    handleDrawerToggle: PropTypes.func,
     handleProfileEdit: PropTypes.func,
-    handleDrawerHide: PropTypes.func,
-    profile: PropTypes.instanceOf(ProfileModel),
-    networkName: PropTypes.string,
+    userName: PropTypes.string,
     handleLogout: PropTypes.func,
     walletsCount: PropTypes.number,
     handleAssetsManagerMoreInfo: PropTypes.func,
     onSelectLink: PropTypes.func,
+    getNetworkName: PropTypes.func,
   }
 
   componentDidMount () {
@@ -173,6 +169,7 @@ export default class DrawerMainMenu extends PureComponent {
   }
 
   render () {
+    const { selectedAccount, avatar, userName } = this.props
 
     return (
       <div styleName='root' className='root-open'>
@@ -183,26 +180,26 @@ export default class DrawerMainMenu extends PureComponent {
             ref={this.setRef}
           >
             <div styleName='chronWalletLogo'>
-              <img src={chronWalletLogoSVG} alt='ChronoWallet logo' />
+              <img src={chronoWalletLogoSVG} alt='ChronoWallet logo' />
               <div styleName='subtitle'>{require('../../../../package.json').version}</div>
             </div>
 
             <div styleName={classnames('account-info', 'item')}>
               <div styleName='account-info-avatar'>
                 <div styleName='avatar-icon' onClick={this.props.handleProfileEdit}>
-                  <IPFSImage
+                  <ProfileImage
                     styleName='avatar-icon-content'
-                    multihash={this.props.profile.icon()}
-                    icon={<div styleName='emptyAvatar'><img src={profileImgJPG} alt='avatar' /></div>}
+                    imageId={avatar}
+                    icon={<div styleName='emptyAvatar'><img styleName='avatar-image' src={getAccountAvatar(selectedAccount)} alt='avatar' /></div>}
                   />
                 </div>
               </div>
               <div styleName='account-info-name'>
                 <div styleName='account-name-text'>
-                  {this.props.profile.name() || 'Account name'}
+                  {userName || getAccountName(selectedAccount) || 'Account name'}
                 </div>
                 <div styleName='network-name-text'>
-                  {this.props.networkName}
+                  {this.props.getNetworkName()}
                 </div>
               </div>
               <div styleName='exit' onClick={this.props.handleLogout}>

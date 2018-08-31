@@ -8,16 +8,25 @@ import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
 import classnames from 'classnames'
 import { Translate } from 'react-redux-i18n'
-import { IPFSImage } from 'components'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { TOKEN_ICONS } from 'assets'
-import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
-import { BTC, createNewChildAddress, ETH, goToWallets, LTC, resetWalletsForm, XEM, WAVES } from 'redux/mainWallet/actions'
-import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
-import { BLOCKCHAIN_NEM } from 'dao/NemDAO'
-import { BLOCKCHAIN_WAVES } from 'dao/WavesDAO'
-
-import './SelectWalletType.scss'
+import { resetWalletsForm } from 'redux/ui/thunks'
+import { navigateToWallets } from 'redux/ui/navigation'
+import { createNewChildAddress } from '@chronobank/core/redux/wallets/actions'
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_NEM,
+  BLOCKCHAIN_WAVES,
+  BTC,
+  ETH,
+  LTC,
+  WAVES,
+  XEM,
+} from '@chronobank/core/dao/constants'
 import { prefix } from '../lang'
+import './SelectWalletType.scss'
 
 function mapStateToProps () {
   return {}
@@ -27,7 +36,7 @@ function mapDispatchToProps (dispatch) {
   return {
     onCreateWallet: (blockchain) => {
       dispatch(createNewChildAddress({ blockchain }))
-      dispatch(goToWallets())
+      dispatch(navigateToWallets())
       dispatch(resetWalletsForm())
     },
   }
@@ -54,15 +63,12 @@ export default class SelectWalletType extends PureComponent {
     const wallets = [
       {
         blockchain: BLOCKCHAIN_BITCOIN,
-        symbol: BTC,
-        title: `${prefix}.btc`,
-        action: this.handleCreateWallet(BLOCKCHAIN_BITCOIN),
+        symbol: BTC, title: `${prefix}.btc`,
       },
       {
         blockchain: BLOCKCHAIN_LITECOIN,
         symbol: LTC,
         title: `${prefix}.ltc`,
-        action: this.handleCreateWallet(BLOCKCHAIN_LITECOIN),
       },
       {
         blockchain: BLOCKCHAIN_ETHEREUM,
@@ -77,7 +83,7 @@ export default class SelectWalletType extends PureComponent {
         disabled: true,
       },
       {
-	blockchain: BLOCKCHAIN_WAVES,
+        blockchain: BLOCKCHAIN_WAVES,
         symbol: WAVES,
         title: `${prefix}.waves`,
         disabled: true,
@@ -89,7 +95,7 @@ export default class SelectWalletType extends PureComponent {
         {
           wallets.map((type) => (
             <div key={type.blockchain} styleName={classnames('walletType', { 'disabled': type.disabled })} onClick={type.action || this.handleTouchTap(type)}>
-              <div styleName='icon'><IPFSImage fallback={TOKEN_ICONS[ type.symbol ]} /></div>
+              <div styleName='icon'><IPFSImage fallback={TOKEN_ICONS[type.symbol]} /></div>
               <div styleName='title'>
                 <Translate value={type.title} />
                 {type.disabled && <div styleName='soon'><Translate value={`${prefix}.soon`} /></div>}
@@ -98,11 +104,6 @@ export default class SelectWalletType extends PureComponent {
             </div>
           ))
         }
-        <div styleName='walletType'>
-          <div styleName='icon' />
-          <div styleName='title'><Translate value={`${prefix}.lgo`} /></div>
-          <div styleName='arrow' />
-        </div>
       </div>
     )
   }

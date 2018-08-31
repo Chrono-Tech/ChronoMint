@@ -4,23 +4,21 @@
  */
 
 import { en as Login } from '@chronobank/login-ui/lang'
-import { en as components } from 'components/lang'
-import * as assetDonator from 'dao/AssetDonatorDAO'
-import * as erc20 from 'dao/ERC20DAO'
-import * as erc20Manager from 'dao/ERC20ManagerDAO'
-import * as eth from 'dao/EthereumDAO'
-import * as bitcoin from '@chronobank/login/network/BitcoinProvider'
-import * as exchange from 'dao/ExchangeDAO'
-import * as loc from 'dao/LOCManagerDAO'
-import * as operations from 'dao/PendingManagerDAO'
-import * as platformsManager from 'dao/PlatformsManagerDAO'
-import * as pollInterface from 'dao/PollInterfaceDAO'
-import * as rewards from 'dao/RewardsDAO'
-import * as time from 'dao/AssetHolderDAO'
-import * as user from 'dao/UserManagerDAO'
-import { en as layouts } from 'layouts/lang'
-import * as votingManager from 'dao/VotingManagerDAO'
-import * as chronoBankAsset from 'dao/ChronoBankAssetDAO'
+import components from 'components/lang'
+import * as assetDonator from '@chronobank/core/dao/constants/AssetDonatorDAO'
+import * as erc20 from '@chronobank/core/dao/constants/ERC20DAO'
+import * as erc20Manager from '@chronobank/core/dao/constants/ERC20ManagerDAO'
+import * as eth from '@chronobank/core/dao/constants/EthereumDAO'
+import * as operations from '@chronobank/core/dao/constants/PendingManagerDAO'
+import * as platformsManager from '@chronobank/core/dao/constants/PlatformsManagerDAO'
+import * as pollInterface from '@chronobank/core/dao/constants/PollInterfaceDAO'
+import * as rewards from '@chronobank/core/dao/constants/RewardsDAO'
+import * as time from '@chronobank/core/dao/constants/AssetHolderDAO'
+import * as user from '@chronobank/core/dao/constants/UserManagerDAO'
+import layouts from 'layouts/lang'
+import * as votingManager from '@chronobank/core/dao/constants/VotingManagerDAO'
+import * as chronoBankAsset from '@chronobank/core/dao/constants/ChronoBankAssetDAO'
+import nem from './en-tx-nem'
 
 export default {
   copyright: 'Copyright © 2018 LaborX Pty Ltd. All Rights Reserved.',
@@ -32,8 +30,8 @@ export default {
   false: 'no',
   tokenNotAvailable: 'Token Not Available',
   ...Login,
-  ...components,
-  layouts,
+  ...components.en,
+  layouts: layouts.en,
   global: {
     about: 'About',
     labourHours: 'Labour—Hours',
@@ -47,14 +45,11 @@ export default {
     deposits: 'Deposits',
     deposit: 'Deposit',
     cbeDashboard: 'CBE Dashboard',
-    locs: 'LOC Admin',
-    lhOperations: 'LH Operations',
-    operations: 'Operations',
     settings: 'Settings',
     wallet: 'Wallet',
     addWallet: 'Add wallet',
-    exchange: 'Exchange',
     voting: 'Voting',
+    newPoll: 'Create new poll',
     rewards: 'Bonuses',
     assets: 'My assets',
     profile: 'Profile',
@@ -68,6 +63,7 @@ export default {
     pageNotFound: 'Page not found',
     backToMain: 'Back to main page',
     twoFa: 'Enable 2FA',
+    poll: 'Poll',
   },
   common: {
     name: 'Name',
@@ -77,7 +73,7 @@ export default {
   },
   wallet: {
     modeAdvanced: 'Advanced',
-    modeSimple: 'Simple',
+    modeSimple: 'Basic',
     templateName: 'Template name',
     satPerByte: 'SAT / byte',
     gweiPerGas: 'GWEI 0 / gas',
@@ -103,14 +99,6 @@ export default {
     revoke: 'Revoke',
     sign: 'Sign',
     enterCode: 'Enter Code',
-  },
-  exchange: {
-    tokens: 'Exchange tokens',
-    rates: 'Exchange rates',
-    exchange: 'Exchange',
-    buyPrice: 'Buy price',
-    sellPrice: 'Sell price',
-    limits: 'Exchange limits',
   },
   // common one-word terms
   terms: {
@@ -143,76 +131,6 @@ export default {
     remove: 'Remove',
     modify: 'Modify',
   },
-  locs: {
-    entries: '%{number} entries total',
-    sendToExchange: 'Send to exchange',
-    recent: 'Recent LOCs',
-    insuranceFee: 'Insurance fee',
-    allowedToBeIssued: 'Allowed to be issued',
-    expirationDate: 'Expiration Date',
-    issuanceParameters: 'Issuance parameters',
-    sendLHToExchange: 'Send LHT to Exchange',
-    uploadedFile: 'Uploaded File',
-    issueLHT: 'Issue LHT',
-    issueS: 'Issue %{asset}',
-    issueLimit: 'Issue Limit',
-    issued: 'Issued',
-    // TODO @dkchv: avoid LHT in tokens
-    redeemLHT: 'Redeem LHT',
-    redeemS: 'Redeem %{asset}',
-    title: 'LOC title',
-    edit: 'Edit LOC',
-    new: 'New LOC',
-    delete: 'Delete LOC',
-    save: 'Save changes',
-    create: 'Create LOC',
-    viewContract: 'View Contact',
-    editInfo: 'Edit LOC Info',
-    daysLeft: 'days left',
-    daysLeft_1: 'day left',
-    updateStatus: 'Update Status',
-    addedOn: 'Added on %{date}',
-    forms: {
-      amountToBeS: 'Amount to be %{action}',
-      allowedToBeS: 'Allowed to be %{action} on behalf of %{name}: %{limit} %{currency}',
-      actions: {
-        issued: 'issued',
-        redeemed: 'redeemed',
-      },
-    },
-    status: {
-      maintenance: 'Maintenance',
-      active: 'Active',
-      suspended: 'Suspended',
-      bankrupt: 'Bankrupt',
-      inactive: 'Inactive',
-    },
-    notice: {
-      added: 'Added',
-      removed: 'Removed',
-      updated: 'Updated',
-      statusUpdated: 'Status updated',
-      issued: 'Issued',
-      revoked: 'Revoked',
-    },
-  },
-  operations: {
-    completed: 'Completed operations',
-    settings: 'Operations settings',
-    desc: 'Description',
-    signs: 'Signatures remained',
-    sign: 'Sign',
-    revoke: 'Revoke',
-    emptyPendingList: 'No pending operations.',
-    emptyCompletedList: 'No completed operations.',
-    adminCount: 'Number of CBE',
-    requiredSigns: 'Required signatures',
-    errors: {
-      // TODO @bshevchenko: move this duplicate error to the common tx errors list
-      duplicate: 'This transaction already added to the list of operations needed multi-signatures.',
-      requiredSigns: 'The amount of signatures required should not exceed CBE count.',
-    },
-  },
   settings: {
     user: {
       title: 'User',
@@ -241,52 +159,72 @@ export default {
   },
   notices: require('./en-notices'),
   tx: {
+    title: 'New transaction',
+    from: 'From',
+    to: 'To',
+    amount: 'Amount',
     transactions: 'Transactions',
     blockNumber: 'Block Number',
     noTransactions: 'No transactions',
     confirm: 'Confirm Transaction',
     fee: 'Fee',
-    balanceAfter: 'Balance after',
+    amountFee: 'Amount+Fee',
+    balanceAfter: '%{symbol} balance after',
     feeLeft: 'Transaction fee left',
+    notEnough: 'Not enough %{symbol}',
+    eventType: {
+      event: 'event',
+      transaction: 'transaction',
+    },
     TokenManagementInterface: {
       createAssetWithoutFee: {
         title: 'Confirm create token',
+        eventTitle: 'Created token without fee',
       },
       createAssetWithFee: {
         title: 'Confirm create token',
+        eventTitle: 'Created token with fee',
       },
     },
     ChronoBankPlatform: {
       reissueAsset: {
         title: 'Confirm reissue tokens',
+        eventTitle: 'Reissue asset',
       },
       revokeAsset: {
         title: 'Confirm revoke tokens',
+        eventTitle: 'Reissue asset',
       },
       addAssetPartOwner: {
         title: 'Confirm add manager',
+        eventTitle: 'Added manager',
       },
       removeAssetPartOwner: {
         title: 'Confirm remove manager',
+        eventTitle: 'Removed manager',
       },
     },
     UserManager: {
       [user.TX_ADD_CBE]: {
         title: 'Add CBE',
+        eventTitle: 'added CBE',
         name: 'Name',
         address: 'Address',
       },
       [user.TX_REVOKE_CBE]: {
         title: 'Revoke CBE',
+        eventTitle: 'Revoke CBE',
         name: 'Name',
         address: 'Address',
       },
       [user.TX_SET_REQUIRED_SIGNS]: {
         title: 'Set Required Signatures',
+        eventTitle: 'Set required signatures',
         _required: 'Quantity',
       },
       [user.TX_SET_OWN_HASH]: {
         title: 'Update profile',
+        eventTitle: 'Updated profile',
         name: 'Name',
         email: 'E-mail',
         company: 'Company',
@@ -294,6 +232,7 @@ export default {
       },
       [user.TX_SET_MEMBER_HASH]: {
         title: 'Update profile',
+        eventTitle: 'Updated profile',
         address: 'Address',
         name: 'Name',
         email: 'Email',
@@ -307,23 +246,27 @@ export default {
     Ethereum: {
       [eth.TX_TRANSFER]: {
         title: 'Transfer ETH',
+        eventTitle: 'Transfer ETH',
+        to: 'Address to',
       },
     },
     /* eslint-disable global-require */
     General: require('./en-tx-general'),
     Bitcoin: require('./en-tx-bitcoin'),
-    Nem: require('./en-tx-nem'),
+    nem,
     Waves: require('./en-tx-waves'),
     /* eslint-enable global-require */
     ContractsManager: {},
     ChronoBankAssetProxy: {
       [erc20.TX_APPROVE]: {
         title: 'Approve TIME',
+        eventTitle: 'Approved TIME',
         account: 'Account',
         amount: 'Amount',
       },
       [erc20.TX_TRANSFER]: {
         title: 'Transfer TIME',
+        eventTitle: 'Transfer TIME',
         recipient: 'Recipient',
         amount: 'Amount',
       },
@@ -331,11 +274,13 @@ export default {
     ChronoBankAssetWithFeeProxy: {
       [erc20.TX_APPROVE]: {
         title: 'Approve LHT',
+        eventTitle: 'Approved LHT',
         account: 'Account',
         amount: 'Amount',
       },
       [erc20.TX_TRANSFER]: {
         title: 'Transfer LHT',
+        eventTitle: 'Transfer LHT',
         recipient: 'Recipient',
         amount: 'Amount',
       },
@@ -343,195 +288,193 @@ export default {
     PendingManager: {
       [operations.TX_CONFIRM]: {
         title: 'Confirm Operation',
+        eventTitle: 'Confirmed Operation',
       },
       [operations.TX_REVOKE]: {
         title: 'Revoke Operation',
+        eventTitle: 'Revoked Operation',
       },
     },
     TimeHolder: {
       [time.TX_DEPOSIT]: {
         title: 'Deposit TIME',
+        eventTitle: 'Deposit TIME',
         amount: 'Amount',
       },
       [time.TX_WITHDRAW_SHARES]: {
         title: 'Withdraw TIME',
+        eventTitle: 'Withdraw TIME',
         amount: 'Amount',
       },
     },
     Rewards: {
       [rewards.TX_WITHDRAW_REWARD]: {
         title: 'Withdraw Bonus',
+        eventTitle: 'Withdraw Bonus',
         amount: 'Amount',
       },
       [rewards.TX_CLOSE_PERIOD]: {
         title: 'Close Bonuses Period',
+        eventTitle: 'Close Bonuses Period',
       },
     },
     AssetDonator: {
       [assetDonator.TX_REQUIRE_TIME]: {
         title: 'Require TIME',
+        eventTitle: 'Require TIME',
+        donation: 'Donation to',
       },
     },
     PlatformsManager: {
       [platformsManager.TX_CREATE_PLATFORM]: {
         title: 'Confirm create platform',
+        eventTitle: 'Created platform',
       },
       [platformsManager.TX_ATTACH_PLATFORM]: {
         title: 'Confirm attach platform',
+        eventTitle: 'Attach platform',
       },
       [platformsManager.TX_DETACH_PLATFORM]: {
         title: 'Confirm detach platform',
-      },
-    },
-    LOCManager: {
-      [loc.standardFuncs.SET_STATUS]: {
-        title: 'Set Status',
-      },
-      [loc.standardFuncs.ADD_LOC]: {
-        title: 'Add LOC',
-        name: 'Name',
-        website: 'Website',
-        issueLimit: 'Issue Limit',
-        publishedHash: 'Contract',
-        expDate: 'Expiration Date',
-        currency: 'Currency',
-      },
-      [loc.standardFuncs.SET_LOC]: {
-        title: 'Update LOC',
-        name: 'Name',
-        website: 'Website',
-        issueLimit: 'Issue Limit',
-        publishedHash: 'Contract',
-        expDate: 'Expiration Date',
-      },
-      [loc.multisigFuncs.REMOVE_LOC]: {
-        title: 'Remove LOC',
-        name: 'Name',
-      },
-      [loc.multisigFuncs.REISSUE_ASSET]: {
-        title: 'Issue asset',
-        amount: 'Amount',
-        name: 'Name',
-      },
-      [loc.multisigFuncs.REVOKE_ASSET]: {
-        title: 'Revoke Asset',
-        amount: 'Amount',
-        name: 'Name',
-      },
-      [loc.multisigFuncs.UPDATE_LOC_STATUS]: {
-        title: 'Update LOC status',
-        name: 'Name',
-        status: 'Status',
-      },
-      [loc.multisigFuncs.SEND_ASSET]: {
-        title: 'Send Asset',
+        eventTitle: 'Detach platform',
       },
     },
     ERC20Manager: {
       [erc20Manager.TX_MODIFY_TOKEN]: {
         title: 'Modify Token',
+        eventTitle: 'Modify Token',
       },
       [erc20Manager.TX_REMOVE_TOKEN]: {
         title: 'Remove Token',
+        eventTitle: 'Remove Token',
       },
       [erc20Manager.TX_ADD_TOKEN]: {
         title: 'Add Token',
+        eventTitle: 'Add Token',
       },
     },
     ERC20Interface: {
       [erc20.TX_APPROVE]: {
-        title: 'Approve to transfer your tokens',
-        account: 'Account',
+        title: 'Approve transfer of your tokens',
+        eventTitle: 'Approved transfer of your tokens',
+        spender: 'Spender',
         amount: 'Amount',
       },
       [erc20.TX_TRANSFER]: {
         title: 'Transfer tokens',
-        account: 'Account',
+        eventTitle: 'Transfer tokens',
         amount: 'Amount',
-      },
-    },
-    ExchangeManager: {
-      createExchange: {
-        title: 'Create an exchange',
-      },
-    },
-    Exchange: {
-      [exchange.TX_BUY]: {
-        title: 'Confirm buy tokens for ETH',
-      },
-      [exchange.TX_SELL]: {
-        title: 'Confirm sell tokens for ETH',
-      },
-      [exchange.TX_WITHDRAW_TOKENS]: {
-        title: 'Confirm withdraw tokens',
-      },
-      [exchange.TX_WITHDRAW_ETH]: {
-        title: 'Confirm withdraw ETH',
       },
     },
     Wallet: {
       transfer: {
         title: 'Transfer',
+        eventTitle: 'Transfer',
         value: 'Value',
-        to: 'To',
+        symbol: 'Symbol',
+      },
+      confirm: {
+        title: 'Confirm tx',
+        eventTitle: 'Confirm tx',
+        value: 'Value',
+        symbol: 'Symbol',
+      },
+      revoke: {
+        title: 'Revoke tx',
+        eventTitle: 'Revoke tx',
+        value: 'Value',
         symbol: 'Symbol',
       },
       addOwner: {
         title: 'Add owner',
+        eventTitle: 'Add owner',
         owner: 'New Owner',
       },
       removeOwner: {
         title: 'Remove owner',
+        eventTitle: 'Remove owner',
         owner: 'Owner',
       },
       kill: {
         title: 'Kill wallet',
+        eventTitle: 'Kill wallet',
         to: 'Transfer tokens to',
       },
       changeRequirement: {
         title: 'Change required signatures',
+        eventTitle: 'Change required signatures',
         requiredSignatures: 'New value',
       },
     },
     PollInterface: {
       [pollInterface.TX_ACTIVATE_POLL]: {
         title: 'Activate poll',
+        eventTitle: 'Activate poll',
+        pollAddress: 'Poll address',
+        from: 'From',
       },
       [pollInterface.TX_REMOVE_POLL]: {
         title: 'Remove Poll',
+        eventTitle: 'Remove poll',
+        pollAddress: 'Poll address',
+        from: 'From',
       },
       [pollInterface.TX_END_POLL]: {
         title: 'End Poll',
+        eventTitle: 'End poll',
+        pollAddress: 'Poll address',
+        from: 'From',
       },
       [pollInterface.TX_VOTE]: {
         title: 'Vote',
+        eventTitle: 'Vote',
+        pollAddress: 'Poll address',
+        from: 'From',
+        choiceNumber: 'Choice number',
       },
     },
     VotingManager: {
       [votingManager.TX_CREATE_POLL]: {
-        title: 'Create Poll',
+        modalTitle: 'Create Poll',
+        eventTitle: 'Create Poll',
+        options: 'Options',
+        files: 'Files',
+        description: 'Description',
+        title: 'Title',
+        deadline: 'End Poll Date',
+        votelimit: 'End Poll by the most voted option',
       },
     },
     ChronoBankAsset: {
       [chronoBankAsset.TX_PAUSE]: {
         title: 'Block asset',
+        eventTitle: 'Block asset',
       },
       [chronoBankAsset.TX_UNPAUSE]: {
         title: 'Unblock asset',
+        eventTitle: 'Unblock asset',
       },
       [chronoBankAsset.TX_RESTRICT]: {
         title: 'Add user to blacklist',
+        eventTitle: 'Added user to blacklist',
       },
       [chronoBankAsset.TX_UNRESTRICT]: {
         title: 'Remove user from blacklist',
+        eventTitle: 'Removed user to blacklist',
       },
     },
     WalletsManager: {
       'createWallet': {
         title: 'Create multisignature wallet',
+        eventTitle: 'Created multisignature wallet',
+        owners: 'Owners',
+        requiredSignatures: 'Required signatures',
+        releaseTime: 'Release time',
+        isTimeLocked: 'Is timeLocked',
       },
       'create2FAWallet': {
         title: 'Create 2FA wallet',
+        eventTitle: 'Created 2FA wallet',
       },
     },
   },
@@ -551,13 +494,13 @@ export default {
     lowerThanOrEqual: 'Should be lower or equal than %{limit}',
     moreThan: 'Should be more than %{limit}',
     moreThanOrEqual: 'Should be more or equal than %{limit}',
+    countMoreThan: 'Count should be more than %{limit}',
+    countMoreThanOrEqual: 'Count should be more or equal than %{limit}',
     invalidLatinString: 'String must have only Latin characters (A-z)',
     mustBeUnique: 'Value must be unique',
     invalidConfirm2FACode: 'Should be a 6-digit code',
-
-    // TODO @bshevchenko: errors domain only for common cases. Move out entries below to the appropriate domains
     cantSentToYourself: 'Can\'t send tokens to yourself',
-    notEnoughTokens: 'Not enough tokens',
+    notTokens: 'The wallet has insufficient funds',
     platformNotEnoughTokens: 'Platform doesn\'t have enough tokens to sell you',
     invalidCurrencyNumber: 'Should have maximum %{decimals} decimal places',
     greaterThanAllowed: 'Amount is greater than allowed',
@@ -609,19 +552,6 @@ export default {
     FRONTEND_RESULT_FALSE: 'Transaction failed with false result.',
     FRONTEND_RESULT_TRUE: 'Transaction failed with true result.',
     FRONTEND_INVALID_RESULT: 'Transaction invalid result.',
-
-    LOC_NOT_FOUND: 'LOC not found',
-    LOC_EXISTS: 'LOC exists',
-    LOC_INACTIVE: 'LOC inactive',
-    LOC_SHOULD_NO_BE_ACTIVE: 'LOC Should be active',
-    LOC_INVALID_PARAMETER: 'LOC invalid parameters',
-    LOC_INVALID_INVOCATION: 'LOC invalid invocation',
-    LOC_ADD_CONTRACT: 'LOC add contract',
-    LOC_SEND_ASSET: 'LOC send asset',
-    LOC_REQUESTED_ISSUE_VALUE_EXCEEDED: 'LOC requested issue value exceed',
-    LOC_REISSUING_ASSET_FAILED: 'LOC reissuing asset failed',
-    LOC_REQUESTED_REVOKE_VALUE_EXCEEDED: 'LOC requested revoke value exceed',
-    LOC_REVOKING_ASSET_FAILED: 'LOC revoking asset failed',
 
     USER_NOT_FOUND: 'User not found',
     USER_INVALID_PARAMETER: 'User: invalid request parameters',
@@ -720,7 +650,7 @@ export default {
     errors: {
       // TODO @dkchv: add errors
     },
-    addAttachments: 'Add attachments',
+    attachNew: 'Attach new',
     selectFile: 'Select File',
     filesLimit: '%{files} of %{limit}',
   },
@@ -788,6 +718,7 @@ export default {
       receivingTitle: 'Your receiving %{symbol} address',
       qrTitle: 'Your QR code for the %{symbol} address',
       buyTitle: 'Also, you can buy %{symbol} in exchanges',
+      error: 'Something wrong.',
     },
     RewardsPeriod: {
       rewardsPeriodIndex: 'Bonus period #%{index}',
@@ -803,39 +734,6 @@ export default {
       percentOfTotalDepositedAmount: '%{percent}% of total deposited amount',
       dividendsAccumulatedForPeriod: 'Dividends accumulated for period',
       yourApproximateRevenueForPeriod: 'Your approximate revenue for period',
-    },
-    Poll: {
-      new: 'New',
-      ongoing: 'Ongoing',
-      daysLeft: 'days left',
-      daysLeft_1: 'day left',
-      finished: 'Finished',
-      timeHoldersAlreadyVoted: 'percent of TIME received',
-      no: 'No',
-      requiredVotes: 'Required TIME',
-      receivedVotes: 'Received TIME',
-      variants: 'Variants',
-      documents: 'Documents',
-      remove: 'Remove',
-      details: 'Details',
-      endPoll: 'End Poll',
-      activate: 'Activate',
-      vote: 'Vote',
-      published: 'Published',
-      endDate: 'End Date',
-    },
-    locs: {
-      PageTitle: {
-        labourOfferingCompanies: 'Labour Offering Companies',
-      },
-    },
-    operations: {
-      Operations: {
-        settings: 'Settings',
-        description: 'Description',
-        signatures: 'Signatures',
-        actions: 'Actions',
-      },
     },
     settings: {
       Tokens: {
@@ -855,58 +753,6 @@ export default {
       },
     },
     dialogs: {
-      OperationsSettingsDialog: {
-        operationsSettings: 'Operations Settings',
-        cancel: 'Cancel',
-        save: 'Save',
-      },
-      CBEAddressDialog: {
-        addCbeAddress: 'Add CBE Address',
-        cancel: 'Cancel',
-        addAddress: 'Add Address',
-      },
-      PollEditDialog: {
-        editPoll: 'Edit Poll',
-        newPoll: 'New Poll',
-        pollTitle: 'Poll title',
-        pollDescription: 'Poll description',
-        voteLimit: 'Vote Limit in TIME per option',
-        finishedDate: 'Finished date',
-        addAttachments: 'Add Attachments',
-        option: 'Option',
-        optionIndex: 'Option #%{index}',
-        updatePoll: 'Update Poll',
-        createPoll: 'Create Poll',
-        addOption: 'Add Option',
-      },
-      PollDetailsDialog: {
-        published: 'Published',
-        finished: 'Finished',
-        no: 'No',
-        endDate: 'End date',
-        requiredVotes: 'Required TIME',
-        receivedVotes: 'Received TIME',
-        variants: 'Variants',
-        documents: 'Documents',
-        ongoing: 'Ongoing',
-        new: 'New',
-        timeHoldersAlreadyVoted: 'percent of TIME received',
-        optionNumber: 'Option #%{number}',
-        pollOptions: 'Poll options',
-        idxNumber: '#%{number}',
-      },
-      AddCurrencyDialog: {
-        addToken: 'Add Token',
-        howToAddYourToken: 'How to add your token? It\'s easy!',
-        youCanConnectToYourPersonalWallet: 'You can connect to your personal wallet one of the already added tokens or add any other ERC20 token.',
-        clickOnThePlusButtonAbove: 'Click on the + plus button above.',
-        fillTheForm: 'Fill the form, check values and press SAVE.',
-        waitUntilYourToken: 'Wait until your token will be added (mined), select it in the list on the left and press SAVE.',
-        allTokens: 'All tokens',
-        save: 'Save',
-        close: 'Close',
-        tokens: 'Tokens',
-      },
       AddTokenDialog: {
         tokenContractAddress: 'Token contract address',
         tokenName: 'Token name',
@@ -937,6 +783,11 @@ export default {
   },
   topButtons: {
     addDeposit: 'Add deposit',
-    addWallet: 'Add wallet',
+    addWallet: 'Add a wallet',
+    addPoll: 'Add a Poll',
+    publish: 'Publish',
+    endPoll: 'End poll',
+    addToken: 'Add a token',
+    voteHistory: 'Changes History',
   },
 }

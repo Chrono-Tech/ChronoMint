@@ -12,13 +12,13 @@ export default {
     ltc: 'Litecoin Wallet',
     eth: 'Ethereum Wallet',
     nem: 'NEM Wallet',
-    lgo: 'List goes on ...',
-    createWallet: 'Add an Ethereum Wallet',
+    waves: 'Waves Wallet',
+    createWallet: 'Add a new %{blockchain} Wallet',
     multisignatureWallet: 'Multi-signature Wallet',
     timeLockedWallet: 'Time-Locked Wallet',
     customWallet: 'Configure Tokens',
     twoFA: 'Enable 2FA',
-    soon: 'Soon...',
+    soon: 'Coming soon...',
     st: {
       title: 'Standard Wallet',
       description: ' ',
@@ -36,8 +36,8 @@ export default {
       description: 'Make the wallet controlled by multiple owners.Advanced',
     },
     cw: {
-      title: 'Make the wallet',
-      description: 'with custom tokens.',
+      title: 'Custom tokens',
+      description: 'Make the wallet with ability to add custom tokens.',
     },
 
   },

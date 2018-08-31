@@ -4,14 +4,13 @@
  */
 
 import OwnerItem from 'components/wallet/OwnersList/OwnerItem'
-import globalStyles from 'layouts/partials/styles'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import { change, Field, formValueSelector, getFormSyncErrors } from 'redux-form/immutable'
-import { DUCK_SESSION } from 'redux/session/actions'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { prefix } from './lang'
 import './OwnersList.scss'
 import validate from './validate'
@@ -24,7 +23,7 @@ function mapStateToProps (state, props) {
   const newOwner = selector(state, FIELD_NEW_ADDRESS)
 
   return {
-    isDisabled: !!errors[ FIELD_NEW_ADDRESS ] || !newOwner,
+    isDisabled: !!errors[FIELD_NEW_ADDRESS] || !newOwner,
     newOwner,
     account: state.get(DUCK_SESSION).account,
   }
@@ -86,8 +85,7 @@ export default class OwnersList extends PureComponent {
           <div styleName='addOwnerField'>
             <Field
               component={TextField}
-              hintText={<Translate value={`${prefix}.floatText`} />}
-              hintStyle={globalStyles.textField.hintStyle}
+              label={<Translate value={`${prefix}.floatText`} />}
               name={FIELD_NEW_ADDRESS}
               validate={validate}
               fullWidth

@@ -4,56 +4,39 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { Checkbox, SelectField, TextField } from 'redux-form-material-ui'
-import { CircularProgress, MenuItem } from 'material-ui'
-import { Button } from 'components'
+import { Checkbox, TextField } from 'redux-form-material-ui'
+import Select from 'redux-form-material-ui/es/Select'
+import { CircularProgress, MenuItem, FormControlLabel } from '@material-ui/core'
+import Button from 'components/common/ui/Button/Button'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 import avaToken from 'assets/img/avaToken.svg'
 import { change, Field, formPropTypes, reduxForm } from 'redux-form/immutable'
+import { submit } from 'redux-form'
 import classnames from 'classnames'
 import colors from 'styles/themes/variables'
 import { connect } from 'react-redux'
 import icnPlus from 'assets/img/icn-plus.svg'
 import platformIcon from 'assets/img/folder-multiple.svg'
 import platformIconInCircle from 'assets/img/assets1.svg'
-import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
-import FileModel from 'models/FileSelect/FileModel'
-import TokenModel from 'models/tokens/TokenModel'
-import { createAsset, DUCK_ASSETS_MANAGER } from 'redux/assetsManager/actions'
+import { ACCEPT_ALL } from '@chronobank/core/models/FileSelect/FileExtension'
+import FileModel from '@chronobank/core/models/FileSelect/FileModel'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
+import { createAsset } from '@chronobank/core/redux/assetsManager/actions'
+import { DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/constants'
 import { modalsOpen } from 'redux/modals/actions'
-import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import ipfs from 'utils/IPFS'
-import FeeModel from 'models/tokens/FeeModel'
-import ReissuableModel from 'models/tokens/ReissuableModel'
+import ipfs from '@chronobank/core-dependencies/utils/IPFS'
+import FeeModel from '@chronobank/core/models/tokens/FeeModel'
+import ReissuableModel from '@chronobank/core/models/tokens/ReissuableModel'
+import { FORM_ADD_TOKEN_DIALOG } from 'components/constants'
 import validate, { normalizeSmallestUnit } from './validate'
 
 import './AddTokenForm.scss'
 
 export const prefix = (token) => {
   return `Assets.AddTokenForm.${token}`
-}
-
-export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
-
-function mapStateToProps (state) {
-  const assetsManager = state.get(DUCK_ASSETS_MANAGER)
-  const form = state.get('form')
-  return {
-    formValues: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('values'),
-    formErrors: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('syncErrors'),
-    platformsList: assetsManager.usersPlatforms(),
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    handleAddPlatformDialog: () => dispatch(modalsOpen({
-      component: AddPlatformDialog,
-    })),
-  }
 }
 
 const onSubmit = (values, dispatch) => {
@@ -75,6 +58,27 @@ const onSubmit = (values, dispatch) => {
   })))
 }
 
+function mapStateToProps (state) {
+  const assetsManager = state.get(DUCK_ASSETS_MANAGER)
+  const form = state.get('form').get(FORM_ADD_TOKEN_DIALOG)
+
+  return {
+    formValues: form && form.get('values'),
+    formErrors: (form && form.get('syncErrors')) || {},
+    platformsList: assetsManager.usersPlatforms(),
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    handleAddPlatformDialog: () => dispatch(modalsOpen({
+      componentName: 'AddPlatformDialog',
+    })),
+    onSubmit: onSubmit,
+    submitForm: () => dispatch(submit(FORM_ADD_TOKEN_DIALOG)),
+  }
+}
+
 // defaults
 const DEFAULT_MAX_FILE_SIZE = 2 * 1024 * 1024 // 2Mb
 // TODO @dkchv: !!! make as [1,2]
@@ -86,6 +90,13 @@ class Platform extends PureComponent {
     platform: PropTypes.instanceOf(Object),
     selectedPlatform: PropTypes.instanceOf(Object),
     onClick: PropTypes.func,
+    formValues: PropTypes.instanceOf(Object),
+    formErrors: PropTypes.instanceOf(Object),
+  }
+
+  static defaultProps = {
+    formValues: null,
+    formErrors: {},
   }
 
   handleClick = () => this.props.onClick(this.props.platform)
@@ -115,21 +126,18 @@ class Platform extends PureComponent {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({ form: FORM_ADD_TOKEN_DIALOG, validate, onSubmit })
+@reduxForm({ form: FORM_ADD_TOKEN_DIALOG, validate })
 export default class AddTokenForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
-    formValues: PropTypes.object,
-    formErrors: PropTypes.object,
-    platformsList: PropTypes.array,
-    createAsset: PropTypes.func,
+    platformsList: PropTypes.arrayOf(PropTypes.object),
     dispatch: PropTypes.func,
     onClose: PropTypes.func.isRequired,
     handleAddPlatformDialog: PropTypes.func,
     maxFiles: PropTypes.number,
     aspectRatio: PropTypes.number,
     maxFileSize: PropTypes.number,
-    accept: PropTypes.array,
+    accept: PropTypes.arrayOf(PropTypes.any),
     ...formPropTypes,
   }
 
@@ -145,7 +153,6 @@ export default class AddTokenForm extends PureComponent {
         aspectRatio: props.aspectRatio || DEFAULT_ASPECT_RATIO,
         maxFiles: props.maxFiles || DEFAULT_MAX_FILES,
       },
-
     }
   }
 
@@ -162,8 +169,8 @@ export default class AddTokenForm extends PureComponent {
     this.props.dispatch(change(FORM_ADD_TOKEN_DIALOG, 'tokenImg', file.hash()))
   }
 
-  async handleUploadFile (e) {
-    const file = e.target.files[ 0 ]
+  handleUploadFile = async (e) => {
+    const file = e.target.files[0]
     if (!file) {
       return
     }
@@ -178,6 +185,7 @@ export default class AddTokenForm extends PureComponent {
 
   handleSubmitClick = () => {
     this.setState({ showPlatformError: !this.props.formErrors || !!this.props.formErrors.platform })
+    this.props.submitForm()
   }
 
   handleWalletClick = () => {
@@ -235,7 +243,7 @@ export default class AddTokenForm extends PureComponent {
         }
 
         <input
-          onChange={(e) => this.handleUploadFile(e)}
+          onChange={this.handleUploadFile}
           ref={this.refWallet}
           type='file'
           styleName='hide'
@@ -272,11 +280,12 @@ export default class AddTokenForm extends PureComponent {
   }
 
   renderTokenInfo () {
-    const tokenSymbol = this.props.formValues && this.props.formValues.get('tokenSymbol')
-    const smallestUnit = this.props.formValues && this.props.formValues.get('smallestUnit')
-    const amount = this.props.formValues && this.props.formValues.get('amount')
-    const description = this.props.formValues && this.props.formValues.get('description')
-    const platform = this.props.formValues && this.props.formValues.get('platform')
+    const formValues = this.props.formValues
+    const tokenSymbol = formValues && formValues.get('tokenSymbol')
+    const smallestUnit = (formValues && +formValues.get('smallestUnit')) || 0
+    const amount = (formValues && +formValues.get('amount')) || 0
+    const description = formValues && formValues.get('description')
+    const platform = formValues && formValues.get('platform')
     const renderPlatform = (platform) => {
       return platform.name
         ? <span>{platform.name}&nbsp;(<small>{platform.address}</small>)</span>
@@ -296,7 +305,7 @@ export default class AddTokenForm extends PureComponent {
             })
           </div>
           <div>
-            <span styleName='layer'>{new BigNumber(amount || 0).toFixed(smallestUnit || 0)}</span>
+            <span styleName='layer'>{new BigNumber(amount).toFixed(smallestUnit)}</span>
             <span styleName='symbol'>{tokenSymbol || <Translate value={prefix('tokenSymbol')} />}</span>
           </div>
           <div styleName='platform'>
@@ -329,10 +338,9 @@ export default class AddTokenForm extends PureComponent {
           <Field
             styleName='xs-show'
             name='platform'
-            component={SelectField}
+            component={Select}
             fullWidth
-            floatingLabelFixed
-            floatingLabelText={<Translate value={prefix('choosePlatform')} />}
+            placeholder={I18n.t(prefix('choosePlatform'))}
           >
             {
               platformsList
@@ -356,14 +364,14 @@ export default class AddTokenForm extends PureComponent {
             component={TextField}
             name='tokenSymbol'
             fullWidth
-            floatingLabelText={<Translate value={prefix('tokenSymbol')} />}
+            placeholder={I18n.t(prefix('tokenSymbol'))}
           />
 
           <Field
             component={TextField}
             name='description'
             fullWidth
-            floatingLabelText={<Translate value={prefix('description')} />}
+            placeholder={I18n.t(prefix('description'))}
           />
 
           <div className='AddTokenForm__grid'>
@@ -373,44 +381,52 @@ export default class AddTokenForm extends PureComponent {
                   component={TextField}
                   name='smallestUnit'
                   fullWidth
-                  floatingLabelText={<Translate value={prefix('smallestUnit')} />}
+                  placeholder={I18n.t(prefix('smallestUnit'))}
                   normalize={normalizeSmallestUnit}
                 />
               </div>
             </div>
             <div className='row'>
               <div className='col-xs-12 col-sm-6'>
-                <Field
-                  component={Checkbox}
-                  name='reissuable'
-                  label={<Translate value={prefix('reissuable')} />}
+                <FormControlLabel
+                  control={
+                    <Field
+                      component={Checkbox}
+                      name='reissuable'
+                    />
+                  }
+                  label={I18n.t(prefix('reissuable'))}
                 />
                 <Field
                   component={TextField}
                   name='amount'
                   fullWidth
-                  floatingLabelText={<Translate value={prefix('amount')} />}
+                  placeholder={I18n.t(prefix('amount'))}
                 />
               </div>
               <div className='col-xs-12 col-sm-6'>
-                <Field
-                  component={Checkbox}
-                  name='withFee'
-                  label={<Translate value={prefix('withFee')} />}
+                <FormControlLabel
+                  control={
+                    <Field
+                      component={Checkbox}
+                      name='withFee'
+                    />
+                  }
+                  label={I18n.t(prefix('withFee'))}
                 />
                 <Field
                   disabled={!withFee}
                   component={TextField}
                   name='feeAddress'
                   fullWidth
-                  floatingLabelText={<Translate value={prefix('feeAddress')} />}
+                  placeholder={I18n.t(prefix('feeAddress'))}
                 />
                 <Field
                   disabled={!withFee}
                   component={TextField}
                   name='feePercent'
                   fullWidth
-                  floatingLabelText={<Translate value={prefix('feePercent')} />}
+                  placeholder={I18n.t(prefix('feePercent'))}
                 />
               </div>
             </div>
@@ -420,8 +436,8 @@ export default class AddTokenForm extends PureComponent {
           <Button
             onClick={this.handleSubmitClick}
             styleName='action'
-            label={<Translate value={prefix('dialogTitle')} />}
-            type='submit'
+            label={I18n.t(prefix('dialogTitle'))}
+            type='button'
           />
         </div>
       </form>

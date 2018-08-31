@@ -10,19 +10,22 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
-import { Field, FieldArray, formPropTypes, reduxForm } from 'redux-form/immutable'
-import { createNewChildAddress, ETH, goToWallets, resetWalletsForm } from 'redux/mainWallet/actions'
-import { getChronobankTokens } from 'redux/settings/erc20/tokens/selectors'
-import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
-import TokenModel from 'models/tokens/TokenModel'
+import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
+import { resetWalletsForm } from 'redux/ui/thunks'
+import { navigateToWallets } from 'redux/ui/navigation'
+import { createNewChildAddress } from '@chronobank/core/redux/wallets/actions'
+import { getChronobankTokens } from '@chronobank/core/redux/settings/erc20/tokens/selectors'
+import { BLOCKCHAIN_ETHEREUM, ETH } from '@chronobank/core/dao/constants'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
+import { FORM_CUSTOM_WALLET_ADD } from 'components/constants'
 import { prefix } from './lang'
 import './CusotmWalletForm.scss'
 import TokensList from './TokensList'
 
-export const FORM_CUSTOM_WALLET_ADD = 'CustomWalletForm'
-
 function mapStateToProps (state) {
+  const selector = formValueSelector(FORM_CUSTOM_WALLET_ADD)
   return {
+    filter: selector(state, 'filter'),
     tokens: getChronobankTokens()(state),
     initialValues: {
       tokens: {
@@ -38,7 +41,7 @@ function mapDispatchToProps (dispatch) {
       const tokens = Object.keys(values.get('tokens').filter((token) => token).toObject()) || []
       const name = values.get('name')
       dispatch(createNewChildAddress({ blockchain: BLOCKCHAIN_ETHEREUM, tokens, name }))
-      dispatch(goToWallets())
+      dispatch(navigateToWallets())
       dispatch(resetWalletsForm())
     },
   }
@@ -53,7 +56,7 @@ export default class CustomWalletForm extends PureComponent {
   }
 
   render () {
-    const { handleSubmit } = this.props
+    const { handleSubmit, filter, tokens } = this.props
 
     return (
       <form styleName='root' onSubmit={handleSubmit}>
@@ -63,12 +66,12 @@ export default class CustomWalletForm extends PureComponent {
               component={TextField}
               name='name'
               fullWidth
-              floatingLabelText={<Translate value={`${prefix}.name`} />}
+              label={<Translate value={`${prefix}.name`} />}
             />
           </div>
           <div styleName='block'>
             <div styleName='tokensList'>
-              <TokensList />
+              <TokensList filter={filter} tokens={tokens} />
             </div>
           </div>
         </div>
