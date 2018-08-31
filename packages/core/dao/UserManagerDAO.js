@@ -3,9 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Immutable from 'immutable'
 import type AbstractModel from '../models/AbstractModelOld'
-import CBEModel from '../models/CBEModel'
 import ProfileModel from '../models/ProfileModel'
 import AbstractContractDAO from './AbstractContractDAO'
 import { TX_ADD_CBE, TX_REVOKE_CBE } from './constants/UserManagerDAO'
@@ -33,32 +31,6 @@ export default class UserManagerDAO extends AbstractContractDAO {
 
   getMemberId (account) {
     return this.contract.methods.getMemberId(account).call()
-  }
-
-  async getCBEList (): Immutable.Map<CBEModel> {
-    const result = await this.contract.methods.getCBEMembers().call()
-    const [addresses, hashes] = Object.values(result)
-    let map = new Immutable.Map()
-
-    const callback = async (address, hash) => {
-      const user = new ProfileModel(await this._ipfs(hash))
-      const cbe = new CBEModel({
-        address,
-        name: user.name(),
-        user,
-      })
-      map = map.set(cbe.id(), cbe)
-    }
-
-    const promises = []
-    for (const key in addresses) {
-      if (addresses.hasOwnProperty(key)) {
-        promises.push(callback(addresses[key], hashes[key]))
-      }
-    }
-    await Promise.all(promises)
-
-    return map
   }
 
   async getMemberProfile (account): Promise<ProfileModel | AbstractModel> {
