@@ -72,4 +72,9 @@ function noopCheckImageFile () {
   return []
 }
 
-export const imageValidator = window ? checkImageFile : noopCheckImageFile
+export const imageValidator = (
+  typeof window !== 'undefined'
+  && typeof Image !== 'undefined'
+)
+  ? checkImageFile
+  : noopCheckImageFile
