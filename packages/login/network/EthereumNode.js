@@ -11,11 +11,11 @@ import EthereumMiddlewareNode from './EthereumMiddlewareNode'
 const ETHEREUM_TESTNET_NODE = new EthereumMiddlewareNode({
   api: axios.create({
     baseURL: 'https://middleware-ethereum-testnet-rest.chronobank.io',
-    timeout: 4000,
+    timeout: 10000,
   }),
   twoFA: axios.create({
     baseURL: 'https://middleware-ethereum-testnet-rest.chronobank.io/2fa',
-    timeout: 4000,
+    timeout: 10000,
   }),
   socket: {
     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
@@ -32,11 +32,11 @@ const ETHEREUM_TESTNET_NODE = new EthereumMiddlewareNode({
 const ETHEREUM_MAINNET_NODE = new EthereumMiddlewareNode({
   api: axios.create({
     baseURL: 'https://middleware-ethereum-mainnet-rest.chronobank.io',
-    timeout: 4000,
+    timeout: 10000,
   }),
   twoFA: axios.create({
     baseURL: 'https://middleware-ethereum-mainnet-rest.chronobank.io/2fa',
-    timeout: 4000,
+    timeout: 10000,
   }),
   socket: {
     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
