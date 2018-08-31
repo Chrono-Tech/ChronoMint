@@ -3,17 +3,17 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { getIsHave2FAWallets } from 'redux/wallet/selectors'
+import { getIsHave2FAWallets } from '@chronobank/core/redux/wallet/selectors'
 import { WalletWidget } from 'components'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import MainWalletModel from 'models/wallet/MainWalletModel'
-import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
+import MainWalletModel from '@chronobank/core/models/wallet/MainWalletModel'
+import MultisigWalletModel from '@chronobank/core/models/wallet/MultisigWalletModel'
 import TwoFAWarningWidget from 'components/wallet/TwoFAWarningWidget/TwoFAWarningWidget'
-import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
+import { DUCK_MULTISIG_WALLET } from '@chronobank/core/redux/multisigWallet/actions'
 import WalletWidgetMini from 'components/wallet/WalletWidgetMini/WalletWidgetMini'
-import { getBalance } from 'redux/mainWallet/actions'
+import { getBalance } from '@chronobank/core/redux/mainWallet/actions'
 import { DUCK_UI } from 'redux/ui/reducer'
 import './WalletsContent.scss'
 import { sectionsSelector } from './selectors'

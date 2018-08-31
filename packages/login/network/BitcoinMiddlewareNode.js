@@ -173,6 +173,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
       res.data.outputs = formatOutputs
       const model = this._createTxModel(res.data, account)
       setImmediate(() => {
+        console.log('setImmediate tx: ', model)
         this.emit('tx', model)
       })
       return model

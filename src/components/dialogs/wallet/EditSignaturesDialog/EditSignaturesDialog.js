@@ -5,12 +5,12 @@
 
 import ModalDialog from 'components/dialogs/ModalDialog'
 import EditSignaturesForm from 'components/dialogs/wallet/EditSignaturesDialog/EditSignaturesForm'
-import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
+import MultisigWalletModel from '@chronobank/core/models/wallet/MultisigWalletModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { modalsClose } from 'redux/modals/actions'
-import { changeRequirement } from 'redux/multisigWallet/actions'
+import { changeRequirement } from '@chronobank/core/redux/multisigWallet/actions'
 
 function mapDispatchToProps (dispatch) {
   return {

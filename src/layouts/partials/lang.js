@@ -3,16 +3,16 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import * as FooterPartial from 'layouts/partials/FooterPartial/lang'
-import * as OperationsContent from 'layouts/partials/OperationsContent/lang'
-import * as RewardsContent from 'layouts/partials/RewardsContent/lang'
-import * as VotingContent from 'layouts/partials/VotingContent/lang'
+import FooterPartial from 'layouts/partials/FooterPartial/lang'
+import OperationsContent from 'layouts/partials/OperationsContent/lang'
+import RewardsContent from 'layouts/partials/RewardsContent/lang'
+import VotingContent from 'layouts/partials/VotingContent/lang'
 import DrawerMainMenu from 'layouts/partials/DrawerMainMenu/lang'
 import MenuTokenMoreInfo from 'layouts/partials/DrawerMainMenu/MenuTokenMoreInfo/lang'
 import MenuTokensList from 'layouts/partials/DrawerMainMenu/MenuTokensList/lang'
 import MenuAssetsManagerMoreInfo from 'layouts/partials/DrawerMainMenu/MenuAssetsManagerMoreInfo/lang'
 import NotificationContent from 'layouts/partials/NotificationContent/lang'
-import * as ProfileContent from 'layouts/partials/ProfileContent/lang'
+import ProfileContent from 'layouts/partials/ProfileContent/lang'
 import DepositsContent from 'layouts/partials/DepositsContent/lang'
 import WalletsContent from 'layouts/partials/WalletsContent/lang'
 import WalletContent from 'layouts/partials/WalletContent/lang'

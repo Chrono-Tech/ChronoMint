@@ -9,41 +9,44 @@ import { CopyIcon, IPFSImage, QRIcon } from 'components'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { selectWallet } from 'redux/wallet/actions'
-import { getToken } from 'redux/locs/selectors'
-import TokenModel from 'models/tokens/TokenModel'
+import { selectWallet } from '@chronobank/core/redux/wallet/actions'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { Translate } from 'react-redux-i18n'
 import { IconButton } from 'material-ui'
 import { TOKEN_ICONS } from 'assets'
-import { getWalletAddress } from 'redux/mainWallet/selectors'
-import AddressModel from 'models/wallet/AddressModel'
+import AddressModel from '@chronobank/core/models/wallet/AddressModel'
+import { PTWallet } from '@chronobank/core/redux/wallet/types'
+import WalletName from 'components/wallet/WalletName/WalletName'
 import walletLinkSvg from 'assets/img/icons/prev.svg'
 import copySvg from 'assets/img/icons/copy.svg'
 import qrSvg from 'assets/img/icons/qr.svg'
-import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
-import MultisigWalletCollection from 'models/wallet/MultisigWalletCollection'
-import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
+import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
 import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED, SYNC_STATUS_SYNCING } from '@chronobank/login/network/MonitorService'
 import { SIDES_TOGGLE_MAIN_MENU } from 'redux/sides/actions'
-import { DUCK_SESSION } from 'redux/session/actions'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
 import './MenuTokenMoreInfo.scss'
 import { prefix } from './lang'
+import { getSelectedToken, getSelectedWalletAddress, getWalletCompactWalletsList } from './selectors'
 
 export const MENU_TOKEN_MORE_INFO_PANEL_KEY = 'MenuTokenMoreInfo_panelKey'
 
-function mapStateToProps (state, ownProps) {
-  const multiSigWallet = state.get(DUCK_MULTISIG_WALLET)
-  const monitor = state.get(DUCK_MONITOR)
-  const { account } = state.get(DUCK_SESSION)
-
-  return {
-    networkStatus: monitor.network,
-    syncStatus: monitor.sync,
-    token: getToken(ownProps.selectedToken ? ownProps.selectedToken.symbol : null)(state),
-    walletAddress: getWalletAddress(ownProps.selectedToken ? ownProps.selectedToken.blockchain : null)(state),
-    multiSigWallet,
-    account,
+const makeMapStateToProps = () => {
+  const getTokenFromState = getSelectedToken()
+  const getAddressFromState = getSelectedWalletAddress()
+  const getWallets = getWalletCompactWalletsList()
+  const mapStateToProps = (ownState, ownProps) => {
+    const monitor = ownState.get(DUCK_MONITOR)
+    const { account } = ownState.get(DUCK_SESSION)
+    return {
+      networkStatus: monitor.network,
+      syncStatus: monitor.sync,
+      token: getTokenFromState(ownState, ownProps),
+      walletAddress: getAddressFromState(ownState, ownProps),
+      wallets: getWallets(ownState),
+      account,
+    }
   }
+  return mapStateToProps
 }
 
 function mapDispatchToProps (dispatch) {
@@ -53,13 +56,13 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(makeMapStateToProps, mapDispatchToProps)
 export default class MenuTokenMoreInfo extends PureComponent {
   static propTypes = {
     token: PropTypes.instanceOf(TokenModel),
     selectedToken: PropTypes.objectOf(PropTypes.string),
     walletAddress: PropTypes.instanceOf(AddressModel),
-    multiSigWallet: PropTypes.instanceOf(MultisigWalletCollection),
+    wallets: PropTypes.arrayOf(PTWallet),
     networkStatus: PropTypes.shape({
       status: PropTypes.string,
     }),
@@ -84,24 +87,25 @@ export default class MenuTokenMoreInfo extends PureComponent {
   }
 
   renderWallet = (wallet) => {
-    const owners = wallet.owners()
+    const { token } = this.props
+
     // if user not owner
-    if (owners.items().filter((owner) => owner.address() === this.props.account).length <= 0) {
+    if (!token.blockchain() || token.blockchain() !== wallet.blockchain || !wallet.owners.includes(this.props.account)) {
       return null
     }
 
     return (
-      <div styleName='walletIrem' key={wallet.address()}>
-        <Link to='/wallet' href styleName='walletTitle' onClick={() => this.handleSelectLink(wallet.blockchain(), wallet.address())}>
-          <div styleName='walletName'><Translate value={`${prefix}.multisignatureWallet`} /></div>
-          <div styleName='walletAddress'>{wallet.address()}</div>
+      <div styleName='walletIrem' key={wallet.address}>
+        <Link to='/wallet' href styleName='walletTitle' onClick={() => this.handleSelectLink(wallet.blockchain, wallet.address)}>
+          <div styleName='walletName'><WalletName wallet={wallet} /></div>
+          <div styleName='walletAddress'>{wallet.address}</div>
           <div styleName='walletLink'>
             <img alt='' src={walletLinkSvg} />
           </div>
         </Link>
 
         <div styleName='action'>
-          <CopyIcon value={wallet.address()}>
+          <CopyIcon value={wallet.address}>
             <div styleName='copyWrap'>
               <div styleName='actionIcon'>
                 <img src={copySvg} alt='' />
@@ -148,7 +152,7 @@ export default class MenuTokenMoreInfo extends PureComponent {
   }
 
   render () {
-    const { selectedToken, token, walletAddress, multiSigWallet } = this.props
+    const { selectedToken, token, walletAddress, wallets } = this.props
 
     return (
       <div styleName='root'>
@@ -164,7 +168,9 @@ export default class MenuTokenMoreInfo extends PureComponent {
           </div>
 
           <div styleName='walletIrem'>
-            <Link to='/wallet' href styleName='walletTitle' onClick={() => {this.handleSelectLink(token.blockchain(), walletAddress.address())}}>
+            <Link to='/wallet' styleName='walletTitle' onClick={() => {
+              this.handleSelectLink(token.blockchain(), walletAddress.address())
+            }}>
               <div styleName='walletName'><Translate value={`${prefix}.mainWalletTitle`} /></div>
               <div styleName='walletAddress'>{walletAddress.address()}</div>
               <div styleName='walletLink'>
@@ -199,7 +205,7 @@ export default class MenuTokenMoreInfo extends PureComponent {
             </div>
           </div>
 
-          {selectedToken && selectedToken.blockchain === BLOCKCHAIN_ETHEREUM && multiSigWallet.items().map(this.renderWallet)}
+          {wallets.map(this.renderWallet)}
 
           {selectedToken && selectedToken.blockchain === BLOCKCHAIN_ETHEREUM && (
             <div styleName='network'>

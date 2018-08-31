@@ -6,9 +6,9 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import ArbitraryNoticeModel from 'models/notices/ArbitraryNoticeModel'
+import ArbitraryNoticeModel from '@chronobank/core/models/notices/ArbitraryNoticeModel'
 import { download } from 'redux/ui/actions'
-import { notify } from 'redux/notifier/actions'
+import { notify } from '@chronobank/core/redux/notifier/actions'
 import FileIcon from 'components/common/FileSelect/FileIcon'
 
 import './DocumentsList.scss'

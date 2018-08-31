@@ -5,16 +5,16 @@
 
 import { Button } from 'components'
 import RewardsPeriod from 'components/dashboard/RewardsPeriod/RewardsPeriod'
-import RewardsCollection from 'models/rewards/RewardsCollection'
-import RewardsCurrentPeriodModel from 'models/rewards/RewardsCurrentPeriodModel'
+import RewardsCollection from '@chronobank/core/models/rewards/RewardsCollection'
+import RewardsCurrentPeriodModel from '@chronobank/core/models/rewards/RewardsCurrentPeriodModel'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Link } from 'react-router'
-import { DUCK_ASSETS_HOLDER } from 'redux/assetsHolder/actions'
-import { closePeriod, DUCK_REWARDS, initRewards, withdrawRevenue } from 'redux/rewards/actions'
-import { DUCK_SESSION } from 'redux/session/actions'
+import { DUCK_ASSETS_HOLDER } from '@chronobank/core/redux/assetsHolder/actions'
+import { closePeriod, DUCK_REWARDS, initRewards, withdrawRevenue } from '@chronobank/core/redux/rewards/actions'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
 import './RewardsContent.scss'
 
 function prefix (token) {

@@ -4,14 +4,14 @@
  */
 
 import Button from 'components/common/ui/Button/Button'
-import OwnerCollection from 'models/wallet/OwnerCollection'
+import OwnerCollection from '@chronobank/core/models/wallet/OwnerCollection'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
-import { DUCK_SESSION } from 'redux/session/actions'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
 
 import './EditManagersBaseForm.scss'
 import ManagerItem from './ManagerItem'

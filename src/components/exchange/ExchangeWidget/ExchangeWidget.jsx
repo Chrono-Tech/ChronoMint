@@ -15,7 +15,7 @@ import { SelectField, TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { modalsOpen } from 'redux/modals/actions'
-import { DUCK_EXCHANGE, search } from 'redux/exchange/actions'
+import { DUCK_EXCHANGE, search } from '@chronobank/core/redux/exchange/actions'
 import AddExchangeDialog from 'components/exchange/AddExchangeDialog/AddExchangeDialog'
 import validate from './validate'
 

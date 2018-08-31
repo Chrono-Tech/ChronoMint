@@ -11,7 +11,7 @@ import { connect } from 'react-redux'
 import { modalsClose } from 'redux/modals/actions'
 import LOCStatusForm from './LOCStatusForm'
 import ModalDialogBase from '../../ModalDialogBase/ModalDialogBase'
-import { updateStatus } from '../../../../redux/locs/actions'
+import { updateStatus } from '@chronobank/core/redux/locs/actions'
 
 const mapDispatchToProps = (dispatch) => ({
   updateStatus: (status, loc) => dispatch(updateStatus(status, loc)),

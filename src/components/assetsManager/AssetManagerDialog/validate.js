@@ -4,7 +4,7 @@
  */
 
 import ErrorList from 'platform/ErrorList'
-import validator from 'models/validator'
+import validator from '@chronobank/core/models/validator'
 
 export default function (values) {
   let managerAddressErrors = new ErrorList()

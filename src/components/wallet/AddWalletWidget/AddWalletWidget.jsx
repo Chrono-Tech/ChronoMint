@@ -8,11 +8,10 @@ import React, { PureComponent } from 'react'
 import { change, formValueSelector } from 'redux-form/immutable'
 import { connect } from 'react-redux'
 import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
-import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
-import { BLOCKCHAIN_NEM } from 'dao/NemDAO'
-import { BLOCKCHAIN_WAVES } from 'dao/WavesDAO'
+import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
+import { BLOCKCHAIN_NEM } from '@chronobank/core/dao/NemDAO'
 import WidgetContainer from 'components/WidgetContainer/WidgetContainer'
-import { FORM_ADD_NEW_WALLET } from 'redux/mainWallet/actions'
+import { FORM_ADD_NEW_WALLET, resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
 
 import './AddWalletWidget.scss'
 import SelectWalletType from './SelectWalletType/SelectWalletType'
@@ -39,6 +38,7 @@ function mapDispatchToProps (dispatch) {
     selectWalletType: (type: string) => {
       dispatch(change(FORM_ADD_NEW_WALLET, 'ethWalletType', type))
     },
+    reset: () => dispatch(resetWalletsForm()),
   }
 }
 
@@ -49,6 +49,11 @@ export default class AddWalletWidget extends PureComponent {
     ethWalletType: PropTypes.string,
     selectWalletBlockchain: PropTypes.func,
     selectWalletType: PropTypes.func,
+    reset: PropTypes.func,
+  }
+
+  componentWillUnmount () {
+    this.props.reset()
   }
 
   onSelectWalletBlockchain = (blockchain: string) => {

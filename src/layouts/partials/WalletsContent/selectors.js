@@ -4,11 +4,11 @@
  */
 
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
-import MainWalletModel from 'models/wallet/MainWalletModel'
-import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
-import AddressModel from 'models/wallet/AddressModel'
-import MultisigWalletCollection from 'models/wallet/MultisigWalletCollection'
-import { getMainWallet, getMultisigWallets } from 'redux/wallet/selectors'
+import MainWalletModel from '@chronobank/core/models/wallet/MainWalletModel'
+import MultisigWalletModel from '@chronobank/core/models/wallet/MultisigWalletModel'
+import AddressModel from '@chronobank/core/models/wallet/AddressModel'
+import MultisigWalletCollection from '@chronobank/core/models/wallet/MultisigWalletCollection'
+import { getMainWallet, getMultisigWallets } from '@chronobank/core/redux/wallet/selectors'
 
 // provides filtered list of addresses of MainWallets
 export const selectMainWalletsList = createSelector(

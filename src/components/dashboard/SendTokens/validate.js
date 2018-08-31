@@ -4,8 +4,8 @@
  */
 
 import ErrorList from 'platform/ErrorList'
-import * as validator from 'models/validator'
-import tokenService from 'services/TokenService'
+import * as validator from '@chronobank/core/models/validator'
+import tokenService from '@chronobank/core/services/TokenService'
 import { MODE_ADVANCED } from './SendTokensForm'
 
 export default (values, props) => {

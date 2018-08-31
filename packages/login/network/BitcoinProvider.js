@@ -83,10 +83,12 @@ export class BitcoinProvider extends AbstractProvider {
       feeRate,
     }
     const { tx /*, fee*/ } = this._engine.createTransaction(to, amount, utxos, options)
+    console.log('txtxtxtx: ', tx, node)
     return node.send(from, tx.toHex())
   }
 
   async onTransaction (tx: BitcoinTx) {
+    console.log('onTransaction: ', tx, this)
     this.emit('tx', {
       account: this.getAddress(),
       time: new Date().getTime(),

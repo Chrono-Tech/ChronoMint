@@ -12,10 +12,10 @@ import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { modalsClose } from 'redux/modals/actions'
-import { setRequiredSignatures } from 'redux/operations/actions'
+import { setRequiredSignatures } from '@chronobank/core/redux/operations/actions'
 import ErrorList from 'platform/ErrorList'
 import ModalDialog from 'components/dialogs/ModalDialog'
-import validator from 'models/validator'
+import validator from '@chronobank/core/models/validator'
 
 import './FormDialog.scss'
 

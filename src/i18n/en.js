@@ -4,23 +4,23 @@
  */
 
 import { en as Login } from '@chronobank/login-ui/lang'
-import { en as components } from 'components/lang'
-import * as assetDonator from 'dao/AssetDonatorDAO'
-import * as erc20 from 'dao/ERC20DAO'
-import * as erc20Manager from 'dao/ERC20ManagerDAO'
-import * as eth from 'dao/EthereumDAO'
+import components from 'components/lang'
+import * as assetDonator from '@chronobank/core/dao/AssetDonatorDAO'
+import * as erc20 from '@chronobank/core/dao/ERC20DAO'
+import * as erc20Manager from '@chronobank/core/dao/ERC20ManagerDAO'
+import * as eth from '@chronobank/core/dao/EthereumDAO'
 import * as bitcoin from '@chronobank/login/network/BitcoinProvider'
-import * as exchange from 'dao/ExchangeDAO'
-import * as loc from 'dao/LOCManagerDAO'
-import * as operations from 'dao/PendingManagerDAO'
-import * as platformsManager from 'dao/PlatformsManagerDAO'
-import * as pollInterface from 'dao/PollInterfaceDAO'
-import * as rewards from 'dao/RewardsDAO'
-import * as time from 'dao/AssetHolderDAO'
-import * as user from 'dao/UserManagerDAO'
-import { en as layouts } from 'layouts/lang'
-import * as votingManager from 'dao/VotingManagerDAO'
-import * as chronoBankAsset from 'dao/ChronoBankAssetDAO'
+import * as exchange from '@chronobank/core/dao/ExchangeDAO'
+import * as loc from '@chronobank/core/dao/LOCManagerDAO'
+import * as operations from '@chronobank/core/dao/PendingManagerDAO'
+import * as platformsManager from '@chronobank/core/dao/PlatformsManagerDAO'
+import * as pollInterface from '@chronobank/core/dao/PollInterfaceDAO'
+import * as rewards from '@chronobank/core/dao/RewardsDAO'
+import * as time from '@chronobank/core/dao/AssetHolderDAO'
+import * as user from '@chronobank/core/dao/UserManagerDAO'
+import layouts from 'layouts/lang'
+import * as votingManager from '@chronobank/core/dao/VotingManagerDAO'
+import * as chronoBankAsset from '@chronobank/core/dao/ChronoBankAssetDAO'
 
 export default {
   copyright: 'Copyright © 2018 LaborX Pty Ltd. All Rights Reserved.',
@@ -32,8 +32,8 @@ export default {
   false: 'no',
   tokenNotAvailable: 'Token Not Available',
   ...Login,
-  ...components,
-  layouts,
+  ...components.en,
+  layouts: layouts.en,
   global: {
     about: 'About',
     labourHours: 'Labour—Hours',

@@ -7,14 +7,15 @@ import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { TIME } from 'redux/mainWallet/actions'
-import { initAssetsHolder } from 'redux/assetsHolder/actions'
-import { getDeposit } from 'redux/mainWallet/selectors'
-import Amount from 'models/Amount'
+import { TIME } from '@chronobank/core/redux/mainWallet/actions'
+import { initAssetsHolder } from '@chronobank/core/redux/assetsHolder/actions'
+import { getDeposit } from '@chronobank/core/redux/mainWallet/selectors'
+import Amount from '@chronobank/core/models/Amount'
 import DepositsList from 'components/Deposits/DepositsList/DepositsList'
 import { Button } from 'components'
 import { modalsOpen } from 'redux/modals/actions'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
+import DepositWarningWidget from 'components/Deposits/DepositWarningWidget/DepositWarningWidget'
 import { prefix } from './lang'
 import './DepositsContent.scss'
 
@@ -56,6 +57,7 @@ export default class DepositsContent extends Component {
       <div styleName='root'>
         <div styleName='content'>
           <div styleName='inner'>
+            <DepositWarningWidget />
             {this.props.deposit.isZero()
               ? (
                 <div styleName='warning'>
