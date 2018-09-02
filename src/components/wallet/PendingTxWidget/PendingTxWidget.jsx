@@ -101,7 +101,7 @@ export default class PendingTxWidget extends PureComponent {
                 : item.value
               return (
                 <div key={index}>
-                  <span>{item.label}:&nbsp;</span>
+                  <span><Translate value={item.label} />:&nbsp;</span>
                   <span>{value}</span>
                 </div>
               )

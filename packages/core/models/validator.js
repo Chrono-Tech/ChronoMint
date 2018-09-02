@@ -5,7 +5,6 @@
 
 import Immutable from 'immutable'
 import { isArray, isObject, isMap, isSet, isEmpty, isString, isNil } from 'lodash'
-import { I18n } from '@chronobank/core-dependencies/i18n'
 import wallet from 'ethereumjs-wallet'
 import Web3 from 'web3'
 
@@ -188,16 +187,16 @@ export const isEthereumAddress = (value) => {
 export const notEmpty = (value) => {
   if (isArray(value) || isObject(value) || isMap(value) || isSet(value)) {
     if (isEmpty(value)) {
-      return I18n.t('validator.required')
+      return 'validator.required'
     }
   }
   if (isString(value)) {
     if (value === '') {
-      return I18n.t('validator.required')
+      return 'validator.required'
     }
   }
   if (isNil(value)) {
-    return I18n.t('validator.required')
+    return 'validator.required'
   }
   return null
 }

@@ -6,7 +6,6 @@
 import moment from 'moment'
 import uuid from 'uuid/v1'
 import BigNumber from 'bignumber.js'
-import { I18n } from '@chronobank/core-dependencies/i18n'
 import { abstractModel } from './AbstractModelOld'
 import TokenModel from './tokens/TokenModel'
 
@@ -91,7 +90,7 @@ export default class TransferExecModel extends abstractModel({
   }
 
   title (): string {
-    return I18n.t(this.get('title'))
+    return this.get('title')
   }
 
   operation (value: string): string {

@@ -114,11 +114,3 @@ export const navigateToRecoverAccountPage = () => (dispatch) => {
 export const navigateToWalletUploadMethod = () => (dispatch) => {
   dispatch(push('/login/upload-wallet'))
 }
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
-export const navigateToLoginLocal = () => (dispatch) => {
-  dispatch(push('/login/local-login'))
-}

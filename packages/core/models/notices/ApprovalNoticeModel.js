@@ -4,28 +4,27 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { I18n } from '@chronobank/core-dependencies/i18n'
-import { Icons } from '@chronobank/core-dependencies/icons'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 export default class ApprovalNoticeModel extends abstractNoticeModel({
-  value: new BigNumber(0),
+  amount: new BigNumber(0),
   symbol: null,
   spender: null,
 }) {
   title () {
-    return I18n.t('notices.approval.title')
+    return 'notices.approval.title'
   }
 
   icon () {
-    return Icons.get('notices.approval.icon')
+    return 'notices.approval.icon'
   }
 
   message () {
-    return I18n.t('notices.approval.message', {
-      value: this.get('value'),
+    return {
+      value: 'notices.approval.message',
+      amount: this.get('value'),
       symbol: this.get('symbol'),
       contractName: this.get('spender'),
-    })
+    }
   }
 }

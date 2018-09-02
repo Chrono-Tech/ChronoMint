@@ -16,8 +16,7 @@ import { WALLET_TYPE_MEMORY, WALLET_TYPE_DEVICE } from '@chronobank/core/models/
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 import { getEthereumSigner } from '@chronobank/core/redux/persistAccount/selectors'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
-// import walletProvider from '@chronobank/login/network/walletProvider'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
+import walletProvider from '@chronobank/login/network/walletProvider'
 import setup from '@chronobank/login/network/EngineUtils'
 import localStorage from 'utils/LocalStorage'
 import {
@@ -31,14 +30,11 @@ import * as SessionThunks from '@chronobank/core/redux/session/thunks'
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
 import * as DeviceActions from '@chronobank/core/redux/device/actions'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
+import { SignerMemoryModel } from '@chronobank/core/models'
 import { checkTestRPC } from '@chronobank/login/redux/network/utils'
 import {
   createAccountEntry,
 } from '@chronobank/core/redux/persistAccount/utils'
-import {
-  isLocalNode,
-  LOCAL_PRIVATE_KEYS,
-} from '@chronobank/login/network/settings'
 import * as LoginUINavActions from './navigation'
 import {
   FORM_LOGIN_PAGE,
@@ -70,15 +66,10 @@ export const navigateToCreateAccountWithoutImport = () => (dispatch) => {
  * TODO: to add description
  * TODO: to dispatch something, this is not a thunk or action. Really..
  */
-export const initCommonNetworkSelector = () => (dispatch, getState) => {
-  const state = getState()
-  const { isLocal } = state.get(DUCK_NETWORK)
+export const initCommonNetworkSelector = () => (dispatch) => {
 
   dispatch(NetworkThunks.autoSelect())
 
-  if (!isLocal) {
-    checkTestRPC()
-  }
 }
 
 /*
@@ -191,51 +182,6 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
     }
   }
-
-  // try {
-  //
-  //   const wallet = dispatch(PersistAccountActions.decryptAccount(selectedWallet.encrypted, password))
-  //   console.log('onSubmitLoginForm: ', selectedWallet, wallet)
-  //
-  //   dispatch(PersistAccountActions.accountLoad(new SignerMemoryModel({ wallet })))
-  //
-  //   const privateKey = wallet && wallet[0] && wallet[0].privateKey
-  //
-  //   if (privateKey) {
-  //     dispatch(SessionThunks.getProfileSignature(wallet[0]))
-  //     // Code below prevously was handleWalletLogin
-  //     dispatch(NetworkActions.loading())
-  //     dispatch(NetworkActions.clearErrors())
-  //     const providerSettings = dispatch(SessionThunks.getProviderSettings())
-  //     const provider = walletProvider.getProvider(
-  //       selectedWallet.encrypted[0],
-  //       password,
-  //       providerSettings,
-  //     )
-  //     dispatch(NetworkActions.selectAccount(provider.ethereum.getAddress()))
-  //     await setup(provider)
-  //     const state = getState()
-  //     const {
-  //       selectedAccount,
-  //       selectedProviderId,
-  //       selectedNetworkId,
-  //     } = state.get(DUCK_NETWORK)
-  //
-  //     dispatch(NetworkActions.clearErrors())
-  //     dispatch(SessionThunks.createNetworkSession(
-  //       selectedAccount,
-  //       selectedProviderId,
-  //       selectedNetworkId,
-  //     ))
-  //     localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
-  //     const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
-  //     dispatch(replace(localStorage.getLastURL() || defaultURL))
-  //   }
-  // } catch (e) {
-  //   // eslint-disable-next-line no-console
-  //   console.log('Error in onSubmitLoginForm:', e)
-  //   throw new SubmissionError({ password: e && e.message })
-  // }
 }
 
 /*
@@ -275,8 +221,6 @@ export const onSubmitCreateAccountImportPrivateKey = (name, password, privateKey
 export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKey = '' }) =>
   async (dispatch) => {
     try {
-      console.log('onSubmitImportAccount: ', name, password, mnemonic, privateKey )
-
       const wallet = await dispatch(PersistAccountActions.createAccount({
         name,
         password,
@@ -285,8 +229,6 @@ export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKe
         type: WALLET_TYPE_MEMORY,
         numberOfAccounts: 0,
       }))
-
-      console.log('PersistAccountActions.createAccount: ', wallet)
 
       dispatch(PersistAccountActions.accountAdd(wallet))
       dispatch(PersistAccountActions.accountSelect(wallet))
@@ -404,17 +346,6 @@ export const onSubmitResetAccountPasswordSuccess = () => (dispatch) => {
   ))
 }
 
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
-export const selectProviderWithNetwork = (networkId, providerId) => (dispatch) => {
-  dispatch(NetworkActions.selectProviderWithNetwork(networkId, providerId))
-  if (isLocalNode(providerId, networkId)) {
-    dispatch(LoginUINavActions.navigateToLoginLocal())
-  }
-}
-
 export const onWalletSelect = (wallet) => (dispatch) => {
   dispatch(PersistAccountActions.accountSelect(wallet))
   dispatch(LoginUINavActions.navigateToLoginPage())
@@ -443,60 +374,3 @@ export const onSubmitLoginFormFail = (errors, submitErrors) => (dispatch) => {
   dispatch(stopSubmit(FORM_LOGIN_PAGE, submitErrors && submitErrors.errors))
   dispatch(NetworkActions.networkResetLoginSubmitting())
 }
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
-// eslint-disable-next-line no-unused-vars
-export const onSubmitLoginTestRPC = () => (dispatch) => {
-  // FIXME: empty thunk
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- */
-// eslint-disable-next-line no-unused-vars
-export const onSubmitLoginTestRPCFail = (errors, submitErrors) => (dispatch) => {
-  // FIXME: empty thunk
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to rework it
- */
-export const handleLoginLocalAccountClick = (account = '') =>
-  async (dispatch, getState) => {
-    let state = getState()
-    const { accounts } = state.get(DUCK_NETWORK)
-    const wallets = state.get(DUCK_ETH_MULTISIG_WALLET)
-    const providerSetting = dispatch(SessionThunks.getProviderSettings())
-    const index = Math.max(accounts.indexOf(account), 0)
-    const provider = privateKeyProvider.getPrivateKeyProvider(
-      LOCAL_PRIVATE_KEYS[index],
-      providerSetting,
-      wallets,
-    )
-    dispatch(NetworkActions.selectAccount(account))
-    await setup(provider)
-
-    state = getState()
-    const {
-      selectedAccount,
-      selectedProviderId,
-      selectedNetworkId,
-    } = state.get(DUCK_NETWORK)
-
-    dispatch(NetworkActions.clearErrors())
-
-    dispatch(SessionThunks.createNetworkSession(
-      selectedAccount,
-      selectedProviderId,
-      selectedNetworkId,
-    ))
-    localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
-    const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
-    dispatch(replace(localStorage.getLastURL() || defaultURL))
-  }

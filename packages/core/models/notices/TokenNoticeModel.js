@@ -3,8 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { I18n } from '@chronobank/core-dependencies/i18n'
-import { Icons } from '@chronobank/core-dependencies/icons'
 import type TokenModel from '../tokens/TokenModel'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
@@ -27,11 +25,11 @@ export default class TokenNoticeModel extends abstractNoticeModel({
   }
 
   icon () {
-    return Icons.get('notices.settings.icon')
+    return 'notices.settings.icon'
   }
 
   title () {
-    return I18n.t('notices.settings.title')
+    return 'notices.settings.title'
   }
 
   token (): TokenModel {
@@ -52,10 +50,10 @@ export default class TokenNoticeModel extends abstractNoticeModel({
   }
 
   message () {
-    const message = `notices.settings.erc20.tokens.${this.get('status')}`
-    return I18n.t(message, {
+    return {
+      value: `notices.settings.erc20.tokens.${this.get('status')}`,
       symbol: this.token().symbol(),
       name: this.token().name(),
-    })
+    }
   }
 }

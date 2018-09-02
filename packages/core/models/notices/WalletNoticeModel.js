@@ -3,8 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { I18n } from '@chronobank/core-dependencies/i18n'
-import { Icons } from '@chronobank/core-dependencies/icons'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 const CREATED = 'notices.wallet.created'
@@ -31,11 +29,11 @@ export default class WalletNoticeModel extends abstractNoticeModel({
 }) {
 
   icon () {
-    return Icons.get('notices.wallet.icon')
+    return 'notices.wallet.icon'
   }
 
   title () {
-    return I18n.t('notices.wallet.title')
+    return 'notices.wallet.title'
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -44,8 +42,9 @@ export default class WalletNoticeModel extends abstractNoticeModel({
   }
 
   message () {
-    return I18n.t(this.get('action'), {
+    return {
+      value: this.get('action'),
       address: this.get('address'),
-    })
+    }
   }
 }

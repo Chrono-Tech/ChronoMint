@@ -3,14 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { getNetworkById, LOCAL_ID, LOCAL_PRIVATE_KEYS, LOCAL_PROVIDER_ID } from '@chronobank/login/network/settings'
+import { getNetworkById } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
-import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import { removeWatchersUserMonitor } from '@chronobank/core-dependencies/redux/ui/actions'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import web3Provider from '@chronobank/login/network/Web3Provider'
-import setup from '@chronobank/login/network/EngineUtils'
 import metaMaskResolver from '@chronobank/login/network/metaMaskResolver'
 import * as SessionActions from './actions'
 import * as ProfileThunks from '../profile/thunks'
@@ -73,26 +70,30 @@ export const getProviderURL = () => (dispatch) => {
 
 export const getProviderSettings = () => (dispatch, getState) => {
   const state = getState()
-  return getCurrentNetworkSelector(state)
+  const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
+  const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
+  const network = getNetworkById(selectedNetworkId, selectedProviderId)
+  const { protocol, host } = network
+
+  if (!host) {
+    const customNetwork = customNetworksList
+      .find((network) => network.id === selectedNetworkId)
+
+    return {
+      network: customNetwork,
+      url: customNetwork && customNetwork.url,
+    }
+  }
+
+  return {
+    network,
+    url: protocol ? `${protocol}://${host}` : `//${host}`,
+  }
 }
 
 export const selectProvider = (selectedProviderId) => (dispatch) => {
   dispatch(NetworkActions.networkResetNetwork())
   dispatch(NetworkActions.networkSetProvider(selectedProviderId))
-}
-
-export const restoreLocalSession = (account, wallets) => async (dispatch) => {
-  dispatch(selectProvider(LOCAL_PROVIDER_ID))
-  dispatch(NetworkActions.networkSetNetwork(LOCAL_ID))
-  dispatch(NetworkActions.selectAccount(account))
-
-  const accounts = await dispatch(loadAccounts())
-  const index = Math.max(accounts.indexOf(account), 0)
-  const providerSetting = dispatch(getProviderSettings())
-  const provider = privateKeyProvider.getPrivateKeyProvider(LOCAL_PRIVATE_KEYS[index], providerSetting, wallets)
-  await setup(provider)
-
-  return true
 }
 
 export const changeGasSlideValue = (value, blockchain) => (dispatch) =>
@@ -167,7 +168,6 @@ export const bootstrap = () => async () => {
 }
 
 export const getProfileSignature = (signer, path) => async (dispatch) => {
-  console.log('getProfileSignature: ', signer, path)
   if (!signer) {
     return
   }
@@ -182,7 +182,7 @@ export const getProfileSignature = (signer, path) => async (dispatch) => {
   } catch (error) {
     // FIXME: to handle it in appropriate way
     // eslint-disable-next-line no-console
-    console.log('getProfileSignature:', error)
+    console.warn('getProfileSignature error: ', error)
   }
 }
 

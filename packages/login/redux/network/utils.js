@@ -31,7 +31,3 @@ export const getPrivateKeyFromBlockchain = (blockchain: string) => {
       return null
   }
 }
-
-export const checkTestRPC = (/*providerUrl*/) => {
-  return false
-}

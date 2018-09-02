@@ -4,7 +4,6 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { I18n } from '@chronobank/core-dependencies/i18n'
 import Immutable from 'immutable'
 import moment from 'moment'
 import uuid from 'uuid/v1'
@@ -127,7 +126,7 @@ class TxExecModel extends abstractModel({
   }
 
   title () {
-    return I18n.t(this.func())
+    return this.func()
   }
 
   details () {
@@ -136,7 +135,7 @@ class TxExecModel extends abstractModel({
 
     return list.entrySeq().map(([key, value]) => {
       return ({
-        label: I18n.t(this.i18nFunc() + key),
+        label: this.i18nFunc() + key,
         value,
       })
     })

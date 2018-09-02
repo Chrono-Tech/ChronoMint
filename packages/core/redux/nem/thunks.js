@@ -27,7 +27,7 @@ const notifyNemTransfer = (entry) => (dispatch, getState) => {
     : prepared.amount
 
   dispatch(notify(new TransferNoticeModel({
-    value: token.removeDecimals(amount),
+    amount: token.removeDecimals(amount),
     symbol: token.symbol(),
     from: entry.tx.from,
     to: entry.tx.to,

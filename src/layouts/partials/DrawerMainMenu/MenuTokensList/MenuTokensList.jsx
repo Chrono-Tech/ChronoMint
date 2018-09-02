@@ -3,9 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { I18n } from '@chronobank/core-dependencies/i18n'
 import { getNetworkName } from '@chronobank/login/redux/network/thunks'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import { DUCK_MONITOR } from '@chronobank/login/redux/monitor/constants'
