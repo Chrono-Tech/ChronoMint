@@ -5,11 +5,9 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
-import { stopSubmit, SubmissionError } from 'redux-form'
-import {
-  FORM_PRIVATE_KEY_LOGIN_PAGE,
-} from '../../redux/constants'
+// import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
+import { stopSubmit } from 'redux-form'
+import { FORM_PRIVATE_KEY_LOGIN_PAGE } from '../../redux/constants'
 import LoginWithPrivateKey from './LoginWithPrivateKey'
 
 export default class LoginWithPrivateKeyContainer extends PureComponent {
@@ -20,14 +18,15 @@ export default class LoginWithPrivateKeyContainer extends PureComponent {
 
   async handleSubmit (values) {
     const { onSubmit } = this.props
+    console.log('handleSubmit : privateKey: ', values, this.props)
 
     let privateKey = values.get('pk')
 
     privateKey = (privateKey || '').trim()
 
-    if (!privateKeyProvider.validatePrivateKey(privateKey)) {
-      throw new SubmissionError({ pk: 'Wrong private key' })
-    }
+    // if (!privateKeyProvider.validatePrivateKey(privateKey)) {
+    //   throw new SubmissionError({ pk: 'Wrong private key' })
+    // }
 
     if (privateKey.slice(0, 2) === '0x') {
       privateKey = privateKey.slice(2)
@@ -38,11 +37,11 @@ export default class LoginWithPrivateKeyContainer extends PureComponent {
 
   handleSubmitSuccess (result) {
     const { onSubmitSuccess } = this.props
-
     onSubmitSuccess && onSubmitSuccess(result)
   }
 
   handleSubmitFail (errors, dispatch, submitErrors) {
+    console.log('handleSubmitFail :,  ', errors, dispatch, submitErrors)
     dispatch(stopSubmit(FORM_PRIVATE_KEY_LOGIN_PAGE, submitErrors && submitErrors.errors))
   }
 

@@ -5,7 +5,8 @@
 
 import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
-import { ErrorNoticeModel, SignerMemoryModel, TransferNoticeModel } from '../../models'
+import { ErrorNoticeModel, TransferNoticeModel } from '../../models'
+import EthereumMemoryDevice  from '../../services/signers/EthereumMemoryDevice'
 import { nemPendingSelector, pendingEntrySelector } from './selectors'
 import { getSelectedNetwork, getEthereumSigner } from '../persistAccount/selectors'
 import { describePendingNemTx } from '../../describers'
@@ -169,10 +170,7 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
   const state = getState()
   let signer = getEthereumSigner(state)
   if (entry.walletDerivedPath) {
-    signer = await SignerMemoryModel.fromDerivedPath({
-      seed: signer.privateKey,
-      derivedPath: entry.walletDerivedPath,
-    })
+    signer = await EthereumMemoryDevice.getDerivedWallet(signer.privateKey, entry.walletDerivedPath)
   }
 
   const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key)(getState())

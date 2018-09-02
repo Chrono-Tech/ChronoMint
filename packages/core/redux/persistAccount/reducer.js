@@ -45,6 +45,7 @@ const persistAccount = (state = initialState, action) => {
       }
 
     case a.WALLETS_LOAD :
+      console.log('WALLETS_LOAD : ', action.wallet)
       return {
         ...state,
         decryptedWallet: action.wallet,

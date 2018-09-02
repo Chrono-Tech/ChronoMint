@@ -166,14 +166,15 @@ export const bootstrap = () => async () => {
   return true //FIXME remove method
 }
 
-export const getProfileSignature = (wallet) => async (dispatch) => {
-  if (!wallet) {
+export const getProfileSignature = (signer, path) => async (dispatch) => {
+  console.log('getProfileSignature: ', signer, path)
+  if (!signer) {
     return
   }
 
   try {
     const signDataString = ProfileService.getSignData()
-    const signData = wallet.sign(signDataString)
+    const signData = signer.signData(signDataString)
     const profileSignature = await dispatch(ProfileThunks.getUserProfile(signData.signature))
     dispatch(SessionActions.setProfileSignature(profileSignature))
 
@@ -181,7 +182,7 @@ export const getProfileSignature = (wallet) => async (dispatch) => {
   } catch (error) {
     // FIXME: to handle it in appropriate way
     // eslint-disable-next-line no-console
-    console.log('Unhadled error at core/redux/session/thunks: getProfileSignature:', error)
+    console.log('getProfileSignature:', error)
   }
 }
 

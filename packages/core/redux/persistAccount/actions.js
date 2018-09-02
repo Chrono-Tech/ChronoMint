@@ -4,22 +4,17 @@
  */
 
 import uuid from 'uuid/v1'
-import hdkey from 'ethereumjs-wallet/hdkey'
-import bip39 from 'bip39'
 import Accounts from 'web3-eth-accounts'
-import {
-  WALLET_HD_PATH,
-} from '@chronobank/login/network/constants'
 import * as ProfileThunks from '../profile/thunks'
+import * as AccountUtils from './utils'
+import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 import {
+  AccountModel,
   AccountEntryModel,
   AccountProfileModel,
   AccountCustomNetwork,
 } from '../../models/wallet/persistAccount'
-import {
-  getWalletsListAddresses,
-  getAccountAddress,
-} from './utils'
+
 import {
   CUSTOM_NETWORKS_LIST_ADD,
   CUSTOM_NETWORKS_LIST_RESET,
@@ -64,11 +59,14 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
   dispatch({ type: WALLETS_UPDATE_LIST, walletsList: copyWalletList })
 }
 
-export const decryptAccount = (encrypted, password) => () => {
-  const accounts = new Accounts()
-  accounts.wallet.clear()
+export const decryptAccount = (entry, password) => async () => {
+  const privateKey = EthereumMemoryDevice.decrypt({ entry: entry.encrypted[0], password })
+  const account = new AccountModel({
+    entry,
+    privateKey,
+  })
 
-  return accounts.wallet.decrypt(encrypted, password)
+  return account
 }
 
 export const validateAccountName = (name) => (dispatch, getState) => {
@@ -92,32 +90,12 @@ export const resetPasswordAccount = (wallet, mnemonic, password) => async (dispa
   dispatch(accountSelect(newWallet))
 }
 
-export const createAccount = ({ name, password, privateKey, mnemonic, type, numberOfAccounts = 0, types = {} }) => async (dispatch) => {
-  let hex = ''
-
-  console.log('createAccount: ', name, password, privateKey, mnemonic, numberOfAccounts, types )
-
-  if (privateKey) {
-    hex = `0x${privateKey}`
-  }
-
-  if (mnemonic) {
-    const hdKeyWallet = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic)).derivePath(WALLET_HD_PATH).getWallet()
-    hex = hdKeyWallet.getPrivateKeyString()
-  }
-
-  const accounts = new Accounts()
-
-  const wallet = await accounts.wallet.create(numberOfAccounts)
-  const account = accounts.privateKeyToAccount(hex)
-  wallet.add(account)
-
+export const createAccount = ({ name, wallet, type }) => async (dispatch) => {
   const entry = new AccountEntryModel({
     key: uuid(),
     name,
-    types,
     type,
-    encrypted: wallet && wallet.encrypt(password),
+    encrypted: [wallet],
     profile: null,
   })
 
@@ -126,37 +104,44 @@ export const createAccount = ({ name, password, privateKey, mnemonic, type, numb
   return newAccounts[0] || entry
 }
 
-export const createHWAccount = ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => async (dispatch) => {
-  let hex = ''
-
-  if (privateKey) {
-    hex = `0x${privateKey}`
-  }
-
-  if (mnemonic){
-    const hdKeyWallet = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic)).derivePath(WALLET_HD_PATH).getWallet()
-    hex = hdKeyWallet.getPrivateKeyString()
-  }
-
-  const accounts = new Accounts()
-  accounts.wallet.clear()
-
-  const wallet = await accounts.wallet.create(numberOfAccounts)
-  const account = accounts.privateKeyToAccount(hex)
-  wallet.add(account)
-
-  const entry = new AccountEntryModel({
-    key: uuid(),
-    name,
-    types,
-    encrypted: wallet && wallet.encrypt(password),
-    profile: null,
-  })
-
-  const newAccounts = await dispatch(setProfilesForAccounts([entry]))
-
-  return newAccounts[0] || entry
+export const createMemoryAccount = ({name, password, mnemonic, privateKey}) => async (dispatch) => {
+  const wallet = await EthereumMemoryDevice.create({ privateKey, mnemonic, password })
+  const account = await dispatch(createAccount({name, wallet, type: 'memory'}))
+  return account
 }
+
+// export const createAccount = ({ name, password, privateKey, mnemonic, type, numberOfAccounts = 0 }) => async (dispatch) => {
+//   let hex = ''
+//
+//   console.log('createAccount: ', name, password, privateKey, mnemonic, numberOfAccounts )
+//
+//   if (privateKey) {
+//     hex = `0x${privateKey}`
+//   }
+//
+//   if (mnemonic) {
+//     const hdKeyWallet = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic)).derivePath(WALLET_HD_PATH).getWallet()
+//     hex = hdKeyWallet.getPrivateKeyString()
+//   }
+//
+//   const accounts = new Accounts()
+//
+//   const wallet = await accounts.wallet.create(numberOfAccounts)
+//   const account = accounts.privateKeyToAccount(hex)
+//   wallet.add(account)
+//
+//   const entry = new AccountEntryModel({
+//     key: uuid(),
+//     name,
+//     type,
+//     encrypted: wallet && wallet.encrypt(password),
+//     profile: null,
+//   })
+//
+//   const newAccounts = await dispatch(setProfilesForAccounts([entry]))
+//
+//   return newAccounts[0] || entry
+// }
 
 export const downloadWallet = () => (dispatch, getState) => {
   const state = getState()
@@ -178,20 +163,16 @@ export const downloadWallet = () => (dispatch, getState) => {
 
 export const setProfilesForAccounts = (walletsList) => async (dispatch) => {
 
-  const addresses = getWalletsListAddresses(walletsList)
+  const addresses = AccountUtils.getWalletsListAddresses(walletsList)
   const data = await dispatch(ProfileThunks.getUserInfo(addresses))
-
-  console.log('setProfilesForAccounts: ', data)
 
   if (Array.isArray(data)) {
     return data.reduce((prev, profile) => {
-      console.log('setProfilesForAccounts map: ', prev, profile)
 
       const updatedProfileAccounts =
         walletsList
-          .filter((wallet) => getAccountAddress(wallet, true) === profile.address)
+          .filter((wallet) => AccountUtils.getAccountAddress(wallet, true) === profile.address)
           .map((account) => {
-            console.log('setProfilesForAccounts map account: ', account)
             const profileModel = profile && new AccountProfileModel(profile) || null
             return new AccountEntryModel({
               ...account,

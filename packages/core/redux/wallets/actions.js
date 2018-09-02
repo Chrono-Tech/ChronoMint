@@ -21,6 +21,7 @@ import WalletModel from '../../models/wallet/WalletModel'
 import { subscribeOnTokens } from '../tokens/actions'
 import { formatBalances, getWalletBalances } from '../tokens/utils'
 import TokenModel from '../../models/tokens/TokenModel'
+import EthereumMemoryDevice  from '../../services/signers/EthereumMemoryDevice'
 import tokenService from '../../services/TokenService'
 import Amount from '../../models/Amount'
 import { getAccount } from '../session/selectors'
@@ -29,10 +30,7 @@ import ethereumDAO from '../../dao/EthereumDAO'
 import { getMainEthWallet, getWallets } from './selectors/models'
 import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
-import {
-  AllowanceCollection,
-  SignerMemoryModel,
-} from '../../models'
+import { AllowanceCollection } from '../../models'
 import { executeTransaction } from '../ethereum/thunks'
 import { executeBitcoinTransaction } from '../bitcoin/thunks'
 import {
@@ -304,10 +302,10 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
         newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
       }
       derivedPath = `${WALLET_HD_PATH}/${newDeriveNumber}`
-      const newWalletSigner = await SignerMemoryModel.fromDerivedPath({ seed: signer.privateKey, derivedPath })
+      const newWalletSigner = await EthereumMemoryDevice.getDerivedWallet(signer.privateKey, derivedPath)
       address = newWalletSigner.address
-
       break
+
     case BLOCKCHAIN_BITCOIN:
       if (newDeriveNumber === undefined || newDeriveNumber === null) {
         newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
@@ -317,6 +315,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
       address = newWallet.getAddress()
       btcProvider.subscribeNewWallet(address)
       break
+
     case BLOCKCHAIN_LITECOIN:
       if (newDeriveNumber === undefined || newDeriveNumber === null) {
         newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
@@ -326,6 +325,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
       address = newWallet.getAddress()
       ltcProvider.subscribeNewWallet(address)
       break
+
     case BLOCKCHAIN_BITCOIN_GOLD:
     case BLOCKCHAIN_NEM:
     case BLOCKCHAIN_WAVES:

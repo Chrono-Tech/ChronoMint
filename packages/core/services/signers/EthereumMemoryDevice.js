@@ -6,19 +6,20 @@
 import EventEmitter from 'events'
 import hdKey from 'ethereumjs-wallet/hdkey'
 import Accounts from 'web3-eth-accounts'
+import { WALLET_TYPE_MEMORY } from '@chronobank/core/models/constants/AccountEntryModel'
 
 const DEFAULT_PATH = `m/44'/60'/0'/0/0`
 
 export default class EthereumMemoryDevice extends EventEmitter {
+
   constructor (privateKey) {
     super()
+    console.log('EthereumMemoryDevice: ', privateKey)
     const accounts = new Accounts()
     const wallet = accounts.wallet.create()
-    // console.log(privateKey)
-    const account = accounts.privateKeyToAccount(privateKey)
-    // console.log(account)
-    wallet.add(account)
+    wallet.add(accounts.privateKeyToAccount(privateKey))
     this.wallet = wallet[0]
+
     Object.freeze(this)
   }
 
@@ -63,6 +64,7 @@ export default class EthereumMemoryDevice extends EventEmitter {
 
   static create ({ privateKey, mnemonic, password }) {
     let wallet
+
     if (privateKey) {
       const accounts = new Accounts()
       wallet = accounts.wallet.create()
@@ -70,10 +72,17 @@ export default class EthereumMemoryDevice extends EventEmitter {
       wallet.add(account)
       wallet = wallet[0]
     }
+
     if (mnemonic) {
       wallet = EthereumMemoryDevice.getDerivedWallet(mnemonic, null)
     }
-    return { wallet: wallet.encrypt(password), path: DEFAULT_PATH, type: 'memory', address: wallet.address }
+
+    return {
+      wallet: wallet.encrypt(password),
+      path: DEFAULT_PATH,
+      type: WALLET_TYPE_MEMORY,
+      address: wallet.address,
+    }
   }
 
   // Should be synchronous by design
@@ -85,13 +94,12 @@ export default class EthereumMemoryDevice extends EventEmitter {
     return privateKey
   }
 
-  static getDerivedWallet (seed, path) {
-    const walletPath = !path
-      ? DEFAULT_PATH
-      : path
+  static getDerivedWallet (mnemonic: string, path: string) {
+    const walletPath = !path ? DEFAULT_PATH : path
     const accounts = new Accounts()
     const wallet = accounts.wallet.create()
-    const hdWallet = hdKey.fromMasterSeed(seed)
+
+    const hdWallet = hdKey.fromMasterSeed(mnemonic)
     const w = hdWallet.derivePath(walletPath).getWallet()
     const account = accounts.privateKeyToAccount(`0x${w.getPrivateKey().toString('hex')}`)
     wallet.add(account)

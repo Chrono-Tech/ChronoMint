@@ -31,7 +31,6 @@ import * as SessionThunks from '@chronobank/core/redux/session/thunks'
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
 import * as DeviceActions from '@chronobank/core/redux/device/actions'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
-// import { SignerMemoryModel } from '@chronobank/core/models'
 import { checkTestRPC } from '@chronobank/login/redux/network/utils'
 import {
   createAccountEntry,
@@ -46,6 +45,8 @@ import {
   FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
   FORM_FOOTER_EMAIL_SUBSCRIPTION,
 } from './constants'
+import {AccountModel} from "../../core/models";
+import {accountLoad} from "../../core/redux/persistAccount/actions";
 
 /*
  * Thunk dispatched by "" screen.
@@ -94,6 +95,7 @@ export const onSubmitSubscribeNewsletter = (email) => async () => {
     throw new SubmissionError({ _error: e && e.message })
   }
 }
+
 /*
  * Thunk dispatched by "" screen.
  * TODO: to add description
@@ -105,18 +107,25 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   const state = getState()
   const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
 
-  const wallet = new AccountEntryModel(selectedWallet)
+  const accountWallet = new AccountEntryModel(selectedWallet)
 
-  switch(wallet.type) {
+  console.log('Selected wallet: ', selectedWallet, accountWallet)
+
+  switch (accountWallet.type) {
 
     case WALLET_TYPE_MEMORY: {
       try {
-        const wallet = await dispatch(PersistAccountActions.decryptAccount(wallet, password))
+        const wallet = await dispatch(PersistAccountActions.decryptAccount(accountWallet, password))
+        console.log('wallet: ', wallet)
+
+        await dispatch(PersistAccountActions.accountLoad(wallet))
         const signer = getEthereumSigner(getState())
-        await dispatch(SessionThunks.getProfileSignature(signer, wallet.entry.encrypted[0].path))
+        console.log('wallet memory: signer: ', signer, accountWallet.encrypted[0].path)
+
+        await dispatch(SessionThunks.getProfileSignature(signer, accountWallet.encrypted[0].path))
 
         //await dispatch(NetworkThunks.handleLogin(wallet.entry.encrypted[0].address))
-        dispatch(NetworkActions.selectAccount(wallet.entry.encrypted[0].address))
+        dispatch(NetworkActions.selectAccount(accountWallet.encrypted[0].address))
         //await setup(provider)
         const {
           selectedAccount,
@@ -136,6 +145,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
         dispatch(replace(localStorage.getLastURL() || defaultURL))
       } catch (e) {
+        console.log('Login MEMORY Error: ', e)
         throw new SubmissionError({ password: e && e.message })
       }
       break
@@ -143,8 +153,12 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
     case WALLET_TYPE_DEVICE: {
       try {
-        const wallet = await dispatch(DeviceActions.loadDeviceAccount(wallet))
+        console.log('WALLET_TYPE_DEVICE AccountModel: ', accountWallet)
+        const wallet = await dispatch(DeviceActions.loadDeviceAccount(accountWallet))
+        console.log('WALLET_TYPE_DEVICE: ', wallet)
         const signer = getEthereumSigner(getState())
+        console.log('WALLET_TYPE_DEVICE signer: ', signer, wallet)
+
         await dispatch(SessionThunks.getProfileSignature(signer, wallet.entry.encrypted[0].path))
 
         //await dispatch(NetworkThunks.handleLogin(wallet.entry.encrypted[0].address))
@@ -170,6 +184,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
         dispatch(replace(localStorage.getLastURL() || defaultURL))
       } catch (e) {
+        console.log('Login DEVICE Error: ', e)
         throw new SubmissionError({ password: e && e.message })
       }
       break

@@ -6,7 +6,7 @@ const DEFAULT_PATH = "m/44'/60'/0'/0"
 const DEFAULT_PATH_FACTORY = (index) => `${DEFAULT_PATH}/${index}`
 const MOCK_SEED = 'advice shed boat scan game expire reveal rapid concert settle before vital'
 
-export default class LedgerDeviceMock extends EventEmitter {
+export default class EthereumLedgerDeviceMock extends EventEmitter {
   get name () {
     return 'ledger_mock'
   }

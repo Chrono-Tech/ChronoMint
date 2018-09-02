@@ -4,7 +4,7 @@
  */
 
 import EthereumTrezorDeviceMock from '../../services/signers/EthereumTrezorDeviceMock'
-import LedgerDeviceMock from '../../services/signers/LedgerDeviceMock'
+import EthereumLedgerDeviceMock from '../../services/signers/EthereumLedgerDeviceMock'
 import MetamaskPlugin from '../../services/signers/MetamaskPlugin'
 import { accountLoad } from '../persistAccount/actions'
 import {
@@ -45,7 +45,7 @@ export const deviceSetStatus = (deviceStatus) => (dispatch) => {
 
 // eslint-disable-next-line no-unused-vars
 export const initLedgerDevice = (wallet) => async (dispatch) => {
-  const ledger = new LedgerDeviceMock()
+  const ledger = new EthereumLedgerDeviceMock()
   const result = await ledger.getAddressInfoList(0,5)
   dispatch(deviceUpdateList(result))
 }
@@ -66,6 +66,7 @@ export const initMetamaskPlugin = (wallet) => async (dispatch) => {
 }
 
 export const loadDeviceAccount = (entry) => async (dispatch) => {
+  console.log('loadDeviceAccount: ', entry)
   const wallet = new AccountModel({
     entry,
   })

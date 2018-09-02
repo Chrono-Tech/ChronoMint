@@ -68,7 +68,7 @@ function mapDispatchToProps (dispatch) {
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
     navigateToRecoverAccountPage: () => dispatch(navigateToRecoverAccountPage()),
     initialValues: {
-      password: 'QWEpoi123',
+      password: '123',
     },
   }
 }
@@ -159,6 +159,10 @@ class LoginPage extends React.Component {
 
   renderType () {
     const { selectedWallet } = this.props
+
+    if (!selectedWallet || !selectedWallet.type) {
+      return this.renderDefaultTypeForm()
+    }
 
     switch (selectedWallet.type) {
       case WALLET_TYPE_MEMORY: {

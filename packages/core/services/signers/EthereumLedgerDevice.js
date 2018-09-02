@@ -16,7 +16,7 @@ const rejectOnTimeout = (timeout) =>
     setTimeout(() => reject(new Error('Timeout')), timeout)
   })
 
-export default class LedgerDevice extends EventEmitter {
+export default class EthereumLedgerDevice extends EventEmitter {
   constructor () {
     super()
     this.lock = new AsyncLock({ domainReentrant: true })

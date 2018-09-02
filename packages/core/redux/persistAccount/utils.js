@@ -3,28 +3,23 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import bip39 from 'bip39'
 import uuid from 'uuid/v1'
-import {
-  profileImgJPG,
-} from '@chronobank/core-dependencies/assets'
-import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
-import {
-  AccountEntryModel,
-} from '../../models/wallet/persistAccount'
+import { profileImgJPG } from '@chronobank/core-dependencies/assets'
+import { WALLET_TYPE_MEMORY, WALLET_TYPE_DEVICE } from '../../models/constants/AccountEntryModel'
+import { AccountEntryModel } from '../../models/wallet/persistAccount'
+import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 
 export const replaceWallet = (wallet, walletList) => {
   const index = walletList.findIndex((item) => item.key === wallet.key)
-
   const copyWalletList = [...walletList]
-
   copyWalletList.splice(index, 1, wallet)
 
   return copyWalletList
 }
 
-export const getAddress = (address, hexFormat = false) => {
-  return `${ hexFormat ? '0x' : ''}${address}`
+export const getAddress = (address, /*hexFormat = false*/) => {
+  return address//`${ hexFormat ? '0x' : ''}${address}`
 }
 
 export const getAccountAddress = (account: AccountEntryModel, hexFormat = false) => {
@@ -55,9 +50,12 @@ export const getAccountAvatarImg = (account) => {
   return ''
 }
 
+export const generateMnemonic = () => {
+  return bip39.generateMnemonic()
+}
+
 export const getAccountAvatar = (account: AccountEntryModel) => {
   const img = getAccountAvatarImg(account)
-
   return img || profileImgJPG
 }
 
@@ -65,20 +63,19 @@ export const createAccountEntry = (name, walletFileImportObject, profile = null)
   new AccountEntryModel({
     key: uuid(),
     name,
+    type: WALLET_TYPE_MEMORY,
     encrypted: [walletFileImportObject],
     profile,
   })
 
-export const getAddressByMnemonic = (mnemonic) => {
-  return mnemonicProvider
-    .createEthereumWallet(mnemonic)
-    .getAddressString()
-}
-
-export const getAddressByPrivateKey = (privateKey) => {
-  return privateKeyProvider
-    .createEthereumWallet(privateKey)
-    .getAddressString()
+export const createDeviceAccountEntry = (name, device, profile = null) => {
+  return new AccountEntryModel({
+    key: uuid(),
+    name,
+    type: WALLET_TYPE_DEVICE,
+    encrypted: [device],
+    profile,
+  })
 }
 
 export const validateMnemonicForAccount = (mnemonic, selectedWallet: AccountEntryModel) => {
@@ -86,4 +83,10 @@ export const validateMnemonicForAccount = (mnemonic, selectedWallet: AccountEntr
   const address = getAddressByMnemonic(mnemonic)
 
   return addressFromWallet === address
+}
+
+export const getAddressByMnemonic = (mnemonic) => {
+  return EthereumMemoryDevice
+    .getDerivedWallet(mnemonic, null)
+    .address
 }
