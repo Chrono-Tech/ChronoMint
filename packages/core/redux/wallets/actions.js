@@ -4,8 +4,6 @@
  */
 
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
-import { nemProvider } from '@chronobank/login/network/NemProvider'
-import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
@@ -39,8 +37,8 @@ import {
   WALLETS_UPDATE_BALANCE,
   WALLETS_UPDATE_WALLET,
 } from './constants'
-import { getEthereumSigner } from '../persistAccount/selectors'
 import { executeNemTransaction } from '../nem/thunks'
+import { getPersistAccount, getEthereumSigner } from '../persistAccount/selectors'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -61,27 +59,19 @@ export const initWallets = () => (dispatch) => {
   dispatch(initDerivedWallets())
 }
 
-const initWalletsFromKeys = () => (dispatch) => {
-  const providers = [
-    bccProvider,
-    btgProvider,
-    ltcProvider,
-    btcProvider,
-    nemProvider,
-    wavesProvider,
-    ethereumProvider,
-  ]
+const initWalletsFromKeys = () => (dispatch, getState) => {
+  const state = getState()
+  const account = getPersistAccount(state)
 
-  providers.forEach((provider) => {
-    const wallet = new WalletModel({
-      address: provider.getAddress(),
-      blockchain: provider.id(),
-      isMain: true,
-    })
-
-    dispatch(setWallet(wallet))
-    dispatch(updateWalletBalance({ wallet }))
+  const wallet = new WalletModel({
+    address: account.decryptedWallet.entry.encrypted[0].address,
+    blockchain: BLOCKCHAIN_ETHEREUM,
+    isMain: true,
+    walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
   })
+
+  dispatch(setWallet(wallet))
+  dispatch(updateWalletBalance({ wallet }))
 }
 
 const initDerivedWallets = () => async (dispatch, getState) => {
