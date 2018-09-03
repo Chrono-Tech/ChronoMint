@@ -58,6 +58,7 @@ import {
 } from '../../dao/constants/WavesDAO'
 import { DAOS_REGISTER } from '../daos/constants'
 import { ContractDAOModel, ContractModel } from '../../models'
+import { getSelectedNetwork } from '../persistAccount/selectors'
 
 const tokensInit = () => ({ type: TOKENS_INIT })
 
@@ -67,7 +68,7 @@ const tokenFetched = (token) => ({ type: TOKENS_FETCHED, token })
 
 const tokensLoadingFailed = () => ({ type: TOKENS_FAILED })
 
-const setLatestBlock = (blockchain, block) => ({ type: TOKENS_UPDATE_LATEST_BLOCK, blockchain, block })
+export const setLatestBlock = (blockchain, block) => ({ type: TOKENS_UPDATE_LATEST_BLOCK, blockchain, block })
 
 const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
@@ -186,7 +187,6 @@ export const initBtcLikeTokens = () => async (dispatch, getState) => {
           const token = await dao.fetchToken()
           tokenService.registerDAO(token, dao)
           dispatch(tokenFetched(token))
-          dispatch(alternateTxHandlingFlow(dao))
           const currentBlock = await dao.getCurrentBlockHeight()
           dispatch(setLatestBlock(token.blockchain(), { blockNumber: currentBlock.currentBlock }))
         } catch (e) {
@@ -299,9 +299,11 @@ export const estimateGasTransfer = (tokenId, params, callback, gasPriceMultiplie
   }
 }
 
-export const estimateBtcFee = (params, callback) => async () => {
+export const estimateBtcFee = (params, callback) => async (dispatch, getState) => {
   try {
-    const feeResult = await getBtcFee(params)
+    const network = getSelectedNetwork()(getState())
+
+    const feeResult = await getBtcFee({ ...params, network })
     const fee = feeResult.fee
     if (typeof fee === 'undefined') {
       throw new Error('Fee is undefined: ' + JSON.stringify(feeResult))

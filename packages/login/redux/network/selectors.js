@@ -20,7 +20,7 @@ export const getProfileSignatureSelector = () => createSelector(
 export const getAccountProfileSummary = () => createSelector(
   [getProfileSignatureSelector],
   (profile) => {
-    if (profile){
+    if (profile) {
       const level1 = profile.level1.submitted
       const level2 = profile.level2.submitted
 
@@ -32,13 +32,13 @@ export const getAccountProfileSummary = () => createSelector(
         avatar: level1 && level1.avatar && level1.avatar.url,
       }
     }
-  }
+  },
 )
 
 export const getCurrentNetworkSelector = createSelector(
   [
     (state) => state.get(DUCK_NETWORK),
-    getCustomNetworksList
+    getCustomNetworksList,
   ],
   (networkDuck, customNetworksList) => {
     const { selectedNetworkId, selectedProviderId, isLocal } = networkDuck
@@ -59,5 +59,5 @@ export const getCurrentNetworkSelector = createSelector(
       network,
       url: protocol ? `${protocol}://${host}` : `//${host}`,
     }
-  }
+  },
 )

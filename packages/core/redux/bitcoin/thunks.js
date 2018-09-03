@@ -18,6 +18,7 @@ import { describePendingBitcoinTx } from '../../describers'
 import { getToken } from '../tokens/selectors'
 import { pendingEntrySelector } from './selectors'
 import { notify } from '../notifier/actions'
+import BitcoinMiddlewareService from './BitcoinMiddlewareService'
 
 export const executeBitcoinTransaction = ({ tx, options = null }) => async (dispatch, getState) => {
   const token = getToken(options.symbol)(getState())
@@ -162,49 +163,51 @@ const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
     isPending: true,
   })))
 
+  const state = getState()
   // eslint-disable-next-line
-  entry = pendingEntrySelector(entry.tx.from, entry.key, entry.blockchain)(getState())
+  entry = pendingEntrySelector(entry.tx.from, entry.key, entry.blockchain)(state)
+  const network = getSelectedNetwork()(state)
   if (!entry) {
     // eslint-disable-next-line no-console
     console.error('entry is null', entry)
     return // stop execute
   }
 
-  const node = BitcoinUtils.getNodeByBlockchain(entry.blockchain)
-  if (!node) {
+  try {
+    const res = await BitcoinMiddlewareService.send(entry.tx.signed.toHex(), { blockchain: entry.blockchain, type: network[entry.blockchain] })
+
+    if (res && res.hash) {
+      dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
+        ...entry,
+        tx: {
+          ...entry.tx,
+          isSent: true,
+          isMined: false,
+          hash: res.hash,
+        },
+      })))
+
+      dispatch(notifyBitcoinTransfer(entry))
+    }
+
+    if (res && res.code === 0) {
+      dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
+        ...entry,
+        tx: {
+          ...entry.tx,
+          isErrored: true,
+          error: res.message,
+        },
+      })))
+      dispatch(notifyBitcoinError(res))
+    }
+
+  } catch (e) {
     dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
       ...entry,
       isErrored: true,
     })))
     return null
-  }
-
-  const res = await node.send(entry.tx.from, entry.tx.signed.toHex())
-
-  if (res && res.hash) {
-    dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
-      ...entry,
-      tx: {
-        ...entry.tx,
-        isSent: true,
-        isMined: false,
-        hash: res.hash,
-      },
-    })))
-
-    dispatch(notifyBitcoinTransfer(entry))
-  }
-
-  if (res.code === 0) {
-    dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
-      ...entry,
-      tx: {
-        ...entry.tx,
-        isErrored: true,
-        error: res.message,
-      },
-    })))
-    dispatch(notifyBitcoinError(res))
   }
 }
 

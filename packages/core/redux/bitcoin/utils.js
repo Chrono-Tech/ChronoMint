@@ -1,14 +1,7 @@
 import uuid from 'uuid/v1'
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import type BigNumber from 'bignumber.js'
 import coinselect from 'coinselect'
 import bitcoin from 'bitcoinjs-lib'
-import {
-  selectBCCNode,
-  selectBTCNode,
-  selectBTGNode,
-  selectLTCNode,
-} from '@chronobank/login/network/BitcoinNode'
 import { TxEntryModel } from '../../models'
 import {
   BLOCKCHAIN_BITCOIN,
@@ -16,6 +9,7 @@ import {
   BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_LITECOIN,
 } from '../../dao/constants'
+import BitcoinMiddlewareService from './BitcoinMiddlewareService'
 
 export const createBitcoinTxEntryModel = (entry, options = {}) =>
   new TxEntryModel({
@@ -44,87 +38,6 @@ export const describeTransaction = (to, amount: BigNumber, feeRate, utxos) => {
   return { inputs, outputs, fee }
 }
 
-export const signInputs = (txb, inputs, wallet) => {
-  for (let i = 0; i < inputs.length; i++) {
-    txb.sign(i, wallet)
-  }
-}
-
-export const signInputsBitcoinGold = (txb, inputs, wallet) => {
-  txb.enableBitcoinGold(true)
-  txb.setVersion(2)
-
-  const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
-
-  for (let i = 0; i < inputs.length; i++) {
-    txb.sign(i, wallet, null, hashType, inputs[i].value)
-  }
-}
-
-export const signInputsBitcoinCash = (txb, inputs, wallet) => {
-  txb.enableBitcoinCash(true)
-  txb.setVersion(2)
-
-  const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
-
-  for (let i = 0; i < inputs.length; i++) {
-    txb.sign(i, wallet, null, hashType, inputs[i].value)
-  }
-}
-
-export const getEngine = (network, blockchain, privateKey) => {
-  let wallet, node
-
-  switch (blockchain) {
-    case BLOCKCHAIN_BITCOIN:
-      const bitcoinNetwork = bitcoin.networks[network.bitcoin]
-      wallet = createBitcoinWalletFromPK(privateKey, bitcoinNetwork)
-      node = selectBTCNode(wallet)
-
-      return {
-        network: bitcoinNetwork,
-        signTransaction: signInputs,
-        wallet,
-        node,
-      }
-    case BLOCKCHAIN_BITCOIN_CASH:
-      const bitcoinCashNetwork = bitcoin.networks[network.bitcoinCash]
-      wallet = createBitcoinWalletFromPK(privateKey, bitcoinCashNetwork)
-      node = selectBCCNode(wallet)
-
-      return {
-        network: bitcoinCashNetwork,
-        signTransaction: signInputsBitcoinCash,
-        wallet,
-        node,
-      }
-    case BLOCKCHAIN_BITCOIN_GOLD:
-      const bitcoinGoldNetwork = bitcoin.networks[network.bitcoinGold]
-      wallet = createBitcoinWalletFromPK(privateKey, bitcoinGoldNetwork)
-      node = selectBTGNode(wallet)
-
-      return {
-        network: bitcoinGoldNetwork,
-        signTransaction: signInputsBitcoinGold,
-        wallet,
-        node,
-      }
-    case BLOCKCHAIN_LITECOIN:
-      const litecoinNetwork = bitcoin.networks[network.litecoin]
-      wallet = createBitcoinWalletFromPK(privateKey, litecoinNetwork)
-      node = selectLTCNode(wallet)
-
-      return {
-        network: litecoinNetwork,
-        signTransaction: signInputs,
-        wallet,
-        node,
-      }
-    default:
-      return
-  }
-}
-
 // Method was moved from privateKeyProvider
 export const createBitcoinWalletFromPK = (privateKey, network) => {
   const keyPair = new bitcoin.ECPair.fromPrivateKey(Buffer.from(privateKey, 'hex'), { network })
@@ -147,44 +60,34 @@ export const getBtcFee = async (
     amount,
     formFee,
     blockchain,
+    network,
   }) => {
-  const utxos = await getUtxos(blockchain, address)
-  return describeTransaction(recipient, amount, formFee, utxos)
-}
-
-export const getNodeByBlockchain = (blockchain) => {
-  switch (blockchain) {
-    case BLOCKCHAIN_BITCOIN:
-      return btcProvider.getNode()
-    case BLOCKCHAIN_BITCOIN_CASH:
-      return bccProvider.getNode()
-    case BLOCKCHAIN_BITCOIN_GOLD:
-      return btgProvider.getNode()
-    case BLOCKCHAIN_LITECOIN:
-      return ltcProvider.getNode()
+  try {
+    const { data } = await getUtxos(address, { blockchain, type: network[blockchain] })
+    const { fee } = describeTransaction(recipient, amount, formFee, data)
+    return fee
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e)
+    throw new Error(e)
   }
-  return null
 }
 
 /**
- *
- * @param blockchain
+ * get UTXOS for address
  * @param address
+ * @param options
  * @returns {Promise<any>}
  */
-const getUtxos = (blockchain, address): Promise<any> => {
-  const node = getNodeByBlockchain(blockchain)
-  if (node) {
-    return node.getAddressUTXOS(address)
-  }
-  return null
+const getUtxos = (address, options): Promise<any> => {
+  return BitcoinMiddlewareService.getAddressUTXOS(address, options)
 }
 
 export const describeBitcoinTransaction = async (to, amount: BigNumber, options) => {
   const { from, feeRate, blockchain, network } = options
   const bitcoinNetwork = bitcoin.networks[network[blockchain]]
-  const utxos = await getUtxos(blockchain, from)
-  const { inputs, outputs, fee } = describeTransaction(to, amount, feeRate, utxos)
+  const { data } = await getUtxos(from, { blockchain, type: network[blockchain] })
+  const { inputs, outputs, fee } = describeTransaction(to, amount, feeRate, data)
 
   if (!inputs || !outputs) throw new Error('Bad transaction data')
 
@@ -236,5 +139,5 @@ export const signInputsMap = {
       txb.sign(i, wallet.keyPair, null, hashType, inputs[i].value)
     }
   },
-  BLOCKCHAIN_LITECOIN: null, // not specified
+  [BLOCKCHAIN_LITECOIN]: null, // not specified
 }
