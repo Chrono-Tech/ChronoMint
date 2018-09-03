@@ -18,12 +18,11 @@ export default class LoginWithPrivateKeyContainer extends PureComponent {
 
   async handleSubmit (values) {
     const { onSubmit } = this.props
-    console.log('handleSubmit : privateKey: ', values, this.props)
 
     let privateKey = values.get('pk')
-
     privateKey = (privateKey || '').trim()
 
+    // ?????
     // if (!privateKeyProvider.validatePrivateKey(privateKey)) {
     //   throw new SubmissionError({ pk: 'Wrong private key' })
     // }
@@ -41,7 +40,6 @@ export default class LoginWithPrivateKeyContainer extends PureComponent {
   }
 
   handleSubmitFail (errors, dispatch, submitErrors) {
-    console.log('handleSubmitFail :,  ', errors, dispatch, submitErrors)
     dispatch(stopSubmit(FORM_PRIVATE_KEY_LOGIN_PAGE, submitErrors && submitErrors.errors))
   }
 

@@ -28,7 +28,6 @@ export const getPersistAccount = (state) => {
 
 export const getEthereumSigner = (state) => {
   const account = getPersistAccount(state)
-  console.log('getEthereumSigner: ', account)
 
   switch (account.selectedWallet.type) {
     case WALLET_TYPE_TREZOR_MOCK: {
@@ -78,7 +77,7 @@ export const getCustomNetworksList = createSelector(
 
 export const getBtcSigner = (state) => {
   const account = getPersistAccount(state)
-  console.log('getBtcSigner: ', account, )
+
   switch (account.decryptedWallet.entry.encrypted[0].type) {
     case WALLET_TYPE_TREZOR_MOCK: {
       return new BitcoinTrezorDeviceMock()

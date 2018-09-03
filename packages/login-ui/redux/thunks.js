@@ -14,7 +14,6 @@ import { replace } from 'react-router-redux'
 import { WALLET_TYPE_MEMORY, WALLET_TYPE_DEVICE } from '@chronobank/core/models/constants/AccountEntryModel'
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 import { getEthereumSigner } from '@chronobank/core/redux/persistAccount/selectors'
-import { AccountModel } from '@chronobank/core/models'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import localStorage from 'utils/LocalStorage'
 import {
@@ -61,9 +60,7 @@ export const navigateToCreateAccountWithoutImport = () => (dispatch) => {
  * TODO: to dispatch something, this is not a thunk or action. Really..
  */
 export const initCommonNetworkSelector = () => (dispatch) => {
-
   dispatch(NetworkThunks.autoSelect())
-
 }
 
 /*
@@ -91,18 +88,15 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
   const state = getState()
   const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
-
   const accountWallet = new AccountEntryModel(selectedWallet)
 
   switch (accountWallet.type) {
-
     case WALLET_TYPE_MEMORY: {
       try {
         const wallet = await dispatch(PersistAccountActions.decryptAccount(accountWallet, password))
 
         await dispatch(PersistAccountActions.accountLoad(wallet))
         const signer = getEthereumSigner(getState())
-
         await dispatch(SessionThunks.getProfileSignature(signer, accountWallet.encrypted[0].path))
 
         //await dispatch(NetworkThunks.handleLogin(wallet.entry.encrypted[0].address))
@@ -126,7 +120,6 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
         dispatch(replace(localStorage.getLastURL() || defaultURL))
       } catch (e) {
-        console.log('Login MEMORY Error: ', e)
         throw new SubmissionError({ password: e && e.message })
       }
       break
@@ -162,11 +155,9 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
         dispatch(replace(localStorage.getLastURL() || defaultURL))
       } catch (e) {
-        console.log('Login DEVICE Error: ', e)
         throw new SubmissionError({ password: e && e.message })
       }
       break
-
     }
   }
 }
@@ -177,14 +168,13 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
  * TODO: to remove throws
  * TODO: to rework it
  */
-export const onSubmitCreateAccountImportMnemonic = (name, password, mnemonic) =>
-  async (dispatch) => {
-    await dispatch(onSubmitImportAccount({
-      name,
-      password,
-      mnemonic,
-    }))
-  }
+export const onSubmitCreateAccountImportMnemonic = (name, password, mnemonic) => async (dispatch) => {
+  await dispatch(onSubmitImportAccount({
+    name,
+    password,
+    mnemonic,
+  }))
+}
 
 /*
  * Thunk dispatched by "" screen.
@@ -192,39 +182,36 @@ export const onSubmitCreateAccountImportMnemonic = (name, password, mnemonic) =>
  * TODO: to remove throws
  * TODO: to rework it
  */
-export const onSubmitCreateAccountImportPrivateKey = (name, password, privateKey) =>
-  async (dispatch) => {
-    await dispatch(onSubmitImportAccount({
-      name,
-      password,
-      privateKey,
-    }))
-  }
+export const onSubmitCreateAccountImportPrivateKey = (name, password, privateKey) => async (dispatch) => {
+  await dispatch(onSubmitImportAccount({
+    name,
+    password,
+    privateKey,
+  }))
+}
 
 /*
  * Thunk dispatched by
  * LoginWithMnemonic, LoginWithPrivateKey screen.
  */
-export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKey = '' }) =>
-  async (dispatch) => {
-    try {
-      const wallet = await dispatch(PersistAccountActions.createAccount({
-        name,
-        password,
-        mnemonic,
-        privateKey,
-        type: WALLET_TYPE_MEMORY,
-        numberOfAccounts: 0,
-      }))
+export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKey = '' }) => async (dispatch) => {
+  try {
+    const wallet = await dispatch(PersistAccountActions.createAccount({
+      name,
+      password,
+      mnemonic,
+      privateKey,
+      type: WALLET_TYPE_MEMORY,
+      numberOfAccounts: 0,
+    }))
 
-      dispatch(PersistAccountActions.accountAdd(wallet))
-      dispatch(PersistAccountActions.accountSelect(wallet))
+    dispatch(PersistAccountActions.accountAdd(wallet))
+    dispatch(PersistAccountActions.accountSelect(wallet))
 
-    } catch (e) {
-      throw new SubmissionError({ _error: e && e.message })
-    }
-
+  } catch (e) {
+    throw new SubmissionError({ _error: e && e.message })
   }
+}
 
 /*
  * Thunk dispatched by "" screen.
@@ -288,7 +275,6 @@ export const onCreateWalletFromJSON = (name, walletJSON, profile) => (dispatch) 
   const account = createAccountEntry(name, walletJSON, profile)
 
   dispatch(PersistAccountActions.accountAdd(account))
-
 }
 
 /*
@@ -337,10 +323,6 @@ export const onWalletSelect = (wallet) => (dispatch) => {
   dispatch(PersistAccountActions.accountSelect(wallet))
   dispatch(LoginUINavActions.navigateToLoginPage())
 }
-
-// #endregion
-
-// #region stopSubmits
 
 /*
  * Thunk dispatched by "" screen.

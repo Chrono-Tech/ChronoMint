@@ -30,7 +30,7 @@ import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { AllowanceCollection } from '../../models'
 import { executeTransaction } from '../ethereum/thunks'
-import { executeBitccoinTransaction } from '../bitcoin/thunks'
+import { executeBitcoinTransaction } from '../bitcoin/thunks'
 import {
   WALLETS_SET,
   WALLETS_SET_NAME,
@@ -205,7 +205,7 @@ export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amo
     const executeMap = {
       [BLOCKCHAIN_ETHEREUM]: executeTransaction,
       [BLOCKCHAIN_NEM]: executeNemTransaction,
-      [BLOCKCHAIN_BITCOIN]: executeBitccoinTransaction,
+      [BLOCKCHAIN_BITCOIN]: executeBitcoinTransaction,
     }
 
     // execute

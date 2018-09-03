@@ -66,7 +66,6 @@ export const initMetamaskPlugin = (wallet) => async (dispatch) => {
 }
 
 export const loadDeviceAccount = (entry) => async (dispatch) => {
-  console.log('loadDeviceAccount: ', entry)
   const wallet = new AccountModel({
     entry,
   })

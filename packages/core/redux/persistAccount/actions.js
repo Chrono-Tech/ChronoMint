@@ -8,6 +8,7 @@ import Accounts from 'web3-eth-accounts'
 import * as ProfileThunks from '../profile/thunks'
 import * as AccountUtils from './utils'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
+import { WALLET_TYPE_MEMORY } from '../../models/constants/AccountEntryModel'
 import {
   AccountModel,
   AccountEntryModel,
@@ -104,44 +105,12 @@ export const createAccount = ({ name, wallet, type }) => async (dispatch) => {
   return newAccounts[0] || entry
 }
 
-export const createMemoryAccount = ({name, password, mnemonic, privateKey}) => async (dispatch) => {
+// ?????
+export const createMemoryAccount = ({ name, password, mnemonic, privateKey }) => async (dispatch) => {
   const wallet = await EthereumMemoryDevice.create({ privateKey, mnemonic, password })
-  const account = await dispatch(createAccount({name, wallet, type: 'memory'}))
+  const account = await dispatch(createAccount({ name, wallet, type: WALLET_TYPE_MEMORY }))
   return account
 }
-
-// export const createAccount = ({ name, password, privateKey, mnemonic, type, numberOfAccounts = 0 }) => async (dispatch) => {
-//   let hex = ''
-//
-//   console.log('createAccount: ', name, password, privateKey, mnemonic, numberOfAccounts )
-//
-//   if (privateKey) {
-//     hex = `0x${privateKey}`
-//   }
-//
-//   if (mnemonic) {
-//     const hdKeyWallet = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic)).derivePath(WALLET_HD_PATH).getWallet()
-//     hex = hdKeyWallet.getPrivateKeyString()
-//   }
-//
-//   const accounts = new Accounts()
-//
-//   const wallet = await accounts.wallet.create(numberOfAccounts)
-//   const account = accounts.privateKeyToAccount(hex)
-//   wallet.add(account)
-//
-//   const entry = new AccountEntryModel({
-//     key: uuid(),
-//     name,
-//     type,
-//     encrypted: wallet && wallet.encrypt(password),
-//     profile: null,
-//   })
-//
-//   const newAccounts = await dispatch(setProfilesForAccounts([entry]))
-//
-//   return newAccounts[0] || entry
-// }
 
 export const downloadWallet = () => (dispatch, getState) => {
   const state = getState()

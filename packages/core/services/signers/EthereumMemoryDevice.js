@@ -14,7 +14,6 @@ export default class EthereumMemoryDevice extends EventEmitter {
 
   constructor (privateKey) {
     super()
-    console.log('EthereumMemoryDevice: ', privateKey)
     const accounts = new Accounts()
     const wallet = accounts.wallet.create()
     wallet.add(accounts.privateKeyToAccount(privateKey))
