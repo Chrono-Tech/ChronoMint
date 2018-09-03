@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import uuid from 'uuid/v1'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
@@ -12,23 +11,9 @@ import {
 } from './constants'
 
 export const NETWORK_MAIN_ID = 1
-export const CUSTOM_PROVIDER_ID = 'CustomProviderID'
-export const LOCAL_ID = 9999999999
-export const LOCAL_PROVIDER_ID = 8
-// export const LOCAL_MNEMONIC = 'video visa alcohol fault earth naive army senior major inherit convince electric'
-export const LOCAL_PRIVATE_KEYS = [
-  '6b9027372deb53f4ae973a5614d8a57024adf33126ece6b587d9e08ba901c0d2',
-  '993130d3dd4de71254a94a47fdacb1c9f90dd33be8ad06b687bd95f073514a97',
-  'c3ea2286b88b51e7cd1cf09ce88b65e9c344302778f96a145c9a01d203f80a4c',
-  '51cd20e24463a0e86c540f074a5f083c334659353eec43bb0bd9297b5929bd35',
-  '7af5f0d70d97f282dfd20a9b611a2e4bd40572c038a89c0ee171a3c93bd6a17a',
-  'cfc6d3fa2b579e3023ff0085b09d7a1cf13f6b6c995199454b739d24f2cf23a5',
-]
 
 export const INFURA_TOKEN = 'PVe9zSjxTKIP3eAuAHFA'
 export const UPORT_ID = '0xfbbf28aaba3b2fc6dfe1a02b9833ccc90b8c4d26'
-
-export const TESTRPC_URL = '/web3/'
 
 // ---------- network's base parameters
 
@@ -95,28 +80,11 @@ const RINKEBY_BASE = {
   waves: 'TESTNET_CONFIG',
 }
 
-const LOCALHOST_BASE = {
-  id: LOCAL_ID,
-  protocol: process.env.BASE_SCHEMA || 'https',
-  name: 'Localhost',
-}
-
 // descriptions only, without hosts
 const BASE_NETWORK_MAP = [
-  LOCALHOST_BASE,
   MAINNET_BASE,
   RINKEBY_BASE,
 ]
-
-// --------- middleware
-
-export const MIDDLEWARE_MAP = {
-  eth: {
-    local: '/_exchange/',
-    mainnet: 'https://middleware-ethereum-mainnet-rest.chronobank.io/',
-    testnet: 'https://middleware-ethereum-testnet-rest.chronobank.io/',
-  },
-}
 
 // --------- providers
 
@@ -207,18 +175,6 @@ if (process.env['NODE_ENV'] === 'development') {
   chronoBankMap.push(chronoBankPrivate)
 }
 
-// local only
-export const infuraLocalNetwork = {
-  ...LOCALHOST_BASE,
-  host: `localhost:3000${TESTRPC_URL}`,
-  bitcoin: 'testnet',
-  bitcoinCash: 'testnet',
-  // bitcoinGold: 'bitcoingold_testnet',
-  litecoin: 'litecoin_testnet',
-  nem: 'testnet',
-  waves: 'TESTNET_CONFIG',
-}
-
 export const providerMap = {
   metamask: {
     id: 1,
@@ -250,22 +206,10 @@ export const providerMap = {
     name: 'UPort',
     disabled: false,
   },
-  local: {
-    id: LOCAL_PROVIDER_ID,
-    name: 'TestRPC',
-    disabled: true,
-  },
 }
 
-export const createNetworkProvider = (name, disabled = false) => {
-  return {
-    id: uuid(),
-    name,
-    disabled,
-  }
-}
-
-export const getNetworksByProvider = (providerId, withLocal = false) => {
+// eslint-disable-next-line complexity
+export const getNetworksByProvider = (providerId) => {
   switch (providerId) {
     case providerMap.uport.id:
     case providerMap.metamask.id: {
@@ -273,30 +217,18 @@ export const getNetworksByProvider = (providerId, withLocal = false) => {
     }
     case providerMap.infura.id: {
       const networks = [...infuraNetworkMap]
-      if (withLocal) {
-        networks.push(infuraLocalNetwork)
-      }
       return networks
     }
     case providerMap.giveth.id: {
       const networks = [...givethNetworkMap]
-      if (withLocal) {
-        networks.push(infuraLocalNetwork)
-      }
       return networks
     }
     case providerMap.mew.id: {
       const networks = [...mewNetworkMap]
-      if (withLocal) {
-        networks.push(infuraLocalNetwork)
-      }
       return networks
     }
     case providerMap.chronoBank.id: {
       return [...chronoBankMap]
-    }
-    case providerMap.local.id: {
-      return [infuraLocalNetwork]
     }
     default: {
       return []
@@ -304,39 +236,10 @@ export const getNetworksByProvider = (providerId, withLocal = false) => {
   }
 }
 
-export const getNetworksWithProviders = (providers = [], withLocal = false) => {
-  let networks = []
-
-  providers
-    .filter((provider) => provider && !provider.disabled)
-    .forEach((provider) => {
-
-      const networksProvider = getNetworksByProvider(provider && provider.id, withLocal)
-        .map((network) => ({
-          provider,
-          network,
-        }))
-
-      networks = networks.concat(networksProvider)
-    })
-
-  if (withLocal) {
-    networks.push({
-      provider: providerMap.local,
-      network: infuraLocalNetwork,
-    })
-  }
-
-  return networks
-}
-
-export const getNetworkWithProviderNames = (providerId, networkId, withLocal = false) => {
-  if (isLocalNode(providerId, networkId)) {
-    return 'localNode'
-  }
+export const getNetworkWithProviderNames = (providerId, networkId) => {
 
   const provider = getProviderById(providerId)
-  const network = getNetworkById(networkId, providerId, withLocal)
+  const network = getNetworkById(networkId, providerId)
 
   if (!provider.name && !network.name) {
     return ''
@@ -345,25 +248,13 @@ export const getNetworkWithProviderNames = (providerId, networkId, withLocal = f
   return `${provider.name} - ${network.name}`
 }
 
-export const isLocalNode = (providerId, networkId) => {
-  return providerId === LOCAL_PROVIDER_ID && networkId === LOCAL_ID
-}
-
 export const getProviderById = (providerId) => {
   return providerMap[Object.keys(providerMap).find((key) => providerMap[key].id === providerId)] || {}
 }
 
-export const getNetworkById = (networkId, providerId, withLocal = false) => {
-  const networkMap = getNetworksByProvider(providerId, withLocal)
+export const getNetworkById = (networkId, providerId) => {
+  const networkMap = getNetworksByProvider(providerId)
   return networkMap.find((net) => net.id === networkId) || {}
-}
-
-export const getScannerById = (networkId, providerId, api = false) => {
-  let scanner = getNetworkById(networkId, providerId).scanner
-  if (Array.isArray(scanner)) {
-    scanner = scanner[api ? 1 : 0]
-  }
-  return scanner
 }
 
 export const getBlockExplorerUrl = (networkId, providerId, txHash, blockchain) => {
@@ -392,15 +283,8 @@ export const isTestingNetwork = (networkId, providerId) => {
   return net.id !== NETWORK_MAIN_ID
 }
 
-export const getDeveloperNetworksGroup = (isLocal) => {
-  let developerProviders = []
-
-  if (isLocal) {
-    developerProviders.push({
-      provider: providerMap.local,
-      network: infuraLocalNetwork,
-    })
-  }
+export const getDeveloperNetworksGroup = () => {
+  const developerProviders = []
 
   if (process.env['NODE_ENV'] === 'development') {
     developerProviders.push({
@@ -412,8 +296,7 @@ export const getDeveloperNetworksGroup = (isLocal) => {
   return developerProviders
 }
 
-export const getNetworksSelectorGroup = (isLocal = false) => {
-  let groups
+export const getNetworksSelectorGroup = () => {
 
   const productionNetworks = {
     title: 'Production networks',
@@ -427,18 +310,10 @@ export const getNetworksSelectorGroup = (isLocal = false) => {
         provider: providerMap.infura,
         network: infuraMainnet,
       },
-      /*{ // does not support websocket
-        provider: providerMap.mew,
-        network: mewMainnet,
-      },
-      {
-        provider: providerMap.giveth,
-        network: givethMainnet,
-      },*/
     ],
   }
 
-  let testNetworks = {
+  const testNetworks = {
     title: 'Test networks',
     description: 'Test networks with fake funds',
     providers: [
@@ -453,9 +328,9 @@ export const getNetworksSelectorGroup = (isLocal = false) => {
     ],
   }
 
-  groups = [productionNetworks, testNetworks]
+  const groups = [productionNetworks, testNetworks]
 
-  const developerNetworkProviders = getDeveloperNetworksGroup(isLocal)
+  const developerNetworkProviders = getDeveloperNetworksGroup()
 
   if (developerNetworkProviders.length) {
     groups.push({

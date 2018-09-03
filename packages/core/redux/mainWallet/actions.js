@@ -91,7 +91,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
           walletsAccounts.includes(tx.from()) || walletsAccounts.includes(tx.to()) ||
           tx.from() === account || tx.to() === account) {
           dispatch(notify(new TransferNoticeModel({
-            value: token.removeDecimals(tx.value()),
+            amount: token.removeDecimals(tx.value()),
             symbol,
             from: tx.from(),
             to: tx.to(),
@@ -166,7 +166,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
     })
     .on(EVENT_APPROVAL_TRANSFER, ({ spender, value }) => {
       dispatch(notify(new ApprovalNoticeModel({
-        value: token.removeDecimals(value),
+        amount: token.removeDecimals(value),
         symbol,
         spender,
       })))

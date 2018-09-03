@@ -10,7 +10,7 @@ import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
-import { getNetworkWithProviderNames, getProviderById, isLocalNode, getNetworksSelectorGroup } from '@chronobank/login/network/settings'
+import { getNetworkWithProviderNames, getProviderById, getNetworksSelectorGroup } from '@chronobank/login/network/settings'
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
 import { autoSelect, selectProviderWithNetwork } from '@chronobank/login/redux/network/thunks'
 import { Popover } from '@material-ui/core'
@@ -66,8 +66,7 @@ const mapStateToProps = (state) => {
   const persistAccount = state.get(DUCK_PERSIST_ACCOUNT)
 
   return {
-    providersList: getNetworksSelectorGroup(network.isLocal),
-    isLocal: network.isLocal,
+    providersList: getNetworksSelectorGroup(),
     selectedNetworkId: network.selectedNetworkId,
     selectedProviderId: network.selectedProviderId,
     selectedProvider: network.selectedProviderId && getProviderById(network.selectedProviderId),
@@ -141,10 +140,6 @@ export default class CommonNetworkSelector extends PureComponent {
   }
 
   getFullNetworkName (item) {
-    if (isLocalNode(item.provider.id, item.network.id)) {
-      return 'localNode'
-    }
-
     return `${item.provider.name} - ${item.network.name}`
   }
 

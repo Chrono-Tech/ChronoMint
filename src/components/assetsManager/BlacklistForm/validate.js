@@ -4,7 +4,7 @@
  */
 
 import * as validator from '@chronobank/core/models/validator'
-import ErrorList from '@chronobank/core-dependencies/ErrorList'
+import ErrorList from 'utils/ErrorList'
 
 export default function (values) {
   return {

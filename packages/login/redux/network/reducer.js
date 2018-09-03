@@ -8,7 +8,6 @@ import * as actions from './constants'
 
 const initialState = {
   isLoading: false,
-  isLocal: false,
   isMetamask: false,
   isMnemonic: false,
   isWalletFile: false,
@@ -52,11 +51,6 @@ export default (state = initialState, action) => {
         ...state,
         isLoading: action.isLoading,
       }
-    case actions.NETWORK_SET_TEST_RPC:
-      return {
-        ...state,
-        isLocal: true,
-      }
     case actions.NETWORK_SET_TEST_METAMASK:
       return {
         ...state,
@@ -76,7 +70,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         selectedProviderId: action.selectedProviderId,
-        networks: getNetworksByProvider(action.selectedProviderId, state.isLocal),
+        networks: getNetworksByProvider(action.selectedProviderId),
       }
     case actions.NETWORK_SET_ACCOUNTS:
       return { ...state, accounts: action.accounts }

@@ -35,6 +35,5 @@ export const NETWORK_SET_PROFILE_SIGNATURE = '@login/network/SET_PROFILE_SIGNATU
 export const NETWORK_SET_PROVIDER = '@login/network/SET_PROVIDER'
 export const NETWORK_SET_TEST_METAMASK = '@login/network/SET_TEST_METAMASK'
 export const NETWORK_SET_TEST_MNEMONIC = '@login/network/SET_TEST_MNEMONIC'
-export const NETWORK_SET_TEST_RPC = '@login/network/SET_TEST_RPC'
 export const NETWORK_SET_TEST_WALLET_FILE = '@login/network/SET_TEST_WALLET_FILE'
 export const NETWORK_SET_WALLET_FILE_IMPORTED = '@login/network/SET_WALLET_FILE_IMPORTED'

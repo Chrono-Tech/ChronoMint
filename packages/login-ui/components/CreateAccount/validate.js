@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import ErrorList from '@chronobank/core-dependencies/ErrorList'
+import ErrorList from 'utils/ErrorList'
 import { required } from '@chronobank/core/models/validator'
 
 const validateEqualPasswords = (password, confirmPassword) => password === confirmPassword ? null : 'Wrong password'

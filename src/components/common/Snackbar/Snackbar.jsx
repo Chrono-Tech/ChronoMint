@@ -5,6 +5,7 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
+import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 
 import './Snackbar.scss'
@@ -62,10 +63,16 @@ export default class Snackbar extends PureComponent {
     return (
       <div styleName={classnames('snackbar', { 'error-notice': isErrorNotice })}>
         <span styleName='snackbar-entry'>
-          <span styleName='entry-status'>{notice.title()}</span>
+          <Translate
+            styleName='entry-status'
+            value={notice.title()}
+          />
         </span>
         <span styleName='snackbar-entry'>
-          <span styleName='entry-value'>{notice.message()}</span>
+          <Translate
+            styleName='entry-value'
+            {...notice.message()}
+          />
         </span>
         {address
           ? (
