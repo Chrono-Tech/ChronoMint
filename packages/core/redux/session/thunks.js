@@ -5,6 +5,7 @@
 
 import { getNetworkById } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
+import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import { removeWatchersUserMonitor } from '@chronobank/core-dependencies/redux/ui/actions'
 import web3Provider from '@chronobank/login/network/Web3Provider'
@@ -70,25 +71,7 @@ export const getProviderURL = () => (dispatch) => {
 
 export const getProviderSettings = () => (dispatch, getState) => {
   const state = getState()
-  const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
-  const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
-  const network = getNetworkById(selectedNetworkId, selectedProviderId)
-  const { protocol, host } = network
-
-  if (!host) {
-    const customNetwork = customNetworksList
-      .find((network) => network.id === selectedNetworkId)
-
-    return {
-      network: customNetwork,
-      url: customNetwork && customNetwork.url,
-    }
-  }
-
-  return {
-    network,
-    url: protocol ? `${protocol}://${host}` : `//${host}`,
-  }
+  return getCurrentNetworkSelector(state)
 }
 
 export const selectProvider = (selectedProviderId) => (dispatch) => {

@@ -185,22 +185,8 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     try {
       const params = new URLSearchParams()
       params.append('tx', rawtx)
-      let res = await this._api.post('tx/send', params)
-      let formatInputs = res.data.inputs.map((input) => {
-        input.address = input.addresses.join(',')
-        return input
-      })
-      let formatOutputs = res.data.outputs.map((output) => {
-        output.address = output.addresses.join(',')
-        return output
-      })
-      res.data.inputs = formatInputs
-      res.data.outputs = formatOutputs
-      const model = this._createTxModel(res.data, account)
-      setImmediate(() => {
-        this.emit('tx', model)
-      })
-      return model
+      const { data } = await this._api.post('tx/send', params)
+      return data
     } catch (e) {
       this.trace(`BitcoinMiddlewareNode send transaction ${rawtx} failed`, e)
       throw e

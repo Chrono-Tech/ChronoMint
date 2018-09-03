@@ -122,26 +122,13 @@ export default class SendTokens extends PureComponent {
     ].includes(blockchain)
   }
 
-  render () {
-    const { isModal, token } = this.props
+  renderSendTokensForm () {
+    const { token } = this.props
+
     const initialValues = {
       feeMultiplier: 1,
       symbol: token,
       mode: MODE_SIMPLE,
-    }
-
-    if (isModal) {
-      return (
-        <ModalDialog>
-          <SendTokensForm
-            initialValues={initialValues}
-            onSubmit={this.handleSubmit}
-            onSubmitSuccess={this.handleSubmitSuccess}
-            token={this.props.token}
-            wallet={this.props.wallet}
-          />
-        </ModalDialog>
-      )
     }
 
     return (
@@ -153,5 +140,19 @@ export default class SendTokens extends PureComponent {
         wallet={this.props.wallet}
       />
     )
+  }
+
+  render () {
+    const { isModal } = this.props
+
+    if (isModal) {
+      return (
+        <ModalDialog>
+          { this.renderSendTokensForm() }
+        </ModalDialog>
+      )
+    }
+
+    return this.renderSendTokensForm()
   }
 }

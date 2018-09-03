@@ -52,7 +52,6 @@ function mapDispatchToProps (dispatch) {
 
 function mapStateToProps (state, ownProps) {
 
-  //region selectors
   const walletInfo = walletInfoSelector(ownProps.wallet, false, state)
   const { selectedCurrency } = getMarket(state)
   const selector = formValueSelector(FORM_SEND_TOKENS)
@@ -70,7 +69,6 @@ function mapStateToProps (state, ownProps) {
   const formErrors = getFormSyncErrors(FORM_SEND_TOKENS)(state)
   const token = state.get(DUCK_TOKENS).item(tokenId)
   const isMultiToken = walletInfo.tokens.length > 1
-  //endregion
 
   return {
     selectedCurrency,
@@ -161,7 +159,7 @@ export default class SendTokensForm extends PureComponent {
       try {
         const value = new Amount(newProps.token.addDecimals(new BigNumber(newProps.amount)), newProps.symbol)
         this.handleEstimateBtcFee(
-          newProps.address,
+          newProps.wallet.address,
           newProps.recipient,
           value,
           this.getFormFee(newProps),
@@ -313,7 +311,9 @@ export default class SendTokensForm extends PureComponent {
   }
 
   getFormFee = (props = this.props) => {
-    return this.props.mode === MODE_SIMPLE ? Number(((props.feeMultiplier) * props.token.feeRate()).toFixed(1)) : this.getAdvancedFormFeeValue(props)
+    return this.props.mode === MODE_SIMPLE
+      ? Number(((props.feeMultiplier) * props.token.feeRate()).toFixed(1))
+      : this.getAdvancedFormFeeValue(props)
   }
 
   getFeeTitle () {
