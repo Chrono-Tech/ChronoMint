@@ -5,6 +5,10 @@
 
 import { createSelector } from 'reselect'
 import { DUCK_BITCOIN } from './constants'
+import { WALLET_TYPE_MEMORY, WALLET_TYPE_TREZOR_MOCK } from '../../models/constants/AccountEntryModel'
+import BitcoinMemoryDevice from '../../services/signers/BitcoinMemoryDevice'
+import BitcoinTrezorDeviceMock from '../../services/signers/BitcoinTrezorDeviceMock'
+import { getPersistAccount } from '../persistAccount/selectors'
 
 export const bitcoinSelector = () => (state) => state.get(DUCK_BITCOIN)
 
@@ -22,3 +26,19 @@ export const pendingEntrySelector = (address, key, blockchain) => createSelector
     return null
   },
 )
+
+export const getBtcSigner = (state) => {
+  const account = getPersistAccount(state)
+
+  switch (account.decryptedWallet.entry.encrypted[0].type) {
+    case WALLET_TYPE_TREZOR_MOCK: {
+      return new BitcoinTrezorDeviceMock()
+    }
+    case WALLET_TYPE_MEMORY: {
+      return new BitcoinMemoryDevice(account.decryptedWallet.privateKey)
+    }
+    default:
+      //eslint-disable-next-line
+      console.warn('Unknown wallet type')
+  }
+}

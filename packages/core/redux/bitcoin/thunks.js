@@ -13,10 +13,10 @@ import {
 } from '../../models'
 import * as BitcoinActions from './actions'
 import * as BitcoinUtils from './utils'
-import { getSelectedNetwork, getBtcSigner } from '../persistAccount/selectors'
+import { getSelectedNetwork } from '../persistAccount/selectors'
 import { describePendingBitcoinTx } from '../../describers'
 import { getToken } from '../tokens/selectors'
-import { pendingEntrySelector } from './selectors'
+import { pendingEntrySelector, getBtcSigner } from './selectors'
 import { notify } from '../notifier/actions'
 import BitcoinMiddlewareService from './BitcoinMiddlewareService'
 

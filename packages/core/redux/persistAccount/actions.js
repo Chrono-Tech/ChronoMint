@@ -105,7 +105,6 @@ export const createAccount = ({ name, wallet, type }) => async (dispatch) => {
   return newAccounts[0] || entry
 }
 
-// ?????
 export const createMemoryAccount = ({ name, password, mnemonic, privateKey }) => async (dispatch) => {
   const wallet = await EthereumMemoryDevice.create({ privateKey, mnemonic, password })
   const account = await dispatch(createAccount({ name, wallet, type: WALLET_TYPE_MEMORY }))

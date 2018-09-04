@@ -74,19 +74,3 @@ export const getCustomNetworksList = createSelector(
   (state) => state.get(DUCK_PERSIST_ACCOUNT),
   (persistAccount) => persistAccount.customNetworksList,
 )
-
-export const getBtcSigner = (state) => {
-  const account = getPersistAccount(state)
-
-  switch (account.decryptedWallet.entry.encrypted[0].type) {
-    case WALLET_TYPE_TREZOR_MOCK: {
-      return new BitcoinTrezorDeviceMock()
-    }
-    case WALLET_TYPE_MEMORY: {
-      return new BitcoinMemoryDevice(account.decryptedWallet.privateKey)
-    }
-    default:
-      //eslint-disable-next-line
-      console.warn('Unknown wallet type')
-  }
-}
