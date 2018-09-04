@@ -123,8 +123,10 @@ export class EthereumProvider extends AbstractProvider {
   }
 
   async getAccountBalances (address) {
+    console.log('getAccountBalances: ', address)
     const node = this._selectNode(this._engine)
-    const data = await node.getAddressInfo(address || this._engine.getAddress())
+    const data = await node.getAddressInfo(address.toLowerCase() || this._engine.getAddress())
+    console.log('getAccountBalances: data: ', data)
     return {
       balance: data.balance,
       tokens: data.erc20token,

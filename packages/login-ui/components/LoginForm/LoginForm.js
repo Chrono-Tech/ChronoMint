@@ -73,7 +73,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-class LoginPage extends React.Component {
+class LoginForm extends React.Component {
   static propTypes = {
     initLoginPage: PropTypes.func,
     navigateToRecoverAccountPage: PropTypes.func,
@@ -206,11 +206,10 @@ class LoginPage extends React.Component {
           {this.renderType()}
 
         </div>
-
       </form>
     )
   }
 }
 
-const form = reduxForm({ form: FORM_LOGIN_PAGE })(LoginPage)
+const form = reduxForm({ form: FORM_LOGIN_PAGE })(LoginForm)
 export default compose(withStyles(styles), connect(mapStateToProps, mapDispatchToProps))(form)

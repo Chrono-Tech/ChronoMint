@@ -61,7 +61,8 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
 }
 
 export const decryptAccount = (entry, password) => async () => {
-  const privateKey = EthereumMemoryDevice.decrypt({ entry: entry.encrypted[0], password })
+  const privateKey = EthereumMemoryDevice.decrypt({ entry: entry.encrypted[0].wallet, password })
+  console.log('decryptAccount: ', privateKey, entry, password)
   const account = new AccountModel({
     entry,
     privateKey,

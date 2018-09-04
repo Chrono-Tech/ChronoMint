@@ -11,6 +11,7 @@ import type { WavesEngine } from './WavesEngine'
 export default class AbstractProvider extends EventEmitter {
   constructor (selectNode) {
     super()
+    console.log('AbstractProvider: ', this.constructor.name, this)
     this._engine = null
     this._selectNode = selectNode
     this._handleTransaction = (tx) => this.onTransaction(tx)

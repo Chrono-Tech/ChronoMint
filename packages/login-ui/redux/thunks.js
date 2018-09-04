@@ -16,6 +16,7 @@ import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount
 import { getEthereumSigner } from '@chronobank/core/redux/persistAccount/selectors'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import walletProvider from '@chronobank/login/network/walletProvider'
+import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import setup from '@chronobank/login/network/EngineUtils'
 import localStorage from 'utils/LocalStorage'
 import {
@@ -102,11 +103,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         await dispatch(SessionThunks.getProfileSignature(signer, accountWallet.encrypted[0].path))
 
         const providerSettings = dispatch(SessionThunks.getProviderSettings())
-        const provider = walletProvider.getProvider(
-          selectedWallet.encrypted[0],
-          password,
-          providerSettings,
-        )
+        const provider = privateKeyProvider.getPrivateKeyProvider(wallet.privateKey.slice(2, 66), providerSettings)
         dispatch(NetworkActions.selectAccount(accountWallet.encrypted[0].address))
         await setup(provider)
 
@@ -128,6 +125,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
         dispatch(replace(localStorage.getLastURL() || defaultURL))
       } catch (e) {
+        console.log('SubmissionError: ', e)
         throw new SubmissionError({ password: e && e.message })
       }
       break
@@ -204,17 +202,17 @@ export const onSubmitCreateAccountImportPrivateKey = (name, password, privateKey
  */
 export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKey = '' }) => async (dispatch) => {
   try {
-    const wallet = await dispatch(PersistAccountActions.createAccount({
+    const account = await dispatch(PersistAccountActions.createMemoryAccount({
       name,
       password,
       mnemonic,
       privateKey,
-      type: WALLET_TYPE_MEMORY,
-      numberOfAccounts: 0,
     }))
 
-    dispatch(PersistAccountActions.accountAdd(wallet))
-    dispatch(PersistAccountActions.accountSelect(wallet))
+    console.log('onSubmitImportAccount: account: ', account)
+
+    dispatch(PersistAccountActions.accountAdd(account))
+    dispatch(PersistAccountActions.accountSelect(account))
 
   } catch (e) {
     throw new SubmissionError({ _error: e && e.message })
@@ -348,6 +346,7 @@ export const onSubmitSubscribeNewsletterFail = (errors, submitErrors) =>
  * TODO: to rework it, merge into one action onSubmitPageFail
  */
 export const onSubmitLoginFormFail = (errors, submitErrors) => (dispatch) => {
+  console.log('onSubmitLoginFormFail: ', errors, submitErrors)
   dispatch(stopSubmit(FORM_LOGIN_PAGE, submitErrors && submitErrors.errors))
   dispatch(NetworkActions.networkResetLoginSubmitting())
 }

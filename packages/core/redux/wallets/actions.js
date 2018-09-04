@@ -65,7 +65,7 @@ const initWalletsFromKeys = () => (dispatch, getState) => {
   const account = getPersistAccount(state)
   const network = getSelectedNetwork()(state)
 
-  console.log('initWalletsFromKeys: ', network)
+  console.log('initWalletsFromKeys: ', account, network)
 
   const wallets = []
 
@@ -77,8 +77,12 @@ const initWalletsFromKeys = () => (dispatch, getState) => {
   }))
 
   const bitcoinWallet = createBitcoinWalletFromPK(account.decryptedWallet.privateKey, network)
-
-  console.log('initWalletsFromKeys bitcoinWallet: ', bitcoinWallet)
+  wallets.push(new WalletModel({
+    address: bitcoinWallet.address,
+    blockchain: BLOCKCHAIN_BITCOIN,
+    isMain: true,
+    walletDerivedPath: bitcoinWallet.derivePath,
+  }))
 
   wallets.forEach((wallet) => {
     dispatch(setWallet(wallet))
@@ -212,7 +216,7 @@ const updateAllowance = (allowance) => (dispatch, getState) => {
 export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1, advancedParams = null) => async (dispatch) => {
   try {
     const tokenDAO = tokenService.getDAO(token.id())
-    // ?????
+    // ????
     const tx = tokenDAO.transfer(wallet.address, recipient, amount, token)
     const executeMap = {
       [BLOCKCHAIN_ETHEREUM]: executeTransaction,

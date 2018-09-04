@@ -10,6 +10,7 @@ import {
   BLOCKCHAIN_LITECOIN,
 } from '../../dao/constants'
 import BitcoinMiddlewareService from './BitcoinMiddlewareService'
+import {COIN_TYPE_BTC_MAINNET, COIN_TYPE_BTC_TESTNET} from "../../../login/network/constants";
 
 export const createBitcoinTxEntryModel = (entry, options = {}) =>
   new TxEntryModel({
@@ -38,17 +39,24 @@ export const describeTransaction = (to, amount: BigNumber, feeRate, utxos) => {
   return { inputs, outputs, fee }
 }
 
-// Method was moved from privateKeyProvider
 export const createBitcoinWalletFromPK = (privateKey, network) => {
-  const keyPair = new bitcoin.ECPair.fromPrivateKey(Buffer.from(privateKey, 'hex'), { network })
+  const bitcoinNetwork = network[BLOCKCHAIN_BITCOIN]
+  console.log('createBitcoinWalletFromPK: ', privateKey.substring(2, 66), privateKey.length, bitcoinNetwork)
+  const keyPair = new bitcoin.ECPair.fromPrivateKey(Buffer.from(privateKey.substring(2, 66), 'hex'), { bitcoinNetwork })
   return {
     keyPair,
-    getNetwork () {
+    get network () {
       return keyPair.network
     },
-    getAddress () {
+    get address () {
       const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network })
       return address
+    },
+    get derivePath () {
+      const coinType = bitcoinNetwork === bitcoin.networks.testnet
+        ? COIN_TYPE_BTC_TESTNET
+        : COIN_TYPE_BTC_MAINNET
+      return `m/44'/${coinType}'/0'/0/0`
     },
   }
 }

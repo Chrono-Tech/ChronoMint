@@ -29,6 +29,7 @@ const EVENT_LAST_BLOCK = 'lastBlock'
 export default class BitcoinDAO extends EventEmitter {
   constructor (name, symbol, bitcoinProvider) {
     super()
+    console.log('BitcoinDAO: ', name, symbol, bitcoinProvider)
     this._name = name
     this._symbol = symbol
     this._bitcoinProvider = bitcoinProvider
@@ -57,6 +58,7 @@ export default class BitcoinDAO extends EventEmitter {
   }
 
   isInitialized () {
+    // return true
     return this._bitcoinProvider.isInitialized()
   }
 
@@ -186,7 +188,7 @@ export default class BitcoinDAO extends EventEmitter {
       console.warn(message)
       throw new Error(message)
     }
-    const feeRate = await this.getFeeRate()
+    // const feeRate = await this.getFeeRate()
 
     return new TokenModel({
       name: this._name,
@@ -194,7 +196,7 @@ export default class BitcoinDAO extends EventEmitter {
       symbol: this._symbol,
       isFetched: true,
       blockchain: this._name,
-      feeRate,
+      feeRate: 200,
     })
   }
 
