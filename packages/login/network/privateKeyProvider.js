@@ -37,6 +37,8 @@ class PrivateKeyProvider {
     const nem = network && network.nem && NemWallet.fromPrivateKey(privateKey, nemSdk.model.network.data[network.nem])
     const waves = network && network.waves && WavesWallet.fromPrivateKey(privateKey, WavesApi[network.waves])
 
+    console.log('getPrivateKeyProvider: btc: ', btc.getAddress())
+
     return {
       networkCode,
       ethereum: engine,//new EthereumEngine(ethereumWallet, network, url, null, lastDeriveNumbers),

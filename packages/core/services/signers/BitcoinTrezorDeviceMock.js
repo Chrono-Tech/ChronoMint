@@ -23,17 +23,14 @@ export default class BitcoinTrezorDeviceMock extends EventEmitter {
     return this._getDerivedWallet(path).getAddress()
   }
 
-  signTransaction (rawTx, path) {
-    // tx object
+  signTransaction (unsignedTxHex, path) {
     const txb = new bitcoin.TransactionBuilder
-      .fromTransaction(bitcoin.Transaction.fromHex(rawTx), this.network)
+      .fromTransaction(bitcoin.Transaction.fromHex(unsignedTxHex), this.network)
     for (let i = 0; i < txb.inputs.length; i++) {
       txb.sign(i, this._getDerivedWallet(path).keyPair)
     }
-    const tx = txb.build()
-    const txhex = tx.toHex()
 
-    return txhex
+    return txb.build().toHex()
   }
 
   _getDerivedWallet (derivedPath) {

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import uuid from 'uuid/v1'
 import type BigNumber from 'bignumber.js'
 import coinselect from 'coinselect'
@@ -9,8 +14,12 @@ import {
   BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_LITECOIN,
 } from '../../dao/constants'
+import {
+  COIN_TYPE_BTC_MAINNET,
+  COIN_TYPE_BTC_TESTNET,
+} from './constants'
 import BitcoinMiddlewareService from './BitcoinMiddlewareService'
-import {COIN_TYPE_BTC_MAINNET, COIN_TYPE_BTC_TESTNET} from "../../../login/network/constants";
+import WalletModel from '../../models/wallet/WalletModel'
 
 export const createBitcoinTxEntryModel = (entry, options = {}) =>
   new TxEntryModel({
@@ -39,10 +48,21 @@ export const describeTransaction = (to, amount: BigNumber, feeRate, utxos) => {
   return { inputs, outputs, fee }
 }
 
+export const createBitcoinWalletModelFromPK = (privateKey, network) => {
+  const wallet = createBitcoinWalletFromPK(privateKey, network)
+  return new WalletModel({
+    address: wallet.address,
+    blockchain: BLOCKCHAIN_BITCOIN,
+    isMain: true,
+    walletDerivedPath: wallet.derivePath,
+  })
+}
+
 export const createBitcoinWalletFromPK = (privateKey, network) => {
+  const btcPrivateKey = (privateKey.slice(0, 2) && privateKey.length === 66) ? privateKey.substring(2, 66) : privateKey
   const bitcoinNetwork = network[BLOCKCHAIN_BITCOIN]
-  console.log('createBitcoinWalletFromPK: ', privateKey.substring(2, 66), privateKey.length, bitcoinNetwork)
-  const keyPair = new bitcoin.ECPair.fromPrivateKey(Buffer.from(privateKey.substring(2, 66), 'hex'), { bitcoinNetwork })
+
+  const keyPair = new bitcoin.ECPair.fromPrivateKey(Buffer.from(btcPrivateKey, 'hex'), { bitcoinNetwork })
   return {
     keyPair,
     get network () {
@@ -72,8 +92,7 @@ export const getBtcFee = async (
   }) => {
   try {
     const { data } = await getUtxos(address, { blockchain, type: network[blockchain] })
-    const { fee } = describeTransaction(recipient, amount, formFee, data)
-    return fee
+    return describeTransaction(recipient, amount, formFee, data)
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(e)

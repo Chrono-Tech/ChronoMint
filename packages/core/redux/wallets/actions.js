@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import bitcoin from 'bitcoinjs-lib'
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import {
   BLOCKCHAIN_BITCOIN,
@@ -18,7 +19,7 @@ import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import WalletModel from '../../models/wallet/WalletModel'
 import { subscribeOnTokens } from '../tokens/actions'
 import { formatBalances, getWalletBalances } from '../tokens/utils'
-import { createBitcoinWalletFromPK } from '../bitcoin/utils'
+import { createBitcoinWalletModelFromPK } from '../bitcoin/utils'
 import TokenModel from '../../models/tokens/TokenModel'
 import EthereumMemoryDevice  from '../../services/signers/EthereumMemoryDevice'
 import tokenService from '../../services/TokenService'
@@ -64,9 +65,6 @@ const initWalletsFromKeys = () => (dispatch, getState) => {
   const state = getState()
   const account = getPersistAccount(state)
   const network = getSelectedNetwork()(state)
-
-  console.log('initWalletsFromKeys: ', account, network)
-
   const wallets = []
 
   wallets.push(new WalletModel({
@@ -76,13 +74,7 @@ const initWalletsFromKeys = () => (dispatch, getState) => {
     walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
   }))
 
-  const bitcoinWallet = createBitcoinWalletFromPK(account.decryptedWallet.privateKey, network)
-  wallets.push(new WalletModel({
-    address: bitcoinWallet.address,
-    blockchain: BLOCKCHAIN_BITCOIN,
-    isMain: true,
-    walletDerivedPath: bitcoinWallet.derivePath,
-  }))
+  wallets.push(createBitcoinWalletModelFromPK(account.decryptedWallet.privateKey, bitcoin.networks[network.bitcoin]))
 
   wallets.forEach((wallet) => {
     dispatch(setWallet(wallet))
