@@ -15,6 +15,8 @@ import { WALLET_TYPE_MEMORY, WALLET_TYPE_DEVICE } from '@chronobank/core/models/
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 import { getEthereumSigner } from '@chronobank/core/redux/persistAccount/selectors'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
+import walletProvider from '@chronobank/login/network/walletProvider'
+import setup from '@chronobank/login/network/EngineUtils'
 import localStorage from 'utils/LocalStorage'
 import {
   DUCK_NETWORK,
@@ -99,9 +101,15 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         const signer = getEthereumSigner(getState())
         await dispatch(SessionThunks.getProfileSignature(signer, accountWallet.encrypted[0].path))
 
-        //await dispatch(NetworkThunks.handleLogin(wallet.entry.encrypted[0].address))
+        const providerSettings = dispatch(SessionThunks.getProviderSettings())
+        const provider = walletProvider.getProvider(
+          selectedWallet.encrypted[0],
+          password,
+          providerSettings,
+        )
         dispatch(NetworkActions.selectAccount(accountWallet.encrypted[0].address))
-        //await setup(provider)
+        await setup(provider)
+
         const {
           selectedAccount,
           selectedProviderId,
