@@ -4,51 +4,31 @@
  */
 
 import EventEmitter from 'events'
-import bitcore from 'bitcore-lib'
 import bitcoin from 'bitcoinjs-lib'
 
 export default class BitcoinMemoryDevice extends EventEmitter {
-  constructor ({ seed, network }) {
+  constructor ({ privateKey, network }) {
     super()
-    this.seed = seed
+    console.log('BitcoinMemoryDevice: ', privateKey, network)
+    this.privateKey = privateKey
     this.network = network
+    this.keyPair = null
     Object.freeze(this)
   }
 
-  privateKey (path) {
-    return this._getDerivedWallet(path).privateKey
-  }
-
-  getAddress (path) {
-    return this._getDerivedWallet(path).privateKey.toAddress(this.network)
-  }
-
-  signTransaction (unsignedTxHex, path) {
-    console.log('signTransaction: MemoryDevice: ', unsignedTxHex)
-
+  signTransaction (unsignedTxHex) {
     const txb = new bitcoin.TransactionBuilder
       .fromTransaction(bitcoin.Transaction.fromHex(unsignedTxHex), this.network)
-
-    console.log('txbtxbtxb: ', txb)
+    const keyPair = this.getKeyPair()
 
     for (let i = 0; i < txb.__inputs.length; i++) {
-      txb.sign(i, this._getDerivedWallet(path).keyPair)
+      txb.sign(i, keyPair)
     }
 
     return txb.build().toHex()
   }
 
-  _getDerivedWallet (derivedPath) {
-    if (this.seed.length > 64) {
-      const HDPrivateKey = bitcore.HDPrivateKey
-
-      const hdPrivateKey = new HDPrivateKey()
-      const derived = hdPrivateKey.derive(derivedPath)
-      return derived
-    }
-    const PrivateKey = bitcore.PrivateKey
-    const imported = PrivateKey.fromWIF(this.seed)
-
-    return imported
+  getKeyPair () {
+    return new bitcoin.ECPair.fromPrivateKey(Buffer.from(this.privateKey, 'hex'), { network: this.network })
   }
 }

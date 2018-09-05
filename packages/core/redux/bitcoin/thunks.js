@@ -116,26 +116,12 @@ const processTransaction = ({ entry, signer }) => async (dispatch, getState) => 
 
 const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   try {
-    const { tx } = entry
+    const network = getSelectedNetwork()(getState())
     const unsignedTxHex = entry.tx.prepared.buildIncomplete().toHex()
-    console.log('signTransaction ss: ', unsignedTxHex)
-
     const signedHex = signer.signTransaction(unsignedTxHex)
-    console.log('signedHex: ', signedHex)
 
-    const txb = tx.prepared
-    const signInputs = BitcoinUtils.signInputsMap[entry.blockchain]
-    const state = getState()
-
-    if (typeof signInputs === 'function') {
-      const network = getSelectedNetwork()(state)
-      const pk = signer.privateKey.substring(2, 66) // remove 0x
-      const bitcoinNetwork = bitcoin.networks[network[entry.blockchain]]
-      const bitcoinSigner = BitcoinUtils.createBitcoinWalletFromPK(pk, bitcoinNetwork)
-      signInputs(txb, tx.inputs, bitcoinSigner)
-    }
-
-    console.log('txb.build(): ', txb.build())
+    const txb = new bitcoin.TransactionBuilder
+      .fromTransaction(bitcoin.Transaction.fromHex(signedHex), bitcoin.networks[network[entry.blockchain]])
 
     dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
       ...entry,

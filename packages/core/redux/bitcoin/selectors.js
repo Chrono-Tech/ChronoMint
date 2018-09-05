@@ -47,7 +47,7 @@ export const getBtcSigner = (state) => {
       return new BitcoinTrezorDeviceMock({ seed: account.decryptedWallet.privateKey, network: bitcoinNetwork })
     }
     case WALLET_TYPE_MEMORY: {
-      return new BitcoinMemoryDevice({ seed: account.decryptedWallet.privateKey, network: bitcoinNetwork })
+      return new BitcoinMemoryDevice({ privateKey: account.decryptedWallet.privateKey.slice(2, 66), network: bitcoinNetwork })
     }
     default:
       //eslint-disable-next-line
