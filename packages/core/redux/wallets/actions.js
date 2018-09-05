@@ -19,7 +19,11 @@ import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import WalletModel from '../../models/wallet/WalletModel'
 import { subscribeOnTokens } from '../tokens/actions'
 import { formatBalances, getWalletBalances } from '../tokens/utils'
-import { createBitcoinWalletModelFromPK } from '../bitcoin/utils'
+import {
+  createBitcoinWalletModelFromPK,
+  createLitecoinWalletModelFromPK,
+  createBitcoinCashWalletModelFromPK,
+} from '../bitcoin/utils'
 import TokenModel from '../../models/tokens/TokenModel'
 import EthereumMemoryDevice  from '../../services/signers/EthereumMemoryDevice'
 import tokenService from '../../services/TokenService'
@@ -74,7 +78,9 @@ const initWalletsFromKeys = () => (dispatch, getState) => {
     walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
   }))
 
-  wallets.push(createBitcoinWalletModelFromPK(account.decryptedWallet.privateKey, bitcoin.networks[network.bitcoin]))
+  wallets.push(createBitcoinWalletModelFromPK(account.decryptedWallet.privateKey, bitcoin.networks[network.bitcoin], network.bitcoin))
+  wallets.push(createBitcoinCashWalletModelFromPK(account.decryptedWallet.privateKey, bitcoin.networks[network.bitcoinCash]), network.bitcoinCash)
+  wallets.push(createLitecoinWalletModelFromPK(account.decryptedWallet.privateKey, bitcoin.networks[network.litecoin]), network.litecoin)
 
   wallets.forEach((wallet) => {
     dispatch(setWallet(wallet))

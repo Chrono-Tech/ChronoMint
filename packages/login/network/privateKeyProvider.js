@@ -26,7 +26,6 @@ import EthereumWallet from './EthereumWallet'
 
 class PrivateKeyProvider {
   getPrivateKeyProvider (privateKey, { url, network } = {}) {
-    console.log('getPrivateKeyProvider: ', privateKey, url, network)
     const networkCode = byEthereumNetwork(network)
     const ethereumWallet = this.createEthereumWallet(privateKey)
     const engine = new EthereumEngine(ethereumWallet, network, url)
@@ -36,8 +35,6 @@ class PrivateKeyProvider {
     const ltc = network && network.litecoin && this.createLitecoinWallet(privateKey, bitcoin.networks[network.litecoin])
     const nem = network && network.nem && NemWallet.fromPrivateKey(privateKey, nemSdk.model.network.data[network.nem])
     const waves = network && network.waves && WavesWallet.fromPrivateKey(privateKey, WavesApi[network.waves])
-
-    console.log('getPrivateKeyProvider: btc: ', btc.getAddress())
 
     return {
       networkCode,

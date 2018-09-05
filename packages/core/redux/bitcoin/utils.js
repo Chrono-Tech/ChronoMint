@@ -48,8 +48,8 @@ export const describeTransaction = (to, amount: BigNumber, feeRate, utxos) => {
   return { inputs, outputs, fee }
 }
 
-export const createBitcoinWalletModelFromPK = (privateKey, network) => {
-  const wallet = createBitcoinWalletFromPK(privateKey, network)
+export const createBitcoinWalletModelFromPK = (privateKey, network, networkName) => {
+  const wallet = createBitcoinWalletFromPK(privateKey, network, networkName)
   return new WalletModel({
     address: wallet.address,
     blockchain: BLOCKCHAIN_BITCOIN,
@@ -58,11 +58,38 @@ export const createBitcoinWalletModelFromPK = (privateKey, network) => {
   })
 }
 
-export const createBitcoinWalletFromPK = (privateKey, network) => {
-  const btcPrivateKey = (privateKey.slice(0, 2) && privateKey.length === 66) ? privateKey.substring(2, 66) : privateKey
-  const bitcoinNetwork = network[BLOCKCHAIN_BITCOIN]
+export const createBitcoinCashWalletModelFromPK = (privateKey, network, networkName) => {
+  const wallet = createBitcoinWalletFromPK(privateKey, network, networkName)
+  return new WalletModel({
+    address: wallet.address,
+    blockchain: BLOCKCHAIN_BITCOIN_CASH,
+    isMain: true,
+    walletDerivedPath: wallet.derivePath,
+  })
+}
 
-  const keyPair = new bitcoin.ECPair.fromPrivateKey(Buffer.from(btcPrivateKey, 'hex'), { bitcoinNetwork })
+export const createLitecoinWalletModelFromPK = (privateKey, network, networkName) => {
+  const wallet = createBitcoinWalletFromPK(privateKey, network, networkName)
+  return new WalletModel({
+    address: wallet.address,
+    blockchain: BLOCKCHAIN_LITECOIN,
+    isMain: true,
+    walletDerivedPath: wallet.derivePath,
+  })
+}
+
+/**
+ *
+ * @param privateKey
+ * @param network network object to generate keyPair
+ * @param networkName network name to generate
+ * @returns {*}
+ */
+export const createBitcoinWalletFromPK = (privateKey, network, networkName) => {
+  console.log('createBitcoinWalletFromPK: ', privateKey, network)
+  const btcPrivateKey = (privateKey.slice(0, 2) && privateKey.length === 66) ? privateKey.substring(2, 66) : privateKey
+
+  const keyPair = new bitcoin.ECPair.fromPrivateKey(Buffer.from(btcPrivateKey, 'hex'), { network })
   return {
     keyPair,
     get network () {
@@ -73,13 +100,14 @@ export const createBitcoinWalletFromPK = (privateKey, network) => {
       return address
     },
     get derivePath () {
-      const coinType = bitcoinNetwork === bitcoin.networks.testnet
+      const coinType = networkName === bitcoin.networks.testnet
         ? COIN_TYPE_BTC_TESTNET
         : COIN_TYPE_BTC_MAINNET
       return `m/44'/${coinType}'/0'/0/0`
     },
   }
 }
+
 
 export const getBtcFee = async (
   {
