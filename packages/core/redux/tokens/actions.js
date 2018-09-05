@@ -22,7 +22,6 @@ import { daoByType } from '../daos/selectors'
 import TxExecModel from '../../models/TxExecModel'
 import { web3Selector } from '../ethereum/selectors'
 import { estimateGas } from '../ethereum/thunks'
-import { getBtcFee } from '../bitcoin/utils'
 
 import { TRANSFER_CANCELLED } from '../../models/constants/TransferError'
 import { WATCHER_TX_SET } from '../watcher/constants'
@@ -38,8 +37,7 @@ import {
   EVENT_ERC20_TOKENS_COUNT,
   EVENT_NEW_ERC20_TOKEN,
 } from '../../dao/constants/ERC20ManagerDAO'
-import
-{
+import {
   NEM_DECIMALS,
   NEM_XEM_NAME,
   NEM_XEM_SYMBOL,
@@ -297,24 +295,5 @@ export const estimateGasTransfer = (tokenId, params, callback, gasPriceMultiplie
     })
   } catch (e) {
     callback(e)
-  }
-}
-
-export const estimateBtcFee = (params, callback) => async (dispatch, getState) => {
-  try {
-    const network = getSelectedNetwork()(getState())
-
-    const feeResult = await getBtcFee({ ...params, network })
-    const fee = feeResult.fee
-    if (typeof fee === 'undefined') {
-      throw new Error('Fee is undefined: ' + JSON.stringify(feeResult))
-    }
-    callback(null, {
-      fee,
-    })
-  } catch (e) {
-    //eslint-disable-next-line
-    console.warn('estimateBtcFee error: ', e)
-    callback(new Error('SendTokens.errorCalculationFee'))
   }
 }

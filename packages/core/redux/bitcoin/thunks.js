@@ -3,63 +3,176 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import BigNumber from 'bignumber.js'
 import bitcoin from 'bitcoinjs-lib'
+import type { Dispatch } from 'redux'
 import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
+import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 import {
-  ErrorNoticeModel,
   TransferNoticeModel,
-  TxExecModel,
 } from '../../models'
 import * as BitcoinActions from './actions'
 import * as BitcoinUtils from './utils'
 import { getSelectedNetwork } from '../persistAccount/selectors'
 import { describePendingBitcoinTx } from '../../describers'
 import { getToken } from '../tokens/selectors'
-import { pendingEntrySelector, getBitcoinSigner } from './selectors'
-import { notify } from '../notifier/actions'
+import { notify, notifyError } from '../notifier/actions'
 import BitcoinMiddlewareService from './BitcoinMiddlewareService'
+import { pendingEntrySelector, getBitcoinSigner } from './selectors'
 
-export const executeBitcoinTransaction = ({ tx, options = null }) => async (dispatch, getState) => {
-  const token = getToken(options.symbol)(getState())
-  const prepared = await dispatch(prepareTransaction(tx, options))
-  const entry = BitcoinUtils.createBitcoinTxEntryModel({
-    tx: prepared,
-    blockchain: token.blockchain(),
-  }, options)
+    const prepared = BitcoinUtils.prepareBitcoinTransaction(tx, token, network, utxos)
+/**
+ * Start sending transaction. It will be signed and sent.
+ * @param {tx} - Object {from, to, value}
+ * @param {options} - Object {feeMultiplier, walletDerivedPath, symbol, advancedParams}
+ *   advancedParams is Object {satPerByte, mode}
+ *   mode is 'advanced'|'simple' (manual or automatic fee)
+ * @return {undefined}
+ */
+export const executeBitcoinTransaction = ({ tx, options = {} }) => async (dispatch, getState) => {
+  const state = getState()
+  const token = getToken(options.symbol)(state)
+  const blockchain = token.blockchain()
+  const network = getSelectedNetwork()(state)
+  try {
+    const utxos = await dispatch(getAddressUTXOS(tx.from, blockchain))
+    const prepared = await dispatch(BitcoinUtils.prepareBitcoinTransaction(tx, token, network, utxos))
+    const entry = BitcoinUtils.createBitcoinTxEntryModel({
+      tx: prepared,
+      blockchain,
+    }, options)
 
-  dispatch(BitcoinActions.createTransaction(entry))
-  dispatch(submitTransaction(entry))
+    dispatch(BitcoinActions.bitcoinTxUpdate(entry))
+    dispatch(submitTransaction(entry))
+  } catch (error) {
+    // And what to do now?
+    // eslint-disable-next-line no-console
+    console.log('Can\'t get utxos.', error)
+  }
 }
 
-export const prepareTransaction = (tx, { feeMultiplier = 1, satPerByte = null, symbol }) => async (dispatch, getState) => {
-  const state = getState()
-  const token = getToken(symbol)(state)
-  const tokenRate = satPerByte ? satPerByte : token.feeRate()
-  const network = getSelectedNetwork()(state)
-  const prepared = await BitcoinUtils.describeBitcoinTransaction(
-    tx.to,
-    tx.value,
-    {
-      from: tx.from,
-      feeRate: new BigNumber(tokenRate).mul(feeMultiplier),
-      blockchain: token.blockchain(),
-      network,
-    })
+// TODO: dispatch(setLatestBlock(blockchain, { blockNumber: data.currentBlock }))
+// in appropriate place
+export const getCurrentBlockHeight = (blockchain: string) => (dispatch: Dispatch<any>, getState): Promise<*> => {
+  if (!blockchain) {
+    const error = new Error('Malformed request. "blockchain" must be non-empty string')
+    dispatch(BitcoinActions.bitcoinHttpGetBlocksHeightFailure(error))
+    return Promise.reject(error)
+  }
 
-  return new TxExecModel({
-    from: tx.from,
-    to: tx.to,
-    amount: new BigNumber(tx.value),
-    fee: new BigNumber(prepared.fee),
-    prepared: prepared.tx,
-    inputs: prepared.inputs,
-    outputs: prepared.outputs,
-  })
+  const state = getState()
+  const { network } = getCurrentNetworkSelector(state)
+  const netType = network[blockchain]
+
+  dispatch(BitcoinActions.bitcoinHttpGetBlocksHeight())
+  return BitcoinMiddlewareService.requestCurrentBlockHeight({ blockchain, type: netType })
+    .then((response) => {
+      dispatch(BitcoinActions.bitcoinHttpGetBlocksHeightSuccess(response.data))
+      // TODO: need to check that res.status is equal 200 etc. Or it is better to check right in fetchPersonInfo.
+      return response.data // TODO: to verify, that 'data' is JSON, not HTML like 502.html or 404.html
+    })
+    .catch((error) => {
+      dispatch(BitcoinActions.bitcoinHttpGetBlocksHeightFailure(error))
+      throw new Error(error) // Rethrow for further processing, for example by SubmissionError
+    })
+}
+
+export const getTransactionInfo = (txid: string, blockchain: string) => (dispatch: Dispatch<any>, getState): Promise<*> => {
+  if (!blockchain || !txid) {
+    const error = new Error('Malformed request. "blockchain" and "txid" must be non-empty string')
+    dispatch(BitcoinActions.bitcoinHttpGetTransactionInfoFailure(error))
+    return Promise.reject(error)
+  }
+
+  const state = getState()
+  const { network } = getCurrentNetworkSelector(state)
+  const netType = network[blockchain]
+
+  dispatch(BitcoinActions.bitcoinHttpGetTransactionInfo())
+  return BitcoinMiddlewareService.requestBitcoinTransactionInfo({ blockchain, type: netType })
+    .then((response) => {
+      dispatch(BitcoinActions.bitcoinHttpGetTransactionInfoSuccess(response.data))
+      // TODO: need to check that res.status is equal 200 etc. Or it is better to check right in fetchPersonInfo.
+      return response.data // TODO: to verify, that 'data' is JSON, not HTML like 502.html or 404.html
+    })
+    .catch((error) => {
+      dispatch(BitcoinActions.bitcoinHttpGetTransactionInfoFailure(error))
+      throw new Error(error) // Rethrow for further processing, for example by SubmissionError
+    })
+}
+
+export const getTransactionsList = (address: string, id, skip = 0, offset = 0, blockchain: string) => (dispatch: Dispatch<any>, getState): Promise<*> => {
+  if (!blockchain || !address || !id) {
+    const error = new Error('Malformed request. blockchain and/or address must be non-empty strings')
+    dispatch(BitcoinActions.bitcoinHttpGetTransactionListFailure(error))
+    return Promise.reject(error)
+  }
+
+  const state = getState()
+  const { network } = getCurrentNetworkSelector(state)
+  const networkType = network[blockchain]
+
+  dispatch(BitcoinActions.bitcoinHttpGetTransactionList())
+  return BitcoinMiddlewareService.requestBitcoinTransactionsList(address, id, skip, offset, blockchain, networkType)
+    .then((response) => {
+      dispatch(BitcoinActions.bitcoinHttpGetTransactionListSuccess(response.data))
+      // TODO: need to check that res.status is equal 200 etc. Or it is better to check right in fetchPersonInfo.
+      return response.data // TODO: to verify, that 'data' is JSON, not HTML like 502.html or 404.html
+    })
+    .catch((error) => {
+      dispatch(BitcoinActions.bitcoinHttpGetTransactionListFailure(error))
+      throw new Error(error) // Rethrow for further processing, for example by SubmissionError
+    })
+}
+
+export const getAddressInfo =  (address: string, blockchain: string) => (dispatch: Dispatch<any>, getState): Promise<*> => {
+  if (!blockchain || !address) {
+    const error = new Error('Malformed request. blockchain and/or address must be non-empty strings')
+    dispatch(BitcoinActions.bitcoinHttpGetAddressInfoFailure(error))
+    return Promise.reject(error)
+  }
+
+  const state = getState()
+  const { network } = getCurrentNetworkSelector(state)
+  const netType = network[blockchain]
+
+  dispatch(BitcoinActions.bitcoinHttpGetAddressInfo())
+  return BitcoinMiddlewareService.requestBitcoinAddressInfo(address, blockchain, netType)
+    .then((response) => {
+      dispatch(BitcoinActions.bitcoinHttpGetAddressInfoSuccess(response.data))
+      // TODO: need to check that res.status is equal 200 etc. Or it is better to check right in fetchPersonInfo.
+      return response.data // TODO: to verify, that 'data' is JSON, not HTML like 502.html or 404.html
+    })
+    .catch((error) => {
+      dispatch(BitcoinActions.bitcoinHttpGetAddressInfoFailure(error))
+      throw new Error(error) // Rethrow for further processing, for example by SubmissionError
+    })
+}
+
+export const getAddressUTXOS = (address: string, blockchain: string) => (dispatch: Dispatch<any>, getState): Promise<*> => {
+  if (!blockchain || !address) {
+    const error = new Error('Malformed request. blockchain and/or address must be non-empty strings')
+    dispatch(BitcoinActions.bitcoinHttpGetUtxosFailure(error))
+    return Promise.reject(error)
+  }
+
+  const state = getState()
+  const { network } = getCurrentNetworkSelector(state)
+  const netType = network[blockchain]
+
+  dispatch(BitcoinActions.bitcoinHttpGetUtxos())
+  return BitcoinMiddlewareService.requestBitcoinAddressUTXOS(address, blockchain, netType)
+    .then((response) => {
+      dispatch(BitcoinActions.bitcoinHttpGetUtxosSuccess(response.data))
+      // TODO: need to check that res.status is equal 200 etc. Or it is better to check right in fetchPersonInfo.
+      return response.data // TODO: to verify, that 'data' is JSON, not HTML like 502.html or 404.html
+    })
+    .catch((error) => {
+      dispatch(BitcoinActions.bitcoinHttpGetUtxosFailure(error))
+      throw new Error(error) // Rethrow for further processing, for example by SubmissionError
+    })
 }
 
 const submitTransaction = (entry) => async (dispatch, getState) => {
-
   const state = getState()
   const description = describePendingBitcoinTx(
     entry,
@@ -73,17 +186,17 @@ const submitTransaction = (entry) => async (dispatch, getState) => {
       entry,
       description,
       accept: acceptTransaction,
-      reject: rejectTransaction,
+      reject: (entry) => (dispatch) => dispatch(BitcoinActions.bitcoinTxReject(entry)),
     },
   }))
 }
 
 const acceptTransaction = (entry) => async (dispatch, getState) => {
-
-  dispatch(BitcoinActions.acceptTransaction(entry))
+  dispatch(BitcoinActions.bitcoinTxAccept(entry))
 
   const state = getState()
-  const signer = getBitcoinSigner(state, entry.blockchain)
+  const signer = getBtcSigner(state)
+
   const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key, entry.blockchain)(getState())
 
   if (!selectedEntry) {
@@ -97,8 +210,6 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
     signer,
   }))
 }
-
-const rejectTransaction = (entry) => (dispatch) => dispatch(BitcoinActions.rejectTransaction(entry))
 
 const processTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   await dispatch(signTransaction({ entry, signer }))
@@ -120,8 +231,14 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     const unsignedTxHex = entry.tx.prepared.buildIncomplete().toHex()
     const signedHex = signer.signTransaction(unsignedTxHex)
 
-    const txb = new bitcoin.TransactionBuilder
-      .fromTransaction(bitcoin.Transaction.fromHex(signedHex), bitcoin.networks[network[entry.blockchain]])
+    if (typeof signInputs === 'function') {
+      const network = getSelectedNetwork()(state)
+      const pk = signer.privateKey.substring(2, 66) // remove 0x
+      const bitcoinNetwork = bitcoin.networks[network[entry.blockchain]]
+      // TODO: do we really need to create new wallet? maybe bitcore or other lib has appropriate method?
+      const bitcoinSigner = BitcoinUtils.createBitcoinWalletFromPK(pk, bitcoinNetwork)
+      signInputs(txb, tx.inputs, bitcoinSigner)
+    }
 
     dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
       ...entry,
@@ -182,7 +299,7 @@ const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
           error: res.message,
         },
       })))
-      dispatch(notifyBitcoinError(res))
+      dispatch(notifyBitcoinError(res, 'Bitcoin: sendSignedTransaction'))
     }
 
   } catch (e) {
@@ -195,8 +312,9 @@ const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
 }
 
 const notifyBitcoinTransfer = (entry) => (dispatch, getState) => {
+  const state = getState()
   const { tx } = entry
-  const token = getToken(entry.symbol)(getState())
+  const token = getToken(entry.symbol)(state)
 
   dispatch(notify(new TransferNoticeModel({
     value: token.removeDecimals(tx.amount),
@@ -206,4 +324,21 @@ const notifyBitcoinTransfer = (entry) => (dispatch, getState) => {
   })))
 }
 
-const notifyBitcoinError = (e) => notify(new ErrorNoticeModel({ message: e.message }))
+const notifyBitcoinError = (e, invoker) => notifyError(e, invoker)
+
+export const estimateBtcFee = (params, callback) => async (dispatch) => {
+  const {
+    address,
+    recipient,
+    amount,
+    formFee,
+    blockchain,
+  } = params
+  try {
+    const utxos = await dispatch(getAddressUTXOS(address, blockchain))
+    const fee = BitcoinUtils.getBtcFee(recipient, amount, formFee, utxos)
+    callback(null, fee)
+  } catch (e) {
+    callback(e)
+  }
+}

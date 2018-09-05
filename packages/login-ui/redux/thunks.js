@@ -16,7 +16,6 @@ import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount
 import { getEthereumSigner } from '@chronobank/core/redux/persistAccount/selectors'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import walletProvider from '@chronobank/login/network/walletProvider'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import setup from '@chronobank/login/network/EngineUtils'
 import localStorage from 'utils/LocalStorage'
 import {

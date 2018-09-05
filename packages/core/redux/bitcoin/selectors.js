@@ -18,7 +18,8 @@ import BitcoinCashMemoryDevice from '../../services/signers/BitcoinCashMemoryDev
 import BitcoinTrezorDeviceMock from '../../services/signers/BitcoinTrezorMockDevice'
 /* eslint-enable */
 
-export const bitcoinSelector = () => (state) => state.get(DUCK_BITCOIN)
+export const bitcoinSelector = () => (state) =>
+  state.get(DUCK_BITCOIN)
 
 export const bitcoinPendingSelector = (blockchain) => createSelector(
   bitcoinSelector(),

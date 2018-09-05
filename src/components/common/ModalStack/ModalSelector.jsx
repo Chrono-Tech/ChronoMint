@@ -63,8 +63,8 @@ export default class ModalSelector extends PureComponent {
   })
 
   static getModal (modalProps) {
-
     if (!modalProps || !modalProps.componentName) {
+      // throw new Error('componentName is mandatory property for the ModalSelector')
       // eslint-disable-next-line no-console
       console.warn('ModalSelector Error: Cant\'t display modal by data:', modalProps)
       return null // return null is safe since React 16.x

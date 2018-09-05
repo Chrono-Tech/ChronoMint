@@ -11,23 +11,38 @@ import BitcoinLedgerDeviceMock from '../../services/signers/BitcoinLedgerDeviceM
 import BitcoinMemoryDevice from '../../services/signers/BitcoinMemoryDevice'
 
 export const DUCK_BITCOIN = 'bitcoin'
-export const TX_UPDATE = 'tx/update'
 
-// coin_types 8, 9, 16, 17 used, but they are not standardized
-export const COIN_TYPE_ETH = 60
-export const COIN_TYPE_BTC_MAINNET = 0
-export const COIN_TYPE_BTC_TESTNET = 1
-export const COIN_TYPE_LTC_MAINNET = 9
-export const COIN_TYPE_LTC_TESTNET = 8
-export const COIN_TYPE_BTG_MAINNET = 17
-export const COIN_TYPE_BTG_TESTNET = 16
+// Actions to operate with preparation of a transaction Create/update, accept before send or reject.
+export const BITCOIN_TX_UPDATE = 'BITCOIN/TX/UPDATE'
+export const BITCOIN_TX_ACCEPT = 'BITCOIN/TX/ACCEPT'
+export const BITCOIN_TX_REJECT = 'BITCOIN/TX/REJECT'
 
-export const signersMap = {
-  'BitcoinCashMemoryDevice': BitcoinCashMemoryDevice,
-  'BitcoinMemoryDevice': BitcoinMemoryDevice,
-  'BitcoinLedgerDevice': BitcoinLedgerDevice,
-  'BitcoinLedgerDeviceMock': BitcoinLedgerDeviceMock,
-  'BitcoinTrezorDevice': BitcoinTrezorDevice,
-  'BitcoinTrezorDeviceMock': BitcoinTrezorDeviceMock,
+// Get UTXOS (exits) for bitcoin-like blockchain
+export const BITCOIN_HTTP_GET_UTXOS = 'BITCOIN/HTTP/GET_UTXOS'
+export const BITCOIN_HTTP_GET_UTXOS_SUCCESS = 'BITCOIN/HTTP/GET_UTXOS_SUCCESS'
+export const BITCOIN_HTTP_GET_UTXOS_FAILURE = 'BITCOIN/HTTP/GET_UTXOS_FAILURE'
 
-}
+// Get top latest block number of a selected bitcoin-like blockchain
+export const BITCOIN_HTTP_GET_BLOCKS_HEIGHT = 'BITCOIN/HTTP/GET_BLOCKS_HEIGHT'
+export const BITCOIN_HTTP_GET_BLOCKS_HEIGHT_SUCCESS = 'BITCOIN/HTTP/GET_BLOCKS_HEIGHT_SUCCESS'
+export const BITCOIN_HTTP_GET_BLOCKS_HEIGHT_FAILURE = 'BITCOIN/HTTP/GET_BLOCKS_HEIGHT_FAILURE'
+
+// Get info about transaction for a selected bitcoin-like blockchain
+export const BITCOIN_HTTP_GET_TX_INFO = 'BITCOIN/HTTP/GET_TX_INFO'
+export const BITCOIN_HTTP_GET_TX_INFO_SUCCESS = 'BITCOIN/HTTP/GET_TX_INFO_SUCCESS'
+export const BITCOIN_HTTP_GET_TX_INFO_FAILURE = 'BITCOIN/HTTP/GET_TX_INFO_FAILURE'
+
+// Get transactions history (list) for a selected bitcoin-like blockchain
+export const BITCOIN_HTTP_GET_TX_LIST = 'BITCOIN/HTTP/GET_TX_LIST'
+export const BITCOIN_HTTP_GET_TX_LIST_SUCCESS = 'BITCOIN/HTTP/GET_TX_LIST_SUCCESS'
+export const BITCOIN_HTTP_GET_TX_LIST_FAILURE = 'BITCOIN/HTTP/GET_TX_LIST_FAILURE'
+
+// Get address info for a selected bitcoin-like blockchain
+export const BITCOIN_HTTP_GET_ADDRESS_INFO = 'BITCOIN/HTTP/GET_ADDRESS_INFO'
+export const BITCOIN_HTTP_GET_ADDRESS_INFO_SUCCESS = 'BITCOIN/HTTP/GET_ADDRESS_INFO_SUCCESS'
+export const BITCOIN_HTTP_GET_ADDRESS_INFO_FAILURE = 'BITCOIN/HTTP/GET_ADDRESS_INFO_FAILURE'
+
+// Send preliminary prepared (signed) transaction for a selected bitcoin-like blockchain
+export const BITCOIN_HTTP_POST_SEND_TX = 'BITCOIN/HTTP/POST_SEND_TX'
+export const BITCOIN_HTTP_POST_SEND_TX_SUCCESS = 'BITCOIN/HTTP/POST_SEND_TX_SUCCESS'
+export const BITCOIN_HTTP_POST_SEND_TX_FAILURE = 'BITCOIN/HTTP/POST_SEND_TX_FAILURE'
