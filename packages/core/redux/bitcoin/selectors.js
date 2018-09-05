@@ -10,14 +10,6 @@ import { DUCK_BITCOIN } from './constants'
 import { signersMap } from './signersMap'
 import { getPersistAccount, getSelectedNetwork } from '../persistAccount/selectors'
 
-/* eslint-disable */
-import BitcoinMemoryDevice from '../../services/signers/BitcoinMemoryDevice'
-import BitcoinLedgerDevice from '../../services/signers/BitcoinLedgerDevice'
-import BitcoinTrezorDevice from '../../services/signers/BitcoinTrezorDevice'
-import BitcoinCashMemoryDevice from '../../services/signers/BitcoinCashMemoryDevice'
-import BitcoinTrezorDeviceMock from '../../services/signers/BitcoinTrezorMockDevice'
-/* eslint-enable */
-
 export const bitcoinSelector = () => (state) => state.get(DUCK_BITCOIN)
 
 export const bitcoinPendingSelector = (blockchain) => createSelector(

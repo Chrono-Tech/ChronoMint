@@ -78,8 +78,6 @@ export const createLitecoinWalletModelFromPK = (privateKey, network, networkName
   })
 }
 
-
-
 /**
  *
  * @param privateKey

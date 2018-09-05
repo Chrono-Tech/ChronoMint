@@ -30,6 +30,7 @@ export const getProviderByBlockchain = (blockchain) => {
 }
 
 export const getWalletBalances = ({ wallet }) => {
+  console.log('getWalletBalances: ', wallet, wallet.blockchain)
   return providersMap[wallet.blockchain].getAccountBalances(wallet.address)
 }
 
