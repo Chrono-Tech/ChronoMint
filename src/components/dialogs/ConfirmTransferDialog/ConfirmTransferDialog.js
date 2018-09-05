@@ -51,7 +51,6 @@ export default class ConfirmTransferDialog extends PureComponent {
     entry: PropTypes.instanceOf(TxEntryModel),
     amountBalance: PropTypes.instanceOf(Amount),
     feeBalance: PropTypes.instanceOf(Amount),
-    feeMultiplier: PropTypes.number,
   }
 
   constructor (props) {
@@ -73,8 +72,8 @@ export default class ConfirmTransferDialog extends PureComponent {
       ...entry,
       tx: new TxExecModel({
         ...entry.tx,
-        feeMultiplier: this.state.feeMultiplier
-      })
+        feeMultiplier: this.state.feeMultiplier,
+      }),
     })
 
     this.props.confirm(updatedEntry)
@@ -89,8 +88,8 @@ export default class ConfirmTransferDialog extends PureComponent {
       ...entry,
       tx: new TxExecModel({
         ...entry.tx,
-        feeMultiplier: this.state.feeMultiplier
-      })
+        feeMultiplier: this.state.feeMultiplier,
+      }),
     })
 
     this.props.reject(updatedEntry)

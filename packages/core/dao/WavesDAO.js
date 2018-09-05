@@ -96,11 +96,11 @@ export default class WavesDAO extends EventEmitter {
   }
 
   // TODO @ipavlenko: Replace with 'immediateTransfer' after all token DAOs will start using 'submit' method
-  transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
+  transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: number = 1) {
     this.submit(from, to, amount, token, feeMultiplier)
   }
 
-  submit (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
+  submit (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: number = 1) {
     setImmediate(async () => {
       this.emit('submit', new TransferExecModel({
         title: `tx.Waves.${this._name ? 'Asset' : 'WAVES'}.transfer.title`,
@@ -117,7 +117,7 @@ export default class WavesDAO extends EventEmitter {
   }
 
   // TODO @ipavlenko: Rename to 'transfer' after all token DAOs will start using 'submit' method and 'trans'
-  async immediateTransfer (from: string, to: string, amount: BigNumber /*token: TokenModel, feeMultiplier: Number = 1*/) {
+  async immediateTransfer (from: string, to: string, amount: BigNumber /*token: TokenModel, feeMultiplier: number = 1*/) {
     try {
       return await this._wavesProvider.transfer(from, to, amount, this._asset)
     } catch (e) {

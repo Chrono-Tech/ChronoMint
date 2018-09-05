@@ -124,15 +124,15 @@ class LedgerLoginPage extends PureComponent {
     navigateToSelectWallet()
   }
 
-  async onSubmitDerivationPath ({ path }) {
+  async onSubmitDerivationPath () {
     this.setState({
-      page: LedgerLoginPage.PAGES.DEVICE_SELECT_FORM
+      page: LedgerLoginPage.PAGES.DEVICE_SELECT_FORM,
     })
   }
 
   navigateToDerivationPathForm () {
     this.setState({
-      page: LedgerLoginPage.PAGES.DERIVATION_PATH_FORM
+      page: LedgerLoginPage.PAGES.DERIVATION_PATH_FORM,
     })
   }
 
@@ -151,8 +151,6 @@ class LedgerLoginPage extends PureComponent {
   }
 
   render () {
-    console.log('this.getCurrentPage(): ', this.getCurrentPage())
-
     return this.getCurrentPage()
   }
 }

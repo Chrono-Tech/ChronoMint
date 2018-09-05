@@ -84,11 +84,52 @@ const configureStore = () => {
     ]
     // All actions like network/* (starts with network)
     const DOMAINS = [
-      // 'AssetsManager/',
+      // '@@i18n/',
+      // '@@redux-form/',
       // '@@router/',
+      // '@login/network',
+      // 'AssetsManager/',
+      // 'daos/',
+      // 'ethMultisigWallet/',
+      // 'events/',
+      // 'mainWallet/',
+      // 'market/',
       // 'MODALS/',
-      // 'SIDES/'
+      // 'persist/',
+      // 'persistAccount/',
       // 'PROFILE/',
+      // 'session/',
+      // 'SIDEMENU/',
+      // 'SIDES/',
+      // 'tokens/',
+      // 'TX/ETH/',
+      // 'voting/',
+      // 'wallet/',
+      // 'watcher/',
+    ]
+    const IGNORED_DOMAINS = [
+      '@@i18n/',
+      '@@redux-form/',
+      '@@router/',
+      '@login/network',
+      'AssetsManager/',
+      'daos/',
+      'ethMultisigWallet/',
+      'events/',
+      'mainWallet/',
+      'market/',
+      'MODALS/',
+      'persist/',
+      'persistAccount/',
+      'PROFILE/',
+      'session/',
+      'SIDEMENU/',
+      'SIDES/',
+      'tokens/',
+      'TX/ETH/',
+      'voting/',
+      'wallet/',
+      'watcher/',
     ]
     const logger = createLogger({
       collapsed: true,
@@ -98,12 +139,12 @@ const configureStore = () => {
           console.error('%c action has no type field!', 'background: red; color: #fff', action)
           return true
         }
-        return WHITE_LIST.includes(action.type) || (
-          !IGNORED_ACTIONS.includes(action.type) &&
-          DOMAINS.some((domain) => {
-            return action.type.startsWith(domain)
-          })
-        )
+        const isWhiteListed = (WHITE_LIST.length > 0 && WHITE_LIST.includes(action.type)) ||
+          DOMAINS.length > 0 && DOMAINS.some((domain) => action.type.startsWith(domain))
+        const isIgnoredAction = IGNORED_ACTIONS.length > 0 && IGNORED_ACTIONS.includes(action.type)
+        const isIgnoredDomain = IGNORED_DOMAINS.length > 0 && IGNORED_DOMAINS.some((domain) => action.type.startsWith(domain))
+
+        return isWhiteListed || (!isIgnoredDomain && !isIgnoredAction)
       },
     })
     // Note: logger must be the last middleware in chain, otherwise it will log thunk and promise, not actual actions

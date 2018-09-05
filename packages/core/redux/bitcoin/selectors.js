@@ -7,10 +7,11 @@ import { createSelector } from 'reselect'
 import bitcoin from 'bitcoinjs-lib'
 import { camelCase, startCase } from 'lodash'
 import { DUCK_BITCOIN } from './constants'
-import { signersMap } from './signersMap'
+import { bitcoinSignersMap } from './signersMap'
 import { getPersistAccount, getSelectedNetwork } from '../persistAccount/selectors'
 
-export const bitcoinSelector = () => (state) => state.get(DUCK_BITCOIN)
+export const bitcoinSelector = () => (state) =>
+  state.get(DUCK_BITCOIN)
 
 export const bitcoinPendingSelector = (blockchain) => createSelector(
   bitcoinSelector(),
@@ -34,7 +35,7 @@ export const getBitcoinSigner = (state, blockchain) => {
   const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
 
   const SignerName = `${startCase(camelCase(blockchain))}${startCase(camelCase(account.decryptedWallet.entry.encrypted[0].type))}Device`
-  const SignerComponent = signersMap[SignerName]
+  const SignerComponent = bitcoinSignersMap[SignerName]
 
   return new SignerComponent({ privateKey, network })
 }

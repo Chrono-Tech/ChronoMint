@@ -135,7 +135,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   async getTransactionsList (address, id, skip, offset) {
     const url = `tx/${address}/history?skip=${skip}&limit=${offset}`
     const { data } = await this._api.get(url)
-    let txs = []
+    const txs = []
     if (!data) {
       throw new Error('invalid result')
     }
