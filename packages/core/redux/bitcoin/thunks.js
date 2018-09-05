@@ -16,7 +16,7 @@ import * as BitcoinUtils from './utils'
 import { getSelectedNetwork } from '../persistAccount/selectors'
 import { describePendingBitcoinTx } from '../../describers'
 import { getToken } from '../tokens/selectors'
-import { pendingEntrySelector, getBtcSigner } from './selectors'
+import { pendingEntrySelector, getBitcoinSigner } from './selectors'
 import { notify } from '../notifier/actions'
 import BitcoinMiddlewareService from './BitcoinMiddlewareService'
 
@@ -83,7 +83,7 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
   dispatch(BitcoinActions.acceptTransaction(entry))
 
   const state = getState()
-  const signer = getBtcSigner(state)
+  const signer = getBitcoinSigner(state, entry.blockchain)
   const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key, entry.blockchain)(getState())
 
   if (!selectedEntry) {

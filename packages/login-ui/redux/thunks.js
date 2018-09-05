@@ -209,8 +209,6 @@ export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKe
       privateKey,
     }))
 
-    console.log('onSubmitImportAccount: account: ', account)
-
     dispatch(PersistAccountActions.accountAdd(account))
     dispatch(PersistAccountActions.accountSelect(account))
 
@@ -346,7 +344,6 @@ export const onSubmitSubscribeNewsletterFail = (errors, submitErrors) =>
  * TODO: to rework it, merge into one action onSubmitPageFail
  */
 export const onSubmitLoginFormFail = (errors, submitErrors) => (dispatch) => {
-  console.log('onSubmitLoginFormFail: ', errors, submitErrors)
   dispatch(stopSubmit(FORM_LOGIN_PAGE, submitErrors && submitErrors.errors))
   dispatch(NetworkActions.networkResetLoginSubmitting())
 }

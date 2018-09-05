@@ -29,7 +29,6 @@ const EVENT_LAST_BLOCK = 'lastBlock'
 export default class BitcoinDAO extends EventEmitter {
   constructor (name, symbol, bitcoinProvider) {
     super()
-    console.log('BitcoinDAO: ', name, symbol, bitcoinProvider)
     this._name = name
     this._symbol = symbol
     this._bitcoinProvider = bitcoinProvider

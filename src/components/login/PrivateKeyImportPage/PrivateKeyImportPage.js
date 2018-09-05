@@ -98,7 +98,6 @@ class PrivateKeyImportPage extends PureComponent {
 
   async onSubmitPrivateKey ({ privateKey }) {
     const memoryDevice = new EthereumMemoryDevice(privateKey)
-
     const data = await this.props.getUserInfo([memoryDevice.address])
     const profile = data[0]
 

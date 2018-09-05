@@ -86,7 +86,6 @@ export default class EthereumMemoryDevice extends EventEmitter {
 
   // Should be synchronous by design
   static decrypt ({ entry, password }) {
-    console.log('decrypt: ', entry, password)
     const accounts = new Accounts()
     const wallet = accounts.wallet.decrypt([entry], password)
     const privateKey = wallet[0].privateKey

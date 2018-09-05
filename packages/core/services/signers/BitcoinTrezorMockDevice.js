@@ -5,4 +5,4 @@
 
 import BitcoinMemoryDevice from './BitcoinMemoryDevice'
 
-export default class BitcoinLedgerMockDevice extends BitcoinMemoryDevice {}
+export default class BitcoinTrezorMockDevice extends BitcoinMemoryDevice {}

@@ -184,9 +184,7 @@ export const initBtcLikeTokens = () => async (dispatch, getState) => {
             }
           })
           await dao.watchLastBlock()
-          console.log('await dao.fetchToken: ', dao)
           const token = await dao.fetchToken()
-          console.log('await dao.fetchToken: ', token)
           tokenService.registerDAO(token, dao)
           dispatch(tokenFetched(token))
           const currentBlock = await dao.getCurrentBlockHeight()

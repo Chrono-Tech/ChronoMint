@@ -5,16 +5,18 @@
 
 import { createSelector } from 'reselect'
 import bitcoin from 'bitcoinjs-lib'
+import { camelCase, startCase } from 'lodash'
 import { DUCK_BITCOIN } from './constants'
-import {
-  WALLET_TYPE_MEMORY,
-  WALLET_TYPE_TREZOR_MOCK,
-  WALLET_TYPE_LEDGER_MOCK,
-} from '../../models/constants/AccountEntryModel'
-import BitcoinMemoryDevice from '../../services/signers/BitcoinMemoryDevice'
-import BitcoinTrezorDeviceMock from '../../services/signers/BitcoinTrezorDeviceMock'
+import { signersMap } from './signersMap'
 import { getPersistAccount, getSelectedNetwork } from '../persistAccount/selectors'
-import { BLOCKCHAIN_BITCOIN } from '../../dao/constants'
+
+/* eslint-disable */
+import BitcoinMemoryDevice from '../../services/signers/BitcoinMemoryDevice'
+import BitcoinLedgerDevice from '../../services/signers/BitcoinLedgerDevice'
+import BitcoinTrezorDevice from '../../services/signers/BitcoinTrezorDevice'
+import BitcoinCashMemoryDevice from '../../services/signers/BitcoinCashMemoryDevice'
+import BitcoinTrezorDeviceMock from '../../services/signers/BitcoinTrezorMockDevice'
+/* eslint-enable */
 
 export const bitcoinSelector = () => (state) => state.get(DUCK_BITCOIN)
 
@@ -33,24 +35,14 @@ export const pendingEntrySelector = (address, key, blockchain) => createSelector
   },
 )
 
-export const getBtcSigner = (state) => {
+export const getBitcoinSigner = (state, blockchain) => {
   const account = getPersistAccount(state)
-  const network = getSelectedNetwork()(state)
-  const bitcoinNetwork = bitcoin.networks[network[BLOCKCHAIN_BITCOIN]]
-  console.log('account: ', account)
+  const networkData = getSelectedNetwork()(state)
+  const network = bitcoin.networks[networkData[blockchain]]
+  const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
 
-  switch (account.decryptedWallet.entry.encrypted[0].type) {
-    case WALLET_TYPE_LEDGER_MOCK: {
-      return new BitcoinTrezorDeviceMock({ seed: account.decryptedWallet.privateKey, network: bitcoinNetwork })
-    }
-    case WALLET_TYPE_TREZOR_MOCK: {
-      return new BitcoinTrezorDeviceMock({ seed: account.decryptedWallet.privateKey, network: bitcoinNetwork })
-    }
-    case WALLET_TYPE_MEMORY: {
-      return new BitcoinMemoryDevice({ privateKey: account.decryptedWallet.privateKey.slice(2, 66), network: bitcoinNetwork })
-    }
-    default:
-      //eslint-disable-next-line
-      console.warn('Unknown wallet type')
-  }
+  const SignerName = `${startCase(camelCase(blockchain))}${startCase(camelCase(account.decryptedWallet.entry.encrypted[0].type))}Device`
+  const SignerComponent = signersMap[SignerName]
+
+  return new SignerComponent({ privateKey, network })
 }

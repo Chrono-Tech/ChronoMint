@@ -78,6 +78,8 @@ export const createLitecoinWalletModelFromPK = (privateKey, network, networkName
   })
 }
 
+
+
 /**
  *
  * @param privateKey
@@ -86,7 +88,6 @@ export const createLitecoinWalletModelFromPK = (privateKey, network, networkName
  * @returns {*}
  */
 export const createBitcoinWalletFromPK = (privateKey, network, networkName) => {
-  console.log('createBitcoinWalletFromPK: ', privateKey, network)
   const btcPrivateKey = (privateKey.slice(0, 2) && privateKey.length === 66) ? privateKey.substring(2, 66) : privateKey
 
   const keyPair = new bitcoin.ECPair.fromPrivateKey(Buffer.from(btcPrivateKey, 'hex'), { network })
