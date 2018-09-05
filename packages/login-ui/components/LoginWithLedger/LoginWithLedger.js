@@ -20,17 +20,6 @@ class LoginWithLedger extends PureComponent {
   componentWillUnmount () {
   }
 
-  renderStates () {
-    return (
-      <div styleName='state' key='1'>
-        <div styleName='titleContent'>
-          <div styleName='title'>Ledger not found</div>
-          <div styleName='subtitle'>Connect your Ledger</div>
-        </div>
-      </div>
-    )
-  }
-
   _buildItem = (item, i) => {
     return (
       <div
@@ -49,6 +38,17 @@ class LoginWithLedger extends PureComponent {
         </div>
         <div styleName='account-item-icon'>
           <div className='chronobank-icon'>next</div>
+        </div>
+      </div>
+    )
+  }
+
+  renderStates () {
+    return (
+      <div styleName='state' key='1'>
+        <div styleName='titleContent'>
+          <div styleName='title'>Ledger not found</div>
+          <div styleName='subtitle'>Connect your Ledger</div>
         </div>
       </div>
     )

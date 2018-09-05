@@ -158,7 +158,9 @@
     "hs": "openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem && hs build -a localhost -o -S",
     "rei": "rm -rf ./node_modules && yarn install && yarn contracts:compile"
   },
-  "pre-commit": [],
+  "pre-commit": [
+    "lint:errors"
+  ],
   "jest": {
     "testURL": "http://localhost",
     "setupTestFrameworkScriptFile": "./src/specsInit.js",

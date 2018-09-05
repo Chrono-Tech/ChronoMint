@@ -13,13 +13,13 @@ import {
 import * as BitcoinActions from './actions'
 import * as BitcoinUtils from './utils'
 import { getSelectedNetwork } from '../persistAccount/selectors'
+
 import { describePendingBitcoinTx } from '../../describers'
 import { getToken } from '../tokens/selectors'
+import { pendingEntrySelector, getBitcoinSigner } from './selectors'
 import { notify, notifyError } from '../notifier/actions'
 import BitcoinMiddlewareService from './BitcoinMiddlewareService'
-import { pendingEntrySelector, getBitcoinSigner } from './selectors'
 
-    const prepared = BitcoinUtils.prepareBitcoinTransaction(tx, token, network, utxos)
 /**
  * Start sending transaction. It will be signed and sent.
  * @param {tx} - Object {from, to, value}
@@ -29,24 +29,22 @@ import { pendingEntrySelector, getBitcoinSigner } from './selectors'
  * @return {undefined}
  */
 export const executeBitcoinTransaction = ({ tx, options = {} }) => async (dispatch, getState) => {
-  const state = getState()
-  const token = getToken(options.symbol)(state)
-  const blockchain = token.blockchain()
-  const network = getSelectedNetwork()(state)
+  dispatch(BitcoinActions.bitcoinExecuteTx())
   try {
+    const state = getState()
+    const token = getToken(options.symbol)(state)
+    const blockchain = token.blockchain()
+    const network = getSelectedNetwork()(state)
     const utxos = await dispatch(getAddressUTXOS(tx.from, blockchain))
     const prepared = await dispatch(BitcoinUtils.prepareBitcoinTransaction(tx, token, network, utxos))
     const entry = BitcoinUtils.createBitcoinTxEntryModel({
       tx: prepared,
       blockchain,
     }, options)
-
     dispatch(BitcoinActions.bitcoinTxUpdate(entry))
     dispatch(submitTransaction(entry))
   } catch (error) {
-    // And what to do now?
-    // eslint-disable-next-line no-console
-    console.log('Can\'t get utxos.', error)
+    dispatch(BitcoinActions.bitcoinExecuteTxFailure(error))
   }
 }
 
@@ -195,114 +193,146 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
   dispatch(BitcoinActions.bitcoinTxAccept(entry))
 
   const state = getState()
-  const signer = getBtcSigner(state)
+  const signer = getBitcoinSigner(state, entry.blockchain)
 
-  const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key, entry.blockchain)(getState())
+  const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key, entry.blockchain)(state)
 
   if (!selectedEntry) {
     // eslint-disable-next-line no-console
     console.error('entry is null', entry)
     return // stop execute
   }
-
-  return dispatch(processTransaction({
-    entry: selectedEntry,
-    signer,
-  }))
+  try {
+    return dispatch(processTransaction({
+      entry: selectedEntry,
+      signer,
+    }))
+  } catch (error) {
+    throw error
+  }
 }
 
-const processTransaction = ({ entry, signer }) => async (dispatch, getState) => {
-  await dispatch(signTransaction({ entry, signer }))
-  const signedEntry = pendingEntrySelector(entry.tx.from, entry.key, entry.blockchain)(getState())
-
-  if (!signedEntry) {
-    // eslint-disable-next-line no-console
-    console.error('signedEntry is null', entry)
-    return null // stop execute
+const processTransaction = ({ entry, signer }) => async (dispatch) => {
+  try {
+    const signedEntry = await dispatch(signTransaction({ entry, signer }))
+    if (!signedEntry) {
+      // eslint-disable-next-line no-console
+      console.error('signedEntry is null', entry)
+      return null // stop execute
+    }
+    return dispatch(sendSignedTransaction(signedEntry))
+  } catch (error) {
+    throw error
   }
-  return dispatch(sendSignedTransaction({
-    entry: signedEntry,
-  }))
 }
 
 const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
+  dispatch(BitcoinActions.bitcoinSignTx())
   try {
     const network = getSelectedNetwork()(getState())
     const unsignedTxHex = entry.tx.prepared.buildIncomplete().toHex()
     const signedHex = signer.signTransaction(unsignedTxHex)
-
-    if (typeof signInputs === 'function') {
-      const network = getSelectedNetwork()(state)
-      const pk = signer.privateKey.substring(2, 66) // remove 0x
-      const bitcoinNetwork = bitcoin.networks[network[entry.blockchain]]
-      // TODO: do we really need to create new wallet? maybe bitcore or other lib has appropriate method?
-      const bitcoinSigner = BitcoinUtils.createBitcoinWalletFromPK(pk, bitcoinNetwork)
-      signInputs(txb, tx.inputs, bitcoinSigner)
-    }
-
-    dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
+    const bitcoinTransaction = bitcoin.Transaction.fromHex(signedHex)
+    const bitcoinNetwork = bitcoin.networks[network[entry.blockchain]]
+    const txb = new bitcoin.TransactionBuilder.fromTransaction(bitcoinTransaction, bitcoinNetwork)
+    const bitcoinTxEntry = BitcoinUtils.createBitcoinTxEntryModel({
       ...entry,
       tx: {
         ...entry.tx,
         signed: txb.build(),
       },
-    })))
+    })
+
+    dispatch(BitcoinActions.bitcoinTxUpdate(bitcoinTxEntry))
+    dispatch(BitcoinActions.bitcoinSignTxSuccess(bitcoinTxEntry))
+    return bitcoinTxEntry
   } catch (error) {
-    dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
+    const bitcoinErrorTxEntry = BitcoinUtils.createBitcoinTxEntryModel({
       ...entry,
       isErrored: true,
       error,
-    })))
+    })
+    dispatch(BitcoinActions.bitcoinTxUpdate(bitcoinErrorTxEntry))
+    dispatch(BitcoinActions.bitcoinSignTxFailure(error))
     throw error
   }
 }
 
-const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
+// TODO: need to continue rework of this method. Pushed to merge with other changes.
+const sendSignedTransaction = (entry) => async (dispatch, getState) => {
+  if (!entry) {
+    const error = new Error('Can\'t send empty Tx. There is no entry at BTC sendSignedTransaction')
+    dispatch(BitcoinActions.bitcoinHttpPostSendTxFailure(error))
+    throw new Error(error)
+  }
+
   dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
     ...entry,
     isPending: true,
   })))
 
-  const state = getState()
-  // eslint-disable-next-line
-  entry = pendingEntrySelector(entry.tx.from, entry.key, entry.blockchain)(state)
-  const network = getSelectedNetwork()(state)
-  if (!entry) {
-    // eslint-disable-next-line no-console
-    console.error('entry is null', entry)
-    return // stop execute
-  }
-
   try {
-    const res = await BitcoinMiddlewareService.send(entry.tx.signed.toHex(), { blockchain: entry.blockchain, type: network[entry.blockchain] })
+    dispatch(BitcoinActions.bitcoinHttpPostSendTx())
 
-    if (res && res.hash) {
-      dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
-        ...entry,
-        tx: {
-          ...entry.tx,
-          isSent: true,
-          isMined: false,
-          hash: res.hash,
-        },
-      })))
+    const state = getState()
+    const rawTx = entry.tx.signed.toHex()
+    const blockchain = entry.blockchain
+    const network = getSelectedNetwork()(state)
+    const networkType = network[blockchain]
 
-      dispatch(notifyBitcoinTransfer(entry))
-    }
+    return BitcoinMiddlewareService
+      .requestBitcoinSendTx(rawTx, blockchain, networkType)
+      .then((response) => {
+        if (!response) {
+          dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
+            ...entry,
+            isErrored: true,
+          })))
+          throw new Error('Incorrect response from server. Can\'t send transaction.')
+        }
+        dispatch(BitcoinActions.bitcoinHttpPostSendTxSuccess(response.data))
 
-    if (res && res.code === 0) {
-      dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
-        ...entry,
-        tx: {
-          ...entry.tx,
+        if (response.data && response.data.code === 0) {
+          dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
+            ...entry,
+            tx: {
+              ...entry.tx,
+              isErrored: true,
+              error: response.data.message,
+            },
+          })))
+          dispatch(notifyError(response.data, 'Bitcoin: sendSignedTransaction'))
+        }
+
+        if (response.data && response.data.hash) {
+          const txEntry = BitcoinUtils.createBitcoinTxEntryModel({
+            ...entry,
+            tx: {
+              ...entry.tx,
+              isSent: true,
+              isMined: false,
+              hash: response.hash,
+            },
+          })
+
+          dispatch(BitcoinActions.bitcoinTxUpdate(txEntry))
+          dispatch(notifyBitcoinTransfer(txEntry))
+        }
+
+        dispatch(BitcoinActions.bitcoinExecuteTxSuccess(response.data)) // TODO: mve it to appropriate place
+        // TODO: need to check that res.status is equal 200 etc. Or it is better to check right in fetchPersonInfo.
+        return response.data // TODO: to verify, that 'data' is JSON, not HTML like 502.html or 404.html
+      })
+      .catch((error) => {
+        dispatch(BitcoinActions.bitcoinHttpPostSendTxFailure(error))
+        dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
+          ...entry,
           isErrored: true,
-          error: res.message,
-        },
-      })))
-      dispatch(notifyBitcoinError(res, 'Bitcoin: sendSignedTransaction'))
-    }
-
-  } catch (e) {
+        })))
+        throw new Error(error) // Rethrow for further processing, for example by SubmissionError
+      })
+  } catch (error) {
+    dispatch(BitcoinActions.bitcoinHttpPostSendTxFailure(error))
     dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
       ...entry,
       isErrored: true,
@@ -323,8 +353,6 @@ const notifyBitcoinTransfer = (entry) => (dispatch, getState) => {
     to: entry.tx.to,
   })))
 }
-
-const notifyBitcoinError = (e, invoker) => notifyError(e, invoker)
 
 export const estimateBtcFee = (params, callback) => async (dispatch) => {
   const {

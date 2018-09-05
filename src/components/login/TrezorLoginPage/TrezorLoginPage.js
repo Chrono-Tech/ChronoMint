@@ -39,6 +39,7 @@ class TrezorLoginPage extends PureComponent {
     getUserInfo: PropTypes.func,
     navigateBack: PropTypes.func,
     onCreateWalletFromDevice: PropTypes.func,
+    navigateToSelectWallet: PropTypes.func,
   }
 
   constructor (props) {
@@ -123,9 +124,9 @@ class TrezorLoginPage extends PureComponent {
     navigateToSelectWallet()
   }
 
-  async onSubmitDerivationPath ({ path }) {
+  async onSubmitDerivationPath () {
     this.setState({
-      page: TrezorLoginPage.PAGES.DEVICE_SELECT_FORM
+      page: TrezorLoginPage.PAGES.DEVICE_SELECT_FORM,
     })
   }
 

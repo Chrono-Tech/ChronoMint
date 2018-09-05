@@ -7,6 +7,10 @@ import uuid from 'uuid/v1'
 import BigNumber from 'bignumber.js'
 import coinselect from 'coinselect'
 import bitcoin from 'bitcoinjs-lib'
+import {
+  COIN_TYPE_BTC_MAINNET,
+  COIN_TYPE_BTC_TESTNET,
+} from '@chronobank/login/network/constants'
 import { TxEntryModel, TxExecModel } from '../../models'
 import {
   BLOCKCHAIN_BITCOIN,
@@ -14,11 +18,6 @@ import {
   BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_LITECOIN,
 } from '../../dao/constants'
-import {
-  COIN_TYPE_BTC_MAINNET,
-  COIN_TYPE_BTC_TESTNET,
-} from './constants'
-import BitcoinMiddlewareService from './BitcoinMiddlewareService'
 import WalletModel from '../../models/wallet/WalletModel'
 
 /**
@@ -65,7 +64,7 @@ export const selectCoins = (to, amount: BigNumber, feeRate, utxos) => {
 }
 
 // Method was moved from privateKeyProvider
-export const createBitcoinWalletFromPK = (privateKey, network) => {
+export const createBitcoinWalletFromPK = (privateKey, network, networkName) => {
   const btcPrivateKey = (privateKey.slice(0, 2) && privateKey.length === 66) ? privateKey.substring(2, 66) : privateKey
   const keyPair = new bitcoin.ECPair.fromPrivateKey(Buffer.from(btcPrivateKey, 'hex'), { network })
   return {
@@ -155,7 +154,6 @@ export const createLitecoinWalletModelFromPK = (privateKey, network, networkName
     walletDerivedPath: wallet.derivePath,
   })
 }
-
 
 export const signBitcoinInputs = (txb, inputs, signer) => {
   for (let i = 0; i < inputs.length; i++) {

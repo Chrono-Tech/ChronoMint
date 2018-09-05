@@ -14,13 +14,11 @@ import {
 } from '@chronobank/core/models/constants/AccountEntryModel'
 import { DUCK_PERSIST_ACCOUNT } from './constants'
 
-import BitcoinMemoryDevice from '../../services/signers/BitcoinMemoryDevice'
 import EthereumTrezorDeviceMock from '../../services/signers/EthereumTrezorDeviceMock'
 import EthereumTrezorDevice from '../../services/signers/EthereumTrezorDevice'
 import EthereumLedgerDeviceMock from '../../services/signers/EthereumLedgerDeviceMock'
 import EthereumLedgerDevice from '../../services/signers/EthereumLedgerDevice'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
-import BitcoinTrezorDeviceMock from '../../services/signers/BitcoinTrezorMockDevice'
 
 export const getPersistAccount = (state) => {
   return state.get(DUCK_PERSIST_ACCOUNT)

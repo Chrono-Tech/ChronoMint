@@ -56,7 +56,6 @@ import {
 } from '../../dao/constants/WavesDAO'
 import { DAOS_REGISTER } from '../daos/constants'
 import { ContractDAOModel, ContractModel } from '../../models'
-import { getSelectedNetwork } from '../persistAccount/selectors'
 
 const tokensInit = () => ({ type: TOKENS_INIT })
 
@@ -188,7 +187,6 @@ export const initBtcLikeTokens = () => async (dispatch, getState) => {
           const currentBlock = await dao.getCurrentBlockHeight()
           dispatch(setLatestBlock(token.blockchain(), { blockNumber: currentBlock.currentBlock }))
         } catch (e) {
-          console.log('await dao.fetchToken: error: ', e)
           dispatch(tokensLoadingFailed())
         }
       }),

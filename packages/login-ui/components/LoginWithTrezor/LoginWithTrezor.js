@@ -19,17 +19,6 @@ class LoginWithTrezor extends Component {
   componentWillUnmount () {
   }
 
-  renderStates () {
-    return (
-      <div styleName='state' key='1'>
-        <div styleName='titleContent'>
-          <div styleName='title'>Trezor not found</div>
-          <div styleName='subtitle'>Connect your Trezor</div>
-        </div>
-      </div>
-    )
-  }
-
   _buildItem = (item, i) => {
     return (
       <div
@@ -48,6 +37,17 @@ class LoginWithTrezor extends Component {
         </div>
         <div styleName='account-item-icon'>
           <div className='chronobank-icon'>next</div>
+        </div>
+      </div>
+    )
+  }
+
+  renderStates () {
+    return (
+      <div styleName='state' key='1'>
+        <div styleName='titleContent'>
+          <div styleName='title'>Trezor not found</div>
+          <div styleName='subtitle'>Connect your Trezor</div>
         </div>
       </div>
     )

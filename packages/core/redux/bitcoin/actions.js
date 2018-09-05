@@ -108,3 +108,31 @@ export const bitcoinHttpPostSendTxFailure = (error) => ({
   type: BtcConstants.BITCOIN_HTTP_POST_SEND_TX_FAILURE,
   error,
 })
+
+export const bitcoinExecuteTx = () => ({
+  type: BtcConstants.BITCOIN_EXECUTE_TX,
+})
+
+export const bitcoinExecuteTxSuccess = (data) => ({
+  type: BtcConstants.BITCOIN_EXECUTE_TX_SUCCESS,
+  data,
+})
+
+export const bitcoinExecuteTxFailure = (error) => ({
+  type: BtcConstants.BITCOIN_EXECUTE_TX_FAILURE,
+  error,
+})
+
+export const bitcoinSignTx = () => ({
+  type: BtcConstants.BITCOIN_SIGN_TX,
+})
+
+export const bitcoinSignTxSuccess = (data) => ({
+  type: BtcConstants.BITCOIN_SIGN_TX_SUCCESS,
+  data,
+})
+
+export const bitcoinSignTxFailure = (error) => ({
+  type: BtcConstants.BITCOIN_SIGN_TX_FAILURE,
+  error,
+})

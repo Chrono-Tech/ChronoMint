@@ -6,7 +6,7 @@
 import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { walletInfoSelector } from '@chronobank/core/redux/wallet/selectors/selectors'
-import { estimateBtcFee } from '@chronobank/core/redux/tokens/actions'
+import { estimateBtcFee } from '@chronobank/core/redux/bitcoin/thunks'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import { getMarket } from '@chronobank/core/redux/market/selectors'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
@@ -196,15 +196,15 @@ export default class Bitcoin extends PureComponent {
           formFee,
           blockchain,
         }
-        this.props.estimateFee(params, (error, result) => {
+        this.props.estimateFee(params, (error, fee) => {
           if (error) {
             this.setState({
               feeError: error,
               feeLoading: false,
             })
-          } else if (result && result.fee) {
+          } else if (fee) {
             this.setState({
-              fee: result.fee,
+              fee,
               feeMultiplier: this.props.feeMultiplier,
               feeError: null,
               feeLoading: false,

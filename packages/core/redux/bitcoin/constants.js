@@ -3,13 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import BitcoinCashMemoryDevice from '../../services/signers/BitcoinCashMemoryDevice'
-import BitcoinTrezorDevice from '../../services/signers/BitcoinTrezorDevice'
-import BitcoinTrezorDeviceMock from '../../services/signers/BitcoinTrezorMockDevice'
-import BitcoinLedgerDevice from '../../services/signers/BitcoinLedgerDevice'
-import BitcoinLedgerDeviceMock from '../../services/signers/BitcoinLedgerDeviceMock'
-import BitcoinMemoryDevice from '../../services/signers/BitcoinMemoryDevice'
-
 export const DUCK_BITCOIN = 'bitcoin'
 
 // Actions to operate with preparation of a transaction Create/update, accept before send or reject.
@@ -46,3 +39,13 @@ export const BITCOIN_HTTP_GET_ADDRESS_INFO_FAILURE = 'BITCOIN/HTTP/GET_ADDRESS_I
 export const BITCOIN_HTTP_POST_SEND_TX = 'BITCOIN/HTTP/POST_SEND_TX'
 export const BITCOIN_HTTP_POST_SEND_TX_SUCCESS = 'BITCOIN/HTTP/POST_SEND_TX_SUCCESS'
 export const BITCOIN_HTTP_POST_SEND_TX_FAILURE = 'BITCOIN/HTTP/POST_SEND_TX_FAILURE'
+
+// Overall Tx execute
+export const BITCOIN_EXECUTE_TX = 'BITCOIN/EXECUTE/TX'
+export const BITCOIN_EXECUTE_TX_SUCCESS = 'BITCOIN/EXECUTE/TX_SUCCESS'
+export const BITCOIN_EXECUTE_TX_FAILURE = 'BITCOIN/EXECUTE/TX_FAILURE'
+
+// Operation 'sign bitcoin'
+export const BITCOIN_SIGN_TX = 'BITCOIN/SIGN/TX'
+export const BITCOIN_SIGN_TX_SUCCESS = 'BITCOIN/SIGN/TX_SUCCESS'
+export const BITCOIN_SIGN_TX_FAILURE = 'BITCOIN/SIGN/TX_FAILURE'

@@ -90,6 +90,28 @@ const mutations = {
     lastRequestMeta: error,
   }),
 
+  // Execute bitcoin Tx
+  [BtcConstants.BITCOIN_EXECUTE_TX]: (state) => state,
+  [BtcConstants.BITCOIN_EXECUTE_TX_SUCCESS]: (state, data) => ({
+    ...state,
+    lastRequestMeta: data,
+  }),
+  [BtcConstants.BITCOIN_EXECUTE_TX_FAILURE]: (state, error) => ({
+    ...state,
+    lastRequestMeta: error,
+  }),
+
+  // Operation sign bitcoin
+  [BtcConstants.BITCOIN_SIGN_TX]: (state) => state,
+  [BtcConstants.BITCOIN_SIGN_TX_SUCCESS]: (state, data) => ({
+    ...state,
+    lastRequestMeta: data,
+  }),
+  [BtcConstants.BITCOIN_SIGN_TX_FAILURE]: (state, error) => ({
+    ...state,
+    lastRequestMeta: error,
+  }),
+
   // Update/Create Tx in state
   [BtcConstants.BITCOIN_TX_UPDATE]: (state, { entry }) => {
     const address = entry.tx.from
