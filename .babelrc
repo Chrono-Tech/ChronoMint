@@ -1,0 +1,26 @@
+{
+  "plugins": [
+  ],
+  "presets": [
+    [
+      "env",
+      {
+        "modules": false
+      }
+    ],
+    "react"
+  ],
+  "env": {
+    "production": {
+      "only": [
+        "app"
+      ],
+      "plugins": []
+    },
+    "development": {
+      "plugins": [
+        "transform-es2015-modules-commonjs"
+      ]
+    }
+  }
+}

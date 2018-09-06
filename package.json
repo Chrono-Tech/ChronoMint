@@ -21,11 +21,13 @@
     "babel-plugin-syntax-trailing-function-commas": "6.22.0",
     "babel-plugin-transform-class-properties": "6.24.1",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-plugin-transform-es2015-modules-commonjs": "6.24.1",
     "babel-plugin-transform-object-rest-spread": "6.23.0",
     "babel-plugin-transform-react-constant-elements": "6.23.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.4.0",
+    "babel-preset-es2015": "^6.22.0",
     "babel-preset-react": "^6.24.1",
     "babel-preset-react-hmre": "^1.1.1",
     "babel-preset-stage-0": "^6.24.1",
@@ -149,7 +151,7 @@
     "build:i18n": "node ./scripts/build.js --src-app=i18nApp",
     "build-archive": "yarn build && node ./scripts/compress.js build build.zip",
     "standalone": "NODE_ENV=standalone node ./scripts/build.js",
-    "test": "NODE_ENV=development jest --useStderr --forceExit --runInBand",
+    "test": "NODE_ENV=development jest --useStderr --forceExit --runInBand --no-cache",
     "testrpc": "ganache-cli --mnemonic \"video visa alcohol fault earth naive army senior major inherit convince electric\" --trace_request true | grep -Ev \"FilterSubprovider|eth_getFilterChanges\"",
     "bridge": "cd node_modules/ethereum-bridge && mkdir -p database && node bridge.js",
     "contracts:compile": "cd node_modules/chronobank-smart-contracts && node --max_old_space_size=8000 ../truffle/build/cli.bundled.js compile --all",
@@ -161,30 +163,6 @@
   "pre-commit": [
     "lint:errors"
   ],
-  "jest": {
-    "testURL": "http://localhost",
-    "setupTestFrameworkScriptFile": "./src/specsInit.js",
-    "collectCoverageFrom": [
-      "src/**/*.js",
-      "src/**/*.jsx",
-      "!**/*.{spec.js,mock.js}**"
-    ],
-    "coverageReporters": [
-      "lcov"
-    ],
-    "transform": {
-      "^.+\\.(js|jsx)?$": "babel-jest"
-    },
-    "moduleDirectories": [
-      "node_modules",
-      "src"
-    ],
-    "moduleNameMapper": {
-      "^@chronobank(.*)$": "<rootDir>/packages/$1",
-      "\\.(css|scss)$": "<rootDir>/mocks/styleMock.js",
-      "\\.(png|jpg|jpeg|gif|ttf|eot|woff|otf|svg)$": "<rootDir>/mocks/fileMock.js"
-    }
-  },
   "engines": {
     "node": ">=7.9.0",
     "yarn": ">=1.0.0"
