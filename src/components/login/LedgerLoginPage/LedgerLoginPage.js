@@ -6,9 +6,8 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import {
-  onCreateWalletFromDevice,
-} from '@chronobank/login-ui/redux/thunks'
+import { onCreateWalletFromDevice } from '@chronobank/login-ui/redux/thunks'
+import { WALLET_TYPE_LEDGER } from '@chronobank/core/models/constants/AccountEntryModel'
 import {
   navigateToSelectWallet,
   navigateBack,
@@ -23,7 +22,7 @@ function mapDispatchToProps (dispatch) {
   return {
     getUserInfo: (addresses: string[]) => dispatch(ProfileThunks.getUserInfo(addresses)),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
-    onCreateWalletFromDevice: (name, device, profile) => dispatch(onCreateWalletFromDevice(name, device, profile)),
+    onCreateWalletFromDevice: (name, device, profile) => dispatch(onCreateWalletFromDevice(name, device, profile, WALLET_TYPE_LEDGER)),
     navigateBack: () => dispatch(navigateBack()),
   }
 }

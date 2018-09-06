@@ -32,8 +32,6 @@ class AccountEntryModel extends AbstractAccountModel {
     switch (this.type) {
       case WALLET_TYPE_MEMORY:
         return this.encrypted[0].address
-      case WALLET_TYPE_DEVICE:
-        return this.encrypted[0].address 
     }
   } 
 

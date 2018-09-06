@@ -5,10 +5,28 @@
 
 import { createSelector } from 'reselect'
 import bitcoin from 'bitcoinjs-lib'
-import { camelCase, startCase } from 'lodash'
 import { DUCK_BITCOIN } from './constants'
-import { bitcoinSignersMap } from './signersMap'
 import { getPersistAccount, getSelectedNetwork } from '../persistAccount/selectors'
+import {
+  WALLET_TYPE_TREZOR,
+  WALLET_TYPE_TREZOR_MOCK,
+  WALLET_TYPE_LEDGER,
+  WALLET_TYPE_LEDGER_MOCK,
+  WALLET_TYPE_MEMORY,
+  WALLET_TYPE_METAMASK,
+} from '../../models/constants/AccountEntryModel'
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+} from '../../dao/constants'
+import MetamaskPlugin from '../../services/signers/MetamaskPlugin'
+import BitcoinMemoryDevice from '../../services/signers/BitcoinMemoryDevice'
+import BitcoinLedgerDeviceMock from '../../services/signers/BitcoinLedgerDeviceMock'
+import BitcoinTrezorDeviceMock from '../../services/signers/BitcoinTrezorDeviceMock'
+
+import BitcoinCashMemoryDevice from '../../services/signers/BitcoinCashMemoryDevice'
+import BitcoinCashLedgerDeviceMock from '../../services/signers/BitcoinCashLedgerDeviceMock'
+import BitcoinCashTrezorDeviceMock from '../../services/signers/BitcoinCashTrezorDeviceMock'
 
 export const bitcoinSelector = () => (state) =>
   state.get(DUCK_BITCOIN)
@@ -28,14 +46,54 @@ export const pendingEntrySelector = (address, key, blockchain) => createSelector
   },
 )
 
-export const getBitcoinSigner = (state, blockchain) => {
+export const getBitcoinSigner = (state) => {
   const account = getPersistAccount(state)
   const networkData = getSelectedNetwork()(state)
-  const network = bitcoin.networks[networkData[blockchain]]
-  const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
+  const network = bitcoin.networks[networkData[BLOCKCHAIN_BITCOIN]]
 
-  const SignerName = `${startCase(camelCase(blockchain))}${startCase(camelCase(account.decryptedWallet.entry.encrypted[0].type))}Device`
-  const SignerComponent = bitcoinSignersMap[SignerName]
+  switch (account.decryptedWallet.entry.encrypted[0].type) {
+    case WALLET_TYPE_MEMORY: {
+      const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
+      return new BitcoinMemoryDevice({ privateKey, network })
+    }
+    case WALLET_TYPE_LEDGER_MOCK:
+    case WALLET_TYPE_LEDGER: {
+      const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
+      return new BitcoinLedgerDeviceMock({ privateKey, network })
+    }
+    case WALLET_TYPE_TREZOR_MOCK:
+    case WALLET_TYPE_TREZOR: {
+      const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
+      return new BitcoinTrezorDeviceMock({ privateKey, network })
+    }
+    case WALLET_TYPE_METAMASK: {
+      return new MetamaskPlugin()
+    }
+  }
+}
 
-  return new SignerComponent({ privateKey, network })
+export const getBitcoinCashSigner = (state) => {
+  const account = getPersistAccount(state)
+  const networkData = getSelectedNetwork()(state)
+  const network = bitcoin.networks[networkData[BLOCKCHAIN_BITCOIN_CASH]]
+
+  switch (account.type) {
+    case WALLET_TYPE_MEMORY: {
+      const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
+      return new BitcoinCashMemoryDevice({ privateKey, network })
+    }
+    case WALLET_TYPE_LEDGER_MOCK:
+    case WALLET_TYPE_LEDGER: {
+      const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
+      return new BitcoinCashLedgerDeviceMock({ privateKey, network })
+    }
+    case WALLET_TYPE_TREZOR_MOCK:
+    case WALLET_TYPE_TREZOR: {
+      const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
+      return new BitcoinCashTrezorDeviceMock({ privateKey, network })
+    }
+    case WALLET_TYPE_METAMASK: {
+      return new MetamaskPlugin()
+    }
+  }
 }

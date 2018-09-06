@@ -13,6 +13,7 @@ import {
   navigateToSelectWallet,
   navigateBack,
 } from '@chronobank/login-ui/redux/navigation'
+import { WALLET_TYPE_TREZOR } from '@chronobank/core/models/constants/AccountEntryModel'
 import LoginWithTrezorContainer from '@chronobank/login-ui/components/LoginWithTrezor/LoginWithTrezorContainer'
 import AccountNameContainer from '@chronobank/login-ui/components/AccountName/AccountNameContainer'
 import DerivationPathFormContainer from '@chronobank/login-ui/components/DerivationPathForm/DerivationPathFormContainer'
@@ -23,7 +24,7 @@ function mapDispatchToProps (dispatch) {
   return {
     getUserInfo: (addresses: string[]) => dispatch(ProfileThunks.getUserInfo(addresses)),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
-    onCreateWalletFromDevice: (name, device, profile) => dispatch(onCreateWalletFromDevice(name, device, profile)),
+    onCreateWalletFromDevice: (name, device, profile) => dispatch(onCreateWalletFromDevice(name, device, profile, WALLET_TYPE_TREZOR)),
     navigateBack: () => dispatch(navigateBack()),
   }
 }

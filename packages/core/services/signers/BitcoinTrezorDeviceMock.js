@@ -4,9 +4,10 @@
  */
 
 import EventEmitter from 'events'
-import bitcoin from 'bitcoinjs-lib'
+import bitcoin from "bitcoinjs-lib";
 
-export default class BitcoinCashMemoryDevice extends EventEmitter {
+export default class BitcoinTrezorDeviceMock extends EventEmitter {
+
   constructor ({ privateKey, network }) {
     super()
     this.privateKey = privateKey
@@ -24,10 +25,9 @@ export default class BitcoinCashMemoryDevice extends EventEmitter {
     const txb = new bitcoin.TransactionBuilder
       .fromTransaction(bitcoin.Transaction.fromHex(unsignedTxHex), this.network)
     const keyPair = this.getKeyPair()
-    const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
 
     for (let i = 0; i < txb.__inputs.length; i++) {
-      txb.sign(i, keyPair, null, hashType, txb.__inputs[i])
+      txb.sign(i, keyPair)
     }
 
     return txb.build().toHex()

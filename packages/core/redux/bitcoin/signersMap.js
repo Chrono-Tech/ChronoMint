@@ -6,13 +6,17 @@
 import BitcoinCashMemoryDevice from '../../services/signers/BitcoinCashMemoryDevice'
 import BitcoinLedgerDevice from '../../services/signers/BitcoinLedgerDevice'
 import BitcoinLedgerDeviceMock from '../../services/signers/BitcoinLedgerDeviceMock'
+import LitecoinMemoryDevice from '../../services/signers/LitecoinMemoryDevice'
 import BitcoinMemoryDevice from '../../services/signers/BitcoinMemoryDevice'
 import BitcoinTrezorDevice from '../../services/signers/BitcoinTrezorDevice'
-import BitcoinTrezorDeviceMock from '../../services/signers/BitcoinTrezorMockDevice'
+import BitcoinTrezorDeviceMock from '../../services/signers/BitcoinTrezorDeviceMock'
 
 // eslint-disable-next-line import/prefer-default-export
 export const bitcoinSignersMap = {
+  'LitecoinMemoryDevice': LitecoinMemoryDevice,
+
   'BitcoinCashMemoryDevice': BitcoinCashMemoryDevice,
+
   'BitcoinLedgerDevice': BitcoinLedgerDevice,
   'BitcoinLedgerDeviceMock': BitcoinLedgerDeviceMock,
   'BitcoinMemoryDevice': BitcoinMemoryDevice,

@@ -6,7 +6,7 @@
 import bip39 from 'bip39'
 import uuid from 'uuid/v1'
 import { profileImgJPG } from '@chronobank/core-dependencies/assets'
-import { WALLET_TYPE_MEMORY, WALLET_TYPE_DEVICE } from '../../models/constants/AccountEntryModel'
+import { WALLET_TYPE_MEMORY } from '../../models/constants/AccountEntryModel'
 import { AccountEntryModel } from '../../models/wallet/persistAccount'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 
@@ -59,20 +59,25 @@ export const getAccountAvatar = (account: AccountEntryModel) => {
   return img || profileImgJPG
 }
 
-export const createAccountEntry = (name, walletFileImportObject, profile = null) =>
-  new AccountEntryModel({
+export const createAccountEntry = (name, walletFileImportObject, profile = null) => {
+  return new AccountEntryModel({
     key: uuid(),
     name,
     type: WALLET_TYPE_MEMORY,
     encrypted: [walletFileImportObject],
     profile,
   })
+}
 
-export const createDeviceAccountEntry = (name, device, profile = null) => {
+export const createDeviceAccountEntry = (name, device, profile = null, walletType = null) => {
+  if (!walletType) {
+    throw new Error('WalletDeviceType is empty')
+  }
+
   return new AccountEntryModel({
     key: uuid(),
     name,
-    type: WALLET_TYPE_DEVICE,
+    type: walletType,
     encrypted: [device],
     profile,
   })

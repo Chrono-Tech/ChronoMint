@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import bitcoin from 'bitcoinjs-lib'
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import {
   BLOCKCHAIN_BITCOIN,
@@ -19,11 +18,6 @@ import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import WalletModel from '../../models/wallet/WalletModel'
 import { subscribeOnTokens } from '../tokens/thunks'
 import { formatBalances, getWalletBalances } from '../tokens/utils'
-import {
-  createBitcoinWalletModelFromPK,
-  createLitecoinWalletModelFromPK,
-  createBitcoinCashWalletModelFromPK,
-} from '../bitcoin/utils'
 import TokenModel from '../../models/tokens/TokenModel'
 import EthereumMemoryDevice  from '../../services/signers/EthereumMemoryDevice'
 import tokenService from '../../services/TokenService'
@@ -44,7 +38,8 @@ import {
   WALLETS_UPDATE_WALLET,
 } from './constants'
 import { executeNemTransaction } from '../nem/thunks'
-import { getPersistAccount, getEthereumSigner, getSelectedNetwork } from '../persistAccount/selectors'
+import { getPersistAccount, getEthereumSigner } from '../persistAccount/selectors'
+import { /*getBitcoinCashSigner,*/ getBitcoinSigner } from '../bitcoin/selectors'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -68,7 +63,6 @@ export const initWallets = () => (dispatch) => {
 const initWalletsFromKeys = () => (dispatch, getState) => {
   const state = getState()
   const account = getPersistAccount(state)
-  const network = getSelectedNetwork()(state)
   const wallets = []
 
   wallets.push(new WalletModel({
@@ -78,9 +72,29 @@ const initWalletsFromKeys = () => (dispatch, getState) => {
     walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
   }))
 
-  wallets.push(createBitcoinWalletModelFromPK(account.decryptedWallet.privateKey, bitcoin.networks[network.bitcoin], network.bitcoin))
-  wallets.push(createBitcoinCashWalletModelFromPK(account.decryptedWallet.privateKey, bitcoin.networks[network.bitcoinCash]), network.bitcoinCash)
-  wallets.push(createLitecoinWalletModelFromPK(account.decryptedWallet.privateKey, bitcoin.networks[network.litecoin]), network.litecoin)
+  const bitcoinSigner = getBitcoinSigner(state)
+  wallets.push(new WalletModel({
+    address: bitcoinSigner.getAddress(),
+    blockchain: BLOCKCHAIN_BITCOIN,
+    isMain: true,
+    walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+  }))
+
+  // const bitcoinCashSigner = getBitcoinCashSigner(state)
+  // wallets.push(new WalletModel({
+  //   address: bitcoinCashSigner.getAddress(),
+  //   blockchain: BLOCKCHAIN_BITCOIN_CASH,
+  //   isMain: true,
+  //   walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+  // }))
+
+  // const litecoinSigner = getBitcoinSigner(state, BLOCKCHAIN_LITECOIN)
+  // wallets.push(new WalletModel({
+  //   address: litecoinSigner.getAddress(),
+  //   blockchain: BLOCKCHAIN_LITECOIN,
+  //   isMain: true,
+  //   walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+  // }))
 
   wallets.forEach((wallet) => {
     dispatch(setWallet(wallet))
@@ -136,7 +150,7 @@ const fallbackCallback = (wallet) => (dispatch) => {
 }
 
 const updateWalletBalance = ({ wallet }) => async (dispatch) => {
-  if (wallet.blockchain === BLOCKCHAIN_NEM) {
+  if (wallet.blockchain === BLOCKCHAIN_NEM || wallet.blockchain === BLOCKCHAIN_ETHEREUM) {
     return dispatch(fallbackCallback(wallet))
   }
   getWalletBalances({ wallet })

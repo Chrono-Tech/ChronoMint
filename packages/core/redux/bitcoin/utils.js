@@ -12,13 +12,6 @@ import {
   COIN_TYPE_BTC_TESTNET,
 } from '@chronobank/login/network/constants'
 import { TxEntryModel, TxExecModel } from '../../models'
-import {
-  BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_LITECOIN,
-} from '../../dao/constants'
-import WalletModel from '../../models/wallet/WalletModel'
 
 /**
  * Create new TxEntryModel from provided data
@@ -63,7 +56,9 @@ export const selectCoins = (to, amount: BigNumber, feeRate, utxos) => {
   return { inputs, outputs, fee }
 }
 
-// Method was moved from privateKeyProvider
+////////////////////////////////////////////////
+// @todo remove after refactor providers/engines
+////////////////////////////////////////////////
 export const createBitcoinWalletFromPK = (privateKey, network, networkName) => {
   const btcPrivateKey = (privateKey.slice(0, 2) && privateKey.length === 66) ? privateKey.substring(2, 66) : privateKey
   const keyPair = new bitcoin.ECPair.fromPrivateKey(Buffer.from(btcPrivateKey, 'hex'), { network })
@@ -125,74 +120,45 @@ const describeBitcoinTransaction = (tx, options, utxos) => {
   }
 }
 
-export const createBitcoinWalletModelFromPK = (privateKey, network, networkName) => {
-  const wallet = createBitcoinWalletFromPK(privateKey, network, networkName)
-  return new WalletModel({
-    address: wallet.address,
-    blockchain: BLOCKCHAIN_BITCOIN,
-    isMain: true,
-    walletDerivedPath: wallet.derivePath,
-  })
-}
-
-export const createBitcoinCashWalletModelFromPK = (privateKey, network, networkName) => {
-  const wallet = createBitcoinWalletFromPK(privateKey, network, networkName)
-  return new WalletModel({
-    address: wallet.address,
-    blockchain: BLOCKCHAIN_BITCOIN_CASH,
-    isMain: true,
-    walletDerivedPath: wallet.derivePath,
-  })
-}
-
-export const createLitecoinWalletModelFromPK = (privateKey, network, networkName) => {
-  const wallet = createBitcoinWalletFromPK(privateKey, network, networkName)
-  return new WalletModel({
-    address: wallet.address,
-    blockchain: BLOCKCHAIN_LITECOIN,
-    isMain: true,
-    walletDerivedPath: wallet.derivePath,
-  })
-}
-
-export const signBitcoinInputs = (txb, inputs, signer) => {
-  for (let i = 0; i < inputs.length; i++) {
-    txb.sign(i, signer.keyPair)
-  }
-}
-
-export const signBitcoinCashInputs = (txb, inputs, from) => {
-  txb.enableBitcoinCash(true)
-  txb.setVersion(2)
-
-  const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
-  const wallet = this._walletsMap[from] || this._wallet
-
-  for (let i = 0; i < inputs.length; i++) {
-    txb.sign(i, wallet.keyPair, null, hashType, inputs[i].value)
-  }
-}
-
-export const signBitcoinGoldInputs = (txb, inputs, from) => {
-  txb.enableBitcoinGold(true)
-  txb.setVersion(2)
-
-  const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
-  const wallet = this._walletsMap[from] || this._wallet
-
-  for (let i = 0; i < inputs.length; i++) {
-    txb.sign(i, wallet.keyPair, null, hashType, inputs[i].value)
-  }
-}
-
-export const signLitecoinInputs = null // not specified
-
-export const signInputsMap = {
-  [BLOCKCHAIN_BITCOIN]: signBitcoinInputs,
-  [BLOCKCHAIN_BITCOIN_CASH]: signBitcoinCashInputs,
-  [BLOCKCHAIN_BITCOIN_GOLD]: signBitcoinGoldInputs,
-  [BLOCKCHAIN_LITECOIN]: signLitecoinInputs,
-}
+//
+// export const signBitcoinInputs = (txb, inputs, signer) => {
+//   for (let i = 0; i < inputs.length; i++) {
+//     txb.sign(i, signer.keyPair)
+//   }
+// }
+//
+// export const signBitcoinCashInputs = (txb, inputs, from) => {
+//   txb.enableBitcoinCash(true)
+//   txb.setVersion(2)
+//
+//   const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
+//   const wallet = this._walletsMap[from] || this._wallet
+//
+//   for (let i = 0; i < inputs.length; i++) {
+//     txb.sign(i, wallet.keyPair, null, hashType, inputs[i].value)
+//   }
+// }
+//
+// export const signBitcoinGoldInputs = (txb, inputs, from) => {
+//   txb.enableBitcoinGold(true)
+//   txb.setVersion(2)
+//
+//   const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
+//   const wallet = this._walletsMap[from] || this._wallet
+//
+//   for (let i = 0; i < inputs.length; i++) {
+//     txb.sign(i, wallet.keyPair, null, hashType, inputs[i].value)
+//   }
+// }
+//
+// export const signLitecoinInputs = null // not specified
+//
+// export const signInputsMap = {
+//   [BLOCKCHAIN_BITCOIN]: signBitcoinInputs,
+//   [BLOCKCHAIN_BITCOIN_CASH]: signBitcoinCashInputs,
+//   [BLOCKCHAIN_BITCOIN_GOLD]: signBitcoinGoldInputs,
+//   [BLOCKCHAIN_LITECOIN]: signLitecoinInputs,
+// }
 
 export const prepareBitcoinTransaction = (tx, token, network, utxos, feeMultiplier = 1, satPerByte = null) => () => {
   const tokenRate = satPerByte || token.feeRate() // TODO: What if satPerByte will be zero (not null)?

@@ -15,7 +15,9 @@ import Button from 'components/common/ui/Button/Button'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import {
   WALLET_TYPE_MEMORY,
-  WALLET_TYPE_DEVICE,
+  WALLET_TYPE_LEDGER,
+  WALLET_TYPE_TREZOR,
+  WALLET_TYPE_METAMASK,
 } from '@chronobank/core/models/constants/AccountEntryModel'
 
 import {
@@ -68,7 +70,7 @@ function mapDispatchToProps (dispatch) {
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
     navigateToRecoverAccountPage: () => dispatch(navigateToRecoverAccountPage()),
     initialValues: {
-      password: '',
+      password: '123',
     },
   }
 }
@@ -165,15 +167,16 @@ class LoginForm extends React.Component {
     }
 
     switch (selectedWallet.type) {
-      case WALLET_TYPE_MEMORY: {
+      case WALLET_TYPE_MEMORY:
         return this.renderDefaultTypeForm()
-      }
-      case WALLET_TYPE_DEVICE: {
+
+      case WALLET_TYPE_LEDGER:
+      case WALLET_TYPE_TREZOR:
+      case WALLET_TYPE_METAMASK:
         return this.renderDeviceTypeForm()
-      }
-      default: {
+
+      default:
         return this.renderDefaultTypeForm()
-      }
     }
   }
 

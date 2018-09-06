@@ -11,7 +11,13 @@ import {
   SubmissionError,
 } from 'redux-form'
 import { replace } from 'react-router-redux'
-import { WALLET_TYPE_MEMORY, WALLET_TYPE_DEVICE } from '@chronobank/core/models/constants/AccountEntryModel'
+import {
+  WALLET_TYPE_MEMORY,
+  WALLET_TYPE_TREZOR,
+  WALLET_TYPE_TREZOR_MOCK,
+  WALLET_TYPE_LEDGER,
+  WALLET_TYPE_LEDGER_MOCK,
+} from '@chronobank/core/models/constants/AccountEntryModel'
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 import { getEthereumSigner } from '@chronobank/core/redux/persistAccount/selectors'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
@@ -31,6 +37,7 @@ import * as DeviceActions from '@chronobank/core/redux/device/actions'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 import {
   createAccountEntry,
+  createDeviceAccountEntry,
 } from '@chronobank/core/redux/persistAccount/utils'
 import * as LoginUINavActions from './navigation'
 import {
@@ -101,10 +108,14 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         const signer = getEthereumSigner(getState())
         await dispatch(SessionThunks.getProfileSignature(signer, accountWallet.encrypted[0].path))
 
+        //////////////////////////////////////////////////////
+        //// @todo remove after providers/engine refactoring
         const providerSettings = dispatch(SessionThunks.getProviderSettings())
         const provider = privateKeyProvider.getPrivateKeyProvider(wallet.privateKey.slice(2, 66), providerSettings)
-        dispatch(NetworkActions.selectAccount(accountWallet.encrypted[0].address))
         await setup(provider)
+        //////////////////////////////////////////////////////
+
+        dispatch(NetworkActions.selectAccount(accountWallet.encrypted[0].address))
 
         const {
           selectedAccount,
@@ -129,16 +140,25 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
       break
     }
 
-    case WALLET_TYPE_DEVICE: {
+    case WALLET_TYPE_TREZOR:
+    case WALLET_TYPE_TREZOR_MOCK:
+    case WALLET_TYPE_LEDGER:
+    case WALLET_TYPE_LEDGER_MOCK: {
       try {
         const wallet = await dispatch(DeviceActions.loadDeviceAccount(accountWallet))
         const signer = getEthereumSigner(getState())
 
         await dispatch(SessionThunks.getProfileSignature(signer, wallet.entry.encrypted[0].path))
 
-        //await dispatch(NetworkThunks.handleLogin(wallet.entry.encrypted[0].address))
+        //////////////////////////////////////////////////////
+        //// @todo remove after providers/engine refactoring
+        const providerSettings = dispatch(SessionThunks.getProviderSettings())
+        const provider = privateKeyProvider.getPrivateKeyProvider(wallet.privateKey.slice(2, 66), providerSettings)
+        await setup(provider)
+        //////////////////////////////////////////////////////
+
         dispatch(NetworkActions.selectAccount(wallet.entry.encrypted[0].address))
-        //await setup(provider)
+
         dispatch(NetworkActions.loading())
         dispatch(NetworkActions.clearErrors())
 
@@ -275,6 +295,17 @@ export const onSubmitCreateHWAccountPageFail = (errors, submitErrors) => {
 */
 export const onCreateWalletFromJSON = (name, walletJSON, profile) => (dispatch) => {
   const account = createAccountEntry(name, walletJSON, profile)
+
+  dispatch(PersistAccountActions.accountAdd(account))
+}
+
+/*
+ * Thunk dispatched by "" screen.
+ * TODO: to add description
+ * TODO: to move logic to utils
+*/
+export const onCreateWalletFromDevice = (name, device, profile, walletType) => (dispatch) => {
+  const account = createDeviceAccountEntry(name, device, profile, walletType)
 
   dispatch(PersistAccountActions.accountAdd(account))
 }

@@ -68,6 +68,7 @@ export const initMetamaskPlugin = (wallet) => async (dispatch) => {
 export const loadDeviceAccount = (entry) => async (dispatch) => {
   const wallet = new AccountModel({
     entry,
+    privateKey: '', // insert your temporary privateKey to test Ledger/Trezor mocks
   })
   await dispatch(accountLoad(wallet))
 

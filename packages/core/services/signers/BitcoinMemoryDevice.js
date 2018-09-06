@@ -14,6 +14,12 @@ export default class BitcoinMemoryDevice extends EventEmitter {
     Object.freeze(this)
   }
 
+  getAddress () {
+    const keyPair = this.getKeyPair()
+    const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: this.network })
+    return address
+  }
+
   signTransaction (unsignedTxHex) {
     const txb = new bitcoin.TransactionBuilder
       .fromTransaction(bitcoin.Transaction.fromHex(unsignedTxHex), this.network)
