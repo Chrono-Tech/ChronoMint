@@ -12,7 +12,7 @@ import {
 import {
   getAccountName,
   getAccountAddress,
-  getAccountAvatarImg,
+  getAccountAvatar,
 } from '@chronobank/core/redux/persistAccount/utils'
 import { reduxForm, Field, formPropTypes } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
@@ -45,7 +45,7 @@ class ResetPassword extends PureComponent {
         <div styleName='user-row'>
           <UserRow
             title={getAccountName(selectedWallet)}
-            avatar={getAccountAvatarImg(selectedWallet)}
+            avatar={getAccountAvatar(selectedWallet)}
             subtitle={getAccountAddress(selectedWallet, true)}
           />
         </div>
