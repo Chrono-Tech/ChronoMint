@@ -97,7 +97,6 @@
     "d3": "^4.10.0",
     "debug": "^3.1.0",
     "immutable": ">=3",
-    "ipfs-api": "^20.2.1",
     "js-file-download": "^0.4.1",
     "jsan": "^3.1.10",
     "lodash": "^4.17.4",

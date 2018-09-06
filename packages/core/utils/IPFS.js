@@ -7,7 +7,7 @@ import ipfsAPI from 'ipfs-api'
 import promisify from 'promisify-node-callback'
 import FileCollection from '@chronobank/core/models/FileSelect/FileCollection'
 import FileModel, { fileConfig } from '@chronobank/core/models/FileSelect/FileModel'
-import { imageValidator, FileReader } from '../imageValidator'
+import { checkImageFile, FileReader } from './imageValidator'
 
 const DEFAULT_CONFIG = {
   host: 'ipfs.chronobank.io',
@@ -100,7 +100,7 @@ class IPFS {
 
     // check image
     if (file.isImage()) {
-      const imageErrors = await imageValidator(file, config)
+      const imageErrors = await checkImageFile(file, config)
       errors = errors.concat(imageErrors)
     }
 

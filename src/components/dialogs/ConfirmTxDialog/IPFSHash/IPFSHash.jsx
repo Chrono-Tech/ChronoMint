@@ -6,7 +6,7 @@
 import PropTypes from 'prop-types'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
-import IPFS from '@chronobank/core-dependencies/utils/IPFS'
+import IPFS from '@chronobank/core/utils/IPFS'
 import Value from '../../../common/Value/Value'
 
 import './IPFSHash.scss'

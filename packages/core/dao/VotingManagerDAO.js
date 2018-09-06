@@ -5,7 +5,7 @@
 
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
-import ipfs from '@chronobank/core-dependencies/utils/IPFS'
+import ipfs from '@chronobank/core/utils/IPFS'
 import PollNoticeModel from '../models/notices/PollNoticeModel'
 import PollModel from '../models/PollModel'
 import PollDetailsModel from '../models/PollDetailsModel'
