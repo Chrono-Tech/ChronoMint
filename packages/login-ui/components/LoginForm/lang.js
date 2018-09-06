@@ -8,5 +8,5 @@ export const en = {
   subTitle: 'Welcome back!',
   enterPassword: 'Enter Password',
   submitButton: 'Log In',
-  forgotPassword: 'Forgot you password?',
+  forgotPassword: 'Forgot your password?',
 }

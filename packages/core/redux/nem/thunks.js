@@ -5,15 +5,17 @@
 
 import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
-import { ErrorNoticeModel, SignerMemoryModel, TransferNoticeModel } from '../../models'
+import { ErrorNoticeModel, TransferNoticeModel } from '../../models'
+import EthereumMemoryDevice  from '../../services/signers/EthereumMemoryDevice'
 import { nemPendingSelector, pendingEntrySelector } from './selectors'
-import { getSelectedNetwork, getSigner } from '../persistAccount/selectors'
+import { getSelectedNetwork, getEthereumSigner } from '../persistAccount/selectors'
 import { describePendingNemTx } from '../../describers'
 import { getAccount } from '../session/selectors/models'
 import * as NemActions from './actions'
 import * as NemUtils from './utils'
 import { getToken } from '../tokens/selectors'
 import { notify } from '../notifier/actions'
+import tokenService from '../../services/TokenService'
 
 const notifyNemTransfer = (entry) => (dispatch, getState) => {
   const { tx } = entry
@@ -53,6 +55,18 @@ const nemTxStatus = (key, address, props) => (dispatch, getState) => {
       ...props,
     }),
   ))
+}
+
+export const estimateNemFee = (params, callback) => async (dispatch) => {
+  try {
+    const { from, to, amount, token } = params
+    const nemDao = tokenService.getDAO(token.symbol())
+    const tx = nemDao.transfer(from, to, amount, token)
+    const preparedTx = await dispatch(prepareTransaction({ tx }))
+    callback(null, { fee: NemUtils.formatFee(preparedTx.prepared.fee) })
+  } catch (e) {
+    callback(e)
+  }
 }
 
 export const executeNemTransaction = ({ tx, options }) => async (dispatch) => {
@@ -154,12 +168,9 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
   dispatch(nemTxStatus(entry.key, entry.tx.from, { isAccepted: true, isPending: true }))
 
   const state = getState()
-  let signer = getSigner(state)
+  let signer = getEthereumSigner(state)
   if (entry.walletDerivedPath) {
-    signer = await SignerMemoryModel.fromDerivedPath({
-      seed: signer.privateKey,
-      derivedPath: entry.walletDerivedPath,
-    })
+    signer = await EthereumMemoryDevice.getDerivedWallet(signer.privateKey, entry.walletDerivedPath)
   }
 
   const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key)(getState())

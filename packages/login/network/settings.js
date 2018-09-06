@@ -51,10 +51,14 @@ const MAINNET_BASE = {
   protocol: 'https',
   name: 'Mainnet (production)',
   scanner: blockExplorersMap.Ethereum.mainnet,
-  bitcoin: 'bitcoin',
-  bitcoinCash: 'bitcoin',
-  bitcoinGold: 'bitcoingold',
-  litecoin: 'litecoin',
+  bitcoin: 'bitcoin', //TODO remove
+  bitcoinCash: 'bitcoin', //TODO remove
+  bitcoinGold: 'bitcoingold', //TODO remove
+  litecoin: 'litecoin', //TODO remove
+  [BLOCKCHAIN_BITCOIN]: 'bitcoin',
+  [BLOCKCHAIN_BITCOIN_CASH]: 'bitcoin',
+  [BLOCKCHAIN_BITCOIN_GOLD]: 'bitcoingold',
+  [BLOCKCHAIN_LITECOIN]: 'litecoin',
   nem: 'mainnet',
   waves: 'MAINNET_CONFIG',
 }
@@ -64,10 +68,14 @@ const RINKEBY_BASE = {
   protocol: 'https',
   name: 'Rinkeby (test network)',
   scanner: blockExplorersMap.Ethereum.testnet,
-  bitcoin: 'testnet',
-  bitcoinCash: 'testnet',
-  bitcoinGold: 'bitcoingold_testnet',
-  litecoin: 'litecoin_testnet',
+  bitcoin: 'testnet', //TODO remove
+  bitcoinCash: 'testnet', //TODO remove
+  bitcoinGold: 'bitcoingold_testnet', //TODO remove
+  litecoin: 'litecoin_testnet', //TODO remove
+  [BLOCKCHAIN_BITCOIN]: 'testnet',
+  [BLOCKCHAIN_BITCOIN_CASH]: 'testnet',
+  [BLOCKCHAIN_BITCOIN_GOLD]: 'bitcoingold_testnet',
+  [BLOCKCHAIN_LITECOIN]: 'litecoin_testnet',
   nem: 'testnet',
   waves: 'TESTNET_CONFIG',
 }

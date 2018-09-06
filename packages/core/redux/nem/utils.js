@@ -21,6 +21,11 @@ export const createNemTxEntryModel = (entry, options = {}) =>
     ...entry,
   })
 
+export const formatFee = (fee) => {
+  const [integer, fractional] = nemSdk.utils.format.nemValue(fee)
+  return parseFloat(integer + "." + fractional)
+}
+
 export const describeXemTransaction = (tx, network) => {
   const value = tx.amount.div(DECIMALS).toNumber() // NEM-SDK works with Number data type
   // Get an empty common object to hold pass and key

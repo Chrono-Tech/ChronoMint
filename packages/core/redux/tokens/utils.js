@@ -16,16 +16,27 @@ import {
   BLOCKCHAIN_WAVES,
 } from '../../dao/constants'
 
+export const providersMap = {
+  [BLOCKCHAIN_ETHEREUM]: ethereumProvider,
+  [BLOCKCHAIN_BITCOIN]: btcProvider,
+  [BLOCKCHAIN_BITCOIN_CASH]: bccProvider,
+  [BLOCKCHAIN_BITCOIN_GOLD]: btgProvider,
+  [BLOCKCHAIN_LITECOIN]: ltcProvider,
+  [BLOCKCHAIN_WAVES]: wavesProvider,
+}
+
+export const getProviderByBlockchain = (blockchain) => {
+  return providersMap[blockchain] || null
+}
+
 export const getWalletBalances = ({ wallet }) => {
-  const providersMap = {
-    [BLOCKCHAIN_ETHEREUM]: ethereumProvider,
-    [BLOCKCHAIN_BITCOIN]: btcProvider,
-    [BLOCKCHAIN_BITCOIN_CASH]: bccProvider,
-    [BLOCKCHAIN_BITCOIN_GOLD]: btgProvider,
-    [BLOCKCHAIN_LITECOIN]: ltcProvider,
-    [BLOCKCHAIN_WAVES]: wavesProvider,
+  try {
+    return  providersMap[wallet.blockchain].getAccountBalances(wallet.address)
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log('Cannot find provider for the %s blockchain', wallet.blockchain)
+    return Promise.reject(`Cannot find provider for the ${wallet.blockchain} blockchain`)
   }
-  return providersMap[wallet.blockchain].getAccountBalances(wallet.address)
 }
 
 export const formatBalances = ({ balancesResult, blockchain }) => {

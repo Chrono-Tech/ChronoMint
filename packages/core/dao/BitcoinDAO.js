@@ -3,34 +3,23 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import {
-  bccProvider,
-  btcProvider,
-  btgProvider,
-  ltcProvider,
-} from '@chronobank/login/network/BitcoinProvider'
+import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import EventEmitter from 'events'
 import BigNumber from 'bignumber.js'
 import Amount from '../models/Amount'
 import TokenModel from '../models/tokens/TokenModel'
 import TxModel from '../models/TxModel'
-import TransferExecModel from '../models/TransferExecModel'
 import { bitcoinAddress } from '../models/validator'
-
-//#region CONSTANTS
-
 import {
+  BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_LITECOIN,
   EVENT_NEW_TRANSFER,
   EVENT_UPDATE_BALANCE,
   EVENT_UPDATE_LAST_BLOCK,
   EVENT_UPDATE_TRANSACTION,
 } from './constants'
-
-//#endregion CONSTANTS
 
 const EVENT_TX = 'tx'
 const EVENT_TRANSACTION_MAINED = 'transaction'
@@ -68,6 +57,7 @@ export default class BitcoinDAO extends EventEmitter {
   }
 
   isInitialized () {
+    // return true
     return this._bitcoinProvider.isInitialized()
   }
 
@@ -89,53 +79,11 @@ export default class BitcoinDAO extends EventEmitter {
     return this.getAccountBalances(address)
   }
 
-  accept (transfer: TransferExecModel) {
-    setImmediate(() => {
-      this.emit('accept', transfer)
-    })
-  }
-
-  reject (transfer: TransferExecModel) {
-    setImmediate(() => {
-      this.emit('reject', transfer)
-    })
-  }
-
-  // TODO @ipavlenko: Replace with 'immediateTransfer' after all token DAOs will start using 'submit' method
-  transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: number = 1, advancedParams = undefined) {
-    this.submit(from, to, amount, token, feeMultiplier, advancedParams)
-  }
-
-  submit (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: number = 1, advancedParams) {
-    const tokenFeeRate = advancedParams && advancedParams.satPerByte ? advancedParams.satPerByte : token.feeRate()
-    setImmediate(async () => {
-      const fee = await this._bitcoinProvider.estimateFee(from, to, amount, tokenFeeRate) // use feeMultiplier = 1 to estimate default fee
-      this.emit('submit', new TransferExecModel({
-        title: `tx.Bitcoin.${this._name}.transfer.title`,
-        blockchain: this._name,
-        from,
-        to,
-        amount: new Amount(amount, token.symbol()),
-        amountToken: token,
-        fee: new Amount(fee, token.symbol()),
-        feeToken: token,
-        feeMultiplier,
-        options: {
-          advancedParams,
-        },
-      }))
-    })
-  }
-
-  // TODO @ipavlenko: Rename to 'transfer' after all token DAOs will start using 'submit' method and 'trans'
-  async immediateTransfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: number = 1, advancedParams = undefined) {
-    try {
-      const tokenRate = advancedParams && advancedParams.satPerByte ? advancedParams.satPerByte : feeMultiplier * token.feeRate()
-      return await this._bitcoinProvider.transfer(from, to, amount, tokenRate)
-    } catch (e) {
-      // eslint-disable-next-line
-      console.log('Transfer failed', e)
-      throw e
+  transfer (from: string, to: string, amount: BigNumber) {
+    return {
+      from,
+      to,
+      value: new BigNumber(amount),
     }
   }
 
@@ -239,7 +187,7 @@ export default class BitcoinDAO extends EventEmitter {
       console.warn(message)
       throw new Error(message)
     }
-    const feeRate = await this.getFeeRate()
+    // const feeRate = await this.getFeeRate()
 
     return new TokenModel({
       name: this._name,
@@ -247,7 +195,7 @@ export default class BitcoinDAO extends EventEmitter {
       symbol: this._symbol,
       isFetched: true,
       blockchain: this._name,
-      feeRate,
+      feeRate: 200,
     })
   }
 

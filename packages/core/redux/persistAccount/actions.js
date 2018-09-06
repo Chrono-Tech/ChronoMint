@@ -4,22 +4,18 @@
  */
 
 import uuid from 'uuid/v1'
-import hdkey from 'ethereumjs-wallet/hdkey'
-import bip39 from 'bip39'
 import Accounts from 'web3-eth-accounts'
-import {
-  WALLET_HD_PATH,
-} from '@chronobank/login/network/constants'
 import * as ProfileThunks from '../profile/thunks'
+import * as AccountUtils from './utils'
+import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
+import { WALLET_TYPE_MEMORY } from '../../models/constants/AccountEntryModel'
 import {
+  AccountModel,
   AccountEntryModel,
   AccountProfileModel,
   AccountCustomNetwork,
 } from '../../models/wallet/persistAccount'
-import {
-  getWalletsListAddresses,
-  getAccountAddress,
-} from './utils'
+
 import {
   CUSTOM_NETWORKS_LIST_ADD,
   CUSTOM_NETWORKS_LIST_RESET,
@@ -56,27 +52,26 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
   const state = getState()
 
   const { walletsList } = state.get(DUCK_PERSIST_ACCOUNT)
-
   const index = walletsList.findIndex((item) => item.key === wallet.key)
-
   const copyWalletList = [...walletsList]
 
   copyWalletList.splice(index, 1, wallet)
 
   dispatch({ type: WALLETS_UPDATE_LIST, walletsList: copyWalletList })
-
 }
 
-export const decryptAccount = (encrypted, password) => () => {
-  const accounts = new Accounts()
-  accounts.wallet.clear()
+export const decryptAccount = (entry, password) => async () => {
+  const privateKey = EthereumMemoryDevice.decrypt({ entry: entry.encrypted[0].wallet, password })
+  const account = new AccountModel({
+    entry,
+    privateKey,
+  })
 
-  return accounts.wallet.decrypt(encrypted, password)
+  return account
 }
 
 export const validateAccountName = (name) => (dispatch, getState) => {
   const state = getState()
-
   const { walletsList } = state.get(DUCK_PERSIST_ACCOUNT)
 
   return !walletsList.find((item) => item.name === name)
@@ -87,81 +82,33 @@ export const resetPasswordAccount = (wallet, mnemonic, password) => async (dispa
   accounts.wallet.clear()
 
   const newCopy = await dispatch(createAccount({ name: wallet.name, mnemonic, password }))
-
   const newWallet = {
     ...wallet,
     encrypted: newCopy.encrypted,
   }
 
   dispatch(accountUpdate(newWallet))
-
   dispatch(accountSelect(newWallet))
-
 }
 
-export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => async (dispatch) => {
-  let hex = ''
-
-  if (privateKey){
-    hex = `0x${privateKey}`
-  }
-
-  if (mnemonic){
-    const hdKeyWallet = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic)).derivePath(WALLET_HD_PATH).getWallet()
-    hex = hdKeyWallet.getPrivateKeyString()
-  }
-
-  const accounts = new Accounts()
-
-  const wallet = await accounts.wallet.create(numberOfAccounts)
-  const account = accounts.privateKeyToAccount(hex)
-  wallet.add(account)
-
+export const createAccount = ({ name, wallet, type }) => async (dispatch) => {
   const entry = new AccountEntryModel({
     key: uuid(),
     name,
-    types,
-    encrypted: wallet && wallet.encrypt(password),
+    type,
+    encrypted: [wallet],
     profile: null,
   })
 
   const newAccounts = await dispatch(setProfilesForAccounts([entry]))
 
   return newAccounts[0] || entry
-
 }
 
-export const createHWAccount = ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => async (dispatch) => {
-  let hex = ''
-
-  if (privateKey){
-    hex = `0x${privateKey}`
-  }
-
-  if (mnemonic){
-    const hdKeyWallet = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic)).derivePath(WALLET_HD_PATH).getWallet()
-    hex = hdKeyWallet.getPrivateKeyString()
-  }
-
-  const accounts = new Accounts()
-  accounts.wallet.clear()
-
-  const wallet = await accounts.wallet.create(numberOfAccounts)
-  const account = accounts.privateKeyToAccount(hex)
-  wallet.add(account)
-
-  const entry = new AccountEntryModel({
-    key: uuid(),
-    name,
-    types,
-    encrypted: wallet && wallet.encrypt(password),
-    profile: null,
-  })
-
-  const newAccounts = await dispatch(setProfilesForAccounts([entry]))
-
-  return newAccounts[0] || entry
-
+export const createMemoryAccount = ({ name, password, mnemonic, privateKey }) => async (dispatch) => {
+  const wallet = await EthereumMemoryDevice.create({ privateKey, mnemonic, password })
+  const account = await dispatch(createAccount({ name, wallet, type: WALLET_TYPE_MEMORY }))
+  return account
 }
 
 export const downloadWallet = () => (dispatch, getState) => {
@@ -184,7 +131,7 @@ export const downloadWallet = () => (dispatch, getState) => {
 
 export const setProfilesForAccounts = (walletsList) => async (dispatch) => {
 
-  const addresses = getWalletsListAddresses(walletsList)
+  const addresses = AccountUtils.getWalletsListAddresses(walletsList)
   const data = await dispatch(ProfileThunks.getUserInfo(addresses))
 
   if (Array.isArray(data)) {
@@ -192,14 +139,13 @@ export const setProfilesForAccounts = (walletsList) => async (dispatch) => {
 
       const updatedProfileAccounts =
         walletsList
-          .filter((wallet) => getAccountAddress(wallet, true) === profile.address)
+          .filter((wallet) => AccountUtils.getAccountAddress(wallet, true) === profile.address)
           .map((account) => {
             const profileModel = profile && new AccountProfileModel(profile) || null
             return new AccountEntryModel({
               ...account,
               profile: profileModel,
             })
-
           })
 
       return [].concat(prev, updatedProfileAccounts)
@@ -229,14 +175,11 @@ export const customNetworkEdit = (network: AccountCustomNetwork) => (dispatch, g
   const state = getState()
 
   const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
-
   const foundNetworkIndex = customNetworksList.findIndex((item) => network.id === item.id)
 
   if (foundNetworkIndex !== -1) {
     const copyNetworksList = [...customNetworksList]
-
     copyNetworksList.splice(foundNetworkIndex, 1, network)
-
     dispatch(customNetworksListUpdate(copyNetworksList))
   }
 }
@@ -247,9 +190,7 @@ export const customNetworksListAdd = (network: AccountCustomNetwork) => (dispatc
 
 export const customNetworksDelete = (network) => (dispatch, getState) => {
   const state = getState()
-
   const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
-
   const updatedNetworkList = customNetworksList.filter((item) => item.id !== network.id)
 
   dispatch(customNetworksListUpdate(updatedNetworkList))

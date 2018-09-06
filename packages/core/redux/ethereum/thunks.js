@@ -6,10 +6,11 @@
 import BigNumber from 'bignumber.js'
 import { isNil, omitBy } from 'lodash'
 import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
-import { SignerMemoryModel, TxEntryModel, HolderModel } from '../../models'
+import { TxEntryModel, HolderModel } from '../../models'
+import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 import { ethereumPendingSelector, pendingEntrySelector, web3Selector } from './selectors'
 import { DUCK_ETHEREUM } from './constants'
-import { getSigner } from '../persistAccount/selectors'
+import { getEthereumSigner } from '../persistAccount/selectors'
 import ethereumDAO from '../../dao/EthereumDAO'
 import { describePendingTx } from '../../describers'
 import { daoByAddress } from '../daos/selectors'
@@ -142,12 +143,9 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
   dispatch(ethTxStatus(entry.key, entry.tx.from, { isAccepted: true, isPending: true }))
 
   const state = getState()
-  let signer = getSigner(state)
+  let signer = getEthereumSigner(state)
   if (entry.walletDerivedPath) {
-    signer = await SignerMemoryModel.fromDerivedPath({
-      seed: signer.privateKey,
-      derivedPath: entry.walletDerivedPath,
-    })
+    signer = await EthereumMemoryDevice.getDerivedWallet(signer.privateKey, entry.walletDerivedPath)
   }
 
   return dispatch(processTransaction({

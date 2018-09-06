@@ -7,9 +7,19 @@ import ethUtil from 'ethereumjs-util'
 import Wallet from 'ethereumjs-wallet'
 import hdKey from 'ethereumjs-wallet/hdkey'
 import bip39 from 'bip39'
+import {
+  WALLET_TYPE_MEMORY,
+} from '@chronobank/core/models/constants/AccountEntryModel'
+
 import { WALLET_HD_PATH } from './constants'
 
 export default class EthereumWallet extends Wallet {
+
+  constructor (privateKey, pub, type) {
+    super(privateKey, pub)
+    this.type = type
+  }
+
   static createWallet (params) {
     const { type, pk, mnemonic } = params
     this.type = type
@@ -17,9 +27,9 @@ export default class EthereumWallet extends Wallet {
     let hdWallet
     let hdkey
     switch (true) {
-      case type === 'memory' && pk && pk.length <= 64:
+      case type === WALLET_TYPE_MEMORY && pk && pk.length <= 64:
         return new EthereumWallet(Buffer.from(pk, 'hex'), null, type)
-      case type === 'memory' && !!pk:
+      case type === WALLET_TYPE_MEMORY && !!pk:
         hdWallet = hdKey.fromMasterSeed(Buffer.from(pk, 'hex'))
         hdkey = hdWallet.derivePath(WALLET_HD_PATH)._hdkey
         if (hdkey._privateKey) {
@@ -27,7 +37,7 @@ export default class EthereumWallet extends Wallet {
         } else {
           return EthereumWallet.fromPublicKey(hdkey._publicKey, true, type)
         }
-      case type === 'memory' && !!mnemonic:
+      case type === WALLET_TYPE_MEMORY && !!mnemonic:
         hdWallet = hdKey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic))
         hdkey = hdWallet.derivePath(WALLET_HD_PATH)._hdkey
         if (hdkey._privateKey) {
@@ -47,11 +57,6 @@ export default class EthereumWallet extends Wallet {
 
   static fromFile (input, password, nonStrict) {
     const wallet = Wallet.fromV3(input, password, nonStrict)
-    return new EthereumWallet(wallet.getPrivateKey(), null, 'memory')
-  }
-
-  constructor (priv, pub, type) {
-    super(priv, pub)
-    this.type = type
+    return new EthereumWallet(wallet.getPrivateKey(), null, WALLET_TYPE_MEMORY)
   }
 }

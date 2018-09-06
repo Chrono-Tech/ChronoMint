@@ -38,7 +38,7 @@ function mapDispatchToProps (dispatch) {
         props: {
           wallet,
           isModal: true,
-          token,
+          tokenSymbol: token,
         },
       }))
     },

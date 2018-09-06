@@ -5,25 +5,15 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
 import { stopSubmit } from 'redux-form'
-import {
-  navigateBack,
-} from '../../redux/navigation'
 import {
   FORM_WALLET_UPLOAD,
 } from '../../redux/constants'
 import LoginWithWallet from './LoginWithWallet'
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    navigateBack: () => dispatch(navigateBack()),
-  }
-}
-
-class LoginWithWalletContainer extends PureComponent {
+export default class LoginWithWalletContainer extends PureComponent {
   static propTypes = {
-    navigateBack: PropTypes.func,
+    previousPage: PropTypes.func,
     onSubmit: PropTypes.func,
     onSubmitSuccess: PropTypes.func,
   }
@@ -50,10 +40,8 @@ class LoginWithWalletContainer extends PureComponent {
         onSubmit={this.handleSubmit.bind(this)}
         onSubmitSuccess={this.handleSubmitSuccess.bind(this)}
         onSubmitFail={this.handleSubmitFail.bind(this)}
-        previousPage={this.props.navigateBack}
+        previousPage={this.props.previousPage}
       />
     )
   }
 }
-
-export default connect(null, mapDispatchToProps)(LoginWithWalletContainer)

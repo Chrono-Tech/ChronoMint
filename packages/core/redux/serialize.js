@@ -41,7 +41,6 @@ function serialize (Immutable, refs) {
     // eslint-disable-next-line complexity
     replacer: function (key, value) {
       if (value instanceof models.AccountModel) return null
-      if (value instanceof models.SignerMemoryModel) return null
       if (value instanceof Date) return mark(value, 'Date', 'toString')
       if (value instanceof models.WalletModel) return mark(value, 'WalletModel', 'transform')
       if (value instanceof models.MultisigEthWalletModel) return mark(value, 'MultisigEthWalletModel', 'transform')
@@ -123,8 +122,6 @@ function serialize (Immutable, refs) {
           case 'MainWalletModel':
             return new models.MainWalletModel(data)
           case 'AccountModel':
-            return null
-          case 'SignerMemoryModel':
             return null
 
           // Immutable types

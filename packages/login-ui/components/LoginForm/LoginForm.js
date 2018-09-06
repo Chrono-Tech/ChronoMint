@@ -14,6 +14,11 @@ import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import {
+  WALLET_TYPE_MEMORY,
+  WALLET_TYPE_DEVICE,
+} from '@chronobank/core/models/constants/AccountEntryModel'
+
+import {
   getAccountAddress,
   getAccountAvatarImg,
   getAccountName,
@@ -62,10 +67,13 @@ function mapDispatchToProps (dispatch) {
     initLoginPage: () => dispatch(initLoginPage()),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
     navigateToRecoverAccountPage: () => dispatch(navigateToRecoverAccountPage()),
+    initialValues: {
+      password: '',
+    },
   }
 }
 
-class LoginPage extends React.Component {
+class LoginForm extends React.Component {
   static propTypes = {
     initLoginPage: PropTypes.func,
     navigateToRecoverAccountPage: PropTypes.func,
@@ -96,15 +104,84 @@ class LoginPage extends React.Component {
     )
   }
 
+  renderDefaultTypeForm () {
+    const { classes, submitting, error } = this.props
+
+    return (
+      <div>
+        <div styleName='field'>
+          <Field
+            component={TextField}
+            name='password'
+            type='password'
+            label={<Translate value='LoginForm.enterPassword' />}
+            fullWidth
+            InputProps={{ className: classes.input }}
+          />
+        </div>
+
+        <div styleName='actions'>
+          <Button
+            styleName='button'
+            buttonType='login'
+            type='submit'
+            label={<Translate value='LoginForm.submitButton' />}
+            isLoading={submitting}
+          />
+
+          {error ? (<div styleName='form-error'>{error}</div>) : null}
+
+          <button onClick={navigateToRecoverAccountPage} styleName='link'>
+            <Translate value='LoginForm.forgotPassword' />
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  renderDeviceTypeForm () {
+    const { error, submitting } = this.props
+
+    return (
+      <div styleName='actions'>
+        <Button
+          styleName='button'
+          buttonType='login'
+          type='submit'
+          label={<Translate value='LoginForm.submitButton' />}
+          isLoading={submitting}
+        />
+
+        {error ? (<div styleName='form-error'>{error}</div>) : null}
+      </div>
+    )
+  }
+
+  renderType () {
+    const { selectedWallet } = this.props
+
+    if (!selectedWallet || !selectedWallet.type) {
+      return this.renderDefaultTypeForm()
+    }
+
+    switch (selectedWallet.type) {
+      case WALLET_TYPE_MEMORY: {
+        return this.renderDefaultTypeForm()
+      }
+      case WALLET_TYPE_DEVICE: {
+        return this.renderDeviceTypeForm()
+      }
+      default: {
+        return this.renderDefaultTypeForm()
+      }
+    }
+  }
+
   render () {
     const {
-      classes,
-      error,
       handleSubmit,
       navigateToSelectWallet,
-      navigateToRecoverAccountPage,
       selectedWallet,
-      submitting,
     } = this.props
 
     return (
@@ -126,38 +203,13 @@ class LoginPage extends React.Component {
             linkTitle='My Accounts'
           />
 
-          <div styleName='field'>
-            <Field
-              component={TextField}
-              name='password'
-              type='password'
-              label={<Translate value='LoginForm.enterPassword' />}
-              fullWidth
-              InputProps={{ className: classes.input }}
-            />
-          </div>
+          {this.renderType()}
 
-          <div styleName='actions'>
-            <Button
-              styleName='button'
-              buttonType='login'
-              type='submit'
-              label={<Translate value='LoginForm.submitButton' />}
-              isLoading={submitting}
-            />
-
-            {error ? (<div styleName='form-error'>{error}</div>) : null}
-
-            <button onClick={navigateToRecoverAccountPage} styleName='link'>
-              <Translate value='LoginForm.forgotPassword' />
-            </button>
-          </div>
         </div>
-
       </form>
     )
   }
 }
 
-const form = reduxForm({ form: FORM_LOGIN_PAGE })(LoginPage)
+const form = reduxForm({ form: FORM_LOGIN_PAGE })(LoginForm)
 export default compose(withStyles(styles), connect(mapStateToProps, mapDispatchToProps))(form)
