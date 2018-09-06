@@ -4,9 +4,6 @@
  */
 
 import uuid from 'uuid/v1'
-import {
-  profileImgJPG,
-} from '@chronobank/core-dependencies/assets'
 import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import {
