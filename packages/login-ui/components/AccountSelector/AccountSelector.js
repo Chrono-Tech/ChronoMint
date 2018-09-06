@@ -9,7 +9,7 @@ import React, { PureComponent } from 'react'
 import Button from 'components/common/ui/Button/Button'
 import {
   getAccountAddress,
-  getAccountAvatarImg,
+  getAccountAvatar,
   getAccountName,
 } from '@chronobank/core/redux/persistAccount/utils'
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
@@ -52,7 +52,7 @@ export default class AccountSelector extends PureComponent {
               key={i}
               title={getAccountName(w)}
               subtitle={getAccountAddress(w, true)}
-              avatar={getAccountAvatarImg(w)}
+              avatar={getAccountAvatar(w)}
               actionIcon={arrow}
               reverseIcon
               onClick={() => onWalletSelect(w)}

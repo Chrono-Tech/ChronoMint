@@ -15,7 +15,7 @@ import Button from 'components/common/ui/Button/Button'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import {
   getAccountAddress,
-  getAccountAvatarImg,
+  getAccountAvatar,
   getAccountName,
 } from '@chronobank/core/redux/persistAccount/utils'
 import {
@@ -121,7 +121,7 @@ class LoginPage extends React.Component {
           <UserRow
             title={getAccountName(selectedWallet)}
             subtitle={getAccountAddress(selectedWallet, true)}
-            avatar={getAccountAvatarImg(selectedWallet)}
+            avatar={getAccountAvatar(selectedWallet)}
             onClick={navigateToSelectWallet}
             linkTitle='My Accounts'
           />
