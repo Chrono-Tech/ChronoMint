@@ -47,6 +47,9 @@ function getImageDimensions (file) {
 }
 
 const checkImageFile = async (file: FileModel, config: fileConfig) => {
+  if (typeof window === 'undefined') return []
+  if (typeof Image === 'undefined') return []
+
   const errors = []
 
   // parse dimensions
