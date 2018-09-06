@@ -17,7 +17,7 @@ import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
 import { logoutAndNavigateToRoot } from 'redux/ui/thunks'
-import defaultAvatar from 'assets/img/profile-photo-1.jpg'
+import { DEFAULT_AVATAR } from 'components/constants'
 import chronoWalletLogoSVG from 'assets/img/chronowallettext-white.svg'
 import ProfileImage from 'components/common/ProfileImage/ProfileImage'
 import exitSvg from 'assets/img/exit-white.svg'
@@ -191,7 +191,7 @@ export default class DrawerMainMenu extends PureComponent {
                   <ProfileImage
                     styleName='avatar-icon-content'
                     imageId={avatar}
-                    icon={<div styleName='emptyAvatar'><img styleName='avatar-image' src={getAccountAvatar(selectedAccount) || defaultAvatar} alt='avatar' /></div>}
+                    icon={<div styleName='emptyAvatar'><img styleName='avatar-image' src={getAccountAvatar(selectedAccount) || DEFAULT_AVATAR} alt='avatar' /></div>}
                   />
                 </div>
               </div>
