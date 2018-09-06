@@ -30,7 +30,7 @@ import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
 import { walletInfoSelector } from '@chronobank/core/redux/wallet/selectors/selectors'
-import { estimateGasTransfer } from '@chronobank/core/redux/tokens/actions'
+import { estimateGasTransfer } from '@chronobank/core/redux/tokens/thunks'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import inversedTheme from 'styles/themes/inversed'
 import { getMarket } from '@chronobank/core/redux/market/selectors'
@@ -127,6 +127,7 @@ export default class Ethereum extends PureComponent {
     this.timeout = null
   }
 
+  // eslint-disable-next-line complexity
   componentWillReceiveProps (newProps) {
     if ((newProps.token.address() !== this.props.token.address() || newProps.recipient !== this.props.recipient) && newProps.token.isERC20()) {
       this.props.dispatch(getSpendersAllowance(newProps.token.id(), newProps.recipient))
@@ -348,6 +349,60 @@ export default class Ethereum extends PureComponent {
     const { invalid, mode, pristine, token, handleSubmit, feeMultiplier, wallet } = this.props
     const isTimeLocked = wallet.isTimeLocked
 
+    const simpleContainer = () => (
+      <div styleName='row'>
+        <div styleName='feeRate'>
+          <div styleName='tagsWrap'>
+            <div><Translate value={`${prefix}.slowTransaction`} /></div>
+            <div><Translate value={`${prefix}.fast`} /></div>
+          </div>
+
+          <Field
+            component={Slider}
+            name='feeMultiplier'
+            {...FEE_RATE_MULTIPLIER}
+            toFixed={1}
+          />
+        </div>
+      </div>
+    )
+
+    const advancedContainer = () => (
+      <div styleName='advanced-mode-container'>
+        <div styleName='field'>
+          <Field
+            component={TextField}
+            name='gweiPerGas'
+            label={<Translate value='wallet.gweiPerGas' />}
+            fullWidth
+          />
+        </div>
+        <div styleName='field'>
+          <Field
+            component={TextField}
+            name='gasLimit'
+            label={<Translate value='wallet.gasLimit' />}
+            fullWidth
+          />
+        </div>
+        {
+          this.state.gasLimitEstimated && !this.props.gasLimit && (
+            <div styleName='gas-limit-based-container'>
+              <span styleName='gas-limit-based'>
+                <Translate value={`${prefix}.basedOnLimit`} limit={this.state.gasLimitEstimated} />
+                <span
+                  styleName='based-limit-value'
+                  onClick={() => this.props.dispatch(change(FORM_SEND_TOKENS, 'gasLimit', this.state.gasLimitEstimated))}
+                >
+                  {this.state.gasLimitEstimated}
+                </span>
+              </span>
+            </div>
+          )
+        }
+      </div>
+    )
+
     return (
       <div styleName='form-container'>
         <div>
@@ -370,57 +425,8 @@ export default class Ethereum extends PureComponent {
             fullWidth
           />
         </div>
-        {mode === MODE_SIMPLE && feeMultiplier && token.feeRate() && (
-          <div styleName='row'>
-            <div styleName='feeRate'>
-              <div styleName='tagsWrap'>
-                <div><Translate value={`${prefix}.slowTransaction`} /></div>
-                <div><Translate value={`${prefix}.fast`} /></div>
-              </div>
-
-              <Field
-                component={Slider}
-                name='feeMultiplier'
-                {...FEE_RATE_MULTIPLIER}
-                toFixed={1}
-              />
-            </div>
-          </div>
-        )}
-
-        <div styleName='advanced-mode-container'>
-          {mode === MODE_ADVANCED &&
-            <div styleName='field'>
-              <Field
-                component={TextField}
-                name='gweiPerGas'
-                label={<Translate value='wallet.gweiPerGas' />}
-                fullWidth
-              />
-            </div>
-          }
-          {mode === MODE_ADVANCED &&
-            <div styleName='field'>
-              <Field
-                component={TextField}
-                name='gasLimit'
-                label={<Translate value='wallet.gasLimit' />}
-                fullWidth
-              />
-            </div>
-          }
-          {mode === MODE_ADVANCED && this.state.gasLimitEstimated && !this.props.gasLimit &&
-          <div styleName='gas-limit-based-container'>
-            <span styleName='gas-limit-based'><Translate value={`${prefix}.basedOnLimit`} limit={this.state.gasLimitEstimated} />
-              <span
-                styleName='based-limit-value'
-                onClick={() => this.props.dispatch(change(FORM_SEND_TOKENS, 'gasLimit', this.state.gasLimitEstimated))}
-              >
-                {this.state.gasLimitEstimated}
-              </span>
-            </span>
-          </div>}
-        </div>
+        { mode === MODE_SIMPLE && feeMultiplier && token.feeRate() && simpleContainer() }
+        { mode === MODE_ADVANCED && advancedContainer() }
 
         <div styleName='transaction-fee'>
           <span styleName='title'>

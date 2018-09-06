@@ -17,7 +17,7 @@ import {
 } from '@chronobank/login/network/constants'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import WalletModel from '../../models/wallet/WalletModel'
-import { subscribeOnTokens } from '../tokens/actions'
+import { subscribeOnTokens } from '../tokens/thunks'
 import { formatBalances, getWalletBalances } from '../tokens/utils'
 import {
   createBitcoinWalletModelFromPK,
