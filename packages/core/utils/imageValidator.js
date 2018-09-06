@@ -46,7 +46,7 @@ function getImageDimensions (file) {
   })
 }
 
-const checkImageFile = async (file: FileModel, config: fileConfig) => {
+export const checkImageFile = async (file: FileModel, config: fileConfig) => {
   if (typeof window === 'undefined') return []
   if (typeof Image === 'undefined') return []
 
@@ -70,14 +70,3 @@ const checkImageFile = async (file: FileModel, config: fileConfig) => {
   }
   return errors
 }
-
-function noopCheckImageFile () {
-  return []
-}
-
-export const imageValidator = (
-  typeof window !== 'undefined'
-  && typeof Image !== 'undefined'
-)
-  ? checkImageFile
-  : noopCheckImageFile
