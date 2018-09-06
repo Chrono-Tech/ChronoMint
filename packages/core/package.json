@@ -14,6 +14,7 @@
     "eth-crypto": "^1.2.2",
     "ethereumjs-abi": "^0.6.5",
     "immutable": ">=3",
+    "ipfs-api": "^20.2.1",
     "joi": "^13.1.2",
     "lodash": "^4.17.4",
     "moment": "^2.17.1",
