@@ -3,10 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import bip39 from 'bip39'
 import uuid from 'uuid/v1'
-import { WALLET_TYPE_MEMORY } from '@chronobank/login/models/constants/AccountEntryModel'
-import { AccountEntryModel } from '@chronobank/login/models/wallet/persistAccount'
+import { WALLET_TYPE_MEMORY } from '../../models/constants/AccountEntryModel'
+import { AccountEntryModel } from '../../models/wallet/persistAccount'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 
 export const replaceWallet = (wallet, walletList) => {
@@ -49,14 +48,6 @@ export const getAccountAvatar = (account) => {
   return ''
 }
 
-export const getAccountAvatar = (account) => {
-  if (account && account.profile && account.profile.avatar) {
-    return account.profile.avatar
-  }
-
-  return ''
-}
-
 export const createAccountEntry = (name, walletFileImportObject, profile = null) =>
   new AccountEntryModel({
     key: uuid(),
@@ -70,7 +61,7 @@ export const createDeviceAccountEntry = (name, device, profile = null) => {
   return new AccountEntryModel({
     key: uuid(),
     name,
-    type: WALLET_TYPE_DEVICE,
+    type: WALLET_TYPE_MEMORY,
     encrypted: [device],
     profile,
   })

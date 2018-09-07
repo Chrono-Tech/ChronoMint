@@ -4,7 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
-import { WALLET_TYPE_MEMORY, WALLET_TYPE_DEVICE } from '@chronobank/core/models/constants/AccountEntryModel'
+import { WALLET_TYPE_MEMORY } from '../../../models/constants/AccountEntryModel'
 import AbstractAccountModel from './AbstractAccountModel'
 
 const schema = {
@@ -29,13 +29,8 @@ class AccountEntryModel extends AbstractAccountModel {
   }
 
   get address () {
-    switch (this.type) {
-      case WALLET_TYPE_MEMORY:
-        return this.encrypted[0].address
-      case WALLET_TYPE_DEVICE:
-        return this.encrypted[0].address 
-    }
-  } 
+    return this.encrypted[0].address
+  }
 
   isMemoryWallet () {
     return !this.type || this.type === WALLET_TYPE_MEMORY

@@ -101,11 +101,14 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         const signer = getEthereumSigner(getState())
         await dispatch(SessionThunks.getProfileSignature(signer, accountWallet.encrypted[0].path))
 
+        //////////////////////////////////////////////////////
+        //// @todo remove after providers/engine refactoring
         const providerSettings = dispatch(SessionThunks.getProviderSettings())
         const provider = privateKeyProvider.getPrivateKeyProvider(wallet.privateKey.slice(2, 66), providerSettings)
-        dispatch(NetworkActions.selectAccount(accountWallet.encrypted[0].address))
         await setup(provider)
+        //////////////////////////////////////////////////////
 
+        dispatch(NetworkActions.selectAccount(accountWallet.address))
         const {
           selectedAccount,
           selectedProviderId,
@@ -133,7 +136,6 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
       try {
         const wallet = await dispatch(DeviceActions.loadDeviceAccount(accountWallet))
         const signer = getEthereumSigner(getState())
-
         await dispatch(SessionThunks.getProfileSignature(signer, wallet.entry.encrypted[0].path))
 
         //await dispatch(NetworkThunks.handleLogin(wallet.entry.encrypted[0].address))
