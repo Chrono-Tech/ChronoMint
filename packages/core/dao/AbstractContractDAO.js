@@ -4,7 +4,7 @@
  */
 
 import EventEmitter from 'events'
-import ipfs from '@chronobank/core-dependencies/utils/IPFS'
+import ipfs from '@chronobank/core/utils/IPFS'
 import BigNumber from 'bignumber.js'
 import TxExecModel from '../models/TxExecModel'
 import web3Converter from '../utils/Web3Converter'
