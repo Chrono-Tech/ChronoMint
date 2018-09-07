@@ -115,7 +115,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         await setup(provider)
         //////////////////////////////////////////////////////
 
-        dispatch(NetworkActions.selectAccount(accountWallet.encrypted[0].address))
+        dispatch(NetworkActions.selectAccount(accountWallet.address))
 
         const {
           selectedAccount,
@@ -147,7 +147,6 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
       try {
         const wallet = await dispatch(DeviceActions.loadDeviceAccount(accountWallet))
         const signer = getEthereumSigner(getState())
-
         await dispatch(SessionThunks.getProfileSignature(signer, wallet.entry.encrypted[0].path))
 
         //////////////////////////////////////////////////////

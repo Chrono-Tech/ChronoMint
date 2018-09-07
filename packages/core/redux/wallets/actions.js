@@ -65,8 +65,9 @@ const initWalletsFromKeys = () => (dispatch, getState) => {
   const account = getPersistAccount(state)
   const wallets = []
 
+  const ethereumSigner = getEthereumSigner(state)
   wallets.push(new WalletModel({
-    address: account.decryptedWallet.entry.encrypted[0].address,
+    address: ethereumSigner.getAddress(),
     blockchain: BLOCKCHAIN_ETHEREUM,
     isMain: true,
     walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
