@@ -4,7 +4,7 @@
  */
 
 import EventEmitter from 'events'
-import SockJS from 'sockjs-client'
+import { WebSocketService } from '@chronobank/core/services/WebSocketService'
 import Stomp from 'webstomp-client'
 
 const TIMEOUT_BASE = 1000
@@ -17,7 +17,6 @@ export default class AbstractNode extends EventEmitter {
     this._trace = trace
     this._socket = socket
     this._subscriptions = {}
-    this._ws = null
     this._client = null
     this._timeout = TIMEOUT_BASE
     this._missedActions = []
@@ -31,6 +30,7 @@ export default class AbstractNode extends EventEmitter {
   }
 
   _handleConnectionSuccess = () => {
+    WebSocketService.socket && WebSocketService.socket.onopen()
     this._timeout = TIMEOUT_BASE
     const actions = this._missedActions
     for (const action of actions) {
@@ -46,7 +46,10 @@ export default class AbstractNode extends EventEmitter {
 
   _handleConnectionError = (e) => {
     this.trace('Failed to connect to %s server. Retry after %s seconds', this._socket.baseURL, this._timeout / 1000, e)
-    setTimeout(this._handleConnectionTimeout, this._timeout)
+    WebSocketService.socket && WebSocketService.socket.onclose()
+    setTimeout(() => {
+      this._handleConnectionTimeout()
+    }, this._timeout)
   }
 
   _closeSubscription (channel) {
@@ -72,11 +75,11 @@ export default class AbstractNode extends EventEmitter {
   }
 
   connect () {
-    if (!this._socket) {
+    if (!this._socket || !WebSocketService.socket || WebSocketService.socket.readyState !== 1) {
+      this._handleConnectionError('WebSocket not ready yet')
       return
     }
-    this._ws = new SockJS(this._socket.baseURL)
-    this._client = Stomp.over(this._ws, {
+    this._client = Stomp.over(WebSocketService.socket, {
       heartbeat: false,
       debug: false,
     })
@@ -86,11 +89,12 @@ export default class AbstractNode extends EventEmitter {
       this._handleConnectionSuccess,
       this._handleConnectionError,
     )
+    WebSocketService.setWebocketHandlers()
   }
 
   disconnect () {
     if (this._socket) {
-      this._ws.close()
+      WebSocketService.disconnect()
     }
   }
 

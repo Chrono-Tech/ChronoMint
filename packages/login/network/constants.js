@@ -18,9 +18,8 @@ export const WALLET_HD_PATH = `m/44'/${COIN_TYPE_ETH}'/0'/0/0`
  * WARNING!
  * The constants below are duplicated in packages/core/dao/constants.js
  * to make @chronobank/core package indenpendent
+ * This file should be removed in the future
 */
-
-// #region Tokens' names
 
 export const BCC = 'BCC'
 export const BTC = 'BTC'
@@ -32,10 +31,6 @@ export const TIME = 'TIME'
 export const WAVES = 'WAVES'
 export const XEM = 'XEM'
 
-// #endregion LHTDAO.js
-
-// #region Blockchains' names
-
 export const BLOCKCHAIN_BITCOIN = 'Bitcoin'
 export const BLOCKCHAIN_BITCOIN_CASH = 'Bitcoin Cash'
 export const BLOCKCHAIN_BITCOIN_GOLD = 'Bitcoin Gold'
@@ -43,5 +38,3 @@ export const BLOCKCHAIN_ETHEREUM = 'Ethereum'
 export const BLOCKCHAIN_LITECOIN = 'Litecoin'
 export const BLOCKCHAIN_NEM = 'NEM'
 export const BLOCKCHAIN_WAVES = 'WAVES'
-
-// #endregion

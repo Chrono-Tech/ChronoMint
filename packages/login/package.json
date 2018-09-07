@@ -21,10 +21,9 @@
     "mnid": "^0.1.1",
     "nem-sdk": "^1.6.7",
     "promisify-node-callback": "^1.0.2",
-    "sockjs-client": "1.0.3",
     "uport-connect": "^0.7.3",
     "web3": "1.0.0-beta.33",
-    "web3-eth-accounts": "^1.0.0-beta.33",
-    "webstomp-client": "^1.2.0"
+    "webstomp-client": "^1.2.4",
+    "web3-eth-accounts": "^1.0.0-beta.33"
   }
 }

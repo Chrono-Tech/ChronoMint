@@ -4,6 +4,7 @@
  */
 
 import BigNumber from 'bignumber.js'
+import { WebSocketService } from '@chronobank/core/services/WebSocketService'
 import BitcoinAbstractNode, { BitcoinBalance, BitcoinTx } from './BitcoinAbstractNode'
 import { DECIMALS } from './BitcoinEngine'
 
@@ -107,8 +108,9 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   }
 
   disconnect () {
-    if (this._socket) {
-      this._ws.close()
+    // FIXME: bad idea to drop connection which used by other DAOs
+    if (WebSocketService.socket) {
+      WebSocketService.disconnect()
     }
   }
 

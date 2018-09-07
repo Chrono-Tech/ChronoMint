@@ -7,19 +7,17 @@ import BigNumber from 'bignumber.js'
 import EventEmitter from 'events'
 import TokenModel from '../models/tokens/TokenModel'
 import TxModel from '../models/TxModel'
-import TransferExecModel from '../models/TransferExecModel'
 import Amount from '../models/Amount'
-import { wavesAddress } from '../models/validator'
+import { wavesAddressValidator } from '../models/validator'
 
 import {
+  BLOCKCHAIN_WAVES,
   EVENT_NEW_TRANSFER,
   EVENT_UPDATE_BALANCE,
 } from './constants'
-
-export const BLOCKCHAIN_WAVES = 'WAVES'
-export const WAVES_WAVES_SYMBOL = 'WAVES'
-export const WAVES_WAVES_NAME = 'WAVES'
-export const WAVES_DECIMALS = 8
+import {
+  WAVES_WAVES_SYMBOL,
+} from './constants/WavesDAO'
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
@@ -37,7 +35,7 @@ export default class WavesDAO extends EventEmitter {
   }
 
   getAddressValidator () {
-    return wavesAddress
+    return wavesAddressValidator
   }
 
   getAccount () {
@@ -83,41 +81,46 @@ export default class WavesDAO extends EventEmitter {
     return this.getAccountBalances()
   }
 
-  accept (transfer: TransferExecModel) {
-    setImmediate(() => {
-      this.emit('accept', transfer)
-    })
-  }
+  // accept (transfer: TransferExecModel) {
+  //   setImmediate(() => {
+  //     this.emit('accept', transfer)
+  //   })
+  // }
 
-  reject (transfer: TransferExecModel) {
-    setImmediate(() => {
-      this.emit('reject', transfer)
-    })
-  }
+  // reject (transfer: TransferExecModel) {
+  //   setImmediate(() => {
+  //     this.emit('reject', transfer)
+  //   })
+  // }
 
   // TODO @ipavlenko: Replace with 'immediateTransfer' after all token DAOs will start using 'submit' method
-  transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
-    this.submit(from, to, amount, token, feeMultiplier)
-  }
+  // transfer (from: string, to: string, amount: BigNumber) {
+  //   // this.submit(from, to, amount, token, feeMultiplier)
+  //   return ({
+  //     amount,
+  //     from,
+  //     to,
+  //   })
+  // }
 
-  submit (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
-    setImmediate(async () => {
-      this.emit('submit', new TransferExecModel({
-        title: `tx.Waves.${this._name ? 'Asset' : 'WAVES'}.transfer.title`,
-        from,
-        to,
-        blockchain: BLOCKCHAIN_WAVES,
-        amount: new Amount(amount, token.symbol()),
-        amountToken: token,
-        feeToken: this._wavesToken,
-        fee: new Amount(10000, this._wavesToken.symbol()),
-        feeMultiplier,
-      }))
-    })
-  }
+  // submit (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: number = 1) {
+  //   setImmediate(async () => {
+  //     this.emit('submit', new TransferExecModel({
+  //       title: `tx.Waves.${this._name ? 'Asset' : 'WAVES'}.transfer.title`,
+  //       from,
+  //       to,
+  //       blockchain: BLOCKCHAIN_WAVES,
+  //       amount: new Amount(amount, token.symbol()),
+  //       amountToken: token,
+  //       feeToken: this._wavesToken,
+  //       fee: new Amount(10000, this._wavesToken.symbol()),
+  //       feeMultiplier,
+  //     }))
+  //   })
+  // }
 
   // TODO @ipavlenko: Rename to 'transfer' after all token DAOs will start using 'submit' method and 'trans'
-  async immediateTransfer (from: string, to: string, amount: BigNumber /*token: TokenModel, feeMultiplier: Number = 1*/) {
+  async immediateTransfer (from: string, to: string, amount: BigNumber /*token: TokenModel, feeMultiplier: number = 1*/) {
     try {
       return await this._wavesProvider.transfer(from, to, amount, this._asset)
     } catch (e) {
@@ -165,7 +168,7 @@ export default class WavesDAO extends EventEmitter {
       if (tx.unconfirmed) {
         if (!this._asset) {
           if (!tx.assets) {
-            this.emit(EVENT_NEW_TRANSFER, this._createXemTxModel(tx))
+            this.emit(EVENT_NEW_TRANSFER, this._createWavesTxModel(tx))
           }
         } else {
           if (tx.assets && (this._asset in tx.assets)) {
@@ -250,8 +253,7 @@ export default class WavesDAO extends EventEmitter {
 
 //TODO WHY WE NEED SYMBOL AND ASSET DESCRIPTION IF SYMBOL IS ENOUGH
 function readBalanceValue (symbol, balance, asset = null) {
-  if (asset) {
-    return balance.assets[asset]
-  }
-  return balance.balance
+  return asset
+    ? balance.assets[asset]
+    : balance.balance
 }

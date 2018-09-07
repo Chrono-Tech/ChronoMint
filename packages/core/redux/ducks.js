@@ -22,6 +22,7 @@ import rewards from './rewards/reducer'
 import session from './session/reducer'
 import settingsErc20Tokens from './settings/erc20/tokens/reducer'
 import tokens from './tokens/reducer'
+import txWaves from './txWaves/reducer'
 import voting from './voting/reducer'
 import wallet from './wallet/reducer'
 import wallets from './wallets/reducer'
@@ -45,6 +46,7 @@ const coreReducers = {
   session,
   settingsErc20Tokens,
   tokens,
+  txWaves,
   voting,
   wallet,
   wallets,

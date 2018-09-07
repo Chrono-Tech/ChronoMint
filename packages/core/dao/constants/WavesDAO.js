@@ -3,6 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export const WAVES_WAVES_SYMBOL = 'WAVES'
-export const WAVES_WAVES_NAME = 'WAVES'
 export const WAVES_DECIMALS = 8
+export const WAVES_WAVES_NAME = 'WAVES'
+export const WAVES_WAVES_SYMBOL = 'WAVES'
