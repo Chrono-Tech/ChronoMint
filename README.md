@@ -38,6 +38,9 @@ yarn tconsole
 ```
 
 ## Test
+
+###Unit
+Runs all test suite files matched `*.spec.js` pattern
 ```bash
 yarn test
 ```
