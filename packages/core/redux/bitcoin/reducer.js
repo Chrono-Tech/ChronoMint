@@ -70,9 +70,10 @@ const mutations = {
 
   // GET address info
   [BtcConstants.BITCOIN_HTTP_GET_ADDRESS_INFO]: (state) => state,
-  [BtcConstants.BITCOIN_HTTP_GET_ADDRESS_INFO_SUCCESS]: (state, data) => ({
+  [BtcConstants.BITCOIN_HTTP_GET_ADDRESS_INFO_SUCCESS]: (state, data, host) => ({
     ...state,
     lastRequestMeta: data,
+    host,
   }),
   [BtcConstants.BITCOIN_HTTP_GET_ADDRESS_INFO_FAILURE]: (state, error) => ({
     ...state,

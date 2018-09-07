@@ -85,9 +85,10 @@ export const bitcoinHttpGetAddressInfo = () => ({
   type: BtcConstants.BITCOIN_HTTP_GET_ADDRESS_INFO,
 })
 
-export const bitcoinHttpGetAddressInfoSuccess = (data) => ({
+export const bitcoinHttpGetAddressInfoSuccess = (data, host) => ({
   type: BtcConstants.BITCOIN_HTTP_GET_ADDRESS_INFO_SUCCESS,
   data,
+  host,
 })
 
 export const bitcoinHttpGetAddressInfoFailure = (error) => ({
