@@ -22,7 +22,6 @@ export default class EthereumLedgerDeviceMock extends EventEmitter {
   }
 
   getAddressInfo (path) {
-    // console.log(path)
     const hdKey = hdkey.fromMasterSeed(MOCK_SEED)
     const wallet = hdKey.derivePath(path).getWallet()
 
@@ -34,13 +33,10 @@ export default class EthereumLedgerDeviceMock extends EventEmitter {
     }
   }
 
-  getAddress (path) {
-    if (this.isConnected) {
-      const hdKey = hdkey.fromMasterSeed(MOCK_SEED)
-      const wallet = hdKey.derivePath(path).getWallet()
-      return `0x${wallet.getAddress().toString('hex')}`
-    }
-    return
+  getAddress () {
+    const hdKey = hdkey.fromMasterSeed(MOCK_SEED)
+    const wallet = hdKey.derivePath(DEFAULT_PATH).getWallet()
+    return `0x${wallet.getAddress().toString('hex')}`
   }
 
   async signTransaction (txData, path) {

@@ -4,7 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
-import { WALLET_TYPE_MEMORY, WALLET_TYPE_DEVICE } from '@chronobank/core/models/constants/AccountEntryModel'
+import { WALLET_TYPE_MEMORY } from '@chronobank/core/models/constants/AccountEntryModel'
 import AbstractAccountModel from './AbstractAccountModel'
 
 const schema = {

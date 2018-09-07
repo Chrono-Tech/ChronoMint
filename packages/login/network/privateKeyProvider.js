@@ -26,6 +26,7 @@ import EthereumWallet from './EthereumWallet'
 
 class PrivateKeyProvider {
   getPrivateKeyProvider (privateKey, { url, network } = {}) {
+    console.log('getPrivateKeyProvider: ', privateKey)
     const networkCode = byEthereumNetwork(network)
     const ethereumWallet = this.createEthereumWallet(privateKey)
     const engine = new EthereumEngine(ethereumWallet, network, url)

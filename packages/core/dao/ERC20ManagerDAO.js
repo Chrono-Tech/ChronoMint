@@ -9,8 +9,6 @@ import AbstractContractDAO from './AbstractContractDAO'
 import ethereumDAO from './EthereumDAO'
 import web3Converter from '../utils/Web3Converter'
 
-//#region CONSTANTS
-
 import {
   BLOCKCHAIN_ETHEREUM,
 } from './constants'
@@ -21,8 +19,6 @@ import {
   TX_MODIFY_TOKEN,
   TX_REMOVE_TOKEN,
 } from './constants/ERC20ManagerDAO'
-
-//#endregion CONSTANTS
 
 export default class ERC20ManagerDAO extends AbstractContractDAO {
   constructor ({ address, history, abi }) {

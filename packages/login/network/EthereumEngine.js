@@ -21,6 +21,7 @@ export default class EthereumEngine {
       // FIXME: what is that? Was merged as is long time ago.
       // dispatch(addError(e.message))
     }
+    console.log('EthereumEngine: ', engine, wallet, network)
     this._engine = engine || Web3Utils.createEngine(wallet, url, deriveNumber)
   }
 

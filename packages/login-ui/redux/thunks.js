@@ -11,6 +11,7 @@ import {
   SubmissionError,
 } from 'redux-form'
 import { replace } from 'react-router-redux'
+import { MOCK_PRIVATE_KEY } from '@chronobank/core/services/signers/BitcoinLedgerDeviceMock'
 import {
   WALLET_TYPE_MEMORY,
   WALLET_TYPE_TREZOR,
@@ -135,6 +136,8 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
         dispatch(replace(localStorage.getLastURL() || defaultURL))
       } catch (e) {
+        //eslint-disable-next-line
+        console.warn('Device errors: ', e)
         throw new SubmissionError({ password: e && e.message })
       }
       break
@@ -152,7 +155,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         //////////////////////////////////////////////////////
         //// @todo remove after providers/engine refactoring
         const providerSettings = dispatch(SessionThunks.getProviderSettings())
-        const provider = privateKeyProvider.getPrivateKeyProvider(wallet.privateKey.slice(2, 66), providerSettings)
+        const provider = privateKeyProvider.getPrivateKeyProvider(MOCK_PRIVATE_KEY, providerSettings)
         await setup(provider)
         //////////////////////////////////////////////////////
 
@@ -178,6 +181,8 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
         dispatch(replace(localStorage.getLastURL() || defaultURL))
       } catch (e) {
+        //eslint-disable-next-line
+        console.warn('Device errors: ', e)
         throw new SubmissionError({ password: e && e.message })
       }
       break
