@@ -4,10 +4,12 @@
  */
 
 import {
-  BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_NEM,
+  BLOCKCHAIN_WAVES,
 } from './constants'
 
 export const NETWORK_MAIN_ID = 1
@@ -51,16 +53,12 @@ const MAINNET_BASE = {
   protocol: 'https',
   name: 'Mainnet (production)',
   scanner: blockExplorersMap.Ethereum.mainnet,
-  bitcoin: 'bitcoin', //TODO remove
-  bitcoinCash: 'bitcoin', //TODO remove
-  bitcoinGold: 'bitcoingold', //TODO remove
-  litecoin: 'litecoin', //TODO remove
   [BLOCKCHAIN_BITCOIN]: 'bitcoin',
   [BLOCKCHAIN_BITCOIN_CASH]: 'bitcoin',
   [BLOCKCHAIN_BITCOIN_GOLD]: 'bitcoingold',
   [BLOCKCHAIN_LITECOIN]: 'litecoin',
-  nem: 'mainnet',
-  waves: 'MAINNET_CONFIG',
+  [BLOCKCHAIN_NEM]: 'mainnet',
+  [BLOCKCHAIN_WAVES]: 'MAINNET_CONFIG',
 }
 
 const RINKEBY_BASE = {
@@ -68,16 +66,12 @@ const RINKEBY_BASE = {
   protocol: 'https',
   name: 'Rinkeby (test network)',
   scanner: blockExplorersMap.Ethereum.testnet,
-  bitcoin: 'testnet', //TODO remove
-  bitcoinCash: 'testnet', //TODO remove
-  bitcoinGold: 'bitcoingold_testnet', //TODO remove
-  litecoin: 'litecoin_testnet', //TODO remove
   [BLOCKCHAIN_BITCOIN]: 'testnet',
   [BLOCKCHAIN_BITCOIN_CASH]: 'testnet',
   [BLOCKCHAIN_BITCOIN_GOLD]: 'bitcoingold_testnet',
   [BLOCKCHAIN_LITECOIN]: 'litecoin_testnet',
-  nem: 'testnet',
-  waves: 'TESTNET_CONFIG',
+  [BLOCKCHAIN_NEM]: 'testnet',
+  [BLOCKCHAIN_WAVES]: 'TESTNET_CONFIG',
 }
 
 // descriptions only, without hosts
@@ -110,11 +104,11 @@ const mewMainnet = {
   protocol: 'https',
   name: 'Mainnet (production MyEtherWallet)',
   scanner: blockExplorersMap.Ethereum.mainnet,
-  bitcoin: 'bitcoin',
-  bitcoinCash: 'bitcoin',
-  bitcoinGold: 'bitcoingold',
-  litecoin: 'litecoin',
-  nem: 'mainnet',
+  [BLOCKCHAIN_BITCOIN]: 'bitcoin',
+  [BLOCKCHAIN_BITCOIN_CASH]: 'bitcoin',
+  [BLOCKCHAIN_BITCOIN_GOLD]: 'bitcoingold',
+  [BLOCKCHAIN_LITECOIN]: 'litecoin',
+  [BLOCKCHAIN_NEM]: 'mainnet',
   host: `api.myetherapi.com/eth`,
 }
 
@@ -127,12 +121,12 @@ const givethMainnet = {
   protocol: 'https',
   name: 'Mainnet (production Giveth)',
   scanner: blockExplorersMap.Ethereum.mainnet,
-  bitcoin: 'bitcoin',
-  bitcoinCash: 'bitcoin',
-  bitcoinGold: 'bitcoingold',
-  litecoin: 'litecoin',
-  nem: 'mainnet',
-  waves: 'MAINNET_CONFIG',
+  [BLOCKCHAIN_BITCOIN]: 'bitcoin',
+  [BLOCKCHAIN_BITCOIN_CASH]: 'bitcoin',
+  [BLOCKCHAIN_BITCOIN_GOLD]: 'bitcoingold',
+  [BLOCKCHAIN_LITECOIN]: 'litecoin',
+  [BLOCKCHAIN_NEM]: 'mainnet',
+  [BLOCKCHAIN_WAVES]: 'MAINNET_CONFIG',
   host: `mew.giveth.io`,
 }
 
@@ -162,12 +156,12 @@ export const chronoBankPrivate = {
   protocol: 'https',
   host: 'private.chronobank.io/',
   name: 'Private (develop network)',
-  bitcoin: 'testnet',
-  bitcoinCash: 'testnet',
-  // bitcoinGold: 'bitcoingold_testnet',
-  litecoin: 'litecoin_testnet',
-  nem: 'testnet',
-  waves: 'TESTNET_CONFIG',
+  [BLOCKCHAIN_BITCOIN]: 'testnet',
+  [BLOCKCHAIN_BITCOIN_CASH]: 'testnet',
+  // [BLOCKCHAIN_BITCOIN_GOLD]: 'bitcoingold_testnet',
+  [BLOCKCHAIN_LITECOIN]: 'litecoin_testnet',
+  [BLOCKCHAIN_NEM]: 'testnet',
+  [BLOCKCHAIN_WAVES]: 'TESTNET_CONFIG',
 }
 
 // dev only

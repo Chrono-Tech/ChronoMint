@@ -8,7 +8,14 @@ import bitcoin from 'bitcoinjs-lib'
 // import hdKe y from 'ethereumjs-wallet/hdkey'
 import * as WavesApi from '@waves/waves-api'
 import nemSdk from 'nem-sdk'
-
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_NEM,
+  BLOCKCHAIN_WAVES,
+} from '@chronobank/login/network/constants'
 import {
   createBCCEngine,
   createBTCEngine,
@@ -55,12 +62,12 @@ class MnemonicProvider {
         }
       }
 
-      const btcNetwork = network.bitcoin && bitcoin.networks[network.bitcoin]
-      const bccNetwork = network.bitcoinCash && bitcoin.networks[network.bitcoinCash]
-      const btgNetwork = network.bitcoinGold && bitcoin.networks[network.bitcoinGold]
-      const ltcNetwork = network.litecoin && bitcoin.networks[network.litecoin]
-      const nemNetwork = network.nem && nemSdk.model.network.data[network.nem]
-      const wavesNetwork = network.waves && WavesApi[network.waves]
+      const btcNetwork = network[BLOCKCHAIN_BITCOIN]  && bitcoin.networks[network[BLOCKCHAIN_BITCOIN] ]
+      const bccNetwork = network[BLOCKCHAIN_BITCOIN_CASH]  && bitcoin.networks[network[BLOCKCHAIN_BITCOIN_CASH] ]
+      const btgNetwork = network[BLOCKCHAIN_BITCOIN_GOLD]  && bitcoin.networks[network[BLOCKCHAIN_BITCOIN_GOLD] ]
+      const ltcNetwork = network[BLOCKCHAIN_LITECOIN]  && bitcoin.networks[network[BLOCKCHAIN_LITECOIN] ]
+      const nemNetwork = network[BLOCKCHAIN_NEM]  && nemSdk.model.network.data[network[BLOCKCHAIN_NEM] ]
+      const wavesNetwork = network[BLOCKCHAIN_WAVES]  && WavesApi[network[BLOCKCHAIN_WAVES] ]
 
       Engines.bcc = prepareEngine(bccNetwork, this.createBitcoinWallet, createBCCEngine)
       Engines.btc = prepareEngine(btcNetwork, this.createBitcoinWallet, createBTCEngine)

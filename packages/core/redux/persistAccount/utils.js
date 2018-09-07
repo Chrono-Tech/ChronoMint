@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import bip39 from 'bip39'
 import uuid from 'uuid/v1'
 import { WALLET_TYPE_MEMORY } from '../../models/constants/AccountEntryModel'
 import { AccountEntryModel } from '../../models/wallet/persistAccount'
@@ -40,6 +41,10 @@ export const getAccountName = (account: AccountEntryModel) => {
   return account && account.name || ''
 }
 
+export const generateMnemonic = () => {
+  return bip39.generateMnemonic()
+}
+
 export const getAccountAvatar = (account) => {
   if (account && account.profile && account.profile.avatar) {
     return account.profile.avatar
@@ -57,11 +62,15 @@ export const createAccountEntry = (name, walletFileImportObject, profile = null)
     profile,
   })
 
-export const createDeviceAccountEntry = (name, device, profile = null) => {
+export const createDeviceAccountEntry = (name, device, profile = null, walletType = null) => {
+  if (!walletType) {
+    throw new Error('WalletDeviceType is empty')
+  }
+
   return new AccountEntryModel({
     key: uuid(),
     name,
-    type: WALLET_TYPE_MEMORY,
+    type: walletType,
     encrypted: [device],
     profile,
   })
