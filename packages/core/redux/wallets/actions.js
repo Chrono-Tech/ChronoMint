@@ -30,7 +30,7 @@ import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { AllowanceCollection } from '../../models'
 import { executeTransaction } from '../ethereum/thunks'
-import { executeBitcoinTransaction } from '../bitcoin/thunks'
+import * as BitcoinThunks from '../bitcoin/thunks'
 import {
   WALLETS_SET,
   WALLETS_SET_NAME,
@@ -161,29 +161,58 @@ const fallbackCallback = (wallet) => (dispatch) => {
 }
 
 const updateWalletBalance = ({ wallet }) => async (dispatch) => {
-  if (wallet.blockchain === BLOCKCHAIN_NEM || wallet.blockchain === BLOCKCHAIN_ETHEREUM) {
+  const blockchain = wallet.blockchain
+  const address = wallet.address
+
+  if (blockchain === BLOCKCHAIN_NEM) {
     return dispatch(fallbackCallback(wallet))
   }
-  getWalletBalances({ wallet })
-    .then((balancesResult) => {
-      try {
-        dispatch(setWallet(new WalletModel({
+
+  const isBtcLikeBlockchain = blockchain === BLOCKCHAIN_BITCOIN
+    || blockchain === BLOCKCHAIN_LITECOIN
+    || blockchain === BLOCKCHAIN_BITCOIN_CASH
+    || blockchain === BLOCKCHAIN_BITCOIN_GOLD
+
+  if (isBtcLikeBlockchain) {
+    return dispatch(BitcoinThunks.getAddressInfo(address, blockchain))
+      .then((balancesResult) => {
+        const formattedBalances = formatBalances(blockchain, balancesResult)
+        const newWallet = new WalletModel({
           ...wallet,
           balances: {
             ...wallet.balances,
-            ...formatBalances({ blockchain: wallet.blockchain, balancesResult }),
+            ...formattedBalances,
           },
-        })))
-      } catch (e) {
+        })
+        dispatch(setWallet(newWallet))
+      })
+      .catch((e) => {
         // eslint-disable-next-line no-console
-        console.log(e.message)
-      }
-    })
-    .catch((e) => {
-      // eslint-disable-next-line no-console
-      console.log('call balances from middleware is failed', e)
-      dispatch(fallbackCallback(wallet))
-    })
+        console.log('call balances from middleware is failed', e)
+        dispatch(fallbackCallback(wallet))
+      })
+  } else {
+    getWalletBalances({ wallet })
+      .then((balancesResult) => {
+        try {
+          dispatch(setWallet(new WalletModel({
+            ...wallet,
+            balances: {
+              ...wallet.balances,
+              ...formatBalances(blockchain, balancesResult),
+            },
+          })))
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.log(e.message)
+        }
+      })
+      .catch((e) => {
+        // eslint-disable-next-line no-console
+        console.log('call balances from middleware is failed', e)
+        dispatch(fallbackCallback(wallet))
+      })
+  }
 }
 
 export const subscribeWallet = ({ wallet }) => async (dispatch) => {
@@ -250,7 +279,7 @@ export const mainTransfer = (
     const executeMap = {
       [BLOCKCHAIN_ETHEREUM]: executeTransaction,
       [BLOCKCHAIN_NEM]: executeNemTransaction,
-      [BLOCKCHAIN_BITCOIN]: executeBitcoinTransaction,
+      [BLOCKCHAIN_BITCOIN]: BitcoinThunks.executeBitcoinTransaction,
     }
 
     // execute

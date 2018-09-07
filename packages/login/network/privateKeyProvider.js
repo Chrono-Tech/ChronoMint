@@ -6,6 +6,14 @@
 import bitcoin from 'bitcoinjs-lib'
 import nemSdk from 'nem-sdk'
 import * as WavesApi from '@waves/waves-api'
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_NEM,
+  BLOCKCHAIN_WAVES,
+} from '@chronobank/login/network/constants'
 import { byEthereumNetwork } from './NetworkProvider'
 import { createBCCEngine, createBTCEngine, createBTGEngine, createLTCEngine } from './BitcoinUtils'
 import EthereumEngine from './EthereumEngine'
@@ -25,27 +33,28 @@ import {
 import EthereumWallet from './EthereumWallet'
 
 class PrivateKeyProvider {
+  // eslint-disable-next-line complexity
   getPrivateKeyProvider (privateKey, { url, network } = {}) {
     console.log('getPrivateKeyProvider: ', privateKey)
     const networkCode = byEthereumNetwork(network)
     const ethereumWallet = this.createEthereumWallet(privateKey)
     const engine = new EthereumEngine(ethereumWallet, network, url)
-    const btc = network && network.bitcoin && this.createBitcoinWallet(privateKey, bitcoin.networks[network.bitcoin])
-    const bcc = network && network.bitcoinCash && this.createBitcoinWallet(privateKey, bitcoin.networks[network.bitcoinCash])
-    const btg = network && network.bitcoinGold && this.createBitcoinGoldWallet(privateKey, bitcoin.networks[network.bitcoinGold])
-    const ltc = network && network.litecoin && this.createLitecoinWallet(privateKey, bitcoin.networks[network.litecoin])
-    const nem = network && network.nem && NemWallet.fromPrivateKey(privateKey, nemSdk.model.network.data[network.nem])
-    const waves = network && network.waves && WavesWallet.fromPrivateKey(privateKey, WavesApi[network.waves])
+    const btc = network && network[BLOCKCHAIN_BITCOIN] && this.createBitcoinWallet(privateKey, bitcoin.networks[network[BLOCKCHAIN_BITCOIN]] )
+    const bcc = network && network[BLOCKCHAIN_BITCOIN_CASH]  && this.createBitcoinWallet(privateKey, bitcoin.networks[network[BLOCKCHAIN_BITCOIN_CASH] ])
+    const btg = network && network[BLOCKCHAIN_BITCOIN_GOLD]  && this.createBitcoinGoldWallet(privateKey, bitcoin.networks[network[BLOCKCHAIN_BITCOIN_GOLD] ])
+    const ltc = network && network[BLOCKCHAIN_LITECOIN]  && this.createLitecoinWallet(privateKey, bitcoin.networks[network[BLOCKCHAIN_LITECOIN] ])
+    const nem = network && network[BLOCKCHAIN_NEM]  && NemWallet.fromPrivateKey(privateKey, nemSdk.model.network.data[network[BLOCKCHAIN_NEM] ])
+    const waves = network && network[BLOCKCHAIN_WAVES]  && WavesWallet.fromPrivateKey(privateKey, WavesApi[network[BLOCKCHAIN_WAVES] ])
 
     return {
       networkCode,
       ethereum: engine,//new EthereumEngine(ethereumWallet, network, url, null, lastDeriveNumbers),
-      btc: network && network.bitcoin && createBTCEngine(btc, bitcoin.networks[network.bitcoin]),
-      bcc: network && network.bitcoinCash && createBCCEngine(bcc, bitcoin.networks[network.bitcoinCash]),
-      btg: network && network.bitcoinGold && createBTGEngine(btg, bitcoin.networks[network.bitcoinGold]),
-      ltc: network && network.litecoin && createLTCEngine(ltc, bitcoin.networks[network.litecoin]),
-      nem: network && network.nem && createNEMEngine(nem, nemSdk.model.network.data[network.nem]),
-      waves: network && network.waves && createWAVESEngine(waves, WavesApi[network.waves]),
+      btc: network && network[BLOCKCHAIN_BITCOIN] && createBTCEngine(btc, bitcoin.networks[network[BLOCKCHAIN_BITCOIN]] ),
+      bcc: network && network[BLOCKCHAIN_BITCOIN_CASH]  && createBCCEngine(bcc, bitcoin.networks[network[BLOCKCHAIN_BITCOIN_CASH] ]),
+      btg: network && network[BLOCKCHAIN_BITCOIN_GOLD]  && createBTGEngine(btg, bitcoin.networks[network[BLOCKCHAIN_BITCOIN_GOLD] ]),
+      ltc: network && network[BLOCKCHAIN_LITECOIN]  && createLTCEngine(ltc, bitcoin.networks[network[BLOCKCHAIN_LITECOIN] ]),
+      nem: network && network[BLOCKCHAIN_NEM]  && createNEMEngine(nem, nemSdk.model.network.data[network[BLOCKCHAIN_NEM] ]),
+      waves: network && network[BLOCKCHAIN_WAVES]  && createWAVESEngine(waves, WavesApi[network[BLOCKCHAIN_WAVES] ]),
     }
   }
 

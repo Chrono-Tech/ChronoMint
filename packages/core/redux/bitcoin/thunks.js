@@ -7,6 +7,7 @@ import bitcoin from 'bitcoinjs-lib'
 import type { Dispatch } from 'redux'
 import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
+import * as converter from './converter'
 import {
   TransferNoticeModel,
 } from '../../models'
@@ -136,9 +137,9 @@ export const getAddressInfo =  (address: string, blockchain: string) => (dispatc
   dispatch(BitcoinActions.bitcoinHttpGetAddressInfo())
   return BitcoinMiddlewareService.requestBitcoinAddressInfo(address, blockchain, netType)
     .then((response) => {
-      dispatch(BitcoinActions.bitcoinHttpGetAddressInfoSuccess(response.data))
+      dispatch(BitcoinActions.bitcoinHttpGetAddressInfoSuccess(response.data, response.config.host))
       // TODO: need to check that res.status is equal 200 etc. Or it is better to check right in fetchPersonInfo.
-      return response.data // TODO: to verify, that 'data' is JSON, not HTML like 502.html or 404.html
+      return converter.addressInfo(response) // TODO: to verify, that 'data' is JSON, not HTML like 502.html or 404.html
     })
     .catch((error) => {
       dispatch(BitcoinActions.bitcoinHttpGetAddressInfoFailure(error))

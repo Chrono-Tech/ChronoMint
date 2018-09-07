@@ -40,7 +40,7 @@ export const getWalletBalances = ({ wallet }) => {
   }
 }
 
-export const formatBalances = ({ balancesResult, blockchain }) => {
+export const formatBalances = (blockchain, balancesResult) => {
   const mainSymbol = getMainSymbolForBlockchain(blockchain)
   if (balancesResult && balancesResult.tokens) {
     const tokensBalances = balancesResult.tokens

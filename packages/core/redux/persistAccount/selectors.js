@@ -55,16 +55,24 @@ export const getSelectedNetworkId = (state) => {
   return selectedNetworkId
 }
 
-export const getSelectedNetwork = () => createSelector(
+export const getSelectedNetwork = (blockchain) => createSelector(
   getNetwork,
   (network) => {
-    if (!network.selectedNetworkId) {
+    if (!network || !network.selectedNetworkId || !network.networks) {
       return null
     }
 
-    return network.networks && network.networks.find(
-      (item) => item.id === network.selectedNetworkId,
-    )
+    if (blockchain) {
+      const networks = network.networks.find(
+        (item) => item.id === network.selectedNetworkId,
+      )
+
+      return networks[blockchain]
+    } else {
+      return network.networks.find(
+        (item) => item.id === network.selectedNetworkId,
+      )
+    }
   },
 )
 

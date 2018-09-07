@@ -375,7 +375,7 @@ export const updateEthMultisigWalletBalance = ({ wallet }) => async (dispatch) =
         ...wallet,
         balances: {
           ...wallet.balances,
-          ...formatBalances({ blockchain: wallet.blockchain, balancesResult }),
+          ...formatBalances(wallet.blockchain, balancesResult),
         },
       })))
     })
