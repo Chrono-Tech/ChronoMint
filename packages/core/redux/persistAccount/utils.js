@@ -5,9 +5,8 @@
 
 import bip39 from 'bip39'
 import uuid from 'uuid/v1'
-import { profileImgJPG } from '@chronobank/core-dependencies/assets'
-import { WALLET_TYPE_MEMORY, WALLET_TYPE_DEVICE } from '../../models/constants/AccountEntryModel'
-import { AccountEntryModel } from '../../models/wallet/persistAccount'
+import { WALLET_TYPE_MEMORY } from '@chronobank/login/models/constants/AccountEntryModel'
+import { AccountEntryModel } from '@chronobank/login/models/wallet/persistAccount'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 
 export const replaceWallet = (wallet, walletList) => {
@@ -42,7 +41,7 @@ export const getAccountName = (account: AccountEntryModel) => {
   return account && account.name || ''
 }
 
-export const getAccountAvatarImg = (account) => {
+export const getAccountAvatar = (account) => {
   if (account && account.profile && account.profile.avatar) {
     return account.profile.avatar
   }
@@ -50,13 +49,12 @@ export const getAccountAvatarImg = (account) => {
   return ''
 }
 
-export const generateMnemonic = () => {
-  return bip39.generateMnemonic()
-}
+export const getAccountAvatar = (account) => {
+  if (account && account.profile && account.profile.avatar) {
+    return account.profile.avatar
+  }
 
-export const getAccountAvatar = (account: AccountEntryModel) => {
-  const img = getAccountAvatarImg(account)
-  return img || profileImgJPG
+  return ''
 }
 
 export const createAccountEntry = (name, walletFileImportObject, profile = null) =>

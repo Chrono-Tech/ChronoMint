@@ -20,7 +20,7 @@ import {
 
 import {
   getAccountAddress,
-  getAccountAvatarImg,
+  getAccountAvatar,
   getAccountName,
 } from '@chronobank/core/redux/persistAccount/utils'
 import {
@@ -198,7 +198,7 @@ class LoginForm extends React.Component {
           <UserRow
             title={getAccountName(selectedWallet)}
             subtitle={getAccountAddress(selectedWallet, true)}
-            avatar={getAccountAvatarImg(selectedWallet)}
+            avatar={getAccountAvatar(selectedWallet)}
             onClick={navigateToSelectWallet}
             linkTitle='My Accounts'
           />
