@@ -4,9 +4,6 @@
  */
 
 import uuid from 'uuid/v1'
-import {
-  profileImgJPG,
-} from '@chronobank/core-dependencies/assets'
 import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import {
@@ -47,18 +44,12 @@ export const getAccountName = (account: AccountEntryModel) => {
   return account && account.name || ''
 }
 
-export const getAccountAvatarImg = (account) => {
+export const getAccountAvatar = (account) => {
   if (account && account.profile && account.profile.avatar) {
     return account.profile.avatar
   }
 
   return ''
-}
-
-export const getAccountAvatar = (account: AccountEntryModel) => {
-  const img = getAccountAvatarImg(account)
-
-  return img || profileImgJPG
 }
 
 export const createAccountEntry = (name, walletFileImportObject, profile = null) =>

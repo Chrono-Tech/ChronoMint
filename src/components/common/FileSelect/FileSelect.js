@@ -23,7 +23,7 @@ import globalStyles from 'styles'
 import { ACCEPT_ALL } from '@chronobank/core/models/FileSelect/FileExtension'
 import FileCollection from '@chronobank/core/models/FileSelect/FileCollection'
 import FileModel, { fileConfig } from '@chronobank/core/models/FileSelect/FileModel'
-import ipfs from '@chronobank/core-dependencies/utils/IPFS'
+import ipfs from '@chronobank/core/utils/IPFS'
 import FileItem from './FileItem'
 
 import './FileSelect.scss'

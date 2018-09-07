@@ -10,7 +10,7 @@ import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import {
   getAccountName,
-  getAccountAvatarImg,
+  getAccountAvatar,
   getAccountAddress,
 } from '@chronobank/core/redux/persistAccount/utils'
 import styles from 'layouts/Splash/styles'
@@ -42,7 +42,7 @@ class RecoverAccount extends PureComponent {
         <div styleName='user-row'>
           <UserRow
             title={getAccountName(selectedWallet)}
-            avatar={getAccountAvatarImg(selectedWallet)}
+            avatar={getAccountAvatar(selectedWallet)}
             subtitle={getAccountAddress(selectedWallet, true)}
             onClick={navigateToSelectWallet}
           />
