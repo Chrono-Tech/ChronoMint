@@ -60,15 +60,17 @@ export const initWallets = () => (dispatch) => {
   dispatch(initDerivedWallets())
 }
 
-const initWalletsFromKeys = () => (dispatch, getState) => {
+const initWalletsFromKeys = () => async (dispatch, getState) => {
   const state = getState()
   const account = getPersistAccount(state)
   const wallets = []
 
   const ethereumSigner = getEthereumSigner(state)
-  console.log('ethereumSigner: ', ethereumSigner, ethereumSigner.getAddress())
+  const ethAddress = await ethereumSigner.getAddress()
+  console.log('ethereumSigner: ', ethereumSigner, ethAddress)
+
   wallets.push(new WalletModel({
-    address: ethereumSigner.getAddress(),
+    address: ethAddress,
     blockchain: BLOCKCHAIN_ETHEREUM,
     isMain: true,
     walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,

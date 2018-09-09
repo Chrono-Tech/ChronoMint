@@ -23,7 +23,7 @@ export default class BitcoinCashTrezorDeviceMock extends EventEmitter {
     return address
   }
 
-  signTransaction (unsignedTxHex) {
+  async signTransaction (unsignedTxHex) {
     // tx object
     const txb = new bitcoin.TransactionBuilder
       .fromTransaction(bitcoin.Transaction.fromHex(unsignedTxHex), this.network)
@@ -34,10 +34,18 @@ export default class BitcoinCashTrezorDeviceMock extends EventEmitter {
       txb.sign(i, keyPair, null, hashType, txb.__inputs[i])
     }
 
-    return txb.build().toHex()
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(txb.build().toHex())
+      }, 5000)
+    })
   }
 
   getKeyPair () {
     return new bitcoin.ECPair.fromPrivateKey(Buffer.from(this.privateKey, 'hex'), { network: this.network })
+  }
+
+  isActionRequestedModalDialogShows () {
+    return true
   }
 }

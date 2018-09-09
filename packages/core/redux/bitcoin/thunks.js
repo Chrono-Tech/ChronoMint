@@ -5,7 +5,7 @@
 
 import bitcoin from 'bitcoinjs-lib'
 import type { Dispatch } from 'redux'
-import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
+import { modalsOpen, modalsClose } from '@chronobank/core-dependencies/redux/modals/actions'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 import * as converter from './converter'
 import {
@@ -232,7 +232,23 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   try {
     const network = getSelectedNetwork()(getState())
     const unsignedTxHex = entry.tx.prepared.buildIncomplete().toHex()
-    const signedHex = signer.signTransaction(unsignedTxHex)
+    if (signer.isActionRequestedModalDialogShows()) {
+      dispatch(BitcoinActions.bitcoinShowSignTxConfirmationModalDialog())
+      dispatch(modalsOpen({
+        componentName: 'ActionRequestDeviceDialog',
+        props: {
+          reject: (entry) => (dispatch) => dispatch(BitcoinActions.bitcoinTxReject(entry)),
+        },
+      }))
+    }
+    const signedHex = await signer.signTransaction(unsignedTxHex)
+
+    if (signer.isActionRequestedModalDialogShows()) {
+      dispatch(BitcoinActions.bitcoinCloseSignTxConfirmationModalDialog())
+      dispatch(modalsClose({
+        componentName: 'ActionRequestDeviceDialog',
+      }))
+    }
     const bitcoinTransaction = bitcoin.Transaction.fromHex(signedHex)
     const bitcoinNetwork = bitcoin.networks[network[entry.blockchain]]
     const txb = new bitcoin.TransactionBuilder.fromTransaction(bitcoinTransaction, bitcoinNetwork)
@@ -248,6 +264,9 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     dispatch(BitcoinActions.bitcoinSignTxSuccess(bitcoinTxEntry))
     return bitcoinTxEntry
   } catch (error) {
+    if (signer.isActionRequestedModalDialogShows()) {
+      dispatch(BitcoinActions.bitcoinCloseSignTxConfirmationModalDialog())
+    }
     const bitcoinErrorTxEntry = BitcoinUtils.createBitcoinTxEntryModel({
       ...entry,
       isErrored: true,

@@ -137,3 +137,11 @@ export const bitcoinSignTxFailure = (error) => ({
   type: BtcConstants.BITCOIN_SIGN_TX_FAILURE,
   error,
 })
+
+export const bitcoinShowSignTxConfirmationModalDialog = () => ({
+  type: BtcConstants.BITCOIN_SHOW_SIGN_TX_CONFIRMATION_MODAL_DIALOG,
+})
+
+export const bitcoinCloseSignTxConfirmationModalDialog = () => ({
+  type: BtcConstants.BITCOIN_CLOSE_SIGN_TX_CONFIRMATION_MODAL_DIALOG,
+})

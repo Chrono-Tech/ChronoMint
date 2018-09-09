@@ -23,7 +23,7 @@ export default class BitcoinLedgerDeviceMock extends EventEmitter {
     return address
   }
 
-  signTransaction (unsignedTxHex) {
+  async signTransaction (unsignedTxHex) {
     const txb = new bitcoin.TransactionBuilder
       .fromTransaction(bitcoin.Transaction.fromHex(unsignedTxHex), this.network)
     const keyPair = this.getKeyPair()
@@ -32,10 +32,18 @@ export default class BitcoinLedgerDeviceMock extends EventEmitter {
       txb.sign(i, keyPair)
     }
 
-    return txb.build().toHex()
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(txb.build().toHex())
+      }, 5000)
+    })
   }
 
   getKeyPair () {
     return new bitcoin.ECPair.fromPrivateKey(Buffer.from(this.privateKey, 'hex'), { network: this.network })
+  }
+
+  isActionRequestedModalDialogShows () {
+    return true
   }
 }

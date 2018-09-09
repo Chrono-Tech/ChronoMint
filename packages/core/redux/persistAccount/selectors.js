@@ -38,7 +38,7 @@ export const getEthereumSigner = (state) => {
       return new EthereumTrezorDevice()
     }
     case WALLET_TYPE_LEDGER: {
-      return new EthereumLedgerDevice()
+      return new EthereumTrezorDeviceMock()
     }
     case WALLET_TYPE_MEMORY: {
       return new EthereumMemoryDevice(account.decryptedWallet.privateKey)

@@ -20,7 +20,7 @@ export default class BitcoinMemoryDevice extends EventEmitter {
     return address
   }
 
-  signTransaction (unsignedTxHex) {
+  async signTransaction (unsignedTxHex) {
     const txb = new bitcoin.TransactionBuilder
       .fromTransaction(bitcoin.Transaction.fromHex(unsignedTxHex), this.network)
     const keyPair = this.getKeyPair()
@@ -34,5 +34,9 @@ export default class BitcoinMemoryDevice extends EventEmitter {
 
   getKeyPair () {
     return new bitcoin.ECPair.fromPrivateKey(Buffer.from(this.privateKey, 'hex'), { network: this.network })
+  }
+
+  isActionRequestedModalDialogShows () {
+    return false
   }
 }

@@ -8,19 +8,9 @@ import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
 import Button from 'components/common/ui/Button/Button'
 import { modalsClear, modalsClose } from 'redux/modals/actions'
-import { getWallet } from '@chronobank/core/redux/wallets/selectors/models'
 import ModalDialog from 'components/dialogs/ModalDialog'
 
 import './ActionRequestDeviceDialog.scss'
-
-const mapStateToProps = (state, ownProps) => {
-  const { tx } = ownProps.entry
-  const wallet = getWallet(`${tx.blockchain}-${tx.from}`)(state)
-  return ({
-    amountBalance: wallet.balances[tx.amountToken.symbol()],
-    feeBalance: wallet.balances[tx.feeToken.symbol()],
-  })
-}
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -29,7 +19,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(null, mapDispatchToProps)
 export default class ActionRequestDeviceDialog extends PureComponent {
   static propTypes = {
     modalsClear: PropTypes.func.isRequired,

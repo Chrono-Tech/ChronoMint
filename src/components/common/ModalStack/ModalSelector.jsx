@@ -8,6 +8,7 @@ import { Map } from 'immutable'
 
 // Here we have a list of [[ALL]] modals dialogues etc.
 // Keep imports alphabetically sorted
+import ActionRequestDeviceDialog from 'components/dialogs/ActionRequestDeviceDialog/ActionRequestDeviceDialog'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import AddTokenDialog from 'components/assetsManager/AddTokenDialog/AddTokenDialog'
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
@@ -36,6 +37,7 @@ import WalletSettingsForm from 'components/wallet/AddWalletWidget/WalletSettings
 export default class ModalSelector extends PureComponent {
   // Keep Map alphabetically sorted
   static modalsMap = new Map({
+    'ActionRequestDeviceDialog': ActionRequestDeviceDialog,
     'AddPlatformDialog': AddPlatformDialog,
     'AddTokenDialog': AddTokenDialog,
     'AssetManagerDialog': AssetManagerDialog,

@@ -75,4 +75,8 @@ export default class BitcoinLedgerDevice extends EventEmitter {
 
     return result
   }
+
+  isActionRequestedModalDialogShows () {
+    return true
+  }
 }

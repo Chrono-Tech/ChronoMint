@@ -155,7 +155,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         //////////////////////////////////////////////////////
         //// @todo remove after providers/engine refactoring
         const providerSettings = dispatch(SessionThunks.getProviderSettings())
-        const provider = privateKeyProvider.getPrivateKeyProvider(MOCK_PRIVATE_KEY, providerSettings)
+        const provider = privateKeyProvider.getPrivateKeyProvider(`${MOCK_PRIVATE_KEY}`, providerSettings)
         await setup(provider)
         //////////////////////////////////////////////////////
 

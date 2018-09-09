@@ -113,6 +113,14 @@ const mutations = {
     lastRequestMeta: error,
   }),
 
+  // Modal dialog shows
+  [BtcConstants.BITCOIN_SHOW_SIGN_TX_CONFIRMATION_MODAL_DIALOG]: (state) => ({
+    ...state,
+  }),
+  [BtcConstants.BITCOIN_CLOSE_SIGN_TX_CONFIRMATION_MODAL_DIALOG]: (state) => ({
+    ...state,
+  }),
+
   // Update/Create Tx in state
   [BtcConstants.BITCOIN_TX_UPDATE]: (state, { entry }) => {
     const address = entry.tx.from
