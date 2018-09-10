@@ -3,6 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+/*
+TODO: Futher refactoring. redux/modals MUST be moved
+out of packages/core after finishing TX send refactoring
+*/
+
 import {
   MODALS_OPEN,
   MODALS_REPLACE,
