@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { modalsClose } from 'redux/modals/actions'
+import { modalsClose } from '@chronobank/core/redux/modals/actions'
 import Button from 'components/common/ui/Button/Button'
 import {
   customNetworkEdit,

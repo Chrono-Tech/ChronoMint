@@ -5,8 +5,8 @@
 
 import bitcoin from 'bitcoinjs-lib'
 import type { Dispatch } from 'redux'
-import { modalsOpen, modalsClose } from '@chronobank/core-dependencies/redux/modals/actions'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
+import { modalsOpen, modalsClose } from '../modals/actions'
 import * as converter from './converter'
 import {
   TransferNoticeModel,

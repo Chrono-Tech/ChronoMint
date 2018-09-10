@@ -33,6 +33,7 @@ import {
 } from '@chronobank/core/redux/persistAccount/constants'
 import * as NetworkThunks from '@chronobank/login/redux/network/thunks'
 import * as SessionThunks from '@chronobank/core/redux/session/thunks'
+import { modalsOpen, modalsClose } from '@chronobank/core/redux/modals/actions'
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
 import * as DeviceActions from '@chronobank/core/redux/device/actions'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
@@ -46,6 +47,7 @@ import {
   FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
   FORM_FOOTER_EMAIL_SUBSCRIPTION,
 } from './constants'
+import userMonitorService from './userMonitorService'
 
 /*
  * Thunk dispatched by "" screen.
@@ -379,4 +381,27 @@ export const onSubmitSubscribeNewsletterFail = (errors, submitErrors) =>
 export const onSubmitLoginFormFail = (errors, submitErrors) => (dispatch) => {
   dispatch(stopSubmit(FORM_LOGIN_PAGE, submitErrors && submitErrors.errors))
   dispatch(NetworkActions.networkResetLoginSubmitting())
+}
+
+export const startUserMonitorAndCloseModals = () => (dispatch) => {
+  userMonitorService.start()
+  dispatch(modalsClose())
+}
+
+export const stopUserMonitor = () => () => {
+  userMonitorService.stop()
+}
+
+export const removeWatchersUserMonitor = () => () => {
+  userMonitorService
+    .removeAllListeners('active')
+    .stop()
+}
+
+export const watchInitUserMonitor = () => (dispatch) => {
+  userMonitorService
+    .on('active', () => dispatch(modalsOpen({
+      componentName: 'UserActiveDialog',
+    })))
+    .start()
 }

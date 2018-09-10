@@ -14,7 +14,6 @@ import { reducer as formReducer } from 'redux-form/immutable'
 import { loadI18n } from 'redux/i18n/actions'
 import { I18n, i18nReducer, loadTranslations, setLocale } from 'react-redux-i18n'
 import moment from 'moment'
-import saveAccountMiddleWare from '@chronobank/core/redux/session/saveAccountMiddleWare'
 import thunk from 'redux-thunk'
 import localStorage from 'utils/LocalStorage'
 import coreReducers from '@chronobank/core/redux/ducks'
@@ -65,7 +64,6 @@ const configureStore = () => {
   const middleware = [
     thunk,
     historyMiddleware,
-    saveAccountMiddleWare,
   ]
 
   if (isDevelopmentEnv) {

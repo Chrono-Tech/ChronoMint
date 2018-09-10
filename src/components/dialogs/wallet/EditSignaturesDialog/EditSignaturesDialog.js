@@ -8,7 +8,7 @@ import EditSignaturesForm from 'components/dialogs/wallet/EditSignaturesDialog/E
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { modalsClose } from 'redux/modals/actions'
+import { modalsClose } from '@chronobank/core/redux/modals/actions'
 import { changeRequirement } from '@chronobank/core/redux/multisigWallet/actions'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 

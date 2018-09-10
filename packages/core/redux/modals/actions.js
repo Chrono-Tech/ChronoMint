@@ -3,6 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+/*
+TODO: Futher refactoring. redux/modals MUST be moved
+out of packages/core after finishing TX send refactoring
+*/
+
 import {
   MODALS_OPEN,
   MODALS_REPLACE,
@@ -10,26 +15,26 @@ import {
   MODALS_CLEAR,
 } from './constants'
 
-export const modalsOpen = ({ componentName, props }) => (dispatch) =>
-  dispatch({
+export const modalsOpen = ({ componentName, props }) =>
+  ({
     type: MODALS_OPEN,
     componentName,
     props,
   })
 
-export const modalsReplace = ({ componentName, props }) => (dispatch) =>
-  dispatch({
+export const modalsReplace = ({ componentName, props }) =>
+  ({
     type: MODALS_REPLACE,
     componentName,
     props,
   })
 
-export const modalsClose = () => (dispatch) =>
-  dispatch({
+export const modalsClose = () =>
+  ({
     type: MODALS_CLOSE,
   })
 
-export const modalsClear = () => (dispatch) =>
-  dispatch({
+export const modalsClear = () =>
+  ({
     type: MODALS_CLEAR,
   })

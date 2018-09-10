@@ -8,9 +8,9 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import ArbitraryNoticeModel from '@chronobank/core/models/notices/ArbitraryNoticeModel'
-import { modalsOpen } from 'redux/modals/actions'
+import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import { notify } from '@chronobank/core/redux/notifier/actions'
-import clipboard from '@chronobank/core-dependencies/utils/clipboard'
+import clipboard from 'utils/clipboard'
 
 import './MicroIcon.scss'
 

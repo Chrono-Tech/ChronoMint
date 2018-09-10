@@ -17,7 +17,7 @@ import { DUCK_PERSIST_ACCOUNT } from './constants'
 import EthereumTrezorDeviceMock from '../../services/signers/EthereumTrezorDeviceMock'
 import EthereumTrezorDevice from '../../services/signers/EthereumTrezorDevice'
 import EthereumLedgerDeviceMock from '../../services/signers/EthereumLedgerDeviceMock'
-import EthereumLedgerDevice from '../../services/signers/EthereumLedgerDevice'
+// import EthereumLedgerDevice from '../../services/signers/EthereumLedgerDevice'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 
 export const getPersistAccount = (state) => {

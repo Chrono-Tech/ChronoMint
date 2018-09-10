@@ -15,7 +15,7 @@ import Amount from '@chronobank/core/models/Amount'
 import TxExecModel from '@chronobank/core/models/TxExecModel'
 import TxEntryModel from '@chronobank/core/models/TxEntryModel'
 
-import { modalsClear, modalsClose } from 'redux/modals/actions'
+import { modalsClear, modalsClose } from '@chronobank/core/redux/modals/actions'
 import { getWallet } from '@chronobank/core/redux/wallets/selectors/models'
 
 import Value from 'components/common/Value/Value'

@@ -6,8 +6,7 @@
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import WavesDAO from '@chronobank/core/dao/WavesDAO'
-import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
-import { showConfirmTransferModal } from '@chronobank/core-dependencies/redux/ui/actions'
+import { modalsOpen } from '../modals/actions'
 import { bccDAO, btcDAO, btgDAO, ltcDAO } from '../../dao/BitcoinDAO'
 import ERC20ManagerDAO from '../../dao/ERC20ManagerDAO'
 import ethereumDAO from '../../dao/EthereumDAO'
@@ -66,7 +65,15 @@ const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExec
         },
       }))
     } else {
-      await dispatch(showConfirmTransferModal(dao, tx))
+      await dispatch(modalsOpen({
+        componentName: 'ConfirmTransferDialog',
+        props: {
+          tx,
+          dao,
+          confirm: (tx) => dao.accept(tx),
+          reject: (tx) => dao.reject(tx),
+        },
+      }))
     }
   } catch (e) {
     dispatch(notifyError(e, tx.funcTitle()))

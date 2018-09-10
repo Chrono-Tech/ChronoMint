@@ -14,7 +14,7 @@ import Preloader from 'components/common/Preloader/Preloader'
 import MultisigWalletPendingTxModel from '@chronobank/core/models/wallet/MultisigWalletPendingTxModel'
 import Amount from '@chronobank/core/models/Amount'
 import { confirmMultisigTx, revokeMultisigTx } from '@chronobank/core/redux/multisigWallet/actions'
-import { modalsOpen } from 'redux/modals/actions'
+import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 

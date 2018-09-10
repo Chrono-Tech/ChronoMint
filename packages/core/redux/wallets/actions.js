@@ -109,17 +109,6 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
     }))
   }
 
-  const nemSigner = getLitecoinSigner(state)
-  console.log('litecoinSigner: ', litecoinSigner)
-  if (litecoinSigner) {
-    wallets.push(new WalletModel({
-      address: litecoinSigner.getAddress(),
-      blockchain: BLOCKCHAIN_LITECOIN,
-      isMain: true,
-      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
-    }))
-  }
-
   wallets.forEach((wallet) => {
     dispatch(setWallet(wallet))
     dispatch(updateWalletBalance({ wallet }))
