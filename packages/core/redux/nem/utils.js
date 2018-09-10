@@ -4,7 +4,6 @@
  */
 
 import uuid from 'uuid/v1'
-import NemWallet from '@chronobank/login/network/NemWallet'
 import nemSdk from 'nem-sdk'
 import {
   BLOCKCHAIN_NEM,
@@ -80,16 +79,20 @@ export const describeMosaicTransaction = (tx, network) => {
 }
 
 export const createXemTransaction = (prepared, signer, network) => {
-  const pk = signer.privateKey.substring(2, 66) // remove 0x
-  const menNetwork = nemSdk.model.network.data[network[BLOCKCHAIN_NEM]]
-  const nemWallet = NemWallet.fromPrivateKey(pk, menNetwork)
-  const pubKey = nemWallet._keyPair.publicKey.toString('hex') // get public key for tx
+  console.log('createXemTransaction: ', prepared, signer, network)
 
-  const serialized = nemSdk.utils.serialization.serializeTransaction({ ...prepared, signer: pubKey })
-  const signature = nemWallet.sign(serialized)
+  // const pk = signer.privateKey.substring(2, 66) // remove 0x
+  // const menNetwork = nemSdk.model.network.data[network[BLOCKCHAIN_NEM]]
+  // const nemWallet = NemWallet.fromPrivateKey(pk, menNetwork)
+  // const pubKey = nemWallet._keyPair.publicKey.toString('hex') // get public key for tx
+
+  const serialized = nemSdk.utils.serialization.serializeTransaction({ ...prepared, signer: signer.getPublicKey() })
+  const signature = signer.sign(serialized)
+  console.log('createXemTransaction serialized: ', serialized, signature)
+
   return {
     tx: {
-      address: nemWallet.getAddress(),
+      address: signer.getAddress(),
       data: nemSdk.utils.convert.ua2hex(serialized),
       signature: signature.toString(),
     },

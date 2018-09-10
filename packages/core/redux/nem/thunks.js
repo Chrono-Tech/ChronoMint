@@ -2,13 +2,11 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { ErrorNoticeModel, TransferNoticeModel } from '../../models'
-import EthereumMemoryDevice  from '../../services/signers/EthereumMemoryDevice'
-import { nemPendingSelector, pendingEntrySelector } from './selectors'
-import { getSelectedNetwork, getEthereumSigner } from '../persistAccount/selectors'
+import { nemPendingSelector, pendingEntrySelector, getNemSigner } from './selectors'
+import { getSelectedNetwork } from '../persistAccount/selectors'
 import { describePendingNemTx } from '../../describers'
 import { getAccount } from '../session/selectors/models'
 import * as NemActions from './actions'
@@ -59,9 +57,9 @@ const nemTxStatus = (key, address, props) => (dispatch, getState) => {
 
 export const estimateNemFee = (params, callback) => async (dispatch) => {
   try {
-    const { from, to, amount, token } = params
-    const nemDao = tokenService.getDAO(token.symbol())
-    const tx = nemDao.transfer(from, to, amount, token)
+    const { from, to, amount } = params
+    const nemDao = tokenService.getDAO(amount.symbol())
+    const tx = nemDao.transfer(from, to, amount)
     const preparedTx = await dispatch(prepareTransaction({ tx }))
     callback(null, { fee: NemUtils.formatFee(preparedTx.prepared.fee) })
   } catch (e) {
@@ -99,8 +97,11 @@ const processTransaction = ({ entry, signer }) => async (dispatch, getState) => 
 
 const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   try {
+    console.log('signTransaction: ', entry, signer)
+
     const { tx } = entry
     const signed = NemUtils.createXemTransaction(tx.prepared, signer, getSelectedNetwork()(getState()))
+    console.log('signTransaction tx: ', tx)
     dispatch(NemActions.nemTxUpdate(entry.key, entry.tx.from, NemUtils.createNemTxEntryModel({
       ...entry,
       tx: {
@@ -110,6 +111,7 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     })))
 
   } catch (error) {
+    console.log('signTransaction error: ', error)
     dispatch(nemTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
     throw error
   }
@@ -126,8 +128,11 @@ const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
     return // stop execute
   }
 
+  console.log('sendSignedTransaction: ', entry)
+
   const node = nemProvider.getNode()
   const res = await node.send({ ...entry.tx.signed.tx, fee: entry.tx.signed.fee })
+  console.log('sendSignedTransaction: ', res)
 
   if (res && res.meta && res.meta.hash) {
     const hash = res.meta.hash.data
@@ -168,16 +173,13 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
   dispatch(nemTxStatus(entry.key, entry.tx.from, { isAccepted: true, isPending: true }))
 
   const state = getState()
-  let signer = getEthereumSigner(state)
-  if (entry.walletDerivedPath) {
-    signer = await EthereumMemoryDevice.getDerivedWallet(signer.privateKey, entry.walletDerivedPath)
-  }
+  const signer = getNemSigner(state)
 
   const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key)(getState())
   if (!selectedEntry) {
     // eslint-disable-next-line no-console
     console.error('entry is null', entry)
-    return // stop execute
+    return
   }
 
   return dispatch(processTransaction({

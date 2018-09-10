@@ -40,6 +40,7 @@ import {
 import { executeNemTransaction } from '../nem/thunks'
 import { getPersistAccount, getEthereumSigner } from '../persistAccount/selectors'
 import { getBitcoinCashSigner, getBitcoinSigner, getLitecoinSigner } from '../bitcoin/selectors'
+import { getNemSigner } from '../nem/selectors'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -109,12 +110,12 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
     }))
   }
 
-  const nemSigner = getLitecoinSigner(state)
-  console.log('litecoinSigner: ', litecoinSigner)
-  if (litecoinSigner) {
+  const nemSigner = getNemSigner(state)
+  console.log('nemSigner: ', nemSigner, nemSigner.getAddress())
+  if (nemSigner) {
     wallets.push(new WalletModel({
-      address: litecoinSigner.getAddress(),
-      blockchain: BLOCKCHAIN_LITECOIN,
+      address: nemSigner.getAddress(),
+      blockchain: BLOCKCHAIN_NEM,
       isMain: true,
       walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
     }))
@@ -287,6 +288,8 @@ export const mainTransfer = (
   advancedParams = null,
 ) => async (dispatch) => {
   try {
+    console.log('TokenDao: ', token)
+    console.log('TokenDao: ', token.toJSON())
     const tokenDAO = tokenService.getDAO(token.id())
     const tx = tokenDAO.transfer(wallet.address, recipient, amount)
     const executeMap = {
