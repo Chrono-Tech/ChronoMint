@@ -4,7 +4,7 @@
  */
 
 import EventEmitter from 'events'
-import { modalsOpen } from 'redux/modals/actions'
+import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 
 export const USER_ACTIVE = 'USER_ACTIVE'
 

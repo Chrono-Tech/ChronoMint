@@ -8,7 +8,6 @@
   "devDependencies": {
     "@chronobank/chronomint-presentation": "github:chronobank/ChronoMintPresentation",
     "@chronobank/core": "*",
-    "@chronobank/core-dependencies": "*",
     "@chronobank/login": "*",
     "@chronobank/login-ui": "*",
     "archiver": "^2.0.0",

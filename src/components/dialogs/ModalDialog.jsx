@@ -7,7 +7,7 @@ import { CSSTransitionGroup } from 'react-transition-group'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
-import { modalsClose } from 'redux/modals/actions'
+import { modalsClose } from '@chronobank/core/redux/modals/actions'
 import './ModalDialog.scss'
 
 const TRANSITION_TIMEOUT = 300

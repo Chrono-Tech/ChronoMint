@@ -9,7 +9,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { addManager, removeManager } from '@chronobank/core/redux/assetsManager/actions'
-import { modalsClose } from 'redux/modals/actions'
+import { modalsClose } from '@chronobank/core/redux/modals/actions'
 import { getSelectedToken } from '@chronobank/core/redux/assetsManager/selectors'
 import './AssetManagerForm.scss'
 

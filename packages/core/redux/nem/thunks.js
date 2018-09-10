@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
+import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { ErrorNoticeModel, SignerMemoryModel, TransferNoticeModel } from '../../models'
 import { nemPendingSelector, pendingEntrySelector } from './selectors'

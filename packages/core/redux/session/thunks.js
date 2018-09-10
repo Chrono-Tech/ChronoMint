@@ -6,7 +6,6 @@
 import { getNetworkById } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
-import { removeWatchersUserMonitor } from '@chronobank/core-dependencies/redux/ui/actions'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import metaMaskResolver from '@chronobank/login/network/metaMaskResolver'
 import * as SessionActions from './actions'
@@ -120,7 +119,6 @@ export const createNetworkSession = (account, provider, network) => (dispatch) =
 
 export const logout = () => async (dispatch) => {
   try {
-    dispatch(removeWatchersUserMonitor())
     dispatch(watchStopMarket())
     dispatch(destroyNetworkSession())
   } catch (e) {

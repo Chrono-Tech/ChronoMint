@@ -8,7 +8,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import ModalDialog from 'components/dialogs/ModalDialog'
-import { modalsClose } from 'redux/modals/actions'
+import { modalsClose } from '@chronobank/core/redux/modals/actions'
 import AssetManagerForm from './AssetManagerForm'
 
 function prefix (token) {

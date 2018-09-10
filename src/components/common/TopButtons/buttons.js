@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { modalsOpen } from 'redux/modals/actions'
+import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import { navigateToAddWallet, navigateToNewPoll } from 'redux/ui/navigation'
 import { goBackForAddWalletsForm } from 'redux/ui/thunks'
 import { changeWalletView } from 'redux/ui/actions'
