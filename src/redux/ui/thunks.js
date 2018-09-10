@@ -7,7 +7,7 @@ import { destroyNetworkSession, login, logout } from '@chronobank/core/redux/ses
 import { change, formValueSelector } from 'redux-form/immutable'
 import { history } from 'redux/configureStore'
 import { navigateToVoting, navigateToRoot, navigateToWallets, navigateToPoll } from 'redux/ui/navigation'
-import { removeWatchersUserMonitor } from 'redux/ui/actions'
+import { removeWatchersUserMonitor } from '@chronobank/login-ui/redux/thunks'
 import { PTPoll } from '@chronobank/core/redux/voting/types'
 import * as VotingThunks from '@chronobank/core/redux/voting/thunks'
 import { removeWallet } from '@chronobank/core/redux/multisigWallet/actions'
