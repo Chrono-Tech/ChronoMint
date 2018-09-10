@@ -14,7 +14,7 @@ import { confirm2FATransfer, updatePendingTx } from '@chronobank/core/redux/mult
 import PropTypes from 'prop-types'
 import MultisigWalletPendingTxModel from '@chronobank/core/models/wallet/MultisigWalletPendingTxModel'
 import Preloader from 'components/common/Preloader/Preloader'
-import { modalsClose } from 'redux/modals/actions'
+import { modalsClose } from '@chronobank/core/redux/modals/actions'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import { FORM_2FA_CONFIRM } from 'components/constants'
 import { prefix } from './lang'

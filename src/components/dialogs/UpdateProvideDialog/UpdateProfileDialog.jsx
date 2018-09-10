@@ -19,7 +19,7 @@ import { getAccountProfileSummary } from '@chronobank/core/redux/session/selecto
 import {
   getAccountName,
 } from '@chronobank/core/redux/persistAccount/utils'
-import { modalsClose } from 'redux/modals/actions'
+import { modalsClose } from '@chronobank/core/redux/modals/actions'
 import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
 import AvatarSelect from 'components/common/AvatarSelect/AvatarSelect'
 import ProfileImage from 'components/common/ProfileImage/ProfileImage'

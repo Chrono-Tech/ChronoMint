@@ -288,8 +288,6 @@ export const mainTransfer = (
   advancedParams = null,
 ) => async (dispatch) => {
   try {
-    console.log('TokenDao: ', token)
-    console.log('TokenDao: ', token.toJSON())
     const tokenDAO = tokenService.getDAO(token.id())
     const tx = tokenDAO.transfer(wallet.address, recipient, amount)
     const executeMap = {

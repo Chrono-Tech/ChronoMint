@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import CONFIRM_OPERATION_SVG from 'assets/img/confirm-operation.svg'
 import React, { PureComponent } from 'react'
-import { modalsClear, modalsClose } from 'redux/modals/actions'
+import { modalsClear, modalsClose } from '@chronobank/core/redux/modals/actions'
 import ModalDialog from 'components/dialogs/ModalDialog'
 
 import { prefix } from './lang'

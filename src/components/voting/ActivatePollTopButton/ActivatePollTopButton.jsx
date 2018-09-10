@@ -11,7 +11,7 @@ import { Translate } from 'react-redux-i18n'
 import { isCBE } from '@chronobank/core/redux/session/selectors'
 import { PTPoll } from '@chronobank/core/redux/voting/types'
 import Button from 'components/common/ui/Button/Button'
-import { modalsOpen } from 'redux/modals/actions'
+import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import './ActivatePollTopButton.scss'
 
 function makeMapStateToProps () {

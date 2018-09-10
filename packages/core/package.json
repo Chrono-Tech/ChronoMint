@@ -27,8 +27,5 @@
     "uuid": "^3.3.0",
     "web3": "npm:web3@1.0.0-beta.33",
     "web3-eth-abi": "^1.0.0-beta.33"
-  },
-  "peerDependencies": {
-    "@chronobank/core-dependencies": "*"
   }
 }

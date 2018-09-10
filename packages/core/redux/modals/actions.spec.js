@@ -4,7 +4,7 @@
  */
 
 import { store } from 'specsInit'
-import * as actions from 'redux/modals/actions'
+import * as actions from './actions'
 
 describe('modals actions', () => {
   ['modalsOpen', 'modalsShow', 'modalsPush'].forEach((name) => {

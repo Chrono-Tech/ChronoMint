@@ -18,7 +18,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import Button from 'components/common/ui/Button/Button'
-import { modalsOpen } from 'redux/modals/actions'
+import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import classnames from 'classnames'
 import Web3 from 'web3'
 import {

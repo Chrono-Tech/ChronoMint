@@ -8,7 +8,7 @@ import { TextField } from 'redux-form-material-ui'
 import Button from 'components/common/ui/Button/Button'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { modalsClose } from 'redux/modals/actions'
+import { modalsClose } from '@chronobank/core/redux/modals/actions'
 import ModalDialog from '../ModalDialog'
 
 import './CopyDialog.scss'
