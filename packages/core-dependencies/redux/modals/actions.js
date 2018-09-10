@@ -3,4 +3,4 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export * from 'redux/modals/actions'
+export * from '@chronobank/core/redux/modals/actions'

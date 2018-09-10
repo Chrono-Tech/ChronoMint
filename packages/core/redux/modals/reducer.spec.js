@@ -3,10 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import React, { PureComponent } from 'react'
+import { PureComponent } from 'react'
 
-import * as actions from 'redux/modals/actions'
-import reducer from 'redux/modals/reducer'
+import * as actions from './actions'
+import reducer from './reducer'
 
 const initialState = {
   stack: [],

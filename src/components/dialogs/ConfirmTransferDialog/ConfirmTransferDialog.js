@@ -17,7 +17,7 @@ import BitcoinDAO from '@chronobank/core/dao/BitcoinDAO'
 import NemDAO from '@chronobank/core/dao/NemDAO'
 import WavesDAO from '@chronobank/core/dao/WavesDAO'
 
-import { modalsClear, modalsClose } from 'redux/modals/actions'
+import { modalsClear, modalsClose } from '@chronobank/core/redux/modals/actions'
 import { getWallet } from '@chronobank/core/redux/wallets/selectors/models'
 
 import Value from 'components/common/Value/Value'

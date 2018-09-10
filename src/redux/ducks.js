@@ -4,13 +4,11 @@
  */
 
 import drawer from './drawer/reducer'
-import modals from './modals/reducer'
 import sides from './sides/reducer'
 import ui from './ui/reducer'
 
 const appReducers = {
   drawer,
-  modals,
   sides,
   ui,
 }

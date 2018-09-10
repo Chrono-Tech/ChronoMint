@@ -11,7 +11,7 @@ import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import { formValueSelector } from 'redux-form/immutable'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
-import { modalsOpen } from 'redux/modals/actions'
+import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import './AddCustomTokenTopButton.scss'
 
 function makeMapStateToProps () {

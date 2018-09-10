@@ -5,7 +5,7 @@
 
 import BigNumber from 'bignumber.js'
 import { isNil, omitBy } from 'lodash'
-import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
+import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import { SignerMemoryModel, TxEntryModel, HolderModel } from '../../models'
 import { ethereumPendingSelector, pendingEntrySelector, web3Selector } from './selectors'
 import { DUCK_ETHEREUM } from './constants'

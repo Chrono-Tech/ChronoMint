@@ -8,8 +8,7 @@ import { setLocale } from 'react-redux-i18n'
 import localStorage from 'utils/LocalStorage'
 import ipfs from '@chronobank/core/utils/IPFS'
 import userMonitorService from 'user/monitorService'
-import { modalsOpen, modalsClose } from 'redux/modals/actions'
-import { DUCK_WATCHER, WATCHER_TX_SET } from '@chronobank/core/redux/watcher/constants'
+import { modalsOpen, modalsClose } from '@chronobank/core/redux/modals/actions'
 import { CHANGE_WALLET_VIEW } from './constants'
 
 export const startUserMonitorAndCloseModals = () => (dispatch) => {
@@ -34,45 +33,6 @@ export const watchInitUserMonitor = () => (dispatch) => {
     })))
     .start()
 }
-
-export const showConfirmTransferModal = (dao, tx) => (dispatch) => {
-  dispatch(modalsOpen({
-    componentName: 'ConfirmTransferDialog',
-    props: {
-      tx,
-      dao,
-      confirm: (tx) => dao.accept(tx),
-      reject: (tx) => dao.reject(tx),
-    },
-  }))
-}
-
-// TODO @ipavlenko: Do not use promise, use emitter, see showConfirmTransferModal
-export const showConfirmTxModal = (estimateGas, localFeeMultiplier) => (dispatch, getState) => new Promise((resolve) => {
-  dispatch(modalsOpen({
-    componentName: 'ConfirmTxDialog',
-    props: {
-      callback: (isConfirmed, tx) => resolve({ isConfirmed, updatedTx: tx }),
-      localFeeMultiplier,
-      handleEstimateGas: async (func, args, value, gasPriceMultiplier = 1) => {
-        if (!estimateGas) {
-          return
-        }
-        const { gasFee, gasLimit, gasPrice } = await estimateGas(func, args, value)
-        let tx = getState().get(DUCK_WATCHER).confirmTx
-        tx = tx
-          .gasPrice(gasPrice.mul(gasPriceMultiplier))
-          .setGas(gasFee.mul(gasPriceMultiplier))
-          .gasLimit(gasLimit)
-        dispatch({ type: WATCHER_TX_SET, tx })
-      },
-    },
-  }))
-}).catch((e) => {
-  // eslint-disable-next-line
-  console.error('Confirm modal error:', e)
-  return { isConfirmed: false }
-})
 
 export const changeMomentLocale = (locale) => (dispatch) => {
   moment.locale(locale)

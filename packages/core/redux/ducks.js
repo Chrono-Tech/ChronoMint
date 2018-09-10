@@ -14,6 +14,7 @@ import ethMultisigWallet from './multisigWallet/reducer'
 import events from './events/reducer'
 import mainWallet from './mainWallet/reducer'
 import market from './market/reducer'
+import modals from './modals/reducer'
 import nem from './nem/reducer'
 import notifier from './notifier/reducer'
 import persistAccount from './persistAccount/reducer'
@@ -37,6 +38,7 @@ const coreReducers = {
   events,
   mainWallet,
   market,
+  modals,
   nem,
   notifier,
   persistAccount,
