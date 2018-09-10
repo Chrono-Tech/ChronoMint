@@ -3,11 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import AbstractNode from './AbstractNode'
-
-export default class WavesAbstractNode extends AbstractNode {
-}
-
 // Intermediate model to communicate under the Provider layer
 export class WavesTx {
   constructor ({

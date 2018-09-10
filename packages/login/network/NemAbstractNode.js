@@ -3,11 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import AbstractNode from './AbstractNode'
-
-export default class NemAbstractNode extends AbstractNode {
-}
-
 // Intermediate model to communicate under the Provider layer
 export class NemTx {
   constructor ({

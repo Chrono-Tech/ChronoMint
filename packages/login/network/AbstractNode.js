@@ -4,7 +4,8 @@
  */
 
 import EventEmitter from 'events'
-import SockJS from 'sockjs-client'
+// import SockJS from 'sockjs-client'
+import { WebSocketService } from '@chronobank/core/services/WebSocketService'
 import Stomp from 'webstomp-client'
 
 const TIMEOUT_BASE = 1000
@@ -31,6 +32,7 @@ export default class AbstractNode extends EventEmitter {
   }
 
   _handleConnectionSuccess = () => {
+    WebSocketService.setConnected(this._socket.user + this._socket.password)
     this._timeout = TIMEOUT_BASE
     const actions = this._missedActions
     for (const action of actions) {
@@ -41,6 +43,7 @@ export default class AbstractNode extends EventEmitter {
 
   _handleConnectionTimeout = () => {
     this._timeout *= 2
+    WebSocketService.setConnected(this._socket.user + this._socket.password, false)
     this.connect()
   }
 
@@ -75,17 +78,24 @@ export default class AbstractNode extends EventEmitter {
     if (!this._socket) {
       return
     }
-    this._ws = new SockJS(this._socket.baseURL)
-    this._client = Stomp.over(this._ws, {
-      heartbeat: false,
-      debug: false,
-    })
-    this._client.connect(
-      this._socket.user,
-      this._socket.password,
-      this._handleConnectionSuccess,
-      this._handleConnectionError,
-    )
+    // this._ws = new SockJS(this._socket.baseURL)
+    const ws = WebSocketService.connect(this._socket.user + this._socket.password)
+    if (ws) {
+      this._ws = ws
+      this._client = Stomp.over(this._ws, {
+        heartbeat: false,
+        debug: false,
+      })
+
+      if (!WebSocketService.sockets[this._socket.user + this._socket.password].connectedToMiddleware) {
+        this._client.connect(
+          this._socket.user,
+          this._socket.password,
+          this._handleConnectionSuccess,
+          this._handleConnectionError,
+        )
+      }
+    }
   }
 
   disconnect () {

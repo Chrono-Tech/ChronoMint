@@ -42,7 +42,6 @@ export default class NetworkSelector extends PureComponent {
       id: PropTypes.number,
       protocol: PropTypes.string,
       name: PropTypes.string,
-      scanner: PropTypes.arrayOf(PropTypes.string),
       bitcoin: PropTypes.string,
       nem: PropTypes.string,
     })),
