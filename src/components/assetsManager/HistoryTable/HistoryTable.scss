@@ -68,7 +68,7 @@ $cell-padding: 24px 0px;
 
             .event-type {
               color: $color-grey-2;
-              font-family: proxima-nova, sans-serif;
+              font-family: $font-proxima;
               font-weight: 200;
               line-height: 20px;
               text-align: left;
@@ -81,7 +81,7 @@ $cell-padding: 24px 0px;
 
             .event-title {
               color: $color-primary-0;
-              font-family: proxima-nova, sans-serif;
+              font-family: $font-proxima;
               font-weight: 400;
               line-height: 20px;
               text-align: left;
@@ -94,7 +94,7 @@ $cell-padding: 24px 0px;
 
             .event-address {
               color: $color-grey-2;
-              font-family: proxima-nova, sans-serif;
+              font-family: $font-proxima;
               font-weight: 400;
               line-height: 20px;
               font-size: 14px;
@@ -161,7 +161,7 @@ $cell-padding: 24px 0px;
           font-size: 14px;
           line-height: 17px;
           color: $color-primary-0;
-          font-family: proxima-nova, sans-serif;
+          font-family: $font-proxima;
           font-weight: 500;
           padding-left: 35px;
           padding-top: 15px;

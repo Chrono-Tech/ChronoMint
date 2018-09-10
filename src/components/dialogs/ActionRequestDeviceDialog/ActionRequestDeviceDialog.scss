@@ -8,6 +8,7 @@
 
 .root {
   z-index: 2500; //should be greater than material-ui popover z-index (it equals to 2000 by default)
+  width: 350px;
 }
 
 .content {
@@ -17,18 +18,47 @@
 
 .header {
   padding: 16px 24px;
+  background-color: $color-blue-4;
+
   h3 {
-    font-weight: 400;
+    font-size: 26px;
+    line-height: 31px;
+    color: $color-white;
+    font-family: $font-proxima;
+    font-weight: 500;
     margin: 0;
     padding: 0;
   }
 }
 
 .body {
-  padding: 16px 24px;
+  padding: 16px 45px;
+  text-align: center;
 }
 
-.footer {
-  padding: 16px 24px;
-  text-align: right;
+.icon-container {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.operation-icon {
+  width: 234px;
+  height: 200px;
+}
+
+.confirm-text {
+  font-size: 14px;
+  line-height: 17px;
+  font-family: $font-proxima;
+  font-weight: 500;
+}
+
+.close-text {
+  font-size: 14px;
+  line-height: 17px;
+  font-family: $font-proxima;
+  font-weight: 300;
+  color: $color-primary-0;
 }

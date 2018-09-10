@@ -5,11 +5,13 @@
 
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+import CONFIRM_OPERATION_SVG from 'assets/img/confirm-operation.svg'
 import React, { PureComponent } from 'react'
-import Button from 'components/common/ui/Button/Button'
 import { modalsClear, modalsClose } from 'redux/modals/actions'
 import ModalDialog from 'components/dialogs/ModalDialog'
 
+import { prefix } from './lang'
 import './ActionRequestDeviceDialog.scss'
 
 function mapDispatchToProps (dispatch) {
@@ -33,18 +35,18 @@ export default class ActionRequestDeviceDialog extends PureComponent {
         <div styleName='root'>
           <div styleName='content'>
             <div styleName='header'>
-              <h3>{'Action required'}</h3>
+              <h3><Translate value={`${prefix}.title`} /></h3>
+            </div>
+            <div styleName='icon-container'>
+              <img styleName='operation-icon' src={CONFIRM_OPERATION_SVG} alt='Confirm operation on device' />
             </div>
             <div styleName='body'>
-              <div>
-                {''}
-              </div>
-            </div>
-            <div styleName='footer'>
-              <Button
-                label='Close'
-                onClick={this.handleClose}
-              />
+              <span styleName='confirm-text'>
+                <Translate value={`${prefix}.pleaseConfirm`} />
+              </span>
+              <span styleName='close-text'>
+                <Translate value={`${prefix}.closeAutomatically`} />
+              </span>
             </div>
           </div>
         </div>

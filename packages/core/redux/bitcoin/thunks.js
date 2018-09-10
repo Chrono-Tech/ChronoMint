@@ -236,9 +236,6 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
       dispatch(BitcoinActions.bitcoinShowSignTxConfirmationModalDialog())
       dispatch(modalsOpen({
         componentName: 'ActionRequestDeviceDialog',
-        props: {
-          reject: (entry) => (dispatch) => dispatch(BitcoinActions.bitcoinTxReject(entry)),
-        },
       }))
     }
     const signedHex = await signer.signTransaction(unsignedTxHex)
