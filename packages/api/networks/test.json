@@ -4,7 +4,6 @@
   "networks": [
     {
       "networkTitle": "ChronoBank - Rinkeby (testnet)",
-      "networkId": "200",
       "provider": {
         "disabled": false,
         "host": "rinkeby-full-geth-rpc.chronobank.io"
@@ -21,7 +20,6 @@
     },
     {
       "networkTitle": "Infura - Rinkeby (testnet)",
-      "networkId": "201",
       "provider": {
         "disabled": false,
         "host": "https://mainnet.infura.io/PVe9zSjxTKIP3eAuAHFA"

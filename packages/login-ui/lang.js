@@ -20,7 +20,6 @@ import * as LoginWithPrivateKey from './components/LoginWithPrivateKey/lang'
 import * as LoginWithTrezor from './components/LoginWithTrezor/lang'
 import * as LoginWithWallet from './components/LoginWithWallet/lang'
 import * as LoginWithMetamask from './components/LoginWithMetamask/lang'
-import * as NetworkSelector from './components/NetworkSelector/lang'
 import * as NetworkCreateModal from './components/NetworkCreateModal/lang'
 import * as NetworkCreateModalForm from './components/NetworkCreateModal/NetworkCreateModalForm/lang'
 import * as NetworkDeleteModal from './components/NetworkCreateModal/NetworkDeleteModal/lang'
@@ -41,7 +40,6 @@ export const en = {
   LoginWithMnemonic: LoginWithMnemonic.en,
   LoginWithOptions: LoginWithOptions.en,
   LoginWithPrivateKey: LoginWithPrivateKey.en,
-  NetworkSelector: NetworkSelector.en,
   LoginWithWallet: LoginWithWallet.en,
   BackButton: BackButton.en,
   GenerateMnemonic: GenerateMnemonic.en,

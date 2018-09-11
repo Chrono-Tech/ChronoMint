@@ -3,11 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import nemSdk from 'nem-sdk'
 import { BLOCKCHAIN_NEM } from '@chronobank/login/network/constants'
 import { createSelector } from 'reselect'
+import nemSdk from 'nem-sdk'
 import { DUCK_NEM } from './constants'
-import MetamaskPlugin from "../../services/signers/MetamaskPlugin";
+import MetamaskPlugin from '../../services/signers/MetamaskPlugin'
 import { getPersistAccount, getSelectedNetwork } from '../persistAccount/selectors'
 
 import NemMemoryDevice from '../../services/signers/NemMemoryDevice'

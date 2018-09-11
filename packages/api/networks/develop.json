@@ -4,7 +4,6 @@
   "networks": [
     {
       "networkTitle": "ChronoBank - Private (develop network)",
-      "networkId": "300",
       "provider": {
         "disabled": false,
         "host": "https://private.chronobank.io"

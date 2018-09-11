@@ -68,15 +68,6 @@ export const navigateToCreateAccountWithoutImport = () => (dispatch) => {
  * TODO: to add description
  * TODO: to dispatch something, this is not a thunk or action. Really..
  */
-export const initCommonNetworkSelector = () => (dispatch) => {
-  dispatch(NetworkThunks.autoSelect())
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to dispatch something, this is not a thunk or action. Really..
- */
 export const onSubmitSubscribeNewsletter = (email) => async () => {
   const publicBackendProvider = new PublicBackendProvider()
 
