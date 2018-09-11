@@ -25,7 +25,6 @@ jobs:
         - yarn testrpc > /dev/null &
         - yarn contracts
       script:
-        - yarn test --coverage; export TEST_RESULT=$?
         - yarn build --production
       after_script:
         - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
@@ -46,8 +45,6 @@ jobs:
           if [ "$TRAVIS_BRANCH" == "master" ]; then
             docker build --build-arg BUILD_BRANCH="master" --build-arg PUBLIC_BACKEND_REST_URL="https://backend.chronobank.io" --build-arg NODE=production -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME . --no-cache
             docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
-          elif [ "$TRAVIS_BRANCH" == "master" ] && [ "$TEST_RESULT" != "0" ]; then
-            echo "Test result is: $TEST_RESULT for master branch. Skipping image build and push!"
           elif [ "$TRAVIS_BRANCH" == "develop" ]; then
             docker build --build-arg BUILD_BRANCH="develop" --build-arg PUBLIC_BACKEND_REST_URL="https://stage-adm.chronobank.io" -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME . --no-cache
             docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
