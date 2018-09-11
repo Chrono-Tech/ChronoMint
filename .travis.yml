@@ -26,6 +26,7 @@ jobs:
     - stage: build docker image
       script:
         - yarn lint:errors; export LINT_RESULT=$?
+        - echo $LINT_RESULT
         - ./node_modules/travis-github-lint-status-update/index.js
         - yarn build --production
       after_script:
