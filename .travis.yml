@@ -18,6 +18,7 @@ branches:
     - master
     - develop
     - release
+    - ci
 jobs:
   include:
     - stage: build docker image
@@ -51,11 +52,19 @@ jobs:
               docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
             fi;
           elif [ "$TRAVIS_BRANCH" != "develop" ]; then
-            echo "Lint check is failed with the exit code: $TEST_RESULT. Skipping image build and terminate!"
+            echo "Lint check is failed with the exit code: $LINT_RESULT. Skipping image build and terminate!"
           fi;
         - |
           if [ "$TRAVIS_BRANCH" == "develop" ]; then
             docker build --build-arg BUILD_BRANCH="develop" --build-arg PUBLIC_BACKEND_REST_URL="https://stage-adm.chronobank.io" -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME . --no-cache
             docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
+          fi;
+        - |
+          if [ "$LINT_RESULT" == "0" ]; then
+            if [ "$TRAVIS_BRANCH" == "ci" ]; then
+              echo "Lint check is passed with the exit code: $LINT_RESULT. The app should be built"
+            fi;
+          elif [ "$TRAVIS_BRANCH" != "develop" ]; then
+            echo "Lint check is failed with the exit code: $LINT_RESULT. Skipping image build and terminate!"
           fi;
         - kill -9 $(ps aux | grep '[t]estrpc' | awk '{print $2}')
