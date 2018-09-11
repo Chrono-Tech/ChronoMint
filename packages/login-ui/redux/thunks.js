@@ -92,6 +92,7 @@ export const onSubmitSubscribeNewsletter = (email) => async () => {
  * TODO: to add description
  * TODO: to extract logic from here
  */
+// eslint-disable-next-line complexity
 export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   dispatch(NetworkActions.networkSetLoginSubmitting())
 

@@ -19,7 +19,6 @@ import Slider from 'components/common/Slider'
 import Amount from '@chronobank/core/models/Amount'
 import AssetsCollection from '@chronobank/core/models/assetHolder/AssetsCollection'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
-import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -85,7 +84,6 @@ function mapStateToProps (state) {
     amount: Number.parseFloat(amount) || 0,
     token,
     feeMultiplier,
-    tokens,
     assets,
     isShowTIMERequired: isTesting && !wallet.isTIMERequired && balance && balance.isZero() && token.symbol() === 'TIME',
     account: state.get(DUCK_SESSION).account,
@@ -123,7 +121,6 @@ export default class DepositTokensForm extends PureComponent {
     token: PropTypes.instanceOf(TokenModel),
     account: PropTypes.string,
     wallet: PropTypes.instanceOf(WalletModel),
-    tokens: PropTypes.instanceOf(TokensCollection),
     assets: PropTypes.instanceOf(AssetsCollection),
     requireTIME: PropTypes.func,
     dispatch: PropTypes.func,
@@ -149,6 +146,7 @@ export default class DepositTokensForm extends PureComponent {
     this.timeout = null
   }
 
+  // eslint-disable-next-line complexity
   componentWillReceiveProps (newProps) {
     const firstAsset = newProps.assets.first()
     if (!newProps.token.isFetched() && firstAsset) {
@@ -315,6 +313,7 @@ export default class DepositTokensForm extends PureComponent {
     )
   }
 
+  // eslint-disable-next-line complexity
   renderBody () {
     const { balance, balanceEth, amount, token, feeMultiplier } = this.props
     return (
@@ -389,6 +388,7 @@ export default class DepositTokensForm extends PureComponent {
     )
   }
 
+  // eslint-disable-next-line complexity
   renderFoot () {
     const {
       isShowTIMERequired,
