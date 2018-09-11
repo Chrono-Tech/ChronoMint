@@ -24,12 +24,9 @@ branches:
 jobs:
   include:
     - stage: build docker image
-      before_script:
-        - yarn testrpc > /dev/null &
-        - yarn contracts
       script:
         - yarn lint:errors; export LINT_RESULT=$?
-        - ./node_modules/travis-github-lint-status-update/index.js yarn lint:errors;
+        - ./node_modules/travis-github-lint-status-update/index.js
         - yarn build --production
       after_script:
         - FULL_GCR_KEY="-----BEGIN PRIVATE KEY-----\n"$GCR_KEY"\n-----END PRIVATE KEY-----\n"
