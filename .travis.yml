@@ -27,7 +27,6 @@ jobs:
       script:
         - yarn build --production
       after_script:
-        - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
         - FULL_GCR_KEY="-----BEGIN PRIVATE KEY-----\n"$GCR_KEY"\n-----END PRIVATE KEY-----\n"
         - sed -i -e "s%\PWD%$FULL_GCR_KEY%g" gcregistry.json
         - sed -i -e "s%branch%$TRAVIS_BRANCH%g" Dockerfile
