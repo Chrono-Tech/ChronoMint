@@ -4,7 +4,6 @@
   "networks": [
     {
       "networkTitle": "ChronoBank - Mainnet (production)",
-      "networkId": "100",
       "provider": {
         "disabled": false,
         "host": "mainnet-full-parity-rpc.chronobank.io"
@@ -21,7 +20,6 @@
     },
     {
       "networkTitle": "Infura - Mainnet (production)",
-      "networkId": "101",
       "provider": {
         "providerTitle": "Infura",
         "disabled": false,
