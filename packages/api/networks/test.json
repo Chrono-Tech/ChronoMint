@@ -1,0 +1,40 @@
+{
+  "sectionTitle": "Test Networks",
+  "sectionDescription": "Test networks with fake funds",
+  "networks": [
+    {
+      "networkTitle": "ChronoBank - Rinkeby (testnet)",
+      "networkId": "200",
+      "provider": {
+        "disabled": false,
+        "host": "rinkeby-full-geth-rpc.chronobank.io"
+      },
+      "blockchainNodes": {
+        "Bitcoin Cash": "bcc_blockdozer",
+        "Bitcoin Gold": "btgexplorer",
+        "Bitcoin": "middleware_bitcoin_testnet_rest",
+        "Ethereum": "middleware_ethereum_testnet_rest",
+        "Litecoin": "middleware_litecoin_testnet_rest",
+        "NEM": "middleware_nem_testnet_rest",
+        "WAVES": "middleware_waves_testnet_rest"
+      }
+    },
+    {
+      "networkTitle": "Infura - Rinkeby (testnet)",
+      "networkId": "201",
+      "provider": {
+        "disabled": false,
+        "host": "https://mainnet.infura.io/PVe9zSjxTKIP3eAuAHFA"
+      },
+      "blockchainNodes": {
+        "Bitcoin Cash": "tbcc_blockdozer",
+        "Bitcoin Gold": false,
+        "Bitcoin": "middleware_bitcoin_testnet_rest",
+        "Ethereum": "middleware_ethereum_testnet_rest",
+        "Litecoin": "middleware_litecoin_testnet_rest",
+        "NEM": "middleware_nem_testnet_rest",
+        "WAVES": "middleware_waves_testnet_rest"
+      }
+    }
+  ]
+}

@@ -3,8 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { isTestingNetwork } from '@chronobank/login/network/settings'
-import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
@@ -26,12 +24,8 @@ function makeMapStateToProps (state) {
   const { blockchain, address } = state.get(DUCK_WALLET)
   const getWallet = getWalletInfo(blockchain, address)
   const mapStateToProps = (ownState) => {
-    const network = state.get(DUCK_NETWORK)
     return {
       wallet: getWallet(ownState),
-      selectedNetworkId: network.selectedNetworkId,
-      selectedProviderId: network.selectedProviderId,
-      isTesting: isTestingNetwork(network.selectedNetworkId, network.selectedProviderId),
     }
   }
   return mapStateToProps
@@ -47,9 +41,6 @@ function mapDispatchToProps (dispatch) {
 @connect(makeMapStateToProps, mapDispatchToProps)
 export default class WalletContent extends Component {
   static propTypes = {
-    isTesting: PropTypes.bool,
-    selectedNetworkId: PropTypes.number,
-    selectedProviderId: PropTypes.number,
     navigateToWallets: PropTypes.func,
     getTransactions: PropTypes.func,
     address: PropTypes.string,

@@ -123,12 +123,25 @@ export const getTransactionsList = (address: string, id, skip = 0, offset = 0, b
     })
 }
 
-export const getAddressInfo =  (address: string, blockchain: string) => (dispatch: Dispatch<any>, getState): Promise<*> => {
+export const getAddressInfo =  (address: string, blockchain: string) => async (dispatch: Dispatch<any>, getState): Promise<*> => {
   if (!blockchain || !address) {
     const error = new Error('Malformed request. blockchain and/or address must be non-empty strings')
     dispatch(BitcoinActions.bitcoinHttpGetAddressInfoFailure(error))
     return Promise.reject(error)
   }
+
+  const waitResult = await dispatch({
+    type: 'TEST',
+    payload: {
+      blockchain,
+      request: {
+        method: 'GET',
+        url: `addr/${address}/balance`,
+      },
+    },
+  })
+  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+  console.log(waitResult)
 
   const state = getState()
   const { network } = getCurrentNetworkSelector(state)
