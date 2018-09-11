@@ -3,7 +3,7 @@ const config = require('./config.base');
 config.collectCoverageFrom = [
   'src/**/*.js',
   'src/**/*.jsx',
-  '!**/*.{spec.js,mock.js}**'
+  '!**/*.{spec.js,mock.js,test.js}**'
 ];
 
 config.coverageReporters = [
