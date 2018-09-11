@@ -6,7 +6,7 @@
 import 'flexboxgrid/css/flexboxgrid.css'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import React from 'react'
-import { render } from 'react-dom'
+import { render, findDOMNode } from 'react-dom'
 import { bootstrap } from '@chronobank/core/redux/session/thunks'
 import { store } from './redux/configureStore'
 import router from './router'
