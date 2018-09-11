@@ -11,8 +11,10 @@ before_install:
   - sudo apt-get install libusb-1.0-0 libusb-1.0-0-dev gcc-4.8 g++-4.8 build-essential -y
   - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.9.4
   - export PATH="$HOME/.yarn/bin:$PATH" CXX=g++-4.8
+install:
   - yarn cache clean
   - yarn
+  - yarn add --dev -W travis-github-lint-status
 branches:
   only:
     - master
@@ -27,6 +29,8 @@ jobs:
         - yarn contracts
       script:
         - yarn lint:errors; export LINT_RESULT=$?
+        - ./node_modules/travis-github-lint-status/index.js
+          yarn lint:errors;
         - yarn build --production
       after_script:
         - FULL_GCR_KEY="-----BEGIN PRIVATE KEY-----\n"$GCR_KEY"\n-----END PRIVATE KEY-----\n"
@@ -61,6 +65,7 @@ jobs:
           fi;
         - |
           if [ "$LINT_RESULT" == "0" ]; then
+            echo "The lint check is passed"
             if [ "$TRAVIS_BRANCH" == "ci" ]; then
               echo "Lint check is passed with the exit code: $LINT_RESULT. The app should be built"
             fi;
