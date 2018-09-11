@@ -22,7 +22,6 @@ jobs:
   include:
     - stage: build docker image
       before_script:
-        - yarn testrpc > /dev/null &
         - yarn contracts
       script:
         - yarn build --production
