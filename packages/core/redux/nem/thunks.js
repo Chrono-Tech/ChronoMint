@@ -2,7 +2,7 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
+import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { ErrorNoticeModel, TransferNoticeModel } from '../../models'
 import { nemPendingSelector, pendingEntrySelector, getNemSigner } from './selectors'
@@ -97,7 +97,7 @@ const processTransaction = ({ entry, signer }) => async (dispatch, getState) => 
 
 const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   try {
-    console.log('signTransaction: ', entry, signer)
+    dispatch(NemActions.nemTxSignTransaction({ entry, signer }))
 
     const { tx } = entry
     const signed = NemUtils.createXemTransaction(tx.prepared, signer, getSelectedNetwork()(getState()))
@@ -170,6 +170,7 @@ const submitTransaction = (entry) => async (dispatch, getState) => {
 }
 
 const acceptTransaction = (entry) => async (dispatch, getState) => {
+  dispatch(NemActions.nemTxAccept(entry))
   dispatch(nemTxStatus(entry.key, entry.tx.from, { isAccepted: true, isPending: true }))
 
   const state = getState()

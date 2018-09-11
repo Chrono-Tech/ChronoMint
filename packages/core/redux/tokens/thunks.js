@@ -52,60 +52,6 @@ import { DAOS_REGISTER } from '../daos/constants'
 import { ContractDAOModel, ContractModel } from '../../models'
 import * as TokensActions from './actions'
 
-const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
-  try {
-    if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
-      dispatch(modalsOpen({
-        comnponentName: 'ConfirmTxDialog',
-        props: {
-          tx,
-          dao,
-          confirm: (tx) => dao.accept(tx),
-          reject: (tx) => dao.reject(tx),
-        },
-      }))
-    } else {
-      await dispatch(modalsOpen({
-        componentName: 'ConfirmTransferDialog',
-        props: {
-          tx,
-          dao,
-          confirm: (tx) => dao.accept(tx),
-          reject: (tx) => dao.reject(tx),
-        },
-      }))
-    }
-  } catch (e) {
-    dispatch(notifyError(e, tx.funcTitle()))
-  }
-}
-
-const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
-  try {
-    if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
-      dispatch({ type: WATCHER_TX_SET, tx })
-      await dao.immediateTransfer(tx)
-    } else {
-      const txOptions = tx.options()
-      await dao.immediateTransfer(tx.from(), tx.to(), tx.amount(), tx.amountToken(), tx.feeMultiplier(), txOptions.advancedParams)
-    }
-  } catch (e) {
-    dispatch(notifyError(e, tx.funcTitle()))
-  }
-}
-
-const rejectTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
-  const e = new TransferError('Rejected', TRANSFER_CANCELLED)
-  dispatch(notifyError(e, tx.funcTitle()))
-}
-
-export const alternateTxHandlingFlow = (dao) => (dispatch) => {
-  dao
-    .on('submit', submitTxHandler(dao, dispatch))
-    .on('accept', acceptTxHandler(dao, dispatch))
-    .on('reject', rejectTxHandler(dao, dispatch))
-}
-
 export const initTokens = () => async (dispatch, getState) => {
   let state = getState()
   if (state.get(DUCK_TOKENS).isInited()) {
@@ -146,7 +92,6 @@ export const initTokens = () => async (dispatch, getState) => {
           dao,
         }),
       })
-
     })
     .fetchTokens()
 
@@ -229,7 +174,6 @@ export const initWavesTokens = () => async (dispatch, getState) => {
     const waves = await dao.fetchToken()
     tokenService.registerDAO(waves, dao)
     dispatch(TokensActions.tokenFetched(waves))
-    dispatch(alternateTxHandlingFlow(dao))
     dispatch(initWavesAssetTokens(waves))
   } catch (e) {
     dispatch(TokensActions.tokensLoadingFailed())
@@ -249,7 +193,6 @@ export const initWavesAssetTokens = (waves: TokenModel) => async (dispatch, getS
           const token = await dao.fetchToken()
           tokenService.registerDAO(token, dao)
           dispatch(TokensActions.tokenFetched(token))
-          dispatch(alternateTxHandlingFlow(dao))
         } catch (e) {
           dispatch(TokensActions.tokensLoadingFailed())
         }

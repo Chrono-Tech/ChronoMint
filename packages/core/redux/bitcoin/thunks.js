@@ -263,6 +263,9 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   } catch (error) {
     if (signer.isActionRequestedModalDialogShows()) {
       dispatch(BitcoinActions.bitcoinCloseSignTxConfirmationModalDialog())
+      dispatch(modalsClose({
+        componentName: 'ActionRequestDeviceDialog',
+      }))
     }
     const bitcoinErrorTxEntry = BitcoinUtils.createBitcoinTxEntryModel({
       ...entry,

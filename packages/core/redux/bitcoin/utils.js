@@ -61,7 +61,6 @@ export const selectCoins = (to, amount: BigNumber, feeRate, utxos) => {
 ////////////////////////////////////////////////
 export const createBitcoinWalletFromPK = (privateKey, network, networkName) => {
   const btcPrivateKey = (privateKey.slice(0, 2) === '0x' && privateKey.length === 66) ? privateKey.substring(2, 66) : privateKey
-  console.log('createBitcoinWalletFromPK: fromPrivateKey: ', btcPrivateKey)
   const keyPair = new bitcoin.ECPair.fromPrivateKey(Buffer.from(btcPrivateKey, 'hex'), { network })
   return {
     keyPair,
@@ -120,46 +119,6 @@ const describeBitcoinTransaction = (tx, options, utxos) => {
     fee,
   }
 }
-
-//
-// export const signBitcoinInputs = (txb, inputs, signer) => {
-//   for (let i = 0; i < inputs.length; i++) {
-//     txb.sign(i, signer.keyPair)
-//   }
-// }
-//
-// export const signBitcoinCashInputs = (txb, inputs, from) => {
-//   txb.enableBitcoinCash(true)
-//   txb.setVersion(2)
-//
-//   const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
-//   const wallet = this._walletsMap[from] || this._wallet
-//
-//   for (let i = 0; i < inputs.length; i++) {
-//     txb.sign(i, wallet.keyPair, null, hashType, inputs[i].value)
-//   }
-// }
-//
-// export const signBitcoinGoldInputs = (txb, inputs, from) => {
-//   txb.enableBitcoinGold(true)
-//   txb.setVersion(2)
-//
-//   const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
-//   const wallet = this._walletsMap[from] || this._wallet
-//
-//   for (let i = 0; i < inputs.length; i++) {
-//     txb.sign(i, wallet.keyPair, null, hashType, inputs[i].value)
-//   }
-// }
-//
-// export const signLitecoinInputs = null // not specified
-//
-// export const signInputsMap = {
-//   [BLOCKCHAIN_BITCOIN]: signBitcoinInputs,
-//   [BLOCKCHAIN_BITCOIN_CASH]: signBitcoinCashInputs,
-//   [BLOCKCHAIN_BITCOIN_GOLD]: signBitcoinGoldInputs,
-//   [BLOCKCHAIN_LITECOIN]: signLitecoinInputs,
-// }
 
 export const prepareBitcoinTransaction = (tx, token, network, utxos, feeMultiplier = 1, satPerByte = null) => () => {
   const tokenRate = satPerByte || token.feeRate() // TODO: What if satPerByte will be zero (not null)?

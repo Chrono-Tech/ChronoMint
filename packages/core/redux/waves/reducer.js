@@ -4,7 +4,7 @@
  */
 
 import { omit } from 'lodash'
-import * as NemConstants from './constants'
+import * as WavesConstants from './constants'
 
 const initialState = () => ({
   lastRequestMeta: null,
@@ -12,7 +12,7 @@ const initialState = () => ({
 })
 
 const mutations = {
-  [NemConstants.TX_CREATE]: (state, { entry }) => {
+  [WavesConstants.TX_CREATE]: (state, { entry }) => {
     const address = entry.tx.from
     const pending = state.pending
     const scope = pending[address]
@@ -27,7 +27,7 @@ const mutations = {
       },
     }
   },
-  [NemConstants.TX_UPDATE]: (state, { key, address, tx }) => {
+  [WavesConstants.TX_UPDATE]: (state, { key, address, tx }) => {
     const scope = state.pending[address]
     return {
       ...state,
@@ -39,7 +39,7 @@ const mutations = {
       },
     }
   },
-  [NemConstants.TX_REMOVE]: (state, { key, address }) => {
+  [WavesConstants.TX_REMOVE]: (state, { key, address }) => {
     const scope = state.pending[address]
     if (!scope || !scope[key]) return state
     return {
@@ -47,7 +47,7 @@ const mutations = {
       pending: omit(state.pending, [key]),
     }
   },
-  [NemConstants.TX_ACCEPT]: (state, { entry }) => {
+  [WavesConstants.TX_ACCEPT]: (state, { entry }) => {
     return {
       ...state,
       lastRequestMeta: entry,

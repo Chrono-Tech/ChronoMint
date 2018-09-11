@@ -30,6 +30,7 @@ import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { AllowanceCollection } from '../../models'
 import { executeTransaction } from '../ethereum/thunks'
+import { executeWavesTransaction } from '../waves/thunks'
 import * as BitcoinThunks from '../bitcoin/thunks'
 import {
   WALLETS_SET,
@@ -288,12 +289,14 @@ export const mainTransfer = (
   advancedParams = null,
 ) => async (dispatch) => {
   try {
+    console.log('mainTransfer: ', wallet, token, amount)
     const tokenDAO = tokenService.getDAO(token.id())
     const tx = tokenDAO.transfer(wallet.address, recipient, amount)
     const executeMap = {
       [BLOCKCHAIN_ETHEREUM]: executeTransaction,
       [BLOCKCHAIN_NEM]: executeNemTransaction,
       [BLOCKCHAIN_BITCOIN]: BitcoinThunks.executeBitcoinTransaction,
+      [BLOCKCHAIN_WAVES]: executeWavesTransaction,
     }
 
     // execute

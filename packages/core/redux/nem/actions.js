@@ -3,22 +3,32 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { TX_CREATE, TX_UPDATE, TX_REMOVE } from './constants'
+import * as NemConstants from './constants'
 
 export const nemTxCreate = (entry) => ({
-  type: TX_CREATE,
+  type: NemConstants.TX_CREATE,
   entry,
 })
 
 export const nemTxUpdate = (key, address, tx) => ({
-  type: TX_UPDATE,
+  type: NemConstants.TX_UPDATE,
   address,
   key,
   tx,
 })
 
 export const nemTxRemove = (key, address) => ({
-  type: TX_REMOVE,
+  type: NemConstants.TX_REMOVE,
   address,
   key,
+})
+
+export const nemTxAccept = (entry) => ({
+  type: NemConstants.TX_ACCEPT,
+  entry,
+})
+
+export const nemTxSignTransaction = (entry) => ({
+  type: NemConstants.TX_SIGN,
+  entry,
 })
