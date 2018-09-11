@@ -28,44 +28,12 @@ jobs:
         - yarn lint:errors; export LINT_RESULT=$?
         - echo $LINT_RESULT
         - ./node_modules/travis-github-lint-status-update/index.js
-        - yarn build --production
       after_script:
-        - FULL_GCR_KEY="-----BEGIN PRIVATE KEY-----\n"$GCR_KEY"\n-----END PRIVATE KEY-----\n"
-        - sed -i -e "s%\PWD%$FULL_GCR_KEY%g" gcregistry.json
-        - sed -i -e "s%branch%$TRAVIS_BRANCH%g" Dockerfile
-        - cat Dockerfile
-        - docker login -u _json_key -p "$(cat gcregistry.json)" https://gcr.io
-        - rm -rf gcregistry.json
-        - |
-          if [ "$TRAVIS_TAG" == "" ]; then
-            IMAGE_TAG_NAME="latest"
-          elif [ "$TRAVIS_TAG" != "" ]; then
-            IMAGE_TAG_NAME="$TRAVIS_TAG"
-          fi;
-        - IMAGE_TAG_NAME="latest"
-        - |
-          if [ "$LINT_RESULT" == "0" ]; then
-            if [ "$TRAVIS_BRANCH" == "master" ]; then
-              docker build --build-arg BUILD_BRANCH="master" --build-arg PUBLIC_BACKEND_REST_URL="https://backend.chronobank.io" --build-arg NODE=production -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME . --no-cache
-              docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
-            elif [ "$TRAVIS_BRANCH" == "release" ]; then
-              docker build --build-arg BUILD_BRANCH="release" --build-arg PUBLIC_BACKEND_REST_URL="https://backend.chronobank.io" -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME . --no-cache
-              docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
-            fi;
-          elif [ "$TRAVIS_BRANCH" != "develop" ]; then
-            echo "Lint check is failed with the exit code: $LINT_RESULT. Skipping image build and terminate!"
-          fi;
-        - |
-          if [ "$TRAVIS_BRANCH" == "develop" ]; then
-            docker build --build-arg BUILD_BRANCH="develop" --build-arg PUBLIC_BACKEND_REST_URL="https://stage-adm.chronobank.io" -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME . --no-cache
-            docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
-          fi;
         - echo $LINT_RESULT
         - |
           if [ "$LINT_RESULT" == "0" ]; then
-            echo "The lint check is passed"
             if [ "$TRAVIS_BRANCH" == "ci" ]; then
-              echo "Lint check is passed with the exit code: $LINT_RESULT. The app should be built"
+              echo "Lint check is passed with the exit code: $LINT_RESULT. The app should be built";
             fi;
           elif [ "$TRAVIS_BRANCH" != "develop" ]; then
             echo "Lint check is failed with the exit code: $LINT_RESULT. Skipping image build and terminate!"
