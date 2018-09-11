@@ -14,7 +14,7 @@ before_install:
 install:
   - yarn cache clean
   - yarn
-  - yarn add --dev -W travis-github-lint-status
+  - yarn add --dev -W travis-github-lint-status-update
 branches:
   only:
     - master
@@ -29,8 +29,7 @@ jobs:
         - yarn contracts
       script:
         - yarn lint:errors; export LINT_RESULT=$?
-        - ./node_modules/travis-github-lint-status/index.js
-          yarn lint:errors;
+        - ./node_modules/travis-github-lint-status-update/index.js yarn lint:errors;
         - yarn build --production
       after_script:
         - FULL_GCR_KEY="-----BEGIN PRIVATE KEY-----\n"$GCR_KEY"\n-----END PRIVATE KEY-----\n"
