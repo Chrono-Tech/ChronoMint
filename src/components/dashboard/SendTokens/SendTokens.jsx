@@ -35,6 +35,7 @@ import {
 import Bitcoin from './type/Bitcoin'
 import Ethereum from './type/Ethereum'
 import Nem from './type/Nem'
+import Waves from './type/Waves'
 
 function mapStateToProps (state, props) {
   const token = state.get(DUCK_TOKENS).item(props.tokenSymbol)
@@ -120,7 +121,7 @@ export default class SendTokens extends PureComponent {
       case BLOCKCHAIN_ETHEREUM:
         return Ethereum
       case BLOCKCHAIN_WAVES:
-        return 'Waves'
+        return Waves
       case BLOCKCHAIN_NEM:
         return Nem
       default:

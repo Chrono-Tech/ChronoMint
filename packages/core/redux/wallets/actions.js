@@ -42,6 +42,7 @@ import { executeNemTransaction } from '../nem/thunks'
 import { getPersistAccount, getEthereumSigner } from '../persistAccount/selectors'
 import { getBitcoinCashSigner, getBitcoinSigner, getLitecoinSigner } from '../bitcoin/selectors'
 import { getNemSigner } from '../nem/selectors'
+import { getWavesSigner } from '../waves/selectors'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -117,6 +118,17 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
     wallets.push(new WalletModel({
       address: nemSigner.getAddress(),
       blockchain: BLOCKCHAIN_NEM,
+      isMain: true,
+      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+    }))
+  }
+
+  const wavesSigner = getWavesSigner(state)
+  console.log('wavesSigner: ', wavesSigner, wavesSigner.getAddress())
+  if (wavesSigner) {
+    wallets.push(new WalletModel({
+      address: wavesSigner.getAddress(),
+      blockchain: BLOCKCHAIN_WAVES,
       isMain: true,
       walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
     }))

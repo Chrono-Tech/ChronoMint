@@ -3,7 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { BLOCKCHAIN_NEM } from '@chronobank/login/network/constants'
+import * as WavesApi from '@waves/waves-api'
+import { BLOCKCHAIN_WAVES } from '@chronobank/login/network/constants'
 import { createSelector } from 'reselect'
 import { DUCK_WAVES } from './constants'
 import MetamaskPlugin from '../../services/signers/MetamaskPlugin'
@@ -35,11 +36,12 @@ export const pendingEntrySelector = (address, key) => createSelector(
   },
 )
 
-export const getNemSigner = (state) => {
+export const getWavesSigner = (state) => {
   const account = getPersistAccount(state)
   const networkData = getSelectedNetwork()(state)
-  const network = nemSdk.model.network.data[networkData[BLOCKCHAIN_NEM]]
-
+  console.log('networkData: ', networkData, networkData[BLOCKCHAIN_WAVES])
+  const network = WavesApi[networkData[BLOCKCHAIN_WAVES]]
+  console.log('WavesApi: ', network)
   switch (account.decryptedWallet.entry.encrypted[0].type) {
     case WALLET_TYPE_MEMORY: {
       const privateKey = account.decryptedWallet.privateKey.slice(2, 66)

@@ -4,10 +4,8 @@
  */
 
 import uuid from 'uuid/v1'
-import {TxEntryModel, TxExecModel} from '../../models'
-import BigNumber from "bignumber.js/bignumber";
-import bitcoin from "bitcoinjs-lib";
-import {selectCoins} from "../bitcoin/utils";
+import BigNumber from 'bignumber.js'
+import { TxEntryModel, TxExecModel } from '../../models'
 
 export const createWavesTxEntryModel = (entry, options = {}) => {
   return new TxEntryModel({
