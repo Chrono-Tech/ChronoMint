@@ -47,7 +47,37 @@ const mutations = {
       pending: omit(state.pending, [key]),
     }
   },
+  [NemConstants.TX_SIGN]: (state, { entry }) => {
+    return {
+      ...state,
+      lastRequestMeta: entry,
+    }
+  },
+  [NemConstants.TX_SIGN_ERROR]: (state, { error }) => {
+    return {
+      ...state,
+      lastRequestMeta: error,
+    }
+  },
+  [NemConstants.TX_SEND_SIGNED_TX_ERROR]: (state, { error }) => {
+    return {
+      ...state,
+      lastRequestMeta: error,
+    }
+  },
   [NemConstants.TX_ACCEPT]: (state, { entry }) => {
+    return {
+      ...state,
+      lastRequestMeta: entry,
+    }
+  },
+  [NemConstants.TX_PREPARE]: (state, { entry }) => {
+    return {
+      ...state,
+      lastRequestMeta: entry,
+    }
+  },
+  [NemConstants.TX_PROCESS]: (state, { entry }) => {
     return {
       ...state,
       lastRequestMeta: entry,

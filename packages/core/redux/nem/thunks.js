@@ -68,6 +68,7 @@ export const estimateNemFee = (params, callback) => async (dispatch) => {
 }
 
 export const executeNemTransaction = ({ tx, options }) => async (dispatch) => {
+  dispatch(NemActions.nemExecuteTx({ tx, options }))
   const prepared = await dispatch(prepareTransaction({ tx, options }))
   const entry = NemUtils.createNemTxEntryModel({ tx: prepared }, options)
 
@@ -76,6 +77,8 @@ export const executeNemTransaction = ({ tx, options }) => async (dispatch) => {
 }
 
 const prepareTransaction = ({ tx }) => async (dispatch, getState) => {
+  dispatch(NemActions.nemPrepareTx({ tx }))
+
   const network = getSelectedNetwork()(getState())
   return tx.mosaicDefinition
     ? NemUtils.describeMosaicTransaction(tx, network)
@@ -83,6 +86,8 @@ const prepareTransaction = ({ tx }) => async (dispatch, getState) => {
 }
 
 const processTransaction = ({ entry, signer }) => async (dispatch, getState) => {
+  dispatch(NemActions.nemProcessTx({ entry, signer }))
+
   await dispatch(signTransaction({ entry, signer }))
   const signedEntry = pendingEntrySelector(entry.tx.from, entry.key)(getState())
   if (!signedEntry) {
@@ -111,6 +116,8 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     })))
 
   } catch (error) {
+    dispatch(NemActions.nemTxSignTransactionError({ error }))
+
     console.log('signTransaction error: ', error)
     dispatch(nemTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
     throw error
@@ -118,6 +125,7 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
 }
 
 const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
+  dispatch(NemActions.nemTxSendSignedTransaction({ entry }))
   dispatch(nemTxStatus(entry.key, entry.tx.from, { isPending: true }))
 
   // eslint-disable-next-line
@@ -141,12 +149,14 @@ const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
   }
 
   if (res.code === 0) {
+    dispatch(NemActions.nemTxSendSignedTransactionError({ entry }))
     dispatch(nemTxStatus(entry.key, entry.tx.from, { isErrored: true, error: res.message }))
     dispatch(notifyNemError(res))
   }
 }
 
 const submitTransaction = (entry) => async (dispatch, getState) => {
+  dispatch(NemActions.nemSubmitTx({ entry }))
 
   const state = getState()
   const account = getAccount(state)
@@ -189,4 +199,7 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
   }))
 }
 
-const rejectTransaction = (entry) => (dispatch) => dispatch(nemTxStatus(entry.key, entry.tx.from, { isRejected: true }))
+const rejectTransaction = (entry) => (dispatch) => {
+  dispatch(NemActions.nemRejectTx({ entry }))
+  dispatch(nemTxStatus(entry.key, entry.tx.from, { isRejected: true }))
+}
