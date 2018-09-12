@@ -22,7 +22,7 @@ jobs:
   include:
     - stage: build docker image
       before_script:
-        - yarn contracts
+        - yarn contracts:compile
       script:
         - yarn build --production
         - yarn lint:errors
