@@ -20,7 +20,7 @@ branches:
     - release
 jobs:
   include:
-    - stage: test
+    - stage: lint
       script:
         - yarn lint:errors
     - stage: build
