@@ -24,7 +24,7 @@ export default class NemTrezorMockDevice extends EventEmitter {
     return nem.model.address.toAddress(this.getPublicKey(), this.network.id)
   }
 
-  sign (unsignedTxData) {
+  signTransaction (unsignedTxData) {
     return this.getKeyPair().sign(unsignedTxData)
   }
 

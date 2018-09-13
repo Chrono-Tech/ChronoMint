@@ -6,6 +6,7 @@
 import uuid from 'uuid/v1'
 import BigNumber from 'bignumber.js'
 import { TxEntryModel, TxExecModel } from '../../models'
+import { TRANSACTION_TYPE_TRANSFER, TRANSACTION_TYPE_ISSUE } from './constants'
 
 export const createWavesTxEntryModel = (entry, options = {}) => {
   return new TxEntryModel({
@@ -19,53 +20,56 @@ export const createWavesTxEntryModel = (entry, options = {}) => {
   })
 }
 
-const describeWavesTransaction = (tx, options, utxos) => {
-  const { to, from, value } = tx
-  const { feeRate, blockchain, network } = options
-  const bitcoinNetwork = bitcoin.networks[network[blockchain]]
-  const { inputs, outputs, fee } = selectCoins(to, value, feeRate, utxos)
-
-  if (!inputs || !outputs) {
-    throw new Error(`Cannot describe ${blockchain} transaction. Bad transaction data.`)
-  }
-
-  const txb = new bitcoin.TransactionBuilder(bitcoinNetwork)
-  for (const input of inputs) {
-    txb.addInput(input.txId, input.vout)
-  }
-
-  for (const output of outputs) {
-    if (!output.address) {
-      output.address = from
-    }
-    txb.addOutput(output.address, output.value)
-  }
-
-  return {
-    tx: txb,
-    inputs,
-    outputs,
-    fee,
+export const describeTransaction = (type, params) => {
+  switch (type) {
+    case TRANSACTION_TYPE_ISSUE :
+      return describeIssueTransaction(params)
+    case TRANSACTION_TYPE_TRANSFER :
+      return describeTransferTransaction(params.to, params.amount, params.asset)
+    default:
+      return null
   }
 }
 
-export const prepareWavesTransaction = (tx, token, network, utxos, feeMultiplier = 1, satPerByte = null) => () => {
-  const tokenRate = satPerByte || token.feeRate() // TODO: What if satPerByte will be zero (not null)?
+export const describeIssueTransaction = (name, description, amount, reissuable = false) => {
+  return {
+    name,
+    description,
+    quantity: amount,
+    precision: 5,
+    reissuable,
+    fee: 100000000,
+    timestamp: Date.now(),
+  }
+}
+
+export const describeTransferTransaction = (to, amount, asset) => {
+  return {
+    senderPublicKey: this.getPublicKey(),
+    recipient: to,
+    assetId: asset,
+    amount,
+    feeAssetId: this._Waves.constants.WAVES,
+    fee: 100000,
+    attachment: '',
+    timestamp: Date.now(),
+  }
+}
+
+export const prepareWavesTransaction = (tx, token, network) => () => {
+  console.log('prepareWavesTransaction: ', tx, token, network)
   const options = {
     from: tx.from,
-    feeRate: new BigNumber(tokenRate).mul(feeMultiplier),
     blockchain: token.blockchain(),
     network,
   }
-  const prepared = describeWavesTransaction(tx, options, utxos)
+  const prepared = describeTransaction(tx, options)
 
   return new TxExecModel({
     from: tx.from,
     to: tx.to,
     amount: new BigNumber(tx.value),
     fee: new BigNumber(prepared.fee),
-    prepared: prepared.tx,
-    inputs: prepared.inputs,
-    outputs: prepared.outputs,
+    prepared: prepared,
   })
 }

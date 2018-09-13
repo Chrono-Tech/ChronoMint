@@ -6,12 +6,16 @@
 import EventEmitter from 'events'
 import * as WavesAPI from '@waves/waves-api'
 
+const TEMP_MOCK_SEED = 'clip grief portion ignore display empower turkey noise derive surface wonder tragic pattern stone squeeze'
+
 export default class WavesMemoryDevice extends EventEmitter {
   constructor ({ seedPhrase, network }) {
     super()
     console.log('WavesMemoryDevice: ', seedPhrase, network)
     this.waves = WavesAPI.create(network)
-    this.seed = this.waves.Seed.fromExistingPhrase('hole law front bottom then mobile fabric under horse drink other member work twenty boss')
+    this.seed = this.waves.Seed.fromExistingPhrase(TEMP_MOCK_SEED)
+    console.log('WavesMemoryDevice seed: ', this.seed)
+
     this.network = network
     Object.freeze(this)
   }
@@ -24,8 +28,10 @@ export default class WavesMemoryDevice extends EventEmitter {
     return this.seed.address
   }
 
-  sign (unsignedTxData) {
-    return unsignedTxData
+  async signTransaction (txData) {
+    const transferTransaction = new this.waves.Transactions.TransferTransaction(txData)
+    const preparedTransaction = await transferTransaction.prepareForAPI(this.getKeyPair().getPrivateKey())
+    return preparedTransaction
   }
 
   getKeyPair () {

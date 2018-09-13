@@ -23,7 +23,7 @@ export default class NemTrezorDevice extends EventEmitter {
     return result.payload.address
   }
 
-  async sign (data, path) {
+  async signTransaction (data, path) {
     const result = await TrezorConnect.nemSignTransaction({
       path: path,
       transaction: data,

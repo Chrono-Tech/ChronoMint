@@ -8,9 +8,15 @@ import * as WavesActions from './actions'
 import { getToken } from '../tokens/selectors'
 import { modalsOpen } from '../modals/actions'
 import { getWavesSigner, pendingEntrySelector } from './selectors'
+import { describePendingWavesTx } from '../../describers'
+import { getSelectedNetwork } from '../persistAccount/selectors'
 
-export const executeWavesTransaction = ({ tx, options }) => async (dispatch) => {
-  dispatch(WavesActions.wavesTxAccept({ tx, options }))
+export const executeWavesTransaction = ({ tx, options }) => async (dispatch, getState) => {
+  console.log('executeWavesTransaction: ', tx, options)
+  const state = getState()
+  const token = getToken(options.symbol)(state)
+  const network = getSelectedNetwork()(state)
+  const prepared = dispatch(WavesUtils.prepareWavesTransaction(tx, token, network))
   const entry = WavesUtils.createWavesTxEntryModel({ tx: prepared }, options)
 
   console.log('entry: ', entry)
@@ -20,6 +26,7 @@ export const executeWavesTransaction = ({ tx, options }) => async (dispatch) => 
 }
 
 const submitTransaction = (entry) => async (dispatch, getState) => {
+  console.log('submitTransaction: ', entry)
   const state = getState()
   const description = describePendingWavesTx(
     entry,

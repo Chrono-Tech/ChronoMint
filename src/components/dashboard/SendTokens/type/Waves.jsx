@@ -5,16 +5,11 @@
 
 import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import { ETH } from '@chronobank/core/dao/constants'
 import { TOKEN_ICONS } from 'assets'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import { TX_TRANSFER } from '@chronobank/core/dao/constants/ERC20DAO'
-import web3Converter from '@chronobank/core/utils/Web3Converter'
 import Amount from '@chronobank/core/models/Amount'
-import Immutable from 'immutable'
-import * as validators from '@chronobank/core/models/validator'
-import { CircularProgress, MenuItem, MuiThemeProvider, Paper } from '@material-ui/core'
+import { MenuItem, MuiThemeProvider, Paper } from '@material-ui/core'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
@@ -23,10 +18,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import Select from 'redux-form-material-ui/es/Select'
-import Slider from 'components/common/Slider'
-import { change, Field, formPropTypes, formValueSelector, getFormSyncErrors, getFormValues, reduxForm } from 'redux-form/immutable'
-import { getSpendersAllowance } from '@chronobank/core/redux/mainWallet/actions'
-import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
+import { Field, formPropTypes, formValueSelector, getFormSyncErrors, getFormValues, reduxForm } from 'redux-form/immutable'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { walletInfoSelector } from '@chronobank/core/redux/wallet/selectors/selectors'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
@@ -34,7 +26,7 @@ import inversedTheme from 'styles/themes/inversed'
 import { getMarket } from '@chronobank/core/redux/market/selectors'
 import { MultisigEthWalletModel } from '@chronobank/core/models'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
-import { ACTION_APPROVE, ACTION_TRANSFER, FORM_SEND_TOKENS, MODE_ADVANCED, MODE_SIMPLE } from 'components/constants'
+import { ACTION_TRANSFER, FORM_SEND_TOKENS } from 'components/constants'
 import { prefix } from '../lang'
 import './form.scss'
 import validate from '../validate'
@@ -120,14 +112,6 @@ export default class Ethereum extends PureComponent {
   }
 
   getTransactionFeeDescription = () => {
-
-    if (this.props.invalid) {
-      return (
-        <span styleName='description'>
-          <Translate value={`${prefix}.errorFillAllFields`} />
-        </span>)
-    }
-
     return (
       <span styleName='description'>
         {this.state.fee && (
@@ -211,7 +195,7 @@ export default class Ethereum extends PureComponent {
   }
 
   renderBody () {
-    const { invalid, pristine, handleSubmit, wallet } = this.props
+    const { invalid, pristine, handleSubmit } = this.props
 
     return (
       <div styleName='form-container'>

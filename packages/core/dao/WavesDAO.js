@@ -95,9 +95,12 @@ export default class WavesDAO extends EventEmitter {
     })
   }
 
-  // TODO @ipavlenko: Replace with 'immediateTransfer' after all token DAOs will start using 'submit' method
-  transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: number = 1) {
-    this.submit(from, to, amount, token, feeMultiplier)
+  transfer (from: string, to: string, amount: BigNumber) {
+    return {
+      from,
+      to,
+      value: new BigNumber(amount),
+    }
   }
 
   submit (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: number = 1) {

@@ -45,7 +45,7 @@ export const getWavesSigner = (state) => {
   switch (account.decryptedWallet.entry.encrypted[0].type) {
     case WALLET_TYPE_MEMORY: {
       const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
-      return new WavesMemoryDevice({ privateKey, network })
+      return new WavesMemoryDevice({ seedPhrase: privateKey, network })
     }
     // case WALLET_TYPE_LEDGER_MOCK: {
     //   return new NemLedgerDeviceMock({ network })

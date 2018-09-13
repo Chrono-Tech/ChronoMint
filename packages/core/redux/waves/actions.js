@@ -28,6 +28,11 @@ export const wavesTxAccept = (entry) => ({
   entry,
 })
 
+export const wavesTxReject = (entry) => ({
+  type: WavesConstants.TX_REJECT,
+  entry,
+})
+
 export const wavesTxSignTransaction = (entry) => ({
   type: WavesConstants.TX_SIGN,
   entry,
