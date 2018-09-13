@@ -27,6 +27,7 @@ jobs:
       script:
         - yarn build --production
     - stage: deploy
+      if: (NOT type IN (pull_request))
       before_script:
         - FULL_GCR_KEY="-----BEGIN PRIVATE KEY-----\n"$GCR_KEY"\n-----END PRIVATE KEY-----\n"
         - sed -i -e "s%\PWD%$FULL_GCR_KEY%g" gcregistry.json
@@ -37,13 +38,13 @@ jobs:
         - IMAGE_TAG_NAME="latest"
       script:
         - |
-          if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+          if [ "$TRAVIS_BRANCH" == "master" ]; then
             docker build --build-arg BUILD_BRANCH="master" --build-arg PUBLIC_BACKEND_REST_URL="https://backend.chronobank.io" --build-arg NODE=production -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME . --no-cache
             docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
-          elif [ "$TRAVIS_BRANCH" == "develop" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+          elif [ "$TRAVIS_BRANCH" == "develop" ]; then
             docker build --build-arg BUILD_BRANCH="develop" --build-arg PUBLIC_BACKEND_REST_URL="https://stage-adm.chronobank.io" -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME . --no-cache
             docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
-          elif [ "$TRAVIS_BRANCH" == "release" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+          elif [ "$TRAVIS_BRANCH" == "release" ]; then
             docker build --build-arg BUILD_BRANCH="release" --build-arg PUBLIC_BACKEND_REST_URL="https://backend.chronobank.io" -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME . --no-cache
             docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
           fi;
