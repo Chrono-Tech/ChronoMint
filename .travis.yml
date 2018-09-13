@@ -20,33 +20,30 @@ branches:
     - release
 jobs:
   include:
-    - stage: build docker image
+    - stage: lint
+      script:
+        - yarn lint:errors
+    - stage: build
       script:
         - yarn build --production
-        - yarn lint:errors
-      after_script:
+    - stage: deploy
+      before_script:
         - FULL_GCR_KEY="-----BEGIN PRIVATE KEY-----\n"$GCR_KEY"\n-----END PRIVATE KEY-----\n"
         - sed -i -e "s%\PWD%$FULL_GCR_KEY%g" gcregistry.json
         - sed -i -e "s%branch%$TRAVIS_BRANCH%g" Dockerfile
         - cat Dockerfile
         - docker login -u _json_key -p "$(cat gcregistry.json)" https://gcr.io
         - rm -rf gcregistry.json
-        - |
-          if [ "$TRAVIS_TAG" == "" ]; then
-            IMAGE_TAG_NAME="latest"
-          elif [ "$TRAVIS_TAG" != "" ]; then
-            IMAGE_TAG_NAME="$TRAVIS_TAG"
-          fi;
         - IMAGE_TAG_NAME="latest"
+      script:
         - |
-          if [ "$TRAVIS_BRANCH" == "master" ]; then
+          if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
             docker build --build-arg BUILD_BRANCH="master" --build-arg PUBLIC_BACKEND_REST_URL="https://backend.chronobank.io" --build-arg NODE=production -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME . --no-cache
             docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
-          elif [ "$TRAVIS_BRANCH" == "develop" ]; then
+          elif [ "$TRAVIS_BRANCH" == "develop" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
             docker build --build-arg BUILD_BRANCH="develop" --build-arg PUBLIC_BACKEND_REST_URL="https://stage-adm.chronobank.io" -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME . --no-cache
             docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
-          elif [ "$TRAVIS_BRANCH" == "release" ]; then
+          elif [ "$TRAVIS_BRANCH" == "release" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
             docker build --build-arg BUILD_BRANCH="release" --build-arg PUBLIC_BACKEND_REST_URL="https://backend.chronobank.io" -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME . --no-cache
             docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
           fi;
-        - kill -9 $(ps aux | grep '[t]estrpc' | awk '{print $2}')
