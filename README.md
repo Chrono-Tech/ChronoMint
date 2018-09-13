@@ -38,10 +38,29 @@ yarn tconsole
 ```
 
 ## Test
+Run both e2e & unit tests by
 ```bash
 yarn test
+``` 
+
+###Unit
+Run all test suite files matched `*.spec.js` pattern
+```bash
+yarn test:unit
 ```
-To test separate specs just add your regex at the end of this command. Ensure what `yarn testrpc` is already ran in separate console 
+To test separate specs just add your regex at the end of this command. Ensure what `yarn testrpc` is already ran in separate console
+
+###E2E
+#### Install
+```bash
+yarn selenium-server:install
+```
+####Run all test suite files matched `*.test.js` pattern
+Note, the app should be launched
+```bash
+yarn selenium-server:start
+yarn test:e2e
+```
 
 
 ## License
