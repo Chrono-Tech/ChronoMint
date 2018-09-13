@@ -47,5 +47,3 @@ jobs:
             docker build --build-arg BUILD_BRANCH="release" --build-arg PUBLIC_BACKEND_REST_URL="https://backend.chronobank.io" -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME . --no-cache
             docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
           fi;
-      after_script:
-        - kill -9 $(ps aux | grep '[t]estrpc' | awk '{print $2}')
