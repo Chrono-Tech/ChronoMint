@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
+ import { DUCK_NODES } from '@chronobank/nodes/redux/constants'
 import ContractDAOModel from '../../models/contracts/ContractDAOModel'
 import { getAccount } from '../session/selectors/models'
 import AbstractContractDAO from '../../dao/AbstractContractDAO'
@@ -33,7 +33,7 @@ export const registerDao = (model) => ({ type: DAOS_REGISTER, model })
 export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
   let state = getState()
   const account = getAccount(state)
-  const currentNetwork = state.get(DUCK_NETWORK).selectedNetworkId
+  const currentNetwork = state.get(DUCK_NODES).selected.networkId
   AbstractContractDAO.setAccount(account)
   const currentNetworkId = currentNetwork
   const contractManagerAddress = ContractsManagerABI.networks[currentNetworkId].address

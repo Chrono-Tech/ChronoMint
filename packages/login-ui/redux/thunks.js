@@ -24,6 +24,7 @@ import { getEthereumSigner } from '@chronobank/core/redux/persistAccount/selecto
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import setup from '@chronobank/login/network/EngineUtils'
+import { selectCurrentNetworkType } from '@chronobank/nodes/redux/selectors'
 import localStorage from 'utils/LocalStorage'
 import {
   DUCK_NETWORK,
@@ -106,7 +107,8 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         //////////////////////////////////////////////////////
         //// @todo remove after providers/engine refactoring
         const providerSettings = dispatch(SessionThunks.getProviderSettings())
-        const provider = privateKeyProvider.getPrivateKeyProvider(wallet.privateKey.slice(2, 66), providerSettings)
+        const networkType = selectCurrentNetworkType(state)
+        const provider = privateKeyProvider.getPrivateKeyProvider(wallet.privateKey.slice(2, 66), { ...providerSettings, networkType })
         await setup(provider)
         //////////////////////////////////////////////////////
 

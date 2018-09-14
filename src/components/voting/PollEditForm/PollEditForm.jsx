@@ -167,6 +167,7 @@ export default class PollEditForm extends Component {
     this.props.addOption(this.props.options)
   }
 
+  // eslint-disable-next-line complexity
   render () {
     const { isModify, handleSubmit, pristine, invalid, voteLimitInTIME, maxVoteLimitInPercent, options, feeMultiplier, formErrors } = this.props
     const limitInTIME = this.props.maxVoteLimitInTIME.div(100).mul(voteLimitInTIME || 1)

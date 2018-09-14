@@ -9,6 +9,8 @@ import { getNetworkById } from '@chronobank/login/network/settings'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import metaMaskResolver from '@chronobank/login/network/metaMaskResolver'
 import web3Provider from '@chronobank/login/network/Web3Provider'
+import { getWeb3Instance } from '@chronobank/nodes/redux/actions'
+import * as NodesThunks from '@chronobank/nodes/redux/thunks'
 import { daoByType } from '../../redux/daos/selectors'
 import { DEFAULT_CBE_URL, DEFAULT_USER_URL, DUCK_SESSION } from './constants'
 import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
@@ -18,7 +20,6 @@ import { watchStopMarket } from '../market/actions'
 import * as ProfileThunks from '../profile/thunks'
 import * as SessionActions from './actions'
 import ProfileService from '../profile/service'
-import web3Factory from '../../web3'
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
@@ -92,7 +93,7 @@ export const destroyNetworkSession = (isReset = true) => (dispatch) => {
 }
 
 export const createNetworkSession = (account, provider, network) => (dispatch) => {
-  if (!account || !provider || !network) {
+  if (!account) {
     throw new Error(`Wrong session arguments: account: ${account}, provider: ${provider}, network: ${network}`)
   }
 
@@ -126,7 +127,7 @@ export const login = (account) => async (dispatch, getState) => {
   }
 
   const web3 = typeof window !== 'undefined'
-    ? web3Factory(network)
+    ? await dispatch(getWeb3Instance())
     : null
 
   await dispatch(initEthereum({ web3 }))
@@ -144,7 +145,58 @@ export const login = (account) => async (dispatch, getState) => {
   return defaultURL
 }
 
-export const bootstrap = () => async () => {
+export const bootstrap = () => async (dispatch) => {
+  // await dispatch(NodesThunks.preselectNetwork())
+  await dispatch({ type: 'NODES/INIT' })
+  // console.log(1)
+  // const mainnet_infura_provider = new Web3.providers.WebsocketProvider('wss://mainnet.infura.io/ws')
+  // mainnet_infura_provider.on('connect', () => console.log('WS Connected'))
+  // mainnet_infura_provider.on('error', e => {
+  //   console.error('WS Error', e)
+  //   // web3.setProvider(getProvider())
+  // })
+  // mainnet_infura_provider.on('end', e => {
+  //   console.error('WS End', e)
+  //   // web3.setProvider(getProvider())
+  // })
+  // const mainnet_chronobank_provider = new Web3.providers.WebsocketProvider('wss://mainnet-full-geth-ws.chronobank.io')
+  // console.log(mainnet_chronobank_provider)
+  // console.log(mainnet_infura_provider)
+  // const mainnet_chronobank_web3 = new Web3(mainnet_chronobank_provider)
+  // const mainnet_infura_web3 = new Web3(mainnet_infura_provider)
+  // console.log(mainnet_chronobank_web3)
+  // console.log(mainnet_infura_web3)
+  // mainnet_chronobank_web3.eth
+  //   .getGasPrice()
+  //   .then((result) => {
+  //     console.log('ChronoBank', mainnet_chronobank_web3.utils.fromWei(result, 'ether'))
+  //   })
+  // mainnet_infura_web3.eth
+  //   .getGasPrice()
+  //   .then((result) => {
+  //     console.log('Infura', mainnet_chronobank_web3.utils.fromWei(result, 'ether'))
+  //   })
+  // console.log('And disconnect in 10 seconds')
+  // setTimeout(() => {
+  //   console.log('Disonnecting...')
+  //   mainnet_chronobank_web3.currentProvider.connection.close()
+  //   console.log(mainnet_chronobank_web3)
+  //   mainnet_chronobank_web3.eth
+  //     .getGasPrice()
+  //     .then((result) => {
+  //       console.log('ChronoBank', mainnet_chronobank_web3.utils.fromWei(result, 'ether'))
+  //     })
+  //     .catch((error) => {
+  //       console.log('Error catched. Reopen')
+  //       console.log(mainnet_infura_web3.currentProvider.connection)
+  //       mainnet_infura_web3.currentProvider.connection.open()
+  //     })
+  //   mainnet_infura_web3.eth
+  //     .getGasPrice()
+  //     .then((result) => {
+  //       console.log('Infura', mainnet_chronobank_web3.utils.fromWei(result, 'ether'))
+  //     })
+  // }, 10000)
   return true //FIXME remove method
 }
 

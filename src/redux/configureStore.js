@@ -23,8 +23,9 @@ import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/cons
 import { DUCK_WALLETS } from '@chronobank/core/redux/wallets/constants'
 import transformer from '@chronobank/core/redux/serialize'
 import { WebSocketService, middlewareWebSocketReducer } from '@chronobank/core/services/WebSocketService'
-import axiosMiddleware from '@chronobank/api/http/middleware'
-import networkSetReducer from '@chronobank/api/networks/reducer'
+import axiosMiddleware from '@chronobank/nodes/httpNodes/axiosMiddleware'
+import nodesMiddleware from '@chronobank/nodes/redux/nodesMiddleware'
+import apiReducer from '@chronobank/nodes/redux/reducer'
 import ducks from './ducks'
 import routingReducer from './routing'
 import createHistory, { historyMiddleware } from './browserHistoryStore'
@@ -42,8 +43,8 @@ const configureStore = () => {
     ...loginReducers,
     form: formReducer,
     i18n: i18nReducer,
+    nodes: apiReducer,
     routing: routingReducer,
-    NETSET: networkSetReducer,
     ws: middlewareWebSocketReducer,
   })
 
@@ -70,6 +71,7 @@ const configureStore = () => {
   const middleware = [
     thunk,
     historyMiddleware,
+    nodesMiddleware,
     axiosMiddleware,
   ]
 
@@ -94,13 +96,14 @@ const configureStore = () => {
       // '@@router/',
       // '@login/network',
       // 'AssetsManager/',
-      // 'daos/',
+      'daos/',
       // 'ethMultisigWallet/',
       // 'events/',
       // 'mainWallet/',
       // 'market/',
-      'MIDDLEWARE/WEB_SOCKET/',
+      // 'MIDDLEWARE/WEB_SOCKET/',
       // 'MODALS/',
+      'NODES/',
       // 'persist/',
       // 'persistAccount/',
       // 'PROFILE/',
@@ -119,13 +122,14 @@ const configureStore = () => {
       '@@router/',
       '@login/network',
       'AssetsManager/',
-      'daos/',
+      // 'daos/',
       'ethMultisigWallet/',
       'events/',
       'mainWallet/',
       'market/',
-      // 'MIDDLEWARE/WEB_SOCKET/',
+      'MIDDLEWARE/WEB_SOCKET/',
       'MODALS/',
+      // 'NODES/',
       'persist/',
       'persistAccount/',
       'PROFILE/',

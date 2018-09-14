@@ -51,10 +51,11 @@ const ETHEREUM_MAINNET_NODE = new EthereumMiddlewareNode({
 })
 
 export default function selectEthereumNode (engine) {
-  switch (engine.getNetwork().id) {
-    case NETWORK_MAIN_ID :
-      return ETHEREUM_MAINNET_NODE
-    default:
-      return ETHEREUM_TESTNET_NODE
-  }
+  return ETHEREUM_MAINNET_NODE
+  // switch (engine.getNetwork().id) {
+  //   case NETWORK_MAIN_ID :
+  //     return ETHEREUM_MAINNET_NODE
+  //   default:
+  //     return ETHEREUM_TESTNET_NODE
+  // }
 }

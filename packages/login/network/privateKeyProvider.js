@@ -14,7 +14,6 @@ import {
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
 } from '@chronobank/login/network/constants'
-import { byEthereumNetwork } from './NetworkProvider'
 import { createBCCEngine, createBTCEngine, createBTGEngine, createLTCEngine } from './BitcoinUtils'
 import EthereumEngine from './EthereumEngine'
 import { createNEMEngine } from './NemUtils'
@@ -34,8 +33,8 @@ import EthereumWallet from './EthereumWallet'
 
 class PrivateKeyProvider {
   // eslint-disable-next-line complexity
-  getPrivateKeyProvider (privateKey, { url, network } = {}) {
-    const networkCode = byEthereumNetwork(network)
+  getPrivateKeyProvider (privateKey, { url, network, networkType } = {}) {
+    const networkCode = networkType
     const ethereumWallet = this.createEthereumWallet(privateKey)
     const engine = new EthereumEngine(ethereumWallet, network, url)
     const btc = network && network[BLOCKCHAIN_BITCOIN] && this.createBitcoinWallet(privateKey, bitcoin.networks[network[BLOCKCHAIN_BITCOIN]] )
