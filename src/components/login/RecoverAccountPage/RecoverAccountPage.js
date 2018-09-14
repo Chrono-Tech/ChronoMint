@@ -16,11 +16,9 @@ import {
   navigateToSelectWallet,
   navigateToLoginPage,
 } from '@chronobank/login-ui/redux/navigation'
-import {
-  ResetPasswordContainer,
-  RecoverAccountContainer,
-  AccountSelectorContainer,
-} from '@chronobank/login-ui/components'
+import ResetPasswordContainer from '@chronobank/login-ui/components/ResetPassword/ResetPasswordContainer'
+import RecoverAccountContainer from '@chronobank/login-ui/components/RecoverAccount/RecoverAccountContainer'
+import AccountSelectorContainer from '@chronobank/login-ui/components/AccountSelector/AccountSelectorContainer'
 
 function mapStateToProps (state) {
   const persistAccount = state.get(DUCK_PERSIST_ACCOUNT)

@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
@@ -145,9 +145,9 @@ export default class DrawerMainMenu extends PureComponent {
   renderItem (item) {
     return (
       <div styleName={classnames('item')} key={item.key}>
-        <Link
+        <div
           styleName='menuItem'
-          activeClassName='drawer-item-active'
+          activeclassname='drawer-item-active'
           to={{ pathname: item.path }}
           onClick={this.handleSelectLink}
           href
@@ -156,7 +156,7 @@ export default class DrawerMainMenu extends PureComponent {
           <div styleName='title'>
             <Translate value={item.title} />
           </div>
-        </Link>
+        </div>
         {item.showMoreButton && (
           <div
             styleName={classnames('itemMenuMore' /*{ 'hover': !!token.address, 'selected': selectedToken && selectedToken.title === token.title }*/)}
@@ -209,10 +209,9 @@ export default class DrawerMainMenu extends PureComponent {
             </div>
 
             <Link
-              activeClassName='drawer-item-active'
+              activeclassname='drawer-item-active'
               to='/wallets'
               onClick={this.handleSelectLink}
-              href
               styleName={classnames('menuItem', 'item')}
             >
               <i styleName='icon' className='material-icons'>account_balance_wallet</i>

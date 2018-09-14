@@ -8,7 +8,7 @@
 import {
   goBack,
   push,
-} from 'react-router-redux'
+} from 'connected-react-router'
 
 /*
  * Thunk dispatched by any screen.

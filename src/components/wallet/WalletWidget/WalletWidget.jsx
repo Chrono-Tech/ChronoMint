@@ -5,7 +5,6 @@
 
 import PropTypes from 'prop-types'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
-import { Link } from 'react-router'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { selectWallet } from '@chronobank/core/redux/wallet/actions'
@@ -239,7 +238,7 @@ export default class WalletWidget extends PureComponent {
                 </div>
               </div>
               <div styleName='content-container'>
-                <Link styleName='addressWrapper' href='' to='/wallet' onClick={this.handleSelectWallet}>
+                <div styleName='addressWrapper' to='/wallet' onClick={this.handleSelectWallet}>
                   <div styleName='address-title'>
                     <h3><WalletName wallet={wallet} /></h3>
                     <span styleName='address-address'>{address}</span>
@@ -252,7 +251,7 @@ export default class WalletWidget extends PureComponent {
                         <Translate value={`${prefix}.tokenNotAvailable`} />
                       </span>
                     )}
-                </Link>
+                </div>
 
                 {this.isMySharedWallet() && this.getOwnersList()}
 

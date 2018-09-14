@@ -5,7 +5,6 @@
 
 import PropTypes from 'prop-types'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
-import { Link } from 'react-router'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { selectWallet } from '@chronobank/core/redux/wallet/actions'
@@ -74,12 +73,12 @@ export default class WalletWidgetMini extends PureComponent {
                 </div>
               </div>
               <div styleName='content-container'>
-                <Link styleName='addressWrapper' href='' to='/wallet' onClick={this.handleSelectWallet}>
+                <div styleName='addressWrapper' href='' to='/wallet' onClick={this.handleSelectWallet}>
                   <div styleName='address-title'>
                     <div><WalletName wallet={wallet} /></div>
                     <span styleName='address-address'>{address}</span>
                   </div>
-                </Link>
+                </div>
                 <div styleName='amount'>
                   <div styleName='amount-crypto'> {token.symbol()}&nbsp;<TokenValueSimple value={wallet.amount} withFraction /></div>
                   <div styleName='amount-fiat'><WalletWidgetMiniUsdAmount wallet={wallet} /></div>

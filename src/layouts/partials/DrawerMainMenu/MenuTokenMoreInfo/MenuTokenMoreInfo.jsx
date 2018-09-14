@@ -4,7 +4,7 @@
  */
 
 import { DUCK_MONITOR } from '@chronobank/login/redux/monitor/constants'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import QRIcon from 'components/dashboard/MicroIcon/QRIcon'
@@ -95,7 +95,7 @@ export default class MenuTokenMoreInfo extends PureComponent {
 
     return (
       <div styleName='walletIrem' key={wallet.address}>
-        <Link to='/wallet' href styleName='walletTitle' onClick={() => this.handleSelectLink(wallet.blockchain, wallet.address)}>
+        <Link to='/wallet' styleName='walletTitle' onClick={() => this.handleSelectLink(wallet.blockchain, wallet.address)}>
           <div styleName='walletName'><WalletName wallet={wallet} /></div>
           <div styleName='walletAddress'>{wallet.address}</div>
           <div styleName='walletLink'>

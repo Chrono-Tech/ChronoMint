@@ -4,7 +4,7 @@
  */
 
 import { createSelector } from 'reselect'
-import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
+import { DUCK_NODES } from '@chronobank/nodes/redux/constants'
 import {
   WALLET_TYPE_MEMORY,
   WALLET_TYPE_TREZOR,
@@ -44,21 +44,22 @@ export const getEthereumSigner = (state) => {
   }
 }
 
+// TODO: Why all these selectors are placed here? WTF.
 export const getNetwork = (state) => {
-  return state.get(DUCK_NETWORK)
+  return state.get(DUCK_NODES)
 }
 
 export const getSelectedNetworkId = (state) => {
-  const { selectedNetworkId } = getNetwork(state)
-  return selectedNetworkId
+  const nodes = getNetwork(state)
+  return nodes.selected.networkId
 }
 
 export const getSelectedNetwork = (blockchain) => createSelector(
   getNetwork,
   (network) => {
-    if (!network || !network.selectedNetworkId || !network.networks) {
-      return null
-    }
+    // if (!network || !network.selectedNetworkId || !network.networks) {
+    //   return null
+    // }
 
     if (blockchain) {
       const networks = network.networks.find(

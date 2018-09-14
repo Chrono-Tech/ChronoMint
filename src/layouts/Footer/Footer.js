@@ -9,7 +9,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import classnames from 'classnames'
 import { Field, reduxForm } from 'redux-form/immutable'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles'
 import compose from 'recompose/compose'
 import {
@@ -77,7 +77,7 @@ class Footer extends Component {
           <div styleName='flex'>
             <div styleName='navigation'>
               <div styleName='navigation-chrono-logo-container'>
-                <img styleName='navigation-chrono-logo' src={LogoChronobankFull} />
+                <img styleName='navigation-chrono-logo' src={LogoChronobankFull} alt='' />
               </div>
 
               <ul styleName='navigation-menu navigation-list'>
@@ -87,39 +87,39 @@ class Footer extends Component {
                   </Link>
                 </li>
                 <li>
-                  <Link href='https://chronobank.io/products/laborx' styleName='footerLink'>
+                  <a href='https://chronobank.io/products/laborx' styleName='footerLink'>
                     LaborX
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link href='https://chronobank.io/team' styleName='footerLink'>
+                  <a href='https://chronobank.io/team' styleName='footerLink'>
                     Team
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link href='https://chronobank.io/faq' styleName='footerLink'>
+                  <a href='https://chronobank.io/faq' styleName='footerLink'>
                     FAQ
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link href='https://blog.chronobank.io/' styleName='footerLink'>
+                  <a href='https://blog.chronobank.io/' styleName='footerLink'>
                     Blog
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link href='https://chronobank.io/files/business_outline.pdf' styleName='footerLink'>
+                  <a href='https://chronobank.io/files/business_outline.pdf' styleName='footerLink'>
                     Business Outline
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link href='https://chronobank.io/files/dev_plan.pdf' styleName='footerLink'>
+                  <a href='https://chronobank.io/files/dev_plan.pdf' styleName='footerLink'>
                     Development Plan
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link href='https://files.chronobank.io/files/Chronobank_WP.pdf' styleName='footerLink'>
+                  <a href='https://files.chronobank.io/files/Chronobank_WP.pdf' styleName='footerLink'>
                     White Paper
-                  </Link>
+                  </a>
                 </li>
               </ul>
 
@@ -131,11 +131,11 @@ class Footer extends Component {
               </div>
 
               <div styleName='ios-market-logo-container'>
-                <img styleName='ios-market-logo ' src={AppstoreWhite} />
+                <img styleName='ios-market-logo ' src={AppstoreWhite} alt='' />
               </div>
 
               <div styleName='android-market-logo-container'>
-                <img styleName='android-market-logo ' src={PlayWhite} />
+                <img styleName='android-market-logo ' src={PlayWhite} alt='' />
               </div>
 
               <ul styleName='navigation-list'>
@@ -151,47 +151,47 @@ class Footer extends Component {
               </div>
               <div styleName='logos-container'>
                 <div styleName='logo-wrapper'>
-                  <Link href='https://www.facebook.com/ChronoBank.io' styleName='resource-link'>
-                    <img styleName='resource-img' src={facebook} />
-                  </Link>
+                  <a href='https://www.facebook.com/ChronoBank.io' styleName='resource-link'>
+                    <img styleName='resource-img' src={facebook} alt='' />
+                  </a>
                 </div>
                 <div styleName='logo-wrapper'>
-                  <Link href='https://twitter.com/ChronobankNews' styleName='resource-link'>
-                    <img styleName='resource-img' src={twitter} />
-                  </Link>
+                  <a href='https://twitter.com/ChronobankNews' styleName='resource-link'>
+                    <img styleName='resource-img' src={twitter} alt='' />
+                  </a>
                 </div>
                 <div styleName='logo-wrapper'>
-                  <Link href='https://www.instagram.com/chronobank.io/' styleName='resource-link'>
-                    <img styleName='resource-img' src={instagram} />
-                  </Link>
+                  <a href='https://www.instagram.com/chronobank.io/' styleName='resource-link'>
+                    <img styleName='resource-img' src={instagram} alt='' />
+                  </a>
                 </div>
                 <div styleName='logo-wrapper'>
-                  <Link href='https://www.reddit.com/r/ChronoBank/' styleName='resource-link'>
-                    <img styleName='resource-img' src={reddit} />
-                  </Link>
+                  <a href='https://www.reddit.com/r/ChronoBank/' styleName='resource-link'>
+                    <img styleName='resource-img' src={reddit} alt='' />
+                  </a>
                 </div>
                 <div styleName='logo-wrapper'>
-                  <Link href='https://telegram.me/chronobank' styleName='resource-link'>
-                    <img styleName='resource-img' src={telegramm} />
-                  </Link>
+                  <a href='https://telegram.me/chronobank' styleName='resource-link'>
+                    <img styleName='resource-img' src={telegramm} alt='' />
+                  </a>
                 </div>
                 <div styleName='logo-wrapper'>
-                  <Link href='https://github.com/ChronoBank' styleName='resource-link'>
-                    <img styleName='resource-img' src={github} />
-                  </Link>
+                  <a href='https://github.com/ChronoBank' styleName='resource-link'>
+                    <img styleName='resource-img' src={github} alt='' />
+                  </a>
                 </div>
               </div>
 
               <ul styleName='navigation-list'>
                 <li styleName='first'>
-                  <Link href='mailto:info@chronobank.io' styleName='footerLink'>
+                  <a href='mailto:info@chronobank.io' styleName='footerLink'>
                     info@chronobank.io
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link href='mailto:support@chronobank.io' styleName='footerLink'>
+                  <a href='mailto:support@chronobank.io' styleName='footerLink'>
                     support@chronobank.io
-                  </Link>
+                  </a>
                 </li>
               </ul>
             </div>

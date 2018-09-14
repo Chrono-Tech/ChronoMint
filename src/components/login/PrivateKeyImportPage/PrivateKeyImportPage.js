@@ -14,11 +14,9 @@ import {
   navigateToSelectImportMethod,
   navigateBack,
 } from '@chronobank/login-ui/redux/navigation'
-import {
-  LoginWithPrivateKeyContainer,
-  CreateAccountContainer,
-  GenerateWalletContainer,
-} from '@chronobank/login-ui/components'
+import LoginWithPrivateKeyContainer from '@chronobank/login-ui/components/LoginWithPrivateKey/LoginWithPrivateKeyContainer'
+import CreateAccountContainer from '@chronobank/login-ui/components/CreateAccount/CreateAccountContainer'
+import GenerateWalletContainer from '@chronobank/login-ui/components/GenerateWallet/GenerateWalletContainer'
 import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
 import AccountProfileModel from '@chronobank/core/models/wallet/persistAccount/AccountProfileModel'
 

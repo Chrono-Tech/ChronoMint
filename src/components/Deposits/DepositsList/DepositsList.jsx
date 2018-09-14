@@ -6,7 +6,7 @@
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import Amount from '@chronobank/core/models/Amount'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { TIME } from '@chronobank/core/dao/constants'
@@ -61,7 +61,7 @@ export default class DepositsList extends PureComponent {
             </div>
           </div>
           <div styleName='itemContent'>
-            <Link to='/deposit' href styleName='link'>
+            <Link to='/deposit' styleName='link'>
               <div styleName='title'><Translate value={`${prefix}.deposit`} /></div>
               <div styleName='address'>{token.address()}</div>
               <div styleName='amount'><TokenValue value={deposit} noRenderPrice /></div>

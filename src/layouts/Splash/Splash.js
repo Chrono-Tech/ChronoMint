@@ -6,7 +6,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { CommonNetworkSelector } from '@chronobank/login-ui/components'
+import CommonNetworkSelector from '@chronobank/login-ui/components/CommonNetworkSelector/CommonNetworkSelector'
 import {
   navigateToLoginPage,
 } from '@chronobank/login-ui/redux/navigation'

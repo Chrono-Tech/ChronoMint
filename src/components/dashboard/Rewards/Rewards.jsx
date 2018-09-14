@@ -11,7 +11,7 @@ import RewardsPeriodModel from '@chronobank/core/models/rewards/RewardsPeriodMod
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 import './Rewards.scss'
 
@@ -38,7 +38,7 @@ class Rewards extends PureComponent {
             foot={(
               <div styleName='buttons'>
                 <Button>
-                  <Link href activeClassName='active' to={{ pathname: '/rewards' }}>
+                  <Link activeclassname='active' to={{ pathname: '/rewards' }}>
                     <Translate value={prefix('allPeriods')} />
                   </Link>
                 </Button>

@@ -10,7 +10,7 @@ import {
   stopSubmit,
   SubmissionError,
 } from 'redux-form'
-import { replace } from 'react-router-redux'
+import { replace } from 'connected-react-router'
 import {
   WALLET_TYPE_MEMORY,
   WALLET_TYPE_TREZOR,
@@ -309,6 +309,7 @@ export const initLoginPage = () =>
 
     if (walletsList && !walletsList.length) {
       dispatch(LoginUINavActions.navigateToCreateAccount())
+      return
     }
 
     if (!selectedWallet) {
