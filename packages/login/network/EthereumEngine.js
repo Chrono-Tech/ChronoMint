@@ -6,9 +6,9 @@
 import Tx from 'ethereumjs-tx'
 import Web3 from 'web3'
 import hdKey from 'ethereumjs-wallet/hdkey'
+import { WALLET_TYPE_MEMORY } from '@chronobank/core/models/constants/AccountEntryModel'
 import Web3Utils from './Web3Utils'
 import { WALLET_HD_PATH } from './constants'
-import { WALLET_TYPE_MEMORY } from '@chronobank/core/models/constants/AccountEntryModel'
 
 export default class EthereumEngine {
   constructor (wallet, network, url, engine, deriveNumber) {
@@ -21,7 +21,6 @@ export default class EthereumEngine {
       // FIXME: what is that? Was merged as is long time ago.
       // dispatch(addError(e.message))
     }
-    console.log('EthereumEngine: ', engine, wallet, network)
     this._engine = engine || Web3Utils.createEngine(wallet, url, deriveNumber)
   }
 

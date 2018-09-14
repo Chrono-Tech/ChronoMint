@@ -11,11 +11,8 @@ const TEMP_MOCK_SEED = 'clip grief portion ignore display empower turkey noise d
 export default class WavesMemoryDevice extends EventEmitter {
   constructor ({ seedPhrase, network }) {
     super()
-    console.log('WavesMemoryDevice: ', seedPhrase, network)
     this.waves = WavesAPI.create(network)
     this.seed = this.waves.Seed.fromExistingPhrase(TEMP_MOCK_SEED)
-    console.log('WavesMemoryDevice seed: ', this.seed)
-
     this.network = network
     Object.freeze(this)
   }

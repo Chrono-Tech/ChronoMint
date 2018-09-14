@@ -106,7 +106,7 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
 
     const { tx } = entry
     const signed = NemUtils.createXemTransaction(tx.prepared, signer, getSelectedNetwork()(getState()))
-    console.log('signTransaction tx: ', tx)
+
     dispatch(NemActions.nemTxUpdate(entry.key, entry.tx.from, NemUtils.createNemTxEntryModel({
       ...entry,
       tx: {
@@ -117,8 +117,6 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
 
   } catch (error) {
     dispatch(NemActions.nemTxSignTransactionError({ error }))
-
-    console.log('signTransaction error: ', error)
     dispatch(nemTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
     throw error
   }
@@ -136,11 +134,8 @@ const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
     return // stop execute
   }
 
-  console.log('sendSignedTransaction: ', entry)
-
   const node = nemProvider.getNode()
   const res = await node.send({ ...entry.tx.signed.tx, fee: entry.tx.signed.fee })
-  console.log('sendSignedTransaction: ', res)
 
   if (res && res.meta && res.meta.hash) {
     const hash = res.meta.hash.data

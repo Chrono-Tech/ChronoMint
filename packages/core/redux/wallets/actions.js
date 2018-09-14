@@ -70,7 +70,6 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
 
   const ethereumSigner = getEthereumSigner(state)
   const ethAddress = await ethereumSigner.getAddress()
-  console.log('ethereumSigner: ', ethereumSigner, ethAddress)
 
   wallets.push(new WalletModel({
     address: ethAddress,
@@ -80,7 +79,6 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
   }))
 
   const bitcoinSigner = getBitcoinSigner(state)
-  console.log('bitcoinSigner: ', bitcoinSigner)
   if (bitcoinSigner) {
     wallets.push(new WalletModel({
       address: bitcoinSigner.getAddress(),
@@ -91,7 +89,6 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
   }
 
   const bitcoinCashSigner = getBitcoinCashSigner(state)
-  console.log('bitcoinCashSigner: ', bitcoinCashSigner)
   if (bitcoinCashSigner) {
     wallets.push(new WalletModel({
       address: bitcoinCashSigner.getAddress(),
@@ -102,7 +99,6 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
   }
 
   const litecoinSigner = getLitecoinSigner(state)
-  console.log('litecoinSigner: ', litecoinSigner)
   if (litecoinSigner) {
     wallets.push(new WalletModel({
       address: litecoinSigner.getAddress(),
@@ -113,7 +109,6 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
   }
 
   const nemSigner = getNemSigner(state)
-  console.log('nemSigner: ', nemSigner, nemSigner.getAddress())
   if (nemSigner) {
     wallets.push(new WalletModel({
       address: nemSigner.getAddress(),
@@ -124,7 +119,6 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
   }
 
   const wavesSigner = getWavesSigner(state)
-  console.log('wavesSigner: ', wavesSigner, wavesSigner.getAddress())
   if (wavesSigner) {
     wallets.push(new WalletModel({
       address: wavesSigner.getAddress(),
@@ -301,7 +295,6 @@ export const mainTransfer = (
   advancedParams = null,
 ) => async (dispatch) => {
   try {
-    console.log('mainTransfer: ', wallet, token, amount)
     const tokenDAO = tokenService.getDAO(token.id())
     const tx = tokenDAO.transfer(wallet.address, recipient, amount)
     const executeMap = {

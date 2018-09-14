@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import bitcoin from 'bitcoinjs-lib'
+import nemSdk from 'nem-sdk'
 import { BLOCKCHAIN_NEM } from '@chronobank/login/network/constants'
 import { createSelector } from 'reselect'
 import { DUCK_NEM } from './constants'
@@ -14,12 +14,12 @@ import NemMemoryDevice from '../../services/signers/NemMemoryDevice'
 import {
   WALLET_TYPE_MEMORY,
   WALLET_TYPE_METAMASK,
-  WALLET_TYPE_LEDGER,
-  WALLET_TYPE_LEDGER_MOCK,
-  WALLET_TYPE_TREZOR,
-  WALLET_TYPE_TREZOR_MOCK,
+  // WALLET_TYPE_LEDGER,
+  // WALLET_TYPE_LEDGER_MOCK,
+  // WALLET_TYPE_TREZOR,
+  // WALLET_TYPE_TREZOR_MOCK,
 } from '../../models/constants/AccountEntryModel'
-import nemSdk from "nem-sdk";
+
 export const nemSelector = () => (state) => state.get(DUCK_NEM)
 
 export const nemPendingSelector = () => createSelector(

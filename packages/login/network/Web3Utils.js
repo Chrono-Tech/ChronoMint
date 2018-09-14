@@ -9,7 +9,6 @@ import HDWalletProvider from './HDWalletProvider'
 
 export default class Web3Utils {
   static createEngine (wallet, providerUrl, deriveNumber) {
-    console.log('createEngine: ', wallet, providerUrl, deriveNumber)
     return new HDWalletProvider(wallet, providerUrl, 0, deriveNumber)
   }
 

@@ -81,8 +81,6 @@ export default class NemDAO extends EventEmitter {
   }
 
   transfer (from: string, to: string, amount: BigNumber) {
-    console.log('transfer: ', from, to, amount)
-
     return {
       from,
       to,

@@ -115,7 +115,7 @@ export default class Ethereum extends PureComponent {
     return (
       <span styleName='description'>
         {this.state.fee && (
-          <span>{`WAVES ${this.state.fee.toString()} (≈${this.props.selectedCurrency} `}
+          <span>{`WAVES ${this.props.token.removeDecimals(this.state.fee).toString()} (≈${this.props.selectedCurrency} `}
             <TokenValue renderOnlyPrice onlyPriceValue value={this.state.fee} />{')'}
           </span>
         )}
@@ -159,7 +159,7 @@ export default class Ethereum extends PureComponent {
                         if (token.isLocked()) {
                           return null
                         }
-                        return (<MenuItem  key={token.id()} value={token.id()}>{token.symbol()}</MenuItem>)
+                        return (<MenuItem key={token.id()} value={token.id()}>{token.symbol()}</MenuItem>)
                       })}
                   </Field>
                 )
@@ -231,7 +231,7 @@ export default class Ethereum extends PureComponent {
           <div styleName='send'>
             <Button
               label={<Translate value={`${prefix}.send`} />}
-              disabled={pristine || invalid }
+              disabled={pristine || invalid}
               onClick={handleSubmit(this.handleTransfer)}
             />
           </div>

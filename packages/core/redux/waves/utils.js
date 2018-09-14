@@ -57,7 +57,6 @@ export const describeTransferTransaction = (to, amount, asset) => {
 }
 
 export const prepareWavesTransaction = (tx, token, network) => () => {
-  console.log('prepareWavesTransaction: ', tx, token, network)
   const options = {
     from: tx.from,
     blockchain: token.blockchain(),

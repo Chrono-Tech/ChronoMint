@@ -31,7 +31,6 @@ export const getProviderByBlockchain = (blockchain) => {
 
 export const getWalletBalances = ({ wallet }) => {
   try {
-    console.log('getWalletBalances: ', wallet, providersMap[wallet.blockchain])
     return  providersMap[wallet.blockchain].getAccountBalances(wallet.address)
   } catch (error) {
     // eslint-disable-next-line no-console

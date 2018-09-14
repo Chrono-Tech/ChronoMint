@@ -18,7 +18,6 @@ export const executeWavesTransaction = ({ tx, options }) => async (dispatch, get
   const network = getSelectedNetwork()(state)
   const prepared = dispatch(WavesUtils.prepareWavesTransaction(tx, token, network))
   const entry = WavesUtils.createWavesTxEntryModel({ tx: prepared }, options)
-
   console.log('entry: ', entry)
 
   await dispatch(WavesActions.wavesTxCreate(entry))
@@ -26,7 +25,6 @@ export const executeWavesTransaction = ({ tx, options }) => async (dispatch, get
 }
 
 const submitTransaction = (entry) => async (dispatch, getState) => {
-  console.log('submitTransaction: ', entry)
   const state = getState()
   const description = describePendingWavesTx(
     entry,

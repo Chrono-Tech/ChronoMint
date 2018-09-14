@@ -13,10 +13,10 @@ import { getPersistAccount, getSelectedNetwork } from '../persistAccount/selecto
 import {
   WALLET_TYPE_MEMORY,
   WALLET_TYPE_METAMASK,
-  WALLET_TYPE_LEDGER,
-  WALLET_TYPE_LEDGER_MOCK,
-  WALLET_TYPE_TREZOR,
-  WALLET_TYPE_TREZOR_MOCK,
+  // WALLET_TYPE_LEDGER,
+  // WALLET_TYPE_LEDGER_MOCK,
+  // WALLET_TYPE_TREZOR,
+  // WALLET_TYPE_TREZOR_MOCK,
 } from '../../models/constants/AccountEntryModel'
 
 export const wavesSelector = () => (state) => state.get(DUCK_WAVES)
@@ -39,9 +39,7 @@ export const pendingEntrySelector = (address, key) => createSelector(
 export const getWavesSigner = (state) => {
   const account = getPersistAccount(state)
   const networkData = getSelectedNetwork()(state)
-  console.log('networkData: ', networkData, networkData[BLOCKCHAIN_WAVES])
   const network = WavesApi[networkData[BLOCKCHAIN_WAVES]]
-  console.log('WavesApi: ', network)
   switch (account.decryptedWallet.entry.encrypted[0].type) {
     case WALLET_TYPE_MEMORY: {
       const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
