@@ -9,30 +9,30 @@ import { combineReducers } from 'redux-immutable'
 import { applyMiddleware, compose, createStore } from 'redux'
 import { createLogger } from 'redux-logger'
 import { composeWithDevTools } from 'redux-devtools-extension'
-import { persistStore } from 'redux-persist-immutable'
+// import { persistStore } from 'redux-persist-immutable'
 import { reducer as formReducer } from 'redux-form/immutable'
-import { loadI18n } from 'redux/i18n/actions'
-import { I18n, i18nReducer, loadTranslations, setLocale } from 'react-redux-i18n'
-import moment from 'moment'
+// import { loadI18n } from 'redux/i18n/actions'
+import { i18nReducer } from 'react-redux-i18n'
+import { routerMiddleware, connectRouter } from 'connected-react-router/immutable'
+import { createBrowserHistory } from 'history'
+// import moment from 'moment'
 import thunk from 'redux-thunk'
-import localStorage from 'utils/LocalStorage'
+// import localStorage from 'utils/LocalStorage'
 import coreReducers from '@chronobank/core/redux/ducks'
 import loginReducers from '@chronobank/login/redux/ducks'
 import { DUCK_I18N } from 'redux/i18n/constants'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import { DUCK_WALLETS } from '@chronobank/core/redux/wallets/constants'
-import transformer from '@chronobank/core/redux/serialize'
-import { WebSocketService, middlewareWebSocketReducer } from '@chronobank/core/services/WebSocketService'
+// import transformer from '@chronobank/core/redux/serialize'
+import { middlewareWebSocketReducer } from '@chronobank/core/services/WebSocketService'
 import axiosMiddleware from '@chronobank/nodes/httpNodes/axiosMiddleware'
 import nodesMiddleware from '@chronobank/nodes/redux/nodesMiddleware'
 import apiReducer from '@chronobank/nodes/redux/reducer'
 import ducks from './ducks'
-import routingReducer from './routing'
-import createHistory, { historyMiddleware } from './browserHistoryStore'
-import translations from '../i18n'
+// import translations from '../i18n'
 
-// eslint-disable-next-line no-unused-vars
-let i18nJson // declaration of a global var for the i18n object for a standalone version
+// // eslint-disable-next-line no-unused-vars
+// let i18nJson // declaration of a global var for the i18n object for a standalone version
 
 const configureStore = () => {
   const initialState = new Immutable.Map()
@@ -44,7 +44,6 @@ const configureStore = () => {
     form: formReducer,
     i18n: i18nReducer,
     nodes: apiReducer,
-    routing: routingReducer,
     ws: middlewareWebSocketReducer,
   })
 
@@ -68,9 +67,11 @@ const configureStore = () => {
     ? composeWithDevTools({ realtime: true })
     : compose
 
+  const history = createBrowserHistory()
+
   const middleware = [
     thunk,
-    historyMiddleware,
+    routerMiddleware(history),
     nodesMiddleware,
     axiosMiddleware,
   ]
@@ -93,7 +94,7 @@ const configureStore = () => {
     const DOMAINS = [
       // '@@i18n/',
       // '@@redux-form/',
-      // '@@router/',
+       '@@router/',
       // '@login/network',
       // 'AssetsManager/',
       'daos/',
@@ -119,7 +120,7 @@ const configureStore = () => {
     const IGNORED_DOMAINS = [
       '@@i18n/',
       '@@redux-form/',
-      '@@router/',
+      // '@@router/',
       '@login/network',
       'AssetsManager/',
       // 'daos/',
@@ -166,38 +167,42 @@ const configureStore = () => {
     applyMiddleware(...middleware),
   )(createStore)
 
-  return createStoreWithMiddleware(
-    rootReducer,
+  const store = createStoreWithMiddleware(
+    // rootReducer,
+    connectRouter(history)(rootReducer),
     initialState,
   )
+  return { store, history }
 }
 
-export const store = configureStore()
-// store.dispatch(globalWatcher())
-WebSocketService.initWebSocketService(store)
+export default configureStore
 
-const persistorConfig = {
-  key: 'root',
-  whitelist: [DUCK_PERSIST_ACCOUNT, DUCK_WALLETS],
-  transforms: [transformer()],
-}
+// export const store = configureStore()
+// // store.dispatch(globalWatcher())
+// WebSocketService.initWebSocketService(store)
 
-// eslint-disable-next-line no-underscore-dangle
-store.__persistor = persistStore(store, persistorConfig)
+// const persistorConfig = {
+//   key: 'root',
+//   whitelist: [DUCK_PERSIST_ACCOUNT, DUCK_WALLETS],
+//   transforms: [transformer()],
+// }
 
-export const history = createHistory(store)
+// // eslint-disable-next-line no-underscore-dangle
+// store.__persistor = persistStore(store, persistorConfig)
 
-// syncTranslationWithStore(store) relaced with manual configuration in the next 6 lines
-I18n.setTranslationsGetter(() => store.getState().get(DUCK_I18N).translations)
-I18n.setLocaleGetter(() => store.getState().get(DUCK_I18N).locale)
+// // export const history = createHistory(store)
 
-const locale = localStorage.getLocale()
-// set moment locale
-moment.locale(locale)
+// // syncTranslationWithStore(store) relaced with manual configuration in the next 6 lines
+// I18n.setTranslationsGetter(() => store.getState().get(DUCK_I18N).translations)
+// I18n.setLocaleGetter(() => store.getState().get(DUCK_I18N).locale)
 
-store.dispatch(loadTranslations(translations))
-store.dispatch(setLocale(locale))
+// const locale = localStorage.getLocale()
+// // set moment locale
+// moment.locale(locale)
 
-// load i18n from the public site
-store.dispatch(loadI18n(locale))
-/** <<< i18n END */
+// store.dispatch(loadTranslations(translations))
+// store.dispatch(setLocale(locale))
+
+// // load i18n from the public site
+// store.dispatch(loadI18n(locale))
+// /** <<< i18n END */

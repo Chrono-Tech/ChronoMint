@@ -5,7 +5,7 @@
 
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { prefix } from './lang'
 import './styles.scss'
 

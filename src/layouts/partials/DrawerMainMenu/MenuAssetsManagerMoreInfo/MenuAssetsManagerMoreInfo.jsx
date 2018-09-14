@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import iconTokenDefaultSVG from 'assets/img/icons/coin-blue.svg'
 import React, { PureComponent } from 'react'
 import linkSvg from 'assets/img/icons/prev.svg'
@@ -54,7 +54,7 @@ export default class MenuAssetsManagerMoreInfo extends PureComponent {
     const assetsList = this.props.assets[platformAddress]
     return (
       <div styleName='walletIrem' key={platformAddress}>
-        <Link to='/assets' href styleName='walletTitle' onClick={this.handleSelectLink}>
+        <Link to='/assets' styleName='walletTitle' onClick={this.handleSelectLink}>
           <div styleName='walletName'><Translate value={`${prefix}.assetPlatform`} num={key + 1} /></div>
           <div styleName='walletAddress'>{platformAddress}</div>
           <div styleName='walletLink'>
@@ -67,7 +67,7 @@ export default class MenuAssetsManagerMoreInfo extends PureComponent {
             return null
           }
           return (
-            <Link to='/assets' href styleName='action' key={token.address()} onClick={this.handleSelectLink}>
+            <Link to='/assets' styleName='action' key={token.address()} onClick={this.handleSelectLink}>
               <div styleName='actionIcon'>
                 <IPFSImage multihash={token && token.icon()} fallback={iconTokenDefaultSVG} />
               </div>

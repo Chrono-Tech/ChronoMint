@@ -18,11 +18,9 @@ import {
   navigateToSelectImportMethod,
   navigateBack,
 } from '@chronobank/login-ui/redux/navigation'
-import {
-  LoginWithMnemonicContainer,
-  CreateAccountContainer,
-  GenerateWalletContainer,
-} from '@chronobank/login-ui/components'
+import LoginWithMnemonicContainer from '@chronobank/login-ui/components/LoginWithMnemonic/LoginWithMnemonicContainer'
+import CreateAccountContainer from '@chronobank/login-ui/components/CreateAccount/CreateAccountContainer'
+import GenerateWalletContainer from '@chronobank/login-ui/components/GenerateWallet/GenerateWalletContainer'
 import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
 
 function mapDispatchToProps (dispatch) {

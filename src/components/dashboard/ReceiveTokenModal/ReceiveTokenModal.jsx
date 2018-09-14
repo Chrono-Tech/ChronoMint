@@ -7,7 +7,7 @@ import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import QRCode from 'qrcode'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { TOKEN_ICONS } from 'assets'
 import Select from 'redux-form-material-ui/es/Select'
 import PropTypes from 'prop-types'
@@ -183,10 +183,10 @@ export default class ReceiveTokenModal extends PureComponent {
             <div styleName='marketList'>
               {marketsTIME.map((market) => {
                 return (
-                  <Link styleName='market' key={market.title} href={market.url} target='_blank'>
+                  <a styleName='market' key={market.title} href={market.url} target='_blank' rel='noopener noreferrer'>
                     <img src={market.img} alt={market.title} />
                     <div styleName='title'>{market.title}</div>
-                  </Link>
+                  </a>
                 )
               })}
             </div>

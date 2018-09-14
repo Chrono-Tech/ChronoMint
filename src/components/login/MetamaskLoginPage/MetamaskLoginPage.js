@@ -14,10 +14,8 @@ import {
   navigateToSelectWallet,
   navigateBack,
 } from '@chronobank/login-ui/redux/navigation'
-import {
-  LoginWithMetamaskContainer,
-  AccountNameContainer,
-} from '@chronobank/login-ui/components'
+import LoginWithMetamaskContainer from '@chronobank/login-ui/components/LoginWithMetamask/LoginWithMetamaskContainer'
+import AccountNameContainer from '@chronobank/login-ui/components/AccountName/AccountNameContainer'
 import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
 import { getAddress } from '@chronobank/core/redux/persistAccount/utils'
 

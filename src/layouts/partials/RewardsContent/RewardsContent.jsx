@@ -11,7 +11,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { DUCK_ASSETS_HOLDER } from '@chronobank/core/redux/assetsHolder/constants'
 import { DUCK_REWARDS } from '@chronobank/core/redux/rewards/constants'
 import { closePeriod, initRewards, withdrawRevenue } from '@chronobank/core/redux/rewards/actions'
@@ -104,7 +104,7 @@ export default class RewardsContent extends Component {
                   </div>
                   <div styleName='actions'>
                     <Button styleName='actionFlat' flat>
-                      <Link activeClassName='active' href to={{ pathname: '/wallet', hash: '#deposit-tokens' }}>
+                      <Link activeclassname='active' to={{ pathname: '/wallet', hash: '#deposit-tokens' }}>
                         <Translate value={prefix('depositOfWithdrawTime')} />
                       </Link>
                     </Button>

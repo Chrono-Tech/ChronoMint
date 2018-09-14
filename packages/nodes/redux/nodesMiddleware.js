@@ -122,7 +122,7 @@ const mutations = {
    * Replace web3 provider to another one
    * TODO: Need to disconnect/reconnect contracts etc.
    */
-  [NodesActionTypes.NODES_PRIMARY_NODE_SWITCH]: (store) => {
+  [NodesActionTypes.NODES_NETWORK_SWITCH]: (store) => {
     const state = store.getState()
     const currentPrimaryNode = NodesSelectors.selectCurrentPrimaryNode(state)
     const currentProviderUrl = currentPrimaryNode && currentPrimaryNode.ws

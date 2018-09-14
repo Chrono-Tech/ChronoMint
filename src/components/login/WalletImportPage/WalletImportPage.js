@@ -16,10 +16,8 @@ import {
   // navigateToLoginPage,
   navigateBack,
 } from '@chronobank/login-ui/redux/navigation'
-import {
-  LoginWithWalletContainer,
-  AccountNameContainer,
-} from '@chronobank/login-ui/components'
+import LoginWithWalletContainer from '@chronobank/login-ui/components/LoginWithWallet/LoginWithWalletContainer'
+import AccountNameContainer from '@chronobank/login-ui/components/AccountName/AccountNameContainer'
 import { SubmissionError } from 'redux-form'
 import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
 import { getAddress } from '@chronobank/core/redux/persistAccount/utils'

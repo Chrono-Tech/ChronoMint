@@ -67,7 +67,9 @@ function mapDispatchToProps (dispatch) {
     },
     onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitLoginFormFail(errors, submitErrors)),
     initLoginPage: () => dispatch(initLoginPage()),
-    navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
+    navigateToSelectWallet: () => {
+      dispatch(navigateToSelectWallet())
+    },
     navigateToRecoverAccountPage: () => dispatch(navigateToRecoverAccountPage()),
   }
 }

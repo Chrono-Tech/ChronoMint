@@ -7,9 +7,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { onWalletSelect } from '@chronobank/login-ui/redux/thunks'
-import {
-  AccountSelectorContainer,
-} from '@chronobank/login-ui/components'
+import AccountSelectorContainer from '@chronobank/login-ui/components/AccountSelector/AccountSelectorContainer'
 
 function mapDispatchToProps (dispatch) {
   return {
