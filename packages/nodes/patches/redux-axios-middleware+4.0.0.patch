@@ -8,17 +8,17 @@ patch-package
 +
 +    function getClientNameFromState (blockchain) {
 +      var state = getState()
-+      var network = state.get('currentNetworkSet').network
-+      if (!network) {
-+        var networkErrorMessage = 'Network does not selected. Please select amin or test network first'
++      var chronobankMiddlewares = state.get('nodes').selected.chronobankMiddlewares
++      if (!chronobankMiddlewares) {
++        var networkErrorMessage = 'Network does not selected. Please select main or test network first'
 +        throw new Error(networkErrorMessage)
 +      }
 +
-+      var node = network[blockchain]
++      var node = chronobankMiddlewares[blockchain]
 +      if (node) {
 +        return node
 +      } else {
-+        var nodeErrorMessage = 'Can\'t find node for the ' + blockchain + ' in selected network ' + network.name
++        var nodeErrorMessage = 'Can\'t find node for the ' + blockchain + '
 +        throw new Error(nodeErrorMessage)
 +      }
 +    }

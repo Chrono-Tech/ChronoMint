@@ -10,10 +10,10 @@ import PropTypes from 'prop-types'
 import Web3 from 'web3'
 
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
-import { currentNetoworkSelector, displayNetworksListSelector } from '@chronobank/api/networks/selectors'
+import { selectCurrentNetwork, selectDisplayNetworksList } from '@chronobank/nodes/redux/selectors'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
-import { switchNetwork } from '@chronobank/api/networks/actions'
+import { networkSwitch } from '@chronobank/nodes/redux/actions'
 import Button from 'components/common/ui/Button/Button'
 import React, { PureComponent } from 'react'
 import web3Provider from '@chronobank/login/network/Web3Provider'
@@ -22,8 +22,8 @@ import web3Utils from '@chronobank/login/network/Web3Utils'
 import styles from './CommonNetworkSelector.scss'
 
 const mapStateToProps = (state) => {
-  const currentNetwork = currentNetoworkSelector(state)
-  const displayNetworksList = displayNetworksListSelector(state)
+  const currentNetwork = selectCurrentNetwork(state)
+  const displayNetworksList = selectDisplayNetworksList(state)
   const customNetworksList = state.get(DUCK_PERSIST_ACCOUNT).customNetworksList
 
   return {
@@ -34,7 +34,8 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  switchNetwork: (networkIndex) => dispatch(switchNetwork(networkIndex)),
+  // TEST: () => dispatch({ type: 'NODES/INIT' }),
+  networkSwitch: (networkIndex) => dispatch(networkSwitch(networkIndex)),
   modalOpenAddNetwork: (network = null) =>
     dispatch(
       modalsOpen({
@@ -68,7 +69,7 @@ const SectionHeader = ({ section }) => (
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class CommonNetworkSelector extends PureComponent {
-  // NOTE: You may find incoming data at @chronobank/api/networks/reducer
+  // NOTE: You may find incoming data at @chronobank/nodes/networks/reducer
   static propTypes = {
     displayNetworksList:  PropTypes.arrayOf(PropTypes.shape({
       sectionTitle: PropTypes.string,
@@ -81,18 +82,18 @@ export default class CommonNetworkSelector extends PureComponent {
     currentNetwork: PropTypes.shape({
       networkTitle: PropTypes.string,
       networkIndex: PropTypes.number,
-      provider: PropTypes.shape({
+      primaryNode: PropTypes.shape({
         disabled: PropTypes.bool,
         host: PropTypes.string,
       }),
-      blockchainNodes: PropTypes.objectOf(PropTypes.oneOfType([
+      chronobankMiddlewares: PropTypes.objectOf(PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.bool,
       ])),
     }),
     customNetworksList: PropTypes.arrayOf(PropTypes.object),
     modalOpenAddNetwork: PropTypes.func,
-    switchNetwork: PropTypes.func,
+    networkSwitch: PropTypes.func,
   }
 
   constructor (props) {
@@ -105,8 +106,9 @@ export default class CommonNetworkSelector extends PureComponent {
 
   handleSelectNetwork = (item, isSelected) => (/*e*/) => {
     if (!isSelected) {
-      this.props.switchNetwork(item.networkIndex)
+      this.props.networkSwitch(item.networkIndex)
     }
+    // this.props.TEST()
     this.handleModalNetworkSelectorClose()
   }
 
@@ -173,6 +175,7 @@ export default class CommonNetworkSelector extends PureComponent {
   }
 
   // TODO: to internationalize text inside
+  // TODO: to complete this method. At the moment it using Redux persistAccount.customNetworkList
   renderCustomNetworkSection = () => (
     <div>
       <SectionHeader section={{ sectionTitle: 'Custom networks' }} />
@@ -184,8 +187,8 @@ export default class CommonNetworkSelector extends PureComponent {
                 providerItem: true,
                 providerItemActive: network.networkIndex === this.props.currentNetwork.networkIndex,
               })}
-              onClick={this.handleClickCustomNetwork(network)}
-              key={network.networkTitle}
+              onClick={this.handleOpenModalAddNetwork(network)}
+              key={network.name}
             >
               <span styleName='providerItemText'>
                 {
@@ -205,7 +208,7 @@ export default class CommonNetworkSelector extends PureComponent {
       </div>
       <div
         styleName='providerItem'
-        onClick={this.handleModalAddNetwork}
+        onClick={this.handleOpenModalAddNetwork()}
       >
         Add a Network ...
       </div>

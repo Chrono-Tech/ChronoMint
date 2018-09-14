@@ -33,7 +33,7 @@
     "rei": "rm -rf ./node_modules && yarn install && yarn contracts:compile"
   },
   "devDependencies": {
-    "@chronobank/api": "*",
+    "@chronobank/nodes": "*",
     "@chronobank/chronomint-presentation": "github:chronobank/ChronoMintPresentation",
     "@chronobank/core": "*",
     "@chronobank/login": "*",
