@@ -23,12 +23,13 @@ export const wavesSelector = () => (state) => state.get(DUCK_WAVES)
 
 export const wavesPendingSelector = () => createSelector(
   wavesSelector(),
-  (nem) => nem.pending,
+  (waves) => waves.pending,
 )
 
 export const pendingEntrySelector = (address, key) => createSelector(
   wavesPendingSelector(),
   (pending) => {
+    console.log('pendingEntrySelector: ', pending)
     if (address in pending) {
       return pending[address][key] || null
     }

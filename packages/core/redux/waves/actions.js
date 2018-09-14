@@ -37,3 +37,13 @@ export const wavesTxSignTransaction = (entry) => ({
   type: WavesConstants.TX_SIGN,
   entry,
 })
+
+export const wavesTxSignTransactionError = (error) => ({
+  type: WavesConstants.TX_SIGN_ERROR,
+  error,
+})
+
+export const wavesTxProcessTransaction = (entry) => ({
+  type: WavesConstants.TX_PROCESS,
+  entry,
+})

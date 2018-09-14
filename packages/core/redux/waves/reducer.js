@@ -53,6 +53,24 @@ const mutations = {
       lastRequestMeta: entry,
     }
   },
+  [WavesConstants.TX_REJECT]: (state, { entry }) => {
+    return {
+      ...state,
+      lastRequestMeta: entry,
+    }
+  },
+  [WavesConstants.TX_PROCESS]: (state, { entry }) => {
+    return {
+      ...state,
+      lastRequestMeta: entry,
+    }
+  },
+  [WavesConstants.TX_SIGN_ERROR]: (state, { error }) => {
+    return {
+      ...state,
+      lastRequestMeta: error,
+    }
+  },
 }
 
 export default (state = initialState(), { type, ...payload }) => {

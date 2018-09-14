@@ -11,6 +11,8 @@ export const TX_UPDATE = 'TX/WAVES/UPDATE'
 export const TX_ACCEPT = 'TX/WAVES/ACCEPT'
 export const TX_REJECT = 'TX/WAVES/REJECT'
 export const TX_SIGN = 'TX/WAVES/SIGN'
+export const TX_SIGN_ERROR = 'TX/WAVES/SIGN_ERROR'
+export const TX_PROCESS = 'TX/WAVES/PROCESS'
 
 export const TRANSACTION_TYPE_TRANSFER = 'TRANSFER'
 export const TRANSACTION_TYPE_ISSUE = 'ISSUE'

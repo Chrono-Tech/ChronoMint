@@ -75,10 +75,9 @@ export default class SendTokens extends PureComponent {
       mode,
     }
 
-    const currentGasLimit = gasLimit || formState.gasLimitEstimated
-
     const token = tokens.item(symbol)
     if (mode === MODE_ADVANCED && token.blockchain() === BLOCKCHAIN_ETHEREUM) {
+      const currentGasLimit = gasLimit || formState.gasLimitEstimated
       const gweiPerGasBN = new BigNumber(web3Converter.toWei(gweiPerGas, 'gwei'))
       advancedModeParams = {
         gweiPerGas: gweiPerGasBN,

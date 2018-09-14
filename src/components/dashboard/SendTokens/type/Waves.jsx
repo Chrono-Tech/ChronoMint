@@ -27,6 +27,7 @@ import { getMarket } from '@chronobank/core/redux/market/selectors'
 import { MultisigEthWalletModel } from '@chronobank/core/models'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import { ACTION_TRANSFER, FORM_SEND_TOKENS } from 'components/constants'
+import { WAVES } from '@chronobank/core/dao/constants'
 import { prefix } from '../lang'
 import './form.scss'
 import validate from '../validate'
@@ -93,7 +94,7 @@ export default class Ethereum extends PureComponent {
   constructor () {
     super(...arguments)
     this.state = {
-      fee: new Amount(10000, 'WAVES'),
+      fee: new Amount(10000, WAVES),
     }
 
     this.timeout = null
@@ -115,7 +116,7 @@ export default class Ethereum extends PureComponent {
     return (
       <span styleName='description'>
         {this.state.fee && (
-          <span>{`WAVES ${this.props.token.removeDecimals(this.state.fee).toString()} (≈${this.props.selectedCurrency} `}
+          <span>{`${WAVES} ${this.props.token.removeDecimals(this.state.fee).toString()} (≈${this.props.selectedCurrency} `}
             <TokenValue renderOnlyPrice onlyPriceValue value={this.state.fee} />{')'}
           </span>
         )}

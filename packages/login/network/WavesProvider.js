@@ -64,6 +64,11 @@ export class WavesProvider extends AbstractProvider {
     return node.send(from, tx)
   }
 
+  justTransfer (from, signedTx) {
+    const node = this._selectNode(this._engine)
+    return node.send(from, signedTx)
+  }
+
   async onTransaction (tx: WavesTx) {
     this.emit('tx', {
       account: this.getAddress(),

@@ -28,6 +28,7 @@ import voting from './voting/reducer'
 import wallet from './wallet/reducer'
 import wallets from './wallets/reducer'
 import watcher from './watcher/reducer'
+import waves from './waves/reducer'
 
 const coreReducers = {
   assetsHolder,
@@ -53,6 +54,7 @@ const coreReducers = {
   wallet,
   wallets,
   watcher,
+  waves,
 }
 
 export default coreReducers
