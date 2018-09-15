@@ -37,6 +37,7 @@ class Splash extends Component {
   static propTypes = {
     children: PropTypes.node,
     goBack: PropTypes.func,
+    navigateToLoginPage: PropTypes.func,
     navigatorText: PropTypes.string,
   }
 

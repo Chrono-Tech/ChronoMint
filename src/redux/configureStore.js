@@ -3,64 +3,73 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Immutable from 'immutable'
-import { SESSION_DESTROY } from '@chronobank/core/redux/session/constants'
-import { combineReducers } from 'redux-immutable'
 import { applyMiddleware, compose, createStore } from 'redux'
-import { createLogger } from 'redux-logger'
+import { combineReducers } from 'redux-immutable'
 import { composeWithDevTools } from 'redux-devtools-extension'
-// import { persistStore } from 'redux-persist-immutable'
-import { reducer as formReducer } from 'redux-form/immutable'
-// import { loadI18n } from 'redux/i18n/actions'
-import { i18nReducer } from 'react-redux-i18n'
-import { routerMiddleware, connectRouter } from 'connected-react-router/immutable'
 import { createBrowserHistory } from 'history'
-// import moment from 'moment'
-import thunk from 'redux-thunk'
-// import localStorage from 'utils/LocalStorage'
-import coreReducers from '@chronobank/core/redux/ducks'
-import loginReducers from '@chronobank/login/redux/ducks'
+import { createLogger } from 'redux-logger'
 import { DUCK_I18N } from 'redux/i18n/constants'
+import { i18nReducer } from 'react-redux-i18n'
+import { persistStore, persistReducer } from 'redux-persist'
+import { reducer as formReducer } from 'redux-form/immutable'
+import { routerMiddleware, connectRouter } from 'connected-react-router/immutable'
+import { Map } from 'immutable'
+import storage from 'redux-persist/lib/storage'
+import thunk from 'redux-thunk'
+
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import { DUCK_WALLETS } from '@chronobank/core/redux/wallets/constants'
-// import transformer from '@chronobank/core/redux/serialize'
 import { middlewareWebSocketReducer } from '@chronobank/core/services/WebSocketService'
-import axiosMiddleware from '@chronobank/nodes/httpNodes/axiosMiddleware'
-import nodesMiddleware from '@chronobank/nodes/redux/nodesMiddleware'
+import { SESSION_DESTROY } from '@chronobank/core/redux/session/constants'
 import apiReducer from '@chronobank/nodes/redux/reducer'
+import axiosMiddleware from '@chronobank/nodes/httpNodes/axiosMiddleware'
+import coreReducers from '@chronobank/core/redux/ducks'
+import loginReducers from '@chronobank/login/redux/ducks'
+import nodesMiddleware from '@chronobank/nodes/redux/nodesMiddleware'
+import persistAccountReducer from '@chronobank/core/redux/persistAccount/reducer'
+import walletsReducer from '@chronobank/core/redux/wallets/reducer'
 import ducks from './ducks'
-// import translations from '../i18n'
 
-// // eslint-disable-next-line no-unused-vars
-// let i18nJson // declaration of a global var for the i18n object for a standalone version
+const walletsPersistConfig = {
+  key: 'wallets',
+  storage: storage,
+}
 
-const configureStore = () => {
-  const initialState = new Immutable.Map()
+const accountPersistConfig = {
+  key: 'account',
+  storage: storage,
+  blacklist: ['decryptedWallet', 'rehydrated'],
+}
 
-  const appReducer = combineReducers({
+export const rootReducer = (state, action) => {
+
+  if (action.type === SESSION_DESTROY) {
+    const i18nState = state.get(DUCK_I18N)
+    const persistAccount = state.get(DUCK_PERSIST_ACCOUNT)
+    const wallets = state.get(DUCK_WALLETS)
+    state = new Map()
+    state = state
+      .set(DUCK_I18N, i18nState)
+      .set(DUCK_PERSIST_ACCOUNT, persistAccount)
+      .set(DUCK_WALLETS, wallets)
+  }
+  return combineReducers({
     ...coreReducers,
     ...ducks,
     ...loginReducers,
     form: formReducer,
     i18n: i18nReducer,
     nodes: apiReducer,
+    // persistAccount: persistReducer(accountPersistConfig, persistAccountReducer),
+    // wallets: persistReducer(walletsPersistConfig, walletsReducer),
     ws: middlewareWebSocketReducer,
   })
+}
 
-  const rootReducer = (state, action) => {
+// const persistedRootReducer = persistReducer(rootPersistConfig, rootReducer)
 
-    if (action.type === SESSION_DESTROY) {
-      const i18nState = state.get(DUCK_I18N)
-      const persistAccount = state.get(DUCK_PERSIST_ACCOUNT)
-      const wallets = state.get(DUCK_WALLETS)
-      state = new Immutable.Map()
-      state = state
-        .set(DUCK_I18N, i18nState)
-        .set(DUCK_PERSIST_ACCOUNT, persistAccount)
-        .set(DUCK_WALLETS, wallets)
-    }
-    return appReducer(state, action)
-  }
+const configureStore = () => {
+  const initialState = new Map()
 
   const isDevelopmentEnv = process.env.NODE_ENV === 'development'
   const composeEnhancers = isDevelopmentEnv
@@ -168,41 +177,13 @@ const configureStore = () => {
   )(createStore)
 
   const store = createStoreWithMiddleware(
-    // rootReducer,
     connectRouter(history)(rootReducer),
     initialState,
   )
-  return { store, history }
+
+  const persistor = persistStore(store)
+
+  return { store, history, persistor }
 }
 
 export default configureStore
-
-// export const store = configureStore()
-// // store.dispatch(globalWatcher())
-// WebSocketService.initWebSocketService(store)
-
-// const persistorConfig = {
-//   key: 'root',
-//   whitelist: [DUCK_PERSIST_ACCOUNT, DUCK_WALLETS],
-//   transforms: [transformer()],
-// }
-
-// // eslint-disable-next-line no-underscore-dangle
-// store.__persistor = persistStore(store, persistorConfig)
-
-// // export const history = createHistory(store)
-
-// // syncTranslationWithStore(store) relaced with manual configuration in the next 6 lines
-// I18n.setTranslationsGetter(() => store.getState().get(DUCK_I18N).translations)
-// I18n.setLocaleGetter(() => store.getState().get(DUCK_I18N).locale)
-
-// const locale = localStorage.getLocale()
-// // set moment locale
-// moment.locale(locale)
-
-// store.dispatch(loadTranslations(translations))
-// store.dispatch(setLocale(locale))
-
-// // load i18n from the public site
-// store.dispatch(loadI18n(locale))
-// /** <<< i18n END */

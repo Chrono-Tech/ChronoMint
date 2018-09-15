@@ -64,6 +64,7 @@ export default class AccountSelector extends PureComponent {
   }
 
   render () {
+    console.log('>>>>>>>>>>>> ACCOUNT SELECTOR')
     const { navigateToCreateAccount, navigateToSelectImportMethod } = this.props
 
     return (

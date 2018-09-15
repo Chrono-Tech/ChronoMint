@@ -124,6 +124,7 @@ class CreateAccountPage extends PureComponent {
   }
 
   render () {
+    console.log('############### CREATE ACCOUNT PAGE')
     return this.getCurrentPage()
   }
 }

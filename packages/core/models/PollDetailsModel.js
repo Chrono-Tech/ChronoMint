@@ -4,7 +4,7 @@
  */
 
 import moment from 'moment'
-import Immutable from 'immutable'
+import { Map, List } from 'immutable'
 import BigNumber from 'bignumber.js'
 import PropTypes from 'prop-types'
 import AbstractModel from './AbstractModel'
@@ -14,11 +14,11 @@ import PollModel from './PollModel'
 const schemaFactory = () => ({
   id: PropTypes.string,
   poll: PropTypes.instanceOf(PollModel),
-  votes: PropTypes.instanceOf(Immutable.Map),
-  statistics: PropTypes.instanceOf(Immutable.List),
+  votes: PropTypes.instanceOf(Map),
+  statistics: PropTypes.instanceOf(List),
   totalSupply: PropTypes.instanceOf(BigNumber),
   shareholdersCount: PropTypes.instanceOf(BigNumber),
-  files: PropTypes.instanceOf(Immutable.List),
+  files: PropTypes.instanceOf(List),
   isFetched: PropTypes.bool,
   isFetching: PropTypes.bool,
 })
@@ -26,11 +26,11 @@ const schemaFactory = () => ({
 const defaultProps = {
   id: null,
   poll: new PollModel(),
-  votes: Immutable.Map(),
-  statistics: Immutable.List(),
+  votes: Map(),
+  statistics: List(),
   totalSupply: new BigNumber(0),
   shareholdersCount: new BigNumber(0),
-  files: Immutable.List(),
+  files: List(),
   isFetched: false,
   isFetching: false,
 }

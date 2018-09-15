@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Immutable from 'immutable'
+import { Map } from 'immutable'
 import BalanceModel from '../tokens/BalanceModel'
 import BalancesCollection from '../tokens/BalancesCollection'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
@@ -13,7 +13,7 @@ import AddressesCollection from './AddressesCollection'
 
 export default class MainWalletModel extends abstractFetchingModel({
   address: null,
-  tokens: new Immutable.Map(),
+  tokens: new Map(),
   timeAddress: null,
   isMultisig: false,
   isMainWallet: true,
@@ -21,9 +21,9 @@ export default class MainWalletModel extends abstractFetchingModel({
   isTIMERequired: true,
   balances: new BalancesCollection(),
   allowances: new AllowanceCollection(),
-  transactions: new Immutable.Map(),
+  transactions: new Map(),
   addresses: new AddressesCollection(),
-  names: new Immutable.Map(),
+  names: new Map(),
   web3: null,
 }) {
 

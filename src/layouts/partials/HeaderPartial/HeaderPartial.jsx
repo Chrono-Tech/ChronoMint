@@ -6,7 +6,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import Immutable from 'immutable'
+import { Map } from 'immutable'
 import Button from 'components/common/ui/Button/Button'
 import TopButtons from 'components/common/TopButtons/TopButtons'
 import { sidesOpen } from 'redux/sides/actions'
@@ -53,7 +53,7 @@ export default class HeaderPartial extends Component {
     handleNotificationTap: PropTypes.func,
     ethereumPendingTxCount: PropTypes.number,
     btcPendingTransactions: PropTypes.arrayOf(PropTypes.object),
-    ethPendingTransactions: PropTypes.instanceOf(Immutable.Map),
+    ethPendingTransactions: PropTypes.instanceOf(Map),
     location: PropTypes.shape({
       action: PropTypes.string,
       hash: PropTypes.string,

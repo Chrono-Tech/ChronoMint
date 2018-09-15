@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Immutable from 'immutable'
+import { List } from 'immutable'
 import { abstractFetchingModel } from './AbstractFetchingModel'
 
 class PollModel extends abstractFetchingModel({
@@ -15,7 +15,7 @@ class PollModel extends abstractFetchingModel({
   published: null,
   voteLimitInTIME: null,
   deadline: null,
-  options: new Immutable.List(['Support', 'Decline']),
+  options: new List(['Support', 'Decline']),
   files: null, // hash
   active: false,
   status: false,

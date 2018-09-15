@@ -21,7 +21,7 @@ class AccountSelectorPage extends PureComponent {
   }
 
   render () {
-
+    console.log('>>>>>>>>>>>> ACCOUNT SELECTOR PAGE')
     return (
       <AccountSelectorContainer onWalletSelect={this.props.onWalletSelect} />
     )

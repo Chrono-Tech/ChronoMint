@@ -64,7 +64,7 @@ class AccountSelectorContainer extends PureComponent {
       walletsList,
       onWalletSelect,
     } = this.props
-
+    console.log('>>>>>>>>>>>> ACCOUNT SELECTOR CONTAINER')
     return (
       <AccountSelector
         navigateToSelectImportMethod={navigateToSelectImportMethod}

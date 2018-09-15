@@ -12,7 +12,7 @@ import TxExecModel from '@chronobank/core/models/TxExecModel'
 import TxModel from '@chronobank/core/models/TxModel'
 import CurrentTransactionNotificationModel from '@chronobank/core/models/CurrentTransactionNotificationModel'
 import { pendingTransactionsSelector } from '@chronobank/core/redux/mainWallet/selectors/tokens'
-import Immutable from 'immutable'
+import { Map, List } from 'immutable'
 import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
 import ReceivedTransactionSVG from 'assets/img/r-0.svg'
@@ -51,9 +51,9 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 class NotificationContent extends PureComponent {
   static propTypes = {
-    ethTransactionsList: PropTypes.instanceOf(Immutable.Map),
+    ethTransactionsList: PropTypes.instanceOf(Map),
     btcTransactionsList: PropTypes.arrayOf(PropTypes.object),
-    noticesList: PropTypes.instanceOf(Immutable.List),
+    noticesList: PropTypes.instanceOf(List),
     onClose: PropTypes.func,
   }
 

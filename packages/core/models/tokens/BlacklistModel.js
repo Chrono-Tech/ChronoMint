@@ -3,11 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Immutable from 'immutable'
+import { List } from 'immutable'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 
 export default class BlacklistModel extends abstractFetchingModel({
-  list: new Immutable.List(),
+  list: new List(),
 }) {
   list (value) {
     return this._getSet('list', value)

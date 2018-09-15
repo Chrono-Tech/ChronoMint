@@ -16,12 +16,20 @@ import {
   FORM_CREATE_ACCOUNT,
 } from '../../redux/constants'
 import validate from './validate'
+
 import './CreateAccount.scss'
 
 class CreateAccount extends PureComponent {
   static propTypes = {
     navigateToSelectWallet: PropTypes.func,
+    handleSubmit: PropTypes.func,
+    error: PropTypes.string,
     accountProfile: PropTypes.instanceOf(AccountProfileModel),
+  }
+
+  handleUseAccountPress = () => {
+    console.log('CreateAccount.handleUseAccountPress')
+    this.props.navigateToSelectWallet()
   }
 
   renderAccountNameField () {
@@ -39,7 +47,8 @@ class CreateAccount extends PureComponent {
   }
 
   render () {
-    const { handleSubmit, error, navigateToSelectWallet, accountProfile } = this.props
+    console.log('>>>>>>>>>>>> CREATE ACCOUNT')
+    const { handleSubmit, error, accountProfile } = this.props
 
     return (
       <form styleName='form' name={FORM_CREATE_ACCOUNT} onSubmit={handleSubmit}>
@@ -90,7 +99,7 @@ class CreateAccount extends PureComponent {
           {error && (<div styleName='form-error'>{error}</div>)}
           <Translate value='CreateAccount.or' />
           <br />
-          <button onClick={navigateToSelectWallet} styleName='link'>
+          <button onClick={this.handleUseAccountPress} styleName='link'>
             <Translate value='CreateAccount.useAccount' />
           </button>
         </div>

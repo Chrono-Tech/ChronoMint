@@ -145,60 +145,61 @@ export const login = (account) => async (dispatch, getState) => {
   return defaultURL
 }
 
-export const bootstrap = () => async (dispatch) => {
-  // await dispatch(NodesThunks.preselectNetwork())
-  await dispatch({ type: 'NODES/INIT' })
-  // console.log(1)
-  // const mainnet_infura_provider = new Web3.providers.WebsocketProvider('wss://mainnet.infura.io/ws')
-  // mainnet_infura_provider.on('connect', () => console.log('WS Connected'))
-  // mainnet_infura_provider.on('error', e => {
-  //   console.error('WS Error', e)
-  //   // web3.setProvider(getProvider())
-  // })
-  // mainnet_infura_provider.on('end', e => {
-  //   console.error('WS End', e)
-  //   // web3.setProvider(getProvider())
-  // })
-  // const mainnet_chronobank_provider = new Web3.providers.WebsocketProvider('wss://mainnet-full-geth-ws.chronobank.io')
-  // console.log(mainnet_chronobank_provider)
-  // console.log(mainnet_infura_provider)
-  // const mainnet_chronobank_web3 = new Web3(mainnet_chronobank_provider)
-  // const mainnet_infura_web3 = new Web3(mainnet_infura_provider)
-  // console.log(mainnet_chronobank_web3)
-  // console.log(mainnet_infura_web3)
-  // mainnet_chronobank_web3.eth
-  //   .getGasPrice()
-  //   .then((result) => {
-  //     console.log('ChronoBank', mainnet_chronobank_web3.utils.fromWei(result, 'ether'))
-  //   })
-  // mainnet_infura_web3.eth
-  //   .getGasPrice()
-  //   .then((result) => {
-  //     console.log('Infura', mainnet_chronobank_web3.utils.fromWei(result, 'ether'))
-  //   })
-  // console.log('And disconnect in 10 seconds')
-  // setTimeout(() => {
-  //   console.log('Disonnecting...')
-  //   mainnet_chronobank_web3.currentProvider.connection.close()
-  //   console.log(mainnet_chronobank_web3)
-  //   mainnet_chronobank_web3.eth
-  //     .getGasPrice()
-  //     .then((result) => {
-  //       console.log('ChronoBank', mainnet_chronobank_web3.utils.fromWei(result, 'ether'))
-  //     })
-  //     .catch((error) => {
-  //       console.log('Error catched. Reopen')
-  //       console.log(mainnet_infura_web3.currentProvider.connection)
-  //       mainnet_infura_web3.currentProvider.connection.open()
-  //     })
-  //   mainnet_infura_web3.eth
-  //     .getGasPrice()
-  //     .then((result) => {
-  //       console.log('Infura', mainnet_chronobank_web3.utils.fromWei(result, 'ether'))
-  //     })
-  // }, 10000)
-  return true //FIXME remove method
-}
+// export const bootstrap = () => async (dispatch) => {
+//   // await dispatch(NodesThunks.preselectNetwork())
+//   await dispatch({ type: 'NODES/INIT' })
+//   console.log('NODES INIT')
+//   // console.log(1)
+//   // const mainnet_infura_provider = new Web3.providers.WebsocketProvider('wss://mainnet.infura.io/ws')
+//   // mainnet_infura_provider.on('connect', () => console.log('WS Connected'))
+//   // mainnet_infura_provider.on('error', e => {
+//   //   console.error('WS Error', e)
+//   //   // web3.setProvider(getProvider())
+//   // })
+//   // mainnet_infura_provider.on('end', e => {
+//   //   console.error('WS End', e)
+//   //   // web3.setProvider(getProvider())
+//   // })
+//   // const mainnet_chronobank_provider = new Web3.providers.WebsocketProvider('wss://mainnet-full-geth-ws.chronobank.io')
+//   // console.log(mainnet_chronobank_provider)
+//   // console.log(mainnet_infura_provider)
+//   // const mainnet_chronobank_web3 = new Web3(mainnet_chronobank_provider)
+//   // const mainnet_infura_web3 = new Web3(mainnet_infura_provider)
+//   // console.log(mainnet_chronobank_web3)
+//   // console.log(mainnet_infura_web3)
+//   // mainnet_chronobank_web3.eth
+//   //   .getGasPrice()
+//   //   .then((result) => {
+//   //     console.log('ChronoBank', mainnet_chronobank_web3.utils.fromWei(result, 'ether'))
+//   //   })
+//   // mainnet_infura_web3.eth
+//   //   .getGasPrice()
+//   //   .then((result) => {
+//   //     console.log('Infura', mainnet_chronobank_web3.utils.fromWei(result, 'ether'))
+//   //   })
+//   // console.log('And disconnect in 10 seconds')
+//   // setTimeout(() => {
+//   //   console.log('Disonnecting...')
+//   //   mainnet_chronobank_web3.currentProvider.connection.close()
+//   //   console.log(mainnet_chronobank_web3)
+//   //   mainnet_chronobank_web3.eth
+//   //     .getGasPrice()
+//   //     .then((result) => {
+//   //       console.log('ChronoBank', mainnet_chronobank_web3.utils.fromWei(result, 'ether'))
+//   //     })
+//   //     .catch((error) => {
+//   //       console.log('Error catched. Reopen')
+//   //       console.log(mainnet_infura_web3.currentProvider.connection)
+//   //       mainnet_infura_web3.currentProvider.connection.open()
+//   //     })
+//   //   mainnet_infura_web3.eth
+//   //     .getGasPrice()
+//   //     .then((result) => {
+//   //       console.log('Infura', mainnet_chronobank_web3.utils.fromWei(result, 'ether'))
+//   //     })
+//   // }, 10000)
+//   return true //FIXME remove method
+// }
 
 export const getProfileSignature = (signer, path) => async (dispatch) => {
   if (!signer) {

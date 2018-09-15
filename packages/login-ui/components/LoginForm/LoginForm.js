@@ -201,7 +201,7 @@ class LoginForm extends React.Component {
             title={getAccountName(selectedWallet)}
             subtitle={getAccountAddress(selectedWallet, true)}
             avatar={getAccountAvatar(selectedWallet)}
-            onClick={navigateToSelectWallet}
+            onClick={() => {console.log('LoginForm.UserRow.onClick props'); navigateToSelectWallet()}}
             linkTitle='My Accounts'
           />
 

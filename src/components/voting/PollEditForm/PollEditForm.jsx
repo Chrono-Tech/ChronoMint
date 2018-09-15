@@ -9,7 +9,7 @@ import web3Converter from '@chronobank/core/utils/Web3Converter'
 import { getTokens } from '@chronobank/core/redux/tokens/selectors'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import { change, Field, formPropTypes, formValueSelector, getFormSyncErrors, reduxForm } from 'redux-form/immutable'
-import Immutable from 'immutable'
+import { List } from 'immutable'
 import { ACCEPT_DOCS } from '@chronobank/core/models/FileSelect/FileExtension'
 import PollModel from '@chronobank/core/models/PollModel'
 import PropTypes from 'prop-types'
@@ -101,7 +101,7 @@ function mapDispatchToProps (dispatch) {
       dispatch(createPoll(
         new PollDetailsModel({
           poll,
-          files: new Immutable.List((filesCollection && filesCollection.links() || [])
+          files: new List((filesCollection && filesCollection.links() || [])
             .map((item) => FileModel.createFromLink(item))),
         })),
       )

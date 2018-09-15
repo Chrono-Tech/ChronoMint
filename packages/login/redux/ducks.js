@@ -3,8 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { combineReducers } from 'redux-immutable'
-
 import ledger from './ledger/reducer'
 import monitor from './monitor/reducer'
 import network from './network/reducer'
@@ -18,6 +16,3 @@ const loginReducers =  {
 }
 
 export default loginReducers
-
-// for further development
-export const combinedLoginReducers = combineReducers(loginReducers)

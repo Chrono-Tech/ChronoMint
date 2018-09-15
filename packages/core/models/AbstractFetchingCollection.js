@@ -3,12 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Immutable from 'immutable'
+import { Map } from 'immutable'
 
 import { abstractFetchingModel } from './AbstractFetchingModel'
 
 export const abstractFetchingCollection = (defaultValues) => class AbstractFetchingCollection extends abstractFetchingModel({
-  list: new Immutable.Map(),
+  list: new Map(),
   leftToFetch: 0,
   selected: null,
   emptyModel: null,

@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Immutable from 'immutable'
+import { Map, Set } from 'immutable'
 import { abstractModel } from './AbstractModelOld'
 import TokenModel from './tokens/TokenModel'
 
@@ -13,16 +13,16 @@ class ProfileModel extends abstractModel({
   company: null,
   url: null,
   icon: null,
-  tokens: new Immutable.Set(),
+  tokens: new Set(),
   version: null,
   hash: null,
-  wallets: new Immutable.Map(),
+  wallets: new Map(),
 }) {
   constructor (data = {}) {
     const newData = data || {}
     super({
       ...newData,
-      tokens: new Immutable.Set(newData.tokens || undefined),
+      tokens: new Set(newData.tokens || undefined),
     })
   }
 
@@ -50,11 +50,11 @@ class ProfileModel extends abstractModel({
     return this.get('icon')
   }
 
-  tokens (value): Immutable.Set {
+  tokens (value): Set {
     return this._getSet('tokens', value)
   }
 
-  wallets (value): Immutable.Map {
+  wallets (value): Map {
     return this._getSet('wallets', value)
   }
 
