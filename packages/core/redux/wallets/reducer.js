@@ -15,6 +15,15 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case REHYDRATE: {
+      // action.payload is undefined if LocalStorage is empty
+      // See https://github.com/rt2zz/redux-persist/issues/719
+      if (!action.payload) {
+        return {
+          ...state,
+          rehydrated: true,
+        }
+      }
+
       const incoming = action.payload.wallets
       if (incoming) {
         return {
