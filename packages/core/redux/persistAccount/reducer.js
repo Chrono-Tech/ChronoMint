@@ -16,13 +16,23 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case REHYDRATE:
+    case REHYDRATE: {
+      // action.payload is undefined if LocalStorage is empty
+      // See https://github.com/rt2zz/redux-persist/issues/719
+      if (!action.payload) {
+        return {
+          ...state,
+          rehydrated: true,
+        }
+      }
+
       return {
         ...state,
         ...action.payload.persistAccount,
         rehydrated: true,
       }
-    case a.WALLETS_ADD :
+    }
+    case a.WALLETS_ADD:
       return {
         ...state,
         walletsList: [
@@ -31,25 +41,25 @@ export default (state = initialState, action) => {
         ],
       }
 
-    case a.WALLETS_SELECT :
+    case a.WALLETS_SELECT:
       return {
         ...state,
         selectedWallet: action.wallet,
       }
 
-    case a.WALLETS_LOAD :
+    case a.WALLETS_LOAD:
       return {
         ...state,
         decryptedWallet: action.wallet,
       }
 
-    case a.WALLETS_UPDATE_LIST :
+    case a.WALLETS_UPDATE_LIST:
       return {
         ...state,
         walletsList: action.walletsList,
       }
 
-    case a.CUSTOM_NETWORKS_LIST_ADD :
+    case a.CUSTOM_NETWORKS_LIST_ADD:
       return {
         ...state,
         customNetworksList: [
@@ -58,13 +68,13 @@ export default (state = initialState, action) => {
         ],
       }
 
-    case a.CUSTOM_NETWORKS_LIST_UPDATE :
+    case a.CUSTOM_NETWORKS_LIST_UPDATE:
       return {
         ...state,
         customNetworksList: action.list,
       }
 
-    case a.CUSTOM_NETWORKS_LIST_RESET :
+    case a.CUSTOM_NETWORKS_LIST_RESET:
       return {
         ...state,
         customNetworksList: [],
