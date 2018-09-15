@@ -3,12 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Immutable from 'immutable'
+import { List } from 'immutable'
 import * as a from './constants'
 
 const initialState = {
   notice: null,
-  list: new Immutable.List(),
+  list: new List(),
   unreadNotices: 0,
 }
 

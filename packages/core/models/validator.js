@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Immutable from 'immutable'
+import { Map, List } from 'immutable'
 import { isArray, isObject, isMap, isSet, isEmpty, isString, isNil } from 'lodash'
 import wallet from 'ethereumjs-wallet'
 import Web3 from 'web3'
@@ -141,13 +141,13 @@ export function countsMoreThan (value, limit, isEqual = false) {
   } : null
 }
 
-export function unique (value, origin: Array | Immutable.Map | Immutable.List) {
+export function unique (value, origin: Array | Map | List) {
   if (!origin || !value) {
     return
   }
   const errorToken = 'errors.mustBeUnique'
 
-  if (Array.isArray(origin) || origin instanceof Immutable.Map || origin instanceof Immutable.List) {
+  if (Array.isArray(origin) || origin instanceof Map || origin instanceof List) {
     return origin.includes(value)
       ? errorToken
       : null

@@ -4,8 +4,8 @@
  */
 
 import BigNumber from 'bignumber.js'
-import Immutable from 'immutable'
-import ipfs from '../utils/IPFS'
+import { List } from 'immutable'
+import ipfs from '@chronobank/core/utils/IPFS'
 import PollNoticeModel from '../models/notices/PollNoticeModel'
 import PollModel from '../models/PollModel'
 import PollDetailsModel from '../models/PollDetailsModel'
@@ -166,7 +166,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
               memberOption,
             })
 
-            const pollFiles = poll && await ipfs.get(poll.files)
+            const pollFiles = await ipfs.get(poll.files)
 
             const pollDetailModel = new PollDetailsModel({
               id: pollAddress,
@@ -175,7 +175,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
               shareholdersCount: new BigNumber(shareholdersCount),
               isFetched: true,
               isFetching: false,
-              files: new Immutable.List((pollFiles && pollFiles.links || [])
+              files: new List((pollFiles && pollFiles.links || [])
                 .map((item) => FileModel.createFromLink(item))),
             })
 

@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Immutable from 'immutable'
+import { Map } from 'immutable'
 import BigNumber from 'bignumber.js'
 import Amount from '../models/Amount'
 import AbstractContractDAO from './AbstractContractDAO'
@@ -45,7 +45,7 @@ export default class PollInterfaceDAO extends AbstractContractDAO {
   async getVotesBalances () {
     const result = await this.contract.methods.getVotesBalances().call()
     const [options, values] = [result[0], result[1]] // [Array(options), Array(values)]
-    let votes = new Immutable.Map()
+    let votes = new Map()
     options.map((option, i) => {
       const value = new BigNumber(values[i])
       if (!value.isZero()) {

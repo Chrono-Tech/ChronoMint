@@ -24,16 +24,14 @@ const mapDispatchToProps = (dispatch) => {
 
 class CreateAccountContainer extends PureComponent {
   static propTypes = {
-    previousPage: PropTypes.func,
     onSubmit: PropTypes.func,
     onSubmitSuccess: PropTypes.func,
     navigateToSelectWallet: PropTypes.func,
     accountProfile: PropTypes.instanceOf(AccountProfileModel),
   }
 
-  async handleSubmit (values) {
+  handleSubmit = (values) => {
     const { onSubmit } = this.props
-
     const walletName = values.get('walletName')
     const password = values.get('password')
 
@@ -43,28 +41,27 @@ class CreateAccountContainer extends PureComponent {
     })
   }
 
-  handleSubmitSuccess (result) {
+  handleSubmitSuccess = (result) => {
     const { onSubmitSuccess } = this.props
-
     onSubmitSuccess && onSubmitSuccess(result)
   }
 
-  handleSubmitFail (errors, dispatch, submitErrors) {
+  handleSubmitFail = (errors, dispatch, submitErrors) => {
     dispatch(stopSubmit(FORM_CREATE_ACCOUNT, submitErrors && submitErrors.errors))
   }
 
   render () {
     const { accountProfile } = this.props
-
     return (
+
       <CreateAccount
         accountProfile={accountProfile}
         initialValues={{
           walletName: accountProfile ? accountProfile.userName : '',
         }}
-        onSubmit={this.handleSubmit.bind(this)}
-        onSubmitFail={this.handleSubmitFail.bind(this)}
-        onSubmitSuccess={this.handleSubmitSuccess.bind(this)}
+        onSubmit={this.handleSubmit}
+        onSubmitFail={this.handleSubmitFail}
+        onSubmitSuccess={this.handleSubmitSuccess}
         navigateToSelectWallet={this.props.navigateToSelectWallet}
       />
     )

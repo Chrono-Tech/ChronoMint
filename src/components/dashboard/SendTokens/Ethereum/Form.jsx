@@ -12,7 +12,7 @@ import TokenValue from 'components/common/TokenValue/TokenValue'
 import { TX_TRANSFER } from '@chronobank/core/dao/constants/ERC20DAO'
 import web3Converter from '@chronobank/core/utils/Web3Converter'
 import Amount from '@chronobank/core/models/Amount'
-import Immutable from 'immutable'
+import { Map } from 'immutable'
 import * as validators from '@chronobank/core/models/validator'
 import { CircularProgress, MenuItem, MuiThemeProvider, Paper } from '@material-ui/core'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
@@ -179,7 +179,7 @@ export default class Ethereum extends PureComponent {
   }
 
   handleRevoke = () => {
-    this.props.onSubmit(new Immutable.Map({
+    this.props.onSubmit(new Map({
       action: ACTION_APPROVE,
       symbol: this.props.token.symbol(),
       amount: 0,

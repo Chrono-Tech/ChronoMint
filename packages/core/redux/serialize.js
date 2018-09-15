@@ -3,6 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+/* eslint-disable no-underscore-dangle */
+
 import Immutable from 'immutable'
 import { createTransform } from 'redux-persist'
 import jsan from 'jsan'
@@ -168,9 +170,7 @@ function transformer (Immutable, refs) {
   }
 }
 
-export default function (config) {
-  config = config || {}
-
+export default function (config = {}) {
   const serializer = transformer(Immutable, config.records)
 
   return createTransform(serializer.stringify, serializer.parse, config)

@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Immutable from 'immutable'
+import { Map } from 'immutable'
 import Amount from '../Amount'
 import AssetsCollection from '../assetHolder/AssetsCollection'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
@@ -17,7 +17,7 @@ export default class RewardsModel extends abstractFetchingModel({
   accountRewards: new Amount(0, null, false),
   // currentAccumulated: new Amount(0, null, false),
   rewardsLeft: new Amount(0, null, false),
-  periods: new Immutable.Map(), /** @see RewardsPeriodModel */
+  periods: new Map(), /** @see RewardsPeriodModel */
   assets: new AssetsCollection(),
 }) {
   id () {

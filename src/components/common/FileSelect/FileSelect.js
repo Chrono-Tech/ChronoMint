@@ -15,7 +15,7 @@ import {
   Close,
 } from '@material-ui/icons'
 import Button from 'components/common/ui/Button/Button'
-import Immutable from 'immutable'
+import { Map } from 'immutable'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -58,7 +58,7 @@ class FileSelect extends PureComponent {
     this.handleReset = this.handleReset.bind(this)
 
     this.state = {
-      files: new Immutable.Map(),
+      files: new Map(),
       fileCollection: new FileCollection(),
       config: {
         accept: props.accept || ACCEPT_ALL,
@@ -122,7 +122,7 @@ class FileSelect extends PureComponent {
     const fileCollection = new FileCollection()
     this.setState({
       fileCollection,
-      files: new Immutable.Map(),
+      files: new Map(),
     })
     await this.uploadCollection(fileCollection, this.state.config)
   }

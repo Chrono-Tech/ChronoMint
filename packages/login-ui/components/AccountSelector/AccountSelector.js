@@ -33,8 +33,12 @@ export default class AccountSelector extends PureComponent {
     walletsList: [],
   }
 
+  handleWalletSelect = (wallet) => () => {
+    this.props.onWalletSelect(wallet)
+  }
+
   renderWalletsList () {
-    const { onWalletSelect, walletsList } = this.props
+    const { walletsList } = this.props
 
     if (!walletsList || !walletsList.length) {
       return (
@@ -47,15 +51,15 @@ export default class AccountSelector extends PureComponent {
     return (
       <div styleName='wallets-list'>
         {
-          walletsList.map((w, i) => (
+          walletsList.map((wallet) => (
             <UserRow
-              key={i}
-              title={getAccountName(w)}
-              subtitle={getAccountAddress(w, true)}
-              avatar={getAccountAvatar(w)}
+              key={wallet.key}
+              title={getAccountName(wallet)}
+              subtitle={getAccountAddress(wallet, true)}
+              avatar={getAccountAvatar(wallet)}
               actionIcon={arrow}
               reverseIcon
-              onClick={() => onWalletSelect(w)}
+              onClick={this.handleWalletSelect(wallet)}
             />
           ))
         }
