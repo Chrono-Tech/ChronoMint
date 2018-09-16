@@ -2574,8 +2574,8 @@ chokidar@^2.0.2:
     fsevents "^1.2.2"
 
 chownr@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.0.1.tgz#e2a75042a9551908bebd25b8523d5f9769d79181"
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.1.0.tgz#17405cadd8706bc41f017b564bb2de460381e7d1"
 
 chrome-trace-event@^1.0.0:
   version "1.0.0"
