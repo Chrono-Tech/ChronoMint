@@ -28,6 +28,7 @@ import './Markup.scss'
 
 function mapStateToProps (state) {
   return {
+    location: state.get('router').toJS().location,
     notice: state.get(DUCK_NOTIFIER).notice,
     mainMenuIsOpen: state.get(DUCK_SIDES).mainMenuIsOpen,
     modalStackSize: state.get(DUCK_MODALS).stack.length,

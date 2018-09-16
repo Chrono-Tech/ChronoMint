@@ -306,14 +306,17 @@ export const initLoginPage = () =>
       selectedWallet,
       walletsList,
     } = state.get(DUCK_PERSIST_ACCOUNT)
-
-    if (walletsList && !walletsList.length) {
-      dispatch(LoginUINavActions.navigateToCreateAccount())
-      return
-    }
-
+    console.log('selectedWallet', selectedWallet)
+    console.log('walletsList', walletsList)
+    console.log('walletsList && !walletsList.length', walletsList && !walletsList.length)
+    console.log('!selectedWallet', !selectedWallet)
     if (!selectedWallet) {
       dispatch(LoginUINavActions.navigateToSelectWallet())
+      return
+    }
+    if (walletsList && walletsList.length === 0) {
+      dispatch(LoginUINavActions.navigateToCreateAccount())
+      return
     }
   }
 

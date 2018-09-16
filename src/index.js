@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { /*connectRouter,*/ ConnectedRouter } from 'connected-react-router/immutable'
 import { DUCK_I18N } from 'redux/i18n/constants'
 import { I18n, loadTranslations, setLocale } from 'react-redux-i18n'
 import { loadI18n } from 'redux/i18n/actions'
@@ -44,25 +43,13 @@ NodeList.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator]
 HTMLCollection.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator]
 FileList.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator]
 
-// TODO: Remove it and use https://reacttraining.com/react-router/web/guides/scroll-restoration
-const hashLinkScroll = () => {
-  const { hash } = window.location
-  if (hash !== '') {
-    setTimeout(() => {
-      const id = hash.replace('#', '')
-      const element = document.getElementById(id)
-      if (element) element.scrollIntoView()
-    }, 0)
-  }
-}
-
 render(
   <Provider store={store}>
     <PersistGate loader={null} persistor={persistor}>
       <MuiThemeProvider theme={themeDefault}>
-        <ConnectedRouter history={history} onUpdate={hashLinkScroll}>
-          {router(store)}
-        </ConnectedRouter>
+        {
+          router(history)
+        }
       </MuiThemeProvider>
     </PersistGate>
   </Provider>,
