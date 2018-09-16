@@ -27,6 +27,12 @@ import PersistWrapper from '../partials/PersistWrapper/PersistWrapper'
 import './Splash.scss'
 import theme from './styles'
 
+function mapStateToProps (state) {
+  return {
+    router: state.get('router'),
+  }
+}
+
 const mapDispatchToProps = (dispatch) => {
   return {
     navigateToLoginPage: () => dispatch(navigateToLoginPage()),
@@ -39,6 +45,7 @@ class Splash extends Component {
     goBack: PropTypes.func,
     navigateToLoginPage: PropTypes.func,
     navigatorText: PropTypes.string,
+    router: PropTypes.any,
   }
 
   static defaultProps = {
@@ -47,7 +54,8 @@ class Splash extends Component {
   }
 
   render () {
-    const { children, goBack, navigatorText, navigateToLoginPage } = this.props
+    const { children, goBack, navigatorText, navigateToLoginPage, router } = this.props
+    const location = router.toJS().location
 
     return (
       <MuiThemeProvider theme={theme}>
@@ -90,7 +98,9 @@ class Splash extends Component {
           }
 
           <PersistWrapper>
-            {children ? children: null}
+            <div className={location.pathname}>
+              {children ? children: null}
+            </div>
           </PersistWrapper>
 
           {!window.isMobile && (<Footer />)}
@@ -102,4 +112,4 @@ class Splash extends Component {
   }
 }
 
-export default connect(null, mapDispatchToProps)(Splash)
+export default connect(mapStateToProps, mapDispatchToProps)(Splash)

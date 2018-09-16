@@ -10,7 +10,7 @@ import {
   stopSubmit,
   SubmissionError,
 } from 'redux-form'
-import { replace } from 'connected-react-router'
+import { replace } from 'connected-react-router/immutable'
 import {
   WALLET_TYPE_MEMORY,
   WALLET_TYPE_TREZOR,
@@ -306,12 +306,11 @@ export const initLoginPage = () =>
       selectedWallet,
       walletsList,
     } = state.get(DUCK_PERSIST_ACCOUNT)
-    if (!selectedWallet) {
-
+    if (walletsList && walletsList.length > 0) {
       dispatch(LoginUINavActions.navigateToSelectWallet())
       return
     }
-    if (walletsList && walletsList.length === 0) {
+    if (!selectedWallet) {
       dispatch(LoginUINavActions.navigateToCreateAccount())
       return
     }
