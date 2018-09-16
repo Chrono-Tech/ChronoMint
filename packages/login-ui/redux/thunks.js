@@ -58,14 +58,6 @@ export const navigateToCreateAccountFromHW = (address) => (dispatch) => {
 /*
  * Thunk dispatched by "" screen.
  * TODO: to add description
- */
-export const navigateToCreateAccountWithoutImport = () => (dispatch) => {
-  dispatch(LoginUINavActions.navigateToCreateAccount())
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
  * TODO: to dispatch something, this is not a thunk or action. Really..
  */
 export const onSubmitSubscribeNewsletter = (email) => async () => {

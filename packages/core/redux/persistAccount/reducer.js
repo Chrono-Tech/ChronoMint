@@ -12,7 +12,6 @@ const initialState = {
   decryptedWallet: null,
   rehydrated: false,
   customNetworksList: [],
-  locale: 'en',
 }
 
 const mutations = {
@@ -31,13 +30,6 @@ const mutations = {
       ...state,
       ...payload.persistAccount,
       rehydrated: true,
-    }
-  },
-
-  [persistAccountActionTypes.SET_LOCALE]: (state, payload) => {
-    return {
-      ...state,
-      locale: payload.locale,
     }
   },
 

@@ -8,7 +8,6 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
-
 import {
   navigateToCreateAccount,
   navigateToLedgerImportMethod,
@@ -18,9 +17,6 @@ import {
   navigateToTrezorImportMethod,
   navigateToWalletUploadMethod,
 } from '@chronobank/login-ui/redux/navigation'
-import {
-  navigateToCreateAccountWithoutImport,
-} from '@chronobank/login-ui/redux/thunks'
 import Trezor from 'assets/img/icons/trezor-white.svg'
 import Ledger from 'assets/img/icons/ledger-nano-white.svg'
 import Plugin from 'assets/img/icons/plugin-white.svg'
@@ -31,7 +27,7 @@ import Uport from 'assets/img/icons/uport.svg'
 
 import './LoginWithOptions.scss'
 
-function mapDispatchToProps (dispatch) {
+const mapDispatchToProps = (dispatch) => {
   return {
     navigateToTrezorImportMethod: () => dispatch(navigateToTrezorImportMethod()),
     navigateToLedgerImportMethod: () => dispatch(navigateToLedgerImportMethod()),
@@ -39,7 +35,6 @@ function mapDispatchToProps (dispatch) {
     navigateToMnemonicImportMethod: () => dispatch(navigateToMnemonicImportMethod()),
     navigateToPrivateKeyImportMethod: () => dispatch(navigateToPrivateKeyImportMethod()),
     navigateToCreateAccount: () => dispatch(navigateToCreateAccount()),
-    navigateToCreateAccountWithoutImport: () => dispatch(navigateToCreateAccountWithoutImport()),
     navigateToWalletUploadMethod: () => dispatch(navigateToWalletUploadMethod()),
   }
 }
@@ -52,7 +47,7 @@ export default class ImportMethodsPage extends PureComponent {
     navigateToPluginImportMethod: PropTypes.func,
     navigateToMnemonicImportMethod: PropTypes.func,
     navigateToPrivateKeyImportMethod: PropTypes.func,
-    navigateToCreateAccountWithoutImport: PropTypes.func,
+    navigateToCreateAccount: PropTypes.func,
     navigateToWalletUploadMethod: PropTypes.func,
   }
 
@@ -68,7 +63,7 @@ export default class ImportMethodsPage extends PureComponent {
 
   handleWalletFileLogin = () => this.props.navigateToWalletUploadMethod()
 
-  handleCreateAccount = () => this.props.navigateToCreateAccountWithoutImport()
+  handleCreateAccount = () => this.props.navigateToCreateAccount()
 
   render () {
     return (
