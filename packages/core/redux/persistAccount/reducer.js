@@ -4,7 +4,7 @@
  */
 
 import { REHYDRATE } from 'redux-persist'
-import * as a from './constants'
+import * as persistAccountActionTypes from './constants'
 
 const initialState = {
   walletsList: [],
@@ -12,75 +12,94 @@ const initialState = {
   decryptedWallet: null,
   rehydrated: false,
   customNetworksList: [],
+  locale: 'en',
 }
 
-export default (state = initialState, action) => {
-  switch (action.type) {
-    case REHYDRATE: {
-      // action.payload is undefined if LocalStorage is empty
-      // See https://github.com/rt2zz/redux-persist/issues/719
-      if (!action.payload) {
-        return {
-          ...state,
-          rehydrated: true,
-        }
-      }
+const mutations = {
 
+  [REHYDRATE]: (state, payload) => {
+    // action.payload is undefined if LocalStorage is empty
+    // See https://github.com/rt2zz/redux-persist/issues/719
+    if (!payload) {
       return {
         ...state,
-        ...action.payload.persistAccount,
         rehydrated: true,
       }
     }
-    case a.WALLETS_ADD:
-      return {
-        ...state,
-        walletsList: [
-          ...state.walletsList,
-          action.wallet,
-        ],
-      }
 
-    case a.WALLETS_SELECT:
-      return {
-        ...state,
-        selectedWallet: action.wallet,
-      }
+    return {
+      ...state,
+      ...payload.persistAccount,
+      rehydrated: true,
+    }
+  },
 
-    case a.WALLETS_LOAD:
-      return {
-        ...state,
-        decryptedWallet: action.wallet,
-      }
+  [persistAccountActionTypes.SET_LOCALE]: (state, payload) => {
+    return {
+      ...state,
+      locale: payload.locale,
+    }
+  },
 
-    case a.WALLETS_UPDATE_LIST:
-      return {
-        ...state,
-        walletsList: action.walletsList,
-      }
+  [persistAccountActionTypes.WALLETS_ADD]: (state, payload) => {
+    return {
+      ...state,
+      walletsList: [
+        ...state.walletsList,
+        payload.wallet,
+      ],
+    }
+  },
 
-    case a.CUSTOM_NETWORKS_LIST_ADD:
-      return {
-        ...state,
-        customNetworksList: [
-          ...state.customNetworksList,
-          action.network,
-        ],
-      }
+  [persistAccountActionTypes.WALLETS_SELECT]: (state, payload) => {
+    return {
+      ...state,
+      selectedWallet: payload.wallet,
+    }
+  },
 
-    case a.CUSTOM_NETWORKS_LIST_UPDATE:
-      return {
-        ...state,
-        customNetworksList: action.list,
-      }
+  [persistAccountActionTypes.WALLETS_LOAD]: (state, payload) => {
+    return {
+      ...state,
+      decryptedWallet: payload.wallet,
+    }
+  },
 
-    case a.CUSTOM_NETWORKS_LIST_RESET:
-      return {
-        ...state,
-        customNetworksList: [],
-      }
+  [persistAccountActionTypes.WALLETS_UPDATE_LIST]: (state, payload) => {
+    return {
+      ...state,
+      walletsList: payload.walletsList,
+    }
+  },
 
-    default:
-      return state
-  }
+  [persistAccountActionTypes.CUSTOM_NETWORKS_LIST_ADD]: (state, payload) => {
+    return {
+      ...state,
+      customNetworksList: [
+        ...state.customNetworksList,
+        payload.network,
+      ],
+    }
+  },
+
+  [persistAccountActionTypes.CUSTOM_NETWORKS_LIST_UPDATE]: (state, payload) => {
+    return {
+      ...state,
+      customNetworksList: payload.list,
+    }
+  },
+
+  [persistAccountActionTypes.CUSTOM_NETWORKS_LIST_RESET]: (state) => {
+    return {
+      ...state,
+      customNetworksList: [],
+    }
+  },
+
+}
+
+export default (state = initialState, { type, ...payload }) => {
+  return (type in mutations)
+    ? mutations[type](state, payload)
+    : state
 }
