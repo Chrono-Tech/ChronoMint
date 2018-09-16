@@ -10,7 +10,7 @@ import {
   stopSubmit,
   SubmissionError,
 } from 'redux-form'
-import { replace } from 'connected-react-router'
+import { replace } from 'connected-react-router/immutable'
 import { MOCK_PRIVATE_KEY } from '@chronobank/core/services/signers/BitcoinLedgerDeviceMock'
 import {
   WALLET_TYPE_MEMORY,
@@ -329,11 +329,11 @@ export const initLoginPage = () =>
     console.log('walletsList', walletsList)
     console.log('walletsList && !walletsList.length', walletsList && !walletsList.length)
     console.log('!selectedWallet', !selectedWallet)
-    if (!selectedWallet) {
+    if (walletsList && walletsList.length > 0) {
       dispatch(LoginUINavActions.navigateToSelectWallet())
       return
     }
-    if (walletsList && walletsList.length === 0) {
+    if (!selectedWallet) {
       dispatch(LoginUINavActions.navigateToCreateAccount())
       return
     }
