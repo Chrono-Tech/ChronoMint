@@ -24,7 +24,7 @@ export const navigateBack = () => (dispatch) => {
  * Resetting account import mode and navigate to CreateAccount screen
  */
 export const navigateToCreateAccount = () => (dispatch) => {
-  dispatch(push('/login/create-account'))
+  dispatch(push('/create-account'))
 }
 
 /*
@@ -32,7 +32,7 @@ export const navigateToCreateAccount = () => (dispatch) => {
  * TODO: to add description
  */
 export const navigateToCreateHWAccount = () => (dispatch) => {
-  dispatch(push('/login/create-hw-account'))
+  dispatch(push('/create-hw-account'))
 }
 
 /*
@@ -40,7 +40,7 @@ export const navigateToCreateHWAccount = () => (dispatch) => {
  * TODO: to add description
  */
 export const navigateToSelectImportMethod = () => (dispatch) => {
-  dispatch(push('/login/import-methods'))
+  dispatch(push('/import-methods'))
 }
 
 /*
@@ -48,7 +48,7 @@ export const navigateToSelectImportMethod = () => (dispatch) => {
  * TODO: to add description
  */
 export const navigateToTrezorImportMethod = () => (dispatch) => {
-  dispatch(push('/login/trezor-login'))
+  dispatch(push('/trezor-login'))
 }
 
 /*
@@ -56,7 +56,7 @@ export const navigateToTrezorImportMethod = () => (dispatch) => {
  * TODO: to add description
  */
 export const navigateToLedgerImportMethod = () => (dispatch) => {
-  dispatch(push('/login/ledger-login'))
+  dispatch(push('/ledger-login'))
 }
 
 /*
@@ -64,7 +64,7 @@ export const navigateToLedgerImportMethod = () => (dispatch) => {
  * TODO: to add description
  */
 export const navigateToPluginImportMethod = () => (dispatch) => {
-  dispatch(push('/login/plugin-login'))
+  dispatch(push('/plugin-login'))
 }
 
 /*
@@ -72,7 +72,7 @@ export const navigateToPluginImportMethod = () => (dispatch) => {
  * TODO: to add description
  */
 export const navigateToMnemonicImportMethod = () => (dispatch) => {
-  dispatch(push('/login/mnemonic-login'))
+  dispatch(push('/mnemonic-login'))
 }
 
 /*
@@ -80,7 +80,7 @@ export const navigateToMnemonicImportMethod = () => (dispatch) => {
  * TODO: to add description
  */
 export const navigateToPrivateKeyImportMethod = () => (dispatch) => {
-  dispatch(push('/login/private-key-login'))
+  dispatch(push('/private-key-login'))
 }
 
 /*
@@ -88,7 +88,7 @@ export const navigateToPrivateKeyImportMethod = () => (dispatch) => {
  * TODO: to add description
  */
 export const navigateToSelectWallet = () => (dispatch) => {
-  dispatch(push('/login/select-account'))
+  dispatch(push('/select-account'))
 }
 
 /*
@@ -104,7 +104,7 @@ export const navigateToLoginPage = () => (dispatch) => {
  * TODO: to add description
  */
 export const navigateToRecoverAccountPage = () => (dispatch) => {
-  dispatch(push('/login/recover-account'))
+  dispatch(push('/recover-account'))
 }
 
 /*
@@ -112,5 +112,5 @@ export const navigateToRecoverAccountPage = () => (dispatch) => {
  * TODO: to add description
  */
 export const navigateToWalletUploadMethod = () => (dispatch) => {
-  dispatch(push('/login/upload-wallet'))
+  dispatch(push('/upload-wallet'))
 }
