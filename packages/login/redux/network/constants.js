@@ -11,7 +11,6 @@ export const NETWORK_ACCOUNTS_SIGNATURES_RESET_LOADING = '@login/network/ACCOUNT
 export const NETWORK_ACCOUNTS_SIGNATURES_RESOLVE = '@login/network/ACCOUNTS_SIGNATURES_RESOLVE'
 export const NETWORK_ADD_ERROR = '@login/network/ADD_ERROR'
 export const NETWORK_CLEAR_ERRORS = '@login/network/CLEAR_ERRORS'
-export const NETWORK_GET_ACCOUNTS = '@login/network/NETWORK_GET_ACCOUNTS'
 export const NETWORK_LOADING = '@login/network/LOADING'
 export const NETWORK_RESET_ACCOUNT_RECOVERY_MODE = '@login/network/RESET_ACCOUNT_RECOVERY_MODE'
 export const NETWORK_RESET_IMPORT_PRIVATE_KEY = '@login/network/RESET_NEW_PRIVATE_KEY'

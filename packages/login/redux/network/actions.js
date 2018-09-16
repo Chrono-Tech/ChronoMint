@@ -10,7 +10,6 @@ import {
   NETWORK_ACCOUNTS_SIGNATURES_RESET_LOADING,
   NETWORK_ADD_ERROR,
   NETWORK_CLEAR_ERRORS,
-  NETWORK_GET_ACCOUNTS,
   NETWORK_LOADING,
   NETWORK_RESET_ACCOUNT_RECOVERY_MODE,
   NETWORK_RESET_IMPORT_PRIVATE_KEY,
@@ -66,10 +65,6 @@ export const clearErrors = () => ({
 export const networkSetAccounts = (accounts) => ({
   type: NETWORK_SET_ACCOUNTS,
   accounts,
-})
-
-export const networkGetAccounts = () => ({
-  type: NETWORK_GET_ACCOUNTS,
 })
 
 export const networkResetImportPrivateKey = () => ({
