@@ -54,8 +54,10 @@ class CreateAccount extends PureComponent {
           <Translate value='CreateAccount.title' />
         </div>
 
-        <div styleName='create-title-description'>
-          <Translate value='CreateAccount.description' />
+        <div styleName='create-title-description-container'>
+          <div styleName='create-title-description'>
+            <Translate value='CreateAccount.description' />
+          </div>
         </div>
 
         <div styleName='fields-block'>

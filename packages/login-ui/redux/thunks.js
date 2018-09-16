@@ -62,14 +62,6 @@ export const navigateToCreateAccountFromHW = (address) => (dispatch) => {
 /*
  * Thunk dispatched by "" screen.
  * TODO: to add description
- */
-export const navigateToCreateAccountWithoutImport = () => (dispatch) => {
-  dispatch(LoginUINavActions.navigateToCreateAccount())
-}
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
  * TODO: to dispatch something, this is not a thunk or action. Really..
  */
 export const onSubmitSubscribeNewsletter = (email) => async () => {
@@ -325,8 +317,7 @@ export const initLoginPage = () =>
       selectedWallet,
       walletsList,
     } = state.get(DUCK_PERSIST_ACCOUNT)
-
-    if (walletsList && walletsList.length > 0) {
+    if (walletsList && !walletsList.length) {
       dispatch(LoginUINavActions.navigateToSelectWallet())
       return
     }

@@ -3,13 +3,16 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import PropTypes from 'prop-types'
 import Markup from 'layouts/Markup'
 import React from 'react'
-import { Route, Switch } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { Route, Switch, Redirect } from 'react-router-dom'
 import { ConnectedRouter } from 'connected-react-router/immutable'
 import LoginForm from '@chronobank/login-ui/components/LoginForm/LoginForm'
 import NotFoundPage from '@chronobank/login-ui/components/NotFoundPage/NotFoundPage'
 import LoginWithOptions from '@chronobank/login-ui/components/LoginWithOptions/LoginWithOptions'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import Splash from 'layouts/Splash/Splash'
 import {
   AssetsPage,
@@ -32,21 +35,9 @@ import TrezorLoginPage from 'components/login/TrezorLoginPage/TrezorLoginPage'
 import LedgerLoginPage from 'components/login/LedgerLoginPage/LedgerLoginPage'
 import MetamaskLoginPage from 'components/login/MetamaskLoginPage/MetamaskLoginPage'
 import RecoverAccountPage from 'components/login/RecoverAccountPage/RecoverAccountPage'
-import AccountSelectorPage from 'components/login/AccountSelectorPage/AccountSelectorPage'
+import AccountSelectorContainer from '@chronobank/login-ui/components/AccountSelector/AccountSelectorContainer'
 import CreateAccountPage from 'components/login/CreateAccountPage/CreateAccountPage'
-import localStorage from 'utils/LocalStorage'
 import './styles/themes/default.scss'
-
-const requireAuth = (nextState, replace) => {
-  if (!localStorage.isSession()) {
-    // pass here only for Test RPC session.
-    // Others through handle clicks on loginPage
-    return replace({
-      pathname: '/',
-      state: { nextPathname: nextState.location.pathname },
-    })
-  }
-}
 
 const NotFound = () => (
   <Splash> <NotFoundPage /> </Splash>
@@ -64,12 +55,36 @@ const hashLinkScroll = () => {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    isLoggedIn: state.get(DUCK_SESSION).isSession,
+  }
+}
+class IsUserAuth extends React.Component {
+  static propTypes = {
+    isLoggedIn: PropTypes.bool,
+  }
+  static defaultProps = {
+    isLoggedIn: false,
+  }
+  render () {
+    return this.props.isLoggedIn
+      ? (
+        <Redirect from='/' to='/wallets' />
+      ) : (
+        <Redirect from='/' to='/login' />
+      )
+  }
+}
+const CIsUserAuth = connect(mapStateToProps, null)(IsUserAuth)
+
 const router = (history) => (
   <ConnectedRouter history={history} onUpdate={hashLinkScroll}>
     <div>
       <Switch>
         <Splash>
-          <Route exact path='/' component={LoginForm} />
+          <Route exact path='/' component={CIsUserAuth} />
+          <Route exact path='/login' component={LoginForm} />
           <Route exact path='/create-account' component={CreateAccountPage} />
           <Route exact path='/import-methods' component={LoginWithOptions} />
           <Route exact path='/ledger-login' component={LedgerLoginPage} />
@@ -77,7 +92,7 @@ const router = (history) => (
           <Route exact path='/plugin-login' component={MetamaskLoginPage} />
           <Route exact path='/private-key-login' component={PrivateKeyImportPage} />
           <Route exact path='/recover-account' component={RecoverAccountPage} />
-          <Route exact path='/select-account' component={AccountSelectorPage} />
+          <Route exact path='/select-account' component={AccountSelectorContainer} />
           <Route exact path='/trezor-login' component={TrezorLoginPage} />
           <Route exact path='/upload-wallet' component={WalletImportPage} />
         </Splash>

@@ -134,6 +134,12 @@ $copyRightPadding: 200px;
   text-align: center;
 }
 
+.create-title-description-container {
+  width:100%;
+  max-width: 520px;
+  margin: 0px auto;
+}
+
 .create-title-description {
   font-weight: 400;
   color: $color-description;
@@ -141,7 +147,8 @@ $copyRightPadding: 200px;
   line-height: 22px;
   margin-bottom: 10px;
   text-align: center;
-  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .links {

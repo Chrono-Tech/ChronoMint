@@ -19,7 +19,6 @@ import {
   WALLET_TYPE_TREZOR,
   WALLET_TYPE_METAMASK,
 } from '@chronobank/core/models/constants/AccountEntryModel'
-
 import {
   getAccountAddress,
   getAccountAvatar,
@@ -67,9 +66,7 @@ function mapDispatchToProps (dispatch) {
     },
     onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitLoginFormFail(errors, submitErrors)),
     initLoginPage: () => dispatch(initLoginPage()),
-    navigateToSelectWallet: () => {
-      dispatch(navigateToSelectWallet())
-    },
+    navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
     navigateToRecoverAccountPage: () => dispatch(navigateToRecoverAccountPage()),
   }
 }
@@ -129,9 +126,11 @@ class LoginForm extends React.Component {
             label={<Translate value='LoginForm.submitButton' />}
             isLoading={submitting}
           />
-
-          {error ? (<div styleName='form-error'>{error}</div>) : null}
-
+          {
+            error
+              ? (<div styleName='form-error'>{error}</div>)
+              : null
+          }
           <button onClick={navigateToRecoverAccountPage} styleName='link'>
             <Translate value='LoginForm.forgotPassword' />
           </button>
@@ -152,8 +151,11 @@ class LoginForm extends React.Component {
           label={<Translate value='LoginForm.submitButton' />}
           isLoading={submitting}
         />
-
-        {error ? (<div styleName='form-error'>{error}</div>) : null}
+        {
+          error
+            ? (<div styleName='form-error'>{error}</div>)
+            : null
+        }
       </div>
     )
   }
@@ -205,7 +207,9 @@ class LoginForm extends React.Component {
             linkTitle='My Accounts'
           />
 
-          {this.renderType()}
+          {
+            this.renderType()
+          }
 
         </div>
       </form>

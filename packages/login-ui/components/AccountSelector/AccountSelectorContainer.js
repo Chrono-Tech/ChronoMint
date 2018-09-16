@@ -12,6 +12,7 @@ import {
 import {
   initAccountsSignature,
 } from '@chronobank/login/redux/network/thunks'
+import { onWalletSelect } from '@chronobank/login-ui/redux/thunks'
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 import './AccountSelector.scss'
 import {
@@ -25,6 +26,7 @@ const mapDispatchToProps = (dispatch) => {
     navigateToCreateAccount: () => dispatch(navigateToCreateAccount()),
     navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
     initAccountsSignature: () => dispatch(initAccountsSignature()),
+    onWalletSelect: (wallet) => dispatch(onWalletSelect(wallet)),
   }
 }
 
