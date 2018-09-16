@@ -153,7 +153,6 @@
     "react-redux-i18n": "^1.8.0",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "react-router-redux": "latest",
     "react-stockcharts": "^0.7.7",
     "react-swipeable-views": "^0.12.3",
     "react-test-renderer": "^16.4.1",
