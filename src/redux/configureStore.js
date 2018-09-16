@@ -4,7 +4,7 @@
  */
 
 import { applyMiddleware, compose, createStore } from 'redux'
-import { composeWithDevTools } from 'redux-devtools-extension'
+import { composeWithDevTools } from 'redux-devtools-extension/logOnly'
 import { createBrowserHistory } from 'history'
 import { persistStore } from 'redux-persist'
 import { connectRouter } from 'connected-react-router/immutable'

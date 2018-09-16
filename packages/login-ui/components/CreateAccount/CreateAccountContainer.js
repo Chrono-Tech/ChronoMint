@@ -62,7 +62,7 @@ class CreateAccountContainer extends PureComponent {
         onSubmit={this.handleSubmit}
         onSubmitFail={this.handleSubmitFail}
         onSubmitSuccess={this.handleSubmitSuccess}
-        navigateToSelectWallet={() => {console.log('CreateAccountContainer.CreateAccount.navigateToSelectWallet props');this.props.navigateToSelectWallet}}
+        navigateToSelectWallet={() => {console.log('CreateAccountContainer.CreateAccount.navigateToSelectWallet props');this.props.navigateToSelectWallet()}}
       />
     )
   }
