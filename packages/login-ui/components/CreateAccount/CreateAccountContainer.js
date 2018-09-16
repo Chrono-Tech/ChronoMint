@@ -22,7 +22,8 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-class CreateAccountContainer extends PureComponent {
+@connect(null, mapDispatchToProps)
+export default class CreateAccountContainer extends PureComponent {
   static propTypes = {
     onSubmit: PropTypes.func,
     onSubmitSuccess: PropTypes.func,
@@ -52,7 +53,6 @@ class CreateAccountContainer extends PureComponent {
 
   render () {
     const { accountProfile } = this.props
-    console.log('############### CREATE ACCOUNT CONTAINER')
     return (
       <CreateAccount
         accountProfile={accountProfile}
@@ -62,10 +62,8 @@ class CreateAccountContainer extends PureComponent {
         onSubmit={this.handleSubmit}
         onSubmitFail={this.handleSubmitFail}
         onSubmitSuccess={this.handleSubmitSuccess}
-        navigateToSelectWallet={() => {console.log('CreateAccountContainer.CreateAccount.navigateToSelectWallet props');this.props.navigateToSelectWallet()}}
+        navigateToSelectWallet={this.props.navigateToSelectWallet}
       />
     )
   }
 }
-
-export default connect(null, mapDispatchToProps)(CreateAccountContainer)

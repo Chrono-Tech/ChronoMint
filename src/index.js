@@ -13,6 +13,7 @@ import moment from 'moment'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import React from 'react'
 import { WebSocketService } from '@chronobank/core/services/WebSocketService'
+import PersistLoader from 'layouts/partials/PersistLoader/PersistLoader'
 import router from './router'
 import configureStore from './redux/configureStore'
 import localStorage from './utils/LocalStorage'
@@ -43,7 +44,7 @@ FileList.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator]
 
 render(
   <Provider store={store}>
-    <PersistGate loader={null} persistor={persistor}>
+    <PersistGate loader={PersistLoader} persistor={persistor}>
       <MuiThemeProvider theme={themeDefault}>
         {
           router(history)

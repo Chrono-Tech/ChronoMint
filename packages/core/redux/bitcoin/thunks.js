@@ -140,8 +140,6 @@ export const getAddressInfo =  (address: string, blockchain: string) => async (d
   //     },
   //   },
   // })
-  // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-  // console.log(waitResult)
 
   const state = getState()
   const { network } = getCurrentNetworkSelector(state)

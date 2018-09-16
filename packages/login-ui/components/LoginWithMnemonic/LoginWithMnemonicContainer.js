@@ -18,12 +18,10 @@ export default class LoginWithMnemonicContainer extends PureComponent {
     onSubmitSuccess: PropTypes.func,
   }
 
-  async handleSubmit (values) {
+  handleSubmit = async (values) => {
     const { onSubmit } = this.props
-
     const mnemonic = values.get('mnemonic')
-
-    let mnemonicValue = (mnemonic || '').trim()
+    const mnemonicValue = (mnemonic || '').trim()
 
     if (!mnemonicProvider.validateMnemonic(mnemonicValue)) {
       throw new SubmissionError({ mnemonic: 'Invalid mnemonic' })
@@ -32,21 +30,21 @@ export default class LoginWithMnemonicContainer extends PureComponent {
     return onSubmit({ mnemonic })
   }
 
-  handleSubmitSuccess (result) {
+  handleSubmitSuccess = (result) =>  {
     const { onSubmitSuccess } = this.props
     onSubmitSuccess && onSubmitSuccess(result)
   }
 
-  handleSubmitFail (errors, dispatch, submitErrors) {
+  handleSubmitFail = (errors, dispatch, submitErrors) => {
     dispatch(stopSubmit(FORM_MNEMONIC_LOGIN_PAGE, submitErrors && submitErrors.errors))
   }
 
   render () {
     return (
       <LoginWithMnemonic
-        onSubmit={this.handleSubmit.bind(this)}
-        onSubmitSuccess={this.handleSubmitSuccess.bind(this)}
-        onSubmitFail={this.handleSubmitFail.bind(this)}
+        onSubmit={this.handleSubmit}
+        onSubmitSuccess={this.handleSubmitSuccess}
+        onSubmitFail={this.handleSubmitFail}
         previousPage={this.props.previousPage}
       />
     )

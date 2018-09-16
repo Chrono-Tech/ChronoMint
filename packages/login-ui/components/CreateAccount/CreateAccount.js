@@ -28,7 +28,6 @@ class CreateAccount extends PureComponent {
   }
 
   handleUseAccountPress = () => {
-    console.log('CreateAccount.handleUseAccountPress')
     this.props.navigateToSelectWallet()
   }
 
@@ -47,7 +46,6 @@ class CreateAccount extends PureComponent {
   }
 
   render () {
-    console.log('>>>>>>>>>>>> CREATE ACCOUNT')
     const { handleSubmit, error, accountProfile } = this.props
 
     return (

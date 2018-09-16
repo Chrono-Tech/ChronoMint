@@ -48,6 +48,10 @@ const requireAuth = (nextState, replace) => {
   }
 }
 
+const NotFound = () => (
+  <Splash> <NotFoundPage /> </Splash>
+)
+
 // TODO: Remove it and use https://reacttraining.com/react-router/web/guides/scroll-restoration
 const hashLinkScroll = () => {
   const { hash } = window.location
@@ -60,180 +64,39 @@ const hashLinkScroll = () => {
   }
 }
 
-const LoginRoutes = (props) => {
-  const { match } = props
-  return (
-    <Splash {...props}>
-      <Switch>
-        <Route exact path={match.url}>
-          <LoginForm />
-        </Route>
-        <Route exact path='/create-account'>
-          <CreateAccountPage />
-        </Route>
-        <Route exact path='/select-account'>
-          <AccountSelectorPage />
-        </Route>
-        <Route exact path='/recover-account'>
-          <RecoverAccountPage />
-        </Route>
-        <Route exact path='/import-methods'>
-          <LoginWithOptions />
-        </Route>
-        <Route exact path='/upload-wallet'>
-          <WalletImportPage />
-        </Route>
-        <Route exact path='/trezor-login'>
-          <TrezorLoginPage />
-        </Route>
-        <Route exact path='/ledger-login'>
-          <LedgerLoginPage />
-        </Route>
-        <Route exact path='/plugin-login'>
-          <MetamaskLoginPage />
-        </Route>
-        <Route exact path='/mnemonic-login'>
-          <MnemonicImportPage />
-        </Route>
-        <Route exact path='/private-key-login'>
-          <PrivateKeyImportPage />
-        </Route>
-      </Switch>
-    </Splash>
-  )
-}
-
-const WalletsRoutes = (props) => (
-  <Markup {...props}>
-    <Switch>
-      <Route exact path='2fa'>
-        <TwoFAPage />
-      </Route>
-      <Route exact path='wallets'>
-        <WalletsPage />
-      </Route>
-      <Route exact path='wallet'>
-        <WalletPage />
-      </Route>
-      <Route exact path='add-wallet'>
-        <AddWalletPage />
-      </Route>
-      <Route exact path='deposits'>
-        <DepositsPage />
-      </Route>
-      <Route exact path='deposit'>
-        <DepositPage />
-      </Route>
-      <Route exact path='rewards'>
-        <RewardsPage />
-      </Route>
-      <Route exact path='voting'>
-        <VotingPage />
-      </Route>
-      <Route exact path='poll'>
-        <PollPage />
-      </Route>
-      <Route exact path='new-poll'>
-        <NewPollPage />
-      </Route>
-      <Route exact path='vote-history'>
-        <VoteHistoryPage />
-      </Route>
-      <Route exact path='assets'>
-        <AssetsPage />
-      </Route>
-    </Switch>
-  </Markup>
-)
-
-// 404
-const NotFound = (props) => (
-  <Splash {...props}>
-    <NotFoundPage />
-  </Splash>
-)
-
 const router = (history) => (
   <ConnectedRouter history={history} onUpdate={hashLinkScroll}>
     <div>
-      <Splash>
-        <Switch>
-          <Route exact path='/'>
-            <LoginForm />
-          </Route>
-          <Route exact path='/create-account'>
-            <CreateAccountPage />
-          </Route>
-          <Route exact path='/select-account'>
-            <AccountSelectorPage />
-          </Route>
-          <Route exact path='/recover-account'>
-            <RecoverAccountPage />
-          </Route>
-          <Route exact path='/import-methods'>
-            <LoginWithOptions />
-          </Route>
-          <Route exact path='/upload-wallet'>
-            <WalletImportPage />
-          </Route>
-          <Route exact path='/trezor-login'>
-            <TrezorLoginPage />
-          </Route>
-          <Route exact path='/ledger-login'>
-            <LedgerLoginPage />
-          </Route>
-          <Route exact path='/plugin-login'>
-            <MetamaskLoginPage />
-          </Route>
-          <Route exact path='/mnemonic-login'>
-            <MnemonicImportPage />
-          </Route>
-          <Route exact path='/private-key-login'>
-            <PrivateKeyImportPage />
-          </Route>
-        </Switch>
-      </Splash>
-      <Markup>
-        <Switch>
-          <Route exact path='/2fa'>
-            <TwoFAPage />
-          </Route>
-          <Route exact path='/wallets'>
-            <WalletsPage />
-          </Route>
-          <Route exact path='/wallet'>
-            <WalletPage />
-          </Route>
-          <Route exact path='/add-wallet'>
-            <AddWalletPage />
-          </Route>
-          <Route exact path='/deposits'>
-            <DepositsPage />
-          </Route>
-          <Route exact path='/deposit'>
-            <DepositPage />
-          </Route>
-          <Route exact path='/rewards'>
-            <RewardsPage />
-          </Route>
-          <Route exact path='/voting'>
-            <VotingPage />
-          </Route>
-          <Route exact path='/poll'>
-            <PollPage />
-          </Route>
-          <Route exact path='/new-poll'>
-            <NewPollPage />
-          </Route>
-          <Route exact path='/vote-history'>
-            <VoteHistoryPage />
-          </Route>
-          <Route exact path='/assets'>
-            <AssetsPage />
-          </Route>
-        </Switch>
-      </Markup>
-      <Route component={NotFound} />
+      <Switch>
+        <Splash>
+          <Route exact path='/' component={LoginForm} />
+          <Route exact path='/create-account' component={CreateAccountPage} />
+          <Route exact path='/import-methods' component={LoginWithOptions} />
+          <Route exact path='/ledger-login' component={LedgerLoginPage} />
+          <Route exact path='/mnemonic-login' component={MnemonicImportPage} />
+          <Route exact path='/plugin-login' component={MetamaskLoginPage} />
+          <Route exact path='/private-key-login' component={PrivateKeyImportPage} />
+          <Route exact path='/recover-account' component={RecoverAccountPage} />
+          <Route exact path='/select-account' component={AccountSelectorPage} />
+          <Route exact path='/trezor-login' component={TrezorLoginPage} />
+          <Route exact path='/upload-wallet' component={WalletImportPage} />
+        </Splash>
+        <Markup>
+          <Route exact path='/2fa' component={TwoFAPage} />
+          <Route exact path='/wallets' component={WalletsPage} />
+          <Route exact path='/wallet' component={WalletPage} />
+          <Route exact path='/add-wallet' component={AddWalletPage} />
+          <Route exact path='/deposits' component={DepositsPage} />
+          <Route exact path='/deposit' component={DepositPage} />
+          <Route exact path='/rewards' component={RewardsPage} />
+          <Route exact path='/voting' component={VotingPage} />
+          <Route exact path='/poll' component={PollPage} />
+          <Route exact path='/new-poll' component={NewPollPage} />
+          <Route exact path='/vote-history' component={VoteHistoryPage} />
+          <Route exact path='/assets' component={AssetsPage} />
+        </Markup>
+        <Route component={NotFound} />
+      </Switch>
     </div>
   </ConnectedRouter>
 )

@@ -28,13 +28,9 @@ class LedgerProvider extends EventEmitter {
     this._isInited = false
     this._timer = null
     this._isETHOpened = false
-
-    // TODO replace with async arrow when class properties will work correctly
-    this._syncing = this._syncing.bind(this)
-
   }
 
-  async init () {
+  init = async () => {
     if (this._isInited) {
       return
     }
@@ -52,22 +48,22 @@ class LedgerProvider extends EventEmitter {
     return this._isInited
   }
 
-  setupAndStart (providerURL) {
+  setupAndStart = (providerURL) => {
     this._engine.addProvider(new FilterSubprovider())
     this._engine.addProvider(this._ledgerSubprovider)
     this._engine.addProvider(new RpcSubprovider({ rpcUrl: providerURL }))
     this._engine.start()
   }
 
-  isU2F () {
+  isU2F = () => {
     return this._ledgerSubprovider.isSupported
   }
 
-  isETHAppOpened () {
+  isETHAppOpened = () => {
     return this._isETHOpened
   }
 
-  _getAppConfig (): Promise {
+  _getAppConfig = (): Promise => {
     // we check for version for define is ETH opened.
     // If its true we get version number in callback
     return new Promise((resolve) => {
@@ -80,7 +76,7 @@ class LedgerProvider extends EventEmitter {
     })
   }
 
-  async _syncing () {
+  _syncing = async () => {
     if (this._ledger.connectionOpened) {
       // already busy
       return
@@ -93,7 +89,7 @@ class LedgerProvider extends EventEmitter {
     this._isETHOpened = newState
   }
 
-  async sync () {
+  sync = async () => {
     let isSync
     try {
       await this._syncing()
@@ -106,7 +102,7 @@ class LedgerProvider extends EventEmitter {
     return isSync
   }
 
-  async fetchAccount () {
+  fetchAccount = async () => {
     return new Promise((resolve) => {
       this._ledger.getAccounts((error, accounts) => {
         if (error) {
@@ -118,25 +114,25 @@ class LedgerProvider extends EventEmitter {
     })
   }
 
-  setWallet (account) {
+  setWallet = (account) => {
     this._wallet = new HardwareWallet(account)
   }
 
-  stop () {
+  stop = () => {
     this.removeAllListeners()
     clearInterval(this._timer)
     this._timer = null
   }
 
-  getWeb3 () {
+  getWeb3 = () => {
     return this._web3
   }
 
-  getProvider () {
+  getProvider = () => {
     return this._engine
   }
 
-  getNetworkProvider ({ url, network } = {}) {
+  getNetworkProvider = ({ url, network } = {}) => {
     return {
       networkCode: byEthereumNetwork(network),
       ethereum: new EthereumEngine(this._wallet, network, url, this._engine),

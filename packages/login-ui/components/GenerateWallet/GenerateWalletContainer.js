@@ -15,7 +15,7 @@ import {
 } from '@chronobank/login-ui/redux/navigation'
 import GenerateWallet from './GenerateWallet'
 
-function mapDispatchToProps (dispatch) {
+const mapDispatchToProps = (dispatch) => {
   return {
     downloadWallet: () => dispatch(downloadWallet()),
     onContinue: () => {
@@ -25,7 +25,8 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-class GenerateWalletContainer extends Component {
+@connect(null, mapDispatchToProps)
+export default class GenerateWalletContainer extends Component {
   static propTypes = {
     downloadWallet: PropTypes.func,
     onContinue: PropTypes.func,
@@ -42,5 +43,3 @@ class GenerateWalletContainer extends Component {
     )
   }
 }
-
-export default connect(null, mapDispatchToProps)(GenerateWalletContainer)

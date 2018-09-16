@@ -18,14 +18,15 @@ import GenerateMnemonicContainer from '@chronobank/login-ui/components/GenerateM
 import ConfirmMnemonicContainer from '@chronobank/login-ui/components/ConfirmMnemonic/ConfirmMnemonicContainer'
 import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 
-function mapDispatchToProps (dispatch) {
+const mapDispatchToProps = (dispatch) => {
   return {
     navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
     onSubmitCreateAccountImportMnemonic: (name, password, mnemonic) => dispatch(onSubmitCreateAccountImportMnemonic(name, password, mnemonic)),
   }
 }
 
-class CreateAccountPage extends PureComponent {
+@connect(null, mapDispatchToProps)
+export default class CreateAccountPage extends PureComponent {
   static PAGES = {
     CREATE_ACCOUNT_FORM: 1,
     GENERATE_MNEMONIC_FORM: 2,
@@ -124,9 +125,6 @@ class CreateAccountPage extends PureComponent {
   }
 
   render () {
-    console.log('############### CREATE ACCOUNT PAGE')
     return this.getCurrentPage()
   }
 }
-
-export default connect(null, mapDispatchToProps)(CreateAccountPage)

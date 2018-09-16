@@ -42,7 +42,7 @@ export default class NetworkCreateModal extends PureComponent {
     network: null,
   }
 
-  handleDeleteNetwork (){
+  handleDeleteNetwork = () => {
     const { network, handleDeleteNetwork, handleCloseModal } = this.props
 
     if (network){
@@ -96,7 +96,7 @@ export default class NetworkCreateModal extends PureComponent {
             <Button
               styleName='button buttonYes'
               buttonType='login'
-              onClick={this.handleDeleteNetwork.bind(this)}
+              onClick={this.handleDeleteNetwork}
               label={<Translate value='NetworkDeleteModal.yes' />}
             />
           </div>

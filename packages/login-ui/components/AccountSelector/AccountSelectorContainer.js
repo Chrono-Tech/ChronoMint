@@ -20,7 +20,7 @@ import {
 } from '../../redux/navigation'
 import AccountSelector from './AccountSelector'
 
-function mapDispatchToProps (dispatch) {
+const mapDispatchToProps = (dispatch) => {
   return {
     navigateToCreateAccount: () => dispatch(navigateToCreateAccount()),
     navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
@@ -28,7 +28,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-function mapStateToProps (state) {
+const mapStateToProps = (state) => {
   return {
     walletsList: state.get(DUCK_PERSIST_ACCOUNT).walletsList.map(
       (wallet) => new AccountEntryModel({ ...wallet }),
@@ -36,7 +36,8 @@ function mapStateToProps (state) {
   }
 }
 
-class AccountSelectorContainer extends PureComponent {
+@connect(mapStateToProps, mapDispatchToProps)
+export default class AccountSelectorContainer extends PureComponent {
   static propTypes = {
     onWalletSelect: PropTypes.func,
     walletsList: PropTypes.arrayOf(
@@ -64,7 +65,6 @@ class AccountSelectorContainer extends PureComponent {
       walletsList,
       onWalletSelect,
     } = this.props
-    console.log('>>>>>>>>>>>> ACCOUNT SELECTOR CONTAINER')
     return (
       <AccountSelector
         navigateToSelectImportMethod={navigateToSelectImportMethod}
@@ -75,5 +75,3 @@ class AccountSelectorContainer extends PureComponent {
     )
   }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(AccountSelectorContainer)

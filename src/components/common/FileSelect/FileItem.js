@@ -16,7 +16,22 @@ import { notify } from '@chronobank/core/redux/notifier/actions'
 
 import './FileItem.scss'
 
-class FileItem extends PureComponent {
+const mapDispatchToProps = (dispatch) => {
+  return {
+    handleDownload: (hash, name) => {
+      try {
+        dispatch(notify(new ArbitraryNoticeModel({ key: 'notices.downloads.started', params: { name } }), false))
+        dispatch(download(hash, name))
+        dispatch(notify(new ArbitraryNoticeModel({ key: 'notices.downloads.completed', params: { name } }), true))
+      } catch (e) {
+        dispatch(notify(new ArbitraryNoticeModel({ key: 'notices.downloads.failed', params: { name } }), false))
+      }
+    },
+  }
+}
+
+@connect(null, mapDispatchToProps)
+export default class FileItem extends PureComponent {
   static propTypes = {
     file: PropTypes.instanceOf(FileModel),
     onRemove: PropTypes.func.isRequired,
@@ -81,19 +96,3 @@ class FileItem extends PureComponent {
     )
   }
 }
-
-function mapDispatchToProps (dispatch) {
-  return {
-    handleDownload: (hash, name) => {
-      try {
-        dispatch(notify(new ArbitraryNoticeModel({ key: 'notices.downloads.started', params: { name } }), false))
-        dispatch(download(hash, name))
-        dispatch(notify(new ArbitraryNoticeModel({ key: 'notices.downloads.completed', params: { name } }), true))
-      } catch (e) {
-        dispatch(notify(new ArbitraryNoticeModel({ key: 'notices.downloads.failed', params: { name } }), false))
-      }
-    },
-  }
-}
-
-export default connect(null, mapDispatchToProps)(FileItem)

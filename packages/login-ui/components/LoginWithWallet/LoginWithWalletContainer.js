@@ -18,28 +18,28 @@ export default class LoginWithWalletContainer extends PureComponent {
     onSubmitSuccess: PropTypes.func,
   }
 
-  async handleSubmit (walletString) {
+  handleSubmit = (walletString) => {
     const { onSubmit } = this.props
 
     return onSubmit && onSubmit(walletString)
   }
 
-  handleSubmitSuccess (result) {
+  handleSubmitSuccess = (result) => {
     const { onSubmitSuccess } = this.props
 
     onSubmitSuccess && onSubmitSuccess(result)
   }
 
-  handleSubmitFail (errors, dispatch, submitErrors) {
+  handleSubmitFail = (errors, dispatch, submitErrors) => {
     dispatch(stopSubmit(FORM_WALLET_UPLOAD, submitErrors && submitErrors.errors))
   }
 
   render () {
     return (
       <LoginWithWallet
-        onSubmit={this.handleSubmit.bind(this)}
-        onSubmitSuccess={this.handleSubmitSuccess.bind(this)}
-        onSubmitFail={this.handleSubmitFail.bind(this)}
+        onSubmit={this.handleSubmit}
+        onSubmitSuccess={this.handleSubmitSuccess}
+        onSubmitFail={this.handleSubmitFail}
         previousPage={this.props.previousPage}
       />
     )
