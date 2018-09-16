@@ -82,7 +82,7 @@ class Footer extends Component {
 
               <ul styleName='navigation-menu navigation-list'>
                 <li>
-                  <Link to='/' href styleName='footerLink'>
+                  <Link to='/' styleName='footerLink'>
                     Home
                   </Link>
                 </li>

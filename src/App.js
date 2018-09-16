@@ -2,6 +2,7 @@ import React from 'react'
 import { ConnectedRouter } from 'connected-react-router/immutable'
 import router from './router'
 
+// TODO: Remove it and use https://reacttraining.com/react-router/web/guides/scroll-restoration
 const hashLinkScroll = () => {
   const { hash } = window.location
   if (hash !== '') {

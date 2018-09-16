@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { connectRouter } from 'connected-react-router/immutable'
+import { /*connectRouter,*/ ConnectedRouter } from 'connected-react-router/immutable'
 import { DUCK_I18N } from 'redux/i18n/constants'
 import { I18n, loadTranslations, setLocale } from 'react-redux-i18n'
 import { loadI18n } from 'redux/i18n/actions'
@@ -13,12 +13,12 @@ import { render } from 'react-dom'
 import moment from 'moment'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import React from 'react'
-
 import { WebSocketService } from '@chronobank/core/services/WebSocketService'
-import App from './App'
+import router from './router'
+// import App from './App'
 import configureStore from './redux/configureStore'
 import localStorage from './utils/LocalStorage'
-import rootReducer from './redux/rootReducer'
+// import rootReducer from './redux/rootReducer'
 import themeDefault from './themeDefault'
 import translations from './i18n'
 
@@ -44,28 +44,42 @@ NodeList.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator]
 HTMLCollection.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator]
 FileList.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator]
 
+// TODO: Remove it and use https://reacttraining.com/react-router/web/guides/scroll-restoration
+const hashLinkScroll = () => {
+  const { hash } = window.location
+  if (hash !== '') {
+    setTimeout(() => {
+      const id = hash.replace('#', '')
+      const element = document.getElementById(id)
+      if (element) element.scrollIntoView()
+    }, 0)
+  }
+}
+
 render(
   <Provider store={store}>
     <PersistGate loader={null} persistor={persistor}>
       <MuiThemeProvider theme={themeDefault}>
-        <App history={history} store={store} />
+        <ConnectedRouter history={history} onUpdate={hashLinkScroll}>
+          {router(store)}
+        </ConnectedRouter>
       </MuiThemeProvider>
     </PersistGate>
   </Provider>,
   document.getElementById('react-root')
 )
 
-// Hot reloading
-if (process.env.NODE_ENV === 'development') {
-  if (module.hot) {
-    // Reload components
-    module.hot.accept('./App', () => {
-      render()
-    })
+// // Hot reloading
+// if (process.env.NODE_ENV === 'development') {
+//   if (module.hot) {
+//     // Reload components
+//     module.hot.accept('./App', () => {
+//       render()
+//     })
 
-    // Reload reducers
-    module.hot.accept('./redux/rootReducer', () => {
-      store.replaceReducer(connectRouter(history)(rootReducer))
-    })
-  }
-}
+//     // Reload reducers
+//     module.hot.accept('./redux/rootReducer', () => {
+//       store.replaceReducer(connectRouter(history)(rootReducer))
+//     })
+//   }
+// }

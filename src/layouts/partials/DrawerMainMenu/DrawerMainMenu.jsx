@@ -150,7 +150,6 @@ export default class DrawerMainMenu extends PureComponent {
           activeclassname='drawer-item-active'
           to={{ pathname: item.path }}
           onClick={this.handleSelectLink}
-          href
         >
           <i styleName='icon' className='material-icons'>{item.icon}</i>
           <div styleName='title'>
