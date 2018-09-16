@@ -9,13 +9,14 @@ import { connect } from 'react-redux'
 import { onWalletSelect } from '@chronobank/login-ui/redux/thunks'
 import AccountSelectorContainer from '@chronobank/login-ui/components/AccountSelector/AccountSelectorContainer'
 
-function mapDispatchToProps (dispatch) {
+const mapDispatchToProps = (dispatch) => {
   return {
     onWalletSelect: (wallet) => dispatch(onWalletSelect(wallet)),
   }
 }
 
-class AccountSelectorPage extends PureComponent {
+@connect(null, mapDispatchToProps)
+export default class AccountSelectorPage extends PureComponent {
   static propTypes = {
     onWalletSelect: PropTypes.func,
   }
@@ -26,5 +27,3 @@ class AccountSelectorPage extends PureComponent {
     )
   }
 }
-
-export default connect(null, mapDispatchToProps)(AccountSelectorPage)

@@ -349,7 +349,7 @@ export const estimateBtcFee = (params) => async (dispatch) => {
   const { address, recipient, amount, formFee, blockchain } = params
   const utxos = await dispatch(getAddressUTXOS(address, blockchain))
   if (!utxos) {
-    throw new Error('Can\'t find utxos for address: ', address)
+    throw new Error(`Can't find utxos for address: ${address}`)
   }
 
   return BitcoinUtils.getBtcFee(recipient, amount, formFee, utxos)

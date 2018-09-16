@@ -22,12 +22,11 @@ import ChronoLogo from 'assets/img/logo-chrono-bank-full.svg'
 import BackIcon from 'assets/img/icons/back.svg'
 
 import Footer from '../Footer/Footer'
-import PersistWrapper from '../partials/PersistWrapper/PersistWrapper'
 
 import './Splash.scss'
 import theme from './styles'
 
-function mapStateToProps (state) {
+const mapStateToProps = (state) => {
   return {
     router: state.get('router'),
   }
@@ -39,7 +38,8 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-class Splash extends Component {
+@connect(mapStateToProps, mapDispatchToProps)
+export default class Splash extends Component {
   static propTypes = {
     children: PropTypes.node,
     goBack: PropTypes.func,
@@ -97,11 +97,9 @@ class Splash extends Component {
             ) : null
           }
 
-          <PersistWrapper>
-            <div className={location.pathname}>
-              {children ? children: null}
-            </div>
-          </PersistWrapper>
+          <div className={location.pathname}>
+            {children ? children: null}
+          </div>
 
           {!window.isMobile && (<Footer />)}
 
@@ -111,5 +109,3 @@ class Splash extends Component {
     )
   }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(Splash)

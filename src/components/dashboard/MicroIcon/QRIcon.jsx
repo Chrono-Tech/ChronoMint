@@ -31,7 +31,7 @@ export default class QRIcon extends PureComponent {
     }
   }
 
-  async handleQROpen (target) {
+  handleQROpen = async (target) => {
     this.setState({
       isQROpen: true,
       qrData: this.state.qrData || await promisify(QRCode.toDataURL)(this.props.value),
@@ -39,14 +39,14 @@ export default class QRIcon extends PureComponent {
     })
   }
 
-  handleQRClose () {
+  handleQRClose = () => {
     this.setState({
       isQROpen: false,
       qrAnchorEl: null,
     })
   }
 
-  renderQR () {
+  renderQR = () => {
     return (
       <img alt='qr code' src={this.state.qrData} />
     )
@@ -72,7 +72,7 @@ export default class QRIcon extends PureComponent {
           open={this.state.isQROpen}
           anchorEl={this.state.qrAnchorEl}
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          onClose={this.handleQRClose.bind(this)}
+          onClose={this.handleQRClose}
           style={{ zIndex: 3000 }}
         >
           {this.renderQR()}

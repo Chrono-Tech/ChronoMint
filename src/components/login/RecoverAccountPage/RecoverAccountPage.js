@@ -20,14 +20,14 @@ import ResetPasswordContainer from '@chronobank/login-ui/components/ResetPasswor
 import RecoverAccountContainer from '@chronobank/login-ui/components/RecoverAccount/RecoverAccountContainer'
 import AccountSelectorContainer from '@chronobank/login-ui/components/AccountSelector/AccountSelectorContainer'
 
-function mapStateToProps (state) {
+const mapStateToProps = (state) => {
   const persistAccount = state.get(DUCK_PERSIST_ACCOUNT)
   return {
     selectedWallet: persistAccount.selectedWallet,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+const mapDispatchToProps = (dispatch) => {
   return {
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
     navigateToLoginPage: () => dispatch(navigateToLoginPage()),
@@ -35,7 +35,8 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-class RecoverAccountPage extends PureComponent {
+@connect(mapStateToProps, mapDispatchToProps)
+export default class RecoverAccountPage extends PureComponent {
   static PAGES = {
     RECOVER_ACCOUNT_FORM: 1,
     RESET_PASSWORD_FORM: 2,
@@ -61,73 +62,73 @@ class RecoverAccountPage extends PureComponent {
     }
   }
 
-  getCurrentPage () {
+  getCurrentPage = () => {
     switch(this.state.page){
       case RecoverAccountPage.PAGES.RECOVER_ACCOUNT_FORM:
         return (
           <RecoverAccountContainer
-            previousPage={this.previousPage.bind(this)}
+            previousPage={this.previousPage}
             selectedWallet={this.state.selectedWallet}
-            navigateToSelectWallet={this.navigateToSelectAccount.bind(this)}
-            onSubmitSuccess={this.onSubmitMnemonicSuccess.bind(this)}
+            navigateToSelectWallet={this.navigateToSelectAccount}
+            onSubmitSuccess={this.onSubmitMnemonicSuccess}
           />
         )
 
       case RecoverAccountPage.PAGES.RESET_PASSWORD_FORM:
         return (
           <ResetPasswordContainer
-            previousPage={this.previousPage.bind(this)}
+            previousPage={this.previousPage}
             selectedWallet={this.state.selectedWallet}
-            onSubmit={this.onSubmitResetPassword.bind(this)}
+            onSubmit={this.onSubmitResetPassword}
           />
         )
 
       case RecoverAccountPage.PAGES.SELECT_WALLET_FORM:
         return (
           <AccountSelectorContainer
-            onWalletSelect={this.onWalletSelect.bind(this)}
+            onWalletSelect={this.onWalletSelect}
           />
         )
 
       default:
         return (
           <RecoverAccountContainer
-            previousPage={this.previousPage.bind(this)}
+            previousPage={this.previousPage}
             selectedWallet={this.state.selectedWallet}
-            navigateToSelectWallet={this.navigateToSelectAccount.bind(this)}
-            onSubmitSuccess={this.onSubmitMnemonicSuccess.bind(this)}
+            navigateToSelectWallet={this.navigateToSelectAccount}
+            onSubmitSuccess={this.onSubmitMnemonicSuccess}
           />
         )
     }
   }
 
-  navigateToSelectAccount () {
+  navigateToSelectAccount = () => {
     this.setState({
       page: RecoverAccountPage.PAGES.SELECT_WALLET_FORM,
     })
   }
 
-  onWalletSelect (selectedWallet) {
+  onWalletSelect = (selectedWallet) => {
     this.setState({
       selectedWallet,
       page: RecoverAccountPage.PAGES.RECOVER_ACCOUNT_FORM,
     })
   }
 
-  onSubmitMnemonicSuccess ({ mnemonic }) {
+  onSubmitMnemonicSuccess = ({ mnemonic }) => {
     this.setState({
       mnemonic,
       page: RecoverAccountPage.PAGES.RESET_PASSWORD_FORM,
     })
   }
 
-  async onSubmitResetPassword ({ password }) {
+  onSubmitResetPassword = async ({ password }) => {
     const { selectedWallet, mnemonic } = this.state
     await this.props.resetPasswordAccount(selectedWallet, mnemonic, password)
     this.props.navigateToLoginPage()
   }
 
-  previousPage () {
+  previousPage = () => {
     if (this.state.page === RecoverAccountPage.PAGES.RECOVER_ACCOUNT_FORM){
       this.props.navigateToSelectImportMethod()
     } else {
@@ -136,9 +137,6 @@ class RecoverAccountPage extends PureComponent {
   }
 
   render () {
-
     return this.getCurrentPage()
   }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(RecoverAccountPage)

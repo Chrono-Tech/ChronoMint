@@ -17,11 +17,19 @@ import './LoginWithPrivateKey.scss'
 
 class LoginWithPrivateKey extends PureComponent {
   static propTypes = {
+    error: PropTypes.string,
+    handleSubmit: PropTypes.func,
     previousPage: PropTypes.func,
+    submitting: PropTypes.bool,
   }
 
   render () {
-    const { handleSubmit, error, previousPage, submitting } = this.props
+    const {
+      error,
+      handleSubmit,
+      previousPage,
+      submitting,
+    } = this.props
 
     return (
       <form styleName='form' name={FORM_PRIVATE_KEY_LOGIN_PAGE} onSubmit={handleSubmit}>

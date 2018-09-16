@@ -22,7 +22,8 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-class CreateAccountContainer extends PureComponent {
+@connect(null, mapDispatchToProps)
+export default class CreateAccountContainer extends PureComponent {
   static propTypes = {
     onSubmit: PropTypes.func,
     onSubmitSuccess: PropTypes.func,
@@ -67,5 +68,3 @@ class CreateAccountContainer extends PureComponent {
     )
   }
 }
-
-export default connect(null, mapDispatchToProps)(CreateAccountContainer)

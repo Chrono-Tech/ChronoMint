@@ -36,12 +36,9 @@ class LoginUPort extends PureComponent {
 
   constructor (props, context, updater) {
     super(props, context, updater)
-
-    // TODO replace with async arrow when class properties will work correctly
-    this.handleLoginClick = this.handleLoginClick.bind(this)
   }
 
-  async handleLoginClick () {
+  handleLoginClick = async () => {
     try {
       await this.props.loginUport()
       this.props.onLogin()

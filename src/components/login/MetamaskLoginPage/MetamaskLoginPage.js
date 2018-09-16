@@ -19,7 +19,7 @@ import AccountNameContainer from '@chronobank/login-ui/components/AccountName/Ac
 import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
 import { getAddress } from '@chronobank/core/redux/persistAccount/utils'
 
-function mapDispatchToProps (dispatch) {
+const mapDispatchToProps = (dispatch) => {
   return {
     getUserInfo: (addresses: string[]) => dispatch(ProfileThunks.getUserInfo(addresses)),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
@@ -28,7 +28,8 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-class MetamaskLoginPage extends PureComponent {
+@connect(null, mapDispatchToProps)
+export default class MetamaskLoginPage extends PureComponent {
   static PAGES = {
     DEVICE_SELECT_FORM: 1,
     ACCOUNT_NAME_FORM: 2,
@@ -37,6 +38,7 @@ class MetamaskLoginPage extends PureComponent {
   static propTypes = {
     getUserInfo: PropTypes.func,
     navigateBack: PropTypes.func,
+    navigateToSelectWallet: PropTypes.func,
     onCreateWalletFromDevice: PropTypes.func,
   }
 
@@ -48,35 +50,35 @@ class MetamaskLoginPage extends PureComponent {
     }
   }
 
-  getCurrentPage () {
+  getCurrentPage = () => {
     switch(this.state.page){
       case MetamaskLoginPage.PAGES.DEVICE_SELECT_FORM:
         return (
           <LoginWithMetamaskContainer
-            previousPage={this.previousPage.bind(this)}
-            onDeviceSelect={this.onSubmitDevice.bind(this)}
+            previousPage={this.previousPage}
+            onDeviceSelect={this.onSubmitDevice}
           />
         )
 
       case MetamaskLoginPage.PAGES.ACCOUNT_NAME_FORM:
         return (
           <AccountNameContainer
-            previousPage={this.previousPage.bind(this)}
-            onSubmit={this.onSubmitAccountName.bind(this)}
+            previousPage={this.previousPage}
+            onSubmit={this.onSubmitAccountName}
           />
         )
 
       default:
         return (
           <LoginWithMetamaskContainer
-            previousPage={this.previousPage.bind(this)}
-            onDeviceSelect={this.onSubmitDevice.bind(this)}
+            previousPage={this.previousPage}
+            onDeviceSelect={this.onSubmitDevice}
           />
         )
     }
   }
 
-  async onSubmitDevice (device) {
+  onSubmitDevice = async (device) => {
     this.setState({
       device: device
     })
@@ -106,20 +108,20 @@ class MetamaskLoginPage extends PureComponent {
     }
   }
 
-  async onSubmitAccountName (accountName) {
+  onSubmitAccountName = async (accountName) => {
     const { onCreateWalletFromDevice, navigateToSelectWallet } = this.props
 
     onCreateWalletFromDevice(accountName, this.state.device, null)
     navigateToSelectWallet()
   }
 
-  navigateToDeviceSelectForm () {
+  navigateToDeviceSelectForm = () => {
     this.setState({
       page: MetamaskLoginPage.PAGES.DEVICE_SELECT_FORM,
     })
   }
 
-  previousPage () {
+  previousPage = () => {
     if (this.state.page === MetamaskLoginPage.PAGES.DEVICE_SELECT_FORM){
       this.props.navigateBack()
     } else {
@@ -128,9 +130,6 @@ class MetamaskLoginPage extends PureComponent {
   }
 
   render () {
-
     return this.getCurrentPage()
   }
 }
-
-export default connect(null, mapDispatchToProps)(MetamaskLoginPage)

@@ -310,6 +310,7 @@ export const initLoginPage = () =>
       dispatch(LoginUINavActions.navigateToSelectWallet())
       return
     }
+
     if (!selectedWallet) {
       dispatch(LoginUINavActions.navigateToCreateAccount())
       return

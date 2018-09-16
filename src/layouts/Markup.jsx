@@ -26,7 +26,7 @@ import { toggleMainMenu } from 'redux/sides/actions'
 
 import './Markup.scss'
 
-function mapStateToProps (state) {
+const mapStateToProps = (state) => {
   return {
     router: state.get('router'),
     notice: state.get(DUCK_NOTIFIER).notice,
@@ -35,14 +35,15 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+const mapDispatchToProps = (dispatch) => {
   return {
     handleCloseNotifier: () => dispatch(closeNotifier()),
     onToggleMainMenu: (mainMenuIsOpen) => dispatch(toggleMainMenu(mainMenuIsOpen)),
   }
 }
 
-class Markup extends PureComponent {
+@connect(mapStateToProps, mapDispatchToProps)
+export default class Markup extends PureComponent {
   static propTypes = {
     children: PropTypes.node,
     handleCloseNotifier: PropTypes.func,
@@ -139,5 +140,3 @@ class Markup extends PureComponent {
     )
   }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(Markup)

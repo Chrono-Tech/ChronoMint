@@ -52,11 +52,6 @@ class FileSelect extends PureComponent {
   constructor (props, context, updater) {
     super(props, context, updater)
 
-    // TODO replace with async arrow when class properties will work correctly
-    this.handleChange = this.handleChange.bind(this)
-    this.handleFileRemove = this.handleFileRemove.bind(this)
-    this.handleReset = this.handleReset.bind(this)
-
     this.state = {
       files: new Map(),
       fileCollection: new FileCollection(),
@@ -86,7 +81,7 @@ class FileSelect extends PureComponent {
     this.input.click()
   }
 
-  async handleChange (e) {
+  handleChange = async (e) => {
     if (!e.target.files.length) {
       return
     }
@@ -109,7 +104,7 @@ class FileSelect extends PureComponent {
     await this.uploadCollection(fileCollection, config)
   }
 
-  async handleFileRemove (id) {
+  handleFileRemove = async (id) => {
     const fileCollection = this.state.fileCollection.remove(id)
     this.setState({
       files: this.state.files.remove(id),
@@ -118,7 +113,7 @@ class FileSelect extends PureComponent {
     await this.uploadCollection(fileCollection, this.state.config)
   }
 
-  async handleReset () {
+  handleReset = async () => {
     const fileCollection = new FileCollection()
     this.setState({
       fileCollection,
@@ -127,11 +122,11 @@ class FileSelect extends PureComponent {
     await this.uploadCollection(fileCollection, this.state.config)
   }
 
-  getFilesLeft () {
+  getFilesLeft = () => {
     return Math.max(this.state.config.maxFiles - this.state.fileCollection.size(), 0)
   }
 
-  async loadCollection (hash) {
+  loadCollection = async (hash) => {
     const data = await ipfs.get(hash)
     let fileCollection = new FileCollection({
       hash,
@@ -147,7 +142,7 @@ class FileSelect extends PureComponent {
     })
   }
 
-  async uploadCollection (files: FileCollection, config: fileConfig) {
+  uploadCollection = async (files: FileCollection, config: fileConfig) => {
     const fileCollection = await ipfs.uploadCollection(files, config, this.handleFileUpdate)
     this.setState({ fileCollection })
     if (this.props.returnCollection) {
@@ -159,7 +154,7 @@ class FileSelect extends PureComponent {
     }
   }
 
-  renderFiles () {
+  renderFiles = () => {
     const files = this.state.fileCollection.files()
       .map((item) => (
         <FileItem
@@ -172,7 +167,7 @@ class FileSelect extends PureComponent {
     return files.length > 0 && <div styleName='files'>{files}</div>
   }
 
-  renderStatus () {
+  renderStatus = () => {
     const { fileCollection } = this.state
     if (fileCollection.hasErrors()) {
       return <Error color={globalStyles.colors.error} />
@@ -186,7 +181,7 @@ class FileSelect extends PureComponent {
     return null
   }
 
-  renderMultiple () {
+  renderMultiple = () => {
     const { fileCollection } = this.state
     const { meta } = this.props
 
@@ -213,7 +208,7 @@ class FileSelect extends PureComponent {
     )
   }
 
-  renderSingle () {
+  renderSingle = () => {
     const selectedFile = this.state.fileCollection.files().first()
     return (
       <div>
@@ -233,7 +228,7 @@ class FileSelect extends PureComponent {
     )
   }
 
-  renderIcon () {
+  renderIcon = () => {
     const { fileCollection } = this.state
     return (
       <div styleName='iconWrapper'>

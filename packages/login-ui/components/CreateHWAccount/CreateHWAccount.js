@@ -23,7 +23,7 @@ import validate from './validate'
 import fieldStyles from './styles'
 import './CreateHWAccount.scss'
 
-function mapDispatchToProps (dispatch) {
+const mapDispatchToProps = (dispatch) => {
   return {
     onSubmit: async (values) => {
       const walletName = values.get('walletName')

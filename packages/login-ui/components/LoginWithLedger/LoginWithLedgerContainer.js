@@ -19,14 +19,14 @@ import {
 } from '../../redux/navigation'
 import LoginWithLedger from './LoginWithLedger'
 
-function mapDispatchToProps (dispatch) {
+const mapDispatchToProps = (dispatch) => {
   return {
     navigateToCreateAccount: () => dispatch(navigateToCreateAccount()),
     initLedgerDevice: () => dispatch(initLedgerDevice()),
   }
 }
 
-function mapStateToProps (state) {
+const mapStateToProps = (state) => {
   return {
     deviceList: state.get(DUCK_DEVICE_ACCOUNT).deviceList.map(
       (wallet) => new DeviceEntryModel({ ...wallet }),
@@ -34,7 +34,8 @@ function mapStateToProps (state) {
   }
 }
 
-class LoginWithLedgerContainer extends PureComponent {
+@connect(mapStateToProps, mapDispatchToProps)
+export default class LoginWithLedgerContainer extends PureComponent {
   static propTypes = {
     previousPage: PropTypes.func,
     onDeviceSelect: PropTypes.func,
@@ -74,5 +75,3 @@ class LoginWithLedgerContainer extends PureComponent {
     )
   }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(LoginWithLedgerContainer)
