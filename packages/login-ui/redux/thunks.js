@@ -31,7 +31,8 @@ import * as SessionThunks from '@chronobank/core/redux/session/thunks'
 import { modalsOpen, modalsClose } from '@chronobank/core/redux/modals/actions'
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
 import * as DeviceActions from '@chronobank/core/redux/device/actions'
-import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
+// import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
+import { subscribeNews } from '@chronobank/nodes/httpNodes/api/backend_chronobank'
 import {
   createAccountEntry,
   createDeviceAccountEntry,
@@ -58,11 +59,11 @@ export const navigateToCreateAccountFromHW = (address) => (dispatch) => {
  * TODO: to add description
  * TODO: to dispatch something, this is not a thunk or action. Really..
  */
-export const onSubmitSubscribeNewsletter = (email) => async () => {
-  const publicBackendProvider = new PublicBackendProvider()
+export const onSubmitSubscribeNewsletter = (email) => async (dispatch) => {
+  // const publicBackendProvider = new PublicBackendProvider()
 
   try {
-    await publicBackendProvider.getSubscribe({ email })
+    await dispatch(subscribeNews(email)) //publicBackendProvider.getSubscribe({ email })
   } catch (e) {
     throw new SubmissionError({ _error: e && e.message })
   }

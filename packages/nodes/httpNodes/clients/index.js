@@ -6,6 +6,7 @@
 import * as expolorers from './explorers'
 import * as chronobankNodes from './chronobankNodes'
 import * as primaryNodes from './primaryNodes'
+import * as otherHosts from './otherHosts'
 
 export default {
 
@@ -21,7 +22,7 @@ export default {
   rinkeby_etherscan: expolorers.erc20.rinkeby_etherscan,
   tbcc_blockdozer: expolorers.bitcoinCash.tbcc_blockdozer,
 
-  // ChronoWallet middlewares
+  // ChronoBank middlewares
   middleware_bitcoin_mainnet_rest: chronobankNodes.bitcoin.middleware_bitcoin_mainnet_rest,
   middleware_bitcoin_testnet_rest: chronobankNodes.bitcoin.middleware_bitcoin_testnet_rest,
   middleware_ethereum_mainnet_rest: chronobankNodes.erc20.middleware_ethereum_mainnet_rest,
@@ -32,6 +33,9 @@ export default {
   middleware_nem_testnet_rest: chronobankNodes.nem.middleware_nem_testnet_rest,
   middleware_waves_mainnet_rest: chronobankNodes.waves.middleware_waves_mainnet_rest,
   middleware_waves_testnet_rest: chronobankNodes.waves.middleware_waves_testnet_rest,
+
+  // ChronoBank publick backend
+  backend_chronobank:  otherHosts.backend_chronobank,
 
   // Primary nodes
   mainnet_chronobank: primaryNodes.mainnet_chronobank,
