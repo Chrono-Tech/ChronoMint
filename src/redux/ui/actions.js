@@ -5,14 +5,14 @@
 
 import moment from 'moment'
 import { setLocale } from 'react-redux-i18n'
-import localStorage from 'utils/LocalStorage'
 import ipfs from '@chronobank/core/utils/IPFS'
+import { setPersistAccountLocale } from '@chronobank/core/redux/persistAccount/actions'
 import { CHANGE_WALLET_VIEW } from './constants'
 
 export const changeMomentLocale = (locale) => (dispatch) => {
   moment.locale(locale)
-  localStorage.setLocale(locale)
   dispatch(setLocale(locale))
+  dispatch(setPersistAccountLocale(locale))
 }
 
 export const download = (hash, name) => async () => {

@@ -10,8 +10,6 @@ import { removeWatchersUserMonitor } from '@chronobank/login-ui/redux/thunks'
 import { PTPoll } from '@chronobank/core/redux/voting/types'
 import * as VotingThunks from '@chronobank/core/redux/voting/thunks'
 import { removeWallet } from '@chronobank/core/redux/multisigWallet/actions'
-import { replace } from 'connected-react-router/immutable'
-import localStorage from 'utils/LocalStorage'
 import type MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import type PollDetailsModel from '@chronobank/core/models/PollDetailsModel'
 import {
@@ -20,8 +18,6 @@ import {
 
 const destroyNetworkSessionInLocalStorage = (isReset = true) => (dispatch) => {
   dispatch(destroyNetworkSession(isReset))
-  localStorage.setLastURL(`${window.location.pathname}${window.location.search}`)
-  localStorage.destroySession()
 }
 
 export const removePollAndNavigateToVotings = (pollObject: PTPoll) => (dispatch) => {
@@ -52,8 +48,7 @@ export const removeWalletAndNavigateToWallets = (wallet: MultisigEthWalletModel)
 }
 
 export const loginAndSetLocalStorage = (account) => async (dispatch) => {
-  const defaultURL = await dispatch(login(account))
-  dispatch(replace(localStorage.getLastURL() || defaultURL))
+  await dispatch(login(account))
 }
 
 export const goBackForAddWalletsForm = () => (dispatch, getState) => {

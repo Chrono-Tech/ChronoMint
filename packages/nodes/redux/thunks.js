@@ -13,9 +13,17 @@ export const preselectNetwork = () => (dispatch: Dispatch<any>, getState) => {
   const nodes = NodesSelectors.selectNodesState(state)
   if (nodes.selected === null) {
     if (process.env['NODE_ENV'] === 'development') {
-      NodesActions.networkSwitch(3)
+      dispatch(networkSelect(3))
     } else {
-      NodesActions.networkSwitch(1)
+      dispatch(networkSelect(1))
     }
   }
 }
+
+export const networkSelect = (networkIndex) => (dispatch: Dispatch<any>) => {
+  dispatch(NodesActions.networkSelect(networkIndex))
+  dispatch(NodesActions.networkSwitch(networkIndex))
+}
+
+export const nodesInit = () => (dispatch: Dispatch<any>) =>
+  dispatch(NodesActions.nodesInit())

@@ -7,6 +7,7 @@ import { Popover } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
+import { DUCK_I18N } from 'redux/i18n/constants'
 import Button from 'components/common/ui/Button/Button'
 import { changeMomentLocale } from 'redux/ui/actions'
 import classnames from 'classnames'
@@ -14,9 +15,10 @@ import classnames from 'classnames'
 import styles from './LocaleDropDown.scss'
 
 function mapStateToProps (state) {
+  const { locale, translations } = state.get(DUCK_I18N)
   return {
-    locale: state.get('i18n').locale,
-    translations: state.get('i18n').translations,
+    locale,
+    translations,
   }
 }
 
@@ -33,7 +35,7 @@ export default class LocaleDropDown extends PureComponent {
   static propTypes = {
     locale: PropTypes.string,
     onChangeLocale: PropTypes.func,
-    translations: PropTypes.object, // FIXME: at the moment it is fixed. But maybe more reliable fix is to replace data type. Or specify data type instead of .object
+    translations: PropTypes.object, // FIXME:  specify data type instead of PropTypes.object
     newButtonStyle: PropTypes.bool,
   }
 
@@ -71,11 +73,12 @@ export default class LocaleDropDown extends PureComponent {
   }
 
   render () {
-    const { locale, newButtonStyle } = this.props
-    const locales = Object.entries(this.props.translations).map(([ name, dictionary ]) => ({
-      name,
-      title: dictionary.title,
-    }))
+    const { locale, newButtonStyle, translations } = this.props
+    const locales = Object.entries(translations)
+      .map(([ name, dictionary ]) => ({
+        name,
+        title: dictionary.title,
+      }))
 
     return (
       <div styleName='root'>

@@ -26,12 +26,18 @@ import ducks from './ducks'
 const walletsPersistConfig = {
   key: DUCK_WALLETS,
   storage: storage,
+  // There is an issue in the source code of redux-persist (default setTimeout does not cleaning)
+  // See https://github.com/rt2zz/redux-persist/issues/786#issuecomment-421850652
+  timeout: null,
 }
 
 const accountPersistConfig = {
   key: DUCK_PERSIST_ACCOUNT,
   storage: storage,
-  blacklist: ['decryptedWallet', 'rehydrated'],
+  blacklist: ['decryptedWallet'],
+  // There is an issue in the source code of redux-persist (default setTimeout does not cleaning)
+  // See https://github.com/rt2zz/redux-persist/issues/786#issuecomment-421850652
+  timeout: null,
 }
 
 // Combine all App's reducers
@@ -42,12 +48,13 @@ const appReducer = combineReducers({
   form: formReducer,
   i18n: i18nReducer,
   nodes: apiReducer,
-  persistAccount: persistReducer(accountPersistConfig, persistAccountReducer),
-  wallets: persistReducer(walletsPersistConfig, walletsReducer),
+  [DUCK_PERSIST_ACCOUNT]: persistReducer(accountPersistConfig, persistAccountReducer),
+  [DUCK_WALLETS]: persistReducer(walletsPersistConfig, walletsReducer),
   ws: middlewareWebSocketReducer,
 })
 
 export default (state, action) => {
+  // TODO: I suppose that there is more appropriate place for this...
   if (action.type === SESSION_DESTROY) {
     const i18nState = state.get(DUCK_I18N)
     const persistAccount = state.get(DUCK_PERSIST_ACCOUNT)

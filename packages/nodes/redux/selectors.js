@@ -18,9 +18,10 @@ export const selectCurrentNetwork = createSelector(
 export const selectAvailableProviders = createSelector(
   selectNodesState,
   (nodesState) =>
-    nodesState.availableNetworks.map((network) =>
-      network.primaryNode.ws
-    )
+    nodesState.availableNetworks
+      .map((network) =>
+        network.primaryNode.ws
+      )
 )
 
 export const selectDisplayNetworksList = createSelector(

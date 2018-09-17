@@ -51,15 +51,12 @@ export default class AccountSelector extends PureComponent {
   )
 
   renderWalletsList = () => {
-    console.log('renderWalletsList')
     const { onWalletSelect, walletsList } = this.props
 
     if (!walletsList || walletsList.length === 0) {
-      console.log('renderEmptyWalletsList')
       return this.renderEmptyWalletsList()
     }
 
-    console.log('walletsList.map')
     return walletsList.map((w, i) => {
       const handleUserRowClick = () => onWalletSelect(w)
       return this.renderUserRow(w, i, handleUserRowClick)

@@ -10,7 +10,6 @@ import {
   stopSubmit,
   SubmissionError,
 } from 'redux-form'
-import { replace } from 'connected-react-router/immutable'
 import { MOCK_PRIVATE_KEY } from '@chronobank/core/services/signers/BitcoinLedgerDeviceMock'
 import {
   WALLET_TYPE_MEMORY,
@@ -25,7 +24,6 @@ import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import setup from '@chronobank/login/network/EngineUtils'
 import { selectCurrentNetworkType } from '@chronobank/nodes/redux/selectors'
-import localStorage from 'utils/LocalStorage'
 import {
   DUCK_NETWORK,
 } from '@chronobank/login/redux/network/constants'
@@ -119,10 +117,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
           selectedNetworkId,
         ))
 
-        localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
-        const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
-
-        dispatch(replace(localStorage.getLastURL() || defaultURL))
+        await dispatch(SessionThunks.login(selectedAccount))
       } catch (e) {
         //eslint-disable-next-line
         console.warn('Device errors: ', e)
@@ -164,10 +159,8 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
           selectedProviderId,
           selectedNetworkId,
         ))
-        localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
-        const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
+        await dispatch(SessionThunks.login(selectedAccount))
 
-        dispatch(replace(localStorage.getLastURL() || defaultURL))
       } catch (e) {
         //eslint-disable-next-line
         console.warn('Device errors: ', e)

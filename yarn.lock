@@ -11706,15 +11706,7 @@ redux-persist-transform-immutable@^4.1.0:
     transit-immutable-js "^0.7.0"
     transit-js "^0.8.846"
 
-redux-persist@^4.0.0:
-  version "4.10.2"
-  resolved "https://registry.yarnpkg.com/redux-persist/-/redux-persist-4.10.2.tgz#8efdb16cfe882c521a78a6d0bfdfef2437f49f96"
-  dependencies:
-    json-stringify-safe "^5.0.1"
-    lodash "^4.17.4"
-    lodash-es "^4.17.4"
-
-redux-persist@^5.9.1:
+redux-persist@^5.10.0, redux-persist@^5.9.1:
   version "5.10.0"
   resolved "https://registry.yarnpkg.com/redux-persist/-/redux-persist-5.10.0.tgz#5d8d802c5571e55924efc1c3a9b23575283be62b"
 

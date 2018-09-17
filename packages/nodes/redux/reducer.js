@@ -10,7 +10,7 @@ import initialState from './initialState'
 
 const mutations = {
 
-  [NodesActionTypes.NODES_NETWORK_SWITCH]: (state, { networkIndex }) => {
+  [NodesActionTypes.NODES_NETWORK_SELECT]: (state, { networkIndex }) => {
     return {
       ...state,
       selected: state.availableNetworks[networkIndex],
