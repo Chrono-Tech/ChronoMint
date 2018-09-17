@@ -33,6 +33,8 @@ const submitTransaction = (entry) => async (dispatch, getState) => {
       token: getToken(entry.symbol)(state),
     })
 
+  console.log('submitTransaction: ', description, entry)
+
   dispatch(modalsOpen({
     componentName: 'ConfirmTxDialog',
     props: {
@@ -108,18 +110,20 @@ const sendSignedTransaction = (entry) => async (dispatch, getState) => {
     throw new Error(error)
   }
 
+  dispatch(WavesActions.wavesTxSendSignedTransaction(entry))
+
   const state = getState()
   const token = state.get(DUCK_TOKENS).item(entry.symbol)
-
   const dao = tokenService.getDAO(token)
 
   try {
 
     const sendResult = await dao._wavesProvider.justTransfer(entry.from, entry.tx.prepared)
-
+    console.log('sendResult: ', sendResult)
     return sendResult
-  } catch (e) {
+  } catch (error) {
     //eslint-disable-next-line
-    console.log('Send WAVES errors: ', e)
+    console.log('Send WAVES errors: ', error)
+    dispatch(WavesActions.wavesTxSendSignedTransactionError(error))
   }
 }

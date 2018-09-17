@@ -4,22 +4,11 @@
  */
 
 export default {
-  Transfer: {
-    transfer: {
-      title: 'Waves Transfer',
-      from: 'From',
-      to: 'To',
-      amount: 'Amount',
-      fee: 'Fee',
-    },
-  },
-  Issue: {
-    transfer: {
-      title: 'Asset Transfer',
-      from: 'From',
-      to: 'To',
-      amount: 'Amount',
-      fee: 'Fee',
-    },
+  transfer: {
+    title: 'Waves Transfer',
+    from: 'From',
+    to: 'To',
+    amount: 'Amount',
+    fee: 'Fee',
   },
 }

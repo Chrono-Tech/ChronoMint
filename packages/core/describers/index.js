@@ -210,7 +210,7 @@ export const describePendingWavesTx = (entry, context = {}) => {
   const fee = new Amount(prepared.fee, WAVES)
   const amount = new Amount(prepared.amount, token.symbol()) // we can send only one mosaic
 
-  const path = `tx.waves.transfer`
+  const path = 'tx.Waves.transfer'
 
   return new LogTxModel({
     key: tx.block ? `${block.hash}/${tx.transactionIndex}` : uuid(),

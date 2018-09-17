@@ -33,6 +33,16 @@ export const wavesTxReject = (entry) => ({
   entry,
 })
 
+export const wavesTxSendSignedTransaction = (entry) => ({
+  type: WavesConstants.TX_SEND_SIGNED,
+  entry,
+})
+
+export const wavesTxSendSignedTransactionError = (error) => ({
+  type: WavesConstants.TX_SEND_SIGNED_ERROR,
+  error,
+})
+
 export const wavesTxSignTransaction = (entry) => ({
   type: WavesConstants.TX_SIGN,
   entry,

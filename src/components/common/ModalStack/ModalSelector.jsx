@@ -14,7 +14,6 @@ import AddTokenDialog from 'components/assetsManager/AddTokenDialog/AddTokenDial
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
 import BlacklistDialog from 'components/assetsManager/BlacklistDialog/BlacklistDialog'
 import BlockAssetDialog from 'components/assetsManager/BlockAssetDialog/BlockAssetDialog'
-import ConfirmTransferDialog from 'components/dialogs/ConfirmTransferDialog/ConfirmTransferDialog'
 import ConfirmTxDialog from 'components/dialogs/ConfirmTxDialog/ConfirmTxDialog'
 import CopyDialog from 'components/dialogs/CopyDialog/CopyDialog'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
@@ -43,7 +42,6 @@ export default class ModalSelector extends PureComponent {
     'AssetManagerDialog': AssetManagerDialog,
     'BlacklistDialog': BlacklistDialog,
     'BlockAssetDialog': BlockAssetDialog,
-    'ConfirmTransferDialog': ConfirmTransferDialog,
     'ConfirmTxDialog': ConfirmTxDialog,
     'CopyDialog': CopyDialog,
     'DepositTokensModal': DepositTokensModal,

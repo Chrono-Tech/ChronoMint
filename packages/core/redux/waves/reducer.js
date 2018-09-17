@@ -65,7 +65,25 @@ const mutations = {
       lastRequestMeta: entry,
     }
   },
+  [WavesConstants.TX_SIGN]: (state, { entry }) => {
+    return {
+      ...state,
+      lastRequestMeta: entry,
+    }
+  },
   [WavesConstants.TX_SIGN_ERROR]: (state, { error }) => {
+    return {
+      ...state,
+      lastRequestMeta: error,
+    }
+  },
+  [WavesConstants.TX_SEND_SIGNED]: (state, { entry }) => {
+    return {
+      ...state,
+      lastRequestMeta: entry,
+    }
+  },
+  [WavesConstants.TX_SEND_SIGNED_ERROR]: (state, { error }) => {
     return {
       ...state,
       lastRequestMeta: error,
