@@ -22,7 +22,6 @@ export const createWavesTxEntryModel = (entry, options = {}) => {
 }
 
 export const describeTransaction = (type, params) => {
-  console.log('describeTransaction: ', type, params)
   switch (type) {
     case TRANSACTION_TYPE_ISSUE :
       return describeIssueTransaction(params)
@@ -58,7 +57,6 @@ export const describeTransferTransaction = (to, amount) => {
 }
 
 export const prepareWavesTransaction = (tx, token, network) => () => {
-  console.log('prepareWavesTransaction: ', tx, token, network)
   const options = {
     from: tx.from,
     to: tx.to,
@@ -67,7 +65,6 @@ export const prepareWavesTransaction = (tx, token, network) => () => {
     amount: tx.value,
   }
   const prepared = describeTransaction(TRANSACTION_TYPE_TRANSFER, options)
-  console.log('prepareWavesTransaction: prepared: ', prepared)
 
   return new TxExecModel({
     from: tx.from,

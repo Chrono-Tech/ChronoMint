@@ -30,12 +30,9 @@ export default class WavesMemoryDevice extends EventEmitter {
       ...unsignedTxData,
       senderPublicKey: this.getPublicKey()
     }
-    console.log('signTransaction: ', unsignedTxData, transactionData)
 
     const transferTransaction = new this.waves.Transactions.TransferTransaction(transactionData)
-    console.log('transferTransaction: ', transferTransaction, this.getKeyPair())
     const preparedTransaction = await transferTransaction.prepareForAPI(this.getKeyPair().privateKey)
-    console.log('transferTransaction preparedTransaction: ', preparedTransaction)
 
     return preparedTransaction
   }

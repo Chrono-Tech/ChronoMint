@@ -15,13 +15,11 @@ import { DUCK_TOKENS } from '../tokens/constants'
 import tokenService from '../../services/TokenService'
 
 export const executeWavesTransaction = ({ tx, options }) => async (dispatch, getState) => {
-  console.log('executeWavesTransaction: ', tx, options)
   const state = getState()
   const token = getToken(options.symbol)(state)
   const network = getSelectedNetwork()(state)
   const prepared = dispatch(WavesUtils.prepareWavesTransaction(tx, token, network))
   const entry = WavesUtils.createWavesTxEntryModel({ tx: prepared }, options)
-  console.log('entry: ', entry)
 
   await dispatch(WavesActions.wavesTxCreate(entry))
   dispatch(submitTransaction(entry, options))
@@ -87,7 +85,6 @@ const processTransaction = ({ entry, signer }) => async (dispatch) => {
 
 const signTransaction = ({ entry, signer }) => async (dispatch) => {
   try {
-    console.log('signTransaction: ', entry, signer)
     dispatch(WavesActions.wavesTxSignTransaction({ entry, signer }))
 
     const signedPreparedTx = await signer.signTransaction(entry.tx.prepared)
@@ -99,7 +96,6 @@ const signTransaction = ({ entry, signer }) => async (dispatch) => {
 
     return newEntry
   } catch (error) {
-    console.log('signTransaction error: ', error)
     dispatch(WavesActions.wavesTxSignTransactionError({ error }))
     throw error
   }
@@ -107,7 +103,6 @@ const signTransaction = ({ entry, signer }) => async (dispatch) => {
 
 // TODO: need to continue rework of this method. Pushed to merge with other changes.
 const sendSignedTransaction = (entry) => async (dispatch, getState) => {
-  console.log('sendSignedTransaction: ', entry)
   if (!entry) {
     const error = new Error('Can\'t send empty Tx. There is no entry at WAVES sendSignedTransaction')
     throw new Error(error)
@@ -117,15 +112,14 @@ const sendSignedTransaction = (entry) => async (dispatch, getState) => {
   const token = state.get(DUCK_TOKENS).item(entry.symbol)
 
   const dao = tokenService.getDAO(token)
-  console.log('daodao: ', dao)
 
   try {
 
     const sendResult = await dao._wavesProvider.justTransfer(entry.from, entry.tx.prepared)
-    console.log('sendResult: ', sendResult)
 
-    return
+    return sendResult
   } catch (e) {
+    //eslint-disable-next-line
     console.log('Send WAVES errors: ', e)
   }
 }

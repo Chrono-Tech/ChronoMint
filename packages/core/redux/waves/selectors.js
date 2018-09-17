@@ -9,14 +9,14 @@ import { createSelector } from 'reselect'
 import { DUCK_WAVES } from './constants'
 import MetamaskPlugin from '../../services/signers/MetamaskPlugin'
 import WavesMemoryDevice from '../../services/signers/WavesMemoryDevice'
+import WavesLedgerDevice from '../../services/signers/WavesLedgerDevice'
+import WavesLedgerDeviceMock from '../../services/signers/WavesLedgerDeviceMock'
 import { getPersistAccount, getSelectedNetwork } from '../persistAccount/selectors'
 import {
   WALLET_TYPE_MEMORY,
   WALLET_TYPE_METAMASK,
-  // WALLET_TYPE_LEDGER,
-  // WALLET_TYPE_LEDGER_MOCK,
-  // WALLET_TYPE_TREZOR,
-  // WALLET_TYPE_TREZOR_MOCK,
+  WALLET_TYPE_TREZOR,
+  WALLET_TYPE_TREZOR_MOCK,
 } from '../../models/constants/AccountEntryModel'
 
 export const wavesSelector = () => (state) => state.get(DUCK_WAVES)
@@ -29,7 +29,6 @@ export const wavesPendingSelector = () => createSelector(
 export const pendingEntrySelector = (address, key) => createSelector(
   wavesPendingSelector(),
   (pending) => {
-    console.log('pendingEntrySelector: ', pending)
     if (address in pending) {
       return pending[address][key] || null
     }
@@ -46,18 +45,12 @@ export const getWavesSigner = (state) => {
       const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
       return new WavesMemoryDevice({ seedPhrase: privateKey, network })
     }
-    // case WALLET_TYPE_LEDGER_MOCK: {
-    //   return new NemLedgerDeviceMock({ network })
-    // }
-    // case WALLET_TYPE_LEDGER: {
-    //   return new NemLedgerDevice({ network })
-    // }
-    // case WALLET_TYPE_TREZOR_MOCK: {
-    //   return new NemLedgerDeviceMock({ network })
-    // }
-    // case WALLET_TYPE_TREZOR: {
-    //   return new NemLedgerDevice({ network })
-    // }
+    case WALLET_TYPE_TREZOR_MOCK: {
+      return new WavesLedgerDeviceMock({ network })
+    }
+    case WALLET_TYPE_TREZOR: {
+      return new WavesLedgerDevice({ network })
+    }
     case WALLET_TYPE_METAMASK: {
       return new MetamaskPlugin()
     }
