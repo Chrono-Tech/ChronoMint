@@ -26,6 +26,7 @@ import {
   WALLETS_SELECT,
   WALLETS_UPDATE_LIST,
   WALLETS_LOAD,
+  PERSIST_ACCOUNT_SET_LOCALE,
 } from './constants'
 
 export const accountAdd = (wallet) => (dispatch) => {
@@ -205,4 +206,8 @@ export const customNetworksListUpdate = (list) => (dispatch) => {
 
 export const customNetworksListReset = () => (dispatch) => {
   dispatch({ type: CUSTOM_NETWORKS_LIST_RESET })
+}
+
+export const setPersistAccountLocale = (locale) => (dispatch) => {
+  dispatch({ type: PERSIST_ACCOUNT_SET_LOCALE, locale })
 }

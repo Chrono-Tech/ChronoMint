@@ -10,8 +10,8 @@ const initialState = {
   walletsList: [],
   selectedWallet: null,
   decryptedWallet: null,
-  rehydrated: false,
   customNetworksList: [],
+  locale: 'en',
 }
 
 const mutations = {
@@ -20,16 +20,19 @@ const mutations = {
     // action.payload is undefined if LocalStorage is empty
     // See https://github.com/rt2zz/redux-persist/issues/719
     if (!payload) {
-      return {
-        ...state,
-        rehydrated: true,
-      }
+      return state
     }
 
     return {
       ...state,
       ...payload.persistAccount,
-      rehydrated: true,
+    }
+  },
+
+  [persistAccountActionTypes.PERSIST_ACCOUNT_SET_LOCALE]: (state, payload) => {
+    return {
+      ...state,
+      locale: payload.locale,
     }
   },
 

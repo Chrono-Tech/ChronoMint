@@ -5,13 +5,12 @@
 
 import { applyMiddleware, compose, createStore } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension/logOnly'
-import { createBrowserHistory } from 'history'
-import { persistStore } from 'redux-persist'
 import { connectRouter } from 'connected-react-router/immutable'
+import { createBrowserHistory } from 'history'
 import { Map } from 'immutable'
-
-import rootReducer from './rootReducer'
+import { persistStore } from 'redux-persist'
 import getMiddlewares from './middlewares'
+import rootReducer from './rootReducer'
 
 const initialState = new Map()
 

@@ -56,6 +56,11 @@ export const networkSwitch = (networkIndex) => ({
   networkIndex,
 })
 
+export const networkSelect = (networkIndex) => ({
+  type: NodesActionTypes.NODES_NETWORK_SELECT,
+  networkIndex,
+})
+
 export const addCustomNetwork = (host, networkTitle, alias, ws) => ({
   type: NodesActionTypes.NODES_PRIMARY_NODE_ADD_CUSTOM_NODE,
   host,

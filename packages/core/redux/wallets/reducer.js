@@ -20,20 +20,21 @@ export default (state = initialState, action) => {
       if (!action.payload) {
         return {
           ...state,
-          rehydrated: true,
         }
       }
-
       const incoming = action.payload.wallets
       if (incoming) {
+        const list = Object.entries(incoming.list)
+          .reduce((accumulator, [key, wallet]) => {
+            if (wallet.isDerived) {
+              accumulator[key] = wallet
+            }
+            return accumulator
+          }, {})
+
         return {
-          list: Object.entries(incoming.list)
-            .reduce((accumulator, [key, wallet]) => {
-              if (wallet.isDerived) {
-                accumulator[key] = wallet
-              }
-              return accumulator
-            }, {}),
+          ...state,
+          list,
         }
       }
       return state

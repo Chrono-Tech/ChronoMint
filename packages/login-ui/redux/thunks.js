@@ -10,7 +10,6 @@ import {
   stopSubmit,
   SubmissionError,
 } from 'redux-form'
-import { replace } from 'connected-react-router/immutable'
 import {
   WALLET_TYPE_MEMORY,
   WALLET_TYPE_TREZOR,
@@ -21,7 +20,6 @@ import {
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 import { getEthereumSigner } from '@chronobank/core/redux/persistAccount/selectors'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
-import localStorage from 'utils/LocalStorage'
 import {
   DUCK_NETWORK,
 } from '@chronobank/login/redux/network/constants'
@@ -107,10 +105,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
           selectedNetworkId,
         ))
 
-        localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
-        const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
-
-        dispatch(replace(localStorage.getLastURL() || defaultURL))
+        await dispatch(SessionThunks.login(selectedAccount))
       } catch (e) {
         //eslint-disable-next-line
         console.warn('Memory type error: ', e)
@@ -144,10 +139,8 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
           selectedProviderId,
           selectedNetworkId,
         ))
-        localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
-        const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
+        await dispatch(SessionThunks.login(selectedAccount))
 
-        dispatch(replace(localStorage.getLastURL() || defaultURL))
       } catch (e) {
         //eslint-disable-next-line
         console.warn('Device type error: ', e)

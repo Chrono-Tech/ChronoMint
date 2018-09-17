@@ -6,7 +6,7 @@
 import Web3 from 'web3'
 import * as NodesActionTypes from './constants'
 import * as NodesActions from './actions'
-// import * as NodesThunks from './thunks'
+import * as NodesThunks from './thunks'
 import * as NodesSelectors from './selectors'
 
 let w3 = null
@@ -102,7 +102,7 @@ const mutations = {
           accumulator[providerUrl] = null
           return accumulator
         }, {})
-      // store.dispatch(NodesThunks.preselectNetwork())
+      store.dispatch(NodesThunks.preselectNetwork())
     }
     const currentPrimaryNode = NodesSelectors.selectCurrentPrimaryNode(state)
     const currentProviderUrl = currentPrimaryNode.ws
@@ -112,9 +112,9 @@ const mutations = {
       const w3Provider = getProvider(currentProviderUrl, store.dispatch)
       availableProviders[currentProviderUrl] = w3Provider
       w3 = new Web3(w3Provider)
-      return w3
+      return Promise.resolve(w3)
     } else {
-      return w3
+      return Promise.resolve(w3)
     }
   },
 

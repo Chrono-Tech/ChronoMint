@@ -144,13 +144,5 @@ export default {
       primaryNode: availablePrimaryNodes[TESTNET].infura,
     },
   ],
-  // selected: null,
-  selected: {
-    chronobankMiddlewares: availableChronoBankMiddlewares[MAINNET],
-    networkId: 1,
-    networkIndex: 1,
-    networkTitle: 'Infura - Mainnet (production)',
-    networkType: MAINNET,
-    primaryNode: availablePrimaryNodes[MAINNET].infura,
-  },
+  selected: null,
 }
