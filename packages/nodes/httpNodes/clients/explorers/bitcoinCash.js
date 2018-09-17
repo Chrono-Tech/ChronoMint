@@ -9,6 +9,7 @@ export const bcc_blockdozer = {
   client: axios.create({
     baseURL: 'https://bcc.blockdozer.com/insight/tx',
     responseType: 'json',
+    withCredentials: false,
   }),
 }
 
@@ -16,5 +17,6 @@ export const tbcc_blockdozer = {
   client: axios.create({
     baseURL: 'https://tbcc.blockdozer.com/insight/tx',
     responseType: 'json',
+    withCredentials: false,
   }),
 }

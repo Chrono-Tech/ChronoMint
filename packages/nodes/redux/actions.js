@@ -21,8 +21,9 @@ export const primaryNodeGetWeb3Instance = () => ({
   type: NodesActionTypes.NODES_PRIMARY_NODE_GET_WEB3,
 })
 
-export const primaryNodeConnected = () => ({
+export const primaryNodeConnected = (url) => ({
   type: NodesActionTypes.NODES_PRIMARY_NODE_CONNECTED,
+  url,
 })
 
 export const primaryNodeSwitch = () => ({
