@@ -18,6 +18,12 @@ export async function checkNotAuthorized (page) {
   await expect(page).not.toMatch('Add a wallet');
 }
 
+export async function openMyAccountsPage (page) {
+  const myAccountsLinkSelector = 'a[title="My Accounts"]';
+  await page.waitForSelector(myAccountsLinkSelector);
+  await page.click(myAccountsLinkSelector);
+}
+
 export async function submitSignUpForm (page, username, password) {
   await page.waitForSelector('[name=walletName]');
   await typeFieldValue(page, '[name=walletName]', username);
