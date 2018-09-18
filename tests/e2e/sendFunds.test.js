@@ -22,6 +22,11 @@ describe('Send Funds', () => {
       'ETH', 0.02, 0.0001);
   }, TimeoutLength);
 
+  it('sends WAVES', async () => {
+    await sendFunds(page, '3MuHNTMjfbUAJ57Xwjnhg1w7qZq8toGjCw1', '3MuNkBGG71eSBc4HBJYU2KH96m77Rh7WYhu',
+      'WAVES', 0.2, 0.000001);
+  }, TimeoutLength);
+
   it('sends XEM', async () => {
     await sendFunds(page, 'TCZRMYQBOLN62JIDT5QPSWDFEQRFLIFLZ6VIG6QO', 'TB5XY5YX6VKWHZMQ2ETNGT2PXQLNV4EHDSI2QQYU',
       'XEM', 0.2, 0.000001);
