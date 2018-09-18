@@ -34,7 +34,6 @@ describe('Sign Up', () => {
     await clickText(page, 'Done');
     await clickText(page, 'Finish');
 
-    await page.waitFor(7000);
     await submitSignInForm(page, username, password);
     await checkAuthorized(page);
   }, TimeoutLength);

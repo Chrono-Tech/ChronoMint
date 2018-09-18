@@ -2,11 +2,12 @@
 import { clickByXpahSelector, clickText, typeFieldValue } from './';
 
 export const submitSignInForm = async function (page, username, password) {
+  await page.waitForXPath(`//*[text()="${username}"]`);
   await clickText(page, username);
-  await page.waitFor(2000);
+  await page.waitForSelector('[name=password]');
   await typeFieldValue(page, '[name=password]', password);
   await clickByXpahSelector(page, '//*[contains(@class, "Button__login_")]');
-  await page.waitFor(15000);
+  await page.waitForXPath('//*[text()="Add a wallet"]');
 };
 
 export async function checkAuthorized (page) {
@@ -18,6 +19,7 @@ export async function checkNotAuthorized (page) {
 }
 
 export async function submitSignUpForm (page, username, password) {
+  await page.waitForSelector('[name=walletName]');
   await typeFieldValue(page, '[name=walletName]', username);
   await typeFieldValue(page, '[name=password]', password);
   await typeFieldValue(page, '[name=confirmPassword]', password);
@@ -31,10 +33,9 @@ export async function signInByMnemonicKey (page, username, password, mnemonicKey
 
   await typeFieldValue(page, '[name=mnemonic]', mnemonicKey);
   await clickText(page, 'Submit');
-  await page.waitFor(7000);
 
   await submitSignUpForm(page, username, password);
-  await page.waitFor(2000);
+  await page.waitForXPath('//*[text()="Finish"]');
   await clickText(page, 'Finish');
   await submitSignInForm(page, username, password);
 }
