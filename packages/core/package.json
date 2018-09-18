@@ -18,6 +18,7 @@
     "joi": "^13.1.2",
     "lodash": "^4.17.4",
     "moment": "^2.17.1",
+    "nem-sdk": "^1.6.7",
     "prop-types": "latest",
     "redux-form": "^7.3.0",
     "redux-persist": "^5.9.1",

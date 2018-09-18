@@ -16,6 +16,7 @@ import mainWallet from './mainWallet/reducer'
 import market from './market/reducer'
 import modals from './modals/reducer'
 import nem from './nem/reducer'
+import eos from './eos/reducer'
 import notifier from './notifier/reducer'
 import persistAccount from './persistAccount/reducer'
 import profile from './profile/reducer'
@@ -40,6 +41,7 @@ const coreReducers = {
   market,
   modals,
   nem,
+  eos,
   notifier,
   persistAccount,
   profile,

@@ -19,6 +19,7 @@ import layouts from 'layouts/lang'
 import * as votingManager from '@chronobank/core/dao/constants/VotingManagerDAO'
 import * as chronoBankAsset from '@chronobank/core/dao/constants/ChronoBankAssetDAO'
 import nem from './en-tx-nem'
+import eos from './en-tx-eos'
 
 export default {
   copyright: 'Copyright © 2018 LaborX Pty Ltd. All Rights Reserved.',
@@ -254,6 +255,7 @@ export default {
     General: require('./en-tx-general'),
     Bitcoin: require('./en-tx-bitcoin'),
     nem,
+    eos,
     Waves: require('./en-tx-waves'),
     /* eslint-enable global-require */
     ContractsManager: {},
