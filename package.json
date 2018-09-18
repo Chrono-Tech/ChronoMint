@@ -85,7 +85,7 @@
     "style-loader": "^0.17.0",
     "uglify-js": "github:mishoo/UglifyJS2#harmony",
     "url-loader": "0.5.8",
-    "webpack": "3.4.1",
+    "webpack": "3.10.0",
     "webpack-compile-time-plugin": "^1.0.0",
     "webpack-dev-server": "2.9.4"
   },
