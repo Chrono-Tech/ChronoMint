@@ -8,6 +8,7 @@ const webpack = require('webpack')
 const babel = require('./babel.dev')
 const CompileTimePlugin = require('webpack-compile-time-plugin')
 const CircularDependencyPlugin = require('circular-dependency-plugin')
+const FilterWarningsPlugin = require('webpack-filter-warnings-plugin')
 
 const config = require('./webpack.config.base.js')
 
@@ -30,7 +31,8 @@ module.exports = config.buildConfig(
       // Next line is not used in dev but WebpackDevServer crashes without it:
       path: buildPath,
       pathinfo: true,
-      filename: 'bundle.js',
+      filename: "[name].bundle.js",
+      chunkFilename: "[id].chunk.js",
       publicPath: '/',
     },
     babel,
@@ -56,6 +58,13 @@ module.exports = config.buildConfig(
         inject: true,
         template: indexHtmlPath,
         favicon: faviconPath,
+      }),
+      new FilterWarningsPlugin({
+        exclude: /Critical dependency: the request of a dependency is an expression/
+      }),
+      new webpack.optimize.CommonsChunkPlugin({
+        name: 'src',
+        minChunks: (m) => /src/.test(m.context)
       }),
       new webpack.ProvidePlugin({
         'Web3': 'web3',
