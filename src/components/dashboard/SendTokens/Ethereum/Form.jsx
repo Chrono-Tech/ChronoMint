@@ -25,7 +25,6 @@ import { TextField } from 'redux-form-material-ui'
 import Select from 'redux-form-material-ui/es/Select'
 import Slider from 'components/common/Slider'
 import { change, Field, formPropTypes, formValueSelector, getFormSyncErrors, getFormValues, reduxForm } from 'redux-form/immutable'
-import { getSpendersAllowance } from '@chronobank/core/redux/mainWallet/actions'
 import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
@@ -42,6 +41,14 @@ import './form.scss'
 import validate from '../validate'
 import { handleNewProps } from '../thunks'
 
+const onUpdate = (form) => {
+  console.log('onUpdate: ', form)
+}
+
+const onChange = (values) => {
+  console.log('onChange: ', values)
+}
+
 function mapDispatchToProps (dispatch, ownProps) {
   return {
     onUpdate: (form) => {
@@ -51,7 +58,7 @@ function mapDispatchToProps (dispatch, ownProps) {
       const currentFormValues = values.toJSON()
       const previousFormValues = Ethereum.formPropsContainer
       console.log('onChange: ', currentFormValues, previousFormValues, ownProps)
-      dispatch(handleNewProps(currentFormValues, previousFormValues))
+      dispatch(handleNewProps(currentFormValues, previousFormValues, ownProps))
 
       // if ((currentFormValues.token.address() !== this.props.token.address() || currentFormValues.recipient !== this.props.recipient) && currentFormValues.token.isERC20()) {
       //   this.props.dispatch(getSpendersAllowance(currentFormValues.token.id(), currentFormValues.recipient))
@@ -165,35 +172,37 @@ export default class Ethereum extends PureComponent {
     this.timeout = null
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate (prevProps) {
     console.log('componentDidUpdate: ', prevProps, this.props)
-
-    if ((this.props.token.address() !== prevProps.token.address() || this.props.recipient !== prevProps.recipient) && this.props.token.isERC20()) {
-      this.props.dispatch(getSpendersAllowance(this.props.token.id(), this.props.recipient))
-    }
-
-    if (this.props.amount > 0 &&
-      (this.props.formValues !== prevProps.formValues || this.props.mode !== prevProps.mode)) {
-      const { token, recipient, amount, feeMultiplier, wallet } = this.props
-      try {
-        const value = new Amount(token.addDecimals(amount), this.props.symbol)
-        this.handleEstimateGas(token.symbol(), [recipient, value, TX_TRANSFER], feeMultiplier, wallet.address)
-      } catch (error) {
-        // eslint-disable-next-line
-        console.error(error)
-      }
-    }
-
-    if (this.props.mode === MODE_SIMPLE && this.props.feeMultiplier !== prevProps.feeMultiplier) {
-      prevProps.dispatch(change(FORM_SEND_TOKENS, 'gweiPerGas', this.getFormFee(this.props)))
-    }
-    if (this.props.gasPriceMultiplier !== prevProps.gasPriceMultiplier) {
-      prevProps.dispatch(change(FORM_SEND_TOKENS, 'feeMultiplier', this.props.gasPriceMultiplier))
-    }
-    if (!prevProps.gasLimit && prevState.gasLimit && prevProps.gasLimit !== prevState.gasLimit) {
-      prevProps.dispatch(change(FORM_SEND_TOKENS, 'gasLimit', prevState.gasLimit))
-    }
   }
+
+  // // eslint-disable-next-line complexity
+  // componentWillReceiveProps (newProps) {
+  //   if ((newProps.token.address() !== this.props.token.address() || newProps.recipient !== this.props.recipient) && newProps.token.isERC20()) {
+  //     this.props.dispatch(getSpendersAllowance(newProps.token.id(), newProps.recipient))
+  //   }
+  //
+  //   if (newProps.amount > 0 &&
+  //     (newProps.formValues !== this.props.formValues || newProps.mode !== this.mode)) {
+  //     const { token, recipient, amount, feeMultiplier, wallet } = newProps
+  //     try {
+  //       const value = new Amount(token.addDecimals(amount), newProps.symbol)
+  //       this.handleEstimateGas(token.symbol(), [recipient, value, TX_TRANSFER], feeMultiplier, wallet.address)
+  //     } catch (error) {
+  //       // eslint-disable-next-line
+  //       console.error(error)
+  //     }
+  //   }
+  //   if (newProps.mode === MODE_SIMPLE && newProps.feeMultiplier !== this.props.feeMultiplier) {
+  //     this.props.dispatch(change(FORM_SEND_TOKENS, 'gweiPerGas', this.getFormFee(newProps)))
+  //   }
+  //   if (newProps.gasPriceMultiplier !== this.props.gasPriceMultiplier) {
+  //     this.props.dispatch(change(FORM_SEND_TOKENS, 'feeMultiplier', newProps.gasPriceMultiplier))
+  //   }
+  //   if (!this.props.gasLimit && this.state.gasLimit && this.props.gasLimit !== this.state.gasLimit) {
+  //     this.props.dispatch(change(FORM_SEND_TOKENS, 'gasLimit', this.state.gasLimit))
+  //   }
+  // }
 
   componentDidCatch (/*error, info*/) {
     clearTimeout(this.timeout)
