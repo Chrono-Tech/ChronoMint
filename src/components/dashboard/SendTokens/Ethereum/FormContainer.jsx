@@ -3,10 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import ModalDialog from 'components/dialogs/ModalDialog'
-import {
-  BLOCKCHAIN_ETHEREUM,
-} from '@chronobank/core/dao/constants'
 import Amount from '@chronobank/core/models/Amount'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
@@ -91,7 +87,7 @@ export default class SendTokens extends PureComponent {
     }
   }
 
-  renderSendTokensForm () {
+  render () {
     const { token } = this.props
 
     const initialValues = {
@@ -108,19 +104,5 @@ export default class SendTokens extends PureComponent {
         wallet={this.props.wallet}
       />
     )
-  }
-
-  render () {
-    const { isModal } = this.props
-
-    if (isModal) {
-      return (
-        <ModalDialog>
-          { this.renderSendTokensForm() }
-        </ModalDialog>
-      )
-    }
-
-    return this.renderSendTokensForm()
   }
 }

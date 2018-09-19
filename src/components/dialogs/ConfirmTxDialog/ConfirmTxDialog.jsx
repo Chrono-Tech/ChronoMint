@@ -59,8 +59,6 @@ export default class ConfirmTxDialog extends PureComponent {
     const tx = entry.tx
     const gasFee = tx.gasPrice ? tx.gasPrice.mul(tx.gasLimit) : null
 
-    console.log('description: ', description)
-
     return (
       <ModalDialog hideCloseIcon title={<Translate value={description.title} />}>
         <div styleName='root'>

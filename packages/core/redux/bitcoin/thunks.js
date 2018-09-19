@@ -374,19 +374,12 @@ const notifyBitcoinTransfer = (entry) => (dispatch, getState) => {
   })))
 }
 
-export const estimateBtcFee = (params, callback) => async (dispatch) => {
-  const {
-    address,
-    recipient,
-    amount,
-    formFee,
-    blockchain,
-  } = params
-  try {
-    const utxos = await dispatch(getAddressUTXOS(address, blockchain))
-    const fee = BitcoinUtils.getBtcFee(recipient, amount, formFee, utxos)
-    callback(null, fee)
-  } catch (e) {
-    callback(e)
+export const estimateBtcFee = (params) => async (dispatch) => {
+  const { address, recipient, amount, formFee, blockchain } = params
+  const utxos = await dispatch(getAddressUTXOS(address, blockchain))
+  if (!utxos) {
+    throw new Error('Can\'t find utxos for address: ', address)
   }
+
+  return BitcoinUtils.getBtcFee(recipient, amount, formFee, utxos)
 }

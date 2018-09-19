@@ -209,18 +209,15 @@ export const watchLatestBlock = () => async (dispatch) => {
   dispatch(TokensActions.setLatestBlock(BLOCKCHAIN_ETHEREUM, { blockNumber: block }))
 }
 
-export const estimateGasTransfer = (tokenId, params, callback, gasPriceMultiplier = 1, address) => async (dispatch) => {
+export const estimateGasTransfer = (tokenId, params, gasPriceMultiplier = 1, address) => async (dispatch) => {
   const tokenDao = tokenService.getDAO(tokenId)
   const [to, amount] = params
   const tx = tokenDao.transfer(address, to, amount)
-  try {
-    const { gasLimit, gasFee, gasPrice } = await dispatch(estimateGas(tx))
-    callback(null, {
-      gasLimit,
-      gasFee: new Amount(gasFee.mul(gasPriceMultiplier).toString(), ETH),
-      gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier).toString(), ETH),
-    })
-  } catch (e) {
-    callback(e)
+  const { gasLimit, gasFee, gasPrice } = await dispatch(estimateGas(tx))
+
+  return {
+    gasLimit,
+    gasFee: new Amount(gasFee.mul(gasPriceMultiplier).toString(), ETH),
+    gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier).toString(), ETH),
   }
 }

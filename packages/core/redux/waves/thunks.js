@@ -27,13 +27,9 @@ export const executeWavesTransaction = ({ tx, options }) => async (dispatch, get
 
 const submitTransaction = (entry) => async (dispatch, getState) => {
   const state = getState()
-  const description = describePendingWavesTx(
-    entry,
-    {
-      token: getToken(entry.symbol)(state),
-    })
-
-  console.log('submitTransaction: ', description, entry)
+  const description = describePendingWavesTx(entry, {
+    token: getToken(entry.symbol)(state),
+  })
 
   dispatch(modalsOpen({
     componentName: 'ConfirmTxDialog',
@@ -117,10 +113,8 @@ const sendSignedTransaction = (entry) => async (dispatch, getState) => {
   const dao = tokenService.getDAO(token)
 
   try {
-
-    const sendResult = await dao._wavesProvider.justTransfer(entry.from, entry.tx.prepared)
-    console.log('sendResult: ', sendResult)
-    return sendResult
+    const result = await dao._wavesProvider.justTransfer(entry.from, entry.tx.prepared)
+    return result
   } catch (error) {
     //eslint-disable-next-line
     console.log('Send WAVES errors: ', error)

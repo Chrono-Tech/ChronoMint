@@ -25,6 +25,7 @@ import { TextField } from 'redux-form-material-ui'
 import Select from 'redux-form-material-ui/es/Select'
 import Slider from 'components/common/Slider'
 import { change, Field, formPropTypes, formValueSelector, getFormSyncErrors, getFormValues, reduxForm } from 'redux-form/immutable'
+import { getSpendersAllowance } from '@chronobank/core/redux/mainWallet/actions'
 import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
@@ -37,57 +38,14 @@ import { MultisigEthWalletModel } from '@chronobank/core/models'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import { ACTION_APPROVE, ACTION_TRANSFER, FORM_SEND_TOKENS, MODE_ADVANCED, MODE_SIMPLE } from 'components/constants'
 import { prefix } from '../lang'
-import './form.scss'
+import '../form.scss'
 import validate from '../validate'
-import { handleNewProps } from '../thunks'
 
-const onUpdate = (form) => {
-  console.log('onUpdate: ', form)
-}
+const DEBOUNCE_ESTIMATE_FEE_TIMEOUT = 1000
 
-const onChange = (values) => {
-  console.log('onChange: ', values)
-}
-
-function mapDispatchToProps (dispatch, ownProps) {
+function mapDispatchToProps (dispatch) {
   return {
-    onUpdate: (form) => {
-      console.log('onUpdate: ', form, dispatch)
-    },
-    onChange: (values) => {
-      const currentFormValues = values.toJSON()
-      const previousFormValues = Ethereum.formPropsContainer
-      console.log('onChange: ', currentFormValues, previousFormValues, ownProps)
-      dispatch(handleNewProps(currentFormValues, previousFormValues, ownProps))
-
-      // if ((currentFormValues.token.address() !== this.props.token.address() || currentFormValues.recipient !== this.props.recipient) && currentFormValues.token.isERC20()) {
-      //   this.props.dispatch(getSpendersAllowance(currentFormValues.token.id(), currentFormValues.recipient))
-      // }
-      //
-      // if (currentFormValues.amount > 0 &&
-      //   (currentFormValues.formValues !== this.props.formValues || currentFormValues.mode !== this.mode)) {
-      //   const { token, recipient, amount, feeMultiplier, wallet } = currentFormValues
-      //   try {
-      //     const value = new Amount(token.addDecimals(amount), currentFormValues.symbol)
-      //     this.handleEstimateGas(token.symbol(), [recipient, value, TX_TRANSFER], feeMultiplier, wallet.address)
-      //   } catch (error) {
-      //     // eslint-disable-next-line
-      //     console.error(error)
-      //   }
-      // }
-      // if (currentFormValues.mode === MODE_SIMPLE && currentFormValues.feeMultiplier !== this.props.feeMultiplier) {
-      //   this.props.dispatch(change(FORM_SEND_TOKENS, 'gweiPerGas', this.getFormFee(currentFormValues)))
-      // }
-      // if (currentFormValues.gasPriceMultiplier !== this.props.gasPriceMultiplier) {
-      //   this.props.dispatch(change(FORM_SEND_TOKENS, 'feeMultiplier', currentFormValues.gasPriceMultiplier))
-      // }
-      // if (!this.props.gasLimit && this.state.gasLimit && this.props.gasLimit !== this.state.gasLimit) {
-      //   this.props.dispatch(change(FORM_SEND_TOKENS, 'gasLimit', this.state.gasLimit))
-      // }
-
-      Ethereum.formPropsContainer = currentFormValues
-    },
-    estimateGas: (tokenId, params, callback, gasPriceMultiplier, address) => dispatch(estimateGasTransfer(tokenId, params, callback, gasPriceMultiplier, address)),
+    estimateGas: (tokenId, params, gasPriceMultiplier, address) => dispatch(estimateGasTransfer(tokenId, params, gasPriceMultiplier, address)),
   }
 }
 
@@ -172,37 +130,34 @@ export default class Ethereum extends PureComponent {
     this.timeout = null
   }
 
-  componentDidUpdate (prevProps) {
-    console.log('componentDidUpdate: ', prevProps, this.props)
-  }
+  componentDidUpdate (prevProps, prevState) {
 
-  // // eslint-disable-next-line complexity
-  // componentWillReceiveProps (newProps) {
-  //   if ((newProps.token.address() !== this.props.token.address() || newProps.recipient !== this.props.recipient) && newProps.token.isERC20()) {
-  //     this.props.dispatch(getSpendersAllowance(newProps.token.id(), newProps.recipient))
-  //   }
-  //
-  //   if (newProps.amount > 0 &&
-  //     (newProps.formValues !== this.props.formValues || newProps.mode !== this.mode)) {
-  //     const { token, recipient, amount, feeMultiplier, wallet } = newProps
-  //     try {
-  //       const value = new Amount(token.addDecimals(amount), newProps.symbol)
-  //       this.handleEstimateGas(token.symbol(), [recipient, value, TX_TRANSFER], feeMultiplier, wallet.address)
-  //     } catch (error) {
-  //       // eslint-disable-next-line
-  //       console.error(error)
-  //     }
-  //   }
-  //   if (newProps.mode === MODE_SIMPLE && newProps.feeMultiplier !== this.props.feeMultiplier) {
-  //     this.props.dispatch(change(FORM_SEND_TOKENS, 'gweiPerGas', this.getFormFee(newProps)))
-  //   }
-  //   if (newProps.gasPriceMultiplier !== this.props.gasPriceMultiplier) {
-  //     this.props.dispatch(change(FORM_SEND_TOKENS, 'feeMultiplier', newProps.gasPriceMultiplier))
-  //   }
-  //   if (!this.props.gasLimit && this.state.gasLimit && this.props.gasLimit !== this.state.gasLimit) {
-  //     this.props.dispatch(change(FORM_SEND_TOKENS, 'gasLimit', this.state.gasLimit))
-  //   }
-  // }
+    if (this.props.amount > 0 && (this.props.formValues !== prevProps.formValues)) {
+      try {
+        const { token, recipient, amount, feeMultiplier, wallet } = this.props
+        const value = new Amount(token.addDecimals(amount), this.props.symbol)
+
+        this.handleEstimateGas(token.symbol(), [recipient, value, TX_TRANSFER], feeMultiplier, wallet.address)
+      } catch (error) {
+        // eslint-disable-next-line
+        console.error(error)
+      }
+    }
+
+    if ((this.props.token.address() !== prevProps.token.address() || this.props.recipient !== prevProps.recipient) && this.props.token.isERC20()) {
+      this.props.dispatch(getSpendersAllowance(this.props.token.id(), this.props.recipient))
+    }
+
+    if (this.props.mode === MODE_SIMPLE && this.props.feeMultiplier !== prevProps.feeMultiplier) {
+      prevProps.dispatch(change(FORM_SEND_TOKENS, 'gweiPerGas', this.getFormFee(this.props)))
+    }
+    if (this.props.gasPriceMultiplier !== prevProps.gasPriceMultiplier) {
+      prevProps.dispatch(change(FORM_SEND_TOKENS, 'feeMultiplier', this.props.gasPriceMultiplier))
+    }
+    if (!prevProps.gasLimit && prevState.gasLimit && prevProps.gasLimit !== prevState.gasLimit) {
+      prevProps.dispatch(change(FORM_SEND_TOKENS, 'gasLimit', prevState.gasLimit))
+    }
+  }
 
   componentDidCatch (/*error, info*/) {
     clearTimeout(this.timeout)
@@ -261,26 +216,24 @@ export default class Ethereum extends PureComponent {
       this.setState({
         gasFeeLoading: true,
       }, () => {
-        this.timeout = setTimeout(() => {
-          this.props.estimateGas(tokenId, params, (error, params) => {
-            if (error) {
-              this.setState({
-                gasFeeError: true,
-              })
-            } else {
-              const { gasLimit, gasFee, gasPrice } = params
-              this.setState(() => {
-                return {
-                  gasFee,
-                  gasPrice,
-                  gasLimitEstimated: gasLimit,
-                  gasFeeError: false,
-                  gasFeeLoading: false,
-                }
-              })
-            }
-          }, feeMultiplier, address)
-        }, 1000)
+        this.timeout = setTimeout(async () => {
+          try {
+            const { gasLimit, gasFee, gasPrice } = await this.props.estimateGas(tokenId, params, feeMultiplier, address)
+            this.setState(() => {
+              return {
+                gasFee,
+                gasPrice,
+                gasLimitEstimated: gasLimit,
+                gasFeeError: false,
+                gasFeeLoading: false,
+              }
+            })
+          } catch (error) {
+            this.setState({
+              gasFeeError: true,
+            })
+          }
+        }, DEBOUNCE_ESTIMATE_FEE_TIMEOUT)
       })
     }
   }

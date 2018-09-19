@@ -90,6 +90,10 @@ export const getBtcFee = (
   return fee
 }
 
+export const convertSatoshiToBTC = (satoshiAmount) => {
+  return new BigNumber(satoshiAmount / 100000000)
+}
+
 const describeBitcoinTransaction = (tx, options, utxos) => {
   const { to, from, value } = tx
   const { feeRate, blockchain, network } = options

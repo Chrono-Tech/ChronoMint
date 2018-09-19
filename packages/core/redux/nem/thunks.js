@@ -55,16 +55,13 @@ const nemTxStatus = (key, address, props) => (dispatch, getState) => {
   ))
 }
 
-export const estimateNemFee = (params, callback) => async (dispatch) => {
-  try {
-    const { from, to, amount } = params
-    const nemDao = tokenService.getDAO(amount.symbol())
-    const tx = nemDao.transfer(from, to, amount)
-    const preparedTx = await dispatch(prepareTransaction({ tx }))
-    callback(null, { fee: NemUtils.formatFee(preparedTx.prepared.fee) })
-  } catch (e) {
-    callback(e)
-  }
+export const estimateNemFee = (params) => async (dispatch) => {
+  const { from, to, amount } = params
+  const nemDao = tokenService.getDAO(amount.symbol())
+  const tx = nemDao.transfer(from, to, amount)
+  const preparedTx = await dispatch(prepareTransaction({ tx }))
+
+  return { fee: NemUtils.formatFee(preparedTx.prepared.fee) }
 }
 
 export const executeNemTransaction = ({ tx, options }) => async (dispatch) => {

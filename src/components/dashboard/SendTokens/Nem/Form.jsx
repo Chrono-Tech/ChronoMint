@@ -3,34 +3,50 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
+import { walletInfoSelector } from '@chronobank/core/redux/wallet/selectors/selectors'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
+import { getMarket } from '@chronobank/core/redux/market/selectors'
+import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
+import Amount from '@chronobank/core/models/Amount'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
+import WalletModel from '@chronobank/core/models/wallet/WalletModel'
+import { estimateNemFee } from '@chronobank/core/redux/nem/thunks'
 import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import { TOKEN_ICONS } from 'assets'
-import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import Amount from '@chronobank/core/models/Amount'
-import { MenuItem, MuiThemeProvider, Paper } from '@material-ui/core'
-import TokenModel from '@chronobank/core/models/tokens/TokenModel'
+import {
+  FORM_SEND_TOKENS,
+} from 'components/constants'
+
+import { TOKEN_ICONS } from 'assets'
+import BigNumber from 'bignumber.js'
+import { CircularProgress, Paper } from '@material-ui/core'
 import PropTypes from 'prop-types'
-import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
-import Select from 'redux-form-material-ui/es/Select'
-import { Field, formPropTypes, formValueSelector, getFormSyncErrors, getFormValues, reduxForm } from 'redux-form/immutable'
-import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
-import { walletInfoSelector } from '@chronobank/core/redux/wallet/selectors/selectors'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
-import inversedTheme from 'styles/themes/inversed'
-import { getMarket } from '@chronobank/core/redux/market/selectors'
-import { MultisigEthWalletModel } from '@chronobank/core/models'
-import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
-import { ACTION_TRANSFER, FORM_SEND_TOKENS } from 'components/constants'
-import { WAVES } from '@chronobank/core/dao/constants'
+import {
+  Field,
+  formPropTypes,
+  formValueSelector,
+  getFormSyncErrors,
+  getFormValues,
+  reduxForm,
+} from 'redux-form/immutable'
 import { prefix } from '../lang'
-import './form.scss'
+
+import '../form.scss'
 import validate from '../validate'
+
+const DEBOUNCE_ESTIMATE_FEE_TIMEOUT = 1000
+
+function mapDispatchToProps (dispatch) {
+  return {
+    estimateFee: (params) => dispatch(estimateNemFee(params)),
+  }
+}
 
 function mapStateToProps (state, ownProps) {
 
@@ -43,10 +59,8 @@ function mapStateToProps (state, ownProps) {
   const tokenInfo = walletInfo.tokens.find((token) => token.symbol === tokenId)
   const recipient = selector(state, 'recipient')
   const amount = selector(state, 'amount')
-  const mode = selector(state, 'mode')
   const formErrors = getFormSyncErrors(FORM_SEND_TOKENS)(state)
   const token = state.get(DUCK_TOKENS).item(tokenId)
-  const isMultiToken = walletInfo.tokens.length > 1
 
   return {
     selectedCurrency,
@@ -55,23 +69,21 @@ function mapStateToProps (state, ownProps) {
     amount,
     token,
     tokenInfo,
-    isMultiToken,
     walletInfo,
     recipient,
     symbol,
-    mode,
     formErrors,
     formValues: (formValues(state) && JSON.stringify(formValues(state).toJSON())) || null,
   }
 }
 
-@connect(mapStateToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_SEND_TOKENS, validate })
-export default class Ethereum extends PureComponent {
+export default class Nem extends PureComponent {
   static propTypes = {
     selectedCurrency: PropTypes.string,
     account: PropTypes.string,
-    wallet: PropTypes.oneOfType([PropTypes.instanceOf(WalletModel), PropTypes.instanceOf(MultisigEthWalletModel)]),
+    wallet: PropTypes.instanceOf(WalletModel),
     recipient: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
     tokenInfo: PropTypes.shape({
@@ -79,25 +91,38 @@ export default class Ethereum extends PureComponent {
       amountPrice: PropTypes.number,
       symbol: PropTypes.string,
     }),
-    feeMultiplier: PropTypes.number,
-    gasLimit: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    gweiPerGas: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    isMultiTokenWallet: PropTypes.bool,
+    satPerByte: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     transfer: PropTypes.func,
-    estimateGas: PropTypes.func,
     onTransfer: PropTypes.func,
     onApprove: PropTypes.func,
-    gasPriceMultiplier: PropTypes.number,
     ...formPropTypes,
   }
 
   constructor () {
     super(...arguments)
     this.state = {
-      fee: new Amount(10000, WAVES),
+      fee: null,
+      feeError: false,
     }
 
     this.timeout = null
+  }
+
+  componentDidUpdate (prevProps) {
+    if (this.props.amount > 0 && prevProps.formValues !== prevProps.formValues) {
+      try {
+        const value = new Amount(this.props.token.addDecimals(new BigNumber(this.props.amount)), this.props.symbol)
+        this.handleEstimateFee(
+          this.props.wallet.address,
+          this.props.recipient,
+          value,
+          this.props.token,
+        )
+      } catch (error) {
+        // eslint-disable-next-line
+        console.error(error)
+      }
+    }
   }
 
   componentDidCatch (/*error, info*/) {
@@ -109,22 +134,70 @@ export default class Ethereum extends PureComponent {
   }
 
   handleTransfer = (values) => {
-    this.props.onSubmit(values.set('action', ACTION_TRANSFER))
+    this.props.onSubmit(values)
+  }
+
+  handleEstimateFee = (address, recipient, amount, token) => {
+    clearTimeout(this.timeout)
+    this.setState({
+      feeLoading: true,
+    }, () => {
+      this.timeout = setTimeout(async () => {
+        try {
+          const params = {
+            from: address,
+            to: recipient,
+            amount,
+            token,
+          }
+          const fee = await this.props.estimateFee(params)
+
+          this.setState({
+            fee,
+            feeError: false,
+            feeLoading: false,
+          })
+        } catch (error) {
+          this.setState({
+            feeError: true,
+            feeLoading: false,
+          })
+        }
+      }, DEBOUNCE_ESTIMATE_FEE_TIMEOUT)
+    })
   }
 
   getTransactionFeeDescription = () => {
-    return (
-      <span styleName='description'>
-        {this.state.fee && (
-          <span>{`${WAVES} ${this.props.token.removeDecimals(this.state.fee).toString()} (≈${this.props.selectedCurrency} `}
-            <TokenValue renderOnlyPrice onlyPriceValue value={this.state.fee} />{')'}
-          </span>
-        )}
-      </span>)
+
+    if (this.props.invalid) {
+      return (
+        <span styleName='description'>
+          <Translate value={`${prefix}.errorFillAllFields`} />
+        </span>)
+    }
+    if (this.state.feeLoading) {
+      return <div styleName='fee-loader-container'><CircularProgress size={12} thickness={1.5} /></div>
+    }
+    if (this.state.feeError) {
+      return (
+        <span styleName='description'>
+          <Translate value={`${prefix}.errorEstimateFee`} />
+        </span>)
+    }
+
+    if (this.state.fee) {
+      return (
+        <span styleName='description'>
+          {`${this.props.token.symbol()}  ${this.state.fee} (≈${this.props.selectedCurrency} `}
+          <TokenValue renderOnlyPrice onlyPriceValue value={new Amount(this.state.fee, this.props.token.symbol())} />{')'}
+        </span>)
+    }
+
+    return null
   }
 
   renderHead () {
-    const { token, isMultiToken, walletInfo, wallet, tokenInfo } = this.props
+    const { token, wallet, tokenInfo } = this.props
 
     return (
       <div styleName='head'>
@@ -141,33 +214,7 @@ export default class Ethereum extends PureComponent {
             <Translate value='wallet.sendTokens' />
           </span>
         </div>
-        {isMultiToken && (
-          <div styleName='head-token-choose-form'>
-            <MuiThemeProvider theme={inversedTheme}>
-              {walletInfo.tokens.length === 0
-                ? <Preloader />
-                : (
-                  <Field
-                    component={Select}
-                    name='symbol'
-                    styleName='symbolSelector'
-                    menu-symbol='symbolSelectorMenu'
-                    floatingLabelStyle={{ color: 'white' }}
-                  >
-                    {walletInfo.tokens
-                      .map((tokenData) => {
-                        const token: TokenModel = this.props.tokens.item(tokenData.symbol)
-                        if (token.isLocked()) {
-                          return null
-                        }
-                        return (<MenuItem key={token.id()} value={token.id()}>{token.symbol()}</MenuItem>)
-                      })}
-                  </Field>
-                )
-              }
-            </MuiThemeProvider>
-          </div>
-        )}
+
         <div styleName='wallet-name-section'>
           <div styleName='wallet-name-title-section'>
             <span styleName='wallet-name-title'>
@@ -206,10 +253,6 @@ export default class Ethereum extends PureComponent {
             name='recipient'
             label={<Translate value={`${prefix}.recipientAddress`} />}
             fullWidth
-          />
-          <Field
-            name='mode'
-            component={(props) => <input type='hidden' {...props} />}
           />
         </div>
         <div styleName='row'>
@@ -254,4 +297,3 @@ export default class Ethereum extends PureComponent {
     )
   }
 }
-
