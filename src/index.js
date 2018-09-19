@@ -8,7 +8,7 @@
 import { DUCK_I18N } from 'redux/i18n/constants'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import { I18n, loadTranslations, setLocale } from 'react-redux-i18n'
-import { loadI18n } from 'redux/i18n/actions'
+import { loadI18n } from 'redux/i18n/thunks'
 import { nodesInit } from '@chronobank/nodes/redux/actions'
 import { PersistGate } from 'redux-persist/lib/integration/react'
 import { Provider } from 'react-redux'
