@@ -57,7 +57,6 @@ export default class BitcoinDAO extends EventEmitter {
   }
 
   isInitialized () {
-    // return true
     return this._bitcoinProvider.isInitialized()
   }
 

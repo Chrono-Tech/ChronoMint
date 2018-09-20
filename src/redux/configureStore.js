@@ -84,7 +84,7 @@ const configureStore = () => {
     const DOMAINS = [
       // '@@i18n/',
       // '@@redux-form/',
-       '@@router/',
+      // '@@router/',
       // '@login/network',
       // 'AssetsManager/',
       // 'daos/',
@@ -108,7 +108,7 @@ const configureStore = () => {
     const IGNORED_DOMAINS = [
       '@@i18n/',
       '@@redux-form/',
-      // '@@router/',
+      '@@router/',
       '@login/network',
       'AssetsManager/',
       'daos/',

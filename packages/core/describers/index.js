@@ -208,7 +208,7 @@ export const describePendingWavesTx = (entry, context = {}) => {
   const { prepared } = tx
 
   const fee = new Amount(prepared.fee, WAVES)
-  const amount = new Amount(prepared.amount, token.symbol()) // we can send only one mosaic
+  const amount = new Amount(prepared.amount, token.symbol())
 
   const path = 'tx.Waves.transfer'
 

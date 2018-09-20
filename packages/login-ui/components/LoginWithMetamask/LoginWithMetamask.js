@@ -9,13 +9,11 @@ import { Translate } from 'react-redux-i18n'
 import './LoginWithMetamask.scss'
 
 class LoginWithMetamask extends Component {
+
   static propTypes = {
     previousPage: PropTypes.func,
     deviceList: PropTypes.instanceOf(Array),
     onDeviceSelect: PropTypes.func,
-  }
-
-  componentWillUnmount () {
   }
 
   _buildItem = (item, i) => {
