@@ -4,6 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
+import { WALLET_TYPE_MEMORY } from '../../../models/constants/AccountEntryModel'
 import AbstractAccountModel from './AbstractAccountModel'
 
 const schema = {
@@ -28,16 +29,11 @@ class AccountEntryModel extends AbstractAccountModel {
   }
 
   get address () {
-    switch (this.type) {
-      case 'memory':
-        return this.encrypted[0].address
-      case 'device':
-        return this.encrypted[0].address 
-    }
-  } 
+    return this.encrypted[0].address
+  }
 
   isMemoryWallet () {
-    return !this.type || this.type === 'memory'
+    return !this.type || this.type === WALLET_TYPE_MEMORY
   }
 }
 

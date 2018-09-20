@@ -17,6 +17,10 @@
   justify-content: center;
 }
 
+.select-field-class {
+  color: $color-white;
+}
+
 .gas-limit-based {
   font-size: 12px;
   line-height: 12px;
@@ -181,7 +185,7 @@
 
   .description {
     line-height: 17px;
-    color: #333333;
+    color: $color-primary-0;
     font-weight: 400;
     font-size: 14px;
     text-align: left;

@@ -46,6 +46,7 @@ export default class WalletsContent extends Component {
 
   render () {
     const Component = this.props.isCompactWalletView ? WalletWidgetMini : WalletWidget
+
     return (
       <div styleName='root'>
         {this.props.check2FAChecked === false && this.props.isHave2FAWallets && <TwoFAWarningWidget />}

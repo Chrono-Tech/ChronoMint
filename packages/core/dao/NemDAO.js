@@ -80,11 +80,11 @@ export default class NemDAO extends EventEmitter {
     return this.getAccountBalances()
   }
 
-  transfer (from: string, to: string, amount: BigNumber, token: TokenModel) {
+  transfer (from: string, to: string, amount: BigNumber) {
     return {
       from,
       to,
-      amount: new Amount(amount, token.symbol()),
+      amount: new Amount(amount, amount.symbol()),
       mosaicDefinition: this._mosaic,
     }
   }

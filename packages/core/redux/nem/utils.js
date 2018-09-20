@@ -4,8 +4,10 @@
  */
 
 import uuid from 'uuid/v1'
-import NemWallet from '@chronobank/login/network/NemWallet'
 import nemSdk from 'nem-sdk'
+import {
+  BLOCKCHAIN_NEM,
+} from '@chronobank/login/network/constants'
 import { TxEntryModel, TxExecModel } from '../../models'
 
 export const DECIMALS = 1000000
@@ -21,6 +23,11 @@ export const createNemTxEntryModel = (entry, options = {}) =>
     ...entry,
   })
 
+export const formatFee = (fee) => {
+  const [integer, fractional] = nemSdk.utils.format.nemValue(fee)
+  return parseFloat(integer + "." + fractional)
+}
+
 export const describeXemTransaction = (tx, network) => {
   const value = tx.amount.div(DECIMALS).toNumber() // NEM-SDK works with Number data type
   // Get an empty common object to hold pass and key
@@ -31,7 +38,7 @@ export const describeXemTransaction = (tx, network) => {
     'Tx from ChronoMint',
   )
 
-  const nemNetwork = nemSdk.model.network.data[network.nem]
+  const nemNetwork = nemSdk.model.network.data[network[BLOCKCHAIN_NEM]]
   const transactionEntity = nemSdk.model.transactions.prepare('transferTransaction')(common, transferTransaction, nemNetwork.id)
   return new TxExecModel({
     prepared: transactionEntity,
@@ -44,7 +51,7 @@ export const describeXemTransaction = (tx, network) => {
 
 export const describeMosaicTransaction = (tx, network) => {
   const value = tx.amount.toNumber() // NEM-SDK works with Number data type
-  const nemNetwork = nemSdk.model.network.data[network.nem]
+  const nemNetwork = nemSdk.model.network.data[network[BLOCKCHAIN_NEM]]
   const common = nemSdk.model.objects.get('common')
   const transferTransaction = nemSdk.model.objects.create('transferTransaction')(
     tx.to,
@@ -71,17 +78,13 @@ export const describeMosaicTransaction = (tx, network) => {
   })
 }
 
-export const createXemTransaction = (prepared, signer, network) => {
-  const pk = signer.privateKey.substring(2, 66) // remove 0x
-  const menNetwork = nemSdk.model.network.data[network.nem]
-  const nemWallet = NemWallet.fromPrivateKey(pk, menNetwork)
-  const pubKey = nemWallet._keyPair.publicKey.toString('hex') // get public key for tx
+export const createXemTransaction = (prepared, signer) => {
+  const serialized = nemSdk.utils.serialization.serializeTransaction({ ...prepared, signer: signer.getPublicKey() })
+  const signature = signer.sign(serialized)
 
-  const serialized = nemSdk.utils.serialization.serializeTransaction({ ...prepared, signer: pubKey })
-  const signature = nemWallet.sign(serialized)
   return {
     tx: {
-      address: nemWallet.getAddress(),
+      address: signer.getAddress(),
       data: nemSdk.utils.convert.ua2hex(serialized),
       signature: signature.toString(),
     },

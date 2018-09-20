@@ -18,6 +18,7 @@ import * as user from '@chronobank/core/dao/constants/UserManagerDAO'
 import layouts from 'layouts/lang'
 import * as votingManager from '@chronobank/core/dao/constants/VotingManagerDAO'
 import * as chronoBankAsset from '@chronobank/core/dao/constants/ChronoBankAssetDAO'
+import bitcoin from './en-tx-bitcoin'
 import nem from './en-tx-nem'
 import eos from './en-tx-eos'
 
@@ -253,7 +254,7 @@ export default {
     },
     /* eslint-disable global-require */
     General: require('./en-tx-general'),
-    Bitcoin: require('./en-tx-bitcoin'),
+    ...bitcoin, // bitcoin-like
     nem,
     eos,
     Waves: require('./en-tx-waves'),

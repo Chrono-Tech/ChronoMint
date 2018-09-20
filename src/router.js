@@ -10,11 +10,7 @@ import { Route, Router, IndexRoute, Redirect } from 'react-router'
 import {
   NotFoundPage,
   LoginForm,
-  CreateHWAccount,
   LoginWithOptions,
-  LoginWithTrezor,
-  LoginWithLedger,
-  LoginWithPlugin,
 } from '@chronobank/login-ui/components'
 import Splash from 'layouts/Splash/Splash'
 import {
@@ -34,6 +30,9 @@ import {
 import MnemonicImportPage from 'components/login/MnemonicImportPage/MnemonicImportPage'
 import PrivateKeyImportPage from 'components/login/PrivateKeyImportPage/PrivateKeyImportPage'
 import WalletImportPage from 'components/login/WalletImportPage/WalletImportPage'
+import TrezorLoginPage from 'components/login/TrezorLoginPage/TrezorLoginPage'
+import LedgerLoginPage from 'components/login/LedgerLoginPage/LedgerLoginPage'
+import MetamaskLoginPage from 'components/login/MetamaskLoginPage/MetamaskLoginPage'
 import RecoverAccountPage from 'components/login/RecoverAccountPage/RecoverAccountPage'
 import AccountSelectorPage from 'components/login/AccountSelectorPage/AccountSelectorPage'
 import CreateAccountPage from 'components/login/CreateAccountPage/CreateAccountPage'
@@ -89,12 +88,11 @@ const router = (
         <Route path='/login/recover-account' component={RecoverAccountPage} />
         <Route path='/login/import-methods' component={LoginWithOptions} />
         <Route path='/login/upload-wallet' component={WalletImportPage} />
-        <Route path='/login/trezor-login' component={LoginWithTrezor} />
-        <Route path='/login/ledger-login' component={LoginWithLedger} />
-        <Route path='/login/plugin-login' component={LoginWithPlugin} />
+        <Route path='/login/trezor-login' component={TrezorLoginPage} />
+        <Route path='/login/ledger-login' component={LedgerLoginPage} />
+        <Route path='/login/plugin-login' component={MetamaskLoginPage} />
         <Route path='/login/mnemonic-login' component={MnemonicImportPage} />
         <Route path='/login/private-key-login' component={PrivateKeyImportPage} />
-        <Route path='/login/create-hw-account' component={CreateHWAccount} />
       </Route>
 
       <Route path='*' component={Splash}>

@@ -4,14 +4,15 @@
  */
 
 import { omit } from 'lodash'
-import { TX_CREATE, TX_REMOVE, TX_UPDATE } from './constants'
+import * as NemConstants from './constants'
 
 const initialState = () => ({
+  lastRequestMeta: null,
   pending: {},
 })
 
 const mutations = {
-  [TX_CREATE]: (state, { entry }) => {
+  [NemConstants.TX_CREATE]: (state, { entry }) => {
     const address = entry.tx.from
     const pending = state.pending
     const scope = pending[address]
@@ -26,7 +27,7 @@ const mutations = {
       },
     }
   },
-  [TX_UPDATE]: (state, { key, address, tx }) => {
+  [NemConstants.TX_UPDATE]: (state, { key, address, tx }) => {
     const scope = state.pending[address]
     return {
       ...state,
@@ -38,12 +39,48 @@ const mutations = {
       },
     }
   },
-  [TX_REMOVE]: (state, { key, address }) => {
+  [NemConstants.TX_REMOVE]: (state, { key, address }) => {
     const scope = state.pending[address]
     if (!scope || !scope[key]) return state
     return {
       ...state,
       pending: omit(state.pending, [key]),
+    }
+  },
+  [NemConstants.TX_SIGN]: (state, { entry }) => {
+    return {
+      ...state,
+      lastRequestMeta: entry,
+    }
+  },
+  [NemConstants.TX_SIGN_ERROR]: (state, { error }) => {
+    return {
+      ...state,
+      lastRequestMeta: error,
+    }
+  },
+  [NemConstants.TX_SEND_SIGNED_TX_ERROR]: (state, { error }) => {
+    return {
+      ...state,
+      lastRequestMeta: error,
+    }
+  },
+  [NemConstants.TX_ACCEPT]: (state, { entry }) => {
+    return {
+      ...state,
+      lastRequestMeta: entry,
+    }
+  },
+  [NemConstants.TX_PREPARE]: (state, { entry }) => {
+    return {
+      ...state,
+      lastRequestMeta: entry,
+    }
+  },
+  [NemConstants.TX_PROCESS]: (state, { entry }) => {
+    return {
+      ...state,
+      lastRequestMeta: entry,
     }
   },
 }

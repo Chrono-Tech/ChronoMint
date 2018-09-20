@@ -10,7 +10,6 @@ import AbstractModel from './AbstractModel'
 const schemaFactory = () => ({
   key: PropTypes.string.isRequired,
   tx: PropTypes.instanceOf(TxExecModel).isRequired,
-  // desc: PropTypes.instanceOf(TxDescModel),
   hash: PropTypes.string,
   raw: PropTypes.string,
   receipt: PropTypes.object,

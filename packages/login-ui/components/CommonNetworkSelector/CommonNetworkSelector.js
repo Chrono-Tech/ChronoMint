@@ -145,7 +145,6 @@ export default class CommonNetworkSelector extends PureComponent {
 
   getSelectedNetwork () {
     const { selectedNetworkId, selectedProviderId, customNetworksList } = this.props
-
     const foundCustomSelectedNetwork = customNetworksList.find((network) => network.id === selectedNetworkId)
 
     if (foundCustomSelectedNetwork) {
@@ -156,7 +155,6 @@ export default class CommonNetworkSelector extends PureComponent {
 
     if (!baseNetworkNames) {
       this.props.autoSelect()
-
       return ''
     }
 

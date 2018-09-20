@@ -2,18 +2,18 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
-import { ErrorNoticeModel, SignerMemoryModel, TransferNoticeModel } from '../../models'
-import { nemPendingSelector, pendingEntrySelector } from './selectors'
-import { getSelectedNetwork, getSigner } from '../persistAccount/selectors'
+import { ErrorNoticeModel, TransferNoticeModel } from '../../models'
+import { nemPendingSelector, pendingEntrySelector, getNemSigner } from './selectors'
+import { getSelectedNetwork } from '../persistAccount/selectors'
 import { describePendingNemTx } from '../../describers'
 import { getAccount } from '../session/selectors/models'
 import * as NemActions from './actions'
 import * as NemUtils from './utils'
 import { getToken } from '../tokens/selectors'
 import { notify } from '../notifier/actions'
+import tokenService from '../../services/TokenService'
 
 const notifyNemTransfer = (entry) => (dispatch, getState) => {
   const { tx } = entry
@@ -55,7 +55,17 @@ const nemTxStatus = (key, address, props) => (dispatch, getState) => {
   ))
 }
 
+export const estimateNemFee = (params) => async (dispatch) => {
+  const { from, to, amount } = params
+  const nemDao = tokenService.getDAO(amount.symbol())
+  const tx = nemDao.transfer(from, to, amount)
+  const preparedTx = await dispatch(prepareTransaction({ tx }))
+
+  return { fee: NemUtils.formatFee(preparedTx.prepared.fee) }
+}
+
 export const executeNemTransaction = ({ tx, options }) => async (dispatch) => {
+  dispatch(NemActions.nemExecuteTx({ tx, options }))
   const prepared = await dispatch(prepareTransaction({ tx, options }))
   const entry = NemUtils.createNemTxEntryModel({ tx: prepared }, options)
 
@@ -64,6 +74,8 @@ export const executeNemTransaction = ({ tx, options }) => async (dispatch) => {
 }
 
 const prepareTransaction = ({ tx }) => async (dispatch, getState) => {
+  dispatch(NemActions.nemPrepareTx({ tx }))
+
   const network = getSelectedNetwork()(getState())
   return tx.mosaicDefinition
     ? NemUtils.describeMosaicTransaction(tx, network)
@@ -71,6 +83,8 @@ const prepareTransaction = ({ tx }) => async (dispatch, getState) => {
 }
 
 const processTransaction = ({ entry, signer }) => async (dispatch, getState) => {
+  dispatch(NemActions.nemProcessTx({ entry, signer }))
+
   await dispatch(signTransaction({ entry, signer }))
   const signedEntry = pendingEntrySelector(entry.tx.from, entry.key)(getState())
   if (!signedEntry) {
@@ -85,8 +99,11 @@ const processTransaction = ({ entry, signer }) => async (dispatch, getState) => 
 
 const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   try {
+    dispatch(NemActions.nemTxSignTransaction({ entry, signer }))
+
     const { tx } = entry
     const signed = NemUtils.createXemTransaction(tx.prepared, signer, getSelectedNetwork()(getState()))
+
     dispatch(NemActions.nemTxUpdate(entry.key, entry.tx.from, NemUtils.createNemTxEntryModel({
       ...entry,
       tx: {
@@ -96,12 +113,14 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     })))
 
   } catch (error) {
+    dispatch(NemActions.nemTxSignTransactionError({ error }))
     dispatch(nemTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
     throw error
   }
 }
 
 const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
+  dispatch(NemActions.nemTxSendSignedTransaction({ entry }))
   dispatch(nemTxStatus(entry.key, entry.tx.from, { isPending: true }))
 
   // eslint-disable-next-line
@@ -122,12 +141,14 @@ const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
   }
 
   if (res.code === 0) {
+    dispatch(NemActions.nemTxSendSignedTransactionError({ entry }))
     dispatch(nemTxStatus(entry.key, entry.tx.from, { isErrored: true, error: res.message }))
     dispatch(notifyNemError(res))
   }
 }
 
 const submitTransaction = (entry) => async (dispatch, getState) => {
+  dispatch(NemActions.nemSubmitTx({ entry }))
 
   const state = getState()
   const account = getAccount(state)
@@ -151,22 +172,17 @@ const submitTransaction = (entry) => async (dispatch, getState) => {
 }
 
 const acceptTransaction = (entry) => async (dispatch, getState) => {
+  dispatch(NemActions.nemTxAccept(entry))
   dispatch(nemTxStatus(entry.key, entry.tx.from, { isAccepted: true, isPending: true }))
 
   const state = getState()
-  let signer = getSigner(state)
-  if (entry.walletDerivedPath) {
-    signer = await SignerMemoryModel.fromDerivedPath({
-      seed: signer.privateKey,
-      derivedPath: entry.walletDerivedPath,
-    })
-  }
+  const signer = getNemSigner(state)
 
   const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key)(getState())
   if (!selectedEntry) {
     // eslint-disable-next-line no-console
     console.error('entry is null', entry)
-    return // stop execute
+    return
   }
 
   return dispatch(processTransaction({
@@ -175,4 +191,7 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
   }))
 }
 
-const rejectTransaction = (entry) => (dispatch) => dispatch(nemTxStatus(entry.key, entry.tx.from, { isRejected: true }))
+const rejectTransaction = (entry) => (dispatch) => {
+  dispatch(NemActions.nemRejectTx({ entry }))
+  dispatch(nemTxStatus(entry.key, entry.tx.from, { isRejected: true }))
+}

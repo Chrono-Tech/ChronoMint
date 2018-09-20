@@ -11,8 +11,18 @@ import {
   SubmissionError,
 } from 'redux-form'
 import { replace } from 'react-router-redux'
+import { MOCK_PRIVATE_KEY } from '@chronobank/core/services/signers/BitcoinLedgerDeviceMock'
+import {
+  WALLET_TYPE_MEMORY,
+  WALLET_TYPE_TREZOR,
+  WALLET_TYPE_TREZOR_MOCK,
+  WALLET_TYPE_LEDGER,
+  WALLET_TYPE_LEDGER_MOCK,
+} from '@chronobank/core/models/constants/AccountEntryModel'
+import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
+import { getEthereumSigner } from '@chronobank/core/redux/persistAccount/selectors'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
-import walletProvider from '@chronobank/login/network/walletProvider'
+import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import setup from '@chronobank/login/network/EngineUtils'
 import localStorage from 'utils/LocalStorage'
 import {
@@ -25,10 +35,11 @@ import * as NetworkThunks from '@chronobank/login/redux/network/thunks'
 import * as SessionThunks from '@chronobank/core/redux/session/thunks'
 import { modalsOpen, modalsClose } from '@chronobank/core/redux/modals/actions'
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
+import * as DeviceActions from '@chronobank/core/redux/device/actions'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
-import { SignerMemoryModel } from '@chronobank/core/models'
 import {
   createAccountEntry,
+  createDeviceAccountEntry,
 } from '@chronobank/core/redux/persistAccount/utils'
 import * as LoginUINavActions from './navigation'
 import {
@@ -61,9 +72,7 @@ export const navigateToCreateAccountWithoutImport = () => (dispatch) => {
  * TODO: to dispatch something, this is not a thunk or action. Really..
  */
 export const initCommonNetworkSelector = () => (dispatch) => {
-
   dispatch(NetworkThunks.autoSelect())
-
 }
 
 /*
@@ -80,6 +89,7 @@ export const onSubmitSubscribeNewsletter = (email) => async () => {
     throw new SubmissionError({ _error: e && e.message })
   }
 }
+
 /*
  * Thunk dispatched by "" screen.
  * TODO: to add description
@@ -90,50 +100,95 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
   const state = getState()
   const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
+  const accountWallet = new AccountEntryModel(selectedWallet)
 
-  try {
-    const wallet = dispatch(PersistAccountActions.decryptAccount(selectedWallet.encrypted, password))
-    dispatch(PersistAccountActions.accountLoad(new SignerMemoryModel({ wallet })))
+  switch (accountWallet.type) {
+    case WALLET_TYPE_MEMORY: {
+      try {
+        const wallet = await dispatch(PersistAccountActions.decryptAccount(accountWallet, password))
 
-    const privateKey = wallet && wallet[0] && wallet[0].privateKey
+        await dispatch(PersistAccountActions.accountLoad(wallet))
+        const signer = getEthereumSigner(getState())
+        await dispatch(SessionThunks.getProfileSignature(signer, accountWallet.encrypted[0].path))
 
-    if (privateKey) {
-      dispatch(SessionThunks.getProfileSignature(wallet[0]))
-      // Code below prevously was handleWalletLogin
-      dispatch(NetworkActions.loading())
-      dispatch(NetworkActions.clearErrors())
-      const providerSettings = dispatch(SessionThunks.getProviderSettings())
-      const provider = walletProvider.getProvider(
-        selectedWallet.encrypted[0],
-        password,
-        providerSettings,
-      )
-      dispatch(NetworkActions.selectAccount(provider.ethereum.getAddress()))
-      await setup(provider)
-      const state = getState()
-      const {
-        selectedAccount,
-        selectedProviderId,
-        selectedNetworkId,
-      } = state.get(DUCK_NETWORK)
+        //////////////////////////////////////////////////////
+        //// @todo remove after providers/engine refactoring
+        const providerSettings = dispatch(SessionThunks.getProviderSettings())
+        const provider = privateKeyProvider.getPrivateKeyProvider(wallet.privateKey.slice(2, 66), providerSettings)
+        await setup(provider)
+        //////////////////////////////////////////////////////
 
-      dispatch(NetworkActions.clearErrors())
-      dispatch(SessionThunks.createNetworkSession(
-        selectedAccount,
-        selectedProviderId,
-        selectedNetworkId,
-      ))
-      localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
+        dispatch(NetworkActions.selectAccount(accountWallet.address))
 
-      dispatch(watchInitUserMonitor())
+        const {
+          selectedAccount,
+          selectedProviderId,
+          selectedNetworkId,
+        } = getState().get(DUCK_NETWORK)
+        dispatch(NetworkActions.clearErrors())
 
-      const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
-      dispatch(replace(localStorage.getLastURL() || defaultURL))
+        dispatch(SessionThunks.createNetworkSession(
+          selectedAccount,
+          selectedProviderId,
+          selectedNetworkId,
+        ))
+
+        localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
+        const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
+
+        dispatch(replace(localStorage.getLastURL() || defaultURL))
+      } catch (e) {
+        //eslint-disable-next-line
+        console.warn('Device errors: ', e)
+        throw new SubmissionError({ password: e && e.message })
+      }
+      break
     }
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.log('Error in onSubmitLoginForm:', e)
-    throw new SubmissionError({ password: e && e.message })
+
+    case WALLET_TYPE_TREZOR:
+    case WALLET_TYPE_TREZOR_MOCK:
+    case WALLET_TYPE_LEDGER:
+    case WALLET_TYPE_LEDGER_MOCK: {
+      try {
+        const wallet = await dispatch(DeviceActions.loadDeviceAccount(accountWallet))
+        const signer = getEthereumSigner(getState())
+        await dispatch(SessionThunks.getProfileSignature(signer, wallet.entry.encrypted[0].path))
+
+        //////////////////////////////////////////////////////
+        //// @todo remove after providers/engine refactoring
+        const providerSettings = dispatch(SessionThunks.getProviderSettings())
+        const provider = privateKeyProvider.getPrivateKeyProvider(`${MOCK_PRIVATE_KEY}`, providerSettings)
+        await setup(provider)
+        //////////////////////////////////////////////////////
+
+        dispatch(NetworkActions.selectAccount(wallet.entry.encrypted[0].address))
+
+        dispatch(NetworkActions.loading())
+        dispatch(NetworkActions.clearErrors())
+
+        const {
+          selectedAccount,
+          selectedProviderId,
+          selectedNetworkId,
+        } = getState().get(DUCK_NETWORK)
+        dispatch(NetworkActions.clearErrors())
+
+        dispatch(SessionThunks.createNetworkSession(
+          selectedAccount,
+          selectedProviderId,
+          selectedNetworkId,
+        ))
+        localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
+        const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
+
+        dispatch(replace(localStorage.getLastURL() || defaultURL))
+      } catch (e) {
+        //eslint-disable-next-line
+        console.warn('Device errors: ', e)
+        throw new SubmissionError({ password: e && e.message })
+      }
+      break
+    }
   }
 }
 
@@ -143,15 +198,13 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
  * TODO: to remove throws
  * TODO: to rework it
  */
-export const onSubmitCreateAccountImportMnemonic = (name, password, mnemonic) =>
-  async (dispatch) => {
-    await dispatch(onSubmitImportAccount({
-      name,
-      password,
-      mnemonic,
-    }))
-
-  }
+export const onSubmitCreateAccountImportMnemonic = (name, password, mnemonic) => async (dispatch) => {
+  await dispatch(onSubmitImportAccount({
+    name,
+    password,
+    mnemonic,
+  }))
+}
 
 /*
  * Thunk dispatched by "" screen.
@@ -159,40 +212,34 @@ export const onSubmitCreateAccountImportMnemonic = (name, password, mnemonic) =>
  * TODO: to remove throws
  * TODO: to rework it
  */
-export const onSubmitCreateAccountImportPrivateKey = (name, password, privateKey) =>
-  async (dispatch) => {
-    await dispatch(onSubmitImportAccount({
-      name,
-      password,
-      privateKey,
-    }))
-
-  }
+export const onSubmitCreateAccountImportPrivateKey = (name, password, privateKey) => async (dispatch) => {
+  await dispatch(onSubmitImportAccount({
+    name,
+    password,
+    privateKey,
+  }))
+}
 
 /*
  * Thunk dispatched by
  * LoginWithMnemonic, LoginWithPrivateKey screen.
  */
-export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKey = '' }) =>
-  async (dispatch) => {
+export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKey = '' }) => async (dispatch) => {
+  try {
+    const account = await dispatch(PersistAccountActions.createMemoryAccount({
+      name,
+      password,
+      mnemonic,
+      privateKey,
+    }))
 
-    try {
-      const wallet = await dispatch(PersistAccountActions.createAccount({
-        name,
-        password,
-        mnemonic,
-        privateKey,
-        numberOfAccounts: 0,
-      }))
+    dispatch(PersistAccountActions.accountAdd(account))
+    dispatch(PersistAccountActions.accountSelect(account))
 
-      dispatch(PersistAccountActions.accountAdd(wallet))
-      dispatch(PersistAccountActions.accountSelect(wallet))
-
-    } catch (e) {
-      throw new SubmissionError({ _error: e && e.message })
-    }
-
+  } catch (e) {
+    throw new SubmissionError({ _error: e && e.message })
   }
+}
 
 /*
  * Thunk dispatched by "" screen.
@@ -256,7 +303,17 @@ export const onCreateWalletFromJSON = (name, walletJSON, profile) => (dispatch) 
   const account = createAccountEntry(name, walletJSON, profile)
 
   dispatch(PersistAccountActions.accountAdd(account))
+}
 
+/*
+ * Thunk dispatched by "" screen.
+ * TODO: to add description
+ * TODO: to move logic to utils
+*/
+export const onCreateWalletFromDevice = (name, device, profile, walletType) => (dispatch) => {
+  const account = createDeviceAccountEntry(name, device, profile, walletType)
+
+  dispatch(PersistAccountActions.accountAdd(account))
 }
 
 /*
@@ -302,14 +359,9 @@ export const onSubmitResetAccountPasswordSuccess = () => (dispatch) => {
 }
 
 export const onWalletSelect = (wallet) => (dispatch) => {
-
   dispatch(PersistAccountActions.accountSelect(wallet))
   dispatch(LoginUINavActions.navigateToLoginPage())
 }
-
-// #endregion
-
-// #region stopSubmits
 
 /*
  * Thunk dispatched by "" screen.

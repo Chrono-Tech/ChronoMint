@@ -43,11 +43,11 @@ export class WavesProvider extends AbstractProvider {
     return this._engine ? this._engine.getPrivateKey() : null
   }
 
-  async getAccountBalances (asset) {
+  async getAccountBalances (address) {
     const node = this._selectNode(this._engine)
-    const { balance, assets } = await node.getAddressInfo(this._engine.getAddress())
-    if (Object.keys(assets).length && assets[asset]) {
-      return new BigNumber(assets[asset]['balance'])
+    const { balance, assets } = await node.getAddressInfo(address)
+    if (Object.keys(assets).length && assets[address]) {
+      return new BigNumber(assets[address]['balance'])
     }
     return new BigNumber(balance)
   }
@@ -62,6 +62,11 @@ export class WavesProvider extends AbstractProvider {
     const node = this._selectNode(this._engine)
     const tx = await this._engine.createTransaction('TRANSFER', { to: to, amount: amount.toNumber(), asset: asset })
     return node.send(from, tx)
+  }
+
+  justTransfer (from, signedTx) {
+    const node = this._selectNode(this._engine)
+    return node.send(from, signedTx)
   }
 
   async onTransaction (tx: WavesTx) {

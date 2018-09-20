@@ -6,43 +6,44 @@
 import EventEmitter from 'events'
 import bitcoin from 'bitcoinjs-lib'
 
+export const MOCK_PRIVATE_KEY = 'cfc237b5d387c438cfdf647f686807ade5d6284cc7302d1ba5e4dd7e16b4e91b'
+
 export default class BitcoinLedgerDeviceMock extends EventEmitter {
-  constructor ({ seed, network }) {
+
+  constructor ({ network }) {
     super()
-    this.seed = seed
+    this.privateKey = MOCK_PRIVATE_KEY
     this.network = network
     Object.freeze(this)
   }
 
-  privateKey (path) {
-    return this._getDerivedWallet(path).privateKey
+  getAddress () {
+    const keyPair = this.getKeyPair()
+    const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: this.network })
+    return address
   }
 
-  // this method is a part of base interface
-  getAddress (path) {
-    return this._getDerivedWallet(path).getAddress()
-  }
-
-  signTransaction (rawTx, path) {
-    // tx object
+  async signTransaction (unsignedTxHex) {
     const txb = new bitcoin.TransactionBuilder
-      .fromTransaction(bitcoin.Transaction.fromHex(rawTx), this.network)
-    for (let i = 0; i < txb.inputs.length; i++) {
-      txb.sign(i, this._getDerivedWallet(path).keyPair)
-    }
-    const tx = txb.build()
-    const txhex = tx.toHex()
+      .fromTransaction(bitcoin.Transaction.fromHex(unsignedTxHex), this.network)
+    const keyPair = this.getKeyPair()
 
-    return txhex
+    for (let i = 0; i < txb.__inputs.length; i++) {
+      txb.sign(i, keyPair)
+    }
+
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(txb.build().toHex())
+      }, 5000)
+    })
   }
 
-  _getDerivedWallet (derivedPath) {
-    if (this.seed) {
-      const wallet = bitcoin.HDNode
-        .fromSeedBuffer(Buffer.from(this.seed.substring(2), 'hex'), bitcoin.networks.testnet)
-        .derivePath(derivedPath)
+  getKeyPair () {
+    return new bitcoin.ECPair.fromPrivateKey(Buffer.from(this.privateKey, 'hex'), { network: this.network })
+  }
 
-      return wallet
-    }
+  isActionRequestedModalDialogShows () {
+    return true
   }
 }
