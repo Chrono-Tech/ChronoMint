@@ -25,6 +25,7 @@
       width: 100%;
       display: table;
       border-bottom: 1px solid $button-color-3;
+      table-layout: fixed;
 
       .tokens-list-table-tr {
         display: table-row;

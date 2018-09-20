@@ -7,6 +7,7 @@ import Assets from 'components/assetsManager/lang'
 import Timer from 'components/common/Timer/lang'
 import TwoFA from 'components/dialogs/TwoFA/lang'
 import UserActiveDialog from 'components/dialogs/UserActiveDialog/lang'
+import ActionRequestDeviceDialog from 'components/dialogs/ActionRequestDeviceDialog/lang'
 import MultisigWalletForm from 'components/wallet/AddWalletWidget/MultisigWalletForm/lang'
 import TimeLockedWalletForm from 'components/wallet/AddWalletWidget/TimeLockedWalletForm/lang'
 import WalletSettingsForm from 'components/wallet/AddWalletWidget/WalletSettingsForm/lang'
@@ -45,6 +46,7 @@ import TransactionsListWidget from 'components/wallet/TransactionsListWidget/lan
 export default {
   en: {
     UserActiveDialog: UserActiveDialog.en,
+    ActionRequestDeviceDialog: ActionRequestDeviceDialog.en,
     Timer: Timer.en,
     Assets: Assets.en,
     UpdateProvideDialog: UpdateProvideDialog.en,

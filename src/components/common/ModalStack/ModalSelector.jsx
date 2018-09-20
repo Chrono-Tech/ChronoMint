@@ -8,12 +8,12 @@ import { Map } from 'immutable'
 
 // Here we have a list of [[ALL]] modals dialogues etc.
 // Keep imports alphabetically sorted
+import ActionRequestDeviceDialog from 'components/dialogs/ActionRequestDeviceDialog/ActionRequestDeviceDialog'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import AddTokenDialog from 'components/assetsManager/AddTokenDialog/AddTokenDialog'
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
 import BlacklistDialog from 'components/assetsManager/BlacklistDialog/BlacklistDialog'
 import BlockAssetDialog from 'components/assetsManager/BlockAssetDialog/BlockAssetDialog'
-import ConfirmTransferDialog from 'components/dialogs/ConfirmTransferDialog/ConfirmTransferDialog'
 import ConfirmTxDialog from 'components/dialogs/ConfirmTxDialog/ConfirmTxDialog'
 import CopyDialog from 'components/dialogs/CopyDialog/CopyDialog'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
@@ -36,12 +36,12 @@ import WalletSettingsForm from 'components/wallet/AddWalletWidget/WalletSettings
 export default class ModalSelector extends PureComponent {
   // Keep Map alphabetically sorted
   static modalsMap = new Map({
+    'ActionRequestDeviceDialog': ActionRequestDeviceDialog,
     'AddPlatformDialog': AddPlatformDialog,
     'AddTokenDialog': AddTokenDialog,
     'AssetManagerDialog': AssetManagerDialog,
     'BlacklistDialog': BlacklistDialog,
     'BlockAssetDialog': BlockAssetDialog,
-    'ConfirmTransferDialog': ConfirmTransferDialog,
     'ConfirmTxDialog': ConfirmTxDialog,
     'CopyDialog': CopyDialog,
     'DepositTokensModal': DepositTokensModal,
@@ -63,9 +63,10 @@ export default class ModalSelector extends PureComponent {
   })
 
   static getModal (modalProps) {
-    // eslint-disable-next-line no-console
-    console.warn('ModalSelector Error: Cant\'t display modal by data:', modalProps)
     if (!modalProps || !modalProps.componentName) {
+      // throw new Error('componentName is mandatory property for the ModalSelector')
+      // eslint-disable-next-line no-console
+      console.warn('ModalSelector Error: Cant\'t display modal by data:', modalProps)
       return null // return null is safe since React 16.x
     }
 

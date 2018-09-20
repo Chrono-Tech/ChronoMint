@@ -6,13 +6,9 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import {
-  downloadWallet,
-  accountDeselect,
-} from '@chronobank/core/redux/persistAccount/actions'
-import {
-  onSubmitCreateAccountImportPrivateKey,
-} from '@chronobank/login-ui/redux/thunks'
+import EthereumMemoryDevice from '@chronobank/core/services/signers/EthereumMemoryDevice'
+import { downloadWallet, accountDeselect } from '@chronobank/core/redux/persistAccount/actions'
+import { onSubmitCreateAccountImportPrivateKey } from '@chronobank/login-ui/redux/thunks'
 import {
   navigateToSelectWallet,
   navigateToSelectImportMethod,
@@ -25,9 +21,6 @@ import {
 } from '@chronobank/login-ui/components'
 import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
 import AccountProfileModel from '@chronobank/core/models/wallet/persistAccount/AccountProfileModel'
-import {
-  getAddressByPrivateKey,
-} from '@chronobank/core/redux/persistAccount/utils'
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -104,10 +97,8 @@ class PrivateKeyImportPage extends PureComponent {
   }
 
   async onSubmitPrivateKey ({ privateKey }) {
-    const address = getAddressByPrivateKey(privateKey)
-
-    const data = await this.props.getUserInfo([address])
-
+    const memoryDevice = new EthereumMemoryDevice(privateKey)
+    const data = await this.props.getUserInfo([memoryDevice.address])
     const profile = data[0]
 
     this.setState({
@@ -119,7 +110,6 @@ class PrivateKeyImportPage extends PureComponent {
 
   async onSubmitCreateAccount ({ walletName, password }) {
     const { onSubmitCreateAccountImportPrivateKey } = this.props
-
     await onSubmitCreateAccountImportPrivateKey(walletName, password, this.state.privateKey)
 
     this.setState({

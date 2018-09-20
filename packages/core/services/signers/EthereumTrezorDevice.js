@@ -8,7 +8,7 @@ import Web3Utils from 'web3-utils'
 const DEFAULT_PATH = "m/44'/60'/0'/0"
 const DEFAULT_PATH_FACTORY = (index) => `${DEFAULT_PATH}/${index}`
 
-export default class TrezorDevice extends EventEmitter {
+export default class EthereumTrezorDevice extends EventEmitter {
   get name () {
     return 'trezor'
   }

@@ -22,10 +22,10 @@ export default class BitcoinTrezorDevice extends EventEmitter {
       .derivePath(path).getAddress()
   }
 
-  async signTransaction (rawTx, path) {
+  async signTransaction (unsignedTxHex, path) {
     // tx object
     const txb = new bitcoin.TransactionBuilder
-      .fromTransaction(bitcoin.Transaction.fromHex(rawTx), this.network)
+      .fromTransaction(bitcoin.Transaction.fromHex(unsignedTxHex), this.network)
     const localAddress = this.getAddress(path)
 
     if (!localAddress) {
@@ -69,10 +69,14 @@ export default class BitcoinTrezorDevice extends EventEmitter {
     const result = await TrezorConnect.signTransaction({
       inputs: inputs,
       outputs: outputs,
-      coin: 'Testnet',
+      coin: 'Testnet', // @todo Need to do mainnet support?
     })
 
     return result
 
+  }
+
+  isActionRequestedModalDialogShows () {
+    return true
   }
 }

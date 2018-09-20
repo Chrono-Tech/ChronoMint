@@ -19,7 +19,7 @@ import './TokensListWidget.scss'
 
 function makeMapStateToProps (state, props) {
   const { walletId } = props
-  let getTokensBalances = walletTokensAmountAndBalanceSelector(walletId)
+  const getTokensBalances = walletTokensAmountAndBalanceSelector(walletId)
   const mapStateToProps = (ownState) => {
     return {
       tokensBalances: getTokensBalances(ownState),
@@ -103,18 +103,18 @@ export default class TokensListWidget extends PureComponent {
         <div styleName='tokens-list'>
           <div styleName='tokens-list-table'>
             <div styleName='tokens-list-table-tr'>
-              <button styleName='tokens-list-table-cell-sort-token' onClick={this.setSort('symbol')}>
+              <div styleName='tokens-list-table-cell-sort-token' onClick={this.setSort('symbol')}>
                 <Translate value={`${prefix}.token`} />&nbsp;
                 {this.renderDirection('symbol')}
-              </button>
-              <button styleName='tokens-list-table-cell-sort-amount' onClick={this.setSort('value')}>
+              </div>
+              <div styleName='tokens-list-table-cell-sort-amount' onClick={this.setSort('value')}>
                 <Translate value={`${prefix}.amount`} />&nbsp;
                 {this.renderDirection('value')}
-              </button>
-              <button styleName='tokens-list-table-cell-sort-usd' onClick={this.setSort('valueUsd')}>
+              </div>
+              <div styleName='tokens-list-table-cell-sort-usd' onClick={this.setSort('valueUsd')}>
                 <Translate value={`${prefix}.fiat`} />&nbsp;
                 {this.renderDirection('valueUsd')}
-              </button>
+              </div>
             </div>
             {this.getTokensList().length > 0 && this.getTokensList().map((balanceInfo) => {
               const token = this.props.tokens.item(balanceInfo.symbol)

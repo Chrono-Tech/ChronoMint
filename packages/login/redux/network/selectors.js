@@ -4,6 +4,8 @@
  */
 
 import { createSelector } from 'reselect'
+import { getCustomNetworksList } from '@chronobank/core/redux/persistAccount/selectors'
+import { getNetworkById } from '../../network/settings'
 import { DUCK_NETWORK } from './constants'
 
 export const getProfileSignatureSelector = () => createSelector(
@@ -18,7 +20,7 @@ export const getProfileSignatureSelector = () => createSelector(
 export const getAccountProfileSummary = () => createSelector(
   [getProfileSignatureSelector],
   (profile) => {
-    if (profile){
+    if (profile) {
       const level1 = profile.level1.submitted
       const level2 = profile.level2.submitted
 
@@ -30,5 +32,32 @@ export const getAccountProfileSummary = () => createSelector(
         avatar: level1 && level1.avatar && level1.avatar.url,
       }
     }
-  }
+  },
+)
+
+export const getCurrentNetworkSelector = createSelector(
+  [
+    (state) => state.get(DUCK_NETWORK),
+    getCustomNetworksList,
+  ],
+  (networkDuck, customNetworksList) => {
+    const { selectedNetworkId, selectedProviderId, isLocal } = networkDuck
+    const network = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
+    const { protocol, host } = network
+
+    if (!host) {
+      const customNetwork = customNetworksList
+        .find((network) => network.id === selectedNetworkId)
+
+      return {
+        network: customNetwork,
+        url: customNetwork && customNetwork.url,
+      }
+    }
+
+    return {
+      network,
+      url: protocol ? `${protocol}://${host}` : `//${host}`,
+    }
+  },
 )

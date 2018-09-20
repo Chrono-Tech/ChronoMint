@@ -14,7 +14,7 @@ import MultisigWalletPendingTxModel from '../../models/wallet/MultisigWalletPend
 import OwnerModel from '../../models/wallet/OwnerModel'
 import { notify, notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
-import { subscribeOnTokens } from '../tokens/actions'
+import { subscribeOnTokens } from '../tokens/thunks'
 import { formatBalances, getWalletBalances } from '../tokens/utils'
 import {
   EE_CONFIRMATION,
@@ -375,7 +375,7 @@ export const updateEthMultisigWalletBalance = ({ wallet }) => async (dispatch) =
         ...wallet,
         balances: {
           ...wallet.balances,
-          ...formatBalances({ blockchain: wallet.blockchain, balancesResult }),
+          ...formatBalances(wallet.blockchain, balancesResult),
         },
       })))
     })

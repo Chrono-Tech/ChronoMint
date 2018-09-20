@@ -3,25 +3,22 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import bip39 from 'bip39'
 import uuid from 'uuid/v1'
-import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
-import {
-  AccountEntryModel,
-} from '../../models/wallet/persistAccount'
+import { WALLET_TYPE_MEMORY } from '../../models/constants/AccountEntryModel'
+import { AccountEntryModel } from '../../models/wallet/persistAccount'
+import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 
 export const replaceWallet = (wallet, walletList) => {
   const index = walletList.findIndex((item) => item.key === wallet.key)
-
   const copyWalletList = [...walletList]
-
   copyWalletList.splice(index, 1, wallet)
 
   return copyWalletList
 }
 
-export const getAddress = (address, hexFormat = false) => {
-  return `${ hexFormat ? '0x' : ''}${address}`
+export const getAddress = (address, /*hexFormat = false*/) => {
+  return address//`${ hexFormat ? '0x' : ''}${address}`
 }
 
 export const getAccountAddress = (account: AccountEntryModel, hexFormat = false) => {
@@ -52,24 +49,32 @@ export const getAccountAvatar = (account) => {
   return ''
 }
 
-export const createAccountEntry = (name, walletFileImportObject, profile = null) =>
-  new AccountEntryModel({
+export const generateMnemonic = () => {
+  return bip39.generateMnemonic()
+}
+
+export const createAccountEntry = (name, walletFileImportObject, profile = null) => {
+  return new AccountEntryModel({
     key: uuid(),
     name,
+    type: WALLET_TYPE_MEMORY,
     encrypted: [walletFileImportObject],
     profile,
   })
-
-export const getAddressByMnemonic = (mnemonic) => {
-  return mnemonicProvider
-    .createEthereumWallet(mnemonic)
-    .getAddressString()
 }
 
-export const getAddressByPrivateKey = (privateKey) => {
-  return privateKeyProvider
-    .createEthereumWallet(privateKey)
-    .getAddressString()
+export const createDeviceAccountEntry = (name, device, profile = null, walletType = null) => {
+  if (!walletType) {
+    throw new Error('WalletDeviceType is empty')
+  }
+
+  return new AccountEntryModel({
+    key: uuid(),
+    name,
+    type: walletType,
+    encrypted: [device],
+    profile,
+  })
 }
 
 export const validateMnemonicForAccount = (mnemonic, selectedWallet: AccountEntryModel) => {
@@ -77,4 +82,10 @@ export const validateMnemonicForAccount = (mnemonic, selectedWallet: AccountEntr
   const address = getAddressByMnemonic(mnemonic)
 
   return addressFromWallet === address
+}
+
+export const getAddressByMnemonic = (mnemonic) => {
+  return EthereumMemoryDevice
+    .getDerivedWallet(mnemonic, null)
+    .address
 }

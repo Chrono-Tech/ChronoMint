@@ -16,19 +16,30 @@ import {
   BLOCKCHAIN_WAVES,
 } from '../../dao/constants'
 
-export const getWalletBalances = ({ wallet }) => {
-  const providersMap = {
-    [BLOCKCHAIN_ETHEREUM]: ethereumProvider,
-    [BLOCKCHAIN_BITCOIN]: btcProvider,
-    [BLOCKCHAIN_BITCOIN_CASH]: bccProvider,
-    [BLOCKCHAIN_BITCOIN_GOLD]: btgProvider,
-    [BLOCKCHAIN_LITECOIN]: ltcProvider,
-    [BLOCKCHAIN_WAVES]: wavesProvider,
-  }
-  return providersMap[wallet.blockchain].getAccountBalances(wallet.address)
+export const providersMap = {
+  [BLOCKCHAIN_ETHEREUM]: ethereumProvider,
+  [BLOCKCHAIN_BITCOIN]: btcProvider,
+  [BLOCKCHAIN_BITCOIN_CASH]: bccProvider,
+  [BLOCKCHAIN_BITCOIN_GOLD]: btgProvider,
+  [BLOCKCHAIN_LITECOIN]: ltcProvider,
+  [BLOCKCHAIN_WAVES]: wavesProvider,
 }
 
-export const formatBalances = ({ balancesResult, blockchain }) => {
+export const getProviderByBlockchain = (blockchain) => {
+  return providersMap[blockchain] || null
+}
+
+export const getWalletBalances = ({ wallet }) => {
+  try {
+    return  providersMap[wallet.blockchain].getAccountBalances(wallet.address)
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log('Cannot find provider for the %s blockchain', wallet.blockchain)
+    return Promise.reject(`Cannot find provider for the ${wallet.blockchain} blockchain`)
+  }
+}
+
+export const formatBalances = (blockchain, balancesResult) => {
   const mainSymbol = getMainSymbolForBlockchain(blockchain)
   if (balancesResult && balancesResult.tokens) {
     const tokensBalances = balancesResult.tokens

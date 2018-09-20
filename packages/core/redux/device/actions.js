@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import TrezorDeviceMock from '../../services/signers/TrezorDeviceMock'
-import LedgerDeviceMock from '../../services/signers/LedgerDeviceMock'
+import EthereumTrezorDeviceMock from '../../services/signers/EthereumTrezorDeviceMock'
+import EthereumLedgerDeviceMock from '../../services/signers/EthereumLedgerDeviceMock'
 import MetamaskPlugin from '../../services/signers/MetamaskPlugin'
 import { accountLoad } from '../persistAccount/actions'
 import {
@@ -45,14 +45,14 @@ export const deviceSetStatus = (deviceStatus) => (dispatch) => {
 
 // eslint-disable-next-line no-unused-vars
 export const initLedgerDevice = (wallet) => async (dispatch) => {
-  const ledger = new LedgerDeviceMock()
+  const ledger = new EthereumLedgerDeviceMock()
   const result = await ledger.getAddressInfoList(0,5)
   dispatch(deviceUpdateList(result))
 }
 
 // eslint-disable-next-line no-unused-vars
 export const initTrezorDevice = (wallet) => async (dispatch) => {
-  const trezor = new TrezorDeviceMock()
+  const trezor = new EthereumTrezorDeviceMock()
   const result = await trezor.getAddressInfoList(0,5)
   dispatch(deviceUpdateList(result))
 }

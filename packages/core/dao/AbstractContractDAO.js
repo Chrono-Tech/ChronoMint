@@ -33,13 +33,8 @@ export default class AbstractContractDAO extends EventEmitter {
     options.from = AbstractContractDAO.getAccount()
     options.gas = DEFAULT_GAS
 
-    // eslint-disable-next-line no-console
-    console.log(`%c [${this.constructor.name}] Connect`, 'background: grey', options)
-
     if (this.address) {
       this.contract = new web3.eth.Contract(this.abi.abi, this.address, options)
-      // eslint-disable-next-line no-console
-      console.log(`%c Contract [${this.constructor.name}] created`, 'background: grey;', this.contract, this.address, this.history)
     }
 
     if (!this.history && !this.contract) {

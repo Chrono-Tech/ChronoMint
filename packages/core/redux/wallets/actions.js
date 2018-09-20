@@ -4,8 +4,6 @@
  */
 
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
-import { nemProvider } from '@chronobank/login/network/NemProvider'
-import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
@@ -18,9 +16,10 @@ import {
 } from '@chronobank/login/network/constants'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import WalletModel from '../../models/wallet/WalletModel'
-import { subscribeOnTokens } from '../tokens/actions'
+import { subscribeOnTokens } from '../tokens/thunks'
 import { formatBalances, getWalletBalances } from '../tokens/utils'
 import TokenModel from '../../models/tokens/TokenModel'
+import EthereumMemoryDevice  from '../../services/signers/EthereumMemoryDevice'
 import tokenService from '../../services/TokenService'
 import Amount from '../../models/Amount'
 import { getAccount } from '../session/selectors'
@@ -29,19 +28,21 @@ import ethereumDAO from '../../dao/EthereumDAO'
 import { getMainEthWallet, getWallets } from './selectors/models'
 import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
-import {
-  AllowanceCollection,
-  SignerMemoryModel,
-} from '../../models'
+import { AllowanceCollection } from '../../models'
 import { executeTransaction } from '../ethereum/thunks'
+import { executeWavesTransaction } from '../waves/thunks'
+import * as BitcoinThunks from '../bitcoin/thunks'
 import {
   WALLETS_SET,
   WALLETS_SET_NAME,
   WALLETS_UPDATE_BALANCE,
   WALLETS_UPDATE_WALLET,
 } from './constants'
-import { getSigner } from '../persistAccount/selectors'
 import { executeNemTransaction } from '../nem/thunks'
+import { getPersistAccount, getEthereumSigner } from '../persistAccount/selectors'
+import { getBitcoinCashSigner, getBitcoinSigner, getLitecoinSigner } from '../bitcoin/selectors'
+import { getNemSigner } from '../nem/selectors'
+import { getWavesSigner } from '../waves/selectors'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -62,24 +63,72 @@ export const initWallets = () => (dispatch) => {
   dispatch(initDerivedWallets())
 }
 
-const initWalletsFromKeys = () => (dispatch) => {
-  const providers = [
-    bccProvider,
-    btgProvider,
-    ltcProvider,
-    btcProvider,
-    nemProvider,
-    wavesProvider,
-    ethereumProvider,
-  ]
+const initWalletsFromKeys = () => async (dispatch, getState) => {
+  const state = getState()
+  const account = getPersistAccount(state)
+  const wallets = []
 
-  providers.forEach((provider) => {
-    const wallet = new WalletModel({
-      address: provider.getAddress(),
-      blockchain: provider.id(),
+  const ethereumSigner = getEthereumSigner(state)
+  const ethAddress = await ethereumSigner.getAddress()
+
+  wallets.push(new WalletModel({
+    address: ethAddress,
+    blockchain: BLOCKCHAIN_ETHEREUM,
+    isMain: true,
+    walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+  }))
+
+  const bitcoinSigner = getBitcoinSigner(state)
+  if (bitcoinSigner) {
+    wallets.push(new WalletModel({
+      address: bitcoinSigner.getAddress(),
+      blockchain: BLOCKCHAIN_BITCOIN,
       isMain: true,
-    })
+      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+    }))
+  }
 
+  const bitcoinCashSigner = getBitcoinCashSigner(state)
+  if (bitcoinCashSigner) {
+    wallets.push(new WalletModel({
+      address: bitcoinCashSigner.getAddress(),
+      blockchain: BLOCKCHAIN_BITCOIN_CASH,
+      isMain: true,
+      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+    }))
+  }
+
+  const litecoinSigner = getLitecoinSigner(state)
+  if (litecoinSigner) {
+    wallets.push(new WalletModel({
+      address: litecoinSigner.getAddress(),
+      blockchain: BLOCKCHAIN_LITECOIN,
+      isMain: true,
+      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+    }))
+  }
+
+  const nemSigner = getNemSigner(state)
+  if (nemSigner) {
+    wallets.push(new WalletModel({
+      address: nemSigner.getAddress(),
+      blockchain: BLOCKCHAIN_NEM,
+      isMain: true,
+      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+    }))
+  }
+
+  const wavesSigner = getWavesSigner(state)
+  if (wavesSigner) {
+    wallets.push(new WalletModel({
+      address: wavesSigner.getAddress(),
+      blockchain: BLOCKCHAIN_WAVES,
+      isMain: true,
+      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+    }))
+  }
+
+  wallets.forEach((wallet) => {
     dispatch(setWallet(wallet))
     dispatch(updateWalletBalance({ wallet }))
   })
@@ -133,29 +182,58 @@ const fallbackCallback = (wallet) => (dispatch) => {
 }
 
 const updateWalletBalance = ({ wallet }) => async (dispatch) => {
-  if (wallet.blockchain === BLOCKCHAIN_NEM) {
+  const blockchain = wallet.blockchain
+  const address = wallet.address
+
+  if (blockchain === BLOCKCHAIN_NEM) {
     return dispatch(fallbackCallback(wallet))
   }
-  getWalletBalances({ wallet })
-    .then((balancesResult) => {
-      try {
-        dispatch(setWallet(new WalletModel({
+
+  const isBtcLikeBlockchain = blockchain === BLOCKCHAIN_BITCOIN
+    || blockchain === BLOCKCHAIN_LITECOIN
+    || blockchain === BLOCKCHAIN_BITCOIN_CASH
+    || blockchain === BLOCKCHAIN_BITCOIN_GOLD
+
+  if (isBtcLikeBlockchain) {
+    return dispatch(BitcoinThunks.getAddressInfo(address, blockchain))
+      .then((balancesResult) => {
+        const formattedBalances = formatBalances(blockchain, balancesResult)
+        const newWallet = new WalletModel({
           ...wallet,
           balances: {
             ...wallet.balances,
-            ...formatBalances({ blockchain: wallet.blockchain, balancesResult }),
+            ...formattedBalances,
           },
-        })))
-      } catch (e) {
+        })
+        dispatch(setWallet(newWallet))
+      })
+      .catch((e) => {
         // eslint-disable-next-line no-console
-        console.log(e.message)
-      }
-    })
-    .catch((e) => {
-      // eslint-disable-next-line no-console
-      console.log('call balances from middleware is failed', e)
-      dispatch(fallbackCallback(wallet))
-    })
+        console.log('call balances from middleware is failed', e)
+        dispatch(fallbackCallback(wallet))
+      })
+  } else {
+    getWalletBalances({ wallet })
+      .then((balancesResult) => {
+        try {
+          dispatch(setWallet(new WalletModel({
+            ...wallet,
+            balances: {
+              ...wallet.balances,
+              ...formatBalances(blockchain, balancesResult),
+            },
+          })))
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.log(e.message)
+        }
+      })
+      .catch((e) => {
+        // eslint-disable-next-line no-console
+        console.log('call balances from middleware is failed', e)
+        dispatch(fallbackCallback(wallet))
+      })
+  }
 }
 
 export const subscribeWallet = ({ wallet }) => async (dispatch) => {
@@ -178,7 +256,6 @@ export const subscribeWallet = ({ wallet }) => async (dispatch) => {
     default:
       return
   }
-
 }
 
 export const unsubscribeWallet = ({ wallet, listener }) => async (/*dispatch, getState*/) => {
@@ -209,13 +286,22 @@ const updateAllowance = (allowance) => (dispatch, getState) => {
   }
 }
 
-export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async (dispatch) => {
+export const mainTransfer = (
+  wallet: WalletModel,
+  token: TokenModel,
+  amount: Amount,
+  recipient: string,
+  feeMultiplier: number = 1,
+  advancedParams = null,
+) => async (dispatch) => {
   try {
     const tokenDAO = tokenService.getDAO(token.id())
-    const tx = tokenDAO.transfer(wallet.address, recipient, amount, token) // added token for btc like transfers
+    const tx = tokenDAO.transfer(wallet.address, recipient, amount)
     const executeMap = {
       [BLOCKCHAIN_ETHEREUM]: executeTransaction,
       [BLOCKCHAIN_NEM]: executeNemTransaction,
+      [BLOCKCHAIN_BITCOIN]: BitcoinThunks.executeBitcoinTransaction,
+      [BLOCKCHAIN_WAVES]: executeWavesTransaction,
     }
 
     // execute
@@ -225,6 +311,7 @@ export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amo
         feeMultiplier,
         walletDerivedPath: wallet.derivedPath,
         symbol: token.symbol(),
+        ...advancedParams,
       },
     }))
 
@@ -235,7 +322,7 @@ export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amo
   }
 }
 
-export const mainApprove = (token: TokenModel, amount: Amount, spender: string, feeMultiplier: Number) => async (dispatch, getState) => {
+export const mainApprove = (token: TokenModel, amount: Amount, spender: string, feeMultiplier: number) => async (dispatch, getState) => {
   const state = getState()
   const wallet = getMainEthWallet(state)
   const allowance = wallet.allowances.list[`${spender}-${token.id()}`]
@@ -254,7 +341,7 @@ export const mainApprove = (token: TokenModel, amount: Amount, spender: string, 
   }
 }
 
-export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Number = 1) => async (dispatch, getState) => {
+export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: number = 1) => async (dispatch, getState) => {
   const state = getState()
   const wallet = getMainEthWallet(state)
   const allowance = wallet.allowances.list[`${spender}-${token.id()}`]
@@ -277,7 +364,7 @@ export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Nu
 // eslint-disable-next-line complexity
 export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }) => async (dispatch, getState) => {
   const state = getState()
-  const signer = getSigner(state)
+  const signer = getEthereumSigner(state)
   const account = getState().get(DUCK_SESSION).account
   const wallets = getWallets(state)
 
@@ -302,10 +389,10 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
         newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
       }
       derivedPath = `${WALLET_HD_PATH}/${newDeriveNumber}`
-      const newWalletSigner = await SignerMemoryModel.fromDerivedPath({ seed: signer.privateKey, derivedPath })
+      const newWalletSigner = await EthereumMemoryDevice.getDerivedWallet(signer.privateKey, derivedPath)
       address = newWalletSigner.address
-
       break
+
     case BLOCKCHAIN_BITCOIN:
       if (newDeriveNumber === undefined || newDeriveNumber === null) {
         newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
@@ -315,6 +402,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
       address = newWallet.getAddress()
       btcProvider.subscribeNewWallet(address)
       break
+
     case BLOCKCHAIN_LITECOIN:
       if (newDeriveNumber === undefined || newDeriveNumber === null) {
         newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
@@ -324,6 +412,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
       address = newWallet.getAddress()
       ltcProvider.subscribeNewWallet(address)
       break
+
     case BLOCKCHAIN_BITCOIN_GOLD:
     case BLOCKCHAIN_NEM:
     case BLOCKCHAIN_WAVES:
