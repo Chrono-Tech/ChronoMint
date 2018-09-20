@@ -109,7 +109,7 @@ export default class Nem extends PureComponent {
   }
 
   componentDidUpdate (prevProps) {
-    if (this.props.amount > 0 && prevProps.formValues !== prevProps.formValues) {
+    if (this.props.amount > 0 && this.props.formValues !== prevProps.formValues) {
       try {
         const value = new Amount(this.props.token.addDecimals(new BigNumber(this.props.amount)), this.props.symbol)
         this.handleEstimateFee(

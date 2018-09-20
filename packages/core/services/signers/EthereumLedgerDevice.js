@@ -160,4 +160,8 @@ export default class EthereumLedgerDevice extends EventEmitter {
   async _safeExec (callable) {
     return this.lock.acquire(LOCK, callable)
   }
+
+  isActionRequestedModalDialogShows () {
+    return true
+  }
 }

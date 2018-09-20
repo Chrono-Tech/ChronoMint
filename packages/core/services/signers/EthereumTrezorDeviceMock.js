@@ -59,4 +59,8 @@ export default class EthereumTrezorDeviceMock extends EventEmitter {
 
     return signedData
   }
+
+  isActionRequestedModalDialogShows () {
+    return true
+  }
 }

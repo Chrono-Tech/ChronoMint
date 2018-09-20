@@ -34,7 +34,6 @@ export default class EthereumMemoryDevice extends EventEmitter {
     return EthereumMemoryDevice.getDerivedWallet(this.wallet.privateKey, path).address
   }
 
-  // this method is a part of base interface
   getAddress (path) {
     if (!path || path === DEFAULT_PATH) {
       return this.address
@@ -44,7 +43,6 @@ export default class EthereumMemoryDevice extends EventEmitter {
   }
 
   async signTransaction (tx, path) {
-    // tx object
     if (!path || path === DEFAULT_PATH) {
       return this.wallet.signTransaction(tx)
     }
@@ -104,5 +102,9 @@ export default class EthereumMemoryDevice extends EventEmitter {
     wallet.add(account)
 
     return wallet[0]
+  }
+
+  isActionRequestedModalDialogShows () {
+    return false
   }
 }

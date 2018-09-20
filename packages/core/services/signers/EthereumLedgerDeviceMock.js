@@ -58,4 +58,8 @@ export default class EthereumLedgerDeviceMock extends EventEmitter {
 
     return signedData
   }
+
+  isActionRequestedModalDialogShows () {
+    return true
+  }
 }

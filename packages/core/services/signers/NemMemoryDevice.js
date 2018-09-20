@@ -37,4 +37,8 @@ export default class NemMemoryDevice extends EventEmitter {
 
     return nem.crypto.keyPair.create(this.privateKey)
   }
+
+  isActionRequestedModalDialogShows () {
+    return false
+  }
 }

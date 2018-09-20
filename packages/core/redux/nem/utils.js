@@ -80,7 +80,7 @@ export const describeMosaicTransaction = (tx, network) => {
 
 export const createXemTransaction = (prepared, signer) => {
   const serialized = nemSdk.utils.serialization.serializeTransaction({ ...prepared, signer: signer.getPublicKey() })
-  const signature = signer.sign(serialized)
+  const signature = signer.signTransaction(serialized)
 
   return {
     tx: {
