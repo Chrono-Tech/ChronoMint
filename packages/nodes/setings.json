@@ -1,0 +1,40 @@
+{
+  "blockchainsEnabled": {
+    "bitcoin": {
+      "enabled": true,
+      "tokens": {}
+    },
+    "bitcoinCash": {
+      "enabled": true,
+      "tokens": {}
+    },
+    "bitcoinGold": {
+      "enabled": true,
+      "tokens": {}
+    },
+    "dash": {
+      "enabled": false,
+      "tokens": {}
+    },
+    "eos": {
+      "enabled": false,
+      "tokens": {}
+    },
+    "litecoin": {
+      "enabled": true,
+      "tokens": {}
+    },
+    "nem": {
+      "enabled": true,
+      "tokens": {}
+    },
+    "waves": {
+      "enabled": true,
+      "tokens": {}
+    }
+  },
+  "walletFeaturesEnabled": {
+    "2fa": false,
+    "multisig": true
+  }
+}

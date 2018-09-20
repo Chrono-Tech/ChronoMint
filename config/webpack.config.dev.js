@@ -31,8 +31,8 @@ module.exports = config.buildConfig(
       // Next line is not used in dev but WebpackDevServer crashes without it:
       path: buildPath,
       pathinfo: true,
-      filename: "[name].bundle.js",
-      chunkFilename: "[id].chunk.js",
+      filename: '[name].bundle.js',
+      chunkFilename: '[id].chunk.js',
       publicPath: '/',
     },
     babel,

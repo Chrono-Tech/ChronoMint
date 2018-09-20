@@ -9,6 +9,12 @@ export const nodesInit = () => ({
   type: NodesActionTypes.NODES_INIT,
 })
 
+export const primaryNodeSetExternalProvider = (w3, w3provider) => ({
+  type: NodesActionTypes.NODES_PRIMARY_NODE_SET_EXTERNAL_PROVIDER,
+  w3,
+  w3provider,
+})
+
 export const getWeb3Instance = () => ({
   type: NodesActionTypes.NODES_PRIMARY_NODE_GET_WEB3,
 })
@@ -42,14 +48,14 @@ export const primaryNodeDisconnected = (url, error) => ({
   url,
 })
 
-export const primaryNodeSetSyncingStatus = (status) => ({
+export const primaryNodeSetSyncingStatus = (isSyncing) => ({
   type: NodesActionTypes.NODES_PRIMARY_NODE_SYNC_STATUS,
-  status,
+  isSyncing,
 })
 
-export const primaryNodeSyncingStatusStop = (status) => ({
+export const primaryNodeSyncingStatusStop = () => ({
   type: NodesActionTypes.NODES_PRIMARY_NODE_SYNC_STATUS_STOP,
-  status,
+  syncStatus: null,
 })
 
 export const networkSwitch = (networkIndex) => ({

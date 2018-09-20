@@ -4,10 +4,10 @@
  */
 
 import Web3 from 'web3'
-import * as NodesActionTypes from './constants'
-import * as NodesActions from './actions'
-import * as NodesThunks from './thunks'
-import * as NodesSelectors from './selectors'
+import * as NodesActionTypes from '../redux/constants'
+import * as NodesActions from '../redux/actions'
+import * as NodesThunks from '../redux/thunks'
+import * as NodesSelectors from '../redux/selectors'
 
 let w3 = null
 let availableProviders = null
@@ -83,6 +83,22 @@ const mutations = {
   /**
    * Returns currently used web3 instance (Only for refactoring purposes, to be deleted in the future)
    */
+  [NodesActionTypes.NODES_PRIMARY_NODE_SET_EXTERNAL_PROVIDER]: (store, payload) => {
+    w3.currentProvider.connection.close()
+    w3 = payload.w3
+    w3.setProvider(payload.provider)
+  },
+
+  /**
+   * Returns currently used web3 instance (Only for refactoring purposes, to be deleted in the future)
+   */
+  [NodesActionTypes.NODES_PRIMARY_NODE_SYNC_STATUS_STOP]: (store) => {
+    stopSyncTimer(store.dispatch)
+  },
+
+  /**
+   * Returns currently used web3 instance (Only for refactoring purposes, to be deleted in the future)
+   */
   [NodesActionTypes.NODES_PRIMARY_NODE_GET_WEB3]: () => w3,
 
   /**
@@ -94,16 +110,17 @@ const mutations = {
   /**
    * Must be called on App start. Connecting to selected primary Ethereum node
    */
-  [NodesActionTypes.NODES_INIT]: (store) => {
-    const state = store.getState()
+  [NodesActionTypes.NODES_INIT]: async (store) => {
+    let state = store.getState()
     if (!availableProviders) {
       availableProviders = NodesSelectors.selectAvailableProviders(state)
         .reduce((accumulator, providerUrl) => {
           accumulator[providerUrl] = null
           return accumulator
         }, {})
-      store.dispatch(NodesThunks.preselectNetwork())
+      await store.dispatch(NodesThunks.preselectNetwork())
     }
+    state = store.getState()
     const currentPrimaryNode = NodesSelectors.selectCurrentPrimaryNode(state)
     const currentProviderUrl = currentPrimaryNode.ws
     if (!w3 || !availableProviders[currentProviderUrl]) {

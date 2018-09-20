@@ -60,6 +60,7 @@ const mapStateToProps = (state) => {
     isLoggedIn: state.get(DUCK_SESSION).isSession,
   }
 }
+
 class IsUserAuth extends React.Component {
   static propTypes = {
     isLoggedIn: PropTypes.bool,
@@ -68,6 +69,7 @@ class IsUserAuth extends React.Component {
     isLoggedIn: false,
   }
   render () {
+    console.log('ROUTE: this.props.isLoggedIn', this.props.isLoggedIn)
     return this.props.isLoggedIn
       ? (
         <Redirect from='/' to='/wallets' />

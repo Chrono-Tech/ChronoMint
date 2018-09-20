@@ -57,7 +57,7 @@ export default class EthereumMiddlewareNode extends AbstractNode {
 
   async _handleUnsubscribe (/*{ ethAddress, nemAddress, wavesAddress }*/) {
 
-    //No method delete in API, I'm not sure if we need the procedure bellow
+    //No method delete in API, I'm not sure if we need the procedure below
 
     /*try {
       await this._api.delete('addr', {

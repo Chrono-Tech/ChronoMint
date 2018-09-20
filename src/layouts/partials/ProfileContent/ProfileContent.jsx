@@ -6,7 +6,7 @@
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { getNetworkName } from '@chronobank/login/redux/network/thunks'
+import { selectCurrentNetworkTitle } from '@chronobank/nodes/redux/selectors'
 import { TOKEN_ICONS } from 'assets'
 import ProfileModel from '@chronobank/core/models/ProfileModel'
 import React, { PureComponent } from 'react'
@@ -23,8 +23,10 @@ import './ProfileContent.scss'
 import { prefix } from './lang'
 
 function mapStateToProps (state) {
+  const currentNetworkName = selectCurrentNetworkTitle(state)
   const session = state.get('session')
   return {
+    currentNetworkName,
     account: session.account,
     profile: session.profile,
     tokens: getBlockchainAddressesList()(state),
@@ -33,7 +35,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    getNetworkName: () => dispatch(getNetworkName()),
     handleProfileEdit: (data) => dispatch(modalsOpen({
       componentName: 'UpdateProfileDialog',
       data,
@@ -47,6 +48,7 @@ class ProfileContent extends PureComponent {
 
   static propTypes = {
     account: PropTypes.string,
+    currentNetworkName: PropTypes.string,
     handleLogout: PropTypes.func,
     handleProfileEdit: PropTypes.func,
     onProfileClose: PropTypes.func,
@@ -73,7 +75,7 @@ class ProfileContent extends PureComponent {
 
         <div styleName='network-name'>
           <div styleName='network-name-text'>
-            {this.props.getNetworkName()}
+            {this.props.currentNetworkName}
           </div>
         </div>
 

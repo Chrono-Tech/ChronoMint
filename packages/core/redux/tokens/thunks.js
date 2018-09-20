@@ -2,21 +2,22 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
+import * as BitcoinMiddlewaresAPI from '@chronobank/nodes/httpNodes/api/chronobankNodes/bitcoins'
+import * as NemMiddlewareApi from '@chronobank/nodes/httpNodes/api/chronobankNodes/nem'
 import WavesDAO from '@chronobank/core/dao/WavesDAO'
 import { bccDAO, btcDAO, btgDAO, ltcDAO } from '../../dao/BitcoinDAO'
+import { daoByType } from '../daos/selectors'
+import { estimateGas } from '../ethereum/thunks'
+import { selectWalletAddressByBlockchain } from '../wallets/selectors/wallets'
+import { web3Selector } from '../ethereum/selectors'
+import Amount from '../../models/Amount'
 import ERC20ManagerDAO from '../../dao/ERC20ManagerDAO'
 import ethereumDAO from '../../dao/EthereumDAO'
 import NemDAO from '../../dao/NemDAO'
 import TokenModel from '../../models/tokens/TokenModel'
 import tokenService from '../../services/TokenService'
-import Amount from '../../models/Amount'
-import { daoByType } from '../daos/selectors'
-import { web3Selector } from '../ethereum/selectors'
-import { estimateGas } from '../ethereum/thunks'
-
 import {
   DUCK_TOKENS,
 } from './constants'
@@ -31,6 +32,7 @@ import {
 } from '../../dao/constants/NemDAO'
 import {
   BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_NEM,
   ETH,
   EVENT_NEW_BLOCK,
   EVENT_NEW_TOKEN,
@@ -104,9 +106,10 @@ export const initBtcLikeTokens = () => async (dispatch, getState) => {
     btcLikeTokens
       .map(async (dao) => {
         try {
+          const blockchain = dao.getBlockchain()
           dao.on(EVENT_UPDATE_LAST_BLOCK, (newBlock) => {
             const blocks = state.get(DUCK_TOKENS).latestBlocks()
-            const currentBlock = blocks[dao.getBlockchain()]
+            const currentBlock = blocks[blockchain]
             if (currentBlock && newBlock.block.blockNumber > currentBlock.blockNumber) {
               dispatch(TokensActions.setLatestBlock(newBlock.blockchain, newBlock.block))
             }
@@ -115,9 +118,9 @@ export const initBtcLikeTokens = () => async (dispatch, getState) => {
           const token = await dao.fetchToken()
           tokenService.registerDAO(token, dao)
           dispatch(TokensActions.tokenFetched(token))
-          const currentBlock = await dao.getCurrentBlockHeight()
-          dispatch(TokensActions.setLatestBlock(token.blockchain(), { blockNumber: currentBlock.currentBlock }))
-        } catch (e) {
+          const currentBlock = await dispatch(BitcoinMiddlewaresAPI.requestBlocksHeight(blockchain))
+          dispatch(TokensActions.setLatestBlock(blockchain, { blockNumber: currentBlock.currentBlock }))
+        } catch (error) {
           dispatch(TokensActions.tokensLoadingFailed())
         }
       }),
@@ -140,7 +143,29 @@ export const initNemTokens = () => async (dispatch, getState) => {
 }
 
 export const initNemMosaicTokens = (nem: TokenModel) => async (dispatch, getState) => {
-  const mosaics = nemProvider.getMosaics()
+  // const mosaics = nemProvider.getMosaics()
+  const mosaics = [{
+    definition: {
+      creator: 'cb60520c740f867ea01a60e662e833a5f7f9d3070fdf23cdcf903d6abc1cdd52',
+      description: 'chronobank bonus minutes',
+      id: {
+        namespaceId: 'chronobank',
+        name: 'minute',
+      },
+      properties: [
+        { name: 'divisibility', value: '2' },
+        { name: 'initialSupply', value: '100000' },
+        { name: 'supplyMutable', value: 'true' },
+        { name: 'transferable', value: 'true' },
+      ],
+      levy: {},
+    },
+    namespace: 'cb:minutes',
+    decimals: 2,
+    name: 'XMIN',
+    title: 'Minutes',
+    symbol: 'XMIN',
+  }]
   const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
   dispatch(TokensActions.setTokensFetchingCount(currentCount + mosaics.length))
   // do not wait until initialized, it is ok to lazy load all the tokens
@@ -174,7 +199,9 @@ export const initWavesTokens = () => async (dispatch, getState) => {
 }
 
 export const initWavesAssetTokens = (waves: TokenModel) => async (dispatch, getState) => {
-  const assets = await wavesProvider.getAssets()
+  const state = getState()
+  const { address } = selectWalletAddressByBlockchain(BLOCKCHAIN_NEM)(state)
+  const { assets } = await dispatch(NemMiddlewareApi.requestNemBalanceByAddress(address))
   const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
   dispatch(TokensActions.setTokensFetchingCount(currentCount + Object.keys(assets).length))
   // do not wait until initialized, it is ok to lazy load all the tokens

@@ -11,7 +11,7 @@ import ArbitraryNoticeModel from '@chronobank/core/models/notices/ArbitraryNotic
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import { notify } from '@chronobank/core/redux/notifier/actions'
 import clipboard from 'utils/clipboard'
-import { getPrivateKeyFromBlockchain } from '@chronobank/login/redux/network/utils'
+import { getPersistAccount } from '@chronobank/core/redux/persistAccount/selectors'
 
 import './MicroIcon.scss'
 
@@ -30,9 +30,12 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-function mapStateToProps (state, props) {
+function mapStateToProps (state) {
+  const currentAccount = getPersistAccount(state)
+  const pk = currentAccount.decryptedWallet.privateKey.slice(2, 66) || 'Private key not available for copying'
   return {
-    show: !!getPrivateKeyFromBlockchain(props.blockchain),
+    pk,
+    show: !!pk,
   }
 }
 
@@ -40,11 +43,11 @@ function mapStateToProps (state, props) {
 export default class PKIcon extends PureComponent {
   static propTypes = {
     show: PropTypes.bool,
-    blockchain: PropTypes.string,
     notify: PropTypes.func,
     onModalOpen: PropTypes.func,
     showCopyDialog: PropTypes.func,
     iconStyle: PropTypes.string,
+    pk: PropTypes.string,
   }
 
   static defaultProps = {
@@ -58,13 +61,13 @@ export default class PKIcon extends PureComponent {
         this.props.onModalOpen()
       }
       this.props.showCopyDialog({
-        copyValue: getPrivateKeyFromBlockchain(this.props.blockchain),
+        copyValue: this.props.pk,
         title: <Translate value='dialogs.copyPrivateKey.title' />,
         controlTitle: <Translate value='dialogs.copyPrivateKey.controlTitle' />,
         description: <Translate value='dialogs.copyPrivateKey.description' />,
       })
     } else {
-      clipboard.copy(getPrivateKeyFromBlockchain(this.props.blockchain))
+      clipboard.copy(this.props.pk)
       this.props.notify()
     }
   }

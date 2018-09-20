@@ -4,7 +4,6 @@
  */
 
 import * as AccountSelector from './components/AccountSelector/lang'
-import * as BackButton from './components/BackButton/lang'
 import * as GenerateMnemonic from './components/GenerateMnemonic/lang'
 import * as ConfirmMnemonic from './components/ConfirmMnemonic/lang'
 import * as CreateAccount from './components/CreateAccount/lang'
@@ -12,7 +11,6 @@ import * as RecoverAccount from './components/RecoverAccount/lang'
 import * as ResetPassword from './components/ResetPassword/lang'
 import * as GenerateWallet from './components/GenerateWallet/lang'
 import * as LoginForm from './components/LoginForm/lang'
-import * as LoginUPort from './components/LoginUPort/lang'
 import * as LoginWithLedger from './components/LoginWithLedger/lang'
 import * as LoginWithMnemonic from './components/LoginWithMnemonic/lang'
 import * as LoginWithOptions from './components/LoginWithOptions/lang'
@@ -41,11 +39,9 @@ export const en = {
   LoginWithOptions: LoginWithOptions.en,
   LoginWithPrivateKey: LoginWithPrivateKey.en,
   LoginWithWallet: LoginWithWallet.en,
-  BackButton: BackButton.en,
   GenerateMnemonic: GenerateMnemonic.en,
   GenerateWallet: GenerateWallet.en,
   Warning: Warning.en,
-  LoginUPort: LoginUPort.en,
   AccountSelector: AccountSelector.en,
   NetworkCreateModal: NetworkCreateModal.en,
   NetworkCreateModalForm: NetworkCreateModalForm.en,

@@ -12,7 +12,7 @@ import { connect } from 'react-redux'
 import menu from 'menu'
 import { drawerHide } from 'redux/drawer/actions'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
-import { getNetworkName } from '@chronobank/login/redux/network/thunks'
+import { selectCurrentNetworkTitle } from '@chronobank/nodes/redux/selectors'
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
@@ -36,9 +36,11 @@ function mapStateToProps (state) {
   const { isCBE, profile } = state.get(DUCK_SESSION)
   const selectedAccount = state.get(DUCK_PERSIST_ACCOUNT).selectedWallet
   const accountProfileSummary = getAccountProfileSummary(state)
+  const currentNetworkName = selectCurrentNetworkTitle(state)
 
   return {
-    selectedAccount: selectedAccount,
+    currentNetworkName,
+    selectedAccount,
     walletsCount: getWalletsLength(state),
     isCBE,
     profile,
@@ -50,7 +52,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    getNetworkName: () => dispatch(getNetworkName()),
     handleDrawerHide: () => dispatch(drawerHide()),
     handleLogout: () => dispatch(logoutAndNavigateToRoot()),
     handleProfileEdit: () => dispatch(modalsOpen({
@@ -96,7 +97,7 @@ export default class DrawerMainMenu extends PureComponent {
     walletsCount: PropTypes.number,
     handleAssetsManagerMoreInfo: PropTypes.func,
     onSelectLink: PropTypes.func,
-    getNetworkName: PropTypes.func,
+    currentNetworkName: PropTypes.string,
   }
 
   componentDidMount () {
@@ -199,7 +200,7 @@ export default class DrawerMainMenu extends PureComponent {
                   {userName || getAccountName(selectedAccount) || 'Account name'}
                 </div>
                 <div styleName='network-name-text'>
-                  {this.props.getNetworkName()}
+                  {this.props.currentNetworkName}
                 </div>
               </div>
               <div styleName='exit' onClick={this.props.handleLogout}>

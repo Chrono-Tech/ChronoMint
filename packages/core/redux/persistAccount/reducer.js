@@ -7,11 +7,12 @@ import { REHYDRATE } from 'redux-persist'
 import * as persistAccountActionTypes from './constants'
 
 const initialState = {
-  walletsList: [],
-  selectedWallet: null,
-  decryptedWallet: null,
   customNetworksList: [],
+  decryptedWallet: null,
+  isLoadingSignatures: false,
   locale: 'en',
+  selectedWallet: null,
+  walletsList: [],
 }
 
 const mutations = {
@@ -28,6 +29,16 @@ const mutations = {
       ...payload.persistAccount,
     }
   },
+
+  [persistAccountActionTypes.PERSIST_ACCOUNT_SIGNATURES_LOADING]: (state) => ({
+    ...state,
+    isLoadingSignatures: true,
+  }),
+
+  [persistAccountActionTypes.PERSIST_ACCOUNT_SIGNATURES_RESET_LOADING]: (state) => ({
+    ...state,
+    isLoadingSignatures: true,
+  }),
 
   [persistAccountActionTypes.PERSIST_ACCOUNT_SET_LOCALE]: (state, payload) => {
     return {

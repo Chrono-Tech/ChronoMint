@@ -16,7 +16,7 @@ import CreateAccountContainer from '@chronobank/login-ui/components/CreateAccoun
 import GenerateWalletContainer from '@chronobank/login-ui/components/GenerateWallet/GenerateWalletContainer'
 import GenerateMnemonicContainer from '@chronobank/login-ui/components/GenerateMnemonic/GenerateMnemonicContainer'
 import ConfirmMnemonicContainer from '@chronobank/login-ui/components/ConfirmMnemonic/ConfirmMnemonicContainer'
-import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
+import bip39 from 'bip39'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -46,7 +46,7 @@ export default class CreateAccountPage extends PureComponent {
       page: CreateAccountPage.PAGES.CREATE_ACCOUNT_FORM,
       accountName: null,
       password: null,
-      mnemonic: mnemonicProvider.generateMnemonic(),
+      mnemonic: bip39.generateMnemonic(),
     }
   }
 

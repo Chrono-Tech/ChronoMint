@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { DUCK_MONITOR } from '@chronobank/login/redux/monitor/constants'
 import { Link } from 'react-router-dom'
 import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
@@ -22,23 +21,24 @@ import walletLinkSvg from 'assets/img/icons/prev.svg'
 import copySvg from 'assets/img/icons/copy.svg'
 import qrSvg from 'assets/img/icons/qr.svg'
 import { toggleMainMenu } from 'redux/sides/actions'
-import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED, SYNC_STATUS_SYNCING } from '@chronobank/login/network/MonitorService'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
+import { selectCurrentisPrimaryNodeOnline, selectCurrentPrimaryNodeSyncingStatus } from '@chronobank/nodes/redux/selectors'
 import './MenuTokenMoreInfo.scss'
 import { prefix } from './lang'
 import { getSelectedToken, getSelectedWalletAddress, getWalletCompactWalletsList } from './selectors'
 
-const makeMapStateToProps = () => {
+const makeMapStateToProps = (state) => {
   const getTokenFromState = getSelectedToken()
   const getAddressFromState = getSelectedWalletAddress()
   const getWallets = getWalletCompactWalletsList()
+  const isPrimaryNodeOnline = selectCurrentisPrimaryNodeOnline(state)
+  const isPrimaryNodeSyncing = selectCurrentPrimaryNodeSyncingStatus(state)
   const mapStateToProps = (ownState, ownProps) => {
-    const monitor = ownState.get(DUCK_MONITOR)
     const { account } = ownState.get(DUCK_SESSION)
     return {
-      networkStatus: monitor.network,
-      syncStatus: monitor.sync,
+      isPrimaryNodeSyncing,
+      isPrimaryNodeOnline,
       token: getTokenFromState(ownState, ownProps),
       walletAddress: getAddressFromState(ownState, ownProps),
       wallets: getWallets(ownState),
@@ -62,13 +62,8 @@ export default class MenuTokenMoreInfo extends PureComponent {
     selectedToken: PropTypes.objectOf(PropTypes.string),
     walletAddress: PropTypes.string,
     wallets: PropTypes.arrayOf(PTWallet),
-    networkStatus: PropTypes.shape({
-      status: PropTypes.string,
-    }),
-    syncStatus: PropTypes.shape({
-      status: PropTypes.string,
-      progress: PropTypes.number,
-    }),
+    isPrimaryNodeOnline: PropTypes.string,
+    isPrimaryNodeSyncing: PropTypes.bool,
     onProfileClose: PropTypes.func,
     onMainMenuClose: PropTypes.func,
     account: PropTypes.string,
@@ -130,23 +125,16 @@ export default class MenuTokenMoreInfo extends PureComponent {
   }
 
   renderStatus () {
-    const { networkStatus, syncStatus } = this.props
+    const { isPrimaryNodeOnline, isPrimaryNodeSyncing } = this.props
 
-    switch (networkStatus.status) {
-      case NETWORK_STATUS_ONLINE: {
-        switch (syncStatus.status) {
-          case SYNC_STATUS_SYNCED:
-            return (<div styleName='icon status-synced'><Translate value={`${prefix}.synced`} /></div>)
-          case SYNC_STATUS_SYNCING:
-          default:
-            return (<div styleName='icon status-syncing'><Translate value={`${prefix}.syncing`} /></div>)
-        }
-      }
-      case NETWORK_STATUS_OFFLINE:
-        return (<div styleName='icon status-offline'><Translate value={`${prefix}.offline`} /></div>)
-      case NETWORK_STATUS_UNKNOWN:
-      default:
-        return null
+    if (isPrimaryNodeOnline) {
+      return isPrimaryNodeSyncing
+        ? (<div styleName='icon status-syncing'><Translate value={`${prefix}.syncing`} /></div>)
+        : (<div styleName='icon status-synced'><Translate value={`${prefix}.synced`} /></div>)
+    } else {
+      return isPrimaryNodeOnline !== null
+        ? (<div styleName='icon status-offline'><Translate value={`${prefix}.offline`} /></div>)
+        : null
     }
   }
 

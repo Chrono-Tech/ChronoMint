@@ -4,8 +4,6 @@
  */
 
 import ledgerProvider from '../../network/LedgerProvider'
-import { selectAccount } from '../network/actions'
-import { NETWORK_SET_ACCOUNTS } from '../../redux/network/constants'
 import {
   LEDGER_FETCHED,
   LEDGER_FETCHING,
@@ -32,9 +30,6 @@ export const stopLedgerSync = (isReset = false) => (dispatch) => {
   if (!isReset) {
     return
   }
-  // reset state if we do not intent to login
-  dispatch({ type: NETWORK_SET_ACCOUNTS, accounts: [] })
-  dispatch(selectAccount(null))
   dispatch({ type: LEDGER_FETCHED, isFetched: false })
 }
 
@@ -45,7 +40,6 @@ export const fetchAccount = () => async (dispatch) => {
     dispatch({ type: LEDGER_FETCHED, isFetched: false })
     return
   }
-  dispatch({ type: NETWORK_SET_ACCOUNTS, accounts })
   dispatch({ type: LEDGER_FETCHED, isFetched: true })
   // we do not need to watching eth app on login
   dispatch(stopLedgerSync())

@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export const subscribeNews = (email) => (dispatch) => {
+export const requestSubscribeNews = (email) => (dispatch) => {
   const action = {
     type: 'REQ/POST/BACKEND/SUBSCRIBE',
     payload: {
@@ -25,7 +25,7 @@ export const subscribeNews = (email) => (dispatch) => {
     })
 }
 
-export const getTranslations = () => (dispatch) => {
+export const requestWebInterfaceI18nTranslations = () => (dispatch) => {
   const action = {
     type: 'REQ/GET/BACKEND/TRANSLATIONS',
     payload: {

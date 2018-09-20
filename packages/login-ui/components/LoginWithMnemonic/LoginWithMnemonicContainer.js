@@ -5,7 +5,7 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
+import bip39 from 'bip39'
 import { stopSubmit, SubmissionError } from 'redux-form'
 import {
   FORM_MNEMONIC_LOGIN_PAGE,
@@ -23,7 +23,7 @@ export default class LoginWithMnemonicContainer extends PureComponent {
     const mnemonic = values.get('mnemonic')
     const mnemonicValue = (mnemonic || '').trim()
 
-    if (!mnemonicProvider.validateMnemonic(mnemonicValue)) {
+    if (!bip39.validateMnemonic(mnemonicValue)) {
       throw new SubmissionError({ mnemonic: 'Invalid mnemonic' })
     }
 

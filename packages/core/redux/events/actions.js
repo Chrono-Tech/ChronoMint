@@ -5,7 +5,7 @@
 
 import { padStart, unionBy, uniq, sortBy } from 'lodash'
 import { describeEvent, describeTx } from '../../describers'
-import { DUCK_SESSION } from '../session/constants'
+import { selectDuckSession } from '../session/selectors/session'
 import { getHistoryKey } from '../../utils/eventHistory'
 
 import { web3Selector } from '../ethereum/selectors'
@@ -26,7 +26,7 @@ export const watchEventsToHistory = () => async (dispatch, getState) => {
     const allHistory = eventsSelector()(getState())
     const topic = event.raw.topics[0]
 
-    Object.entries(allHistory).map(([, history]) => {
+    Object.entries(allHistory).forEach(([, history]) => {
       const isTopicsExists = history.topics.some((t) => t === topic)
       if (!isTopicsExists) {
         return
@@ -39,8 +39,9 @@ export const watchEventsToHistory = () => async (dispatch, getState) => {
 
 export const pushTx = (historyKey, receipt) => async (dispatch, getState) => {
   {
-    const web3 = web3Selector()(getState())
-    const allHistory = eventsSelector()(getState())
+    const state = getState()
+    const web3 = web3Selector()(state)
+    const allHistory = eventsSelector()(state)
 
     const [tx, block] = await Promise.all([
       web3.eth.getTransaction(receipt.transactionHash),
@@ -72,9 +73,10 @@ export const pushTx = (historyKey, receipt) => async (dispatch, getState) => {
 
 export const pushEvent = (historyKey, log) => async (dispatch, getState) => {
 
-  const web3 = web3Selector()(getState())
-  const allHistory = eventsSelector()(getState())
-  const account = getState().get(DUCK_SESSION).account
+  const state = getState()
+  const web3 = web3Selector()(state)
+  const allHistory = eventsSelector()(state)
+  const { account } = selectDuckSession(state)
 
   const [tx, receipt, block] = await Promise.all([
     web3.eth.getTransaction(log.transactionHash),
@@ -105,11 +107,13 @@ export const pushEvent = (historyKey, log) => async (dispatch, getState) => {
   })
 }
 
-export const loadEvents = (topics = null, address: string = null, blockScanLimit = 100000, logScanLimit = 10) => async (dispatch, getState) => {
+// eslint-disable-next-line complexity
+export const loadEvents = (topics = null, ofAddress: string = null, blockScanLimit = 100000, logScanLimit = 10) => async (dispatch, getState) => {
 
-  const web3 = web3Selector()(getState())
-  const account = getState().get(DUCK_SESSION).account
-  address = address ? address.toLowerCase() : account
+  const state = getState()
+  const web3 = web3Selector()(state)
+  const { account } = selectDuckSession(state)
+  const address = ofAddress ? ofAddress.toLowerCase() : account
   const historyKey = getHistoryKey(topics, address)
 
   await dispatch({
@@ -119,7 +123,7 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
     topics,
   })
 
-  const allHistory = eventsSelector()(getState())
+  const allHistory = eventsSelector()(state)
   const history = allHistory[historyKey]
 
   const toBlock = await web3.eth.getBlock(
@@ -176,7 +180,7 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
       type: EVENTS_LOGS_LOADED,
       historyKey,
       address,
-      entries: history.entries
+      entries: history.entries,
     })
 
     return

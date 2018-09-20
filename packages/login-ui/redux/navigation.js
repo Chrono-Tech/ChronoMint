@@ -114,3 +114,6 @@ export const navigateToRecoverAccountPage = () => (dispatch) => {
 export const navigateToWalletUploadMethod = () => (dispatch) => {
   dispatch(push('/upload-wallet'))
 }
+
+export const navigateToRoot = () => (dispatch) =>
+  dispatch(push('/'))

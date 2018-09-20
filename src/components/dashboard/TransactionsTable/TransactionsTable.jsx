@@ -6,8 +6,7 @@
 import classnames from 'classnames'
 import Button from 'components/common/ui/Button/Button'
 import TxConfirmations from 'components/common/TxConfirmations/TxConfirmations'
-import { getBlockExplorerUrl } from '@chronobank/login/network/settings'
-import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
+import { selectCurrentNetworkBlockchains } from '@chronobank/nodes/redux/selectors'
 import Moment from 'components/common/Moment'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import moment from 'moment'
@@ -24,14 +23,13 @@ import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import './TransactionsTable.scss'
 import { prefix } from './lang'
 
-function mapStateToProps (state) {
-  const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
+const mapStateToProps = (state) => {
+  const currentNetworkBlockchainsInfo = selectCurrentNetworkBlockchains(state)
 
   return {
+    currentNetworkBlockchainsInfo,
     account: state.get(DUCK_SESSION).account,
     locale: state.get(DUCK_I18N).locale,
-    selectedNetworkId,
-    selectedProviderId,
     tokens: state.get(DUCK_TOKENS),
   }
 }
@@ -41,8 +39,6 @@ export default class TransactionsTable extends PureComponent {
   static propTypes = {
     walletAddress: PropTypes.string,
     transactions: PropTypes.instanceOf(Array),
-    selectedNetworkId: PropTypes.number,
-    selectedProviderId: PropTypes.number,
     locale: PropTypes.string,
     onGetTransactions: PropTypes.func.isRequired,
     tokens: PropTypes.instanceOf(TokensCollection),
@@ -56,7 +52,7 @@ export default class TransactionsTable extends PureComponent {
   renderRow ({ trx }) {
     const account = this.props.walletAddress || this.props.account
     const token: TokenModel = this.props.tokens.item(trx.symbol())
-    const blockExplorerUrl = (txHash) => getBlockExplorerUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash, token.blockchain())
+    const blockExplorerUrl = this.props(token.blockchain())
     const isFrom = trx.from().split(',').some((from) => from === account)
 
     const info = (
@@ -70,8 +66,9 @@ export default class TransactionsTable extends PureComponent {
       <div styleName='row' key={trx.id()}>
         <div styleName='confirmations'><TxConfirmations transaction={trx} /></div>
 
-        {blockExplorerUrl(trx.txHash())
-          ? <a styleName='link' href={blockExplorerUrl(trx.txHash())} target='_blank' rel='noopener noreferrer'>{info}</a>
+        {
+          blockExplorerUrl
+            ? <a styleName='link' href={new URL(trx.txHash(), blockExplorerUrl)} target='_blank' rel='noopener noreferrer'>{info}</a>
           : info
         }
 

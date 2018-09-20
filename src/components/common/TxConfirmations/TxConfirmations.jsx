@@ -12,12 +12,12 @@ import { TX_CONFIRMATIONS } from 'assets'
 import { DUCK_WALLET } from '@chronobank/core/redux/wallet/constants'
 import { makeGetLastBlockForBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import {
-  BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LITECOIN,
-} from '@chronobank/login/network/constants'
-import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
+} from '@chronobank/core/dao/constants'
 import { prefix } from './lang'
 import './TxConfirmations.scss'
 

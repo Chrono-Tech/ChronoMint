@@ -9,7 +9,14 @@
  * to make @chronobank/login package indenpendent
 */
 
-//#region Tokens' names
+// coin_types 8, 9, 16, 17 used, but they are not standardized
+export const COIN_TYPE_ETH = 60
+export const COIN_TYPE_BTC_MAINNET = 0
+export const COIN_TYPE_BTC_TESTNET = 1
+export const COIN_TYPE_LTC_MAINNET = 9
+export const COIN_TYPE_LTC_TESTNET = 8
+export const COIN_TYPE_BTG_MAINNET = 17
+export const COIN_TYPE_BTG_TESTNET = 16
 
 export const BCC = 'BCC'
 export const BTC = 'BTC'
@@ -21,10 +28,6 @@ export const TIME = 'TIME'
 export const WAVES = 'WAVES'
 export const XEM = 'XEM'
 
-//#endregion LHTDAO.js
-
-//#region Blockchains' names
-
 export const BLOCKCHAIN_BITCOIN = 'Bitcoin'
 export const BLOCKCHAIN_BITCOIN_CASH = 'Bitcoin Cash'
 export const BLOCKCHAIN_BITCOIN_GOLD = 'Bitcoin Gold'
@@ -32,10 +35,6 @@ export const BLOCKCHAIN_ETHEREUM = 'Ethereum'
 export const BLOCKCHAIN_LITECOIN = 'Litecoin'
 export const BLOCKCHAIN_NEM = 'NEM'
 export const BLOCKCHAIN_WAVES = 'WAVES'
-
-//#endregion
-
-//#region Common constnats
 
 export const TX_FRONTEND_ERROR_CODES = {
   FRONTEND_UNKNOWN: 'f0',
@@ -65,5 +64,3 @@ export const EVENT_NEW_TRANSFER = 'TokenTxTransfer'
 export const EVENT_UPDATE_BALANCE = 'TokenUpdateBalance'
 export const EVENT_UPDATE_LAST_BLOCK = 'updateLastBlock'
 export const EVENT_UPDATE_TRANSACTION = 'TokenUpdateTransaction'
-
-//#endregion

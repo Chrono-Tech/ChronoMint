@@ -24,9 +24,7 @@ import {
   getAccountAvatar,
   getAccountName,
 } from '@chronobank/core/redux/persistAccount/utils'
-import {
-  DUCK_NETWORK,
-} from '@chronobank/login/redux/network/constants'
+
 import {
   navigateToSelectWallet,
   navigateToRecoverAccountPage,
@@ -46,14 +44,11 @@ import styles from './styles'
 import './LoginForm.scss'
 
 function mapStateToProps (state) {
-  const network = state.get(DUCK_NETWORK)
   const selectedWallet = state.get(DUCK_PERSIST_ACCOUNT).selectedWallet
   const formSelector = formValueSelector(FORM_LOGIN_PAGE)
 
   return {
-    selectedNetworkId: network.selectedNetworkId,
-    selectedProvider: network.selectedProviderId,
-    selectedWallet: selectedWallet,
+    selectedWallet,
     successMessage: formSelector(state, FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE),
   }
 }
