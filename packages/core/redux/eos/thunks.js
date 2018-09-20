@@ -4,9 +4,10 @@
  */
 
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
-import { SignerMemoryModel/*, ErrorNoticeModel, TransferNoticeModel*/ } from '../../models'
+// import { /*, ErrorNoticeModel, TransferNoticeModel*/ } from '../../models'
+import Eos from 'eosjs'
 import { eosPendingSelector, eosPendingEntrySelector } from './selectors'
-import { getPersistAccount, getSelectedNetwork, getSigner } from '../persistAccount/selectors'
+import { getPersistAccount, getSelectedNetwork } from '../persistAccount/selectors'
 import { describePendingEosTx } from '../../describers'
 import { getAccount } from '../session/selectors/models'
 import * as EosActions from './actions'
@@ -152,13 +153,13 @@ const submitTransaction = (entry) => async (dispatch, getState) => {
 const acceptTransaction = (entry) => async (dispatch, getState) => {
   dispatch(eosTxStatus(entry.key, entry.tx.from, { isAccepted: true, isPending: true }))
 
-  const state = getState()
-  let signer = getSigner(state)
+  // const state = getState()
+  // let signer = getSigner(state)
   if (entry.walletDerivedPath) {
-    signer = await SignerMemoryModel.fromDerivedPath({
-      seed: signer.privateKey,
-      derivedPath: entry.walletDerivedPath,
-    })
+    // signer = await SignerMemoryModel.fromDerivedPath({
+    //   seed: signer.privateKey,
+    //   derivedPath: entry.walletDerivedPath,
+    // })
   }
 
   const selectedEntry = eosPendingEntrySelector(entry.tx.from, entry.key)(getState())
@@ -170,7 +171,7 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
 
   return dispatch(processTransaction({
     entry: selectedEntry,
-    signer,
+    // signer,
   }))
 }
 
@@ -187,5 +188,13 @@ export const createEosWallet = () => (dispatch, getState) => {
       isMain: true,
     }),
   })
+}
 
+export const checkEos = () => () => {
+  const httpEndpoint = 'http://jungle.cryptolions.io:18888'
+  const chainId = '038f4b0fc8ff18a4f0842a8f0564611f6e96e8535901dd45e43ac8691a1c4dca'
+  const keyProvider = '5J2xA9xFZQNksmXN9JdhEfN8HXwg72fAMeBdQrmoSsMj6XYdEQE'
+  const eos = Eos({ httpEndpoint, chainId, keyProvider })
+  // eslint-disable-next-line
+  console.log('%c eos', 'background: #222; color: #fff', eos)
 }
