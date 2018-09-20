@@ -4,6 +4,8 @@
  */
 
 import uuid from 'uuid/v1'
+import ecc from 'eosjs-ecc'
+import ethUtils from 'ethereumjs-util'
 // TODO change imports
 // import EosWallet from '@chronobank/login/network/EosWallet'
 // import eosSdk from 'eos-sdk'
@@ -58,5 +60,31 @@ export const createEosTransaction = (prepared/*, signer, network*/) => {
       // signature: signature.toString(),
     },
     fee: prepared.fee,
+  }
+}
+
+export const createEosKeys = (ethereumPrivateKey) => {
+  if (ethUtils.isValidPrivate(Buffer.from(ethereumPrivateKey, 'hex'))) {
+    // Create EOS owner keys
+    const convertedEOSOwnerPrivateKey = ecc.PrivateKey(Buffer.from(ethereumPrivateKey, 'hex')).toWif()
+    const convertedEOSOwnerPublicKey = ecc.privateToPublic(convertedEOSOwnerPrivateKey)
+
+    // Create EOS active keys
+    const convertedEOSActivePrivateKey = ecc.PrivateKey(Buffer.from(ethereumPrivateKey, 'hex').reverse()).toWif() // TODO implement something more smart
+    const convertedEOSActivePublicKey = ecc.privateToPublic(convertedEOSActivePrivateKey)
+
+    // eslint-disable-next-line
+    console.log(`EOS Private owner Key: ${convertedEOSOwnerPrivateKey}`)
+    // eslint-disable-next-line
+    console.log(`EOS Public owner Key: ${convertedEOSOwnerPublicKey}`)
+
+    // eslint-disable-next-line
+    console.log(`EOS Private active Key: ${convertedEOSActivePrivateKey}`)
+    // eslint-disable-next-line
+    console.log(`EOS Public active Key: ${convertedEOSActivePublicKey}`)
+
+  } else {
+    // eslint-disable-next-line
+    console.log("Invalid Ethereum Private Key")
   }
 }

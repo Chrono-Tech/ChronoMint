@@ -10,19 +10,28 @@ import WalletModel from '../../../models/wallet/WalletModel'
 import Amount from '../../../models/Amount'
 import { getEthMultisigWallet } from '../../multisigWallet/selectors/models'
 import MultisigEthWalletModel from '../../../models/wallet/MultisigEthWalletModel'
+import { getEosWallet } from '../../eos/selectors'
 
 export const selectWallet = (blockchain, address) => createSelector(
   [
     getWallet(`${blockchain}-${address}`),
+    getEosWallet(`${blockchain}-${address}`),
     getEthMultisigWallet(`${blockchain}-${address}`),
   ],
-  (wallet, ethMultisigWallet) => {
+  (wallet, eosWallet, ethMultisigWallet) => {
     const mainSymbol = getMainSymbolForBlockchain(blockchain)
 
     if (wallet) {
       const balance: Amount = wallet ? wallet.balances[mainSymbol] : new Amount(0, mainSymbol)
       return new WalletModel({
         ...wallet,
+        amount: balance,
+      })
+    }
+    if (eosWallet) {
+      const balance: Amount = eosWallet ? eosWallet.balances[mainSymbol] : new Amount(0, mainSymbol)
+      return new WalletModel({
+        ...eosWallet,
         amount: balance,
       })
     }

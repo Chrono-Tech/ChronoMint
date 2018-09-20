@@ -6,12 +6,14 @@
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import { SignerMemoryModel/*, ErrorNoticeModel, TransferNoticeModel*/ } from '../../models'
 import { eosPendingSelector, eosPendingEntrySelector } from './selectors'
-import { getSelectedNetwork, getSigner } from '../persistAccount/selectors'
+import { getPersistAccount, getSelectedNetwork, getSigner } from '../persistAccount/selectors'
 import { describePendingEosTx } from '../../describers'
 import { getAccount } from '../session/selectors/models'
 import * as EosActions from './actions'
 import * as EosUtils from './utils'
 import { getToken } from '../tokens/selectors'
+import WalletModel from '../../models/wallet/WalletModel'
+import { EOS_UPDATE_WALLET, BLOCKCHAIN_EOS } from './constants'
 // import { notify } from '../notifier/actions'
 
 /*
@@ -173,3 +175,17 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
 }
 
 const rejectTransaction = (entry) => (dispatch) => dispatch(eosTxStatus(entry.key, entry.tx.from, { isRejected: true }))
+
+export const createEosWallet = () => (dispatch, getState) => {
+  const persistAccount = getPersistAccount(getState())
+  EosUtils.createEosKeys(persistAccount.decryptedWallet.privateKey.substring(2, 66))
+  dispatch({
+    type: EOS_UPDATE_WALLET,
+    wallet: new WalletModel({
+      address: 'chronobank11',
+      blockchain: BLOCKCHAIN_EOS,
+      isMain: true,
+    }),
+  })
+
+}

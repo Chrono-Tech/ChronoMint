@@ -100,7 +100,6 @@
     "classnames": "^2.2.5",
     "d3": "^4.10.0",
     "debug": "^3.1.0",
-    "eosjs": "^16.0.8",
     "immutable": ">=3",
     "js-file-download": "^0.4.1",
     "jsan": "^3.1.10",

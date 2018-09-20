@@ -67,6 +67,7 @@ import {
   WALLET_TRANSACTION,
   WALLET_TRANSACTION_UPDATED,
 } from './constants'
+import { createEosWallet } from '../eos/thunks'
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
@@ -244,6 +245,7 @@ export const initMainWallet = () => async (dispatch) => {
       }),
     })
   })
+  dispatch(createEosWallet())
 }
 
 export const updateIsTIMERequired = () => async (dispatch, getState) => {

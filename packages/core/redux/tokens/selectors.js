@@ -22,6 +22,7 @@ import {
 } from '../../dao/constants'
 
 import { DUCK_TOKENS } from './constants'
+import { BLOCKCHAIN_EOS, EOS } from '../eos/constants'
 
 export const getTokens = (state) => {
   return state.get(DUCK_TOKENS)
@@ -52,6 +53,8 @@ export const getMainSymbolForBlockchain = (blockchain) => {
       return XEM
     case BLOCKCHAIN_WAVES:
       return WAVES
+    case BLOCKCHAIN_EOS:
+      return EOS
   }
 }
 

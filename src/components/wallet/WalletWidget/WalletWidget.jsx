@@ -212,7 +212,7 @@ export default class WalletWidget extends PureComponent {
     return (
       <BalanceSubscription wallet={wallet}>
         <div styleName='header-container'>
-          {showGroupTitle && <h1 styleName='header-text' id={blockchain}><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>}
+          {showGroupTitle && <h1 styleName='header-text' id={blockchain}><Translate value={`${prefix}.walletTitle`} title={blockchain.toUpperCase()} /></h1>}
           <div styleName='wallet-list-container'>
 
             <div styleName='wallet-container'>

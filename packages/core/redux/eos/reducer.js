@@ -4,15 +4,25 @@
  */
 
 import { omit } from 'lodash'
-import { TX_CREATE, TX_REMOVE, TX_UPDATE } from './constants'
+import { EOS_UPDATE_WALLET, TX_CREATE, TX_REMOVE, TX_UPDATE } from './constants'
 
 const initialState = {
+  wallets: {},
   tokens: {}, // eos tokens
   pending: {}, // pending transactions
 }
 
 // TODO refactor this
 const mutations = {
+  [EOS_UPDATE_WALLET]: (state, { wallet }) => {
+    return {
+      ...state,
+      wallets: {
+        ...state.wallets,
+        [`${wallet.blockchain}-${wallet.address}`]: wallet,
+      },
+    }
+  },
   [TX_CREATE]: (state, { entry }) => {
     const address = entry.tx.from
     const pending = state.pending

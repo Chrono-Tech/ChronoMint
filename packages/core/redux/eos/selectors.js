@@ -22,3 +22,17 @@ export const eosPendingEntrySelector = (address, key) => createSelector(
     return null
   },
 )
+
+export const getEosWallets = createSelector(
+  eosSelector(),
+  (eosState) => {
+    return eosState.wallets
+  },
+)
+
+export const getEosWallet = (id) => createSelector(
+  eosSelector(),
+  (eosState) => {
+    return eosState.wallets[id]
+  },
+)
