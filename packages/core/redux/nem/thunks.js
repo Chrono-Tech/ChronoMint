@@ -61,7 +61,7 @@ export const estimateNemFee = (params) => async (dispatch) => {
   const tx = nemDao.transfer(from, to, amount)
   const preparedTx = await dispatch(prepareTransaction({ tx }))
 
-  return { fee: NemUtils.formatFee(preparedTx.prepared.fee) }
+  return NemUtils.formatFee(preparedTx.prepared.fee)
 }
 
 export const executeNemTransaction = ({ tx, options }) => async (dispatch) => {
@@ -141,7 +141,7 @@ const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
   }
 
   if (res.code === 0) {
-    dispatch(NemActions.nemTxSendSignedTransactionError({ entry }))
+    dispatch(NemActions.nemTxSendSignedTransactionError({ entry, res }))
     dispatch(nemTxStatus(entry.key, entry.tx.from, { isErrored: true, error: res.message }))
     dispatch(notifyNemError(res))
   }
