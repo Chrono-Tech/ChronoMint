@@ -7,11 +7,10 @@ import Amount from '../../models/Amount'
 import AssetModel from '../../models/assetHolder/AssetModel'
 import TokenModel from '../../models/tokens/TokenModel'
 import AllowanceModel from '../../models/wallet/AllowanceModel'
-import { DUCK_SESSION } from '../session/constants'
+import { selectDuckSession } from '../session/selectors/session'
 import { subscribeOnTokens } from '../tokens/thunks'
 import tokenService from '../../services/TokenService'
 import { daoByType } from '../daos/selectors'
-import { BLOCKCHAIN_ETHEREUM } from '../../dao/constants'
 import { getWallet } from '../wallets/selectors/models'
 import { WALLETS_UPDATE_WALLET } from '../wallets/constants'
 import WalletModel from '../../models/wallet/WalletModel'
@@ -65,10 +64,11 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
 }
 
 export const fetchAssetDeposit = (token: TokenModel) => async (dispatch, getState) => {
-  const { account } = getState().get(DUCK_SESSION)
-  const assetHolderDAO = daoByType('TimeHolder')(getState())
+  const state = getState()
+  const { account } = selectDuckSession(state)
+  const assetHolderDAO = daoByType('TimeHolder')(state)
   const deposit = await assetHolderDAO.getDeposit(token.address(), account)
-  const asset = getState().get(DUCK_ASSETS_HOLDER).assets().item(token.address()).deposit(new Amount(
+  const asset = state.get(DUCK_ASSETS_HOLDER).assets().item(token.address()).deposit(new Amount(
     deposit,
     token.symbol(),
     true,
@@ -78,13 +78,14 @@ export const fetchAssetDeposit = (token: TokenModel) => async (dispatch, getStat
 
 export const fetchAssetAllowance = (token: TokenModel) => async (dispatch, getState) => {
   const assetHolder = getState().get(DUCK_ASSETS_HOLDER)
-  const { account } = getState().get(DUCK_SESSION)
+  const state = getState()
+  const { account } = selectDuckSession(state)
 
   const holderWallet = assetHolder.wallet()
   const tokenDAO = tokenService.getDAO(token.id())
   const assetHolderWalletAllowance = await tokenDAO.getAccountAllowance(account, holderWallet)
 
-  const wallet = getWallet(BLOCKCHAIN_ETHEREUM, account)(getState())
+  const wallet = getWallet(`Ethereum-${account}`)(state)
   const allowance = new AllowanceModel({
     amount: new Amount(assetHolderWalletAllowance, token.id(), true),
     spender: holderWallet,
@@ -141,7 +142,7 @@ export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: n
   try {
     const state = getState()
     const assetHolderDAO = daoByType('TimeHolder')(state)
-    const { account } = state.get(DUCK_SESSION)
+    const { account } = selectDuckSession(state)
     const tx = assetHolderDAO.deposit(token.address(), amount, account)
     if (tx) {
       await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
@@ -158,7 +159,7 @@ export const withdrawAsset = (amount: Amount, token: TokenModel, feeMultiplier: 
   try {
     const state = getState()
     const assetHolderDAO = daoByType('TimeHolder')(state)
-    const { account } = state.get(DUCK_SESSION)
+    const { account } = selectDuckSession(state)
     const tx = assetHolderDAO.withdraw(token.address(), amount, account)
     if (tx) {
       await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))

@@ -3,11 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { getNetworkName } from '@chronobank/login/redux/network/thunks'
+import { selectCurrentNetworkTitle } from '@chronobank/nodes/redux/selectors'
 import { Translate, I18n } from 'react-redux-i18n'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
-import { DUCK_MONITOR } from '@chronobank/login/redux/monitor/constants'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { drawerHide, drawerToggle } from 'redux/drawer/actions'
@@ -20,16 +19,15 @@ import { prefix } from './lang'
 
 import './MenuTokensList.scss'
 
-function makeMapStateToProps () {
+function makeMapStateToProps (state) {
   const getwallets = getBlockchainAddressesList()
+  const currentNetworkName = selectCurrentNetworkTitle(state)
   const mapStateToProps = (ownState) => {
     const session = ownState.get(DUCK_SESSION)
-    const monitor = ownState.get(DUCK_MONITOR)
     return {
+      currentNetworkName,
       account: session.account,
       tokens: getwallets(ownState),
-      networkStatus: monitor.network,
-      syncStatus: monitor.sync,
     }
   }
   return mapStateToProps
@@ -37,7 +35,6 @@ function makeMapStateToProps () {
 
 function mapDispatchToProps (dispatch) {
   return {
-    getNetworkName: () => dispatch(getNetworkName()),
     handleDrawerToggle: () => dispatch(drawerToggle()),
     handleDrawerHide: () => dispatch(drawerHide()),
     handleLogout: () => dispatch(logoutAndNavigateToRoot()),
@@ -75,7 +72,7 @@ export default class MenuTokensList extends PureComponent {
     tokens: PropTypes.arrayOf(PropTypes.object),
     handleTokenMoreInfo: PropTypes.func,
     initTokenSide: PropTypes.func,
-    getNetworkName: PropTypes.func,
+    currentNetworkName: PropTypes.string,
   }
 
   constructor (props) {
@@ -116,8 +113,8 @@ export default class MenuTokensList extends PureComponent {
         }
       }
     }
-    const network =  this.props.getNetworkName()
     const { selectedToken } = this.state
+    const { currentNetworkName } = this.props
 
     return (
       <div styleName='root'>
@@ -129,7 +126,7 @@ export default class MenuTokensList extends PureComponent {
                 <div styleName='syncIcon'>
                   <span
                     styleName={classnames('icon', { 'status-synced': !!token.address, 'status-offline': !token.address })}
-                    title={I18n.t(`${prefix}.${token.address ? 'synced' : 'offline'}`, { network })}
+                    title={I18n.t(`${prefix}.${token.address ? 'synced' : 'offline'}`, { currentNetworkName })}
                   />
                 </div>
                 <div styleName='addressTitle' onClick={this.handleTouchTitle(token.blockchain)}>

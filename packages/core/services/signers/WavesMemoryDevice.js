@@ -9,7 +9,7 @@ import * as WavesAPI from '@waves/waves-api'
 // const TEMP_MOCK_SEED = 'clip grief portion ignore display empower turkey noise derive surface wonder tragic pattern stone squeeze'
 
 export default class WavesMemoryDevice extends EventEmitter {
-  constructor ({ /*seedPhrase,*/ network }) {
+  constructor ({ seedPhrase, network }) {
     super()
     this.waves = WavesAPI.create(network)
     this.seed = this.waves.Seed.fromExistingPhrase(seedPhrase)
@@ -28,7 +28,7 @@ export default class WavesMemoryDevice extends EventEmitter {
   async signTransaction (unsignedTxData) {
     const transactionData = {
       ...unsignedTxData,
-      senderPublicKey: this.getPublicKey()
+      senderPublicKey: this.getPublicKey(),
     }
 
     const transferTransaction = new this.waves.Transactions.TransferTransaction(transactionData)

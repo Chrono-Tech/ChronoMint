@@ -60,6 +60,7 @@ const mapStateToProps = (state) => {
     isLoggedIn: state.get(DUCK_SESSION).isSession,
   }
 }
+
 class IsUserAuth extends React.Component {
   static propTypes = {
     isLoggedIn: PropTypes.bool,

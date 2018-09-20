@@ -9,9 +9,6 @@ import React, { PureComponent } from 'react'
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
-import {
-  initAccountsSignature,
-} from '@chronobank/login/redux/network/thunks'
 import { onWalletSelect } from '@chronobank/login-ui/redux/thunks'
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 import './AccountSelector.scss'
@@ -25,7 +22,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     navigateToCreateAccount: () => dispatch(navigateToCreateAccount()),
     navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
-    initAccountsSignature: () => dispatch(initAccountsSignature()),
     onWalletSelect: (wallet) => dispatch(onWalletSelect(wallet)),
   }
 }
@@ -47,17 +43,12 @@ export default class AccountSelectorContainer extends PureComponent {
     ),
     navigateToSelectImportMethod: PropTypes.func,
     navigateToCreateAccount: PropTypes.func,
-    initAccountsSignature: PropTypes.func,
   }
 
   static defaultProps = {
     onWalletSelect: () => {
     },
     walletsList: [],
-  }
-
-  componentDidMount () {
-    this.props.initAccountsSignature()
   }
 
   render () {

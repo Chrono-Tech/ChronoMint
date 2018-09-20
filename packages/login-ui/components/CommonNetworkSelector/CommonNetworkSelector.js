@@ -7,7 +7,6 @@ import { connect } from 'react-redux'
 import { Popover } from '@material-ui/core'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
-import Web3 from 'web3'
 
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
 import { selectCurrentNetwork, selectDisplayNetworksList } from '@chronobank/nodes/redux/selectors'
@@ -16,8 +15,6 @@ import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import { networkSelect } from '@chronobank/nodes/redux/thunks'
 import Button from 'components/common/ui/Button/Button'
 import React, { PureComponent } from 'react'
-import web3Provider from '@chronobank/login/network/Web3Provider'
-import web3Utils from '@chronobank/login/network/Web3Utils'
 
 import styles from './CommonNetworkSelector.scss'
 
@@ -139,12 +136,6 @@ export default class CommonNetworkSelector extends PureComponent {
     } else {
       this.props.modalOpenAddNetwork()
     }
-  }
-
-  resolveNetwork (providerUrl) {
-    const web3 = new Web3()
-    web3Provider.reinit(web3, web3Utils.createStatusEngine(providerUrl))
-    web3Provider.resolve()
   }
 
   renderPredefinedNetworkSections = () => {

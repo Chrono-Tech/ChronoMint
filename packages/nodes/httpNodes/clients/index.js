@@ -25,6 +25,8 @@ export default {
   // ChronoBank middlewares
   middleware_bitcoin_mainnet_rest: chronobankNodes.bitcoin.middleware_bitcoin_mainnet_rest,
   middleware_bitcoin_testnet_rest: chronobankNodes.bitcoin.middleware_bitcoin_testnet_rest,
+  middleware_bitcoincash_mainnet_rest: chronobankNodes.bitcoincash.middleware_bitcoincash_mainnet_rest,
+  middleware_bitcoincash_testnet_rest: chronobankNodes.bitcoincash.middleware_bitcoincash_testnet_rest,
   middleware_ethereum_mainnet_rest: chronobankNodes.erc20.middleware_ethereum_mainnet_rest,
   middleware_ethereum_testnet_rest: chronobankNodes.erc20.middleware_ethereum_testnet_rest,
   middleware_litecoin_mainnet_rest: chronobankNodes.litecoin.middleware_litecoin_mainnet_rest,

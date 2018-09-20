@@ -8,7 +8,8 @@ import { routerMiddleware } from 'connected-react-router/immutable'
 import thunk from 'redux-thunk'
 
 import axiosMiddleware from '@chronobank/nodes/httpNodes/axiosMiddleware'
-import nodesMiddleware from '@chronobank/nodes/redux/nodesMiddleware'
+import primaryNodesReduxMiddleware from '@chronobank/nodes/store/primaryNodesReduxMiddleware'
+import chronobankMiddlewaresReduxMiddleware from '@chronobank/nodes/store/chronobankMiddlewaresReduxMiddleware'
 
 const getReduxLoggerMiddleware = () => {
   // Highest priority, IGNORED_ACTIONS and DOMAINS are ignored by WHITE_LIST
@@ -101,7 +102,8 @@ export default (history) => {
   const middleware = [
     thunk,
     routerMiddleware(history),
-    nodesMiddleware,
+    primaryNodesReduxMiddleware,
+    chronobankMiddlewaresReduxMiddleware,
     axiosMiddleware,
   ]
   const isDevelopmentEnv = process.env.NODE_ENV === 'development'

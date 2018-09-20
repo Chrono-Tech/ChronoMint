@@ -17,7 +17,6 @@ import { middlewareWebSocketReducer } from '@chronobank/core/services/WebSocketS
 import { SESSION_DESTROY } from '@chronobank/core/redux/session/constants'
 import apiReducer from '@chronobank/nodes/redux/reducer'
 import coreReducers from '@chronobank/core/redux/ducks'
-import loginReducers from '@chronobank/login/redux/ducks'
 import persistAccountReducer from '@chronobank/core/redux/persistAccount/reducer'
 import walletsReducer from '@chronobank/core/redux/wallets/reducer'
 import ducks from './ducks'
@@ -44,7 +43,6 @@ const accountPersistConfig = {
 const appReducer = combineReducers({
   ...coreReducers,
   ...ducks,
-  ...loginReducers,
   form: formReducer,
   i18n: i18nReducer,
   nodes: apiReducer,

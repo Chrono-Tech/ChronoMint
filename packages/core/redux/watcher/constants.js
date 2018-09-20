@@ -5,9 +5,5 @@
 
 export const DUCK_WATCHER = 'watcher'
 
-// next two actions represents start of the events watching
-export const WATCHER = 'watcher/USER'
-export const WATCHER_CBE = 'watcher/CBE'
-
 export const WATCHER_TX_SET = 'watcher/TX_SET'
 export const WATCHER_TX_END = 'watcher/TX_END'
