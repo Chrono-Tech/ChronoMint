@@ -209,7 +209,7 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
       })
       .catch((e) => {
         // eslint-disable-next-line no-console
-        console.log('call balances from middleware is failed', e)
+        console.log('call balances from middleware is failed getAddressInfo ', e)
         dispatch(fallbackCallback(wallet))
       })
   } else {
@@ -230,7 +230,7 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
       })
       .catch((e) => {
         // eslint-disable-next-line no-console
-        console.log('call balances from middleware is failed', e)
+        console.log('call balances from middleware is failed getWalletBalances', e)
         dispatch(fallbackCallback(wallet))
       })
   }

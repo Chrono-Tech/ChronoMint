@@ -42,6 +42,10 @@ export const getWalletBalances = ({ wallet }) => {
 export const formatBalances = (blockchain, balancesResult) => {
   const mainSymbol = getMainSymbolForBlockchain(blockchain)
   if (balancesResult && balancesResult.tokens) {
+    // @todo fix on Middleware empty object in case of empty balance
+    if (JSON.stringify({}) === JSON.stringify(balancesResult.tokens)) {
+      balancesResult.tokens = []
+    }
     const tokensBalances = balancesResult.tokens
       .reduce((accumulator, { symbol, balance }) => {
         return {

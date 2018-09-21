@@ -139,7 +139,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         dispatch(replace(localStorage.getLastURL() || defaultURL))
       } catch (e) {
         //eslint-disable-next-line
-        console.warn('Device errors: ', e)
+        console.warn('Memory type errors: ', e)
         throw new SubmissionError({ password: e && e.message })
       }
       break
@@ -184,7 +184,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         dispatch(replace(localStorage.getLastURL() || defaultURL))
       } catch (e) {
         //eslint-disable-next-line
-        console.warn('Device errors: ', e)
+        console.warn('Device type errors: ', e)
         throw new SubmissionError({ password: e && e.message })
       }
       break

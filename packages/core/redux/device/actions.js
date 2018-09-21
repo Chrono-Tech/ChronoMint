@@ -45,6 +45,7 @@ export const deviceSetStatus = (deviceStatus) => (dispatch) => {
 
 // eslint-disable-next-line no-unused-vars
 export const initLedgerDevice = (wallet) => async (dispatch) => {
+  // @todo replace on EthereumLedgerDevice before any release
   const ledger = new EthereumLedgerDeviceMock()
   const result = await ledger.getAddressInfoList(0,5)
   dispatch(deviceUpdateList(result))
@@ -52,6 +53,7 @@ export const initLedgerDevice = (wallet) => async (dispatch) => {
 
 // eslint-disable-next-line no-unused-vars
 export const initTrezorDevice = (wallet) => async (dispatch) => {
+  // @todo replace on EthereumTrezorDevice before any release
   const trezor = new EthereumTrezorDeviceMock()
   const result = await trezor.getAddressInfoList(0,5)
   dispatch(deviceUpdateList(result))

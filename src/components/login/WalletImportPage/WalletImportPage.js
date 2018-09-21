@@ -39,11 +39,8 @@ class WalletImportPage extends PureComponent {
   static propTypes = {
     getUserInfo: PropTypes.func,
     navigateBack: PropTypes.func,
-    // navigateToLoginPage: PropTypes.func,
-    // navigateToSelectImportMethod: PropTypes.func,
     navigateToSelectWallet: PropTypes.func,
     onCreateWalletFromJSON: PropTypes.func,
-    // onSubmitCreateAccountImportPrivateKey: PropTypes.func,
   }
 
   constructor (props) {
