@@ -118,7 +118,8 @@ export const downloadWallet = () => (dispatch, getState) => {
 
   if (selectedWallet) {
     const walletName = selectedWallet.name || 'Wallet'
-    const text = JSON.stringify(selectedWallet.encrypted.length > 1 ? selectedWallet.encrypted : selectedWallet.encrypted[0])
+    const encrypted = selectedWallet.encrypted.length > 1 ? selectedWallet.encrypted : selectedWallet.encrypted[0]
+    const text = JSON.stringify(encrypted && encrypted.wallet)
     const element = document.createElement('a')
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text))
     element.setAttribute('download', `${walletName}.wlt`)

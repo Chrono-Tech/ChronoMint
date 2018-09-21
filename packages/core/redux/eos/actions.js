@@ -3,7 +3,23 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { TX_CREATE, TX_UPDATE, TX_REMOVE } from './constants'
+import {
+  TX_CREATE,
+  TX_UPDATE,
+  TX_REMOVE,
+  EOS_UPDATE,
+  EOS_UPDATE_WALLET,
+} from './constants'
+
+export const updateEos = (eos) => ({
+  type: EOS_UPDATE,
+  eos,
+})
+
+export const updateWallet = (wallet) => ({
+  type: EOS_UPDATE_WALLET,
+  wallet,
+})
 
 export const eosTxCreate = (entry) => ({
   type: TX_CREATE,

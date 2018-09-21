@@ -15,6 +15,9 @@ import { DUCK_UI } from 'redux/ui/constants'
 import { sectionsSelector } from '@chronobank/core/redux/wallets/selectors/wallets'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import './WalletsContent.scss'
+import { getEosWallets } from '@chronobank/core/redux/eos/selectors'
+import WalletModel from '@chronobank/core/models/wallet/WalletModel'
+import { BLOCKCHAIN_EOS } from '@chronobank/core/redux/eos/constants'
 
 const mapStateToProps = (state) => {
   const { isCompactWalletView } = state.get(DUCK_UI)
@@ -23,6 +26,7 @@ const mapStateToProps = (state) => {
     check2FAChecked: getTwoFaChecked(state),
     isHave2FAWallets: isHave2FAWallets(state),
     walletsList: sectionsSelector(state),
+    eosWalletsList: getEosWallets(state),
   }
 }
 
@@ -42,10 +46,12 @@ export default class WalletsContent extends Component {
         ]),
       }),
     ),
+    eosWalletsList: PropTypes.arrayOf(PropTypes.instanceOf(WalletModel)),
   }
 
   render () {
     const Component = this.props.isCompactWalletView ? WalletWidgetMini : WalletWidget
+    // const EosWalletWidget = this.props.isCompactWalletView ? EOSWalletWidgetMini : EOSWalletWidget
 
     return (
       <div styleName='root'>
@@ -64,6 +70,20 @@ export default class WalletsContent extends Component {
             })}
           </div>
         ))}
+        {this.props.eosWalletsList.length > 0 ? (
+          <div key={BLOCKCHAIN_EOS}>
+            {this.props.eosWalletsList.map((wallet, i) => {
+              return (
+                <Component
+                  showGroupTitle={i === 0}
+                  key={`${BLOCKCHAIN_EOS}-${wallet.address}`}
+                  blockchain={BLOCKCHAIN_EOS}
+                  address={wallet.address}
+                />
+              )
+            })}
+          </div>
+        ) : null}
       </div>
     )
   }

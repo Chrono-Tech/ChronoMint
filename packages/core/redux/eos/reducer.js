@@ -4,7 +4,13 @@
  */
 
 import { omit } from 'lodash'
-import { EOS_UPDATE_WALLET, TX_CREATE, TX_REMOVE, TX_UPDATE } from './constants'
+import {
+  EOS_UPDATE,
+  EOS_UPDATE_WALLET,
+  TX_CREATE,
+  TX_REMOVE,
+  TX_UPDATE,
+} from './constants'
 
 const initialState = {
   wallets: {},
@@ -14,6 +20,10 @@ const initialState = {
 
 // TODO refactor this
 const mutations = {
+  [EOS_UPDATE]: (state, { eos }) => ({
+    ...state,
+    eos,
+  }),
   [EOS_UPDATE_WALLET]: (state, { wallet }) => {
     return {
       ...state,
