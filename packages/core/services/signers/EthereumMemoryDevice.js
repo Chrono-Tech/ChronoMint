@@ -3,10 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import bip39 from 'bip39'
 import EventEmitter from 'events'
 import hdKey from 'ethereumjs-wallet/hdkey'
 import Accounts from 'web3-eth-accounts'
 import { WALLET_TYPE_MEMORY } from '@chronobank/core/models/constants/AccountEntryModel'
+import { WALLET_HD_PATH } from '@chronobank/login/network/constants'
 
 const DEFAULT_PATH = `m/44'/60'/0'/0/0`
 
@@ -60,19 +62,25 @@ export default class EthereumMemoryDevice extends EventEmitter {
   }
 
   static create ({ privateKey, mnemonic, password }) {
-    let wallet
+    let account
+
+    const accounts = new Accounts()
+    const wallets = accounts.wallet.create()
 
     if (privateKey) {
-      const accounts = new Accounts()
-      wallet = accounts.wallet.create()
-      const account = accounts.privateKeyToAccount(`0x${privateKey}`)
-      wallet.add(account)
-      wallet = wallet[0]
+      const hdWallet = hdKey.fromMasterSeed(Buffer.from(privateKey, 'hex'))
+      const hdkey = hdWallet.derivePath(WALLET_HD_PATH)._hdkey
+      account = accounts.privateKeyToAccount(`0x${hdkey._privateKey.toString('hex')}`)
     }
 
     if (mnemonic) {
-      wallet = EthereumMemoryDevice.getDerivedWallet(mnemonic, null)
+      const hdWallet = hdKey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic))
+      const hdkey = hdWallet.derivePath(WALLET_HD_PATH)._hdkey
+      account = accounts.privateKeyToAccount(`0x${hdkey._privateKey.toString('hex')}`)
     }
+
+    wallets.add(account)
+    const wallet = wallets[0]
 
     return {
       wallet: wallet.encrypt(password),
