@@ -6,7 +6,13 @@
 // FIXME: to rework all methods below to avoid complexity
 /* eslint-disable complexity */
 
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import {
+    bccProvider,
+    btcProvider,
+    btgProvider,
+    dashProvider,
+    ltcProvider
+} from '@chronobank/login/network/BitcoinProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
@@ -42,12 +48,14 @@ import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
   BTC,
   BTG,
+  DASH,
   ETH,
   EVENT_APPROVAL_TRANSFER,
   EVENT_NEW_TRANSFER,
@@ -230,6 +238,7 @@ export const initMainWallet = () => async (dispatch) => {
   const providers = [
     bccProvider,
     btgProvider,
+    dashProvider,
     ltcProvider,
     btcProvider,
     nemProvider,
@@ -380,6 +389,9 @@ export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
       break
     case BLOCKCHAIN_BITCOIN_GOLD:
       dao = tokenService.getDAO(BTG)
+      break
+    case BLOCKCHAIN_DASH:
+      dao = tokenService.getDAO(DASH)
       break
     case BLOCKCHAIN_LITECOIN:
       dao = tokenService.getDAO(LTC)
