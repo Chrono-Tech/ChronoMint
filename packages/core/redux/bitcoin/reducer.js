@@ -8,6 +8,7 @@ import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_DASHCOIN,
   BLOCKCHAIN_LITECOIN,
 } from '../../dao/constants'
 
@@ -26,6 +27,9 @@ const initialState = () => ({
     ...initialSubState,
   },
   [BLOCKCHAIN_BITCOIN_GOLD]: {
+    ...initialSubState,
+  },
+  [BLOCKCHAIN_DASHCOIN]: {
     ...initialSubState,
   },
   [BLOCKCHAIN_LITECOIN]: {
