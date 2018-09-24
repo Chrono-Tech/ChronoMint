@@ -44,7 +44,7 @@ export default class BitcoinMiddlewareService {
     },
     [BLOCKCHAIN_DASHCOIN]: {
       dashcoin: DASH_MAINNET_NODE,
-      testnet: DASH_TESTNET_NODE,
+      dashcoin_testnet: DASH_TESTNET_NODE,
     },
     [BLOCKCHAIN_LITECOIN]: {
       litecoin: LTC_MAINNET_NODE,

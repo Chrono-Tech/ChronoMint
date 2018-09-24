@@ -4,6 +4,7 @@
  */
 
 import bitcoin from 'bitcoinjs-lib'
+import dashcore, { Networks } from 'dashcore-lib'
 import nemSdk from 'nem-sdk'
 import * as WavesApi from '@waves/waves-api'
 import {
@@ -48,7 +49,7 @@ class PrivateKeyProvider {
     const btc = network && network[BLOCKCHAIN_BITCOIN] && this.createBitcoinWallet(privateKey, bitcoin.networks[network[BLOCKCHAIN_BITCOIN]] )
     const bcc = network && network[BLOCKCHAIN_BITCOIN_CASH]  && this.createBitcoinWallet(privateKey, bitcoin.networks[network[BLOCKCHAIN_BITCOIN_CASH] ])
     const btg = network && network[BLOCKCHAIN_BITCOIN_GOLD]  && this.createBitcoinGoldWallet(privateKey, bitcoin.networks[network[BLOCKCHAIN_BITCOIN_GOLD] ])
-    const dash = network && network[BLOCKCHAIN_DASHCOIN]  && this.createBitcoinWallet(privateKey, bitcoin.networks[network[BLOCKCHAIN_DASHCOIN] ])
+    const dash = network && network[BLOCKCHAIN_DASHCOIN]  && this.createDashcoinWallet(privateKey, bitcoin.networks[network[BLOCKCHAIN_DASHCOIN] ])
     const ltc = network && network[BLOCKCHAIN_LITECOIN]  && this.createLitecoinWallet(privateKey, bitcoin.networks[network[BLOCKCHAIN_LITECOIN] ])
     const nem = network && network[BLOCKCHAIN_NEM]  && NemWallet.fromPrivateKey(privateKey, nemSdk.model.network.data[network[BLOCKCHAIN_NEM] ])
     const waves = network && network[BLOCKCHAIN_WAVES]  && WavesWallet.fromPrivateKey(privateKey, WavesApi[network[BLOCKCHAIN_WAVES] ])
@@ -119,6 +120,14 @@ class PrivateKeyProvider {
     return bitcoin.HDNode
       .fromSeedBuffer(Buffer.from(privateKey, 'hex'), network)
       .derivePath(`m/44'/${coinType}'/0'/0/0`)
+  }
+
+  createDashcoinWallet (privateKey, network) {
+    const networkType = network === bitcoin.networks.dashcoin_testnet
+        ? Networks.testnet
+        : Networks.livenet
+
+    return new dashcore.PrivateKey(privateKey).toAddress(networkType);
   }
 
   createEthereumWallet (privateKey) {

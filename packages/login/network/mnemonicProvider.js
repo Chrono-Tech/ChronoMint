@@ -5,6 +5,7 @@
 
 import bip39 from 'bip39'
 import bitcoin from 'bitcoinjs-lib'
+import dashcore, { Networks } from 'dashcore-lib'
 // import hdKe y from 'ethereumjs-wallet/hdkey'
 import * as WavesApi from '@waves/waves-api'
 import nemSdk from 'nem-sdk'
@@ -76,7 +77,7 @@ class MnemonicProvider {
       Engines.bcc = prepareEngine(bccNetwork, this.createBitcoinWallet, createBCCEngine)
       Engines.btc = prepareEngine(btcNetwork, this.createBitcoinWallet, createBTCEngine)
       Engines.btg = prepareEngine(btgNetwork, this.createBitcoinGoldWallet, createBTGEngine)
-      Engines.dash = prepareEngine(dashNetwork, this.createBitcoinWallet, createDASHEngine)
+      Engines.dash = prepareEngine(dashNetwork, this.createDashcoinWallet, createDASHEngine)
       Engines.ltc = prepareEngine(ltcNetwork, this.createLitecoinWallet, createLTCEngine)
       Engines.nem = prepareEngine(nemNetwork, NemWallet.fromMnemonic, createNEMEngine)
       Engines.waves = prepareEngine(wavesNetwork, WavesWallet.fromMnemonic, createWAVESEngine)
@@ -88,6 +89,14 @@ class MnemonicProvider {
       ethereum: new EthereumEngine(ethereumWallet, network, url),
       ...Engines,
     }
+  }
+
+  createDashcoinWallet (mnemonic, network) {
+    const networkType = network === bitcoin.networks.dashcoin_testnet
+        ? Networks.testnet
+        : Networks.livenet
+
+    return new dashcore.PrivateKey(mnemonic).toAddress(networkType);
   }
 
   createEthereumWallet (mnemonic) {

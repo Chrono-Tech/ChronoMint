@@ -87,7 +87,7 @@ const BTG_TESTNET_NODE = new BitcoinBlockexplorerNode({
 
 const DASH_MAINNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
-    baseURL: 'https://bitcoincash.blockexplorer.com/api',
+    baseURL: 'https://insight.dash.siampm.com/api',
     timeout: 10000,
   }),
   trace: false,
@@ -95,7 +95,7 @@ const DASH_MAINNET_NODE = new BitcoinBlockexplorerNode({
 
 const DASH_TESTNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
-    baseURL: 'https://tbcc.blockdozer.com/insight-api',
+    baseURL: 'https://test.insight.dash.siampm.com/api',
     timeout: 10000,
   }),
   trace: true,
