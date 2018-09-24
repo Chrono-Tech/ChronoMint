@@ -10,7 +10,7 @@ import Accounts from 'web3-eth-accounts'
 import { WALLET_TYPE_MEMORY } from '@chronobank/core/models/constants/AccountEntryModel'
 import { WALLET_HD_PATH } from '@chronobank/login/network/constants'
 
-const DEFAULT_PATH = `m/44'/60'/0'/0/0`
+export const DEFAULT_PATH = `m/44'/60'/0'/0/0`
 
 export default class EthereumMemoryDevice extends EventEmitter {
 
@@ -86,11 +86,20 @@ export default class EthereumMemoryDevice extends EventEmitter {
     wallets.add(account)
     const wallet = wallets[0]
 
+    return wallet.encrypt(password)
+  }
+
+  /**
+   * Method converts Web3 1.0 wallet object to our application format
+   *
+   * @param wallet Web3 1.0 format. @see Web3 wallet.decrypt
+   */
+  static convertWeb3WalletFormat (wallet) {
     return {
-      wallet: wallet.encrypt(password),
+      wallet: wallet,
+      address: `0x${wallet.address}`,
       path: DEFAULT_PATH,
       type: WALLET_TYPE_MEMORY,
-      address: wallet.address.toLowerCase(),
     }
   }
 

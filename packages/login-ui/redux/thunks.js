@@ -25,6 +25,7 @@ import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import setup from '@chronobank/login/network/EngineUtils'
 import localStorage from 'utils/LocalStorage'
+import { DEFAULT_PATH } from '@chronobank/core/services/signers/EthereumMemoryDevice'
 import {
   DUCK_NETWORK,
 } from '@chronobank/login/redux/network/constants'
@@ -294,14 +295,24 @@ export const onSubmitCreateHWAccountPageFail = (errors, submitErrors) => {
   // FIXME: empty thunk
 }
 
-/*
+/**
  * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to move logic to utils
-*/
-export const onCreateWalletFromJSON = (name, walletJSON, profile) => (dispatch) => {
-  const account = createAccountEntry(name, walletJSON, profile)
+ * @name name of account on login page
+ * @walletObject it's an object of encrypted wallet. Result of Web3 1.0 wallet.encrypt function
+ * @see https://web3js.readthedocs.io/en/1.0/web3-eth-accounts.html#wallet-encrypt
+ * @profile
+ **/
+export const onCreateWalletFromJSON = (name, walletObject, profile) => (dispatch) => {
 
+  // wallet JSON updated for our format to list it on login page
+  const updatedWalletJSON = {
+    wallet: walletObject,
+    type: WALLET_TYPE_MEMORY,
+    path: DEFAULT_PATH,
+    address: `0x${walletObject.address}`,
+  }
+
+  const account = createAccountEntry(name, updatedWalletJSON, profile)
   dispatch(PersistAccountActions.accountAdd(account))
 }
 

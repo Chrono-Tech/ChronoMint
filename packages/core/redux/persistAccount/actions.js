@@ -107,7 +107,11 @@ export const createAccount = ({ name, wallet, type }) => async (dispatch) => {
 
 export const createMemoryAccount = ({ name, password, mnemonic, privateKey }) => async (dispatch) => {
   const wallet = await EthereumMemoryDevice.create({ privateKey, mnemonic, password })
-  const account = await dispatch(createAccount({ name, wallet, type: WALLET_TYPE_MEMORY }))
+  const account = await dispatch(createAccount({
+    name,
+    wallet: EthereumMemoryDevice.convertWeb3WalletFormat(wallet),
+    type: WALLET_TYPE_MEMORY,
+  }))
   return account
 }
 
@@ -117,7 +121,7 @@ export const downloadWallet = () => (dispatch, getState) => {
 
   if (selectedWallet) {
     const walletName = selectedWallet.name || 'Wallet'
-    const text = JSON.stringify(selectedWallet.encrypted.length > 1 ? selectedWallet.encrypted : selectedWallet.encrypted[0])
+    const text = JSON.stringify(selectedWallet.encrypted.length > 1 ? selectedWallet.encrypted : selectedWallet.encrypted[0].wallet)
     const element = document.createElement('a')
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text))
     element.setAttribute('download', `${walletName}.wlt`)
