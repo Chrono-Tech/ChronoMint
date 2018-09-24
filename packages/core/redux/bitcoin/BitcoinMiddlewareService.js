@@ -9,6 +9,7 @@ import axios from 'axios'
 import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_DASHCOIN,
   BLOCKCHAIN_LITECOIN,
 } from '../../dao/constants'
 
@@ -18,6 +19,8 @@ const BTC_MAINNET_NODE = axios.create({ baseURL: 'https://middleware-bitcoin-mai
 const BTC_TESTNET_NODE = axios.create({ baseURL: 'https://middleware-bitcoin-testnet-rest.chronobank.io', timeout: HTTP_TIMEOUT })
 const BCC_MAINNET_NODE = axios.create({ baseURL: 'https://explorer.bitcoingold.org/insight-api', timeout: 10000 })
 const BCC_TESTNET_NODE = axios.create({ baseURL: 'https://tbcc.blockdozer.com/insight-api', timeout: 10000, withCredentials: false })
+const DASH_MAINNET_NODE = axios.create({ baseURL: 'https://explorer.bitcoingold.org/insight-api', timeout: 10000 })
+const DASH_TESTNET_NODE = axios.create({ baseURL: 'https://tbcc.blockdozer.com/insight-api', timeout: 10000, withCredentials: false })
 const LTC_MAINNET_NODE = axios.create({ baseURL: 'https://middleware-litecoin-mainnet-rest.chronobank.io', timeout: HTTP_TIMEOUT })
 const LTC_TESTNET_NODE = axios.create({ baseURL: 'https://middleware-litecoin-testnet-rest.chronobank.io', timeout: HTTP_TIMEOUT })
 
@@ -38,6 +41,10 @@ export default class BitcoinMiddlewareService {
     [BLOCKCHAIN_BITCOIN]: {
       bitcoin: BTC_MAINNET_NODE,
       testnet: BTC_TESTNET_NODE,
+    },
+    [BLOCKCHAIN_DASHCOIN]: {
+      dashcoin: DASH_MAINNET_NODE,
+      dashcoin_testnet: DASH_TESTNET_NODE,
     },
     [BLOCKCHAIN_LITECOIN]: {
       litecoin: LTC_MAINNET_NODE,
@@ -144,7 +151,7 @@ export default class BitcoinMiddlewareService {
     }
 
     // In the testnet we are using blockdozer to get BCC balances
-    if (blockchain === BLOCKCHAIN_BITCOIN_CASH && networkType === 'testnet') {
+    if ([BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_DASHCOIN].includes(blockchain) && networkType === 'testnet') {
       const [confirmedBalance, unconfirmedBalance] = await Promise.all(
         [
           BitcoinMiddlewareService.requestBlockdozerConfirmedBalance(currentNode, address),

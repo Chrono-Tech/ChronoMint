@@ -3,7 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import {
+  bccProvider,
+  btcProvider,
+  btgProvider,
+  dashProvider,
+  ltcProvider
+} from '@chronobank/login/network/BitcoinProvider'
 import EventEmitter from 'events'
 import BigNumber from 'bignumber.js'
 import Amount from '../models/Amount'
@@ -14,6 +20,7 @@ import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_DASHCOIN,
   BLOCKCHAIN_LITECOIN,
   EVENT_NEW_TRANSFER,
   EVENT_UPDATE_BALANCE,
@@ -206,4 +213,5 @@ export default class BitcoinDAO extends EventEmitter {
 export const btcDAO = new BitcoinDAO(BLOCKCHAIN_BITCOIN, 'BTC', btcProvider)
 export const bccDAO = new BitcoinDAO(BLOCKCHAIN_BITCOIN_CASH, 'BCC', bccProvider)
 export const btgDAO = new BitcoinDAO(BLOCKCHAIN_BITCOIN_GOLD, 'BTG', btgProvider)
+export const dashDAO = new BitcoinDAO(BLOCKCHAIN_DASHCOIN, 'DASH', dashProvider)
 export const ltcDAO = new BitcoinDAO(BLOCKCHAIN_LITECOIN, 'LTC', ltcProvider)

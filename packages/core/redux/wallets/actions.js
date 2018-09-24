@@ -3,11 +3,18 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import {
+  bccProvider,
+  btcProvider,
+  btgProvider,
+  dashProvider,
+  ltcProvider
+} from '@chronobank/login/network/BitcoinProvider'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_DASHCOIN,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
@@ -40,7 +47,12 @@ import {
 } from './constants'
 import { executeNemTransaction } from '../nem/thunks'
 import { getPersistAccount, getEthereumSigner } from '../persistAccount/selectors'
-import { getBitcoinCashSigner, getBitcoinSigner, getLitecoinSigner } from '../bitcoin/selectors'
+import {
+  getBitcoinCashSigner,
+  getBitcoinSigner,
+  getDashcoinSigner,
+  getLitecoinSigner
+} from '../bitcoin/selectors'
 import { getNemSigner } from '../nem/selectors'
 import { getWavesSigner } from '../waves/selectors'
 
@@ -93,6 +105,16 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
     wallets.push(new WalletModel({
       address: bitcoinCashSigner.getAddress(),
       blockchain: BLOCKCHAIN_BITCOIN_CASH,
+      isMain: true,
+      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+    }))
+  }
+
+  const dashcoinCashSigner = getDashcoinSigner(state)
+  if (dashcoinCashSigner) {
+    wallets.push(new WalletModel({
+      address: dashcoinCashSigner.getAddress(),
+      blockchain: BLOCKCHAIN_DASHCOIN,
       isMain: true,
       walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
     }))
@@ -156,6 +178,10 @@ const initDerivedWallets = () => async (dispatch, getState) => {
           btgProvider.createNewChildAddress(wallet.deriveNumber)
           btgProvider.subscribeNewWallet(wallet.address)
           break
+        case BLOCKCHAIN_DASHCOIN:
+          dashProvider.createNewChildAddress(wallet.deriveNumber)
+          dashProvider.subscribeNewWallet(wallet.address)
+          break
         case BLOCKCHAIN_LITECOIN:
           ltcProvider.createNewChildAddress(wallet.deriveNumber)
           ltcProvider.subscribeNewWallet(wallet.address)
@@ -189,10 +215,13 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
     return dispatch(fallbackCallback(wallet))
   }
 
-  const isBtcLikeBlockchain = blockchain === BLOCKCHAIN_BITCOIN
-    || blockchain === BLOCKCHAIN_LITECOIN
-    || blockchain === BLOCKCHAIN_BITCOIN_CASH
-    || blockchain === BLOCKCHAIN_BITCOIN_GOLD
+  const isBtcLikeBlockchain = [
+    BLOCKCHAIN_BITCOIN,
+    BLOCKCHAIN_BITCOIN_CASH,
+    BLOCKCHAIN_BITCOIN_GOLD,
+    BLOCKCHAIN_DASHCOIN,
+    BLOCKCHAIN_LITECOIN
+  ].includes(blockchain)
 
   if (isBtcLikeBlockchain) {
     return dispatch(BitcoinThunks.getAddressInfo(address, blockchain))
