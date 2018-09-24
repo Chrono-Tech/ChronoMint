@@ -141,8 +141,6 @@ export default class BitcoinDAO extends EventEmitter {
         EVENT_NEW_TRANSFER,
         new TxModel({
           txHash: tx.txHash,
-          // blockHash: tx.blockhash,
-          // blockNumber: tx.blockheight,
           blockNumber: null,
           time: tx.time,
           from: tx.from,

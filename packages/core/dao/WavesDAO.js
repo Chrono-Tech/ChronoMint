@@ -7,7 +7,6 @@ import BigNumber from 'bignumber.js'
 import EventEmitter from 'events'
 import TokenModel from '../models/tokens/TokenModel'
 import TxModel from '../models/TxModel'
-import TransferExecModel from '../models/TransferExecModel'
 import Amount from '../models/Amount'
 import { wavesAddress } from '../models/validator'
 
@@ -83,40 +82,12 @@ export default class WavesDAO extends EventEmitter {
     return this.getAccountBalances()
   }
 
-  accept (transfer: TransferExecModel) {
-    setImmediate(() => {
-      this.emit('accept', transfer)
-    })
-  }
-
-  reject (transfer: TransferExecModel) {
-    setImmediate(() => {
-      this.emit('reject', transfer)
-    })
-  }
-
   transfer (from: string, to: string, amount: BigNumber) {
     return {
       from,
       to,
       value: new BigNumber(amount),
     }
-  }
-
-  submit (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: number = 1) {
-    setImmediate(async () => {
-      this.emit('submit', new TransferExecModel({
-        title: `tx.Waves.${this._name ? 'Asset' : 'WAVES'}.transfer.title`,
-        from,
-        to,
-        blockchain: BLOCKCHAIN_WAVES,
-        amount: new Amount(amount, token.symbol()),
-        amountToken: token,
-        feeToken: this._wavesToken,
-        fee: new Amount(10000, this._wavesToken.symbol()),
-        feeMultiplier,
-      }))
-    })
   }
 
   // TODO @ipavlenko: Rename to 'transfer' after all token DAOs will start using 'submit' method and 'trans'
@@ -217,19 +188,6 @@ export default class WavesDAO extends EventEmitter {
         balance: readBalanceValue(this._symbol, balance, this._asset),
       })
     })
-  }
-
-  // eslint-disable-next-line no-unused-vars
-  async watchApproval (callback) {
-    // Ignore
-  }
-
-  async stopWatching () {
-    // Ignore
-  }
-
-  resetFilterCache () {
-    // do nothing
   }
 
   async fetchToken () {

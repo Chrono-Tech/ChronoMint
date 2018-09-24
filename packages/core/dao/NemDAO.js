@@ -179,19 +179,6 @@ export default class NemDAO extends EventEmitter {
     })
   }
 
-  // eslint-disable-next-line no-unused-vars
-  async watchApproval (callback) {
-    // Ignore
-  }
-
-  async stopWatching () {
-    // Ignore
-  }
-
-  resetFilterCache () {
-    // do nothing
-  }
-
   async fetchToken () {
     if (!this.isInitialized()) {
       const message = `${this._symbol} support is not available`
