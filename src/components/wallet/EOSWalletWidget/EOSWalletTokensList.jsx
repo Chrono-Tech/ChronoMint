@@ -9,39 +9,35 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { TOKEN_ICONS } from 'assets'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import { getMarket } from '@chronobank/core/redux/market/selectors'
 import TokenPrice from 'components/common/TokenPrice/TokenPrice'
-import { walletTokensAmountSelector } from '@chronobank/core/redux/wallets/selectors/balances'
-import { getMainSymbolForBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import Amount from '@chronobank/core/models/Amount'
-import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
+import { EOS } from '@chronobank/core/redux/eos/constants'
+import { EOSTokensCountBalanceSelector } from '@chronobank/core/redux/eos/selectors/balances'
 import './EOSWalletWidget.scss'
 import { prefix } from './lang'
 
 function makeMapStateToProps (state, props) {
   const { wallet } = props
-  let getAmount = walletTokensAmountSelector(wallet.id)
-  const mapStateToProps = (ownState) => {
+  const getAmount = EOSTokensCountBalanceSelector(wallet.id)
+
+  return (ownState) => {
     const { selectedCurrency } = getMarket(state)
     return {
-      mainSymbol: getMainSymbolForBlockchain(wallet.blockchain),
+      mainSymbol: EOS,
       selectedCurrency,
       amount: getAmount(ownState),
-      tokens: ownState.get(DUCK_TOKENS),
     }
   }
-  return mapStateToProps
 }
 
 @connect(makeMapStateToProps)
-export default class WalletTokensList extends PureComponent {
+export default class EOSWalletTokensList extends PureComponent {
   static propTypes = {
     mainSymbol: PropTypes.string,
     selectedCurrency: PropTypes.string,
-    tokens: PropTypes.instanceOf(TokensCollection),
     amount: PropTypes.arrayOf(PropTypes.shape({
       symbol: PropTypes.string,
       value: PropTypes.number,
@@ -91,22 +87,17 @@ export default class WalletTokensList extends PureComponent {
           <div styleName='tokens-list'>
             <div styleName='tokens-list-table'>
               {this.getTokensList()
-                .map((tokenBalance) => {
-                  const token = this.props.tokens.item(tokenBalance.symbol)
-
-                  if (!token.isFetched()) {
-                    return null
-                  }
+                .map((balance) => {
                   return (
-                    <div styleName='tokens-list-table-tr' key={token.id()}>
+                    <div styleName='tokens-list-table-tr' key={balance.symbol}>
                       <div styleName='tokens-list-table-cell-icon'>
-                        <IPFSImage styleName='table-image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()] || TOKEN_ICONS.DEFAULT} />
+                        <IPFSImage styleName='table-image' fallback={TOKEN_ICONS[balance.symbol] || TOKEN_ICONS.DEFAULT} />
                       </div>
                       <div styleName='tokens-list-table-cell-amount'>
-                        {token.symbol()} {integerWithDelimiter(tokenBalance.value, true, null)}
+                        {balance.symbol} {integerWithDelimiter(balance.value, true, null)}
                       </div>
                       <div styleName='tokens-list-table-cell-usd'>
-                        {this.props.selectedCurrency} <TokenPrice value={new Amount(tokenBalance.value, tokenBalance.symbol)} />
+                        {this.props.selectedCurrency} <TokenPrice value={new Amount(balance.value, balance.symbol)} isRemoveDecimals={false} />
                       </div>
                     </div>
                   )

@@ -42,6 +42,8 @@ import PublishPollDialog from 'components/dialogs/PublishPollDialog/lang'
 import VotingWarningWidgets from 'components/voting/VotingWarningWidgets/lang'
 import TransactionsTable from 'components/dashboard/TransactionsTable/lang'
 import TransactionsListWidget from 'components/wallet/TransactionsListWidget/lang'
+import EOSWalletWidget from 'components/wallet/EOSWalletWidget/lang'
+import EOSWalletsList from 'components/wallet/EOSWalletsList/lang'
 
 export default {
   en: {
@@ -87,5 +89,7 @@ export default {
     TransactionsListWidget: TransactionsListWidget.en,
     CustomWalletForm: CustomWalletForm.en,
     StandardWalletForm: StandardWalletForm.en,
+    EOSWalletWidget: EOSWalletWidget.en,
+    EOSWalletsList: EOSWalletsList.en,
   },
 }

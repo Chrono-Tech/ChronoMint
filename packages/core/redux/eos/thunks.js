@@ -6,7 +6,7 @@
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 // import { /*, ErrorNoticeModel, TransferNoticeModel*/ } from '../../models'
 import Eos from 'eosjs'
-import { eosPendingEntrySelector, eosPendingSelector, eosSelector, getEosWallet } from './selectors'
+import { eosPendingEntrySelector, EOSPendingSelector, EOSSelector, getEOSWallet } from './selectors/mainSelectors'
 import { getPersistAccount, getSelectedNetwork } from '../persistAccount/selectors'
 import { describePendingEosTx } from '../../describers'
 import { getAccount } from '../session/selectors/models'
@@ -38,7 +38,7 @@ const notifyEosError = (e) => notify(new ErrorNoticeModel({ message: e.message }
 */
 
 const eosTxStatus = (key, address, props) => (dispatch, getState) => {
-  const pending = eosPendingSelector()(getState())
+  const pending = EOSPendingSelector()(getState())
   const scope = pending[address]
   if (!scope) {
     return null
@@ -196,8 +196,8 @@ export const createEosWallet = () => (dispatch, getState) => {
 export const getAccountBalances = (account) => async (dispatch, getState) => {
   try {
     const state = getState()
-    const eos = eosSelector(state)
-    const wallet = getEosWallet(`${BLOCKCHAIN_EOS }-${account}`)(state)
+    const eos = EOSSelector(state)
+    const wallet = getEOSWallet(`${BLOCKCHAIN_EOS }-${account}`)(state)
     const result = await eos.getCurrencyBalance('eosio.token', account)
     if (Array.isArray(result)) {
       const balances = result.reduce((accumulator, balance) => {

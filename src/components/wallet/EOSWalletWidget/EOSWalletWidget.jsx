@@ -4,7 +4,6 @@
  */
 
 import PropTypes from 'prop-types'
-import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { Link } from 'react-router'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -12,25 +11,25 @@ import { selectWallet } from '@chronobank/core/redux/wallet/actions'
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 import { TOKEN_ICONS } from 'assets'
-import { eosPendingSelector, getEosWallet } from '@chronobank/core/redux/eos/selectors'
 import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { isBTCLikeBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
+import { EOS } from '@chronobank/core/redux/eos/constants'
+import { EOSPendingSelector, getEOSWallet } from '@chronobank/core/redux/eos/selectors/mainSelectors'
 import './EOSWalletWidget.scss'
 import { prefix } from './lang'
-import Moment from '../../common/Moment'
 import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
-import WalletMainCoinBalance from './WalletMainCoinBalance'
-import WalletTokensList from './WalletTokensList'
+import EOSWalletTokensList from './EOSWalletTokensList'
 import WalletName from '../WalletName/WalletName'
 import BalanceSubscription from '../../micros/BalanceSubscription/BalanceSubscription'
+import EOSWalletMainCoinBalance from './EOSWalletMainCoinBalance'
 
 function makeMapStateToProps (state, ownProps) {
-  const getWallet = getEosWallet(`${ownProps.blockchain}-${ownProps.address}`)
-  const getTransactions = eosPendingSelector()
+  const getWallet = getEOSWallet(`${ownProps.blockchain}-${ownProps.address}`)
+  const getTransactions = EOSPendingSelector()
 
   const mapStateToProps = (ownState) => {
     return {
@@ -78,12 +77,7 @@ function mapDispatchToProps (dispatch) {
 @connect(makeMapStateToProps, mapDispatchToProps)
 export default class EOSWalletWidget extends PureComponent {
   static propTypes = {
-    blockchain: PropTypes.string,
-    pendingTransactions: PropTypes.arrayOf(PropTypes.object),
     wallet: PropTypes.oneOfType([PropTypes.instanceOf(WalletModel), PropTypes.instanceOf(MultisigEthWalletModel)]),
-    address: PropTypes.string,
-    token: PropTypes.instanceOf(TokenModel),
-    showGroupTitle: PropTypes.bool,
     send: PropTypes.func,
     setWalletName: PropTypes.func,
     receive: PropTypes.func,
@@ -92,67 +86,20 @@ export default class EOSWalletWidget extends PureComponent {
   }
 
   handleSend = (wallet) => () => {
-    this.props.send(this.props.token.id(), wallet)
+    this.props.send(wallet)
   }
 
   handleReceive = () => {
     this.props.receive(this.props.wallet)
   }
 
-  handleDeposit = () => {
-    this.props.deposit()
-  }
-
   handleSelectWallet = () => {
-    const { address, blockchain } = this.props
-    this.props.selectWallet(blockchain, address)
+    const { wallet } = this.props
+    this.props.selectWallet(wallet.blockchain, wallet.address)
   }
 
   handleOpenSettings = () => {
-    this.props.setWalletName(this.props.wallet, this.props.blockchain, this.props.address)
-  }
-
-  getOwnersList = () => {
-    const ownersList = this.props.wallet.owners
-
-    if (ownersList.length <= 3) {
-      return (
-        <div styleName='owners-amount'>
-          <div styleName='owners-list'>
-            {ownersList.map((ownerAddress) => {
-              return (
-                <div styleName='owner-icon' key={ownerAddress}>
-                  <div styleName='owner' className='chronobank-icon' title={ownerAddress}>profile</div>
-                </div>
-              )
-            })
-            }
-          </div>
-        </div>
-      )
-    }
-
-    return (
-      <div styleName='owners-amount'>
-        <div styleName='owners-list'>
-          {ownersList.slice(0, 2).map((owner) => {
-            return (
-              <div styleName='owner-icon'>
-                <div styleName='owner' className='chronobank-icon' title={owner}>profile</div>
-              </div>
-            )
-          })
-          }
-          <div styleName='owner-counter'>
-            <div styleName='counter'>+{ownersList.length - 2}</div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  isMySharedWallet = () => {
-    return this.props.wallet.isMultisig && !this.props.wallet.isTimeLocked && !this.props.wallet.is2FA
+    this.props.setWalletName(this.props.wallet)
   }
 
   renderLastIncomingIcon = () => {
@@ -201,87 +148,59 @@ export default class EOSWalletWidget extends PureComponent {
   }
 
   render () {
-    const { address, token, blockchain, wallet, showGroupTitle } = this.props
-    const tokenIsFetched = (token && token.isFetched())
+    const { wallet } = this.props
+    const isBalancesLoaded = Object.values(wallet.balances).length
 
     return (
       <BalanceSubscription wallet={wallet}>
-        <div styleName='header-container'>
-          {showGroupTitle && <h1 styleName='header-text' id={blockchain}><Translate value={`${prefix}.walletTitle`} title={blockchain.toUpperCase()} /></h1>}
-          <div styleName='wallet-list-container'>
-
-            <div styleName='wallet-container'>
-              {wallet.pendingCount > 0 && (
-                <div styleName='pendings-container'>
-                  <div styleName='pendings-icon'><Translate value={`${prefix}.pending`} count={wallet.pendingCount} /></div>
-                </div>
-              )}
-              {this.renderLastIncomingIcon()}
-              {this.renderLastSendingIcon()}
-              <div styleName='settings-container'>
-                <div styleName='settings-icon' className='chronobank-icon' onClick={this.handleOpenSettings}>settings
-                </div>
+        <div styleName='root'>
+          <div styleName='wallet-container'>
+            {wallet.pendingCount > 0 && (
+              <div styleName='pendings-container'>
+                <div styleName='pendings-icon'><Translate value={`${prefix}.pending`} count={wallet.pendingCount} /></div>
               </div>
-              <div styleName='token-container'>
-                {blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}
-                <div styleName='token-icon'>
-                  <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()] || TOKEN_ICONS.DEFAULT} />
-                </div>
+            )}
+            {this.renderLastIncomingIcon()}
+            {this.renderLastSendingIcon()}
+            <div styleName='settings-container'>
+              <button styleName='settings-icon' className='chronobank-icon' onClick={this.handleOpenSettings}>settings</button>
+            </div>
+            <div styleName='token-container'>
+              {wallet.blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}
+              <div styleName='token-icon'>
+                <IPFSImage styleName='image' fallback={TOKEN_ICONS[EOS] || TOKEN_ICONS.DEFAULT} />
               </div>
-              <div styleName='content-container'>
-                <Link styleName='addressWrapper' href='' to='/wallet' onClick={this.handleSelectWallet}>
-                  <div styleName='address-title'>
-                    <h3><WalletName wallet={wallet} /></h3>
-                    <span styleName='address-address'>{address}</span>
-                  </div>
+            </div>
+            <div styleName='content-container'>
+              <Link styleName='addressWrapper' href='' to='/wallet' onClick={this.handleSelectWallet}>
+                <div styleName='address-title'>
+                  <h3><WalletName wallet={wallet} /></h3>
+                  <span styleName='address-address'>{wallet.address}</span>
+                </div>
 
-                  {tokenIsFetched
-                    ? <WalletMainCoinBalance wallet={wallet} />
-                    : (
-                      <span styleName='noToken'>
-                        <Translate value={`${prefix}.tokenNotAvailable`} />
-                      </span>
-                    )}
-                </Link>
+                {isBalancesLoaded > 0
+                  ? <EOSWalletMainCoinBalance wallet={wallet} />
+                  : (<span styleName='noToken'> <Translate value={`${prefix}.tokenNotAvailable`} /> </span>)}
+              </Link>
 
-                {this.isMySharedWallet() && this.getOwnersList()}
+              <EOSWalletTokensList wallet={wallet} />
 
-                <WalletTokensList wallet={wallet} />
-
-                {wallet.isTimeLocked && (
-                  <div styleName='unlockDateWrapper'>
-                    <Translate value={`${prefix}.unlockDate`} /> <Moment data={wallet.releaseTime} format='HH:mm, Do MMMM YYYY' />
-                  </div>
-                )}
-
-                <div styleName='actions-container'>
-                  <div styleName='action'>
-                    <Button
-                      disabled={!tokenIsFetched}
-                      type='submit'
-                      label={<Translate value={`${prefix}.sendButton`} />}
-                      onClick={this.handleSend(wallet)}
-                    />
-                  </div>
-                  <div styleName='action'>
-                    <Button
-                      disabled={!tokenIsFetched}
-                      type='submit'
-                      label={<Translate value={`${prefix}.receiveButton`} />}
-                      onClick={this.handleReceive}
-                    />
-                  </div>
-                  {/*blockchain === BLOCKCHAIN_ETHEREUM && (
-                  <div styleName='action'>
-                    <Button
-                      disabled={false}
-                      flat
-                      type='submit'
-                      label={<Translate value={`${prefix}.depositButton`} />}
-                      onClick={this.handleDeposit}
-                    />
-                  </div>
-                )*/}
+              <div styleName='actions-container'>
+                <div styleName='action'>
+                  <Button
+                    disabled={!isBalancesLoaded}
+                    type='submit'
+                    label={<Translate value={`${prefix}.sendButton`} />}
+                    onClick={this.handleSend(wallet)}
+                  />
+                </div>
+                <div styleName='action'>
+                  <Button
+                    disabled={!isBalancesLoaded}
+                    type='submit'
+                    label={<Translate value={`${prefix}.receiveButton`} />}
+                    onClick={this.handleReceive}
+                  />
                 </div>
               </div>
             </div>

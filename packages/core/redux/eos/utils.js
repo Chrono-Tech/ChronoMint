@@ -10,6 +10,7 @@ import ethUtils from 'ethereumjs-util'
 // import EosWallet from '@chronobank/login/network/EosWallet'
 // import eosSdk from 'eos-sdk'
 import { TxEntryModel, TxExecModel } from '../../models'
+import Amount from '../../models/Amount'
 
 export const createEosTxEntryModel = (entry, options = {}) =>
   new TxEntryModel({
@@ -87,4 +88,9 @@ export const createEosKeys = (ethereumPrivateKey) => {
     // eslint-disable-next-line
     console.log("Invalid Ethereum Private Key")
   }
+}
+
+export const getEOSBalanceFromStr = (balance: string): Amount => { // "1000.000 EOS"
+  const [value, symbol] = balance.split(' ')
+  return new Amount(value, symbol)
 }

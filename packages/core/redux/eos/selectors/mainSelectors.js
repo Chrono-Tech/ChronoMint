@@ -4,22 +4,22 @@
  */
 
 import { createSelector } from 'reselect'
-import { DUCK_EOS } from './constants'
+import { DUCK_EOS } from '../constants'
 
-export const eosDuckSelector = (state) => state.get(DUCK_EOS)
+export const EOSDuckSelector = (state) => state.get(DUCK_EOS)
 
-export const eosSelector = (state) => {
-  const duck = eosDuckSelector(state)
+export const EOSSelector = (state) => {
+  const duck = EOSDuckSelector(state)
   return duck.eos
 }
 
-export const eosPendingSelector = () => createSelector(
-  eosDuckSelector,
+export const EOSPendingSelector = () => createSelector(
+  EOSDuckSelector,
   (eos) => eos.pending,
 )
 
 export const eosPendingEntrySelector = (address, key) => createSelector(
-  eosPendingSelector(),
+  EOSPendingSelector(),
   (pending) => {
     if (address in pending) {
       return pending[address][key] || null
@@ -29,14 +29,14 @@ export const eosPendingEntrySelector = (address, key) => createSelector(
 )
 
 export const getEosWallets = createSelector(
-  eosDuckSelector,
+  EOSDuckSelector,
   (eosState) => {
     return eosState.wallets
   },
 )
 
-export const getEosWallet = (id) => createSelector(
-  eosDuckSelector,
+export const getEOSWallet = (id) => createSelector(
+  EOSDuckSelector,
   (eosState) => {
     return eosState.wallets[id]
   },

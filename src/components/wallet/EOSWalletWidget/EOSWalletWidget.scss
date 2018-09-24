@@ -5,37 +5,15 @@
 @import '~styles/partials/variables';
 @import "~styles/partials/mixins";
 
-.header-container {
-  width: 587px;
-  margin-bottom: 28px;
-  margin-top: 28px;
-
-  @include sm-only {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .header-text {
-    color: $color-white;
-
-    @include sm-only {
-      margin-left: 5px;
-    }
-  }
-
-  .wallet-list-container {
-    display: flex;
-    flex-direction: column;
-  }
+.root {
+  margin-top: 20px;
 }
 
 .wallet-container {
   display: flex;
+  flex-direction: row;
   position: relative;
-  width: 590px;
-  margin-top: 20px;
+  width: 100%;
   min-height: 260px;
   background-color: $color-white;
   border-radius: 2px;

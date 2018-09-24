@@ -10,11 +10,8 @@ export default {
     sendButton: 'SEND',
     receiveButton: 'RECEIVE',
     depositButton: 'DEPOSIT',
-    walletTitle: '%{title} wallets',
     pending: '%{count} pending',
-    additionalStandardWallet: 'My additional standard Wallet',
     standardWallet: 'My Wallet',
     tokensTitle: 'Other positive balance tokens (%{count})',
-    tokenNotAvailable: 'Token Not Available',
   },
 }

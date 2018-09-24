@@ -7,19 +7,19 @@ import PropTypes from 'prop-types'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { getMainSymbolForBlockchain } from '@chronobank/core/redux/tokens/selectors'
-import { walletAmountSelector, walletBalanceSelector } from '@chronobank/core/redux/wallets/selectors/balances'
+import { EOS } from '@chronobank/core/redux/eos/constants'
 import { getMarket } from '@chronobank/core/redux/market/selectors'
+import { EOSWalletAmountSelector, EOSWalletBalanceSelector } from '@chronobank/core/redux/eos/selectors/balances'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
 import './EOSWalletWidget.scss'
 
 function makeMapStateToProps (state, props) {
   const { wallet } = props
-  const mainSymbol = getMainSymbolForBlockchain(wallet.blockchain)
+  const mainSymbol = EOS
   let getAmount
   let getBalance
-  getAmount = walletAmountSelector(wallet.id, mainSymbol)
-  getBalance = walletBalanceSelector(wallet.id, mainSymbol)
+  getAmount = EOSWalletAmountSelector(wallet.id, mainSymbol)
+  getBalance = EOSWalletBalanceSelector(wallet.id, mainSymbol)
   const mapStateToProps = (ownState) => {
     const { selectedCurrency } = getMarket(ownState)
     return {
@@ -33,7 +33,7 @@ function makeMapStateToProps (state, props) {
 }
 
 @connect(makeMapStateToProps)
-export default class WalletMainCoinBalance extends PureComponent {
+export default class EOSWalletMainCoinBalance extends PureComponent {
   static propTypes = {
     mainSymbol: PropTypes.string,
     balance: PropTypes.number,
