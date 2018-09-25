@@ -491,6 +491,7 @@ export default {
     invalidLength: 'Should have length more than or equal 3 symbols',
     invalidMaxLength: 'Should have length less than or equal 32 symbols',
     invalidAddress: 'Should be valid %{blockchain} address',
+    invalidEOSAccount: 'Should be valid %{blockchain} account, a-z, 1-5 are allowed only, length 12.',
     validIpfsFileList: 'Should be valid file list',
     between: 'Should be between %{min} and %{max}',
     lowerThan: 'Should be lower than %{limit}',

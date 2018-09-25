@@ -40,6 +40,16 @@ export const wavesAddress = (value, required = true, blockchain = 'WAVES') => {
   return null
 }
 
+export const eosAccount = (value: string, required = true, blockchain = 'EOS') => {
+  const checkLength = value && value.length === 12 // Length 12.
+  const badSymbolsPresent = /[^a-z1-5]/.test(value) // a-z,1-5 are allowed only.
+
+  if ((!value && required) || !checkLength || badSymbolsPresent) {
+    return { value: 'errors.invalidEOSAccount', blockchain }
+  }
+  return null
+}
+
 export const name = (value, required = true) => {
   if (value && !/^[A-z]/.test(value)) {
     return 'errors.invalidLatinString'

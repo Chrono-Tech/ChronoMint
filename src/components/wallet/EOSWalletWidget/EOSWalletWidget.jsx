@@ -42,13 +42,12 @@ function makeMapStateToProps (state, ownProps) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    send: (token, wallet) => {
+    send: (wallet) => {
       dispatch(modalsOpen({
         componentName: 'SendTokens',
         props: {
           wallet,
           isModal: true,
-          tokenSymbol: token,
         },
       }))
     },
