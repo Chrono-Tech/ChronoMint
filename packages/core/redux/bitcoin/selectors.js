@@ -18,6 +18,7 @@ import {
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_LITECOIN,
 } from '../../dao/constants'
 import MetamaskPlugin from '../../services/signers/MetamaskPlugin'
@@ -75,6 +76,30 @@ export const getBitcoinCashSigner = (state) => {
   const account = getPersistAccount(state)
   const networkData = getSelectedNetwork()(state)
   const network = bitcoin.networks[networkData[BLOCKCHAIN_BITCOIN_CASH]]
+
+  switch (account.decryptedWallet.entry.encrypted[0].type) {
+    case WALLET_TYPE_MEMORY: {
+      const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
+      return new BitcoinCashMemoryDevice({ privateKey, network })
+    }
+    case WALLET_TYPE_LEDGER_MOCK:
+    case WALLET_TYPE_LEDGER: {
+      return new BitcoinCashLedgerDeviceMock({ network })
+    }
+    case WALLET_TYPE_TREZOR_MOCK:
+    case WALLET_TYPE_TREZOR: {
+      return new BitcoinCashTrezorDeviceMock({ network })
+    }
+    case WALLET_TYPE_METAMASK: {
+      return new MetamaskPlugin()
+    }
+  }
+}
+
+export const getDashSigner = (state) => {
+  const account = getPersistAccount(state)
+  const networkData = getSelectedNetwork()(state)
+  const network = bitcoin.networks[networkData[BLOCKCHAIN_DASH]]
 
   switch (account.decryptedWallet.entry.encrypted[0].type) {
     case WALLET_TYPE_MEMORY: {

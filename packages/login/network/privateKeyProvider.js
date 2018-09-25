@@ -4,18 +4,26 @@
  */
 
 import bitcoin from 'bitcoinjs-lib'
+import { Address, PrivateKey, PublicKey } from 'dashcore-lib'
 import nemSdk from 'nem-sdk'
 import * as WavesApi from '@waves/waves-api'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
 } from '@chronobank/login/network/constants'
 import { byEthereumNetwork } from './NetworkProvider'
-import { createBCCEngine, createBTCEngine, createBTGEngine, createLTCEngine } from './BitcoinUtils'
+import {
+  createBCCEngine,
+  createBTCEngine,
+  createBTGEngine,
+  createDASHEngine,
+  createLTCEngine
+} from './BitcoinUtils'
 import EthereumEngine from './EthereumEngine'
 import { createNEMEngine } from './NemUtils'
 import { createWAVESEngine } from './WavesUtils'
@@ -41,6 +49,7 @@ class PrivateKeyProvider {
     const btc = network && network[BLOCKCHAIN_BITCOIN] && this.createBitcoinWallet(privateKey, bitcoin.networks[network[BLOCKCHAIN_BITCOIN]] )
     const bcc = network && network[BLOCKCHAIN_BITCOIN_CASH]  && this.createBitcoinWallet(privateKey, bitcoin.networks[network[BLOCKCHAIN_BITCOIN_CASH] ])
     const btg = network && network[BLOCKCHAIN_BITCOIN_GOLD]  && this.createBitcoinGoldWallet(privateKey, bitcoin.networks[network[BLOCKCHAIN_BITCOIN_GOLD] ])
+    const dash = network && network[BLOCKCHAIN_DASH]  && this.createDashWallet(privateKey, bitcoin.networks[network[BLOCKCHAIN_DASH] ])
     const ltc = network && network[BLOCKCHAIN_LITECOIN]  && this.createLitecoinWallet(privateKey, bitcoin.networks[network[BLOCKCHAIN_LITECOIN] ])
     const nem = network && network[BLOCKCHAIN_NEM]  && NemWallet.fromPrivateKey(privateKey, nemSdk.model.network.data[network[BLOCKCHAIN_NEM] ])
     const waves = network && network[BLOCKCHAIN_WAVES]  && WavesWallet.fromPrivateKey(privateKey, WavesApi[network[BLOCKCHAIN_WAVES] ])
@@ -51,6 +60,7 @@ class PrivateKeyProvider {
       btc: network && network[BLOCKCHAIN_BITCOIN] && createBTCEngine(btc, bitcoin.networks[network[BLOCKCHAIN_BITCOIN]] ),
       bcc: network && network[BLOCKCHAIN_BITCOIN_CASH]  && createBCCEngine(bcc, bitcoin.networks[network[BLOCKCHAIN_BITCOIN_CASH] ]),
       btg: network && network[BLOCKCHAIN_BITCOIN_GOLD]  && createBTGEngine(btg, bitcoin.networks[network[BLOCKCHAIN_BITCOIN_GOLD] ]),
+      dash: network && network[BLOCKCHAIN_DASH]  && createDASHEngine(dash, bitcoin.networks[network[BLOCKCHAIN_DASH] ]),
       ltc: network && network[BLOCKCHAIN_LITECOIN]  && createLTCEngine(ltc, bitcoin.networks[network[BLOCKCHAIN_LITECOIN] ]),
       nem: network && network[BLOCKCHAIN_NEM]  && createNEMEngine(nem, nemSdk.model.network.data[network[BLOCKCHAIN_NEM] ]),
       waves: network && network[BLOCKCHAIN_WAVES]  && createWAVESEngine(waves, WavesApi[network[BLOCKCHAIN_WAVES] ]),
@@ -76,6 +86,25 @@ class PrivateKeyProvider {
     }
   }
 
+  createDashWalletFromPK (privateKey, network) {
+    const keyPair = new bitcoin.ECPair.fromPrivateKey(
+      Buffer.from(privateKey, 'hex'),
+      {
+        network,
+      }
+    );
+    return {
+      keyPair,
+      getNetwork () {
+        return keyPair.network
+      },
+      getAddress () {
+        const address = new Address(PublicKey(new PrivateKey(privateKey)));
+        return address
+      },
+    }
+  }
+
   createBitcoinWallet (privateKey, network) {
     if (privateKey.length <= 64) {
       return this.createBitcoinWalletFromPK(privateKey, network)
@@ -83,6 +112,18 @@ class PrivateKeyProvider {
     const coinType = network === bitcoin.networks.testnet
       ? COIN_TYPE_BTC_TESTNET
       : COIN_TYPE_BTC_MAINNET
+    return bitcoin.HDNode
+      .fromSeedBuffer(Buffer.from(privateKey, 'hex'), network)
+      .derivePath(`m/44'/${coinType}'/0'/0/0`)
+  }
+
+  createDashWallet (privateKey, network) {
+    if (privateKey.length <= 64) {
+      return this.createDashWalletFromPK(privateKey, network)
+    }
+    const coinType = network === bitcoin.networks.litecoin_testnet
+      ? COIN_TYPE_LTC_TESTNET
+      : COIN_TYPE_LTC_MAINNET
     return bitcoin.HDNode
       .fromSeedBuffer(Buffer.from(privateKey, 'hex'), network)
       .derivePath(`m/44'/${coinType}'/0'/0/0`)

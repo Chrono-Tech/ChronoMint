@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { BCCEngine, BTCEngine, BTGEngine, LTCEngine } from './BitcoinEngine'
+import { BCCEngine, BTCEngine, BTGEngine, DASHEngine, LTCEngine } from './BitcoinEngine'
 
 export function createBTCEngine (wallet, network) {
   return new BTCEngine(wallet, network)
@@ -15,6 +15,10 @@ export function createBCCEngine (wallet, network) {
 
 export function createBTGEngine (wallet, network) {
   return new BTGEngine(wallet, network)
+}
+
+export function createDASHEngine (wallet, network) {
+  return new DASHEngine(wallet, network)
 }
 
 export function createLTCEngine (wallet, network) {
