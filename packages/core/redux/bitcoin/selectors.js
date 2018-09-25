@@ -18,7 +18,7 @@ import {
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_DASHCOIN,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_LITECOIN,
 } from '../../dao/constants'
 import MetamaskPlugin from '../../services/signers/MetamaskPlugin'
@@ -96,10 +96,10 @@ export const getBitcoinCashSigner = (state) => {
   }
 }
 
-export const getDashcoinSigner = (state) => {
+export const getDashSigner = (state) => {
   const account = getPersistAccount(state)
   const networkData = getSelectedNetwork()(state)
-  const network = bitcoin.networks[networkData[BLOCKCHAIN_DASHCOIN]]
+  const network = bitcoin.networks[networkData[BLOCKCHAIN_DASH]]
 
   switch (account.decryptedWallet.entry.encrypted[0].type) {
     case WALLET_TYPE_MEMORY: {

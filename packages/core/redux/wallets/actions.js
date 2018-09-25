@@ -14,7 +14,7 @@ import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_DASHCOIN,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
@@ -50,7 +50,7 @@ import { getPersistAccount, getEthereumSigner } from '../persistAccount/selector
 import {
   getBitcoinCashSigner,
   getBitcoinSigner,
-  getDashcoinSigner,
+  getDashSigner,
   getLitecoinSigner
 } from '../bitcoin/selectors'
 import { getNemSigner } from '../nem/selectors'
@@ -110,11 +110,11 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
     }))
   }
 
-  const dashcoinCashSigner = getDashcoinSigner(state)
-  if (dashcoinCashSigner) {
+  const dashCashSigner = getDashSigner(state)
+  if (dashCashSigner) {
     wallets.push(new WalletModel({
-      address: dashcoinCashSigner.getAddress(),
-      blockchain: BLOCKCHAIN_DASHCOIN,
+      address: dashCashSigner.getAddress(),
+      blockchain: BLOCKCHAIN_DASH,
       isMain: true,
       walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
     }))
@@ -178,7 +178,7 @@ const initDerivedWallets = () => async (dispatch, getState) => {
           btgProvider.createNewChildAddress(wallet.deriveNumber)
           btgProvider.subscribeNewWallet(wallet.address)
           break
-        case BLOCKCHAIN_DASHCOIN:
+        case BLOCKCHAIN_DASH:
           dashProvider.createNewChildAddress(wallet.deriveNumber)
           dashProvider.subscribeNewWallet(wallet.address)
           break
@@ -219,7 +219,7 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
     BLOCKCHAIN_BITCOIN,
     BLOCKCHAIN_BITCOIN_CASH,
     BLOCKCHAIN_BITCOIN_GOLD,
-    BLOCKCHAIN_DASHCOIN,
+    BLOCKCHAIN_DASH,
     BLOCKCHAIN_LITECOIN
   ].includes(blockchain)
 

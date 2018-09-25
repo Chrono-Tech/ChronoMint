@@ -9,7 +9,7 @@ import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_DASHCOIN,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
@@ -34,7 +34,7 @@ export const isBTCLikeBlockchain = (blockchain) => {
     BLOCKCHAIN_BITCOIN,
     BLOCKCHAIN_BITCOIN_CASH,
     BLOCKCHAIN_BITCOIN_GOLD,
-    BLOCKCHAIN_DASHCOIN,
+    BLOCKCHAIN_DASH,
     BLOCKCHAIN_LITECOIN,
   ].includes(blockchain)
 }
@@ -47,7 +47,7 @@ export const getMainSymbolForBlockchain = (blockchain) => {
       return BCC
     case BLOCKCHAIN_BITCOIN_GOLD:
       return BTG
-    case BLOCKCHAIN_DASHCOIN:
+    case BLOCKCHAIN_DASH:
       return DASH
     case BLOCKCHAIN_LITECOIN:
       return LTC

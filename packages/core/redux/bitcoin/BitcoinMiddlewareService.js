@@ -9,7 +9,7 @@ import axios from 'axios'
 import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_DASHCOIN,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_LITECOIN,
 } from '../../dao/constants'
 
@@ -42,9 +42,9 @@ export default class BitcoinMiddlewareService {
       bitcoin: BTC_MAINNET_NODE,
       testnet: BTC_TESTNET_NODE,
     },
-    [BLOCKCHAIN_DASHCOIN]: {
-      dashcoin: DASH_MAINNET_NODE,
-      testnet: DASH_TESTNET_NODE,
+    [BLOCKCHAIN_DASH]: {
+      dash: DASH_MAINNET_NODE,
+      dash_testnet: DASH_TESTNET_NODE,
     },
     [BLOCKCHAIN_LITECOIN]: {
       litecoin: LTC_MAINNET_NODE,
@@ -151,7 +151,7 @@ export default class BitcoinMiddlewareService {
     }
 
     // In the testnet we are using blockdozer to get BCC balances
-    if ([BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_DASHCOIN].includes(blockchain) && networkType === 'testnet') {
+    if ([BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_DASH].includes(blockchain) && networkType === 'testnet') {
       const [confirmedBalance, unconfirmedBalance] = await Promise.all(
         [
           BitcoinMiddlewareService.requestBlockdozerConfirmedBalance(currentNode, address),

@@ -48,7 +48,7 @@ import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_DASHCOIN,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
@@ -390,7 +390,7 @@ export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
     case BLOCKCHAIN_BITCOIN_GOLD:
       dao = tokenService.getDAO(BTG)
       break
-    case BLOCKCHAIN_DASHCOIN:
+    case BLOCKCHAIN_DASH:
       dao = tokenService.getDAO(DASH)
       break
     case BLOCKCHAIN_LITECOIN:

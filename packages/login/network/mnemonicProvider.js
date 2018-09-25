@@ -12,7 +12,7 @@ import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_DASHCOIN,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
@@ -50,7 +50,7 @@ class MnemonicProvider {
     Engines.bcc = false // Bitcoin Cash
     Engines.btc = false // Bitcoin
     Engines.btg = false // Bitcoin Gold
-    Engines.dash = false // Dashcoin
+    Engines.dash = false // Dash
     Engines.ltc = false // Litecoin
     Engines.nem = false // Nem
     Engines.waves = false // Waves
@@ -68,7 +68,7 @@ class MnemonicProvider {
       const btcNetwork = network[BLOCKCHAIN_BITCOIN]  && bitcoin.networks[network[BLOCKCHAIN_BITCOIN] ]
       const bccNetwork = network[BLOCKCHAIN_BITCOIN_CASH]  && bitcoin.networks[network[BLOCKCHAIN_BITCOIN_CASH] ]
       const btgNetwork = network[BLOCKCHAIN_BITCOIN_GOLD]  && bitcoin.networks[network[BLOCKCHAIN_BITCOIN_GOLD] ]
-      const dashNetwork = network[BLOCKCHAIN_DASHCOIN]  && bitcoin.networks[network[BLOCKCHAIN_DASHCOIN] ]
+      const dashNetwork = network[BLOCKCHAIN_DASH]  && bitcoin.networks[network[BLOCKCHAIN_DASH] ]
       const ltcNetwork = network[BLOCKCHAIN_LITECOIN]  && bitcoin.networks[network[BLOCKCHAIN_LITECOIN] ]
       const nemNetwork = network[BLOCKCHAIN_NEM]  && nemSdk.model.network.data[network[BLOCKCHAIN_NEM] ]
       const wavesNetwork = network[BLOCKCHAIN_WAVES]  && WavesApi[network[BLOCKCHAIN_WAVES] ]

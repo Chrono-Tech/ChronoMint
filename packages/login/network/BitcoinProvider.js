@@ -20,7 +20,7 @@ import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_DASHCOIN,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_LITECOIN,
   COIN_TYPE_BTC_MAINNET,
   COIN_TYPE_BTC_TESTNET,
@@ -181,5 +181,5 @@ export class BitcoinProvider extends AbstractProvider {
 export const btcProvider = new BitcoinProvider(selectBTCNode, BLOCKCHAIN_BITCOIN)
 export const bccProvider = new BitcoinProvider(selectBCCNode, BLOCKCHAIN_BITCOIN_CASH)
 export const btgProvider = new BitcoinProvider(selectBTGNode, BLOCKCHAIN_BITCOIN_GOLD)
-export const dashProvider = new BitcoinProvider(selectDASHNode, BLOCKCHAIN_DASHCOIN)
+export const dashProvider = new BitcoinProvider(selectDASHNode, BLOCKCHAIN_DASH)
 export const ltcProvider = new BitcoinProvider(selectLTCNode, BLOCKCHAIN_LITECOIN)
