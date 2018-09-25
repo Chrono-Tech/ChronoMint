@@ -3,11 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import { bccProvider, btcProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
@@ -152,10 +151,6 @@ const initDerivedWallets = () => async (dispatch, getState) => {
           bccProvider.createNewChildAddress(wallet.deriveNumber)
           bccProvider.subscribeNewWallet(wallet.address)
           break
-        case BLOCKCHAIN_BITCOIN_GOLD:
-          btgProvider.createNewChildAddress(wallet.deriveNumber)
-          btgProvider.subscribeNewWallet(wallet.address)
-          break
         case BLOCKCHAIN_LITECOIN:
           ltcProvider.createNewChildAddress(wallet.deriveNumber)
           ltcProvider.subscribeNewWallet(wallet.address)
@@ -192,7 +187,6 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
   const isBtcLikeBlockchain = blockchain === BLOCKCHAIN_BITCOIN
     || blockchain === BLOCKCHAIN_LITECOIN
     || blockchain === BLOCKCHAIN_BITCOIN_CASH
-    || blockchain === BLOCKCHAIN_BITCOIN_GOLD
 
   if (isBtcLikeBlockchain) {
     return dispatch(BitcoinThunks.getAddressInfo(address, blockchain))
@@ -209,7 +203,7 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
       })
       .catch((e) => {
         // eslint-disable-next-line no-console
-        console.log('call balances from middleware is failed getAddressInfo ', e)
+        console.log('call balances from middleware is failed getAddressInfo ', blockchain, e)
         dispatch(fallbackCallback(wallet))
       })
   } else {
@@ -413,7 +407,6 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
       ltcProvider.subscribeNewWallet(address)
       break
 
-    case BLOCKCHAIN_BITCOIN_GOLD:
     case BLOCKCHAIN_NEM:
     case BLOCKCHAIN_WAVES:
     default:

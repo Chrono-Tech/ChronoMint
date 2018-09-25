@@ -6,7 +6,7 @@
 // FIXME: to rework all methods below to avoid complexity
 /* eslint-disable complexity */
 
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import { bccProvider, btcProvider,  ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
@@ -36,18 +36,16 @@ import { estimateGas, executeTransaction } from '../ethereum/thunks'
 import { TX_DEPOSIT, ASSET_DEPOSIT_WITHDRAW } from '../../dao/constants/AssetHolderDAO'
 import { TX_APPROVE } from '../../dao/constants/ERC20DAO'
 import { DUCK_ETH_MULTISIG_WALLET, ETH_MULTISIG_BALANCE, ETH_MULTISIG_FETCHED } from '../multisigWallet/constants'
-import { WALLETS_SET_IS_TIME_REQUIRED, WALLETS_UPDATE_WALLET } from '../wallets/constants'
+import { WALLETS_SET_IS_TIME_REQUIRED, WALLETS_UPDATE_BALANCE, WALLETS_UPDATE_WALLET } from '../wallets/constants'
 import {
   BCC,
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
   BTC,
-  BTG,
   ETH,
   EVENT_APPROVAL_TRANSFER,
   EVENT_NEW_TRANSFER,
@@ -106,6 +104,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
           if (!(tx.from() === account || tx.to() === account)) {
             return
           }
+
           // update donator
           if (tx.from() === assetDonatorDAO.getInitAddress()) {
             dispatch(updateIsTIMERequired())
@@ -141,27 +140,42 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       }
     })
     .on(EVENT_UPDATE_BALANCE, ({ account, balance }) => {
-      const wallets = getState().get(DUCK_ETH_MULTISIG_WALLET)
-      if (wallets.item(account)) {
-        dispatch({
-          type: ETH_MULTISIG_BALANCE,
-          walletId: account,
-          balance: new BalanceModel({
-            id: token.id(),
-            amount: new Amount(balance, token.symbol(), true),
-          }),
-        })
-      } else {
-        const addresses = getMainEthWallet(getState())
-        if (addresses.includes(account)) {
-          dispatch({
-            type: WALLET_TOKEN_BALANCE,
-            balance: new BalanceModel({
-              id: token.id(),
-              amount: new Amount(balance, token.symbol()),
-            }),
-          })
-        }
+
+      switch (token.blockchain()) {
+        case BLOCKCHAIN_ETHEREUM:
+          const wallets = getState().get(DUCK_ETH_MULTISIG_WALLET)
+          if (wallets.item(account)) {
+            dispatch({
+              type: ETH_MULTISIG_BALANCE,
+              walletId: account,
+              balance: new BalanceModel({
+                id: token.id(),
+                amount: new Amount(balance, token.symbol(), true),
+              }),
+            })
+          } else {
+            const addresses = getMainEthWallet(getState())
+            if (addresses.includes(account)) {
+              dispatch({
+                type: WALLET_TOKEN_BALANCE,
+                balance: new BalanceModel({
+                  id: token.id(),
+                  amount: new Amount(balance, token.symbol()),
+                }),
+              })
+            }
+          }
+          break
+
+        case BLOCKCHAIN_NEM:
+          const wallet = getWallet(token.blockchain(), account)(getState())
+          dispatch({ type: WALLETS_UPDATE_BALANCE, walletId: wallet.id, balance: new Amount(balance, token.symbol()) })
+          break
+
+        default:
+          //eslint-disable-next-line
+          console.warn('Update balance unknown token blockchain: ', account, balance, token.toJSON())
+          break
       }
     })
     .on(EVENT_APPROVAL_TRANSFER, ({ spender, value }) => {
@@ -229,7 +243,6 @@ export const initMainWallet = () => async (dispatch) => {
 
   const providers = [
     bccProvider,
-    btgProvider,
     ltcProvider,
     btcProvider,
     nemProvider,
@@ -352,7 +365,7 @@ export const getTransactionsForMainWallet = ({ wallet, forcedOffset }) => async 
 
   const transactions = await getTxList({ wallet, forcedOffset, tokens })
 
-  const newWallet = getWallet(wallet.id)(getState())
+  const newWallet = getWallet(wallet.blockchain, wallet.address)(getState())
   dispatch({
     type: WALLETS_UPDATE_WALLET,
     wallet: new WalletModel({ ...newWallet, transactions }),
@@ -377,9 +390,6 @@ export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
       break
     case BLOCKCHAIN_BITCOIN_CASH:
       dao = tokenService.getDAO(BCC)
-      break
-    case BLOCKCHAIN_BITCOIN_GOLD:
-      dao = tokenService.getDAO(BTG)
       break
     case BLOCKCHAIN_LITECOIN:
       dao = tokenService.getDAO(LTC)

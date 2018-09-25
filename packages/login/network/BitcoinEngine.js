@@ -118,20 +118,6 @@ export class BTCEngine extends BitcoinEngine {
 export class LTCEngine extends BTCEngine {
 }
 
-export class BTGEngine extends BitcoinEngine {
-  _signInputs (txb, inputs, options) {
-    txb.enableBitcoinGold(true)
-    txb.setVersion(2)
-
-    const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
-    const wallet = this._walletsMap[options.from] || this._wallet
-
-    for (let i = 0; i < inputs.length; i++) {
-      txb.sign(i, wallet.keyPair, null, hashType, inputs[i].value)
-    }
-  }
-}
-
 export class BCCEngine extends BitcoinEngine {
   _signInputs (txb, inputs, options) {
     txb.enableBitcoinCash(true)

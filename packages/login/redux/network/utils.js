@@ -10,7 +10,6 @@
 import { ethereumProvider } from '../../network/EthereumProvider'
 import {
   btcProvider,
-  btgProvider,
   ltcProvider,
 } from '../../network/BitcoinProvider'
 import { nemProvider } from '../../network/NemProvider'
@@ -21,8 +20,6 @@ export const getPrivateKeyFromBlockchain = (blockchain: string) => {
       return ethereumProvider.getPrivateKey()
     case 'Bitcoin':
       return btcProvider.getPrivateKey()
-    case 'Bitcoin Gold':
-      return btgProvider.getPrivateKey()
     case 'Litecoin':
       return ltcProvider.getPrivateKey()
     case 'NEM':

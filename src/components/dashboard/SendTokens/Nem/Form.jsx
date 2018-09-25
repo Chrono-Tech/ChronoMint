@@ -36,6 +36,7 @@ import {
   reduxForm,
 } from 'redux-form/immutable'
 import { prefix } from '../lang'
+import { normalizeAddress } from './normalize'
 
 import '../form.scss'
 import validate from '../validate'
@@ -253,6 +254,7 @@ export default class Nem extends PureComponent {
             name='recipient'
             label={<Translate value={`${prefix}.recipientAddress`} />}
             fullWidth
+            normalize={normalizeAddress}
           />
         </div>
         <div styleName='row'>

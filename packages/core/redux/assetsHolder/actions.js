@@ -83,7 +83,7 @@ export const fetchAssetAllowance = (token: TokenModel) => async (dispatch, getSt
   const tokenDAO = tokenService.getDAO(token.id())
   const assetHolderWalletAllowance = await tokenDAO.getAccountAllowance(account, holderWallet)
 
-  const wallet = getWallet(`Ethereum-${account}`)(getState())
+  const wallet = getWallet('Ethereum', account)(getState())
   const allowance = new AllowanceModel({
     amount: new Amount(assetHolderWalletAllowance, token.id(), true),
     spender: holderWallet,

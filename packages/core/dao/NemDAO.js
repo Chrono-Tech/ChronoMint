@@ -142,8 +142,6 @@ export default class NemDAO extends EventEmitter {
   _createXemTxModel (tx) {
     return new TxModel({
       txHash: tx.txHash,
-      // blockHash: tx.blockhash,
-      // blockNumber: tx.blockheight,
       blockNumber: null,
       time: tx.time,
       from: tx.from || tx.signer,
@@ -157,8 +155,6 @@ export default class NemDAO extends EventEmitter {
   _createMosaicTxModel (tx) {
     return new TxModel({
       txHash: tx.txHash,
-      // blockHash: tx.blockhash,
-      // blockNumber: tx.blockheight,
       blockNumber: null,
       time: tx.time,
       from: tx.from || tx.signer,

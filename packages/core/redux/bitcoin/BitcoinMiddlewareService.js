@@ -149,7 +149,9 @@ export default class BitcoinMiddlewareService {
         [
           BitcoinMiddlewareService.requestBlockdozerConfirmedBalance(currentNode, address),
           BitcoinMiddlewareService.requestBlockdozerUnconfirmedBalance(currentNode, address),
-        ].map((promise) => promise.catch((error) => error)) // We will handle errors by ourselves
+        ].map((promise) => promise.catch((error) => {
+          return error
+        })) // We will handle errors by ourselves
       )
 
       if (confirmedBalance instanceof Error || unconfirmedBalance instanceof Error) {

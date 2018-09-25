@@ -14,7 +14,6 @@ import { makeGetLastBlockForBlockchain } from '@chronobank/core/redux/tokens/sel
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_LITECOIN,
 } from '@chronobank/login/network/constants'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
@@ -43,7 +42,6 @@ export default class TxConfirmations extends PureComponent {
     switch (blockchain) {
       case BLOCKCHAIN_BITCOIN:
       case BLOCKCHAIN_BITCOIN_CASH:
-      case BLOCKCHAIN_BITCOIN_GOLD:
       case BLOCKCHAIN_LITECOIN:
         return 600
 

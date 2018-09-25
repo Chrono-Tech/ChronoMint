@@ -69,22 +69,6 @@ const BCC_TESTNET_NODE = new BitcoinBlockexplorerNode({
   trace: true,
 })
 
-const BTG_MAINNET_NODE = new BitcoinBlockexplorerNode({
-  api: axios.create({
-    baseURL: 'https://explorer.bitcoingold.org/insight-api',
-    timeout: 10000,
-  }),
-  trace: false,
-})
-
-const BTG_TESTNET_NODE = new BitcoinBlockexplorerNode({
-  api: axios.create({
-    baseURL: 'https://test-explorer.bitcoingold.org/insight-api',
-    timeout: 10000,
-  }),
-  trace: false,
-})
-
 export const LTC_MAINNET_NODE = new BitcoinMiddlewareNode({
   feeRate: 900,
   api: axios.create({
@@ -135,12 +119,6 @@ export function selectBCCNode (engine) {
   return engine.getNetwork() !== networks.bitcoin
     ? BCC_TESTNET_NODE
     : BCC_MAINNET_NODE
-}
-
-export function selectBTGNode (engine) {
-  return engine.getNetwork() !== networks.bitcoingold
-    ? BTG_TESTNET_NODE
-    : BTG_MAINNET_NODE
 }
 
 export function selectLTCNode (engine) {

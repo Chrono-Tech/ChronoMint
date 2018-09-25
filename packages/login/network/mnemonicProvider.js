@@ -11,7 +11,6 @@ import nemSdk from 'nem-sdk'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
@@ -19,7 +18,6 @@ import {
 import {
   createBCCEngine,
   createBTCEngine,
-  createBTGEngine,
   createLTCEngine,
 } from './BitcoinUtils'
 import { byEthereumNetwork } from './NetworkProvider'
@@ -35,8 +33,6 @@ import {
   COIN_TYPE_BTC_TESTNET,
   COIN_TYPE_LTC_MAINNET,
   COIN_TYPE_LTC_TESTNET,
-  COIN_TYPE_BTG_MAINNET,
-  COIN_TYPE_BTG_TESTNET,
 } from './constants'
 
 class MnemonicProvider {
@@ -47,7 +43,6 @@ class MnemonicProvider {
     const Engines = Object.create(null) // Object.create(null) creating really empty object with no __proto__
     Engines.bcc = false // Bitcoin Cache
     Engines.btc = false // Bitcoin
-    Engines.btg = false // Bitcoin Gold
     Engines.ltc = false // Litecoin
     Engines.nem = false // Nem
     Engines.waves = false // Waves
@@ -64,18 +59,15 @@ class MnemonicProvider {
 
       const btcNetwork = network[BLOCKCHAIN_BITCOIN]  && bitcoin.networks[network[BLOCKCHAIN_BITCOIN] ]
       const bccNetwork = network[BLOCKCHAIN_BITCOIN_CASH]  && bitcoin.networks[network[BLOCKCHAIN_BITCOIN_CASH] ]
-      const btgNetwork = network[BLOCKCHAIN_BITCOIN_GOLD]  && bitcoin.networks[network[BLOCKCHAIN_BITCOIN_GOLD] ]
       const ltcNetwork = network[BLOCKCHAIN_LITECOIN]  && bitcoin.networks[network[BLOCKCHAIN_LITECOIN] ]
       const nemNetwork = network[BLOCKCHAIN_NEM]  && nemSdk.model.network.data[network[BLOCKCHAIN_NEM] ]
       const wavesNetwork = network[BLOCKCHAIN_WAVES]  && WavesApi[network[BLOCKCHAIN_WAVES] ]
 
       Engines.bcc = prepareEngine(bccNetwork, this.createBitcoinWallet, createBCCEngine)
       Engines.btc = prepareEngine(btcNetwork, this.createBitcoinWallet, createBTCEngine)
-      Engines.btg = prepareEngine(btgNetwork, this.createBitcoinGoldWallet, createBTGEngine)
       Engines.ltc = prepareEngine(ltcNetwork, this.createLitecoinWallet, createLTCEngine)
       Engines.nem = prepareEngine(nemNetwork, NemWallet.fromMnemonic, createNEMEngine)
       Engines.waves = prepareEngine(wavesNetwork, WavesWallet.fromMnemonic, createWAVESEngine)
-
     }
 
     return {
@@ -102,15 +94,6 @@ class MnemonicProvider {
     const coinType = network === bitcoin.networks.litecoin_testnet
       ? COIN_TYPE_LTC_TESTNET
       : COIN_TYPE_LTC_MAINNET
-    return bitcoin.HDNode
-      .fromSeedBuffer(bip39.mnemonicToSeed(mnemonic), network)
-      .derivePath(`m/44'/${coinType}'/0'/0/0`)
-  }
-
-  createBitcoinGoldWallet (mnemonic, network) {
-    const coinType = network === bitcoin.networks.bitcoingold_testnet
-      ? COIN_TYPE_BTG_TESTNET
-      : COIN_TYPE_BTG_MAINNET
     return bitcoin.HDNode
       .fromSeedBuffer(bip39.mnemonicToSeed(mnemonic), network)
       .derivePath(`m/44'/${coinType}'/0'/0/0`)
