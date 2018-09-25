@@ -4,6 +4,7 @@
  */
 
 import bitcoin from 'bitcoinjs-lib'
+import { Address, PrivateKey, PublicKey } from 'dashcore-lib'
 import nemSdk from 'nem-sdk'
 import * as WavesApi from '@waves/waves-api'
 import {
@@ -48,7 +49,7 @@ class PrivateKeyProvider {
     const btc = network && network[BLOCKCHAIN_BITCOIN] && this.createBitcoinWallet(privateKey, bitcoin.networks[network[BLOCKCHAIN_BITCOIN]] )
     const bcc = network && network[BLOCKCHAIN_BITCOIN_CASH]  && this.createBitcoinWallet(privateKey, bitcoin.networks[network[BLOCKCHAIN_BITCOIN_CASH] ])
     const btg = network && network[BLOCKCHAIN_BITCOIN_GOLD]  && this.createBitcoinGoldWallet(privateKey, bitcoin.networks[network[BLOCKCHAIN_BITCOIN_GOLD] ])
-    const dash = network && network[BLOCKCHAIN_DASHCOIN]  && this.createBitcoinWallet(privateKey, bitcoin.networks[network[BLOCKCHAIN_DASHCOIN] ])
+    const dash = network && network[BLOCKCHAIN_DASHCOIN]  && this.createDashWallet(privateKey, bitcoin.networks[network[BLOCKCHAIN_DASHCOIN] ])
     const ltc = network && network[BLOCKCHAIN_LITECOIN]  && this.createLitecoinWallet(privateKey, bitcoin.networks[network[BLOCKCHAIN_LITECOIN] ])
     const nem = network && network[BLOCKCHAIN_NEM]  && NemWallet.fromPrivateKey(privateKey, nemSdk.model.network.data[network[BLOCKCHAIN_NEM] ])
     const waves = network && network[BLOCKCHAIN_WAVES]  && WavesWallet.fromPrivateKey(privateKey, WavesApi[network[BLOCKCHAIN_WAVES] ])
@@ -85,6 +86,25 @@ class PrivateKeyProvider {
     }
   }
 
+  createDashWalletFromPK (privateKey, network) {
+    const keyPair = new bitcoin.ECPair.fromPrivateKey(
+      Buffer.from(privateKey, 'hex'),
+      {
+        network,
+      }
+    );
+    return {
+      keyPair,
+      getNetwork () {
+        return keyPair.network
+      },
+      getAddress () {
+        const address = new Address(PublicKey(new PrivateKey(privateKey)));
+        return address
+      },
+    }
+  }
+
   createBitcoinWallet (privateKey, network) {
     if (privateKey.length <= 64) {
       return this.createBitcoinWalletFromPK(privateKey, network)
@@ -92,6 +112,18 @@ class PrivateKeyProvider {
     const coinType = network === bitcoin.networks.testnet
       ? COIN_TYPE_BTC_TESTNET
       : COIN_TYPE_BTC_MAINNET
+    return bitcoin.HDNode
+      .fromSeedBuffer(Buffer.from(privateKey, 'hex'), network)
+      .derivePath(`m/44'/${coinType}'/0'/0/0`)
+  }
+
+  createDashWallet (privateKey, network) {
+    if (privateKey.length <= 64) {
+      return this.createDashWalletFromPK(privateKey, network)
+    }
+    const coinType = network === bitcoin.networks.litecoin_testnet
+      ? COIN_TYPE_LTC_TESTNET
+      : COIN_TYPE_LTC_MAINNET
     return bitcoin.HDNode
       .fromSeedBuffer(Buffer.from(privateKey, 'hex'), network)
       .derivePath(`m/44'/${coinType}'/0'/0/0`)
