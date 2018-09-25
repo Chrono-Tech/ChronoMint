@@ -3,16 +3,16 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { modalsOpen } from '@chronobank/core/redux/modals/actions'
+// import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 // import { /*, ErrorNoticeModel, TransferNoticeModel*/ } from '../../models'
 import Eos from 'eosjs'
-import { eosPendingEntrySelector, EOSPendingSelector, EOSSelector, getEOSWallet } from './selectors/mainSelectors'
-import { getPersistAccount, getSelectedNetwork } from '../persistAccount/selectors'
-import { describePendingEosTx } from '../../describers'
-import { getAccount } from '../session/selectors/models'
+import { /*eosPendingEntrySelector, EOSPendingSelector, */EOSSelector, getEOSWallet } from './selectors/mainSelectors'
+import { getPersistAccount /*getSelectedNetwork*/ } from '../persistAccount/selectors'
+// import { describePendingEosTx } from '../../describers'
+// import { getAccount } from '../session/selectors/models'
 import * as EosActions from './actions'
 import * as EosUtils from './utils'
-import { getToken } from '../tokens/selectors'
+// import { getToken } from '../tokens/selectors'
 import WalletModel from '../../models/wallet/WalletModel'
 import { BLOCKCHAIN_EOS } from './constants'
 import Amount from '../../models/Amount'
@@ -37,6 +37,7 @@ const notifyEosTransfer = (entry) => (dispatch, getState) => {
 const notifyEosError = (e) => notify(new ErrorNoticeModel({ message: e.message }))
 */
 
+/*
 const eosTxStatus = (key, address, props) => (dispatch, getState) => {
   const pending = EOSPendingSelector()(getState())
   const scope = pending[address]
@@ -57,20 +58,49 @@ const eosTxStatus = (key, address, props) => (dispatch, getState) => {
     }),
   ))
 }
+*/
 
-export const executeEosTransaction = ({ tx, options }) => async (dispatch) => {
-  const prepared = await dispatch(prepareTransaction({ tx, options }))
-  const entry = EosUtils.createEosTxEntryModel({ tx: prepared }, options)
+export const executeEosTransaction = (wallet, amount, recipient) => async (dispatch, getState) => {
+  const eos = EOSSelector(getState())
+  // const prepared = await dispatch(prepareTransaction({ tx, options }))
+  // const entry = EosUtils.createEosTxEntryModel({ tx: prepared }, options)
+  //
+  // await dispatch(EosActions.eosTxCreate(entry))
+  // dispatch(submitTransaction(entry, options))
+  try {
 
-  await dispatch(EosActions.eosTxCreate(entry))
-  dispatch(submitTransaction(entry, options))
+    await eos.transaction(
+      {
+        actions: [
+          {
+            account: 'eosio.token',
+            name: 'transfer',
+            authorization: [{
+              actor: wallet.address,
+              permission: 'active',
+            }],
+            data: {
+              from: wallet.address,
+              to: recipient,
+              quantity: amount,
+              memo: '',
+            },
+          },
+        ],
+      },
+    )
+  } catch (e) {
+    // TODO implement error notifier
+    // console.error(e)
+  }
 }
 
-const prepareTransaction = ({ tx }) => async (dispatch, getState) => {
+/*const prepareTransaction = ({ tx }) => async (dispatch, getState) => {
   const network = getSelectedNetwork()(getState())
   return EosUtils.describeEosTransaction(tx, network)
-}
+}*/
 
+/*
 const processTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   await dispatch(signTransaction({ entry, signer }))
   const signedEntry = eosPendingEntrySelector(entry.tx.from, entry.key)(getState())
@@ -83,8 +113,9 @@ const processTransaction = ({ entry, signer }) => async (dispatch, getState) => 
     entry: signedEntry,
   }))
 }
+*/
 
-const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
+/*const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   try {
     const { tx } = entry
     const signed = EosUtils.createEosTransaction(tx.prepared, signer, getSelectedNetwork()(getState()))
@@ -101,7 +132,9 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     throw error
   }
 }
+*/
 
+/*
 const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
   dispatch(eosTxStatus(entry.key, entry.tx.from, { isPending: true }))
 
@@ -116,7 +149,7 @@ const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
   // TODO implement node
   // const res = await node.send({ ...entry.tx.signed.tx, fee: entry.tx.signed.fee })
 
-  /*if (res && res.meta && res.meta.hash) {
+  /!*if (res && res.meta && res.meta.hash) {
     const hash = res.meta.hash.data
     dispatch(eosTxStatus(entry.key, entry.tx.from, { isSent: true, isMined: true, hash }))
     dispatch(notifyEosTransfer(entry))
@@ -125,9 +158,11 @@ const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
   if (res.code === 0) {
     dispatch(eosTxStatus(entry.key, entry.tx.from, { isErrored: true, error: res.message }))
     dispatch(notifyEosError(res))
-  }*/
+  }*!/
 }
+*/
 
+/*
 const submitTransaction = (entry) => async (dispatch, getState) => {
 
   const state = getState()
@@ -150,7 +185,9 @@ const submitTransaction = (entry) => async (dispatch, getState) => {
     },
   }))
 }
+*/
 
+/*
 const acceptTransaction = (entry) => async (dispatch, getState) => {
   dispatch(eosTxStatus(entry.key, entry.tx.from, { isAccepted: true, isPending: true }))
 
@@ -177,12 +214,14 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
 }
 
 const rejectTransaction = (entry) => (dispatch) => dispatch(eosTxStatus(entry.key, entry.tx.from, { isRejected: true }))
+*/
 
 export const initEos = () => async (dispatch) => {
   dispatch(createEosWallet())
   dispatch(setEos())
   await dispatch(getAccountBalances('chronobank11'))
 }
+
 export const createEosWallet = () => (dispatch, getState) => {
   const persistAccount = getPersistAccount(getState())
   EosUtils.createEosKeys(persistAccount.decryptedWallet.privateKey.substring(2, 66))
