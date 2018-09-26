@@ -3,7 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export { getAccount, getProfile, getGasSliderCollection } from './selectors/models'
+export {
+  getAccount,
+  getProfile,
+  getGasSliderCollection,
+  getIsSession,
+} from './selectors/models'
 export {
   getGasPriceMultiplier,
   getAddressesList,

@@ -31,8 +31,12 @@ function mapDispatchToProps (dispatch) {
 }
 
 function mapStateToProps (state) {
-  const currentAccount = getPersistAccount(state)
-  const pk = currentAccount.decryptedWallet.privateKey.slice(2, 66) || 'Private key not available for copying'
+  const { decryptedWallet } = getPersistAccount(state)
+  const pk = decryptedWallet
+    && decryptedWallet.privateKey
+    && decryptedWallet.privateKey.slice(2, 66)
+    || 'Private key not available for copying'
+
   return {
     pk,
     show: !!pk,

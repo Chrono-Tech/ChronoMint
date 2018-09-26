@@ -23,7 +23,7 @@ import qrSvg from 'assets/img/icons/qr.svg'
 import { toggleMainMenu } from 'redux/sides/actions'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
-import { selectCurrentisPrimaryNodeOnline, selectCurrentPrimaryNodeSyncingStatus } from '@chronobank/nodes/redux/selectors'
+import { selectCurrentPrimaryNodeSyncingStatus, selectCurrentPrimaryNodeStatus } from '@chronobank/nodes/redux/selectors'
 import './MenuTokenMoreInfo.scss'
 import { prefix } from './lang'
 import { getSelectedToken, getSelectedWalletAddress, getWalletCompactWalletsList } from './selectors'
@@ -32,7 +32,7 @@ const makeMapStateToProps = (state) => {
   const getTokenFromState = getSelectedToken()
   const getAddressFromState = getSelectedWalletAddress()
   const getWallets = getWalletCompactWalletsList()
-  const isPrimaryNodeOnline = selectCurrentisPrimaryNodeOnline(state)
+  const isPrimaryNodeOnline = selectCurrentPrimaryNodeStatus(state)
   const isPrimaryNodeSyncing = selectCurrentPrimaryNodeSyncingStatus(state)
   const mapStateToProps = (ownState, ownProps) => {
     const { account } = ownState.get(DUCK_SESSION)

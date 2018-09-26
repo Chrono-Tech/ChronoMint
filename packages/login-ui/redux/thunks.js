@@ -76,6 +76,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         await dispatch(SessionThunks.getProfileSignature(signer, accountWallet.encrypted[0].path))
 
         dispatch(SessionThunks.createNetworkSession(accountWallet.address))
+        dispatch(LoginUINavActions.navigateToRoot())
       } catch (e) {
         //eslint-disable-next-line
         console.warn('Memory type error: ', e)
@@ -94,6 +95,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         await dispatch(SessionThunks.getProfileSignature(signer, wallet.entry.encrypted[0].path))
 
         dispatch(SessionThunks.createNetworkSession(accountWallet.address))
+        dispatch(LoginUINavActions.navigateToRoot())
       } catch (e) {
         //eslint-disable-next-line
         console.warn('Device type error: ', e)
@@ -233,6 +235,9 @@ export const initLoginPage = () =>
       selectedWallet,
       walletsList,
     } = state.get(DUCK_PERSIST_ACCOUNT)
+
+    if (selectedWallet) return
+
     if (walletsList && walletsList.length > 0) {
       dispatch(LoginUINavActions.navigateToSelectWallet())
       return
