@@ -7,11 +7,11 @@
 // import { /*, ErrorNoticeModel, TransferNoticeModel*/ } from '../../models'
 import Eos from 'eosjs'
 import { /*eosPendingEntrySelector, EOSPendingSelector, */EOSSelector, getEOSWallet } from './selectors/mainSelectors'
-import { getPersistAccount /*getSelectedNetwork*/ } from '../persistAccount/selectors'
+import { /*getPersistAccount getSelectedNetwork*/ } from '../persistAccount/selectors'
 // import { describePendingEosTx } from '../../describers'
 // import { getAccount } from '../session/selectors/models'
 import * as EosActions from './actions'
-import * as EosUtils from './utils'
+// import * as EosUtils from './utils'
 // import { getToken } from '../tokens/selectors'
 import WalletModel from '../../models/wallet/WalletModel'
 import { BLOCKCHAIN_EOS } from './constants'
@@ -60,39 +60,32 @@ const eosTxStatus = (key, address, props) => (dispatch, getState) => {
 }
 */
 
-export const executeEosTransaction = (wallet, amount, recipient) => async (dispatch, getState) => {
-  const eos = EOSSelector(getState())
+export const executeEosTransaction = (/*wallet, amount, recipient*/) => async (/*dispatch, getState*/) => {
   // const prepared = await dispatch(prepareTransaction({ tx, options }))
   // const entry = EosUtils.createEosTxEntryModel({ tx: prepared }, options)
   //
   // await dispatch(EosActions.eosTxCreate(entry))
   // dispatch(submitTransaction(entry, options))
-  try {
+  /*try {
+    const persistAccount = getPersistAccount(getState())
+    const keys = EosUtils.createEosKeys(persistAccount.decryptedWallet.privateKey.substring(2, 66))
+    const memo = ''
+    const httpEndpoint = 'https://api.jungle.alohaeos.com:443'
+    const chainId = '038f4b0fc8ff18a4f0842a8f0564611f6e96e8535901dd45e43ac8691a1c4dca'
+    const eos = Eos({ httpEndpoint, chainId, keyProvider: keys.active.priv }) // create eos read-only instance
+    const signed = await eos.transfer(wallet.address, recipient, amount, memo, false) // `false` is a shortcut for {broadcast: false}
+    // TODO @abdulov remove console.log
+    console.log('%c res', 'background: #222; color: #fff', signed)
 
-    await eos.transaction(
-      {
-        actions: [
-          {
-            account: 'eosio.token',
-            name: 'transfer',
-            authorization: [{
-              actor: wallet.address,
-              permission: 'active',
-            }],
-            data: {
-              from: wallet.address,
-              to: recipient,
-              quantity: amount,
-              memo: '',
-            },
-          },
-        ],
-      },
-    )
+    // process
+    const res = await eos.pushTransaction(signed.transaction)
+    // TODO @abdulov remove console.log
+    console.log('%c res', 'background: #222; color: #fff', res)
+
   } catch (e) {
     // TODO implement error notifier
-    // console.error(e)
-  }
+    console.error(e)
+  }*/
 }
 
 /*const prepareTransaction = ({ tx }) => async (dispatch, getState) => {
@@ -219,14 +212,12 @@ const rejectTransaction = (entry) => (dispatch) => dispatch(eosTxStatus(entry.ke
 export const initEos = () => async (dispatch) => {
   dispatch(createEosWallet())
   dispatch(setEos())
-  await dispatch(getAccountBalances('chronobank11'))
+  await dispatch(getAccountBalances('chronobank13'))
 }
 
-export const createEosWallet = () => (dispatch, getState) => {
-  const persistAccount = getPersistAccount(getState())
-  EosUtils.createEosKeys(persistAccount.decryptedWallet.privateKey.substring(2, 66))
+export const createEosWallet = () => (dispatch) => {
   dispatch(EosActions.updateWallet(new WalletModel({
-    address: 'chronobank11',
+    address: 'chronobank13',
     blockchain: BLOCKCHAIN_EOS,
     isMain: true,
   })))
@@ -259,15 +250,12 @@ export const getAccountBalances = (account) => async (dispatch, getState) => {
 
 export const setEos = () => async (dispatch) => {
   try {
-
-    const httpEndpoint = 'https://jungle.eosio.cr:443'
+    const httpEndpoint = 'https://api.jungle.alohaeos.com:443'
     const chainId = '038f4b0fc8ff18a4f0842a8f0564611f6e96e8535901dd45e43ac8691a1c4dca'
-    const keyProvider = '5J2xA9xFZQNksmXN9JdhEfN8HXwg72fAMeBdQrmoSsMj6XYdEQE'
-    const eos = Eos({ httpEndpoint, chainId, keyProvider })
+    const eos = Eos({ httpEndpoint, chainId }) // create eos read-only instance
     dispatch(EosActions.updateEos(eos))
   } catch (e) {
     // TODO implement reaction somehow
-    // TODO @abdulov remove console.log
     // eslint-disable-next-line
     console.log('%c e', 'background: #222; color: #fff', e)
   }

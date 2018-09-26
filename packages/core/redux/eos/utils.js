@@ -75,6 +75,8 @@ export const createEosKeys = (ethereumPrivateKey) => {
     const convertedEOSActivePublicKey = ecc.privateToPublic(convertedEOSActivePrivateKey)
 
     // eslint-disable-next-line
+    console.log(`eth pk: ${ethereumPrivateKey}`)
+    // eslint-disable-next-line
     console.log(`EOS Private owner Key: ${convertedEOSOwnerPrivateKey}`)
     // eslint-disable-next-line
     console.log(`EOS Public owner Key: ${convertedEOSOwnerPublicKey}`)
@@ -84,6 +86,16 @@ export const createEosKeys = (ethereumPrivateKey) => {
     // eslint-disable-next-line
     console.log(`EOS Public active Key: ${convertedEOSActivePublicKey}`)
 
+    return {
+      owner: {
+        priv: convertedEOSOwnerPrivateKey,
+        pub: convertedEOSOwnerPublicKey,
+      },
+      active: {
+        priv: convertedEOSActivePrivateKey,
+        pub: convertedEOSActivePublicKey,
+      },
+    }
   } else {
     // eslint-disable-next-line
     console.log("Invalid Ethereum Private Key")
