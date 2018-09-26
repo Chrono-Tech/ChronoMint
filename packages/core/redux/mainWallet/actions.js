@@ -168,13 +168,17 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
           break
 
         case BLOCKCHAIN_NEM:
+        case BLOCKCHAIN_BITCOIN:
+        case BLOCKCHAIN_BITCOIN_CASH:
+        case BLOCKCHAIN_LITECOIN:
+        case BLOCKCHAIN_WAVES:
           const wallet = getWallet(token.blockchain(), account)(getState())
           dispatch({ type: WALLETS_UPDATE_BALANCE, walletId: wallet.id, balance: new Amount(balance, token.symbol()) })
           break
 
         default:
           //eslint-disable-next-line
-          console.warn('Update balance unknown token blockchain: ', account, balance, token.toJSON())
+          console.warn('Update balance of unknown token blockchain: ', account, balance, token.toJSON())
           break
       }
     })
