@@ -34,14 +34,14 @@ const mutations = {
     }
   },
   [TX_CREATE]: (state, { entry }) => {
-    const address = entry.tx.from
+    const account = entry.tx.from
     const pending = state.pending
-    const scope = pending[address]
+    const scope = pending[account]
     return {
       ...state,
       pending: {
         ...pending,
-        [address]: {
+        [account]: {
           ...scope,
           [entry.key]: entry,
         },

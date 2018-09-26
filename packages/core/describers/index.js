@@ -282,12 +282,8 @@ export const describePendingBitcoinTx = (entry, context = {}) => {
   })
 }
 
-export const describePendingEosTx = (entry, context = {}) => {
+export const describePendingEosTx = (entry) => {
   const { tx, block } = entry
-  const { token } = context
-  const { prepared } = tx
-
-  const amount = new Amount(prepared.amount, token.symbol())
 
   const path = `tx.eos.transfer`
 
@@ -310,8 +306,12 @@ export const describePendingEosTx = (entry, context = {}) => {
         description: `${path}.to`,
       },
       {
-        value: amount,
+        value: tx.amount,
         description: `${path}.amount`,
+      },
+      {
+        value: tx.memo,
+        description: `${path}.memo`,
       },
     ],
   })

@@ -45,7 +45,7 @@ function mapStateToProps (state, ownProps) {
   const walletsTokens = getEOSWalletsTokens(ownProps.wallet.id)(state)
   const initialValues = {
     symbol: symbol || EOS,
-    // recipient: 'chronobank12',
+    // recipient: 'chronobank12', // TODO remove test data
     // amount: '1',
   }
   const prices = selectMarketPricesListStore(state)

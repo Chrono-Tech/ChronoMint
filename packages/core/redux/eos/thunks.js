@@ -3,15 +3,14 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-// import { modalsOpen } from '@chronobank/core/redux/modals/actions'
+import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 // import { /*, ErrorNoticeModel, TransferNoticeModel*/ } from '../../models'
 import Eos from 'eosjs'
-import { /*eosPendingEntrySelector, EOSPendingSelector, */EOSSelector, getEOSWallet } from './selectors/mainSelectors'
-import { /*getPersistAccount getSelectedNetwork*/ } from '../persistAccount/selectors'
-// import { describePendingEosTx } from '../../describers'
+import { eosPendingEntrySelector, EOSPendingSelector, EOSSelector, getEosSigner, getEOSWallet } from './selectors/mainSelectors'
+import { describePendingEosTx } from '../../describers'
 // import { getAccount } from '../session/selectors/models'
 import * as EosActions from './actions'
-// import * as EosUtils from './utils'
+import * as EosUtils from './utils'
 // import { getToken } from '../tokens/selectors'
 import WalletModel from '../../models/wallet/WalletModel'
 import { BLOCKCHAIN_EOS } from './constants'
@@ -37,7 +36,6 @@ const notifyEosTransfer = (entry) => (dispatch, getState) => {
 const notifyEosError = (e) => notify(new ErrorNoticeModel({ message: e.message }))
 */
 
-/*
 const eosTxStatus = (key, address, props) => (dispatch, getState) => {
   const pending = EOSPendingSelector()(getState())
   const scope = pending[address]
@@ -58,44 +56,21 @@ const eosTxStatus = (key, address, props) => (dispatch, getState) => {
     }),
   ))
 }
-*/
 
-export const executeEosTransaction = (/*wallet, amount, recipient*/) => async (/*dispatch, getState*/) => {
-  // const prepared = await dispatch(prepareTransaction({ tx, options }))
-  // const entry = EosUtils.createEosTxEntryModel({ tx: prepared }, options)
-  //
-  // await dispatch(EosActions.eosTxCreate(entry))
-  // dispatch(submitTransaction(entry, options))
-  /*try {
-    const persistAccount = getPersistAccount(getState())
-    const keys = EosUtils.createEosKeys(persistAccount.decryptedWallet.privateKey.substring(2, 66))
-    const memo = ''
-    const httpEndpoint = 'https://api.jungle.alohaeos.com:443'
-    const chainId = '038f4b0fc8ff18a4f0842a8f0564611f6e96e8535901dd45e43ac8691a1c4dca'
-    const eos = Eos({ httpEndpoint, chainId, keyProvider: keys.active.priv }) // create eos read-only instance
-    const signed = await eos.transfer(wallet.address, recipient, amount, memo, false) // `false` is a shortcut for {broadcast: false}
-    // TODO @abdulov remove console.log
-    console.log('%c res', 'background: #222; color: #fff', signed)
-
-    // process
-    const res = await eos.pushTransaction(signed.transaction)
-    // TODO @abdulov remove console.log
-    console.log('%c res', 'background: #222; color: #fff', res)
-
-  } catch (e) {
-    // TODO implement error notifier
-    console.error(e)
-  }*/
+export const executeEosTransaction = (wallet, amount, to, memo = '') => async (dispatch) => {
+  const tx = {
+    from: wallet.address,
+    amount,
+    to,
+    memo,
+  }
+  const entry = EosUtils.createEosTxEntryModel({ tx })
+  await dispatch(EosActions.eosTxCreate(entry))
+  dispatch(submitTransaction(entry))
 }
 
-/*const prepareTransaction = ({ tx }) => async (dispatch, getState) => {
-  const network = getSelectedNetwork()(getState())
-  return EosUtils.describeEosTransaction(tx, network)
-}*/
-
-/*
-const processTransaction = ({ entry, signer }) => async (dispatch, getState) => {
-  await dispatch(signTransaction({ entry, signer }))
+const processTransaction = ({ entry }) => async (dispatch, getState) => {
+  await dispatch(signTransaction({ entry }))
   const signedEntry = eosPendingEntrySelector(entry.tx.from, entry.key)(getState())
   if (!signedEntry) {
     // eslint-disable-next-line no-console
@@ -106,18 +81,20 @@ const processTransaction = ({ entry, signer }) => async (dispatch, getState) => 
     entry: signedEntry,
   }))
 }
-*/
 
-/*const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
+const signTransaction = ({ entry }) => async (dispatch, getState) => {
   try {
-    const { tx } = entry
-    const signed = EosUtils.createEosTransaction(tx.prepared, signer, getSelectedNetwork()(getState()))
+    const state = getState()
+    const signer = getEosSigner(state)
+    const preparedTx = await EosUtils.prepareTransactionToOfflineSign(entry.tx)
+
+    // sign
+    const signedTx = await signer.signTransaction(preparedTx)
+
     dispatch(EosActions.eosTxUpdate(entry.key, entry.tx.from, EosUtils.createEosTxEntryModel({
       ...entry,
-      tx: {
-        ...entry.tx,
-        signed,
-      },
+      tx: { ...entry.tx },
+      signedTx,
     })))
 
   } catch (error) {
@@ -125,9 +102,7 @@ const processTransaction = ({ entry, signer }) => async (dispatch, getState) => 
     throw error
   }
 }
-*/
 
-/*
 const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
   dispatch(eosTxStatus(entry.key, entry.tx.from, { isPending: true }))
 
@@ -139,34 +114,33 @@ const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
     return // stop execute
   }
 
-  // TODO implement node
-  // const res = await node.send({ ...entry.tx.signed.tx, fee: entry.tx.signed.fee })
-
-  /!*if (res && res.meta && res.meta.hash) {
-    const hash = res.meta.hash.data
-    dispatch(eosTxStatus(entry.key, entry.tx.from, { isSent: true, isMined: true, hash }))
-    dispatch(notifyEosTransfer(entry))
+  try {
+    const httpEndpoint = 'https://api.jungle.alohaeos.com:443'
+    const chainId = '038f4b0fc8ff18a4f0842a8f0564611f6e96e8535901dd45e43ac8691a1c4dca'
+    const eos = Eos({ httpEndpoint, chainId }) // create eos read-only instance
+    await eos.pushTransaction(entry.signedTx.transaction)
+    // TODO implement callback after send
+    // TODO @abdulov remove console.log
+    // console.log('%c res', 'background: #222; color: #fff', res)
+  } catch (e) {
+    // TODO implement error notifier
+    // console.error(e)
   }
 
-  if (res.code === 0) {
-    dispatch(eosTxStatus(entry.key, entry.tx.from, { isErrored: true, error: res.message }))
-    dispatch(notifyEosError(res))
-  }*!/
+  // if (res && res.meta && res.meta.hash) {
+  //   const hash = res.meta.hash.data
+  //   dispatch(eosTxStatus(entry.key, entry.tx.from, { isSent: true, isMined: true, hash }))
+  //   dispatch(notifyEosTransfer(entry))
+  // }
+  //
+  // if (res.code === 0) {
+  //   dispatch(eosTxStatus(entry.key, entry.tx.from, { isErrored: true, error: res.message }))
+  //   dispatch(notifyEosError(res))
+  // }
 }
-*/
 
-/*
-const submitTransaction = (entry) => async (dispatch, getState) => {
-
-  const state = getState()
-  const account = getAccount(state)
-
-  const description = describePendingEosTx(
-    entry,
-    {
-      address: account,
-      token: getToken(entry.symbol)(state),
-    })
+const submitTransaction = (entry) => async (dispatch) => {
+  const description = describePendingEosTx(entry)
 
   dispatch(modalsOpen({
     componentName: 'ConfirmTxDialog',
@@ -178,36 +152,16 @@ const submitTransaction = (entry) => async (dispatch, getState) => {
     },
   }))
 }
-*/
 
-/*
 const acceptTransaction = (entry) => async (dispatch, getState) => {
   dispatch(eosTxStatus(entry.key, entry.tx.from, { isAccepted: true, isPending: true }))
-
-  // const state = getState()
-  // let signer = getSigner(state)
-  if (entry.walletDerivedPath) {
-    // signer = await SignerMemoryModel.fromDerivedPath({
-    //   seed: signer.privateKey,
-    //   derivedPath: entry.walletDerivedPath,
-    // })
-  }
-
   const selectedEntry = eosPendingEntrySelector(entry.tx.from, entry.key)(getState())
-  if (!selectedEntry) {
-    // eslint-disable-next-line no-console
-    console.error('entry is null', entry)
-    return // stop execute
-  }
-
   return dispatch(processTransaction({
     entry: selectedEntry,
-    // signer,
   }))
 }
 
 const rejectTransaction = (entry) => (dispatch) => dispatch(eosTxStatus(entry.key, entry.tx.from, { isRejected: true }))
-*/
 
 export const initEos = () => async (dispatch) => {
   dispatch(createEosWallet())

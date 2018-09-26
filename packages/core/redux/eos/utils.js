@@ -5,45 +5,18 @@
 
 import uuid from 'uuid/v1'
 import ecc from 'eosjs-ecc'
+import Eos from 'eosjs'
 import ethUtils from 'ethereumjs-util'
-// TODO change imports
-// import EosWallet from '@chronobank/login/network/EosWallet'
-// import eosSdk from 'eos-sdk'
-import { TxEntryModel, TxExecModel } from '../../models'
+import { TxEntryModel } from '../../models'
 import Amount from '../../models/Amount'
 
-export const createEosTxEntryModel = (entry, options = {}) =>
+export const createEosTxEntryModel = (entry) =>
   new TxEntryModel({
     key: uuid(),
-    receipt: null,
     isSubmitted: true,
     isAccepted: false,
-    walletDerivedPath: options && options.walletDerivedPath,
-    symbol: options.symbol,
     ...entry,
   })
-
-export const describeEosTransaction = (tx/*, network*/) => {
-  // TODO implement method
-  // const value = tx.amount.div(DECIMALS).toNumber()
-  // Get an empty common object to hold pass and key
-  // const common = eosSdk.model.objects.get('common')
-  // const transferTransaction = eosSdk.model.objects.create('transferTransaction')(
-  //   tx.to,
-  //   value,
-  //   'Tx from ChronoMint',
-  // )
-
-  // const eosNetwork = eosSdk.model.network.data[network.eos]
-  // const transactionEntity = eosSdk.model.transactions.prepare('transferTransaction')(common, transferTransaction, eosNetwork.id)
-  return new TxExecModel({
-    // prepared: transactionEntity,
-    hash: null,
-    block: null,
-    from: tx.from,
-    to: tx.to,
-  })
-}
 
 export const createEosTransaction = (prepared/*, signer, network*/) => {
   // TODO implement method
@@ -105,4 +78,24 @@ export const createEosKeys = (ethereumPrivateKey) => {
 export const getEOSBalanceFromStr = (balance: string): Amount => { // "1000.000 EOS"
   const [value, symbol] = balance.split(' ')
   return new Amount(value, symbol)
+}
+
+export const prepareTransactionToOfflineSign = async (tx) => {
+  const httpEndpoint = 'https://api.jungle.alohaeos.com:443' // TODO move to config
+  const chainId = '038f4b0fc8ff18a4f0842a8f0564611f6e96e8535901dd45e43ac8691a1c4dca' // TODO move to config
+  const eos = Eos({ httpEndpoint, chainId }) // create eos read-only instance
+
+  const expireInSeconds = 60 * 60 // 1 hour
+  const info = await eos.getInfo({})
+  const chainDate = new Date(info.head_block_time + 'Z')
+  let expiration = new Date(chainDate.getTime() + expireInSeconds * 1000)
+  expiration = expiration.toISOString().split('.')[0]
+  const block = await eos.getBlock(info.last_irreversible_block_num)
+
+  const transactionHeaders = {
+    expiration,
+    ref_block_num: info.last_irreversible_block_num & 0xFFFF,
+    ref_block_prefix: block.ref_block_prefix,
+  }
+  return { chainId, transactionHeaders, tx }
 }

@@ -35,7 +35,7 @@ export default class SendTokens extends PureComponent {
   handleSubmit = (values) => {
     const { wallet } = this.props
     const { symbol, amount, recipient } = values.toJS()
-    this.props.transfer(wallet, `${amount.toFixed(4)} ${symbol}`, recipient)
+    this.props.transfer(wallet, `${parseFloat(amount).toFixed(4)} ${symbol}`, recipient)
   }
 
   render () {

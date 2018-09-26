@@ -9,5 +9,6 @@ export default {
     from: 'From',
     to: 'To',
     amount: 'Amount',
+    memo: 'Memo',
   },
 }

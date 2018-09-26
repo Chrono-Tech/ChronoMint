@@ -7,7 +7,7 @@ import nemSdk from 'nem-sdk'
 import { BLOCKCHAIN_NEM } from '@chronobank/login/network/constants'
 import { createSelector } from 'reselect'
 import { DUCK_NEM } from './constants'
-import MetamaskPlugin from "../../services/signers/MetamaskPlugin";
+import MetamaskPlugin from "../../services/signers/MetamaskPlugin"
 import { getPersistAccount, getSelectedNetwork } from '../persistAccount/selectors'
 
 import NemMemoryDevice from '../../services/signers/NemMemoryDevice'
@@ -40,7 +40,7 @@ export const pendingEntrySelector = (address, key) => createSelector(
 export const getNemSigner = (state) => {
   const account = getPersistAccount(state)
   const networkData = getSelectedNetwork()(state)
-  const network = nemSdk.model.network.data[networkData[BLOCKCHAIN_NEM] ]
+  const network = nemSdk.model.network.data[networkData[BLOCKCHAIN_NEM]]
 
   switch (account.decryptedWallet.entry.encrypted[0].type) {
     case WALLET_TYPE_MEMORY: {
