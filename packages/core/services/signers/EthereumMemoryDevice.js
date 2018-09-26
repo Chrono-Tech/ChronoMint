@@ -82,17 +82,8 @@ export default class EthereumMemoryDevice extends EventEmitter {
     wallets.add(account)
     const wallet = wallets[0]
 
-    return wallet.encrypt(password)
-  }
-
-  /**
-   * Method converts Web3 1.0 wallet object to our application format
-   *
-   * @param wallet Web3 1.0 format. @see Web3 wallet.decrypt
-   */
-  static convertWeb3WalletFormat (wallet) {
     return {
-      wallet: wallet,
+      wallet: wallet.encrypt(password),
       address: `0x${wallet.address}`,
       path: DEFAULT_PATH,
       type: WALLET_TYPE_MEMORY,

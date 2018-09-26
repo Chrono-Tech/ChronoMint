@@ -25,7 +25,6 @@ import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import setup from '@chronobank/login/network/EngineUtils'
 import localStorage from 'utils/LocalStorage'
-import { DEFAULT_PATH } from '@chronobank/core/services/signers/EthereumMemoryDevice'
 import {
   DUCK_NETWORK,
 } from '@chronobank/login/redux/network/constants'
@@ -303,16 +302,7 @@ export const onSubmitCreateHWAccountPageFail = (errors, submitErrors) => {
  * @profile
  **/
 export const onCreateWalletFromJSON = (name, walletObject, profile) => (dispatch) => {
-
-  // wallet JSON updated for our format to list it on login page
-  const updatedWalletJSON = {
-    wallet: walletObject,
-    type: WALLET_TYPE_MEMORY,
-    path: DEFAULT_PATH,
-    address: `0x${walletObject.address}`,
-  }
-
-  const account = createAccountEntry(name, updatedWalletJSON, profile)
+  const account = createAccountEntry(name, walletObject, profile)
   dispatch(PersistAccountActions.accountAdd(account))
 }
 

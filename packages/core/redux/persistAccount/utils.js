@@ -5,6 +5,7 @@
 
 import bip39 from 'bip39'
 import uuid from 'uuid/v1'
+import { DEFAULT_PATH } from '@chronobank/core/services/signers/EthereumMemoryDevice'
 import { WALLET_TYPE_MEMORY } from '../../models/constants/AccountEntryModel'
 import { AccountEntryModel } from '../../models/wallet/persistAccount'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
@@ -54,11 +55,20 @@ export const generateMnemonic = () => {
 }
 
 export const createAccountEntry = (name, walletFileImportObject, profile = null) => {
+
+  // wallet JSON updated for our format to list it on login page
+  const updatedWalletJSON = {
+    wallet: walletFileImportObject,
+    type: WALLET_TYPE_MEMORY,
+    path: DEFAULT_PATH,
+    address: `0x${walletFileImportObject.address}`,
+  }
+
   return new AccountEntryModel({
     key: uuid(),
     name,
     type: WALLET_TYPE_MEMORY,
-    encrypted: [walletFileImportObject],
+    encrypted: [updatedWalletJSON],
     profile,
   })
 }

@@ -109,7 +109,7 @@ export const createMemoryAccount = ({ name, password, mnemonic, privateKey }) =>
   const wallet = await EthereumMemoryDevice.create({ privateKey, mnemonic, password })
   const account = await dispatch(createAccount({
     name,
-    wallet: EthereumMemoryDevice.convertWeb3WalletFormat(wallet),
+    wallet,
     type: WALLET_TYPE_MEMORY,
   }))
   return account
