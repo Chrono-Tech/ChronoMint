@@ -29,7 +29,8 @@ export const getProviderByBlockchain = (blockchain) => {
 
 export const getWalletBalances = ({ wallet }) => {
   try {
-    return  providersMap[wallet.blockchain].getAccountBalances(wallet.address)
+    console.log('getWalletBalances: ', wallet)
+    return providersMap[wallet.blockchain].getAccountBalances(wallet.address)
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log('Cannot find provider for the %s blockchain', wallet.blockchain)

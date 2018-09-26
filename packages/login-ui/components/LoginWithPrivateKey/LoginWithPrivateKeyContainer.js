@@ -5,7 +5,6 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-// import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import { stopSubmit } from 'redux-form'
 import { FORM_PRIVATE_KEY_LOGIN_PAGE } from '../../redux/constants'
 import LoginWithPrivateKey from './LoginWithPrivateKey'

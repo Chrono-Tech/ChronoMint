@@ -11,7 +11,6 @@ import {
   SubmissionError,
 } from 'redux-form'
 import { replace } from 'react-router-redux'
-import { MOCK_PRIVATE_KEY } from '@chronobank/core/services/signers/BitcoinLedgerDeviceMock'
 import {
   WALLET_TYPE_MEMORY,
   WALLET_TYPE_TREZOR,
@@ -22,8 +21,6 @@ import {
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 import { getEthereumSigner } from '@chronobank/core/redux/persistAccount/selectors'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
-import setup from '@chronobank/login/network/EngineUtils'
 import localStorage from 'utils/LocalStorage'
 import {
   DUCK_NETWORK,
@@ -111,13 +108,6 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         const signer = getEthereumSigner(getState())
         await dispatch(SessionThunks.getProfileSignature(signer, accountWallet.encrypted[0].path))
 
-        //////////////////////////////////////////////////////
-        //// @todo remove after providers/engine refactoring
-        const providerSettings = dispatch(SessionThunks.getProviderSettings())
-        const provider = privateKeyProvider.getPrivateKeyProvider(wallet.privateKey.slice(2, 66), providerSettings)
-        await setup(provider)
-        //////////////////////////////////////////////////////
-
         dispatch(NetworkActions.selectAccount(accountWallet.address))
 
         const {
@@ -139,7 +129,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         dispatch(replace(localStorage.getLastURL() || defaultURL))
       } catch (e) {
         //eslint-disable-next-line
-        console.warn('Memory type errors: ', e)
+        console.warn('Memory type error: ', e)
         throw new SubmissionError({ password: e && e.message })
       }
       break
@@ -154,15 +144,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         const signer = getEthereumSigner(getState())
         await dispatch(SessionThunks.getProfileSignature(signer, wallet.entry.encrypted[0].path))
 
-        //////////////////////////////////////////////////////
-        //// @todo remove after providers/engine refactoring
-        const providerSettings = dispatch(SessionThunks.getProviderSettings())
-        const provider = privateKeyProvider.getPrivateKeyProvider(`${MOCK_PRIVATE_KEY}`, providerSettings)
-        await setup(provider)
-        //////////////////////////////////////////////////////
-
         dispatch(NetworkActions.selectAccount(wallet.entry.encrypted[0].address))
-
         dispatch(NetworkActions.loading())
         dispatch(NetworkActions.clearErrors())
 
@@ -184,7 +166,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         dispatch(replace(localStorage.getLastURL() || defaultURL))
       } catch (e) {
         //eslint-disable-next-line
-        console.warn('Device type errors: ', e)
+        console.warn('Device type error: ', e)
         throw new SubmissionError({ password: e && e.message })
       }
       break

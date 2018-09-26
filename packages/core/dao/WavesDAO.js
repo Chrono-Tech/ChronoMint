@@ -64,12 +64,6 @@ export default class WavesDAO extends EventEmitter {
     return this._wavesProvider.isInitialized()
   }
 
-  hasBalancesStream () {
-    // Balance should not be fetched after transfer notification,
-    // it will be updated from the balances event stream
-    return true
-  }
-
   getDecimals () {
     return this._decimals
   }

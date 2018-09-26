@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import bip39 from 'bip39'
 import uuid from 'uuid/v1'
 import { DEFAULT_PATH } from '@chronobank/core/services/signers/EthereumMemoryDevice'
 import { WALLET_TYPE_MEMORY } from '../../models/constants/AccountEntryModel'
@@ -48,10 +47,6 @@ export const getAccountAvatar = (account) => {
   }
 
   return ''
-}
-
-export const generateMnemonic = () => {
-  return bip39.generateMnemonic()
 }
 
 export const createAccountEntry = (name, walletFileImportObject, profile = null) => {

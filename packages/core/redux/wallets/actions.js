@@ -203,7 +203,7 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
       })
       .catch((e) => {
         // eslint-disable-next-line no-console
-        console.log('call balances from middleware is failed getAddressInfo ', blockchain, e)
+        console.log('Balances call to middleware has failed [getAddressInfo]: ', blockchain, e)
         dispatch(fallbackCallback(wallet))
       })
   } else {

@@ -20,6 +20,7 @@ import { getToken } from '../tokens/selectors'
 import { pendingEntrySelector, getBitcoinSigner } from './selectors'
 import { notify, notifyError } from '../notifier/actions'
 import BitcoinMiddlewareService from './BitcoinMiddlewareService'
+import {DUCK_PERSIST_ACCOUNT} from "../persistAccount/constants";
 
 /**
  * Start sending transaction. It will be signed and sent.
@@ -231,21 +232,24 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   dispatch(BitcoinActions.bitcoinSignTx())
   try {
     const network = getSelectedNetwork()(getState())
+    const persistAccount = getState().get(DUCK_PERSIST_ACCOUNT)
+    console.log('PersistAccount: ', persistAccount)
+
     const unsignedTxHex = entry.tx.prepared.buildIncomplete().toHex()
-    if (signer.isActionRequestedModalDialogShows()) {
-      dispatch(BitcoinActions.bitcoinShowSignTxConfirmationModalDialog())
-      dispatch(modalsOpen({
-        componentName: 'ActionRequestDeviceDialog',
-      }))
-    }
+    // if (signer.isActionRequestedModalDialogShows()) {
+    //   dispatch(BitcoinActions.bitcoinShowSignTxConfirmationModalDialog())
+    //   dispatch(modalsOpen({
+    //     componentName: 'ActionRequestDeviceDialog',
+    //   }))
+    // }
     const signedHex = await signer.signTransaction(unsignedTxHex)
 
-    if (signer.isActionRequestedModalDialogShows()) {
-      dispatch(BitcoinActions.bitcoinCloseSignTxConfirmationModalDialog())
-      dispatch(modalsClose({
-        componentName: 'ActionRequestDeviceDialog',
-      }))
-    }
+    // if (signer.isActionRequestedModalDialogShows()) {
+    //   dispatch(BitcoinActions.bitcoinCloseSignTxConfirmationModalDialog())
+    //   dispatch(modalsClose({
+    //     componentName: 'ActionRequestDeviceDialog',
+    //   }))
+    // }
     const bitcoinTransaction = bitcoin.Transaction.fromHex(signedHex)
     const bitcoinNetwork = bitcoin.networks[network[entry.blockchain]]
     const txb = new bitcoin.TransactionBuilder.fromTransaction(bitcoinTransaction, bitcoinNetwork)
@@ -261,12 +265,12 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     dispatch(BitcoinActions.bitcoinSignTxSuccess(bitcoinTxEntry))
     return bitcoinTxEntry
   } catch (error) {
-    if (signer.isActionRequestedModalDialogShows()) {
-      dispatch(BitcoinActions.bitcoinCloseSignTxConfirmationModalDialog())
-      dispatch(modalsClose({
-        componentName: 'ActionRequestDeviceDialog',
-      }))
-    }
+    // if (signer.isActionRequestedModalDialogShows()) {
+    //   dispatch(BitcoinActions.bitcoinCloseSignTxConfirmationModalDialog())
+    //   dispatch(modalsClose({
+    //     componentName: 'ActionRequestDeviceDialog',
+    //   }))
+    // }
     const bitcoinErrorTxEntry = BitcoinUtils.createBitcoinTxEntryModel({
       ...entry,
       isErrored: true,

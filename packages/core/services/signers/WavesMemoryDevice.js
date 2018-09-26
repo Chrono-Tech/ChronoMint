@@ -41,7 +41,4 @@ export default class WavesMemoryDevice extends EventEmitter {
     return this.seed.keyPair
   }
 
-  isActionRequestedModalDialogShows () {
-    return false
-  }
 }

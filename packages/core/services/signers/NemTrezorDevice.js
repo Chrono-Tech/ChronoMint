@@ -32,7 +32,5 @@ export default class NemTrezorDevice extends EventEmitter {
     return result.payload.signature
   }
 
-  isActionRequestedModalDialogShows () {
-    return true
-  }
+
 }

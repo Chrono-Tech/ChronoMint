@@ -4,127 +4,79 @@
  */
 
 import AbstractProvider from './AbstractProvider'
-import EthereumEngine from './EthereumEngine'
 import selectEthereumNode from './EthereumNode'
 
 export class EthereumProvider extends AbstractProvider {
   constructor () {
     super(...arguments)
-    this._nemEngine = null
-    this._wavesEngine = null
     this._id = 'Ethereum'
   }
 
-  setEngine (ethEngine: EthereumEngine, nemEngine, wavesEngine) {
-    if (this._isInited) {
-      this.unsubscribe(this._engine, this._nemEngine)
-      this._isInited = false
-    }
-    this._engine = ethEngine
-    this._nemEngine = nemEngine
-    this._wavesEngine = wavesEngine
-    this.subscribe(this._engine, this._nemEngine, this._wavesEngine)
-    this._isInited = true
-  }
-
-  subscribe (ethEngine: EthereumEngine, nemEngine, wavesEngine) {
-    const node = this._selectNode(ethEngine)
+  subscribe (ethAddress) {
+    const node = this._selectNode(this.networkSettings)
 
     node.emit('subscribe', {
-      ethAddress: ethEngine.getAddress(),
-      nemAddress: nemEngine && nemEngine.getAddress(),
-      wavesAddress: wavesEngine && wavesEngine.getAddress(),
+      ethAddress,
     })
     return node
   }
 
-  unsubscribe (ethEngine: EthereumEngine, nemEngine, wavesEngine) {
-    const node = this._selectNode(ethEngine)
+  unsubscribe (ethAddress) {
+    const node = this._selectNode(this.networkSettings)
     node.emit('unsubscribe', {
-      ethAddress: ethEngine.getAddress(),
-      nemAddress: nemEngine && nemEngine.getAddress(),
-      wavesAddress: wavesEngine && wavesEngine.getAddress(),
+      ethAddress,
     })
     return node
   }
 
   subscribeNewWallet (address) {
-    const node = this._selectNode(this._engine)
+    const node = this._selectNode(this.networkSettings)
     node.subscribeNewWallet(address)
   }
 
   getTransactionsList (address, skip, offset) {
-    const node = this._selectNode(this._engine)
+    const node = this._selectNode(this.networkSettings)
     return node.getTransactionsList(address, this._id, skip, offset)
   }
 
-  getPrivateKey (address) {
-    if (address) {
-      let pk = null
-      this._engine
-        // eslint-disable-next-line no-underscore-dangle
-        ? this._engine._engine.wallets.map((wallet) => {
-          if (wallet.getAddressString() === address) {
-            pk = wallet.privKey
-          }
-        })
-        : null
-      return pk
-    } else {
-      return this._engine ? this._engine.getPrivateKey() : null
-    }
-  }
-
-  getPublicKey () {
-    return this._engine ? this._engine.getPublicKey() : null
-  }
-
-  createNewChildAddress (deriveNumber) {
-    return this._engine ? this._engine.createNewChildAddress(deriveNumber) : null
-  }
-
   getPlatformList (userAddress: string) {
-    const node = this._selectNode(this._engine)
+    const node = this._selectNode(this.networkSettings)
     return node.getPlatformList(userAddress)
   }
 
   getEventsData (eventName: string, queryFilter: string, mapCallback) {
-    const node = this._selectNode(this._engine)
+    const node = this._selectNode(this.networkSettings)
     return node.getEventsData(eventName, queryFilter, mapCallback)
   }
 
   subscribeOnMiddleware (event, callback) {
-    const node = this._selectNode(this._engine)
+    const node = this._selectNode(this.networkSettings)
     node.on(event, callback)
   }
 
   get2FAEncodedKey (callback) {
-    const node = this._selectNode(this._engine)
-    return node.get2FAEncodedKey(this._engine, callback)
+    const node = this._selectNode(this.networkSettings)
+    return node.get2FAEncodedKey(this.networkSettings, callback)
   }
 
   confirm2FASecret (account, confirmToken, callback) {
-    const node = this._selectNode(this._engine)
+    const node = this._selectNode(this.networkSettings)
     return node.confirm2FASecret(account, confirmToken, callback)
   }
 
   confirm2FAtx (txAddress, walletAddress, confirmToken, callback) {
-    const node = this._selectNode(this._engine)
+    const node = this._selectNode(this.networkSettings)
     return node.confirm2FAtx(txAddress, walletAddress, confirmToken, callback)
   }
 
   checkConfirm2FAtx (txAddress, callback) {
-    const node = this._selectNode(this._engine)
+    const node = this._selectNode(this.networkSettings)
     return node.checkConfirm2FAtx(txAddress, callback)
   }
 
-  getEngine () {
-    return this._engine
-  }
-
   async getAccountBalances (address) {
-    const node = this._selectNode(this._engine)
-    const data = await node.getAddressInfo(address.toLowerCase() || this._engine.getAddress())
+    const node = this._selectNode(this.networkSettings)
+    const data = await node.getAddressInfo(address.toLowerCase())
     return {
       balance: data.balance,
       tokens: data.erc20token,

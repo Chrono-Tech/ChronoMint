@@ -31,12 +31,12 @@ export class BitcoinProvider extends AbstractProvider {
   }
 
   subscribeNewWallet (address) {
-    const node = this._selectNode(this._engine)
+    const node = this._selectNode(this.networkSettings)
     node.subscribeNewWallet(address)
   }
 
   addDerivedWallet (wallet) {
-    this._engine.addWallet(wallet)
+    this.networkSettings.addWallet(wallet)
   }
 
   subscribe (engine) {
@@ -55,53 +55,53 @@ export class BitcoinProvider extends AbstractProvider {
     node.removeListener('transaction', this._handleTransactionUpdated)
   }
 
-  async getTransactionInfo (txid) {
-    const node = this._selectNode(this._engine)
-    return node.getTransactionInfo(txid)
+  async getTransactionInfo (transactionId) {
+    const node = this._selectNode(this.networkSettings)
+    return node.getTransactionInfo(transactionId)
   }
 
   async getTransactionsList (address, skip, offset) {
-    const node = this._selectNode(this._engine)
+    const node = this._selectNode(this.networkSettings)
     return node.getTransactionsList(address, this._id, skip, offset)
   }
 
   async getFeeRate () {
-    const node = this._selectNode(this._engine)
+    const node = this._selectNode(this.networkSettings)
     return node.getFeeRate()
   }
 
   async getCurrentBlockHeight () {
-    const node = this._selectNode(this._engine)
+    const node = this._selectNode(this.networkSettings)
     return node.getCurrentBlockHeight()
   }
 
   async getAccountBalances (address) {
-    const node = this._selectNode(this._engine)
-    const result = await node.getAddressInfo(address || this._engine.getAddress())
+    const node = this._selectNode(this.networkSettings)
+    const result = await node.getAddressInfo(address || this.networkSettings.getAddress())
     const { balance0, balance6 } = result
     return balance0 || balance6
   }
 
   async estimateFee (from: string, to, amount: BigNumber, feeRate: number) {
-    const node = this._selectNode(this._engine)
-    const utxos = await node.getAddressUTXOS(from || this._engine.getAddress())
+    const node = this._selectNode(this.networkSettings)
+    const utxos = await node.getAddressUTXOS(from)
     const { fee } = this._engine.describeTransaction(to, amount, feeRate, utxos)
     return fee
   }
 
   async transfer (from: string, to, amount: BigNumber, feeRate: number) {
-    const node = this._selectNode(this._engine)
-    const utxos = await node.getAddressUTXOS(from || this._engine.getAddress())
+    const node = this._selectNode(this.networkSettings)
+    const utxos = await node.getAddressUTXOS(from || this.networkSettings.getAddress())
     const options = {
       from,
       feeRate,
     }
-    const { tx /*, fee*/ } = this._engine.createTransaction(to, amount, utxos, options)
+    const { tx /*, fee*/ } = this.networkSettings.createTransaction(to, amount, utxos, options)
     return node.send(from, tx.toHex())
   }
 
   async onTransactionUpdated (txData, address, blockchain, symbol) {
-    const node = this._selectNode(this._engine)
+    const node = this._selectNode(this.networkSettings)
     const tx = node._createTxModel(txData, address)
     const txModel = new TxModel({
       txHash: tx.txHash,
@@ -143,7 +143,7 @@ export class BitcoinProvider extends AbstractProvider {
   }
 
   getPrivateKey () {
-    return this._engine ? this._engine.getPrivateKey() : null
+    return this.networkSettings ? this.networkSettings.getPrivateKey() : null
   }
 
   createNewChildAddress (deriveNumber) {
@@ -151,22 +151,22 @@ export class BitcoinProvider extends AbstractProvider {
 
     switch (this._id) {
       case BLOCKCHAIN_BITCOIN:
-        coinType = this._engine._network === bitcoin.networks.testnet
+        coinType = this.networkSettings._network === bitcoin.networks.testnet
           ? COIN_TYPE_BTC_TESTNET
           : COIN_TYPE_BTC_MAINNET
         break
       case BLOCKCHAIN_LITECOIN:
-        coinType = this._engine._network === bitcoin.networks.litecoin_testnet
+        coinType = this.networkSettings._network === bitcoin.networks.litecoin_testnet
           ? COIN_TYPE_LTC_TESTNET
           : COIN_TYPE_LTC_MAINNET
         break
     }
 
-    return this._engine && coinType ? this._engine.createNewChildAddress(deriveNumber, coinType) : null
+    return this.networkSettings && coinType ? this.networkSettings.createNewChildAddress(deriveNumber, coinType) : null
   }
 
   getNode () {
-    return this._selectNode(this._engine)
+    return this._selectNode(this.networkSettings)
   }
 }
 

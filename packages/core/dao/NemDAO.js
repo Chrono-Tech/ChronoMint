@@ -58,26 +58,20 @@ export default class NemDAO extends EventEmitter {
     return this._nemProvider.isInitialized()
   }
 
-  hasBalancesStream () {
-    // Balance should not be fetched after transfer notification,
-    // it will be updated from the balances event stream
-    return true
-  }
-
   getDecimals () {
     return this._decimals
   }
 
-  getAccountBalances () {
-    return this._nemProvider.getAccountBalances(this._namespace)
+  getAccountBalances (address) {
+    return this._nemProvider.getAccountBalances(address)
   }
 
   /**
    * wrapper for getAccountBalances, is required for uniformity os DAOs
    * @returns {*|Promise<*>}
    */
-  getAccountBalance () {
-    return this.getAccountBalances()
+  getAccountBalance (address) {
+    return this.getAccountBalances(address)
   }
 
   transfer (from: string, to: string, amount: BigNumber) {

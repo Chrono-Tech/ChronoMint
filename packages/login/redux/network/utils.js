@@ -16,14 +16,14 @@ import { nemProvider } from '../../network/NemProvider'
 
 export const getPrivateKeyFromBlockchain = (blockchain: string) => {
   switch (blockchain) {
-    case 'Ethereum':
-      return ethereumProvider.getPrivateKey()
-    case 'Bitcoin':
-      return btcProvider.getPrivateKey()
-    case 'Litecoin':
-      return ltcProvider.getPrivateKey()
-    case 'NEM':
-      return nemProvider.getPrivateKey()
+    // case 'Ethereum':
+    //   return ethereumProvider.getPrivateKey()
+    // case 'Bitcoin':
+    //   return btcProvider.getPrivateKey()
+    // case 'Litecoin':
+    //   return ltcProvider.getPrivateKey()
+    // case 'NEM':
+    //   return nemProvider.getPrivateKey()
     default:
       return null
   }

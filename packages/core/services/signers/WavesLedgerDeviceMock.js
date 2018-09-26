@@ -12,7 +12,4 @@ export default class WavesLedgerDeviceMock extends WavesMemoryDevice {
     super({ network, seedPhrase: MOCK_PRIVATE_SEED })
   }
 
-  isActionRequestedModalDialogShows () {
-    return true
-  }
 }

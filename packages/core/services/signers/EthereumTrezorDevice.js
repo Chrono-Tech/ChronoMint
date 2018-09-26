@@ -120,7 +120,4 @@ export default class EthereumTrezorDevice extends EventEmitter {
     }
   }
 
-  isActionRequestedModalDialogShows () {
-    return true
-  }
 }

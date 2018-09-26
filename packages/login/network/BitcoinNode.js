@@ -109,20 +109,20 @@ export const LTC_TESTNET_NODE = new BitcoinMiddlewareNode({
   trace: false,
 })
 
-export function selectBTCNode (engine) {
-  return engine.getNetwork() !== networks.bitcoin
+export function selectBTCNode (network) {
+  return network.Bitcoin === 'testnet'
     ? BTC_TESTNET_NODE
     : BTC_MAINNET_NODE
 }
 
-export function selectBCCNode (engine) {
-  return engine.getNetwork() !== networks.bitcoin
+export function selectBCCNode (network) {
+  return network['Bitcoin Cash'] === 'testnet'
     ? BCC_TESTNET_NODE
     : BCC_MAINNET_NODE
 }
 
-export function selectLTCNode (engine) {
-  return engine.getNetwork() !== networks.litecoin
+export function selectLTCNode (network) {
+  return network.Litecoin === 'testnet'
     ? LTC_TESTNET_NODE
     : LTC_MAINNET_NODE
 }

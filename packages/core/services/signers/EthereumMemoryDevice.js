@@ -111,8 +111,4 @@ export default class EthereumMemoryDevice extends EventEmitter {
 
     return wallet[0]
   }
-
-  isActionRequestedModalDialogShows () {
-    return false
-  }
 }

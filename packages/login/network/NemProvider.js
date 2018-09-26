@@ -29,27 +29,24 @@ export class NemProvider extends AbstractProvider {
   }
 
   async getTransactionInfo (txid) {
-    const node = this._selectNode(this._engine)
+    const node = this._selectNode(this.networkSettings)
     return node.getTransactionInfo(txid)
   }
 
   async getFeeRate () {
-    const node = this._selectNode(this._engine)
+    const node = this._selectNode(this.networkSettings)
     return node.getFeeRate()
   }
 
   getMosaics () {
-    const node = this._selectNode(this._engine)
+    const node = this._selectNode(this.networkSettings)
     return node.getMosaics() || []
   }
 
-  getPrivateKey () {
-    return this._engine ? this._engine.getPrivateKey() : null
-  }
-
-  async getAccountBalances (mosaic = null) {
-    const node = this._selectNode(this._engine)
-    let { balance, mosaics } = await node.getAddressInfo(this._engine.getAddress())
+  async getAccountBalances (address, mosaic = null) {
+    console.log('getAccountBalances: ', address, mosaic)
+    const node = this._selectNode(this.networkSettings)
+    let { balance, mosaics } = await node.getAddressInfo(address)
     if (mosaic) {
       balance = (mosaics && (mosaic in mosaics))
         ? mosaics[mosaic]
@@ -62,7 +59,7 @@ export class NemProvider extends AbstractProvider {
   }
 
   async getTransactionsList (address, id, skip, offset) {
-    const node = this._selectNode(this._engine)
+    const node = this._selectNode(this.networkSettings)
     return node.getTransactionsList(address, id, skip, offset)
   }
 
@@ -72,7 +69,7 @@ export class NemProvider extends AbstractProvider {
   }
 
   getNode () {
-    return this._selectNode(this._engine)
+    return this._selectNode(this.networkSettings)
   }
 
   async onTransaction (tx: NemTx) {
