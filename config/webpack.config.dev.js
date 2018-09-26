@@ -64,7 +64,12 @@ module.exports = config.buildConfig(
       }),
       new webpack.optimize.CommonsChunkPlugin({
         name: 'src',
-        minChunks: (m) => /src/.test(m.context)
+        minChunks: (m) => [
+          /packages\/core/,
+          /packages\/login/,
+          /packages\/login-ui/,
+          /src/,
+        ].map(regExp => regExp.test(m.context)).includes(true)
       }),
       new webpack.ProvidePlugin({
         'Web3': 'web3',
