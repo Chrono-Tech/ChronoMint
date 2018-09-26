@@ -12,9 +12,9 @@ import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import PersistLoader from 'layouts/partials/PersistLoader/PersistLoader'
 import React from 'react'
 import configureStore from './redux/configureStore'
-import router from './router'
 import themeDefault from './themeDefault'
 import * as Initializers from './initializers'
+import Router from './Router'
 
 const { store, history, persistor } = configureStore()
 
@@ -39,9 +39,7 @@ render(
       onBeforeLift={initAfterRehydration}
     >
       <MuiThemeProvider theme={themeDefault}>
-        {
-          router(history)
-        }
+        <Router history={history} />
       </MuiThemeProvider>
     </PersistGate>
   </Provider>,
