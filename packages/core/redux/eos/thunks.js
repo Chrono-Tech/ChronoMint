@@ -212,3 +212,8 @@ export const setEos = () => async (dispatch, getState) => {
     throw error
   }
 }
+
+export const setEOSWalletName = (walletId, name) => (dispatch, getState) => {
+  const wallet = getEOSWallet(walletId)(getState())
+  dispatch(EosActions.updateWallet(new WalletModel({ ...wallet, name })))
+}

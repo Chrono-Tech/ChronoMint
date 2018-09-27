@@ -5,14 +5,15 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
-import { getEosWallets } from '@chronobank/core/redux/eos/selectors/mainSelectors'
-import { BLOCKCHAIN_EOS } from '@chronobank/core/redux/eos/constants'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
+import { BLOCKCHAIN_EOS } from '@chronobank/core/redux/eos/constants'
+import { connect } from 'react-redux'
 import { DUCK_UI } from 'redux/ui/constants'
-import EOSWalletWidget from '../EOSWalletWidget/EOSWalletWidget'
+import { getEosWallets } from '@chronobank/core/redux/eos/selectors/mainSelectors'
+import { Translate } from 'react-redux-i18n'
 import './EOSWalletsList.scss'
+import EOSWalletWidget from '../EOSWalletWidget/EOSWalletWidget'
+import EOSWalletWidgetMini from '../EOSWalletWidgetMini/EOSWalletWidgetMini'
 import { prefix } from './lang'
 
 function makeMapStateToProps (state) {
@@ -31,7 +32,7 @@ export default class EOSWalletsList extends PureComponent {
   }
 
   render () {
-    const Component = this.props.isCompactWalletView ? null : EOSWalletWidget // TODO implement mini widget for
+    const Component = this.props.isCompactWalletView ? EOSWalletWidgetMini : EOSWalletWidget
     const list = Object.values(this.props.eosWalletsList)
 
     return (

@@ -10,6 +10,7 @@ import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import { executeEosTransaction } from '@chronobank/core/redux/eos/thunks'
 import { MultisigEthWalletModel } from '@chronobank/core/models'
+import { modalsClose } from '@chronobank/core/redux/modals/actions'
 import EosForm from './Form'
 
 function mapStateToProps (state) {
@@ -20,7 +21,10 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    transfer: (wallet, amount, recipient) => dispatch(executeEosTransaction(wallet, amount, recipient)),
+    transfer: (wallet, amount, recipient) => {
+      dispatch(modalsClose())
+      dispatch(executeEosTransaction(wallet, amount, recipient))
+    },
   }
 }
 
