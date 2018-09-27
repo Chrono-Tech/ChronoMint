@@ -5,9 +5,10 @@
 
 import * as WavesUtils from './utils'
 import * as WavesActions from './actions'
+import { pendingEntrySelector } from './selectors'
 import { getToken } from '../tokens/selectors'
 import { modalsOpen } from '../modals/actions'
-import { getWavesSigner, pendingEntrySelector } from './selectors'
+import { getWavesSigner } from '../../services/signers/SignerFactory'
 import { describePendingWavesTx } from '../../describers'
 import { getSelectedNetwork } from '../persistAccount/selectors'
 import TxExecModel from '../../models/TxExecModel'
