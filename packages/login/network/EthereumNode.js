@@ -35,10 +35,6 @@ const ETHEREUM_TESTNET_NODE = new EthereumMiddlewareNode({
  * @returns {EthereumMiddlewareNode}
  */
 export default function selectEthereumNode (network) {
-  if (!network) {
-    console.error('Network is empty: ', network)
-  }
-
   return (network.id === NETWORK_MAIN_ID) ? ETHEREUM_MAINNET_NODE : ETHEREUM_TESTNET_NODE
 }
 

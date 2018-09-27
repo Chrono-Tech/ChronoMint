@@ -17,7 +17,6 @@ export class WavesProvider extends AbstractProvider {
   }
 
   subscribe (address) {
-    console.log('Waves subscribe address: ', address)
     const node = super.subscribe(address)
     node.addListener('tx', this._handleTransaction)
     node.addListener('balance', this._handleBalance)
@@ -34,12 +33,12 @@ export class WavesProvider extends AbstractProvider {
     return node.getTransactionInfo(transactionId)
   }
 
-  async getAssets (address) {
+  async getAssets (/*address*/) {
     // @todo
     return {}
-    const node = this._selectNode(this.networkSettings)
-    const { assets } = await node.getAddressInfo(address)
-    return { ...assets }
+    // const node = this._selectNode(this.networkSettings)
+    // const { assets } = await node.getAddressInfo(address)
+    // return { ...assets }
   }
 
   async getAccountBalances (address) {

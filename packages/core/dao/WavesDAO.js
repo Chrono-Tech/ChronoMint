@@ -172,7 +172,6 @@ export default class WavesDAO extends EventEmitter {
 
   async watchBalance () {
     this._wavesProvider.addListener(EVENT_BALANCE, async ({ account, time, balance }) => {
-      console.log('UPDATE BALANCE DAO account, time, balance: ', account, time, balance)
       this.emit(EVENT_UPDATE_BALANCE, {
         account,
         time,
@@ -201,7 +200,8 @@ export default class WavesDAO extends EventEmitter {
 }
 
 //TODO WHY WE NEED SYMBOL AND ASSET DESCRIPTION IF SYMBOL IS ENOUGH
-function readBalanceValue (symbol, balance, asset = null) {
+function readBalanceValue (symbol, balance, /*asset = null*/) {
+  // @todo assets
   // console.log('readBalanceValue: ', symbol, balance, asset)
   // if (asset) {
   //   return balance.assets[asset]

@@ -31,6 +31,4 @@ export default class NemTrezorDevice extends EventEmitter {
 
     return result.payload.signature
   }
-
-
 }

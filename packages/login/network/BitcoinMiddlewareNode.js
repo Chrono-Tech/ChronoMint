@@ -36,7 +36,6 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
         this._subscriptions[`balance:${address}`] = this._client.subscribe(
           `${this._socket.channels.balance}.${address}`,
           (message) => {
-            console.log('Balance update: ', message)
             try {
               const data = JSON.parse(message.body)
               this.trace('Address Balance', data)

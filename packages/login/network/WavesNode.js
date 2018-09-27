@@ -42,8 +42,6 @@ export const WAVES_TESTNET_NODE = new WavesMiddlewareNode({
 })
 
 export function selectWavesNode (network) {
-  console.log('selectWavesNode: ', network)
-
   return WavesApi[network['Waves']] === WavesApi.MAINNET_CONFIG
     ? WAVES_MAINNET_NODE
     : WAVES_TESTNET_NODE

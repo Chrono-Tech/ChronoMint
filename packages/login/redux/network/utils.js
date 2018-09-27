@@ -7,13 +7,7 @@
 
 /* eslint-disable import/prefer-default-export */
 
-import { ethereumProvider } from '../../network/EthereumProvider'
-import {
-  btcProvider,
-  ltcProvider,
-} from '../../network/BitcoinProvider'
-import { nemProvider } from '../../network/NemProvider'
-
+// @todo remove
 export const getPrivateKeyFromBlockchain = (blockchain: string) => {
   switch (blockchain) {
     // case 'Ethereum':

@@ -100,8 +100,6 @@ export const sendSignedTransaction = ({ web3, entry }) => async (dispatch, getSt
   entry = pendingEntrySelector(entry.tx.from, entry.key)(getState())
   dispatch(ethActions.ethNonceUpdate(entry.tx.from, entry.tx.nonce))
 
-  console.log('sendSignedTransaction: ', entry)
-
   return new Promise((resolve, reject) => {
     web3.eth.sendSignedTransaction(entry.raw)
       .on('transactionHash', (hash) => {

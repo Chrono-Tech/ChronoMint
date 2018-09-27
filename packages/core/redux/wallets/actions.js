@@ -132,8 +132,6 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
     }))
   }
 
-  console.log('Wallet set Wallet: ', wallets)
-
   wallets.forEach((wallet) => {
     dispatch(setWallet(wallet))
     dispatch(updateWalletBalance({ wallet }))

@@ -6,7 +6,7 @@
 import bitcoin from 'bitcoinjs-lib'
 import type { Dispatch } from 'redux'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
-import { modalsOpen, modalsClose } from '../modals/actions'
+import { modalsOpen } from '../modals/actions'
 import * as converter from './converter'
 import {
   TransferNoticeModel,
@@ -20,7 +20,6 @@ import { getToken } from '../tokens/selectors'
 import { pendingEntrySelector, getBitcoinSigner } from './selectors'
 import { notify, notifyError } from '../notifier/actions'
 import BitcoinMiddlewareService from './BitcoinMiddlewareService'
-import {DUCK_PERSIST_ACCOUNT} from "../persistAccount/constants";
 
 /**
  * Start sending transaction. It will be signed and sent.
@@ -232,8 +231,7 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   dispatch(BitcoinActions.bitcoinSignTx())
   try {
     const network = getSelectedNetwork()(getState())
-    const persistAccount = getState().get(DUCK_PERSIST_ACCOUNT)
-    console.log('PersistAccount: ', persistAccount)
+    // const persistAccount = getState().get(DUCK_PERSIST_ACCOUNT)
 
     const unsignedTxHex = entry.tx.prepared.buildIncomplete().toHex()
     // if (signer.isActionRequestedModalDialogShows()) {

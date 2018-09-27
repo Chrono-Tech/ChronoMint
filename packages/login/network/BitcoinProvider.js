@@ -34,7 +34,6 @@ export class BitcoinProvider extends AbstractProvider {
   }
 
   subscribe (address) {
-    console.log('subscribe BTC: ', address)
     const node = super.subscribe(address)
     node.addListener('tx', this._handleTransaction) // send transaction
     node.addListener('balance', this._handleBalance)

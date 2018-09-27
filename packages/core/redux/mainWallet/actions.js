@@ -52,7 +52,6 @@ import {
   XEM,
 } from '../../dao/constants'
 import {
-  WALLET_ADDRESS,
   WALLET_ALLOWANCE,
   WALLET_ESTIMATE_GAS_FOR_DEPOSIT,
   WALLET_INIT,
