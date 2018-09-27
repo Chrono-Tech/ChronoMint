@@ -19,6 +19,7 @@ import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_DASH,
   BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
 } from '../../dao/constants';
@@ -40,6 +41,7 @@ import DashMemoryDevice from './dash/MemoryDevice'
 import EthereumTrezorDeviceMock from './EthereumTrezorDeviceMock'
 import EthereumTrezorDevice from './EthereumTrezorDevice'
 import EthereumLedgerDeviceMock from './EthereumLedgerDeviceMock'
+import EthereumLedgerDevice from './EthereumLedgerDevice'
 import EthereumMemoryDevice from './EthereumMemoryDevice'
 
 import NemMemoryDevice from './NemMemoryDevice'
@@ -49,6 +51,18 @@ import NemTrezorDeviceMock from './NemTrezorDeviceMock'
 import WavesMemoryDevice from './WavesMemoryDevice'
 import WavesLedgerDevice from './WavesLedgerDevice'
 import WavesLedgerDeviceMock from './WavesLedgerDeviceMock'
+
+export const getSigner = (blockchainType, state) => {
+  switch (blockchainType) {
+    case BLOCKCHAIN_BITCOIN: return getBitcoinSigner(state);
+    case BLOCKCHAIN_BITCOIN_CASH: return getBitcoinCashSigner(state);
+    case BLOCKCHAIN_DASH: return getDashSigner(state);
+    case BLOCKCHAIN_LITECOIN: return getLitecoinSigner(state);
+    case BLOCKCHAIN_ETHEREUM: return getEthereumSigner(state);
+    case BLOCKCHAIN_NEM: return getNemSigner(state);
+    case BLOCKCHAIN_WAVES: return getWavesSigner(state);
+  }
+};
 
 export const getBitcoinSigner = (state) => {
   const account = getPersistAccount(state)
@@ -142,21 +156,11 @@ export const getEthereumSigner = (state) => {
   const account = getPersistAccount(state)
 
   switch (account.selectedWallet.type) {
-    case WALLET_TYPE_MEMORY: {
-      return new EthereumMemoryDevice(account.decryptedWallet.privateKey)
-    }
-    case WALLET_TYPE_LEDGER: {
-      return new EthereumTrezorDeviceMock()
-    }
-    case WALLET_TYPE_LEDGER_MOCK: {
-      return new EthereumLedgerDeviceMock()
-    }
-    case WALLET_TYPE_TREZOR: {
-      return new EthereumTrezorDevice()
-    }
-    case WALLET_TYPE_TREZOR_MOCK: {
-      return new EthereumTrezorDeviceMock()
-    }
+    case WALLET_TYPE_MEMORY: return new EthereumMemoryDevice(account.decryptedWallet.privateKey)
+    case WALLET_TYPE_LEDGER: return new EthereumLedgerDevice()
+    case WALLET_TYPE_LEDGER_MOCK: return new EthereumLedgerDeviceMock()
+    case WALLET_TYPE_TREZOR: return new EthereumTrezorDevice()
+    case WALLET_TYPE_TREZOR_MOCK: return new EthereumTrezorDeviceMock()
   }
 }
 
