@@ -46,15 +46,16 @@ import {
   WALLETS_UPDATE_WALLET,
 } from './constants'
 import { executeNemTransaction } from '../nem/thunks'
-import { getPersistAccount, getEthereumSigner } from '../persistAccount/selectors'
+import { getPersistAccount } from '../persistAccount/selectors'
 import {
   getBitcoinCashSigner,
   getBitcoinSigner,
   getDashSigner,
-  getLitecoinSigner
-} from '../bitcoin/selectors'
-import { getNemSigner } from '../nem/selectors'
-import { getWavesSigner } from '../waves/selectors'
+  getLitecoinSigner,
+  getEthereumSigner,
+  getNemSigner,
+  getWavesSigner
+} from '../../services/signers/SignerFactory'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
