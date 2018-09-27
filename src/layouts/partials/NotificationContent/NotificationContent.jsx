@@ -3,42 +3,45 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import AbstractNoticeModel from '@chronobank/core/models/notices/AbstractNoticeModel'
 import classnames from 'classnames'
-import { Translate } from 'react-redux-i18n'
-import PropTypes from 'prop-types'
-import { DUCK_WATCHER } from '@chronobank/core/redux/watcher/constants'
-import { DUCK_NOTIFIER } from '@chronobank/core/redux/notifier/constants'
-import TxExecModel from '@chronobank/core/models/TxExecModel'
-import TxModel from '@chronobank/core/models/TxModel'
 import CurrentTransactionNotificationModel from '@chronobank/core/models/CurrentTransactionNotificationModel'
-import { pendingTransactionsSelector } from '@chronobank/core/redux/mainWallet/selectors/tokens'
 import Immutable from 'immutable'
-import { connect } from 'react-redux'
+import Moment from 'components/common/Moment'
+import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import ReceivedTransactionSVG from 'assets/img/r-0.svg'
+import TxEntryModel from '@chronobank/core/models/TxEntryModel'
+import TxExecModel from '@chronobank/core/models/TxExecModel'
+import TxModel from '@chronobank/core/models/TxModel'
 import Value from 'components/common/Value/Value'
-import AbstractNoticeModel from '@chronobank/core/models/notices/AbstractNoticeModel'
-import Moment from 'components/common/Moment'
+import { connect } from 'react-redux'
+import { DUCK_NOTIFIER } from '@chronobank/core/redux/notifier/constants'
+import { DUCK_WATCHER } from '@chronobank/core/redux/watcher/constants'
+import { eosPendingFormatSelector } from '@chronobank/core/redux/eos/selectors/mainSelectors'
+import { ethereumPendingFormatSelector } from '@chronobank/core/redux/ethereum/selectors'
 import { FULL_DATE } from '@chronobank/core/models/constants'
 import { IconButton } from '@material-ui/core'
-import { ethereumPendingFormatSelector } from '@chronobank/core/redux/ethereum/selectors'
-import TxEntryModel from '@chronobank/core/models/TxEntryModel'
-import { sidesCloseAll } from 'redux/sides/actions'
 import { Icons } from 'components/icons'
-import { prefix } from './lang'
+import { pendingTransactionsSelector } from '@chronobank/core/redux/mainWallet/selectors/tokens'
+import { sidesCloseAll } from 'redux/sides/actions'
+import { Translate } from 'react-redux-i18n'
 import './NotificationContent.scss'
+import { prefix } from './lang'
 
 function mapStateToProps (state) {
   const { pendingTxs } = state.get(DUCK_WATCHER)
   const { list } = state.get(DUCK_NOTIFIER)
   const btcTransactions = pendingTransactionsSelector()(state)
   const ethereumTxList = ethereumPendingFormatSelector()(state)
+  const eosTxList = eosPendingFormatSelector()(state)
 
   return {
     noticesList: list,
     ethTransactionsList: pendingTxs,
     btcTransactionsList: btcTransactions,
     ethereumTxList,
+    eosTxList,
   }
 }
 
@@ -62,7 +65,7 @@ class NotificationContent extends PureComponent {
   }
 
   getCurrentTransactionNotificationList = () => {
-    const { ethTransactionsList, btcTransactionsList, ethereumTxList } = this.props
+    const { ethTransactionsList, btcTransactionsList, ethereumTxList, eosTxList } = this.props
     const list = []
 
     ethereumTxList
@@ -75,6 +78,10 @@ class NotificationContent extends PureComponent {
     btcTransactionsList.map((item) => {
       list.push(this.convertToCurrentTransactionNotification(item))
     })
+    eosTxList
+      .map((item) => {
+        list.push(this.convertToCurrentTransactionNotification(item))
+      })
 
     return list
   }

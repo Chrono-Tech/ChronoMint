@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { BLOCKCHAIN_EOS } from '@chronobank/core/redux/eos/constants'
 import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
@@ -59,6 +60,7 @@ const MAINNET_BASE = {
   [BLOCKCHAIN_LITECOIN]: 'litecoin',
   [BLOCKCHAIN_NEM]: 'mainnet',
   [BLOCKCHAIN_WAVES]: 'MAINNET_CONFIG',
+  [BLOCKCHAIN_EOS]: 'mainnet',
 }
 
 const RINKEBY_BASE = {
@@ -72,6 +74,7 @@ const RINKEBY_BASE = {
   [BLOCKCHAIN_LITECOIN]: 'litecoin_testnet',
   [BLOCKCHAIN_NEM]: 'testnet',
   [BLOCKCHAIN_WAVES]: 'TESTNET_CONFIG',
+  [BLOCKCHAIN_EOS]: 'testnet',
 }
 
 // descriptions only, without hosts

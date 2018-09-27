@@ -13,10 +13,9 @@ import { sidesOpen } from 'redux/sides/actions'
 import { pendingTransactionsSelector } from '@chronobank/core/redux/mainWallet/selectors/tokens'
 import { DUCK_WATCHER } from '@chronobank/core/redux/watcher/constants'
 import { ethereumPendingCountSelector } from '@chronobank/core/redux/ethereum/selectors'
-
 import { NOTIFICATION_PANEL_KEY } from 'redux/sides/constants'
+import { eosPendingCountSelector } from '@chronobank/core/redux/eos/selectors/mainSelectors'
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
-
 import './HeaderPartial.scss'
 
 function mapStateToProps (state) {
@@ -25,6 +24,7 @@ function mapStateToProps (state) {
   return {
     ethPendingTransactions: pendingTxs,
     ethereumPendingTxCount: ethereumPendingCountSelector()(state),
+    eosPendingTxCount: eosPendingCountSelector()(state),
     btcPendingTransactions: pendingTransactionsSelector()(state),
   }
 }
@@ -52,6 +52,7 @@ export default class HeaderPartial extends Component {
   static propTypes = {
     handleNotificationTap: PropTypes.func,
     ethereumPendingTxCount: PropTypes.number,
+    eosPendingTxCount: PropTypes.number,
     btcPendingTransactions: PropTypes.arrayOf(PropTypes.object),
     ethPendingTransactions: PropTypes.instanceOf(Immutable.Map),
     location: PropTypes.shape({
@@ -69,6 +70,7 @@ export default class HeaderPartial extends Component {
     return this.props.btcPendingTransactions.length
     || this.props.ethPendingTransactions.size > 0
     || this.props.ethereumPendingTxCount > 0
+    || this.props.eosPendingTxCount > 0
       ? 'pending'
       : 'raised'
   }

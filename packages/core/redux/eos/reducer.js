@@ -14,11 +14,9 @@ import {
 
 const initialState = {
   wallets: {},
-  tokens: {}, // eos tokens
   pending: {}, // pending transactions
 }
 
-// TODO refactor this
 const mutations = {
   [EOS_UPDATE]: (state, { eos }) => ({
     ...state,

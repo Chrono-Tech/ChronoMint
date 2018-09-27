@@ -3,38 +3,26 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { modalsOpen } from '@chronobank/core/redux/modals/actions'
-// import { /*, ErrorNoticeModel, TransferNoticeModel*/ } from '../../models'
 import Eos from 'eosjs'
-import { eosPendingEntrySelector, EOSPendingSelector, EOSSelector, getEosSigner, getEOSWallet } from './selectors/mainSelectors'
-import { describePendingEosTx } from '../../describers'
-// import { getAccount } from '../session/selectors/models'
+import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import * as EosActions from './actions'
 import * as EosUtils from './utils'
-// import { getToken } from '../tokens/selectors'
+import Amount from '../../models/Amount'
 import WalletModel from '../../models/wallet/WalletModel'
 import { BLOCKCHAIN_EOS } from './constants'
-import Amount from '../../models/Amount'
-// import { notify } from '../notifier/actions'
+import { describePendingEosTx } from '../../describers'
+import { eosPendingEntrySelector, EOSPendingSelector, EOSSelector, getEosSigner, getEOSWallet } from './selectors/mainSelectors'
+import { ErrorNoticeModel, TransferNoticeModel } from '../../models'
+import { notify } from '../notifier/actions'
+import { getSelectedNetwork } from '../persistAccount/selectors'
 
-/*
-const notifyEosTransfer = (entry) => (dispatch, getState) => {
-  const { tx } = entry
-  const { prepared } = tx
-  const token = getToken(entry.symbol)(getState())
+const notifyEosTransfer = (entry) => (dispatch) => {
+  const { tx: { from, to, amount } } = entry
 
-  const amount = prepared.amount
-
-  dispatch(notify(new TransferNoticeModel({
-    amount: token.removeDecimals(amount),
-    symbol: token.symbol(),
-    from: entry.tx.from,
-    to: entry.tx.to,
-  })))
+  dispatch(notify(new TransferNoticeModel({ amount, from, to })))
 }
 
 const notifyEosError = (e) => notify(new ErrorNoticeModel({ message: e.message }))
-*/
 
 const eosTxStatus = (key, address, props) => (dispatch, getState) => {
   const pending = EOSPendingSelector()(getState())
@@ -86,7 +74,9 @@ const signTransaction = ({ entry }) => async (dispatch, getState) => {
   try {
     const state = getState()
     const signer = getEosSigner(state)
-    const preparedTx = await EosUtils.prepareTransactionToOfflineSign(entry.tx)
+    const network = getSelectedNetwork()(state)
+    const networkConfig = EosUtils.getEOSNetworkConfig(network[BLOCKCHAIN_EOS])
+    const preparedTx = await EosUtils.prepareTransactionToOfflineSign(entry.tx, networkConfig)
 
     // sign
     const signedTx = await signer.signTransaction(preparedTx)
@@ -104,39 +94,45 @@ const signTransaction = ({ entry }) => async (dispatch, getState) => {
 }
 
 const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
+  const state = getState()
   dispatch(eosTxStatus(entry.key, entry.tx.from, { isPending: true }))
 
   // eslint-disable-next-line
-  entry = eosPendingEntrySelector(entry.tx.from, entry.key)(getState())
+  entry = eosPendingEntrySelector(entry.tx.from, entry.key)(state)
   if (!entry) {
     // eslint-disable-next-line no-console
     console.error('entry is null', entry)
-    return // stop execute
+    return notifyEosError('entry is null') // stop execute
   }
 
   try {
-    const httpEndpoint = 'https://api.jungle.alohaeos.com:443'
-    const chainId = '038f4b0fc8ff18a4f0842a8f0564611f6e96e8535901dd45e43ac8691a1c4dca'
-    const eos = Eos({ httpEndpoint, chainId }) // create eos read-only instance
-    await eos.pushTransaction(entry.signedTx.transaction)
-    // TODO implement callback after send
-    // TODO @abdulov remove console.log
-    // console.log('%c res', 'background: #222; color: #fff', res)
-  } catch (e) {
-    // TODO implement error notifier
-    // console.error(e)
+    const network = getSelectedNetwork()(state)
+    const { httpEndpoint, chainId } = EosUtils.getEOSNetworkConfig(network[BLOCKCHAIN_EOS])
+    const eos = Eos({ httpEndpoint, chainId }) // create eos for push new signed tx
+    eos.pushTransaction(entry.signedTx.transaction, (error, transaction) => {
+      if (error) {
+        dispatch(eosTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
+        return notifyEosError(error)
+      }
+      dispatch(notifyEosTransfer(entry))
+      const { processed, transaction_id } = transaction
+      dispatch(EosActions.eosTxUpdate(
+        entry.key,
+        entry.tx.from,
+        EosUtils.createEosTxEntryModel({
+          ...entry,
+          processed,
+          hash: transaction_id,
+          isSent: true,
+          isMined: true,
+        }),
+      ))
+      dispatch(getAccountBalances(entry.tx.from))
+    })
+  } catch (error) {
+    dispatch(eosTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
+    return notifyEosError(error)
   }
-
-  // if (res && res.meta && res.meta.hash) {
-  //   const hash = res.meta.hash.data
-  //   dispatch(eosTxStatus(entry.key, entry.tx.from, { isSent: true, isMined: true, hash }))
-  //   dispatch(notifyEosTransfer(entry))
-  // }
-  //
-  // if (res.code === 0) {
-  //   dispatch(eosTxStatus(entry.key, entry.tx.from, { isErrored: true, error: res.message }))
-  //   dispatch(notifyEosError(res))
-  // }
 }
 
 const submitTransaction = (entry) => async (dispatch) => {
@@ -164,17 +160,20 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
 const rejectTransaction = (entry) => (dispatch) => dispatch(eosTxStatus(entry.key, entry.tx.from, { isRejected: true }))
 
 export const initEos = () => async (dispatch) => {
-  dispatch(createEosWallet())
   dispatch(setEos())
-  await dispatch(getAccountBalances('chronobank13'))
+  dispatch(createEosWallet())
 }
 
 export const createEosWallet = () => (dispatch) => {
+  // TODO refactor method somehow
+  const accountName = 'chronobank13'
   dispatch(EosActions.updateWallet(new WalletModel({
-    address: 'chronobank13',
+    address: accountName,
     blockchain: BLOCKCHAIN_EOS,
     isMain: true,
   })))
+
+  dispatch(getAccountBalances(accountName))
 }
 
 export const getAccountBalances = (account) => async (dispatch, getState) => {
@@ -194,23 +193,22 @@ export const getAccountBalances = (account) => async (dispatch, getState) => {
 
       dispatch(EosActions.updateWallet(new WalletModel({ ...wallet, balances })))
     }
-  } catch (e) {
-    // TODO @abdulov remove console.log
-    // eslint-disable-next-line
-    console.log(e)
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error)
+    throw error
   }
-
 }
 
-export const setEos = () => async (dispatch) => {
+export const setEos = () => async (dispatch, getState) => {
   try {
-    const httpEndpoint = 'https://api.jungle.alohaeos.com:443'
-    const chainId = '038f4b0fc8ff18a4f0842a8f0564611f6e96e8535901dd45e43ac8691a1c4dca'
+    const network = getSelectedNetwork()(getState())
+    const { httpEndpoint, chainId } = EosUtils.getEOSNetworkConfig(network[BLOCKCHAIN_EOS])
     const eos = Eos({ httpEndpoint, chainId }) // create eos read-only instance
     dispatch(EosActions.updateEos(eos))
-  } catch (e) {
-    // TODO implement reaction somehow
-    // eslint-disable-next-line
-    console.log('%c e', 'background: #222; color: #fff', e)
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error)
+    throw error
   }
 }

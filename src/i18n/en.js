@@ -19,6 +19,7 @@ import layouts from 'layouts/lang'
 import * as votingManager from '@chronobank/core/dao/constants/VotingManagerDAO'
 import * as chronoBankAsset from '@chronobank/core/dao/constants/ChronoBankAssetDAO'
 import bitcoin from './en-tx-bitcoin'
+import notices from './en-notices'
 import nem from './en-tx-nem'
 import eos from './en-tx-eos'
 
@@ -159,7 +160,7 @@ export default {
       },
     },
   },
-  notices: require('./en-notices'),
+  notices,
   tx: {
     title: 'New transaction',
     from: 'From',
