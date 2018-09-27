@@ -18,6 +18,7 @@ import {
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_LITECOIN,
 } from '../../dao/constants'
 import MetamaskPlugin from '../../services/signers/MetamaskPlugin'
@@ -28,6 +29,8 @@ import BitcoinTrezorDeviceMock from '../../services/signers/BitcoinTrezorDeviceM
 import BitcoinCashMemoryDevice from '../../services/signers/BitcoinCashMemoryDevice'
 import BitcoinCashLedgerDeviceMock from '../../services/signers/BitcoinCashLedgerDeviceMock'
 import BitcoinCashTrezorDeviceMock from '../../services/signers/BitcoinCashTrezorDeviceMock'
+
+import DashMemoryDevice from '../../services/signers/dash/MemoryDevice'
 
 export const bitcoinSelector = () => (state) =>
   state.get(DUCK_BITCOIN)
@@ -94,6 +97,22 @@ export const getBitcoinCashSigner = (state) => {
     }
   }
 }
+
+export const getDashSigner = (state) => {
+  const account = getPersistAccount(state);
+  const networkData = getSelectedNetwork()(state);
+  const network = bitcoin.networks[networkData[BLOCKCHAIN_DASH]];
+
+  switch (account.decryptedWallet.entry.encrypted[0].type) {
+    case WALLET_TYPE_MEMORY: {
+      const privateKey = account.decryptedWallet.privateKey.slice(2, 66);
+      return new DashMemoryDevice({ privateKey, network });
+    }
+    case WALLET_TYPE_METAMASK: {
+      return new MetamaskPlugin();
+    }
+  }
+};
 
 export const getLitecoinSigner = (state) => {
   const account = getPersistAccount(state)

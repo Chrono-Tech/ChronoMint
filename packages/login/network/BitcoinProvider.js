@@ -8,12 +8,19 @@ import bitcoin from 'bitcoinjs-lib'
 import TxModel from '@chronobank/core/models/TxModel'
 import Amount from '@chronobank/core/models/Amount'
 import AbstractProvider from './AbstractProvider'
-import { selectBCCNode, selectBTCNode, selectBTGNode, selectLTCNode } from './BitcoinNode'
+import {
+  selectBCCNode,
+  selectBTCNode,
+  selectBTGNode,
+  selectDASHNode,
+  selectLTCNode
+} from './BitcoinNode'
 import { BitcoinTx, BitcoinBalance } from './BitcoinAbstractNode'
 import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_LITECOIN,
   COIN_TYPE_BTC_MAINNET,
   COIN_TYPE_BTC_TESTNET,
@@ -174,4 +181,5 @@ export class BitcoinProvider extends AbstractProvider {
 export const btcProvider = new BitcoinProvider(selectBTCNode, BLOCKCHAIN_BITCOIN)
 export const bccProvider = new BitcoinProvider(selectBCCNode, BLOCKCHAIN_BITCOIN_CASH)
 export const btgProvider = new BitcoinProvider(selectBTGNode, BLOCKCHAIN_BITCOIN_GOLD)
+export const dashProvider = new BitcoinProvider(selectDASHNode, BLOCKCHAIN_DASH)
 export const ltcProvider = new BitcoinProvider(selectLTCNode, BLOCKCHAIN_LITECOIN)
