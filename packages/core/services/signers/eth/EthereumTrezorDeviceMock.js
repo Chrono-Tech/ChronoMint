@@ -1,5 +1,5 @@
 import EventEmitter from 'events'
-import hdkey from '../../../../../node_modules/ethereumjs-wallet/hdkey'
+import hdkey from 'ethereumjs-wallet/hdkey'
 import Accounts from 'web3-eth-accounts'
 
 const DEFAULT_PATH = "m/44'/60'/0'/0"
