@@ -19,6 +19,7 @@ import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_DASH,
   BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
 } from '../../dao/constants';
@@ -49,6 +50,18 @@ import NemTrezorDeviceMock from './NemTrezorDeviceMock'
 import WavesMemoryDevice from './WavesMemoryDevice'
 import WavesLedgerDevice from './WavesLedgerDevice'
 import WavesLedgerDeviceMock from './WavesLedgerDeviceMock'
+
+export const getSigner = (blockchainType, state) => {
+  switch (blockchainType) {
+    case BLOCKCHAIN_BITCOIN: return getBitcoinSigner(state);
+    case BLOCKCHAIN_BITCOIN_CASH: return getBitcoinCashSigner(state);
+    case BLOCKCHAIN_DASH: return getDashSigner(state);
+    case BLOCKCHAIN_LITECOIN: return getLitecoinSigner(state);
+    case BLOCKCHAIN_ETHEREUM: return getEthereumSigner(state);
+    case BLOCKCHAIN_NEM: return getNemSigner(state);
+    case BLOCKCHAIN_WAVES: return getWavesSigner(state);
+  }
+};
 
 export const getBitcoinSigner = (state) => {
   const account = getPersistAccount(state)
