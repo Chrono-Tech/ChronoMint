@@ -11,7 +11,7 @@ import {
   SubmissionError,
 } from 'redux-form'
 import { replace } from 'react-router-redux'
-import { MOCK_PRIVATE_KEY } from '@chronobank/core/services/signers/BitcoinLedgerDeviceMock'
+import { MOCK_PRIVATE_KEY } from '@chronobank/core/services/signers/btc/BitcoinLedgerDeviceMock'
 import {
   WALLET_TYPE_MEMORY,
   WALLET_TYPE_TREZOR,
@@ -20,7 +20,7 @@ import {
   WALLET_TYPE_LEDGER_MOCK,
 } from '@chronobank/core/models/constants/AccountEntryModel'
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
-import { getEthereumSigner } from '@chronobank/core/redux/persistAccount/selectors'
+import { getEthereumSigner } from '@chronobank/core/services/signers/SignerFactory'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import setup from '@chronobank/login/network/EngineUtils'

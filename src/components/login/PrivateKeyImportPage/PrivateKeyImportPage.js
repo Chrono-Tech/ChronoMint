@@ -6,7 +6,7 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import EthereumMemoryDevice from '@chronobank/core/services/signers/EthereumMemoryDevice'
+import EthereumMemoryDevice from '@chronobank/core/services/signers/eth/EthereumMemoryDevice'
 import { downloadWallet, accountDeselect } from '@chronobank/core/redux/persistAccount/actions'
 import { onSubmitCreateAccountImportPrivateKey } from '@chronobank/login-ui/redux/thunks'
 import {

@@ -11,6 +11,7 @@ import {
   bccProvider,
   btcProvider,
   btgProvider,
+  dashProvider,
   ltcProvider,
 } from './BitcoinProvider'
 import { nemProvider } from './NemProvider'
@@ -18,7 +19,7 @@ import { wavesProvider } from './WavesProvider'
 
 // #endregion
 
-const setup = ({ networkCode, ethereum, btc, bcc, btg, ltc, nem, waves }) => {
+const setup = ({ networkCode, ethereum, btc, bcc, btg, dash, ltc, nem, waves }) => {
   // const web3 = new Web3()
   // web3Provider.reinit(web3, ethereum.getProvider())
   networkProvider.setNetworkCode(networkCode)
@@ -26,6 +27,7 @@ const setup = ({ networkCode, ethereum, btc, bcc, btg, ltc, nem, waves }) => {
   bcc && bccProvider.setEngine(bcc)
   btc && btcProvider.setEngine(btc)
   btg && btgProvider.setEngine(btg)
+  dash && dashProvider.setEngine(dash)
   ltc && ltcProvider.setEngine(ltc)
   nem && nemProvider.setEngine(nem)
   waves && wavesProvider.setEngine(waves)

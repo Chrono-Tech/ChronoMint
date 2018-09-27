@@ -12,12 +12,13 @@ import {
   TransferNoticeModel,
 } from '../../models'
 import * as BitcoinActions from './actions'
+import { pendingEntrySelector } from './selectors'
 import * as BitcoinUtils from './utils'
 import { getSelectedNetwork } from '../persistAccount/selectors'
 
 import { describePendingBitcoinTx } from '../../describers'
 import { getToken } from '../tokens/selectors'
-import { pendingEntrySelector, getBitcoinSigner } from './selectors'
+import { getBitcoinSigner } from '../../services/signers/SignerFactory'
 import { notify, notifyError } from '../notifier/actions'
 import BitcoinMiddlewareService from './BitcoinMiddlewareService'
 
