@@ -10,6 +10,7 @@ export const TOKEN_ICONS = {
   BTC: require('./img/icn-bitcoin.svg'),
   BCC: require('./img/icn-bitcoin-cash.svg'),
   BTG: require('./img/icn-bitcoin-gold.svg'),
+  DASH: require('./img/dashcoin.svg'),
   LTC: require('./img/icn-litecoin.svg'),
   TIME: require('./img/icn-time.svg'),
   LHUS: require('./img/icn-lhus.svg'),

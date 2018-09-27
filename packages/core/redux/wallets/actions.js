@@ -3,11 +3,18 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import {
+  bccProvider,
+  btcProvider,
+  btgProvider,
+  dashProvider,
+  ltcProvider
+} from '@chronobank/login/network/BitcoinProvider'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
@@ -39,10 +46,8 @@ import {
   WALLETS_UPDATE_WALLET,
 } from './constants'
 import { executeNemTransaction } from '../nem/thunks'
-import { getPersistAccount, getEthereumSigner } from '../persistAccount/selectors'
-import { getBitcoinCashSigner, getBitcoinSigner, getLitecoinSigner } from '../bitcoin/selectors'
-import { getNemSigner } from '../nem/selectors'
-import { getWavesSigner } from '../waves/selectors'
+import { getPersistAccount } from '../persistAccount/selectors'
+import { getEthereumSigner, getSigner } from '../../services/signers/SignerFactory'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -64,74 +69,37 @@ export const initWallets = () => (dispatch) => {
 }
 
 const initWalletsFromKeys = () => async (dispatch, getState) => {
-  const state = getState()
-  const account = getPersistAccount(state)
-  const wallets = []
+  const state = getState();
+  const account = getPersistAccount(state);
+  const wallets = [];
 
-  const ethereumSigner = getEthereumSigner(state)
-  const ethAddress = await ethereumSigner.getAddress()
+  [
+    BLOCKCHAIN_BITCOIN,
+    BLOCKCHAIN_BITCOIN_CASH,
+    BLOCKCHAIN_DASH,
+    BLOCKCHAIN_LITECOIN,
+    BLOCKCHAIN_ETHEREUM,
+    BLOCKCHAIN_NEM,
+    BLOCKCHAIN_WAVES
+  ].map(async (blockchainType) => {
+    const signer = getSigner(blockchainType, state);
 
-  wallets.push(new WalletModel({
-    address: ethAddress,
-    blockchain: BLOCKCHAIN_ETHEREUM,
-    isMain: true,
-    walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
-  }))
+    if(signer !== undefined) {
+      const address = blockchainType === BLOCKCHAIN_ETHEREUM ? (await signer.getAddress()) : signer.getAddress();
 
-  const bitcoinSigner = getBitcoinSigner(state)
-  if (bitcoinSigner) {
-    wallets.push(new WalletModel({
-      address: bitcoinSigner.getAddress(),
-      blockchain: BLOCKCHAIN_BITCOIN,
-      isMain: true,
-      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
-    }))
-  }
-
-  const bitcoinCashSigner = getBitcoinCashSigner(state)
-  if (bitcoinCashSigner) {
-    wallets.push(new WalletModel({
-      address: bitcoinCashSigner.getAddress(),
-      blockchain: BLOCKCHAIN_BITCOIN_CASH,
-      isMain: true,
-      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
-    }))
-  }
-
-  const litecoinSigner = getLitecoinSigner(state)
-  if (litecoinSigner) {
-    wallets.push(new WalletModel({
-      address: litecoinSigner.getAddress(),
-      blockchain: BLOCKCHAIN_LITECOIN,
-      isMain: true,
-      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
-    }))
-  }
-
-  const nemSigner = getNemSigner(state)
-  if (nemSigner) {
-    wallets.push(new WalletModel({
-      address: nemSigner.getAddress(),
-      blockchain: BLOCKCHAIN_NEM,
-      isMain: true,
-      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
-    }))
-  }
-
-  const wavesSigner = getWavesSigner(state)
-  if (wavesSigner) {
-    wallets.push(new WalletModel({
-      address: wavesSigner.getAddress(),
-      blockchain: BLOCKCHAIN_WAVES,
-      isMain: true,
-      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
-    }))
-  }
+      wallets.push(new WalletModel({
+        address: address,
+        blockchain: blockchainType,
+        isMain: true,
+        walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+      }));
+    }
+  });
 
   wallets.forEach((wallet) => {
-    dispatch(setWallet(wallet))
-    dispatch(updateWalletBalance({ wallet }))
-  })
+    dispatch(setWallet(wallet));
+    dispatch(updateWalletBalance({ wallet }));
+  });
 }
 
 const initDerivedWallets = () => async (dispatch, getState) => {
@@ -155,6 +123,10 @@ const initDerivedWallets = () => async (dispatch, getState) => {
         case BLOCKCHAIN_BITCOIN_GOLD:
           btgProvider.createNewChildAddress(wallet.deriveNumber)
           btgProvider.subscribeNewWallet(wallet.address)
+          break
+        case BLOCKCHAIN_DASH:
+          dashProvider.createNewChildAddress(wallet.deriveNumber)
+          dashProvider.subscribeNewWallet(wallet.address)
           break
         case BLOCKCHAIN_LITECOIN:
           ltcProvider.createNewChildAddress(wallet.deriveNumber)
@@ -189,10 +161,13 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
     return dispatch(fallbackCallback(wallet))
   }
 
-  const isBtcLikeBlockchain = blockchain === BLOCKCHAIN_BITCOIN
-    || blockchain === BLOCKCHAIN_LITECOIN
-    || blockchain === BLOCKCHAIN_BITCOIN_CASH
-    || blockchain === BLOCKCHAIN_BITCOIN_GOLD
+  const isBtcLikeBlockchain = [
+    BLOCKCHAIN_BITCOIN,
+    BLOCKCHAIN_BITCOIN_CASH,
+    BLOCKCHAIN_BITCOIN_GOLD,
+    BLOCKCHAIN_DASH,
+    BLOCKCHAIN_LITECOIN
+  ].includes(blockchain)
 
   if (isBtcLikeBlockchain) {
     return dispatch(BitcoinThunks.getAddressInfo(address, blockchain))
