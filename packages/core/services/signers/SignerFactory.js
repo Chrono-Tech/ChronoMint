@@ -28,29 +28,29 @@ import { getPersistAccount, getSelectedNetwork } from '../../redux/persistAccoun
 
 import MetamaskPlugin from './MetamaskPlugin'
 
-import BitcoinMemoryDevice from './BitcoinMemoryDevice'
-import BitcoinLedgerDeviceMock from './BitcoinLedgerDeviceMock'
-import BitcoinTrezorDeviceMock from './BitcoinTrezorDeviceMock'
+import BitcoinMemoryDevice from './btc/BitcoinMemoryDevice'
+import BitcoinLedgerDeviceMock from './btc/BitcoinLedgerDeviceMock'
+import BitcoinTrezorDeviceMock from './btc/BitcoinTrezorDeviceMock'
 
-import BitcoinCashMemoryDevice from './BitcoinCashMemoryDevice'
-import BitcoinCashLedgerDeviceMock from './BitcoinCashLedgerDeviceMock'
-import BitcoinCashTrezorDeviceMock from './BitcoinCashTrezorDeviceMock'
+import BitcoinCashMemoryDevice from './bcc/BitcoinCashMemoryDevice'
+import BitcoinCashLedgerDeviceMock from './bcc/BitcoinCashLedgerDeviceMock'
+import BitcoinCashTrezorDeviceMock from './bcc/BitcoinCashTrezorDeviceMock'
 
 import DashMemoryDevice from './dash/MemoryDevice'
 
-import EthereumTrezorDeviceMock from './EthereumTrezorDeviceMock'
-import EthereumTrezorDevice from './EthereumTrezorDevice'
-import EthereumLedgerDeviceMock from './EthereumLedgerDeviceMock'
-import EthereumLedgerDevice from './EthereumLedgerDevice'
-import EthereumMemoryDevice from './EthereumMemoryDevice'
+import EthereumTrezorDeviceMock from './eth/EthereumTrezorDeviceMock'
+import EthereumTrezorDevice from './eth/EthereumTrezorDevice'
+import EthereumLedgerDeviceMock from './eth/EthereumLedgerDeviceMock'
+import EthereumLedgerDevice from './eth/EthereumLedgerDevice'
+import EthereumMemoryDevice from './eth/EthereumMemoryDevice'
 
-import NemMemoryDevice from './NemMemoryDevice'
-import NemTrezorDevice from './NemTrezorDevice'
-import NemTrezorDeviceMock from './NemTrezorDeviceMock'
+import NemMemoryDevice from './nem/NemMemoryDevice'
+import NemTrezorDevice from './nem/NemTrezorDevice'
+import NemTrezorDeviceMock from './nem/NemTrezorDeviceMock'
 
-import WavesMemoryDevice from './WavesMemoryDevice'
-import WavesLedgerDevice from './WavesLedgerDevice'
-import WavesLedgerDeviceMock from './WavesLedgerDeviceMock'
+import WavesMemoryDevice from './waves/WavesMemoryDevice'
+import WavesLedgerDevice from './waves/WavesLedgerDevice'
+import WavesLedgerDeviceMock from './waves/WavesLedgerDeviceMock'
 
 const getConfiguredSigner = (blockchainType, state, devices, networkList, privateKeyFieldName = 'privateKey') => {
   const account = getPersistAccount(state)

@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import EthereumTrezorDeviceMock from '../../services/signers/EthereumTrezorDeviceMock'
-import EthereumLedgerDeviceMock from '../../services/signers/EthereumLedgerDeviceMock'
+import EthereumTrezorDeviceMock from '../../services/signers/eth/EthereumTrezorDeviceMock'
+import EthereumLedgerDeviceMock from '../../services/signers/eth/EthereumLedgerDeviceMock'
 import MetamaskPlugin from '../../services/signers/MetamaskPlugin'
 import { accountLoad } from '../persistAccount/actions'
 import {

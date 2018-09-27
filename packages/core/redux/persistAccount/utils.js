@@ -7,7 +7,7 @@ import bip39 from 'bip39'
 import uuid from 'uuid/v1'
 import { WALLET_TYPE_MEMORY } from '../../models/constants/AccountEntryModel'
 import { AccountEntryModel } from '../../models/wallet/persistAccount'
-import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
+import EthereumMemoryDevice from '../../services/signers/eth/EthereumMemoryDevice'
 
 export const replaceWallet = (wallet, walletList) => {
   const index = walletList.findIndex((item) => item.key === wallet.key)

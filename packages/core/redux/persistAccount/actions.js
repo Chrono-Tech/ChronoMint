@@ -7,7 +7,7 @@ import uuid from 'uuid/v1'
 import Accounts from 'web3-eth-accounts'
 import * as ProfileThunks from '../profile/thunks'
 import * as AccountUtils from './utils'
-import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
+import EthereumMemoryDevice from '../../services/signers/eth/EthereumMemoryDevice'
 import { WALLET_TYPE_MEMORY } from '../../models/constants/AccountEntryModel'
 import {
   AccountModel,

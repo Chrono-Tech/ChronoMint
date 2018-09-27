@@ -4,7 +4,7 @@
  */
 
 import EventEmitter from 'events'
-import hdKey from 'ethereumjs-wallet/hdkey'
+import hdKey from '../../../../../node_modules/ethereumjs-wallet/hdkey'
 import Accounts from 'web3-eth-accounts'
 import { WALLET_TYPE_MEMORY } from '@chronobank/core/models/constants/AccountEntryModel'
 

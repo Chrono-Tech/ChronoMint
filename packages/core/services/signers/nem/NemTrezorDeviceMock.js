@@ -6,7 +6,7 @@
 import EventEmitter from 'events'
 import nem from 'nem-sdk'
 import xor from 'buffer-xor'
-import { MOCK_PRIVATE_KEY } from './BitcoinLedgerDeviceMock'
+import { MOCK_PRIVATE_KEY } from '../btc/BitcoinLedgerDeviceMock'
 
 export default class NemTrezorMockDevice extends EventEmitter {
   constructor ({ network }) {

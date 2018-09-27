@@ -11,7 +11,7 @@ import {
   SubmissionError,
 } from 'redux-form'
 import { replace } from 'react-router-redux'
-import { MOCK_PRIVATE_KEY } from '@chronobank/core/services/signers/BitcoinLedgerDeviceMock'
+import { MOCK_PRIVATE_KEY } from '@chronobank/core/services/signers/btc/BitcoinLedgerDeviceMock'
 import {
   WALLET_TYPE_MEMORY,
   WALLET_TYPE_TREZOR,

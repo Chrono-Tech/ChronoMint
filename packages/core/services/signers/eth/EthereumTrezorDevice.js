@@ -1,6 +1,6 @@
 import EventEmitter from 'events'
 import EthereumTx from 'ethereumjs-tx'
-import hdkey from 'ethereumjs-wallet/hdkey'
+import hdkey from '../../../../../node_modules/ethereumjs-wallet/hdkey'
 import TrezorConnect from 'trezor-connect'
 import { omitBy, isNil } from 'lodash'
 import Web3Utils from 'web3-utils'

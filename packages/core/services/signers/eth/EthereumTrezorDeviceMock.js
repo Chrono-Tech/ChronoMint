@@ -1,24 +1,25 @@
 import EventEmitter from 'events'
-import hdkey from 'ethereumjs-wallet/hdkey'
+import hdkey from '../../../../../node_modules/ethereumjs-wallet/hdkey'
 import Accounts from 'web3-eth-accounts'
 
 const DEFAULT_PATH = "m/44'/60'/0'/0"
 const DEFAULT_PATH_FACTORY = (index) => `${DEFAULT_PATH}/${index}`
 const MOCK_SEED = 'advice shed boat scan game expire reveal rapid concert settle before vital'
 
-export default class EthereumLedgerDeviceMock extends EventEmitter {
+export default class EthereumTrezorDeviceMock extends EventEmitter {
   get name () {
-    return 'ledger_mock'
+    return 'trezor_mock'
   }
 
   get title () {
-    return 'Ledger Device Mock'
+    return 'Trezor Device Mock'
   }
 
   async getAddressInfoList (from: number = 0, limit: number = 5): String {
-    return Array.from({ length: limit }).map((element, index) => {
-      return this.getAddressInfo(DEFAULT_PATH_FACTORY(from + index))
-    })
+    return Array.from({ length: limit })
+      .map((element, index) => {
+        return this.getAddressInfo(DEFAULT_PATH_FACTORY(from + index))
+      })
   }
 
   getAddressInfo (path) {
@@ -44,7 +45,7 @@ export default class EthereumLedgerDeviceMock extends EventEmitter {
     const hdWallet = hdkey.fromMasterSeed(MOCK_SEED).derivePath(path)
     const wallet = hdWallet.getWallet()
     const account = await accounts.privateKeyToAccount(`0x${wallet.getPrivateKey().toString('hex')}`)
-    const signedTransaction = await account.signTransaction(txData)
+    const signedTransaction  = await account.signTransaction(txData)
 
     return signedTransaction
   }
