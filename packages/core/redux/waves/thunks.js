@@ -114,6 +114,7 @@ const sendSignedTransaction = (entry) => async (dispatch, getState) => {
 
   try {
     const result = await dao._wavesProvider.justTransfer(entry.from, entry.tx.prepared)
+    console.log('Waves result: ', result)
     return result
   } catch (error) {
     //eslint-disable-next-line

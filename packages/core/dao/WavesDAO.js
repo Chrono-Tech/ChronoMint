@@ -133,7 +133,7 @@ export default class WavesDAO extends EventEmitter {
       if (tx.unconfirmed) {
         if (!this._asset) {
           if (!tx.assets) {
-            this.emit(EVENT_NEW_TRANSFER, this._createXemTxModel(tx))
+            this.emit(EVENT_NEW_TRANSFER, this._createWavesTxModel(tx))
           }
         } else {
           if (tx.assets && (this._asset in tx.assets)) {
@@ -147,8 +147,6 @@ export default class WavesDAO extends EventEmitter {
   _createWavesTxModel (tx) {
     return new TxModel({
       txHash: tx.txHash,
-      // blockHash: tx.blockhash,
-      // blockNumber: tx.blockheight,
       blockNumber: null,
       time: tx.time,
       from: tx.from || tx.signer,
@@ -162,8 +160,6 @@ export default class WavesDAO extends EventEmitter {
   _createAssetTxModel (tx) {
     return new TxModel({
       txHash: tx.txHash,
-      // blockHash: tx.blockhash,
-      // blockNumber: tx.blockheight,
       blockNumber: null,
       time: tx.time,
       from: tx.from || tx.signer,
@@ -176,6 +172,7 @@ export default class WavesDAO extends EventEmitter {
 
   async watchBalance () {
     this._wavesProvider.addListener(EVENT_BALANCE, async ({ account, time, balance }) => {
+      console.log('UPDATE BALANCE DAO account, time, balance: ', account, time, balance)
       this.emit(EVENT_UPDATE_BALANCE, {
         account,
         time,
@@ -205,8 +202,9 @@ export default class WavesDAO extends EventEmitter {
 
 //TODO WHY WE NEED SYMBOL AND ASSET DESCRIPTION IF SYMBOL IS ENOUGH
 function readBalanceValue (symbol, balance, asset = null) {
-  if (asset) {
-    return balance.assets[asset]
-  }
+  // console.log('readBalanceValue: ', symbol, balance, asset)
+  // if (asset) {
+  //   return balance.assets[asset]
+  // }
   return balance.balance
 }

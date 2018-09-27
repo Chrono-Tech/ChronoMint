@@ -16,8 +16,6 @@ import { initMultisigWalletManager } from '../multisigWallet/actions'
 import { initWallets } from '../wallets/actions'
 import { WATCHER } from './constants'
 
-console.log('initProviders: ', initProviders)
-
 // for all users on all pages
 export const globalWatcher = () => async (dispatch) => {
   dispatch(watchInitMonitor())

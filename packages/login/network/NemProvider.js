@@ -44,14 +44,15 @@ export class NemProvider extends AbstractProvider {
   }
 
   async getAccountBalances (address, mosaic = null) {
-    console.log('getAccountBalances: ', address, mosaic)
     const node = this._selectNode(this.networkSettings)
     let { balance, mosaics } = await node.getAddressInfo(address)
+    console.log('balance, mosaics: ', balance, mosaics)
     if (mosaic) {
       balance = (mosaics && (mosaic in mosaics))
         ? mosaics[mosaic]
         : { unconfirmed: new BigNumber(0) } // When no such mosaic specified
     }
+    console.log('balance, mosaics result: ', balance)
 
     if (balance) {
       return balance ? balance.unconfirmed : null
@@ -63,18 +64,13 @@ export class NemProvider extends AbstractProvider {
     return node.getTransactionsList(address, id, skip, offset)
   }
 
-  async estimateFee (from: string, to, amount: BigNumber, mosaicDefinition) {
-    const { fee } = this._engine.describeTransaction(to, amount, mosaicDefinition)
-    return fee
-  }
-
   getNode () {
     return this._selectNode(this.networkSettings)
   }
 
-  async onTransaction (tx: NemTx) {
+  async onTransaction (tx: NemTx, address) {
     this.emit('tx', {
-      account: this.getAddress(),
+      account: address,
       time: new Date().getTime(),
       tx,
     })
@@ -82,9 +78,9 @@ export class NemProvider extends AbstractProvider {
 
   async onBalance (balance: NemBalance) {
     this.emit('balance', {
-      account: this.getAddress(),
+      account: balance.address,
       time: new Date().getTime(),
-      balance, // structured for NEM
+      balance,
     })
   }
 }

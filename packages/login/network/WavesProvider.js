@@ -16,14 +16,15 @@ export class WavesProvider extends AbstractProvider {
     this._id = 'WAVES'
   }
 
-  subscribe (engine) {
-    const node = super.subscribe(engine)
+  subscribe (address) {
+    console.log('Waves subscribe address: ', address)
+    const node = super.subscribe(address)
     node.addListener('tx', this._handleTransaction)
     node.addListener('balance', this._handleBalance)
   }
 
-  unsubscribe (engine) {
-    const node = super.unsubscribe(engine)
+  unsubscribe (address) {
+    const node = super.unsubscribe(address)
     node.removeListener('tx', this._handleTransaction)
     node.removeListener('balance', this._handleBalance)
   }
@@ -60,9 +61,9 @@ export class WavesProvider extends AbstractProvider {
     return node.send(from, signedTx)
   }
 
-  async onTransaction (tx: WavesTx) {
+  async onTransaction (tx: WavesTx, address) {
     this.emit('tx', {
-      account: this.getAddress(),
+      account: address,
       time: new Date().getTime(),
       tx,
     })
@@ -70,7 +71,7 @@ export class WavesProvider extends AbstractProvider {
 
   async onBalance (balance: WavesBalance) {
     this.emit('balance', {
-      account: this.getAddress(),
+      account: balance.address,
       time: new Date().getTime(),
       balance,
     })

@@ -16,7 +16,7 @@ import {
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import WalletModel from '../../models/wallet/WalletModel'
 import { subscribeOnTokens } from '../tokens/thunks'
-import { formatBalances, getWalletBalances } from '../tokens/utils'
+import { formatBalances, getProviderByBlockchain, getWalletBalances } from '../tokens/utils'
 import TokenModel from '../../models/tokens/TokenModel'
 import EthereumMemoryDevice  from '../../services/signers/EthereumMemoryDevice'
 import tokenService from '../../services/TokenService'
@@ -53,7 +53,12 @@ export const get2FAEncodedKey = (callback) => () => {
 
 export const setWalletName = (walletId, name) => (dispatch) => dispatch({ type: WALLETS_SET_NAME, walletId, name })
 
-export const setWallet = (wallet) => (dispatch) => dispatch({ type: WALLETS_SET, wallet })
+export const setWallet = (wallet) => (dispatch) => {
+  const provider = getProviderByBlockchain(wallet.blockchain)
+  provider.subscribe(wallet.address)
+
+  dispatch({ type: WALLETS_SET, wallet })
+}
 
 export const setWalletBalance = (walletId, balance) => (dispatch) => dispatch({ type: WALLETS_UPDATE_BALANCE, walletId, balance })
 
@@ -71,7 +76,7 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
   const ethAddress = await ethereumSigner.getAddress()
 
   wallets.push(new WalletModel({
-    address: ethAddress,
+    address: ethAddress.toLowerCase(),
     blockchain: BLOCKCHAIN_ETHEREUM,
     isMain: true,
     walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
@@ -126,6 +131,8 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
       walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
     }))
   }
+
+  console.log('Wallet set Wallet: ', wallets)
 
   wallets.forEach((wallet) => {
     dispatch(setWallet(wallet))

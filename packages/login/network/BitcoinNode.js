@@ -4,7 +4,6 @@
  */
 
 import axios from 'axios'
-import { networks } from 'bitcoinjs-lib'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_LITECOIN,

@@ -32,7 +32,7 @@ export default class WavesMiddlewareNode extends WavesAbstractNode {
         })
         this._openSubscription(`${this._socket.channels.transaction}.${address}`, (data) => {
           this.trace('WAVES Tx', data)
-          this.emit('tx', createTxModel(data, address))
+          this.emit('tx', createTxModel(data, address), address)
         })
       })
     } catch (e) {
@@ -54,13 +54,13 @@ export default class WavesMiddlewareNode extends WavesAbstractNode {
     }
   }
 
-  async getTransactionInfo (txid) {
+  async getTransactionInfo (transactionId) {
     try {
-      const res = await this._api.get(`tx/${txid}`)
+      const res = await this._api.get(`tx/${transactionId}`)
       this.trace(res)
       return res.data
     } catch (e) {
-      this.trace(`getTransactionInfo ${txid} failed`, e)
+      this.trace(`getTransactionInfo ${transactionId} failed`, e)
       throw e
     }
   }

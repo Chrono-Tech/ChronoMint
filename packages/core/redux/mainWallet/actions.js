@@ -6,10 +6,6 @@
 // FIXME: to rework all methods below to avoid complexity
 /* eslint-disable complexity */
 
-import { bccProvider, btcProvider,  ltcProvider } from '@chronobank/login/network/BitcoinProvider'
-import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
-import { nemProvider } from '@chronobank/login/network/NemProvider'
-import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import { getDeriveWalletsAddresses, getMultisigWallets } from '../wallet/selectors'
 import Amount from '../../models/Amount'
 import ApprovalNoticeModel from '../../models/notices/ApprovalNoticeModel'
@@ -17,7 +13,6 @@ import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import BalanceModel from '../../models/tokens/BalanceModel'
 import TokenModel from '../../models/tokens/TokenModel'
 import validator from '../../models/validator'
-import AddressModel from '../../models/wallet/AddressModel'
 import AllowanceModel from '../../models/wallet/AllowanceModel'
 import { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
 import { addMarketToken } from '../market/actions'
@@ -206,8 +201,6 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       })
     })
 
-  // dispatch(fetchTokenBalance(token, account))
-
   dispatch(addMarketToken(token.symbol()))
 
   if (token.symbol() === 'TIME') {
@@ -245,22 +238,22 @@ export const initMainWallet = () => async (dispatch) => {
 
   dispatch(subscribeOnTokens(handleToken))
 
-  const providers = [
-    bccProvider,
-    ltcProvider,
-    btcProvider,
-    nemProvider,
-    wavesProvider,
-    ethereumProvider,
-  ]
-  providers.forEach((provider) => {
-    dispatch({
-      type: WALLET_ADDRESS, address: new AddressModel({
-        id: provider.id(),
-        address: provider.getAddress(),
-      }),
-    })
-  })
+  // const providers = [
+  //   bccProvider,
+  //   ltcProvider,
+  //   btcProvider,
+  //   nemProvider,
+  //   wavesProvider,
+  //   ethereumProvider,
+  // ]
+  // providers.forEach((provider) => {
+  //   dispatch({
+  //     type: WALLET_ADDRESS, address: new AddressModel({
+  //       id: provider.id(),
+  //       address: provider.getAddress(),
+  //     }),
+  //   })
+  // })
 }
 
 export const updateIsTIMERequired = () => async (dispatch, getState) => {
