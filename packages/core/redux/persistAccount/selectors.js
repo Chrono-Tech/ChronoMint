@@ -11,7 +11,7 @@ import {
   WALLET_TYPE_TREZOR_MOCK,
   WALLET_TYPE_LEDGER,
   WALLET_TYPE_LEDGER_MOCK,
-} from '@chronobank/core/models/constants/AccountEntryModel'
+} from '../../models/constants/AccountEntryModel'
 import { DUCK_PERSIST_ACCOUNT } from './constants'
 
 import EthereumTrezorDeviceMock from '../../services/signers/EthereumTrezorDeviceMock'

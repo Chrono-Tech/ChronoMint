@@ -7,8 +7,8 @@ import bip39 from 'bip39'
 import EventEmitter from 'events'
 import hdKey from 'ethereumjs-wallet/hdkey'
 import Accounts from 'web3-eth-accounts'
-import { WALLET_TYPE_MEMORY } from '@chronobank/core/models/constants/AccountEntryModel'
 import { WALLET_HD_PATH } from '@chronobank/login/network/constants'
+import { WALLET_TYPE_MEMORY } from '../../models/constants/AccountEntryModel'
 
 export const DEFAULT_PATH = `m/44'/60'/0'/0/0`
 
