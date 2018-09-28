@@ -171,7 +171,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
           break
 
         default:
-          //eslint-disable-next-line
+          //eslint-disable-next-line no-console
           console.warn('Update balance of unknown token blockchain: ', account, balance, token.toJSON())
           break
       }
@@ -236,23 +236,6 @@ export const initMainWallet = () => async (dispatch) => {
   dispatch({ type: WALLET_INIT, isInited: true })
 
   dispatch(subscribeOnTokens(handleToken))
-
-  // const providers = [
-  //   bccProvider,
-  //   ltcProvider,
-  //   btcProvider,
-  //   nemProvider,
-  //   wavesProvider,
-  //   ethereumProvider,
-  // ]
-  // providers.forEach((provider) => {
-  //   dispatch({
-  //     type: WALLET_ADDRESS, address: new AddressModel({
-  //       id: provider.id(),
-  //       address: provider.getAddress(),
-  //     }),
-  //   })
-  // })
 }
 
 export const updateIsTIMERequired = () => async (dispatch, getState) => {

@@ -11,6 +11,7 @@ import { DUCK_SESSION } from '../session/constants'
 import { subscribeOnTokens } from '../tokens/thunks'
 import tokenService from '../../services/TokenService'
 import { daoByType } from '../daos/selectors'
+import { BLOCKCHAIN_ETHEREUM } from '../../dao/constants'
 import { getWallet } from '../wallets/selectors/models'
 import { WALLETS_UPDATE_WALLET } from '../wallets/constants'
 import WalletModel from '../../models/wallet/WalletModel'
@@ -83,7 +84,7 @@ export const fetchAssetAllowance = (token: TokenModel) => async (dispatch, getSt
   const tokenDAO = tokenService.getDAO(token.id())
   const assetHolderWalletAllowance = await tokenDAO.getAccountAllowance(account, holderWallet)
 
-  const wallet = getWallet('Ethereum', account)(getState())
+  const wallet = getWallet(BLOCKCHAIN_ETHEREUM, account)(getState())
   const allowance = new AllowanceModel({
     amount: new Amount(assetHolderWalletAllowance, token.id(), true),
     spender: holderWallet,
