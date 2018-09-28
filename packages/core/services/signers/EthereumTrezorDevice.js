@@ -29,7 +29,6 @@ export default class EthereumTrezorDevice extends EventEmitter {
   async getAddressInfoList (from: number = 0, limit: number = 5): String {
     if (!this.xpubkey) {
       const result = await TrezorConnect.getPublicKey({ path: DEFAULT_PATH })
-      // console.log(result)
       const { xpub } = result.payload
       this.xpubkey = xpub
     }

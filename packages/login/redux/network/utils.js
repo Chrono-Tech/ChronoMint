@@ -5,9 +5,8 @@
  * @flow
  */
 
+// @todo remove this file and method usage. MINT-1924
 /* eslint-disable import/prefer-default-export */
-
-// @todo remove
 export const getPrivateKeyFromBlockchain = (blockchain: string) => {
   switch (blockchain) {
     // case 'Ethereum':

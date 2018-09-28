@@ -84,7 +84,7 @@ export default class EthereumMemoryDevice extends EventEmitter {
 
     return {
       wallet: wallet.encrypt(password),
-      address: `0x${wallet.address}`,
+      address: wallet.address.toLowerCase(),
       path: DEFAULT_PATH,
       type: WALLET_TYPE_MEMORY,
     }

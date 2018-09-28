@@ -5,18 +5,20 @@
 
 import BigNumber from 'bignumber.js'
 import { isNil, omitBy } from 'lodash'
-import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import { TxEntryModel, HolderModel } from '../../models'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 import { ethereumPendingSelector, pendingEntrySelector, web3Selector } from './selectors'
 import { DUCK_ETHEREUM } from './constants'
 import { getEthereumSigner } from '../persistAccount/selectors'
 import ethereumDAO from '../../dao/EthereumDAO'
+import { modalsOpen, modalsClose } from '../modals/actions'
 import { describePendingTx } from '../../describers'
 import { daoByAddress } from '../daos/selectors'
 import { getAccount } from '../session/selectors/models'
 import * as ethActions from './actions'
 import * as Utils from './utils'
+import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
+import { isShowSignTransactionModal } from '../../utils/SignersUtils'
 
 export const initEthereum = ({ web3 }) => (dispatch) => {
   dispatch(ethActions.ethWeb3Update(new HolderModel({ value: web3 })))
@@ -80,14 +82,40 @@ export const processTransaction = ({ web3, entry, signer }) => async (dispatch, 
   }))
 }
 
-export const signTransaction = ({ entry, signer }) => async (dispatch) => {
+export const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
+  let signerType, signerPath
+
   try {
-    const signed = await signer.signTransaction(omitBy(entry.tx, isNil))
+    const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
+    signerType = selectedWallet.encrypted[0].type
+    signerPath = selectedWallet.encrypted[0].path
+
+    if (isShowSignTransactionModal(signerType)) {
+      dispatch(modalsOpen({
+        componentName: 'ActionRequestDeviceDialog',
+      }))
+    }
+
+    const signed = await signer.signTransaction(omitBy(entry.tx, isNil), signerPath)
+
+    if (isShowSignTransactionModal(signerType)) {
+      dispatch(modalsClose({
+        componentName: 'ActionRequestDeviceDialog',
+      }))
+    }
+
     const raw = signed.rawTransaction
     dispatch(ethTxStatus(entry.key, entry.tx.from, { isSigned: true, raw }))
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log('signTransaction error: ', error)
+
+    if (isShowSignTransactionModal(signerType)) {
+      dispatch(modalsClose({
+        componentName: 'ActionRequestDeviceDialog',
+      }))
+    }
+
     dispatch(ethTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
     throw error
   }

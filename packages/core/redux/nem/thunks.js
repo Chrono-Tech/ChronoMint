@@ -14,6 +14,9 @@ import * as NemUtils from './utils'
 import { getToken } from '../tokens/selectors'
 import { notify } from '../notifier/actions'
 import tokenService from '../../services/TokenService'
+import { isShowSignTransactionModal } from '../../utils/SignersUtils'
+import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
+import { modalsClose } from '../modals/actions'
 
 const notifyNemTransfer = (entry) => (dispatch, getState) => {
   const { tx } = entry
@@ -98,11 +101,29 @@ const processTransaction = ({ entry, signer }) => async (dispatch, getState) => 
 }
 
 const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
+  let signerType, signerPath
+
   try {
     dispatch(NemActions.nemTxSignTransaction({ entry, signer }))
 
+    const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
+    signerType = selectedWallet.encrypted[0].type
+    signerPath = selectedWallet.encrypted[0].path
+
+    if (isShowSignTransactionModal(signerType)) {
+      dispatch(modalsOpen({
+        componentName: 'ActionRequestDeviceDialog',
+      }))
+    }
+
     const { tx } = entry
-    const signed = NemUtils.createXemTransaction(tx.prepared, signer, getSelectedNetwork()(getState()))
+    const signed = await NemUtils.createXemTransaction(tx.prepared, signer, signerPath)
+
+    if (isShowSignTransactionModal(signerType)) {
+      dispatch(modalsClose({
+        componentName: 'ActionRequestDeviceDialog',
+      }))
+    }
 
     dispatch(NemActions.nemTxUpdate(entry.key, entry.tx.from, NemUtils.createNemTxEntryModel({
       ...entry,
@@ -113,6 +134,12 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     })))
 
   } catch (error) {
+    if (isShowSignTransactionModal(signerType)) {
+      dispatch(modalsClose({
+        componentName: 'ActionRequestDeviceDialog',
+      }))
+    }
+
     dispatch(NemActions.nemTxSignTransactionError({ error }))
     dispatch(nemTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
     throw error
