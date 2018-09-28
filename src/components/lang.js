@@ -45,6 +45,7 @@ import TransactionsListWidget from 'components/wallet/TransactionsListWidget/lan
 import EOSWalletWidget from 'components/wallet/EOSWalletWidget/lang'
 import EOSWalletsList from 'components/wallet/EOSWalletsList/lang'
 import EOSWalletWidgetMini from 'components/wallet/EOSWalletWidgetMini/lang'
+import EOSWalletWidgetDetail from 'components/wallet/EOSWalletWidgetDetail/lang'
 
 export default {
   en: {
@@ -93,5 +94,6 @@ export default {
     EOSWalletWidget: EOSWalletWidget.en,
     EOSWalletsList: EOSWalletsList.en,
     EOSWalletWidgetMini: EOSWalletWidgetMini.en,
+    EOSWalletWidgetDetail: EOSWalletWidgetDetail.en,
   },
 }

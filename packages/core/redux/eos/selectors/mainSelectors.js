@@ -73,3 +73,8 @@ export const eosPendingCountSelector = () => createSelector(
     return pendingList ? pendingList.length : 0
   },
 )
+
+export const getEOSWalletTransactions = (walletId) => (state) => {
+  const wallet = getEOSWallet(walletId)(state)
+  return wallet ? wallet.transactions.transactions : null
+}

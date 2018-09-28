@@ -19,12 +19,11 @@ function makeMapStateToProps (state, props) {
   const { wallet } = props
   const getTransactions = getTxListForWallet(wallet.id)
 
-  const mapStateToProps = (ownState) => {
+  return (ownState) => {
     return {
       transactions: getTransactions(ownState),
     }
   }
-  return mapStateToProps
 }
 
 function mapDispatchToProps (dispatch) {

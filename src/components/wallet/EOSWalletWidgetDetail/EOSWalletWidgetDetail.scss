@@ -1,0 +1,184 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import '~styles/partials/variables';
+@import '~styles/partials/mixins';
+
+.header-container {
+  width: 100%;
+  margin-bottom: 30px;
+  margin-top: 30px;
+
+  @include xs-only {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .wallet-list-container {
+    display: flex;
+    flex-direction: column;
+
+    @include xs-only {
+      width: 100%;
+    }
+  }
+}
+
+.wallet-container {
+  width: 100%;
+  margin-top: 20px;
+  min-height: 260px;
+  background-color: $background-color-1;
+  border-radius: 2px;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+
+  @include xs-only {
+    flex: 1;
+    width: 100%;
+  }
+}
+
+.actions-container {
+  display: flex;
+  flex: 3;
+  padding-right: 10px;
+}
+
+.action {
+  display: flex;
+  margin-right: 10px;
+  button {
+    width: 100px;
+  }
+}
+
+.image {
+  height: 100px;
+  width: 100px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+
+  @include xs-only {
+    height: auto;
+    width: 100px;
+  }
+}
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+  padding-top: 50px;
+  width: 370px;
+
+  @include xs-only {
+    flex: 1;
+    width: 100%;
+    max-width: 264px;
+  }
+
+  :global {
+    .WalletMainCoinBalance__root {
+      color: $color-white;
+    }
+    .WalletMainCoinBalance__usd-amount {
+      color: $additionalData-color-1;
+    }
+  }
+}
+
+.token-container {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  margin-right: 40px;
+  margin-left: 40px;
+
+  @include xs-only {
+    margin-right: 20px;
+    margin-left: 20px;
+  }
+
+  :global {
+    .SubIconForWallet_root {
+      position: absolute;
+      top: 50px;
+      left: 2px;
+    }
+  }
+}
+
+.token-icon {
+  display: flex;
+  width: 100px;
+  height: 100px;
+  margin-top: 50px;
+
+  @include xs-only {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+.address-title {
+  font-size: 16px;
+  color: $color-white;
+  font-family: 'proxima nova', sans-serif;
+  font-weight: 700;
+  line-height: 22px;
+  word-break: break-all;
+}
+
+.address-address {
+  font-size: 14px;
+  color: $additionalData-color-1;
+  font-family: 'proxima nova', sans-serif;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: left;
+}
+
+.body {
+  display: flex;
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.footer {
+  display: flex;
+  margin-bottom: 20px;
+
+  .pendingOperations {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex: 2;
+
+    .pendingOperationsCount {
+      padding: 0 30px;
+      background: $color-red-2;
+      min-height: 17px;
+      border-radius: 13px;
+      line-height: 14px;
+      text-transform: uppercase;
+      font-size: 12px;
+      color: $color-white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .actions-container {
+    display: flex;
+    flex: 3;
+    justify-content: flex-end;
+  }
+}
+
+.noToken {
+  color: $error-color;
+}

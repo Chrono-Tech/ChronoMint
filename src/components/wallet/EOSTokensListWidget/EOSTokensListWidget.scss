@@ -1,0 +1,166 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import '~styles/partials/variables';
+@import '~styles/partials/mixins';
+
+.root {
+  width: 100%;
+  background: $color-white;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
+
+  .header {
+    font-weight: 500;
+    padding: 25px 30px;
+    font-size: 26px;
+    line-height: 31px;
+  }
+
+  .tokens-list {
+    display: flex;
+
+    .tokens-list-table {
+      width: 100%;
+      display: table;
+      border-bottom: 1px solid $button-color-3;
+      table-layout: fixed;
+
+      .tokens-list-table-tr {
+        display: table-row;
+        border-top: 1px solid $button-color-3;
+        border-bottom: 1px solid $button-color-3;
+        font-weight: 500;
+
+        .tokens-list-table-cell-icon {
+          padding: 15px 30px;
+          display: table-cell;
+          text-align: center;
+          vertical-align: middle;
+          border-right: 1px solid $button-color-3;
+          border-top: 1px solid $button-color-3;
+
+          @include sm-only {
+            padding: 5px 15px;
+          }
+
+          .table-image {
+            width: auto;
+            height: 40px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center center;
+            text-align: center;
+
+            @include sm-only {
+              width: auto;
+              height: 40px;
+              margin-right: 0;
+            }
+          }
+        }
+
+        .tokens-list-table-cell-amount {
+          padding: 15px 30px;
+          display: table-cell;
+          vertical-align: middle;
+          font-size: 14px;
+          line-height: 17px;
+          color: $color-primary-3;
+          border-right: 1px solid $button-color-3;
+          border-top: 1px solid $button-color-3;
+
+          @include sm-only {
+            padding: 5px 15px;
+          }
+        }
+
+        .tokens-list-table-cell-usd {
+          padding: 15px 30px;
+          display: table-cell;
+          vertical-align: middle;
+          color: $color-primary-3;
+          font-size: 14px;
+          line-height: 17px;
+          border-right: 1px solid $button-color-3;
+          border-top: 1px solid $button-color-3;
+
+          @include sm-only {
+            padding: 5px 15px;
+          }
+        }
+
+        .tokens-list-table-cell-sort-token {
+          cursor: pointer;
+          padding: 10px 30px;
+          display: table-cell;
+          vertical-align: middle;
+          text-align: center;
+
+          @include sm-only {
+           padding: 5px 15px;
+          }
+
+          &:hover {
+            padding-top: 10px;
+            background-color: $color-grey-3;
+            padding-bottom: 10px;
+          }
+
+          .table-image {
+            width: 40px;
+            height: 40px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center center;
+
+            @include sm-only {
+              width: auto;
+              height: 40px;
+            }
+          }
+        }
+
+        .tokens-list-table-cell-sort-amount {
+          cursor: pointer;
+          padding: 10px 30px;
+          display: table-cell;
+          vertical-align: middle;
+          font-size: 14px;
+          line-height: 17px;
+          color: $color-primary-3;
+          border-right: 1px solid $button-color-3;
+          border-left: 1px solid $button-color-3;
+
+          &:hover {
+            padding-top: 10px;
+            background-color: $color-grey-3;
+            padding-bottom: 10px;
+          }
+        }
+
+        .tokens-list-table-cell-sort-usd {
+          cursor: pointer;
+          padding: 10px 30px;
+          display: table-cell;
+          vertical-align: middle;
+          color: $color-primary-3;
+          font-size: 16px;
+          line-height: 17px;
+          &:hover {
+            padding-top: 10px;
+            background-color: $color-grey-3;
+            padding-bottom: 10px;
+          }
+        }
+      }
+    }
+  }
+
+  .more {
+    display: flex;
+    justify-content: center;
+    min-height: 40px;
+  }
+}
