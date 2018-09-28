@@ -2,6 +2,7 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
+
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { ErrorNoticeModel, TransferNoticeModel } from '../../models'
@@ -14,9 +15,8 @@ import * as NemUtils from './utils'
 import { getToken } from '../tokens/selectors'
 import { notify } from '../notifier/actions'
 import tokenService from '../../services/TokenService'
-import { isShowSignTransactionModal } from '../../utils/SignersUtils'
 import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
-import { modalsClose } from '../modals/actions'
+import { showSignerModal, closeSignerModal } from '../modals/thunks'
 
 const notifyNemTransfer = (entry) => (dispatch, getState) => {
   const { tx } = entry
@@ -101,29 +101,15 @@ const processTransaction = ({ entry, signer }) => async (dispatch, getState) => 
 }
 
 const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
-  let signerType, signerPath
-
   try {
+    const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
+
     dispatch(NemActions.nemTxSignTransaction({ entry, signer }))
 
-    const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
-    signerType = selectedWallet.encrypted[0].type
-    signerPath = selectedWallet.encrypted[0].path
-
-    if (isShowSignTransactionModal(signerType)) {
-      dispatch(modalsOpen({
-        componentName: 'ActionRequestDeviceDialog',
-      }))
-    }
-
+    dispatch(showSignerModal())
     const { tx } = entry
-    const signed = await NemUtils.createXemTransaction(tx.prepared, signer, signerPath)
-
-    if (isShowSignTransactionModal(signerType)) {
-      dispatch(modalsClose({
-        componentName: 'ActionRequestDeviceDialog',
-      }))
-    }
+    const signed = await NemUtils.createXemTransaction(tx.prepared, signer, selectedWallet.encrypted[0].path)
+    dispatch(closeSignerModal())
 
     dispatch(NemActions.nemTxUpdate(entry.key, entry.tx.from, NemUtils.createNemTxEntryModel({
       ...entry,
@@ -134,11 +120,7 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     })))
 
   } catch (error) {
-    if (isShowSignTransactionModal(signerType)) {
-      dispatch(modalsClose({
-        componentName: 'ActionRequestDeviceDialog',
-      }))
-    }
+    dispatch(closeSignerModal())
 
     dispatch(NemActions.nemTxSignTransactionError({ error }))
     dispatch(nemTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))

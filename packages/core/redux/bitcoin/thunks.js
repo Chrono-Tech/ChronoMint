@@ -6,9 +6,8 @@
 import bitcoin from 'bitcoinjs-lib'
 import type { Dispatch } from 'redux'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
-import { modalsOpen, modalsClose } from '../modals/actions'
+import { modalsOpen } from '../modals/actions'
 import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
-import { isShowSignTransactionModal } from '../../utils/SignersUtils'
 import * as converter from './converter'
 import {
   TransferNoticeModel,
@@ -16,6 +15,7 @@ import {
 import * as BitcoinActions from './actions'
 import * as BitcoinUtils from './utils'
 import { getSelectedNetwork } from '../persistAccount/selectors'
+import { showSignerModal, closeSignerModal } from '../modals/thunks'
 
 import { describePendingBitcoinTx } from '../../describers'
 import { getToken } from '../tokens/selectors'
@@ -230,31 +230,17 @@ const processTransaction = ({ entry, signer }) => async (dispatch) => {
 }
 
 const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
-  let signerType, signerPath
-
   dispatch(BitcoinActions.bitcoinSignTx())
 
   try {
     const network = getSelectedNetwork()(getState())
     const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
-    signerType = selectedWallet.encrypted[0].type
-    signerPath = selectedWallet.encrypted[0].path
-
     const unsignedTxHex = entry.tx.prepared.buildIncomplete().toHex()
-    if (isShowSignTransactionModal(signerType)) {
-      dispatch(BitcoinActions.bitcoinShowSignTxConfirmationModalDialog())
-      dispatch(modalsOpen({
-        componentName: 'ActionRequestDeviceDialog',
-      }))
-    }
-    const signedHex = await signer.signTransaction(unsignedTxHex, signerPath)
 
-    if (isShowSignTransactionModal(signerType)) {
-      dispatch(BitcoinActions.bitcoinCloseSignTxConfirmationModalDialog())
-      dispatch(modalsClose({
-        componentName: 'ActionRequestDeviceDialog',
-      }))
-    }
+    dispatch(showSignerModal())
+    const signedHex = await signer.signTransaction(unsignedTxHex, selectedWallet.encrypted[0].path)
+    dispatch(closeSignerModal())
+
     const bitcoinTransaction = bitcoin.Transaction.fromHex(signedHex)
     const bitcoinNetwork = bitcoin.networks[network[entry.blockchain]]
     const txb = new bitcoin.TransactionBuilder.fromTransaction(bitcoinTransaction, bitcoinNetwork)
@@ -270,12 +256,8 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     dispatch(BitcoinActions.bitcoinSignTxSuccess(bitcoinTxEntry))
     return bitcoinTxEntry
   } catch (error) {
-    if (isShowSignTransactionModal(signerType)) {
-      dispatch(BitcoinActions.bitcoinCloseSignTxConfirmationModalDialog())
-      dispatch(modalsClose({
-        componentName: 'ActionRequestDeviceDialog',
-      }))
-    }
+    dispatch(closeSignerModal())
+
     const bitcoinErrorTxEntry = BitcoinUtils.createBitcoinTxEntryModel({
       ...entry,
       isErrored: true,

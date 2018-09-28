@@ -6,15 +6,15 @@
 import * as WavesUtils from './utils'
 import * as WavesActions from './actions'
 import { getToken } from '../tokens/selectors'
-import { modalsClose, modalsOpen } from '../modals/actions'
+import { modalsOpen } from '../modals/actions'
 import { getWavesSigner, pendingEntrySelector } from './selectors'
 import { describePendingWavesTx } from '../../describers'
 import { getSelectedNetwork } from '../persistAccount/selectors'
 import TxExecModel from '../../models/TxExecModel'
 import { DUCK_TOKENS } from '../tokens/constants'
 import tokenService from '../../services/TokenService'
-import { isShowSignTransactionModal } from '../../utils/SignersUtils'
 import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
+import { showSignerModal, closeSignerModal } from '../modals/thunks'
 
 export const executeWavesTransaction = ({ tx, options }) => async (dispatch, getState) => {
   const state = getState()
@@ -84,28 +84,14 @@ const processTransaction = ({ entry, signer }) => async (dispatch) => {
 }
 
 const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
-  let signerType, signerPath
-
   try {
+    const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
     dispatch(WavesActions.wavesTxSignTransaction({ entry, signer }))
 
-    const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
-    signerType = selectedWallet.encrypted[0].type
-    signerPath = selectedWallet.encrypted[0].path
+    dispatch(showSignerModal())
+    const signedPreparedTx = await signer.signTransaction(entry.tx.prepared, selectedWallet.encrypted[0].path)
+    dispatch(closeSignerModal())
 
-    if (isShowSignTransactionModal(signerType)) {
-      dispatch(modalsOpen({
-        componentName: 'ActionRequestDeviceDialog',
-      }))
-    }
-
-    const signedPreparedTx = await signer.signTransaction(entry.tx.prepared, signerPath)
-
-    if (isShowSignTransactionModal(signerType)) {
-      dispatch(modalsClose({
-        componentName: 'ActionRequestDeviceDialog',
-      }))
-    }
     const newEntry = WavesUtils.createWavesTxEntryModel({ ...entry, tx: new TxExecModel({
       ...entry.tx,
       prepared: signedPreparedTx,
@@ -114,11 +100,8 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
 
     return newEntry
   } catch (error) {
-    if (isShowSignTransactionModal(signerType)) {
-      dispatch(modalsClose({
-        componentName: 'ActionRequestDeviceDialog',
-      }))
-    }
+    dispatch(closeSignerModal())
+
     dispatch(WavesActions.wavesTxSignTransactionError({ error }))
     throw error
   }

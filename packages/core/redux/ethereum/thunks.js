@@ -11,14 +11,14 @@ import { ethereumPendingSelector, pendingEntrySelector, web3Selector } from './s
 import { DUCK_ETHEREUM } from './constants'
 import { getEthereumSigner } from '../persistAccount/selectors'
 import ethereumDAO from '../../dao/EthereumDAO'
-import { modalsOpen, modalsClose } from '../modals/actions'
+import { modalsOpen } from '../modals/actions'
 import { describePendingTx } from '../../describers'
 import { daoByAddress } from '../daos/selectors'
 import { getAccount } from '../session/selectors/models'
+import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
 import * as ethActions from './actions'
 import * as Utils from './utils'
-import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
-import { isShowSignTransactionModal } from '../../utils/SignersUtils'
+import { showSignerModal, closeSignerModal } from '../modals/thunks'
 
 export const initEthereum = ({ web3 }) => (dispatch) => {
   dispatch(ethActions.ethWeb3Update(new HolderModel({ value: web3 })))
@@ -83,39 +83,19 @@ export const processTransaction = ({ web3, entry, signer }) => async (dispatch, 
 }
 
 export const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
-  let signerType, signerPath
-
   try {
     const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
-    signerType = selectedWallet.encrypted[0].type
-    signerPath = selectedWallet.encrypted[0].path
 
-    if (isShowSignTransactionModal(signerType)) {
-      dispatch(modalsOpen({
-        componentName: 'ActionRequestDeviceDialog',
-      }))
-    }
-
-    const signed = await signer.signTransaction(omitBy(entry.tx, isNil), signerPath)
-
-    if (isShowSignTransactionModal(signerType)) {
-      dispatch(modalsClose({
-        componentName: 'ActionRequestDeviceDialog',
-      }))
-    }
+    dispatch(showSignerModal())
+    const signed = await signer.signTransaction(omitBy(entry.tx, isNil), selectedWallet.encrypted[0].path)
+    dispatch(closeSignerModal())
 
     const raw = signed.rawTransaction
     dispatch(ethTxStatus(entry.key, entry.tx.from, { isSigned: true, raw }))
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log('signTransaction error: ', error)
-
-    if (isShowSignTransactionModal(signerType)) {
-      dispatch(modalsClose({
-        componentName: 'ActionRequestDeviceDialog',
-      }))
-    }
-
+    dispatch(closeSignerModal())
     dispatch(ethTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
     throw error
   }
