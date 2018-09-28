@@ -10,14 +10,14 @@ const URL_PROFILE_HOST = 'https://backend.profile.tp.ntr1x.com/'
 const URL_PROFILE_BASE_PATH = URL_PROFILE_HOST + 'api/v1/'
 
 const URL_PROFILE_USER_INFO = 'security/persons/query'
-const URL_PROFILE_SIGNATURE = 'security/signin/signature'
+const URL_PROFILE_SIGNATURE = 'security/signin/signature/chronomint'
 const URL_PROFILE_UPDATE_PROFILE = 'security/me/profile/combine/update'
 
 // URLs for avatar
 const URL_PROFILE_IMAGE_DOWNLOAD = `media/image/`
 const URL_PROFILE_IMAGE_UPLOAD = 'media/image/upload'
 
-const EXCHANGE_PURPOSE_DATA = { purpose: 'exchange' }
+const EXCHANGE_PURPOSE_DATA = { purpose: 'middleware' }
 
 export default class ProfileService {
   static service = axios.create({ baseURL: URL_PROFILE_BASE_PATH })
@@ -41,12 +41,15 @@ export default class ProfileService {
     })
   }
 
-  static requestUserProfile (signature) {
+  static requestUserProfile (signature, addresses) {
     return ProfileService.service.request({
       method: 'POST',
       url: URL_PROFILE_SIGNATURE,
       // responseType: 'json',
-      data: EXCHANGE_PURPOSE_DATA,
+      data: {
+        ...EXCHANGE_PURPOSE_DATA,
+        addresses,
+      },
       headers: Utils.getPostConfigWithAuthorizationSignature(signature),
     })
   }

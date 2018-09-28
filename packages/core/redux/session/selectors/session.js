@@ -14,6 +14,10 @@ import {
 import { getMainWallets } from '../../wallets/selectors/models'
 import { getGasSliderCollection, getIsCBE } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
+import { getEthereumSigner, getPersistAccount } from '../../persistAccount/selectors'
+import { getBitcoinCashSigner, getBitcoinSigner, getLitecoinSigner } from '../../bitcoin/selectors'
+import { getNemSigner } from '../../nem/selectors'
+import { getWavesSigner } from '../../waves/selectors'
 
 export const getGasPriceMultiplier = (blockchain) => createSelector([getGasSliderCollection],
   (gasSliderCollection) => {
@@ -75,7 +79,7 @@ export const getAccountProfileSummary = createSelector(
     getSelectedAccountName,
   ],
   (profile, selectedAccountName) => {
-    if (profile){
+    if (profile) {
       const level1 = profile.level1.submitted
       const level2 = profile.level2.submitted
 
@@ -90,5 +94,42 @@ export const getAccountProfileSummary = createSelector(
     }
 
     return {}
-  }
+  },
+)
+
+export const getAccountAddresses = createSelector(
+  [
+    getPersistAccount,
+    getEthereumSigner,
+    getBitcoinSigner,
+    getBitcoinCashSigner,
+    getLitecoinSigner,
+    getNemSigner,
+    getWavesSigner,
+  ],
+  (persistAccount, ethereumSigner, bitcoinSigner, bitcoinCashSigner, litecoinSigner, nemSigner, wavesSigner) => {
+    const { selectedWallet } = persistAccount
+    const signerPath = selectedWallet.encrypted[0].path
+    return [
+      {
+        type: "ethereum-public-key",
+        value: ethereumSigner.getAddress(signerPath),
+      }, {
+        type: 'bitcoin-address',
+        value: bitcoinSigner.getAddress(signerPath),
+      }, {
+        type: 'bitcoin-cash-address',
+        value: bitcoinCashSigner.getAddress(signerPath),
+      }, {
+        type: 'bitcoin-litecoin-address',
+        value: litecoinSigner.getAddress(signerPath),
+      }, {
+        type: "waves-address",
+        value: wavesSigner.getAddress(signerPath),
+      }, {
+        type: 'nem-address',
+        value: nemSigner.getAddress(signerPath),
+      },
+    ]
+  },
 )

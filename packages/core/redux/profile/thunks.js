@@ -9,6 +9,7 @@ import type { Dispatch } from 'redux'
 import * as ProfileActions from './actions'
 import ProfileService from './service'
 import { DUCK_SESSION } from '../session/constants'
+import { getAccountAddresses } from '../session/selectors/session'
 
 export const getUserInfo = (addresses: string[]) => (dispatch: Dispatch<any>/*, getState*/): Promise<*> => {
   // TODO: kept this part commented for further investigation.
@@ -36,7 +37,7 @@ export const getUserInfo = (addresses: string[]) => (dispatch: Dispatch<any>/*, 
     })
 }
 
-export const getUserProfile = (signature: string) => (dispatch: Dispatch<any>/*, getState*/): Promise<*> => {
+export const getUserProfile = (signature: string) => (dispatch: Dispatch<any>, getState): Promise<*> => {
   // TODO: kept this part commented for further investigation.
   // Somethimes we need to repeat requests
   // const state = getState()
@@ -45,8 +46,9 @@ export const getUserProfile = (signature: string) => (dispatch: Dispatch<any>/*,
   //   return Promise.resolve('IN_PROGRESS') // it is safe to silently ignore duplicated request
   // }
 
+  const addresses = getAccountAddresses(getState())
   dispatch(ProfileActions.profileUserProfileFetch())
-  return ProfileService.requestUserProfile(signature)
+  return ProfileService.requestUserProfile(signature, addresses)
     .then((response) => {
       dispatch(ProfileActions.profileUserProfileFetchSuccess())
       // TODO: need to check that res.status is equal 200 etc. Or it is better to check right in fetchPersonInfo.
