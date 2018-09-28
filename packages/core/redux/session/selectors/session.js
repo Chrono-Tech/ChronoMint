@@ -11,13 +11,17 @@ import {
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '../../persistAccount/constants'
-import { getMainWallets } from '../../wallets/selectors/models'
+import { getWallets, getMainWallets } from '../../wallets/selectors/models'
 import { getGasSliderCollection, getIsCBE } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
-import { getEthereumSigner, getPersistAccount } from '../../persistAccount/selectors'
-import { getBitcoinCashSigner, getBitcoinSigner, getLitecoinSigner } from '../../bitcoin/selectors'
-import { getNemSigner } from '../../nem/selectors'
-import { getWavesSigner } from '../../waves/selectors'
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_NEM,
+  BLOCKCHAIN_WAVES,
+} from '../../../dao/constants'
 
 export const getGasPriceMultiplier = (blockchain) => createSelector([getGasSliderCollection],
   (gasSliderCollection) => {
@@ -99,37 +103,38 @@ export const getAccountProfileSummary = createSelector(
 
 export const getAccountAddresses = createSelector(
   [
-    getPersistAccount,
-    getEthereumSigner,
-    getBitcoinSigner,
-    getBitcoinCashSigner,
-    getLitecoinSigner,
-    getNemSigner,
-    getWavesSigner,
+    getWallets,
   ],
-  (persistAccount, ethereumSigner, bitcoinSigner, bitcoinCashSigner, litecoinSigner, nemSigner, wavesSigner) => {
-    const { selectedWallet } = persistAccount
-    const signerPath = selectedWallet.encrypted[0].path
-    return [
-      {
-        type: "ethereum-public-key",
-        value: ethereumSigner.getAddress(signerPath),
-      }, {
-        type: 'bitcoin-address',
-        value: bitcoinSigner.getAddress(signerPath),
-      }, {
-        type: 'bitcoin-cash-address',
-        value: bitcoinCashSigner.getAddress(signerPath),
-      }, {
-        type: 'bitcoin-litecoin-address',
-        value: litecoinSigner.getAddress(signerPath),
-      }, {
-        type: "waves-address",
-        value: wavesSigner.getAddress(signerPath),
-      }, {
-        type: 'nem-address',
-        value: nemSigner.getAddress(signerPath),
-      },
-    ]
+  (wallets) => {
+    let type = null
+    return Object.values(wallets).reduce((accumulator, wallet) => {
+      switch (wallet.blockchain) {
+        case BLOCKCHAIN_BITCOIN:
+          type = 'bitcoin-address'
+          break
+        case BLOCKCHAIN_BITCOIN_CASH:
+          type = 'bitcoin-cash-address'
+          break
+        case BLOCKCHAIN_LITECOIN:
+          type = 'bitcoin-litecoin-address'
+          break
+        case BLOCKCHAIN_ETHEREUM:
+          type = 'ethereum-public-key'
+          break
+        case BLOCKCHAIN_NEM:
+          type = 'nem-address'
+          break
+        case BLOCKCHAIN_WAVES:
+          type = 'waves-address'
+          break
+      }
+
+      if (!wallet.isMain || !type) {
+        return accumulator
+      }
+
+      return [...accumulator, { type, value: wallet.address },
+      ]
+    }, {})
   },
 )
