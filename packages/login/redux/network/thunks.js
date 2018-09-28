@@ -53,9 +53,10 @@ export const updateSelectedAccount = () => (dispatch, getState) => {
   } = state.get(DUCK_PERSIST_ACCOUNT)
 
   const foundAccount = walletsList
-    .find((account) =>
-      account.key === selectedWallet.key,
-    )
+    .find((account) => {
+      return selectedWallet && account.key === selectedWallet.key
+    }
+  )
 
   if (foundAccount) {
     dispatch(PersistAccountActions.accountSelect(foundAccount))

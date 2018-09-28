@@ -30,15 +30,13 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     this.addListener('unsubscribe', (address) => this._handleUnsubscribe(address))
   }
 
-  async _handleSubscribe ({ ethAddress, nemAddress, wavesAddress }) {
+  async _handleSubscribe (ethAddress) {
     if (!this._socket) {
       return
     }
     try {
-      await this._api.post('addr', {
+      this.addMiddlewareSupportForAddress({
         address: ethAddress,
-        nem: nemAddress,
-        waves: wavesAddress,
       })
 
       this.executeOrSchedule(() => {
@@ -55,19 +53,17 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     }
   }
 
-  async _handleUnsubscribe (/*{ ethAddress, nemAddress, wavesAddress }*/) {
+  /**
+   * Method for adding Middleware support for the address
+   * @param addressData
+   * @returns {Promise<void>}
+   */
+  async addMiddlewareSupportForAddress (addressData) {
+    await this._api.post('addr', addressData)
+  }
 
+  async _handleUnsubscribe (/*ethAddress*/) {
     //No method delete in API, I'm not sure if we need the procedure bellow
-
-    /*try {
-      await this._api.delete('addr', {
-        address: ethAddress,
-        //nem: nemAddress,
-        //waves: wavesAddress,
-      })
-    } catch (e) {
-      this.trace('Address unsubscription error', e)
-    }*/
   }
 
   async getTransactionsList (address, id, skip, offset) {

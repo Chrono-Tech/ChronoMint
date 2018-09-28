@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import { bccProvider, btcProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import EventEmitter from 'events'
 import BigNumber from 'bignumber.js'
 import Amount from '../models/Amount'
@@ -13,7 +13,6 @@ import { bitcoinAddress } from '../models/validator'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_LITECOIN,
   EVENT_NEW_TRANSFER,
   EVENT_UPDATE_BALANCE,
@@ -58,12 +57,6 @@ export default class BitcoinDAO extends EventEmitter {
 
   isInitialized () {
     return this._bitcoinProvider.isInitialized()
-  }
-
-  hasBalancesStream () {
-    // Balance should not be fetched after transfer notification,
-    // it will be updated from the balances event stream
-    return true
   }
 
   async getFeeRate () {
@@ -141,8 +134,6 @@ export default class BitcoinDAO extends EventEmitter {
         EVENT_NEW_TRANSFER,
         new TxModel({
           txHash: tx.txHash,
-          // blockHash: tx.blockhash,
-          // blockNumber: tx.blockheight,
           blockNumber: null,
           time: tx.time,
           from: tx.from,
@@ -205,5 +196,4 @@ export default class BitcoinDAO extends EventEmitter {
 
 export const btcDAO = new BitcoinDAO(BLOCKCHAIN_BITCOIN, 'BTC', btcProvider)
 export const bccDAO = new BitcoinDAO(BLOCKCHAIN_BITCOIN_CASH, 'BCC', bccProvider)
-export const btgDAO = new BitcoinDAO(BLOCKCHAIN_BITCOIN_GOLD, 'BTG', btgProvider)
 export const ltcDAO = new BitcoinDAO(BLOCKCHAIN_LITECOIN, 'LTC', ltcProvider)

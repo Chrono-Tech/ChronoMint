@@ -7,7 +7,6 @@ import ModalDialog from 'components/dialogs/ModalDialog'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_WAVES,
@@ -46,7 +45,6 @@ export default class SendTokens extends PureComponent {
     switch (blockchain) {
       case BLOCKCHAIN_BITCOIN:
       case BLOCKCHAIN_BITCOIN_CASH:
-      case BLOCKCHAIN_BITCOIN_GOLD:
       case BLOCKCHAIN_LITECOIN:
         return Bitcoin
       case BLOCKCHAIN_ETHEREUM:

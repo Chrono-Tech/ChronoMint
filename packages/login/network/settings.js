@@ -5,7 +5,6 @@
 
 import {
   BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
@@ -38,10 +37,6 @@ const blockExplorersMap = {
     mainnet: 'https://bcc.blockdozer.com/insight/tx',
     testnet: 'https://tbcc.blockdozer.com/insight/tx',
   },
-  [BLOCKCHAIN_BITCOIN_GOLD]: {
-    mainnet: 'https://btgexplorer.com/tx',
-    testnet: null,
-  },
   [BLOCKCHAIN_LITECOIN]: {
     mainnet: 'https://live.blockcypher.com/ltc/tx',
     testnet: 'https://chain.so/tx/LTCTEST',
@@ -55,7 +50,6 @@ const MAINNET_BASE = {
   scanner: blockExplorersMap.Ethereum.mainnet,
   [BLOCKCHAIN_BITCOIN]: 'bitcoin',
   [BLOCKCHAIN_BITCOIN_CASH]: 'bitcoin',
-  [BLOCKCHAIN_BITCOIN_GOLD]: 'bitcoingold',
   [BLOCKCHAIN_LITECOIN]: 'litecoin',
   [BLOCKCHAIN_NEM]: 'mainnet',
   [BLOCKCHAIN_WAVES]: 'MAINNET_CONFIG',
@@ -68,7 +62,6 @@ const RINKEBY_BASE = {
   scanner: blockExplorersMap.Ethereum.testnet,
   [BLOCKCHAIN_BITCOIN]: 'testnet',
   [BLOCKCHAIN_BITCOIN_CASH]: 'testnet',
-  [BLOCKCHAIN_BITCOIN_GOLD]: 'bitcoingold_testnet',
   [BLOCKCHAIN_LITECOIN]: 'litecoin_testnet',
   [BLOCKCHAIN_NEM]: 'testnet',
   [BLOCKCHAIN_WAVES]: 'TESTNET_CONFIG',
@@ -106,7 +99,6 @@ const mewMainnet = {
   scanner: blockExplorersMap.Ethereum.mainnet,
   [BLOCKCHAIN_BITCOIN]: 'bitcoin',
   [BLOCKCHAIN_BITCOIN_CASH]: 'bitcoin',
-  [BLOCKCHAIN_BITCOIN_GOLD]: 'bitcoingold',
   [BLOCKCHAIN_LITECOIN]: 'litecoin',
   [BLOCKCHAIN_NEM]: 'mainnet',
   host: `api.myetherapi.com/eth`,
@@ -123,7 +115,6 @@ const givethMainnet = {
   scanner: blockExplorersMap.Ethereum.mainnet,
   [BLOCKCHAIN_BITCOIN]: 'bitcoin',
   [BLOCKCHAIN_BITCOIN_CASH]: 'bitcoin',
-  [BLOCKCHAIN_BITCOIN_GOLD]: 'bitcoingold',
   [BLOCKCHAIN_LITECOIN]: 'litecoin',
   [BLOCKCHAIN_NEM]: 'mainnet',
   [BLOCKCHAIN_WAVES]: 'MAINNET_CONFIG',
@@ -158,7 +149,6 @@ export const chronoBankPrivate = {
   name: 'Private (develop network)',
   [BLOCKCHAIN_BITCOIN]: 'testnet',
   [BLOCKCHAIN_BITCOIN_CASH]: 'testnet',
-  // [BLOCKCHAIN_BITCOIN_GOLD]: 'bitcoingold_testnet',
   [BLOCKCHAIN_LITECOIN]: 'litecoin_testnet',
   [BLOCKCHAIN_NEM]: 'testnet',
   [BLOCKCHAIN_WAVES]: 'TESTNET_CONFIG',

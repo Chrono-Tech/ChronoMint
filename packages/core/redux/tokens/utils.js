@@ -2,27 +2,29 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import { bccProvider, btcProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
+import { nemProvider } from '@chronobank/login/network/NemProvider'
+
 import { getMainSymbolForBlockchain } from './selectors'
 import { Amount } from '../../models'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_WAVES,
+  BLOCKCHAIN_NEM,
 } from '../../dao/constants'
 
 export const providersMap = {
   [BLOCKCHAIN_ETHEREUM]: ethereumProvider,
   [BLOCKCHAIN_BITCOIN]: btcProvider,
   [BLOCKCHAIN_BITCOIN_CASH]: bccProvider,
-  [BLOCKCHAIN_BITCOIN_GOLD]: btgProvider,
   [BLOCKCHAIN_LITECOIN]: ltcProvider,
   [BLOCKCHAIN_WAVES]: wavesProvider,
+  [BLOCKCHAIN_NEM]: nemProvider,
 }
 
 export const getProviderByBlockchain = (blockchain) => {
@@ -31,7 +33,7 @@ export const getProviderByBlockchain = (blockchain) => {
 
 export const getWalletBalances = ({ wallet }) => {
   try {
-    return  providersMap[wallet.blockchain].getAccountBalances(wallet.address)
+    return providersMap[wallet.blockchain].getAccountBalances(wallet.address)
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log('Cannot find provider for the %s blockchain', wallet.blockchain)
@@ -42,6 +44,10 @@ export const getWalletBalances = ({ wallet }) => {
 export const formatBalances = (blockchain, balancesResult) => {
   const mainSymbol = getMainSymbolForBlockchain(blockchain)
   if (balancesResult && balancesResult.tokens) {
+    // @todo fix on Middleware empty object in case of empty balance
+    if (JSON.stringify({}) === JSON.stringify(balancesResult.tokens)) {
+      balancesResult.tokens = []
+    }
     const tokensBalances = balancesResult.tokens
       .reduce((accumulator, { symbol, balance }) => {
         return {

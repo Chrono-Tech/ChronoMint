@@ -11,4 +11,5 @@ export default class WavesLedgerDeviceMock extends WavesMemoryDevice {
   constructor ({ network }) {
     super({ network, seedPhrase: MOCK_PRIVATE_SEED })
   }
+
 }

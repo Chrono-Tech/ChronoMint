@@ -13,7 +13,7 @@ import MultisigEthWalletModel from '../../../models/wallet/MultisigEthWalletMode
 
 export const selectWallet = (blockchain, address) => createSelector(
   [
-    getWallet(`${blockchain}-${address}`),
+    getWallet(blockchain, address),
     getEthMultisigWallet(`${blockchain}-${address}`),
   ],
   (wallet, ethMultisigWallet) => {

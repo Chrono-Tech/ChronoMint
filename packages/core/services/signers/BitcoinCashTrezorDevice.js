@@ -74,8 +74,4 @@ export default class BitcoinTrezorDevice extends EventEmitter {
 
     return result
   }
-
-  isActionRequestedModalDialogShows () {
-    return true
-  }
 }

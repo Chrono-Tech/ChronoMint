@@ -3,11 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import { bccProvider, btcProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
@@ -17,7 +16,7 @@ import {
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import WalletModel from '../../models/wallet/WalletModel'
 import { subscribeOnTokens } from '../tokens/thunks'
-import { formatBalances, getWalletBalances } from '../tokens/utils'
+import { formatBalances, getProviderByBlockchain, getWalletBalances } from '../tokens/utils'
 import TokenModel from '../../models/tokens/TokenModel'
 import EthereumMemoryDevice  from '../../services/signers/EthereumMemoryDevice'
 import tokenService from '../../services/TokenService'
@@ -54,7 +53,12 @@ export const get2FAEncodedKey = (callback) => () => {
 
 export const setWalletName = (walletId, name) => (dispatch) => dispatch({ type: WALLETS_SET_NAME, walletId, name })
 
-export const setWallet = (wallet) => (dispatch) => dispatch({ type: WALLETS_SET, wallet })
+export const setWallet = (wallet) => (dispatch) => {
+  const provider = getProviderByBlockchain(wallet.blockchain)
+  provider.subscribe(wallet.address)
+
+  dispatch({ type: WALLETS_SET, wallet })
+}
 
 export const setWalletBalance = (walletId, balance) => (dispatch) => dispatch({ type: WALLETS_UPDATE_BALANCE, walletId, balance })
 
@@ -67,64 +71,65 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
   const state = getState()
   const account = getPersistAccount(state)
   const wallets = []
+  const accountPath = account.decryptedWallet.entry.encrypted[0].path
 
   const ethereumSigner = getEthereumSigner(state)
-  const ethAddress = await ethereumSigner.getAddress()
+  const ethAddress = await ethereumSigner.getAddress(accountPath)
 
   wallets.push(new WalletModel({
-    address: ethAddress,
+    address: ethAddress.toLowerCase(accountPath),
     blockchain: BLOCKCHAIN_ETHEREUM,
     isMain: true,
-    walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+    walletDerivedPath: accountPath,
   }))
 
   const bitcoinSigner = getBitcoinSigner(state)
   if (bitcoinSigner) {
     wallets.push(new WalletModel({
-      address: bitcoinSigner.getAddress(),
+      address: bitcoinSigner.getAddress(accountPath),
       blockchain: BLOCKCHAIN_BITCOIN,
       isMain: true,
-      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+      walletDerivedPath: accountPath,
     }))
   }
 
   const bitcoinCashSigner = getBitcoinCashSigner(state)
   if (bitcoinCashSigner) {
     wallets.push(new WalletModel({
-      address: bitcoinCashSigner.getAddress(),
+      address: bitcoinCashSigner.getAddress(accountPath),
       blockchain: BLOCKCHAIN_BITCOIN_CASH,
       isMain: true,
-      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+      walletDerivedPath: accountPath,
     }))
   }
 
   const litecoinSigner = getLitecoinSigner(state)
   if (litecoinSigner) {
     wallets.push(new WalletModel({
-      address: litecoinSigner.getAddress(),
+      address: litecoinSigner.getAddress(accountPath),
       blockchain: BLOCKCHAIN_LITECOIN,
       isMain: true,
-      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+      walletDerivedPath: accountPath,
     }))
   }
 
   const nemSigner = getNemSigner(state)
   if (nemSigner) {
     wallets.push(new WalletModel({
-      address: nemSigner.getAddress(),
+      address: nemSigner.getAddress(accountPath),
       blockchain: BLOCKCHAIN_NEM,
       isMain: true,
-      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+      walletDerivedPath: accountPath,
     }))
   }
 
   const wavesSigner = getWavesSigner(state)
   if (wavesSigner) {
     wallets.push(new WalletModel({
-      address: wavesSigner.getAddress(),
+      address: wavesSigner.getAddress(accountPath),
       blockchain: BLOCKCHAIN_WAVES,
       isMain: true,
-      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+      walletDerivedPath: accountPath,
     }))
   }
 
@@ -151,10 +156,6 @@ const initDerivedWallets = () => async (dispatch, getState) => {
         case BLOCKCHAIN_BITCOIN_CASH:
           bccProvider.createNewChildAddress(wallet.deriveNumber)
           bccProvider.subscribeNewWallet(wallet.address)
-          break
-        case BLOCKCHAIN_BITCOIN_GOLD:
-          btgProvider.createNewChildAddress(wallet.deriveNumber)
-          btgProvider.subscribeNewWallet(wallet.address)
           break
         case BLOCKCHAIN_LITECOIN:
           ltcProvider.createNewChildAddress(wallet.deriveNumber)
@@ -192,7 +193,6 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
   const isBtcLikeBlockchain = blockchain === BLOCKCHAIN_BITCOIN
     || blockchain === BLOCKCHAIN_LITECOIN
     || blockchain === BLOCKCHAIN_BITCOIN_CASH
-    || blockchain === BLOCKCHAIN_BITCOIN_GOLD
 
   if (isBtcLikeBlockchain) {
     return dispatch(BitcoinThunks.getAddressInfo(address, blockchain))
@@ -209,7 +209,7 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
       })
       .catch((e) => {
         // eslint-disable-next-line no-console
-        console.log('call balances from middleware is failed', e)
+        console.log('Balances call to middleware has failed [getAddressInfo]: ', blockchain, e)
         dispatch(fallbackCallback(wallet))
       })
   } else {
@@ -230,7 +230,7 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
       })
       .catch((e) => {
         // eslint-disable-next-line no-console
-        console.log('call balances from middleware is failed', e)
+        console.log('call balances from middleware is failed getWalletBalances', e)
         dispatch(fallbackCallback(wallet))
       })
   }
@@ -413,7 +413,6 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
       ltcProvider.subscribeNewWallet(address)
       break
 
-    case BLOCKCHAIN_BITCOIN_GOLD:
     case BLOCKCHAIN_NEM:
     case BLOCKCHAIN_WAVES:
     default:

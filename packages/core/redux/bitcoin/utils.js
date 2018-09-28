@@ -19,8 +19,8 @@ import { TxEntryModel, TxExecModel } from '../../models'
  * @param {Object} options - TODO
  * @return {TxEntryModel}
  */
-export const createBitcoinTxEntryModel = (entry, options = {}) =>
-  new TxEntryModel({
+export const createBitcoinTxEntryModel = (entry, options = {}) => {
+  return new TxEntryModel({
     key: uuid(),
     isSubmitted: true,
     isAccepted: false,
@@ -28,7 +28,7 @@ export const createBitcoinTxEntryModel = (entry, options = {}) =>
     symbol: options && options.symbol,
     ...entry,
   })
-
+}
 /**
  * Get unused exits to create new transaction
  * @param {string} to - recipient's address

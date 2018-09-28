@@ -66,7 +66,7 @@ export const priceTokenSelector = (value: Amount) => createSelector(
 
 export const makeGetTxListForWallet = (blockchain: string, address: string) => createSelector(
   [
-    getWallet(`${blockchain}-${address}`),
+    getWallet(blockchain, address),
     getEthMultisigWallet(`${blockchain}-${address}`),
   ],
   (wallet, ethMultisigWallet) => {
@@ -75,7 +75,7 @@ export const makeGetTxListForWallet = (blockchain: string, address: string) => c
 )
 
 export const getWalletBalanceForSymbol = (address, blockchain, symbol) => createSelector(
-  [getWallet(`${blockchain}-${address}`)],
+  [getWallet(blockchain, address)],
   (currentWallet) => {
     return currentWallet.balances[symbol]
   },

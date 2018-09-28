@@ -7,13 +7,10 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import {
-  // onSubmitCreateAccountImportPrivateKey,
   onCreateWalletFromJSON,
 } from '@chronobank/login-ui/redux/thunks'
 import {
   navigateToSelectWallet,
-  // navigateToSelectImportMethod,
-  // navigateToLoginPage,
   navigateBack,
 } from '@chronobank/login-ui/redux/navigation'
 import {
@@ -28,11 +25,8 @@ function mapDispatchToProps (dispatch) {
   return {
     getUserInfo: (addresses: string[]) => dispatch(ProfileThunks.getUserInfo(addresses)),
     navigateBack: () => dispatch(navigateBack()),
-    // navigateToLoginPage: () => dispatch(navigateToLoginPage()),
-    // navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
     onCreateWalletFromJSON: (name, walletJSON, profile) => dispatch(onCreateWalletFromJSON(name, walletJSON, profile)),
-    // onSubmitCreateAccountImportPrivateKey: (name, password, mnemonic) => dispatch(onSubmitCreateAccountImportPrivateKey(name, password, mnemonic)),
   }
 }
 
@@ -45,11 +39,8 @@ class WalletImportPage extends PureComponent {
   static propTypes = {
     getUserInfo: PropTypes.func,
     navigateBack: PropTypes.func,
-    // navigateToLoginPage: PropTypes.func,
-    // navigateToSelectImportMethod: PropTypes.func,
     navigateToSelectWallet: PropTypes.func,
     onCreateWalletFromJSON: PropTypes.func,
-    // onSubmitCreateAccountImportPrivateKey: PropTypes.func,
   }
 
   constructor (props) {
@@ -111,7 +102,7 @@ class WalletImportPage extends PureComponent {
   }
 
   async onSubmitWallet (walletString) {
-    let walletJSON = this.convertWalletFileToJSON(walletString)
+    const walletJSON = this.convertWalletFileToJSON(walletString)
     this.setState({ walletJSON })
 
     let response = null, userName = null, profile = null

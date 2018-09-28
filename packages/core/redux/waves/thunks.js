@@ -13,6 +13,8 @@ import { getSelectedNetwork } from '../persistAccount/selectors'
 import TxExecModel from '../../models/TxExecModel'
 import { DUCK_TOKENS } from '../tokens/constants'
 import tokenService from '../../services/TokenService'
+import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
+import { showSignerModal, closeSignerModal } from '../modals/thunks'
 
 export const executeWavesTransaction = ({ tx, options }) => async (dispatch, getState) => {
   const state = getState()
@@ -81,11 +83,15 @@ const processTransaction = ({ entry, signer }) => async (dispatch) => {
   }
 }
 
-const signTransaction = ({ entry, signer }) => async (dispatch) => {
+const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   try {
+    const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
     dispatch(WavesActions.wavesTxSignTransaction({ entry, signer }))
 
-    const signedPreparedTx = await signer.signTransaction(entry.tx.prepared)
+    dispatch(showSignerModal())
+    const signedPreparedTx = await signer.signTransaction(entry.tx.prepared, selectedWallet.encrypted[0].path)
+    dispatch(closeSignerModal())
+
     const newEntry = WavesUtils.createWavesTxEntryModel({ ...entry, tx: new TxExecModel({
       ...entry.tx,
       prepared: signedPreparedTx,
@@ -94,6 +100,8 @@ const signTransaction = ({ entry, signer }) => async (dispatch) => {
 
     return newEntry
   } catch (error) {
+    dispatch(closeSignerModal())
+
     dispatch(WavesActions.wavesTxSignTransactionError({ error }))
     throw error
   }
