@@ -4,8 +4,8 @@
  */
 
 import EventEmitter from 'events'
-import ipfs from '@chronobank/core/utils/IPFS'
 import BigNumber from 'bignumber.js'
+import ipfs from '../utils/IPFS'
 import TxExecModel from '../models/TxExecModel'
 import web3Converter from '../utils/Web3Converter'
 import { DEFAULT_GAS } from './constants'

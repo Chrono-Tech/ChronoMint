@@ -5,7 +5,7 @@
 
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
-import WavesDAO from '@chronobank/core/dao/WavesDAO'
+import WavesDAO from '../../dao/WavesDAO'
 import { bccDAO, btcDAO, ltcDAO } from '../../dao/BitcoinDAO'
 import ERC20ManagerDAO from '../../dao/ERC20ManagerDAO'
 import ethereumDAO from '../../dao/EthereumDAO'

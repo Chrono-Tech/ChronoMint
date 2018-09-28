@@ -4,7 +4,7 @@
  *
  * @flow
  */
-import FileModel, { fileConfig } from '@chronobank/core/models/FileSelect/FileModel'
+import FileModel, { fileConfig } from '../models/FileSelect/FileModel'
 
 const noopURL = {
   createObjectURL () {
