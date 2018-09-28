@@ -12,7 +12,7 @@ import { modalsOpen, modalsClose } from '../modals/actions'
  */
 
 export const showSignerModal = () => (dispatch, getState) => {
-  const modalComponentName = getSignerModalComponentName()(getState())
+  const modalComponentName = getSignerModalComponentName(getState())
 
   if (modalComponentName) {
     dispatch(modalsOpen({
@@ -22,7 +22,7 @@ export const showSignerModal = () => (dispatch, getState) => {
 }
 
 export const closeSignerModal = () => (dispatch, getState) => {
-  const modalComponentName = getSignerModalComponentName()(getState())
+  const modalComponentName = getSignerModalComponentName(getState())
 
   if (modalComponentName) {
     dispatch(modalsClose({

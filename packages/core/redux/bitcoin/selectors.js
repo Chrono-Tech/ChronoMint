@@ -120,8 +120,8 @@ export const getLitecoinSigner = (state) => {
 }
 
 export const getSignerModalComponentName = (state) => {
-  const account = getPersistAccount(state)
-  switch (account.encrypted[0].type) {
+  const { selectedWallet } = getPersistAccount(state)
+  switch (selectedWallet.encrypted[0].type) {
     // feel free to add your components here. We have only one component at the moment
     case WALLET_TYPE_TREZOR_MOCK:
     case WALLET_TYPE_TREZOR:
