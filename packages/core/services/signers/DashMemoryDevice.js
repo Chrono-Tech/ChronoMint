@@ -3,13 +3,21 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import EventEmitter from 'events'
+import { Address, PrivateKey, PublicKey } from 'dashcore-lib'
+import { dashProvider } from '@chronobank/login/network/DashProvider'
 
-export default class DashMemoryDevice extends EventEmitter {
-  constructor () {
-    super()
+export default class DashMemoryDevice {
+  constructor ({ privateKey, network }) {
+    this.privateKey = privateKey
+    this.network = network
     Object.freeze(this)
   }
 
-  // @todo going to be implemented
+  getAddress () {
+    return new Address(PublicKey(new PrivateKey(this.privateKey)), dashProvider.getNetworkType()).toString()
+  }
+
+  signTransaction (tx) {
+    tx.sign(new PrivateKey(this.privateKey))
+  }
 }

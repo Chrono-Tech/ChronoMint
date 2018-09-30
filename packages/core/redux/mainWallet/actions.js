@@ -31,6 +31,7 @@ import { WALLETS_SET_IS_TIME_REQUIRED, WALLETS_UPDATE_BALANCE } from '../wallets
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
@@ -156,6 +157,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
         case BLOCKCHAIN_NEM:
         case BLOCKCHAIN_BITCOIN:
         case BLOCKCHAIN_BITCOIN_CASH:
+        case BLOCKCHAIN_DASH:
         case BLOCKCHAIN_LITECOIN:
         case BLOCKCHAIN_WAVES:
           const wallet = getWallet(token.blockchain(), account)(getState())

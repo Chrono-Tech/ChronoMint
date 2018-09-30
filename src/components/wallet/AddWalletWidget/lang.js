@@ -9,6 +9,7 @@ export default {
   en: {
     addWallet: 'Add a Wallet',
     btc: 'Bitcoin Wallet',
+    dash: 'Dash Wallet',
     ltc: 'Litecoin Wallet',
     eth: 'Ethereum Wallet',
     nem: 'NEM Wallet',
