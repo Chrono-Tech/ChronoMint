@@ -8,7 +8,7 @@ import type { Dispatch } from 'redux'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 import { modalsOpen } from '../modals/actions'
 import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
-import * as converter from './converter'
+import { getBalanceDataParser } from './converter'
 import {
   TransferNoticeModel,
 } from '../../models'
@@ -141,7 +141,7 @@ export const getAddressInfo =  (address: string, blockchain: string) => (dispatc
     .then((response) => {
       dispatch(BitcoinActions.bitcoinHttpGetAddressInfoSuccess(response.data, response.config.host))
       // TODO: need to check that res.status is equal 200 etc. Or it is better to check right in fetchPersonInfo.
-      return converter.addressInfo(response) // TODO: to verify, that 'data' is JSON, not HTML like 502.html or 404.html
+      return getBalanceDataParser(blockchain, netType)(response) // TODO: to verify, that 'data' is JSON, not HTML like 502.html or 404.html
     })
     .catch((error) => {
       dispatch(BitcoinActions.bitcoinHttpGetAddressInfoFailure(error))

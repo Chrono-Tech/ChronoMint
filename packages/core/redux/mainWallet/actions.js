@@ -36,11 +36,13 @@ import {
   BCC,
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
   BTC,
+  DASH,
   ETH,
   EVENT_APPROVAL_TRANSFER,
   EVENT_NEW_TRANSFER,
@@ -164,6 +166,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
         case BLOCKCHAIN_NEM:
         case BLOCKCHAIN_BITCOIN:
         case BLOCKCHAIN_BITCOIN_CASH:
+        case BLOCKCHAIN_DASH:
         case BLOCKCHAIN_LITECOIN:
         case BLOCKCHAIN_WAVES:
           const wallet = getWallet(token.blockchain(), account)(getState())
@@ -369,6 +372,9 @@ export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
       break
     case BLOCKCHAIN_BITCOIN_CASH:
       dao = tokenService.getDAO(BCC)
+      break
+    case BLOCKCHAIN_DASH:
+      dao = tokenService.getDAO(DASH)
       break
     case BLOCKCHAIN_LITECOIN:
       dao = tokenService.getDAO(LTC)

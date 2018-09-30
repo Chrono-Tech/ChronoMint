@@ -68,6 +68,22 @@ const BCC_TESTNET_NODE = new BitcoinBlockexplorerNode({
   trace: true,
 })
 
+const DASH_MAINNET_NODE = new BitcoinBlockexplorerNode({
+  api: axios.create({
+    baseURL: 'https://insight.dash.siampm.com/api',
+    timeout: 10000,
+  }),
+  trace: false,
+})
+
+const DASH_TESTNET_NODE = new BitcoinBlockexplorerNode({
+  api: axios.create({
+    baseURL: 'https://testnet-insight.dashevo.org/insight-api-dash',
+    timeout: 10000,
+  }),
+  trace: true,
+})
+
 export const LTC_MAINNET_NODE = new BitcoinMiddlewareNode({
   feeRate: 900,
   api: axios.create({
@@ -118,6 +134,12 @@ export function selectBCCNode (network) {
   return network['Bitcoin Cash'] === 'testnet'
     ? BCC_TESTNET_NODE
     : BCC_MAINNET_NODE
+}
+
+export function selectDASHNode (network) {
+  return network.Dash === 'testnet'
+    ? DASH_TESTNET_NODE
+    : DASH_MAINNET_NODE
 }
 
 export function selectLTCNode (network) {
