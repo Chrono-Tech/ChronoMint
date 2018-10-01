@@ -61,6 +61,6 @@ export default class EosMemoryDevice extends EventEmitter {
       transactionHeaders,
     })
 
-    return eos.transfer(tx.from, tx.to, tx.amount, tx.memo, false) // `false` is a shortcut for {broadcast: false}
+    return eos.transfer(tx.from, tx.to, tx.quantity, tx.memo, false) // `false` is a shortcut for {broadcast: false}
   }
 }

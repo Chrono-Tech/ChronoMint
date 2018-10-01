@@ -3,23 +3,26 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import BigNumber from 'bignumber.js'
 import Eos from 'eosjs'
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import * as EosActions from './actions'
 import * as EosUtils from './utils'
 import Amount from '../../models/Amount'
 import WalletModel from '../../models/wallet/WalletModel'
-import { BLOCKCHAIN_EOS } from './constants'
+import { BLOCKCHAIN_EOS, PAGE_SIZE } from './constants'
 import { describePendingEosTx } from '../../describers'
 import { eosPendingEntrySelector, EOSPendingSelector, EOSSelector, getEosSigner, getEOSWallet } from './selectors/mainSelectors'
 import { ErrorNoticeModel, TransferNoticeModel } from '../../models'
 import { notify } from '../notifier/actions'
 import { getSelectedNetwork } from '../persistAccount/selectors'
+import TxHistoryModel from '../../models/wallet/TxHistoryModel'
+import TxExecModel from '../../models/TxExecModel'
 
 const notifyEosTransfer = (entry) => (dispatch) => {
-  const { tx: { from, to, amount } } = entry
+  const { tx: { from, to, quantity } } = entry
 
-  dispatch(notify(new TransferNoticeModel({ amount, from, to })))
+  dispatch(notify(new TransferNoticeModel({ amount: quantity, from, to })))
 }
 
 const notifyEosError = (e) => notify(new ErrorNoticeModel({ message: e.message }))
@@ -45,10 +48,10 @@ const eosTxStatus = (key, address, props) => (dispatch, getState) => {
   ))
 }
 
-export const executeEosTransaction = (wallet, amount, to, memo = '') => async (dispatch) => {
+export const executeEosTransaction = (wallet, quantity, to, memo = '') => async (dispatch) => {
   const tx = {
     from: wallet.address,
-    amount,
+    quantity,
     to,
     memo,
   }
@@ -192,6 +195,7 @@ export const getAccountBalances = (account) => async (dispatch, getState) => {
       }, {})
 
       dispatch(EosActions.updateWallet(new WalletModel({ ...wallet, balances })))
+      dispatch(getEOSWalletTransactions(wallet.id))
     }
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -216,4 +220,67 @@ export const setEos = () => async (dispatch, getState) => {
 export const setEOSWalletName = (walletId, name) => (dispatch, getState) => {
   const wallet = getEOSWallet(walletId)(getState())
   dispatch(EosActions.updateWallet(new WalletModel({ ...wallet, name })))
+}
+
+export const getEOSWalletTransactions = (walletId) => async (dispatch, getState) => {
+  const state = getState()
+  const wallet = getEOSWallet(walletId)(state)
+  const eos = EOSSelector(state)
+  try {
+    const transactionsList = wallet.transactions
+    let firstAction = transactionsList.firstAction
+
+    dispatch(EosActions.updateWallet(new WalletModel({
+      ...wallet,
+      transactions: new TxHistoryModel({ ...wallet.transactions, isLoading: true }),
+    })))
+
+    const { actions } = await eos.getActions(wallet.address, firstAction || -1, -PAGE_SIZE)
+
+    const blocks = actions
+      .reverse()
+      .reduce((accumulator, action) => {
+        const block = action.block_num
+        const act = action.action_trace.act
+        const { from, to, memo, quantity } = act.data
+        const [value, symbol] = quantity.split(' ')
+
+        const tx = new TxExecModel({
+          contract: null,
+          func: action.action_trace.act.name,
+          blockchain: BLOCKCHAIN_EOS,
+          symbol,
+          from,
+          to,
+          value: new BigNumber(value),
+          memo,
+          hash: action.action_trace.trx_id,
+          data: action.action_trace.act.hex_data,
+        })
+        firstAction = firstAction
+          ? Math.min(action.account_action_seq, firstAction)
+          : action.account_action_seq
+
+        if (!accumulator.hasOwnProperty(block)) {
+          accumulator[block] = {
+            transactions: {},
+          }
+        }
+        accumulator[block].transactions[tx.hash] = tx
+        return accumulator
+      }, { ...wallet.transactions.blocks })
+
+    dispatch(EosActions.updateWallet(new WalletModel({
+      ...wallet, transactions: new TxHistoryModel({
+        ...wallet.transactions,
+        blocks,
+        firstAction,
+        isLoaded: true,
+        isLoading: false,
+      }),
+    })))
+  } catch (error) {
+    // TODO @abdulov remove console.log
+    console.log('%c error', 'background: #222; color: #fff', error)
+  }
 }

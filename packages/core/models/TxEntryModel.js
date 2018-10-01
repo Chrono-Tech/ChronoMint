@@ -4,12 +4,11 @@
  */
 
 import PropTypes from 'prop-types'
-import TxExecModel from './TxExecModel'
 import AbstractModel from './AbstractModel'
 
 const schemaFactory = () => ({
   key: PropTypes.string.isRequired,
-  tx: PropTypes.instanceOf(TxExecModel).isRequired,
+  tx: PropTypes.object.isRequired,
   hash: PropTypes.string,
   raw: PropTypes.string,
   receipt: PropTypes.object,

@@ -68,11 +68,12 @@ export const priceTokenSelector = (value: Amount) => createSelector(
 export const makeGetTxListForWallet = (blockchain: string, address: string) => createSelector(
   [
     getWallet(`${blockchain}-${address}`),
-    getEOSWallet(`${blockchain}-${address}`),
     getEthMultisigWallet(`${blockchain}-${address}`),
   ],
-  (wallet, eosWallet, ethMultisigWallet) => {
-    return (wallet || eosWallet || ethMultisigWallet).transactions.transactions
+  (wallet, ethMultisigWallet) => {
+    // TODO @abdulov remove console.log
+    console.log('%c wallet, ethMultisigWallet', 'background: #222; color: #fff', wallet, ethMultisigWallet)
+    return (wallet || ethMultisigWallet).transactions.transactions
   },
 )
 
