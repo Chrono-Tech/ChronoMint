@@ -17,4 +17,8 @@ export default class DashMemoryDevice {
     const networkType = this.network === bitcoin.networks.testnet ? Networks.testnet : Networks.livenet;
     return new Address(PublicKey(new PrivateKey(this.privateKey)), networkType).toString();
   }
+
+  signTransaction (tx) {
+    tx.sign(new PrivateKey(this.privateKey))
+  }
 }

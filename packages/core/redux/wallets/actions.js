@@ -30,6 +30,7 @@ import { getMainEthWallet, getWallets } from './selectors/models'
 import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { AllowanceCollection } from '../../models'
+import { executeDashTransaction } from '../dash/thunks'
 import { executeTransaction } from '../ethereum/thunks'
 import { executeWavesTransaction } from '../waves/thunks'
 import * as BitcoinThunks from '../bitcoin/thunks'
@@ -41,7 +42,8 @@ import {
 } from './constants'
 import { executeNemTransaction } from '../nem/thunks'
 import { getPersistAccount, getEthereumSigner } from '../persistAccount/selectors'
-import { getBitcoinCashSigner, getBitcoinSigner, getDashSigner, getLitecoinSigner } from '../bitcoin/selectors'
+import { getBitcoinCashSigner, getBitcoinSigner, getLitecoinSigner } from '../bitcoin/selectors'
+import { getDashSigner } from '../dash/selectors'
 import { getNemSigner } from '../nem/selectors'
 import { getWavesSigner } from '../waves/selectors'
 
@@ -320,6 +322,7 @@ export const mainTransfer = (
       [BLOCKCHAIN_ETHEREUM]: executeTransaction,
       [BLOCKCHAIN_NEM]: executeNemTransaction,
       [BLOCKCHAIN_BITCOIN]: BitcoinThunks.executeBitcoinTransaction,
+      [BLOCKCHAIN_DASH]: executeDashTransaction,
       [BLOCKCHAIN_WAVES]: executeWavesTransaction,
     }
 
