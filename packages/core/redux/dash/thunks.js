@@ -5,16 +5,19 @@
 import { Address, Transaction } from 'dashcore-lib';
 import BigNumber from 'bignumber.js'
 
-import { TxExecModel } from '../../models'
+import { TransferNoticeModel, TxExecModel } from '../../models'
 import { describePendingBitcoinTx } from '../../describers'
+
 import { getToken } from '../tokens/selectors'
 import { getSelectedNetwork } from '../persistAccount/selectors'
+
+import { modalsOpen } from '../modals/actions'
+import { notify } from '../notifier/actions'
 
 import * as BitcoinActions from '../bitcoin/actions'
 import { getAddressUTXOS } from '../bitcoin/thunks'
 import * as BitcoinUtils from '../bitcoin/utils'
 
-import { modalsOpen } from '../modals/actions'
 import { getDashSigner } from './selectors'
 import DashMiddlewareService from './DashMiddlewareService'
 
@@ -57,7 +60,13 @@ export const executeDashTransaction = ({ tx, options }) => async (dispatch, getS
         description,
         accept: () => async (dispatch) => {
           const response = await DashMiddlewareService.requestSendTx(transaction, blockchain, network[blockchain])
-          dispatch(BitcoinActions.bitcoinExecuteTxSuccess(response.data))
+          dispatch(notify(new TransferNoticeModel({
+            value: token.removeDecimals(tx.value),
+            symbol: token.symbol(),
+            from: tx.from,
+            to: tx.to,
+          })))
+          return dispatch(BitcoinActions.bitcoinExecuteTxSuccess(response.data))
         },
         reject: (entry) => (dispatch) => dispatch(BitcoinActions.bitcoinTxReject(entry)),
       },
