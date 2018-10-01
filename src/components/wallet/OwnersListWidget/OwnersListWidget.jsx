@@ -39,7 +39,7 @@ export default class OwnersListWidget extends PureComponent {
   render () {
     const { wallet } = this.props
 
-    if (!wallet.isMultisig) {
+    if (wallet && !wallet.isMultisig) {
       return null
     }
 
@@ -49,11 +49,17 @@ export default class OwnersListWidget extends PureComponent {
           <Translate value={`${prefix}.title`} />
         </div>
         <div styleName='body'>
-          {!wallet
-            ? <Preloader />
-            : wallet.owners.map((item) => this.renderRow(item))
+          {wallet
+            ? wallet.owners.map((item) => this.renderRow(item))
+            : <Preloader />
           }
-          <div styleName='signatures'><Translate value={`${prefix}.signatures`} s1={wallet.requiredSignatures} s2={wallet.owners.length} /></div>
+          <div styleName='signatures'>
+            <Translate
+              value={`${prefix}.signatures`}
+              s1={wallet && wallet.requiredSignatures}
+              s2={wallet && wallet.owners.length}
+            />
+          </div>
         </div>
       </div>
     )

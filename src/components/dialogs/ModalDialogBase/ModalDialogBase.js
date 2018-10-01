@@ -40,7 +40,7 @@ class ModalDialogBase extends PureComponent {
         transitionLeaveTimeout={TRANSITION_TIMEOUT}
       >
         <ModalDialog
-          onClose={() => this.props.closeModal()}
+          onClose={this.props.closeModal}
         >
           <div styleName='root'>
             <div styleName='header'>

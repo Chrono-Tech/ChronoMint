@@ -124,7 +124,7 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
   const history = allHistory[historyKey]
 
   const toBlock = await web3.eth.getBlock(
-    history.cursor == null ? 'latest' : Math.max(0, history.cursor - 1),
+    (history && history.cursor == null) ? 'latest' : Math.max(0, ( history && history.cursor ) - 1)
   )
 
   let fromBlock = await web3.eth.getBlock(

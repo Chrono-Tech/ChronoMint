@@ -11,12 +11,9 @@ import { connect } from 'react-redux'
 import { selectWallet } from '@chronobank/core/redux/wallet/actions'
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
-import { TOKEN_ICONS } from 'assets'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import Button from 'components/common/ui/Button/Button'
-import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { getMainSymbolForBlockchain, getTokens, isBTCLikeBlockchain } from '@chronobank/core/redux/tokens/selectors'
-import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import { makeGetTxListForWallet } from '@chronobank/core/redux/wallet/selectors'
 import { walletAmountSelector } from '@chronobank/core/redux/wallets/selectors/balances'
 import { getWalletInfo } from '@chronobank/core/redux/wallets/selectors/wallet'
@@ -25,11 +22,11 @@ import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWa
 import './WalletWidget.scss'
 import { prefix } from './lang'
 import Moment from '../../common/Moment'
-import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
 import WalletMainCoinBalance from './WalletMainCoinBalance'
 import WalletTokensList from './WalletTokensList'
 import WalletName from '../WalletName/WalletName'
 import BalanceSubscription from '../../micros/BalanceSubscription/BalanceSubscription'
+import WalletToken from '../WalletToken/WalletToken'
 
 function makeMapStateToProps (state, ownProps) {
   const getWallet = getWalletInfo(ownProps.blockchain, ownProps.address)
@@ -147,14 +144,17 @@ export default class WalletWidget extends PureComponent {
         <div styleName='owners-list'>
           {ownersList.slice(0, 2).map((owner) => {
             return (
-              <div styleName='owner-icon'>
+              <div
+                key={owner}
+                styleName='owner-icon'
+              >
                 <div styleName='owner' className='chronobank-icon' title={owner}>profile</div>
               </div>
             )
           })
           }
           <div styleName='owner-counter'>
-            <div styleName='counter'>+{ownersList.length - 2}</div>
+            <div>+{ownersList.length - 2}</div>
           </div>
         </div>
       </div>
@@ -232,12 +232,11 @@ export default class WalletWidget extends PureComponent {
                 <div styleName='settings-icon' className='chronobank-icon' onClick={this.handleOpenSettings}>settings
                 </div>
               </div>
-              <div styleName='token-container'>
-                {blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}
-                <div styleName='token-icon'>
-                  <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()] || TOKEN_ICONS.DEFAULT} />
-                </div>
-              </div>
+              <WalletToken
+                blockchain={blockchain}
+                wallet={wallet}
+                token={token}
+              />
               <div styleName='content-container'>
                 <Link styleName='addressWrapper' href='' to='/wallet' onClick={this.handleSelectWallet}>
                   <div styleName='address-title'>

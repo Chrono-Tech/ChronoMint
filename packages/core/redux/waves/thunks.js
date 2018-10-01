@@ -24,7 +24,7 @@ export const executeWavesTransaction = ({ tx, options }) => async (dispatch, get
   const entry = WavesUtils.createWavesTxEntryModel({ tx: prepared }, options)
 
   await dispatch(WavesActions.wavesTxCreate(entry))
-  dispatch(submitTransaction(entry, options))
+  dispatch(submitTransaction(entry))
 }
 
 const submitTransaction = (entry) => async (dispatch, getState) => {
@@ -48,9 +48,9 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
   dispatch(WavesActions.wavesTxAccept(entry))
 
   const state = getState()
-  const signer = getWavesSigner(state, entry.blockchain)
+  const signer = getWavesSigner(state)
 
-  const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key, entry.blockchain)(state)
+  const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key)(state)
   if (!selectedEntry) {
     // eslint-disable-next-line no-console
     console.error('entry is null', entry)

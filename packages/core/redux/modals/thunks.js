@@ -4,7 +4,7 @@
  */
 
 import { getSignerModalComponentName } from '../bitcoin/selectors'
-import { modalsOpen, modalsClose } from '../modals/actions'
+import { modalsOpen, modalsClose } from './actions'
 
 /**
  * Copyright 2017–2018, LaborX PTY

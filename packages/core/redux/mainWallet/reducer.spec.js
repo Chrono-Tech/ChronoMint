@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import { accounts } from 'specsInit'
 import MainWallet from '../../models/wallet/MainWalletModel'
@@ -14,7 +13,6 @@ import * as a from './actions'
 import reducer from './reducer'
 
 const token1 = new TokenModel({ symbol: 'TK1' })
-const token2 = new TokenModel({ symbol: 'TK2' })
 
 const tokens = new Immutable.Map({ [token1.symbol()]: token1 })
 

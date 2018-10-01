@@ -25,7 +25,7 @@ describe('watcher actions', () => {
   })
 
   it('should dispatch watcher', async () => {
-    await store.dispatch(actions.watcher())
+    await store.dispatch(actions.watcher({}))
     expect(store.getActions()).toMatchSnapshot()
   })
 })
