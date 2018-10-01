@@ -63,13 +63,13 @@ export default class MenuAssetsManagerMoreInfo extends PureComponent {
         </Link>
 
         {Object.values(assetsList).map((token: TokenModel) => {
-          if (!token.address()) {
+          if (!token || !token.address || !token.address()) {
             return null
           }
           return (
             <Link to='/assets' styleName='action' key={token.address()} onClick={this.handleSelectLink}>
               <div styleName='actionIcon'>
-                <IPFSImage multihash={token && token.icon()} fallback={iconTokenDefaultSVG} />
+                <IPFSImage multihash={token.icon()} fallback={iconTokenDefaultSVG} />
               </div>
               <div styleName='actionTitle'>
                 {token.symbol()}

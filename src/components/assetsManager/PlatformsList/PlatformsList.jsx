@@ -44,28 +44,39 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleSelectPlatform: (platformAddress) => dispatch(selectPlatform(platformAddress)),
-    handleSelectToken: (token: TokenModel) => dispatch(selectToken(token)),
-    handleDetachPlatform: (platformAddress) => dispatch(detachPlatform(platformAddress)),
+    onSelectPlatform: (platformAddress) => dispatch(selectPlatform(platformAddress)),
+    onSelectToken: (token: TokenModel) => dispatch(selectToken(token)),
+    onDetachPlatform: (platformAddress) => dispatch(detachPlatform(platformAddress)),
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class PlatformsList extends PureComponent {
   static propTypes = {
-    handleSelectToken: PropTypes.func.isRequired,
+    onSelectToken: PropTypes.func.isRequired,
     selectedToken: PropTypes.string,
-    handleSelectPlatform: PropTypes.func.isRequired,
+    onSelectPlatform: PropTypes.func.isRequired,
     selectedPlatform: PropTypes.string,
-    handleDetachPlatform: PropTypes.func,
+    onDetachPlatform: PropTypes.func,
     platformsList: PropTypes.arrayOf(PropTypes.object),
     tokens: PropTypes.instanceOf(TokensCollection),
     assets: PropTypes.objectOf(PropTypes.object),
     assetsManagerCountsLoading: PropTypes.bool,
   }
 
-  handleSelectPlatform (platformAddress) {
-    this.props.handleSelectPlatform(this.props.selectedPlatform === platformAddress ? null : platformAddress)
+  handleSelectPlatform = (platformAddress) => () => {
+    this.props.onSelectPlatform(this.props.selectedPlatform === platformAddress ? null : platformAddress)
+  }
+
+  handleSelectToken = (token = {}) => () => {
+    try {
+      if (token.isPending()) return
+      if (!token.isFetched()) return
+
+      return this.props.onSelectToken(token)
+    } catch (e) {
+      return
+    }
   }
 
   renderTokenList ({ assets, tokens, selectedToken }) {
@@ -99,7 +110,7 @@ export default class PlatformsList extends PureComponent {
               <div
                 key={asset.address}
                 styleName={classnames('tokenItem', { 'selected': selectedToken !== null && selectedToken === token.symbol() })}
-                onClick={() => !token.isPending() && token.isFetched() ? this.props.handleSelectToken(token) : undefined}
+                onClick={this.handleSelectToken(token)}
               >
                 <div styleName='tokenIcon'>
                   <IPFSImage styleName='content' multihash={token.icon()} fallback={tokenIconStubSVG} />
@@ -114,7 +125,7 @@ export default class PlatformsList extends PureComponent {
                     token.isFetched() && asset.totalSupply &&
                     <TokenValue
                       style={{ fontSize: '24px' }}
-                      value={new Amount(token ? asset.totalSupply : asset.totalSupply, token.symbol())}
+                      value={new Amount(asset.totalSupply, token.symbol())}
                     />
                   }
                 </div>
@@ -136,9 +147,7 @@ export default class PlatformsList extends PureComponent {
               <div styleName={classnames('platformHeader', { 'selected': selectedPlatform === address })}>
                 <div
                   styleName='platformTitleWrap'
-                  onClick={() => {
-                    this.handleSelectPlatform(address)
-                  }}
+                  onClick={this.handleSelectPlatform(address)}
                 >
                   <div styleName='platformIcon' />
                   <div styleName='subTitle'><Translate value={prefix('platform')} /></div>
@@ -146,7 +155,6 @@ export default class PlatformsList extends PureComponent {
                     ? <div styleName='platformTitle'>{name}&nbsp;( <small>{address}</small> )</div>
                     : <div styleName='platformTitle'>{address}</div>
                   }
-                  {/*<button onClick={() => handleDetachPlatform(address)}>detach platform</button>*/}
                 </div>
               </div>
               {selectedPlatform === address && this.renderTokenList({ assets, tokens, selectedToken })}
@@ -168,7 +176,7 @@ export default class PlatformsList extends PureComponent {
             platformsList={this.props.platformsList}
             tokens={this.props.tokens}
             selectedToken={this.props.selectedToken}
-            handleDetachPlatform={this.props.handleDetachPlatform}
+            onDetachPlatform={this.props.onDetachPlatform}
             assets={this.props.assets}
           >
             {this.renderPlatformsList}

@@ -116,9 +116,11 @@
     "uglify-js": "github:mishoo/UglifyJS2#harmony",
     "url-loader": "0.5.8",
     "webpack": "3.10.0",
+    "webpack-bundle-analyzer": "^3.0.2",
     "webpack-compile-time-plugin": "^1.0.0",
     "webpack-dev-server": "2.9.4",
-    "webpack-filter-warnings-plugin": "^1.2.0"
+    "webpack-filter-warnings-plugin": "^1.2.0",
+    "webpack-messages": "^2.0.3"
   },
   "dependencies": {
     "@material-ui/core": "latest",

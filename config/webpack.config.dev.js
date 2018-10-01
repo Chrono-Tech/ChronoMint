@@ -9,6 +9,7 @@ const babel = require('./babel.dev')
 const CompileTimePlugin = require('webpack-compile-time-plugin')
 const CircularDependencyPlugin = require('circular-dependency-plugin')
 const FilterWarningsPlugin = require('webpack-filter-warnings-plugin')
+const WebpackMessages = require('webpack-messages')
 
 const config = require('./webpack.config.base.js')
 
@@ -37,6 +38,10 @@ module.exports = config.buildConfig(
     },
     babel,
     plugins: [
+      new WebpackMessages({
+        name: 'client',
+        logger: str => console.log(`>> ${str}`)
+      }),
       new CircularDependencyPlugin({
         // `onStart` is called before the cycle detection starts
         onStart ({ compilation }) {

@@ -243,10 +243,7 @@ export const initLoginPage = () =>
       return
     }
 
-    if (!selectedWallet) {
-      dispatch(LoginUINavActions.navigateToCreateAccount())
-      return
-    }
+    dispatch(LoginUINavActions.navigateToCreateAccount())
   }
 
 /*

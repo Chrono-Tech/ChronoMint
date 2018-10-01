@@ -70,7 +70,7 @@ class LoginWithTrezor extends Component {
         }
 
         {
-          deviceList.length && (
+          deviceList.length > 0 && (
             <div styleName='account'>
               {deviceList.map(this._buildItem)}
             </div>

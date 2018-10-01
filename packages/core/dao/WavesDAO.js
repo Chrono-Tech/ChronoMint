@@ -192,7 +192,7 @@ export default class WavesDAO extends EventEmitter {
       this.emit(EVENT_UPDATE_BALANCE, {
         account,
         time,
-        balance: readBalanceValue(this._symbol, balance, this._asset),
+        balance: readBalanceValue(this._symbol, balance),
       })
     })
   }

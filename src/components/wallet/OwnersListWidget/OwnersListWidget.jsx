@@ -6,7 +6,6 @@
 import PropTypes from 'prop-types'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
-import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import Preloader from 'components/common/Preloader/Preloader'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
 
@@ -15,12 +14,7 @@ import './OwnersListWidget.scss'
 
 export default class OwnersListWidget extends PureComponent {
   static propTypes = {
-    wallet: PTWallet,
-    revoke: PropTypes.func,
-    confirm: PropTypes.func,
-    getPendingData: PropTypes.func,
-    tokens: PropTypes.instanceOf(TokensCollection),
-    locale: PropTypes.string,
+    wallet: PropTypes.instanceOf(PTWallet),
   }
 
   renderRow (item: string) {
@@ -39,7 +33,7 @@ export default class OwnersListWidget extends PureComponent {
   render () {
     const { wallet } = this.props
 
-    if (!wallet.isMultisig) {
+    if (wallet && !wallet.isMultisig) {
       return null
     }
 
@@ -49,11 +43,17 @@ export default class OwnersListWidget extends PureComponent {
           <Translate value={`${prefix}.title`} />
         </div>
         <div styleName='body'>
-          {!wallet
-            ? <Preloader />
-            : wallet.owners.map((item) => this.renderRow(item))
+          {wallet
+            ? wallet.owners.map((item) => this.renderRow(item))
+            : <Preloader />
           }
-          <div styleName='signatures'><Translate value={`${prefix}.signatures`} s1={wallet.requiredSignatures} s2={wallet.owners.length} /></div>
+          <div styleName='signatures'>
+            <Translate
+              value={`${prefix}.signatures`}
+              s1={wallet && wallet.requiredSignatures}
+              s2={wallet && wallet.owners.length}
+            />
+          </div>
         </div>
       </div>
     )

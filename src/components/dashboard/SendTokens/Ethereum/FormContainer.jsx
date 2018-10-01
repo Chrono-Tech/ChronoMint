@@ -87,18 +87,18 @@ export default class SendTokens extends PureComponent {
     }
   }
 
+  getInitialValues = (token) => ({
+    feeMultiplier: 1,
+    symbol: token.symbol(),
+    mode: MODE_SIMPLE,
+  })
+
   render () {
     const { token } = this.props
 
-    const initialValues = {
-      feeMultiplier: 1,
-      symbol: token.symbol(),
-      mode: MODE_SIMPLE,
-    }
-
     return (
       <EthereumForm
-        initialValues={initialValues}
+        initialValues={this.getInitialValues(token)}
         onSubmit={this.handleSubmit}
         token={this.props.token}
         wallet={this.props.wallet}

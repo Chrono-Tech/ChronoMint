@@ -23,6 +23,7 @@ import './WalletWidgetDetail.scss'
 import { prefix } from './lang'
 import WalletMainCoinBalance from '../WalletWidget/WalletMainCoinBalance'
 import WalletName from '../WalletName/WalletName'
+import WalletToken from '../WalletToken/WalletToken'
 
 function mapStateToProps (state, ownProps) {
   return {
@@ -98,6 +99,11 @@ export default class WalletWidgetDetail extends PureComponent {
         <div styleName='wallet-list-container'>
           <div styleName='wallet-container'>
             <div styleName='body'>
+              <WalletToken
+                blockchain={wallet.blockchain}
+                wallet={wallet}
+                token={token}
+              />
               <div styleName='token-container'>
                 {wallet.blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}
                 <div styleName='token-icon'>

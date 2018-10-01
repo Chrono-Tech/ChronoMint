@@ -20,7 +20,7 @@ export const createWavesTxEntryModel = (entry, options = {}) => {
     receipt: null,
     isSubmitted: true,
     isAccepted: false,
-    walletDerivedPath: options && options.walletDerivedPath,
+    walletDerivedPath: options.walletDerivedPath,
     symbol: options.symbol,
     ...entry,
   })

@@ -71,7 +71,7 @@ function mapStateToProps (state) {
   const spender = assetHolder.wallet()
   const networkType =  selectCurrentNetworkType(state)
   const isTestNetwork = networkType === 'testnet' // TODO: replace to TESTNET constant
-  const isShowTIMERequired = isTestNetwork && !wallet.isTIMERequired && balance && balance.isZero() && token.symbol() === 'TIME'
+  const isShowTIMERequired = isTestNetwork && !wallet.isTIMERequired && balance.isZero() && token.symbol() === 'TIME'
 
   return {
     isTestNetwork,
