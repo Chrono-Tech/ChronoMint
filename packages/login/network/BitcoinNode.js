@@ -70,7 +70,7 @@ const BCC_TESTNET_NODE = new BitcoinBlockexplorerNode({
 
 const DASH_MAINNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
-    baseURL: 'https://insight.dash.siampm.com/api',
+    baseURL: 'https://insight.dashevo.org/insight-api-dash',
     timeout: 10000,
   }),
   trace: false,

@@ -39,7 +39,7 @@ const blockExplorersMap = {
     testnet: 'https://tbcc.blockdozer.com/insight/tx',
   },
   [BLOCKCHAIN_DASH]: {
-    mainnet: 'https://insight.dash.siampm.com/api/tx',
+    mainnet: 'https://insight.dashevo.org/insight-api-dash/tx',
     testnet: 'https://testnet-insight.dashevo.org/insight-api-dash/tx',
   },
   [BLOCKCHAIN_LITECOIN]: {
