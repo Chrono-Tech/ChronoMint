@@ -17,7 +17,7 @@ import { ErrorNoticeModel, TransferNoticeModel } from '../../models'
 import { notify } from '../notifier/actions'
 import { getSelectedNetwork } from '../persistAccount/selectors'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
-import TxExecModel from '../../models/TxExecModel'
+import TxDescModel from '../../models/TxDescModel'
 
 const notifyEosTransfer = (entry) => (dispatch) => {
   const { tx: { from, to, quantity } } = entry
@@ -245,17 +245,18 @@ export const getEOSWalletTransactions = (walletId) => async (dispatch, getState)
         const { from, to, memo, quantity } = act.data
         const [value, symbol] = quantity.split(' ')
 
-        const tx = new TxExecModel({
-          contract: null,
-          func: action.action_trace.act.name,
-          blockchain: BLOCKCHAIN_EOS,
-          symbol,
-          from,
-          to,
-          value: new BigNumber(value),
-          memo,
+        const tx = new TxDescModel({
           hash: action.action_trace.trx_id,
-          data: action.action_trace.act.hex_data,
+          type: action.action_trace.act.name,
+          title: action.action_trace.act.name,
+          address: action.action_trace.trx_id,
+          amount: new Amount(value, symbol),
+          params: [
+            { name: 'from', value: from },
+            { name: 'to', value: to },
+            { name: 'quantity', value: quantity },
+            { name: 'memo', value: memo },
+          ],
         })
         firstAction = firstAction
           ? Math.min(action.account_action_seq, firstAction)

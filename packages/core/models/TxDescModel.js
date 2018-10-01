@@ -38,4 +38,8 @@ export default class TxDescModel extends AbstractModel {
     super(data, schemaFactory(), options)
     Object.freeze(this)
   }
+
+  get id () {
+    return this.hash
+  }
 }
