@@ -68,7 +68,7 @@ export const executeDashTransaction = ({ tx, options }) => async (dispatch, getS
           })))
           return dispatch(BitcoinActions.bitcoinExecuteTxSuccess(response.data))
         },
-        reject: (entry) => (dispatch) => dispatch(BitcoinActions.bitcoinTxReject(entry)),
+        reject: (entry) => (dispatch) => dispatch(BitcoinActions.bitcoinTxReject({ tx: entry, blockchain })),
       },
     }))
 
