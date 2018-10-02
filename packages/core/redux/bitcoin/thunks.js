@@ -23,6 +23,10 @@ import { pendingEntrySelector, getBitcoinSigner } from './selectors'
 import { notify, notifyError } from '../notifier/actions'
 import BitcoinMiddlewareService from './BitcoinMiddlewareService'
 
+import { getAddressUTXOS } from '../bitcoin-like-blockchain/thunks'
+
+export { getAddressUTXOS } from '../bitcoin-like-blockchain/thunks'
+
 /**
  * Start sending transaction. It will be signed and sent.
  * @param {tx} - Object {from, to, value}
@@ -145,30 +149,6 @@ export const getAddressInfo =  (address: string, blockchain: string) => (dispatc
     })
     .catch((error) => {
       dispatch(BitcoinActions.bitcoinHttpGetAddressInfoFailure(error))
-      throw new Error(error) // Rethrow for further processing, for example by SubmissionError
-    })
-}
-
-export const getAddressUTXOS = (address: string, blockchain: string) => (dispatch: Dispatch<any>, getState): Promise<*> => {
-  if (!blockchain || !address) {
-    const error = new Error('Malformed request. blockchain and/or address must be non-empty strings')
-    dispatch(BitcoinActions.bitcoinHttpGetUtxosFailure(error))
-    return Promise.reject(error)
-  }
-
-  const state = getState()
-  const { network } = getCurrentNetworkSelector(state)
-  const netType = network[blockchain]
-
-  dispatch(BitcoinActions.bitcoinHttpGetUtxos())
-  return BitcoinMiddlewareService.requestBitcoinAddressUTXOS(address, blockchain, netType)
-    .then((response) => {
-      dispatch(BitcoinActions.bitcoinHttpGetUtxosSuccess(response.data))
-      // TODO: need to check that res.status is equal 200 etc. Or it is better to check right in fetchPersonInfo.
-      return response.data // TODO: to verify, that 'data' is JSON, not HTML like 502.html or 404.html
-    })
-    .catch((error) => {
-      dispatch(BitcoinActions.bitcoinHttpGetUtxosFailure(error))
       throw new Error(error) // Rethrow for further processing, for example by SubmissionError
     })
 }

@@ -12,7 +12,6 @@ const URL_BLOCKS_HEIGHT = 'blocks/height'
 const URL_TX = 'tx'
 const URL_HISTORY = (address, skip, offset) => `tx/${address}/history?skip=${skip}&limit=${offset}`
 const URL_ADDRESS_INFO = (address) => `addr/${address}/balance`
-const URL_GET_UTXOS = (address) => `addr/${address}/utxo`
 const URL_SEND = 'tx/send'
 
 /** Class for HTTP requests to nodes in Testnet and Mainnet. */
@@ -119,23 +118,6 @@ export default class BitcoinMiddlewareService extends BitcoinLikeBlockchainMiddl
     return currentNode.request({
       method: 'GET',
       url: URL_ADDRESS_INFO(address),
-    })
-  }
-
-  /**
-   * Request UTXOS for specified address
-   * @return {Promise} Axios GET request for further processing.
-   */
-  static requestBitcoinAddressUTXOS (address, blockchain, networkType) {
-    const currentNode = BitcoinMiddlewareService.getCurrentNode(blockchain, networkType)
-    if (!currentNode) {
-      const error = BitcoinMiddlewareService.genErrorMessage(blockchain, networkType, `GET: ${URL_GET_UTXOS(address)}`)
-      return Promise.reject(error)
-    }
-
-    return currentNode.request({
-      method: 'GET',
-      url: URL_GET_UTXOS(address),
     })
   }
 

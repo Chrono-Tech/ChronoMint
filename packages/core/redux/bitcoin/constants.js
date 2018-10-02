@@ -7,6 +7,9 @@ export {
   BITCOIN_EXECUTE_TX,
   BITCOIN_EXECUTE_TX_FAILURE,
   BITCOIN_EXECUTE_TX_SUCCESS,
+  BITCOIN_HTTP_GET_UTXOS,
+  BITCOIN_HTTP_GET_UTXOS_SUCCESS,
+  BITCOIN_HTTP_GET_UTXOS_FAILURE,
   BITCOIN_TX_REJECT,
 } from '../bitcoin-like-blockchain/constants'
 
@@ -15,11 +18,6 @@ export const DUCK_BITCOIN = 'bitcoin'
 // Actions to operate with preparation of a transaction Create/update, accept before send or reject.
 export const BITCOIN_TX_UPDATE = 'BITCOIN/TX/UPDATE'
 export const BITCOIN_TX_ACCEPT = 'BITCOIN/TX/ACCEPT'
-
-// Get UTXOS (exits) for bitcoin-like blockchain
-export const BITCOIN_HTTP_GET_UTXOS = 'BITCOIN/HTTP/GET_UTXOS'
-export const BITCOIN_HTTP_GET_UTXOS_SUCCESS = 'BITCOIN/HTTP/GET_UTXOS_SUCCESS'
-export const BITCOIN_HTTP_GET_UTXOS_FAILURE = 'BITCOIN/HTTP/GET_UTXOS_FAILURE'
 
 // Get top latest block number of a selected bitcoin-like blockchain
 export const BITCOIN_HTTP_GET_BLOCKS_HEIGHT = 'BITCOIN/HTTP/GET_BLOCKS_HEIGHT'

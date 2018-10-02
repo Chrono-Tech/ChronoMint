@@ -15,7 +15,7 @@ import { modalsOpen } from '../modals/actions'
 import { notify } from '../notifier/actions'
 
 import * as BitcoinActions from '../bitcoin-like-blockchain/actions'
-import { getAddressUTXOS } from '../bitcoin/thunks'
+import { getAddressUTXOS } from '../bitcoin-like-blockchain/thunks'
 import * as BitcoinUtils from '../bitcoin/utils'
 
 import { getDashSigner } from './selectors'

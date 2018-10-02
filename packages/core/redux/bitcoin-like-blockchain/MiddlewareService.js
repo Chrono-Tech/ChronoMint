@@ -24,6 +24,8 @@ const DASH_TESTNET_NODE = axios.create({ baseURL: 'https://testnet-insight.dashe
 const LTC_MAINNET_NODE = axios.create({ baseURL: 'https://middleware-litecoin-mainnet-rest.chronobank.io', timeout: HTTP_TIMEOUT })
 const LTC_TESTNET_NODE = axios.create({ baseURL: 'https://middleware-litecoin-testnet-rest.chronobank.io', timeout: HTTP_TIMEOUT })
 
+const URL_GET_UTXOS = (address) => `addr/${address}/utxo`
+
 /** Class for HTTP requests to nodes in Testnet and Mainnet. */
 export default class BitcoinMiddlewareService {
   static service = {
@@ -61,5 +63,22 @@ export default class BitcoinMiddlewareService {
    */
   static getCurrentNode (blockchain, networkType) {
     return BitcoinMiddlewareService.service[blockchain] && BitcoinMiddlewareService.service[blockchain][networkType] || null
+  }
+
+  /**
+   * Request UTXOS for specified address
+   * @return {Promise} Axios GET request for further processing.
+   */
+  static requestBitcoinAddressUTXOS (address, blockchain, networkType) {
+    const currentNode = BitcoinMiddlewareService.getCurrentNode(blockchain, networkType)
+    if (!currentNode) {
+      const error = BitcoinMiddlewareService.genErrorMessage(blockchain, networkType, `GET: ${URL_GET_UTXOS(address)}`)
+      return Promise.reject(error)
+    }
+
+    return currentNode.request({
+      method: 'GET',
+      url: URL_GET_UTXOS(address),
+    })
   }
 }

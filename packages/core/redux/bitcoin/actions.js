@@ -9,6 +9,9 @@ export {
   bitcoinExecuteTx,
   bitcoinExecuteTxFailure,
   bitcoinExecuteTxSuccess,
+  bitcoinHttpGetUtxos,
+  bitcoinHttpGetUtxosFailure,
+  bitcoinHttpGetUtxosSuccess,
   bitcoinTxReject,
 } from '../bitcoin-like-blockchain/actions'
 
@@ -24,20 +27,6 @@ export const bitcoinTxAccept = (entry) => ({
   entry,
   isAccepted: true,
   isPending: true,
-})
-
-export const bitcoinHttpGetUtxos = () => ({
-  type: BtcConstants.BITCOIN_HTTP_GET_UTXOS,
-})
-
-export const bitcoinHttpGetUtxosSuccess = (data) => ({
-  type: BtcConstants.BITCOIN_HTTP_GET_UTXOS_SUCCESS,
-  data,
-})
-
-export const bitcoinHttpGetUtxosFailure = (error) => ({
-  type: BtcConstants.BITCOIN_HTTP_GET_UTXOS_FAILURE,
-  error,
 })
 
 export const bitcoinHttpGetBlocksHeight = () => ({

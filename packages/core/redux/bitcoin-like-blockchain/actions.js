@@ -24,3 +24,17 @@ export const bitcoinExecuteTxFailure = (error) => ({
   type: BtcConstants.BITCOIN_EXECUTE_TX_FAILURE,
   error,
 })
+
+export const bitcoinHttpGetUtxos = () => ({
+  type: BtcConstants.BITCOIN_HTTP_GET_UTXOS,
+})
+
+export const bitcoinHttpGetUtxosSuccess = (data) => ({
+  type: BtcConstants.BITCOIN_HTTP_GET_UTXOS_SUCCESS,
+  data,
+})
+
+export const bitcoinHttpGetUtxosFailure = (error) => ({
+  type: BtcConstants.BITCOIN_HTTP_GET_UTXOS_FAILURE,
+  error,
+})
