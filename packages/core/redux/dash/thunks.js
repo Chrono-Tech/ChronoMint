@@ -2,7 +2,7 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-import { Address, Transaction, Unit } from 'dashcore-lib';
+import { Address, Transaction, Unit } from 'dashcore-lib'
 import BigNumber from 'bignumber.js'
 
 import { TransferNoticeModel, TxExecModel } from '../../models'

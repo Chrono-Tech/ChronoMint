@@ -8,14 +8,14 @@ import { Address, Networks, PrivateKey, PublicKey } from 'dashcore-lib'
 
 export default class DashMemoryDevice {
   constructor ({ privateKey, network }) {
-    this.privateKey = privateKey;
-    this.network = network;
-    Object.freeze(this);
+    this.privateKey = privateKey
+    this.network = network
+    Object.freeze(this)
   }
 
   getAddress () {
-    const networkType = this.network === bitcoin.networks.testnet ? Networks.testnet : Networks.livenet;
-    return new Address(PublicKey(new PrivateKey(this.privateKey)), networkType).toString();
+    const networkType = this.network === bitcoin.networks.testnet ? Networks.testnet : Networks.livenet
+    return new Address(PublicKey(new PrivateKey(this.privateKey)), networkType).toString()
   }
 
   signTransaction (tx) {

@@ -17,8 +17,8 @@ export const createBitcoinTxEntryModel = (entry, options = {}) => {
     key: uuid(),
     isSubmitted: true,
     isAccepted: false,
-    walletDerivedPath: options && options.walletDerivedPath,
-    symbol: options && options.symbol,
+    walletDerivedPath: options.walletDerivedPath,
+    symbol: options.symbol,
     ...entry,
   })
 }

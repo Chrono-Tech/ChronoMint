@@ -65,7 +65,8 @@ export default class SelectWalletType extends PureComponent {
     const wallets = [
       {
         blockchain: BLOCKCHAIN_BITCOIN,
-        symbol: BTC,title: `${prefix}.btc`,
+        symbol: BTC,
+        title: `${prefix}.btc`,
       },
       {
         blockchain: BLOCKCHAIN_DASH,

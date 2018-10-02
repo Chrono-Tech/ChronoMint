@@ -17,17 +17,17 @@ import MetamaskPlugin from '../../services/signers/MetamaskPlugin'
 import DashMemoryDevice from '../../services/signers/DashMemoryDevice'
 
 export const getDashSigner = (state) => {
-  const account = getPersistAccount(state);
-  const networkData = getSelectedNetwork()(state);
-  const network = bitcoin.networks[networkData[BLOCKCHAIN_DASH]];
+  const account = getPersistAccount(state)
+  const networkData = getSelectedNetwork()(state)
+  const network = bitcoin.networks[networkData[BLOCKCHAIN_DASH]]
 
   switch (account.decryptedWallet.entry.encrypted[0].type) {
     case WALLET_TYPE_MEMORY: {
-      const privateKey = account.decryptedWallet.privateKey.slice(2, 66);
-      return new DashMemoryDevice({ privateKey, network });
+      const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
+      return new DashMemoryDevice({ privateKey, network })
     }
     case WALLET_TYPE_METAMASK: {
-      return new MetamaskPlugin();
+      return new MetamaskPlugin()
     }
   }
 }
