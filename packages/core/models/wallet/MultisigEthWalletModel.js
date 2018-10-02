@@ -31,19 +31,18 @@ const schemaFactory = () => ({
   allowances: PropTypes.instanceOf(AllowanceCollection),
 })
 
-const defaultProps = {
-  balances: {},
-  transactions: new TxHistoryModel(),
-  owners: [],
-  pendingTxList: {},
-  customTokens: null,
-  isTIMERequired: false,
-  allowances: new AllowanceCollection({}),
-  blockchain: BLOCKCHAIN_ETHEREUM,
-}
-
 export default class MultisigEthWalletModel extends AbstractModel {
   constructor (ownProps) {
+    const defaultProps = {
+      balances: {},
+      transactions: new TxHistoryModel(),
+      owners: [],
+      pendingTxList: {},
+      customTokens: null,
+      isTIMERequired: false,
+      allowances: new AllowanceCollection({}),
+      blockchain: BLOCKCHAIN_ETHEREUM,
+    }
     const props = { ...defaultProps, ...ownProps }
     super(props, schemaFactory())
     Object.assign(this, props)

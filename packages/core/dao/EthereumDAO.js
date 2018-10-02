@@ -10,7 +10,8 @@ import Amount from '../models/Amount'
 import TokenModel from '../models/tokens/TokenModel'
 import TxModel from '../models/TxModel'
 import AbstractTokenDAO from './AbstractTokenDAO'
-import { BLOCKCHAIN_ETHEREUM, EVENT_NEW_BLOCK } from './constants'
+import { BLOCKCHAIN_ETHEREUM, ETH, EVENT_NEW_BLOCK } from './constants'
+import TxDescModel from '../models/TxDescModel'
 
 const transferSignature = '0x940c4b3549ef0aaff95807dc27f62d88ca15532d1bf535d7d63800f40395d16c'
 const signatureDefinition = {
@@ -123,27 +124,34 @@ export class EthereumDAO extends AbstractTokenDAO {
   }
 
   /** @private */
-  _getTxModel (tx, time = Date.now() / 1000): TxModel {
+  _getTxModel (tx, time): TxModel {
     const gasPrice = tx.gasPrice && new BigNumber('' + tx.gasPrice)
     const gasFee = gasPrice && gasPrice.mul(tx.gas)
 
-    return new TxModel({
-      txHash: tx.hash,
-      blockHash: tx.blockHash,
+    return new TxDescModel({
+      title: tx.details ? tx.details.event : 'tx.transfer',
+      hash: tx.hash,
+      time,
+      blockchain: BLOCKCHAIN_ETHEREUM,
       blockNumber: tx.blockNumber,
-      transactionIndex: tx.transactionIndex,
+      value: new Amount(tx.value, tx.symbol || this._symbol),
+      fee: new Amount(gasFee, ETH),
       from: tx.from,
       to: tx.to,
-      value: new Amount(tx.value, tx.symbol || this._symbol),
-      time,
-      gasPrice,
-      gas: tx.gas,
-      gasFee,
-      input: tx.input,
-      // TODO @dkchv: token ???
-      token: tx.symbol || this._symbol,
-      symbol: tx.symbol || this._symbol,
-      blockchain: BLOCKCHAIN_ETHEREUM,
+      params: [
+        {
+          name: 'from',
+          value: tx.from,
+        },
+        {
+          name: 'to',
+          value: tx.to,
+        },
+        {
+          name: 'amount',
+          value: new Amount(tx.value, tx.symbol || this._symbol),
+        },
+      ],
     })
   }
 
@@ -199,6 +207,7 @@ export class EthereumDAO extends AbstractTokenDAO {
               tx.from = resultDecoded.args.from
               tx.to = resultDecoded.args.to
               tx.value = resultDecoded.args.value
+              tx.details = resultDecoded
             }
           })
           if (txToken) {

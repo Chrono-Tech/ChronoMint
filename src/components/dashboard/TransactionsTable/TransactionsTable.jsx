@@ -21,6 +21,7 @@ import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
+import TxHistoryModel from '@chronobank/core/models/wallet/TxHistoryModel'
 import './TransactionsTable.scss'
 import { prefix } from './lang'
 
@@ -40,7 +41,7 @@ function mapStateToProps (state) {
 export default class TransactionsTable extends PureComponent {
   static propTypes = {
     walletAddress: PropTypes.string,
-    transactions: PropTypes.instanceOf(Array),
+    transactionsHistory: PropTypes.instanceOf(TxHistoryModel),
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
     locale: PropTypes.string,
@@ -55,29 +56,29 @@ export default class TransactionsTable extends PureComponent {
 
   renderRow ({ trx }) {
     const account = this.props.walletAddress || this.props.account
-    const token: TokenModel = this.props.tokens.item(trx.symbol())
+    const token: TokenModel = this.props.tokens.item(trx.value.symbol())
     const blockExplorerUrl = (txHash) => getBlockExplorerUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash, token.blockchain())
-    const isFrom = trx.from().split(',').some((from) => from === account)
+    const isFrom = trx.from.split(',').some((from) => from === account)
 
     const info = (
       <div styleName='info'>
         <div styleName='title'><Translate value={`${prefix}.${isFrom ? 'sending' : 'receiving'}`} /></div>
-        <div styleName='address'>{isFrom ? trx.to() : trx.from()}</div>
+        <div styleName='address'>{isFrom ? trx.to : trx.from}</div>
       </div>
     )
 
     return (
-      <div styleName='row' key={trx.id()}>
+      <div styleName='row' key={trx.id}>
         <div styleName='confirmations'><TxConfirmations transaction={trx} /></div>
 
-        {blockExplorerUrl(trx.txHash())
-          ? <a styleName='link' href={blockExplorerUrl(trx.txHash())} target='_blank' rel='noopener noreferrer'>{info}</a>
+        {blockExplorerUrl(trx.hash)
+          ? <a styleName='link' href={blockExplorerUrl(trx.hash)} target='_blank' rel='noopener noreferrer'>{info}</a>
           : info
         }
 
         <div styleName='valuesWrapper'>
           <div styleName={classnames('value', { 'receiving': !isFrom, 'sending': isFrom })}>
-            <TokenValue value={trx.value()} noRenderPrice />
+            <TokenValue value={trx.value} noRenderPrice />
           </div>
           <div styleName='confirmationsText'><TxConfirmations transaction={trx} textMode /></div>
         </div>
@@ -86,10 +87,16 @@ export default class TransactionsTable extends PureComponent {
   }
 
   render () {
-    const { transactions, locale } = this.props
+    const { transactionsHistory, locale } = this.props
+
+    if (!transactionsHistory) {
+      return null
+    }
+
+    const transactions = transactionsHistory.transactions
     const size = transactions.length
-    const endOfList = false //transactions.endOfList() //TODO
-    const isFetching = false //transactions.isFetching() //TODO
+    const endOfList = transactionsHistory.endOfList
+    const isFetching = transactionsHistory.isFetching
     const data = buildTableData(transactions, locale)
 
     return (
@@ -150,18 +157,20 @@ export default class TransactionsTable extends PureComponent {
 function buildTableData (transactions, locale) {
   moment.locale(locale)
   const groups = transactions
-    .filter((tx) => tx.value().gt(0))
+    .filter((tx) => {
+      return tx.value.gt(0)
+    })
     .reduce((data, trx) => {
-      const groupBy = trx.date('YYYY-MM-DD')
+      const groupBy = moment(trx.time).format('YYYY-MM-DD')
       data[groupBy] = data[groupBy] || {
-        dateBy: trx.date('YYYY-MM-DD'),
-        dateTitle: <Moment date={trx.date('YYYY-MM-DD')} format='DD MMMM YYYY' />,
+        dateBy: groupBy,
+        dateTitle: <Moment date={groupBy} format='DD MMMM YYYY' />,
         transactions: [],
       }
       data[groupBy].transactions.push({
         trx,
-        timeBy: trx.date('HH:mm:ss'),
-        timeTitle: trx.date('HH:mm'),
+        timeBy: moment(trx.time).format('HH:mm:ss'),
+        timeTitle: moment(trx.time).format('HH:mm'),
       })
       return data
     }, {})

@@ -14,6 +14,7 @@ import {
   EVENT_NEW_TRANSFER,
   EVENT_UPDATE_BALANCE,
 } from './constants'
+import TxDescModel from '../models/TxDescModel'
 
 export const BLOCKCHAIN_WAVES = 'WAVES'
 export const WAVES_WAVES_SYMBOL = 'WAVES'
@@ -94,24 +95,40 @@ export default class WavesDAO extends EventEmitter {
     }
   }
 
-  async getTransfer (id, account, skip, offset): Promise<Array<TxModel>> {
+  async getTransfer (id, account, skip, offset): Promise<Array<TxDescModel>> {
     const txs = []
     try {
       const txsResult = await this._wavesProvider.getTransactionsList(account, id, skip, offset)
       for (const tx of txsResult) {
         if (tx.value > 0) {
-          txs.push(new TxModel({
-            txHash: tx.txHash,
-            blockHash: tx.blockHash,
-            blockNumber: tx.blockNumber,
-            time: tx.time,
-            from: tx.from,
-            to: tx.to,
-            symbol: this._symbol,
-            value: new Amount(tx.value, this._symbol),
-            fee: new Amount(tx.fee, this._symbol),
-            blockchain: BLOCKCHAIN_WAVES,
-          }))
+          txs.push(
+            new TxDescModel({
+              confirmations: tx.confirmations,
+              title: tx.details ? tx.details.event : 'tx.transfer',
+              hash: tx.txHash,
+              time: tx.time,
+              blockchain: this._name,
+              blockNumber: tx.blockNumber,
+              address: tx.details ? tx.details.address : null,
+              value: new Amount(tx.value, tx.symbol || this._symbol),
+              fee: new Amount(tx.fee, this._symbol),
+              from: tx.from,
+              to: tx.to,
+              params: [
+                {
+                  name: 'from',
+                  value: tx.from,
+                },
+                {
+                  name: 'to',
+                  value: tx.to,
+                },
+                {
+                  name: 'amount',
+                  value: new Amount(tx.value, tx.symbol || this._symbol),
+                },
+              ],
+            }))
         }
       }
     } catch (e) {
@@ -200,7 +217,7 @@ export default class WavesDAO extends EventEmitter {
 }
 
 //TODO WHY WE NEED SYMBOL AND ASSET DESCRIPTION IF SYMBOL IS ENOUGH
-function readBalanceValue (symbol, balance, /*asset = null*/) {
+function readBalanceValue (symbol, balance /*asset = null*/) {
   // @todo assets
   // console.log('readBalanceValue: ', symbol, balance, asset)
   // if (asset) {

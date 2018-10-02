@@ -19,6 +19,7 @@ import {
   EVENTS_LOGS_UPDATED,
   ADD_EVENT_TO_HISTORY,
 } from './constants'
+import { daoByAddress } from '../daos/selectors'
 
 export const watchEventsToHistory = () => async (dispatch, getState) => {
 
@@ -44,11 +45,11 @@ export const pushTx = (historyKey, receipt) => async (dispatch, getState) => {
 
     const [tx, block] = await Promise.all([
       web3.eth.getTransaction(receipt.transactionHash),
-      web3.eth.getBlock(receipt.blockHash)
+      web3.eth.getBlock(receipt.blockHash),
     ])
 
     const desciption = describeTx(
-      { tx, receipt, block }
+      { tx, receipt, block },
     )
 
     const entries = Array.isArray(desciption)
@@ -79,11 +80,11 @@ export const pushEvent = (historyKey, log) => async (dispatch, getState) => {
   const [tx, receipt, block] = await Promise.all([
     web3.eth.getTransaction(log.transactionHash),
     web3.eth.getTransactionReceipt(log.transactionHash),
-    web3.eth.getBlock(log.blockHash)
+    web3.eth.getBlock(log.blockHash),
   ])
 
   const desciption = describeEvent(
-    { log, tx, receipt, block: block || { timestamp: +new Date() } }
+    { log, tx, receipt, block: block || { timestamp: +new Date() } },
   )
 
   const entries = Array.isArray(desciption)
@@ -123,11 +124,11 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
   const history = allHistory[historyKey]
 
   const toBlock = await web3.eth.getBlock(
-    history.cursor == null ? 'latest' : Math.max(0, history.cursor - 1)
+    history.cursor == null ? 'latest' : Math.max(0, history.cursor - 1),
   )
 
   let fromBlock = await web3.eth.getBlock(
-    Math.max(0, toBlock.number - blockScanLimit)
+    Math.max(0, toBlock.number - blockScanLimit),
   )
 
   const topic = `0x${padStart(address.substring(2), 64, 0)}`
@@ -142,15 +143,15 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
           fromBlock: `0x${Number(fromBlock.number).toString(16)}`,
           topics: topicsArray,
         })
-      }
-    )
+      },
+    ),
   )
 
   let logs = unionBy(
     logs1,
     logs2,
     logs3,
-    (entry) => `${entry.blockHash}-${entry.transactionIndex}-${entry.logIndex}`
+    (entry) => `${entry.blockHash}-${entry.transactionIndex}-${entry.logIndex}`,
   ).sort((log1, log2) => {
     const blockDiff = log2.blockNumber - log1.blockNumber
     if (blockDiff !== 0) {
@@ -176,19 +177,19 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
       type: EVENTS_LOGS_LOADED,
       historyKey,
       address,
-      entries: history.entries
+      entries: history.entries,
     })
 
     return
   }
 
   fromBlock = await web3.eth.getBlock(
-    logs[logs.length - 1].blockHash
+    logs[logs.length - 1].blockHash,
   )
 
   const blocks = await Promise.all(
     uniq(logs.map((entry) => entry.blockHash))
-      .map((blockHash) => web3.eth.getBlock(blockHash))
+      .map((blockHash) => web3.eth.getBlock(blockHash)),
   )
 
   const blocksMap = blocks.reduce(
@@ -196,12 +197,12 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
       target[block.hash] = block
       return target
     },
-    {}
+    {},
   )
 
   const transactions = await Promise.all(
     uniq(logs.map((entry) => entry.transactionHash), (transactionHash) => transactionHash)
-      .map((transactionHash) => web3.eth.getTransaction(transactionHash))
+      .map((transactionHash) => web3.eth.getTransaction(transactionHash)),
   )
 
   const transactionsMap = transactions.reduce(
@@ -209,11 +210,11 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
       target[tx.hash] = tx
       return target
     },
-    {}
+    {},
   )
 
   const receipts = await Promise.all(
-    transactions.map((tx) => web3.eth.getTransactionReceipt(tx.hash))
+    transactions.map((tx) => web3.eth.getTransactionReceipt(tx.hash)),
   )
 
   const receiptsMap = receipts.reduce(
@@ -221,7 +222,7 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
       target[receipt.transactionHash] = receipt
       return target
     },
-    {}
+    {},
   )
 
   const tree = []
@@ -239,7 +240,7 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
   const entries = []
 
   const store = {
-    tokens: getTokens(getState())
+    tokens: getTokens(getState()),
   }
 
   for (const { block, transactions } of sortBy(Object.values(tree), (v) => -v.block.timestamp)) {
@@ -248,13 +249,20 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
         address,
         store,
       }
+      const dao = daoByAddress(tx.to.toLowerCase())(getState())
+      if (dao) {
+        context.abi = dao.abi
+        context.token = dao.token
+      }
 
       for (const log of logs) {
-        const description = describeEvent({ log, tx, receipt, block }, context)
-        if (Array.isArray(description)) {
-          entries.push(...description)
-        } else {
-          entries.push(description)
+        if (log.data || log.dataIndexStart) {
+          const description = describeEvent({ log, tx, receipt, block }, context)
+          if (Array.isArray(description)) {
+            entries.push(...description)
+          } else {
+            entries.push(description)
+          }
         }
       }
 

@@ -23,20 +23,19 @@ const schemaFactory = () => ({
   isFetching: PropTypes.bool,
 })
 
-const defaultProps = {
-  id: null,
-  poll: new PollModel(),
-  votes: Immutable.Map(),
-  statistics: Immutable.List(),
-  totalSupply: new BigNumber(0),
-  shareholdersCount: new BigNumber(0),
-  files: Immutable.List(),
-  isFetched: false,
-  isFetching: false,
-}
-
 class PollDetailsModel extends AbstractModel {
   constructor (ownProps) {
+    const defaultProps = {
+      id: null,
+      poll: new PollModel(),
+      votes: Immutable.Map(),
+      statistics: Immutable.List(),
+      totalSupply: new BigNumber(0),
+      shareholdersCount: new BigNumber(0),
+      files: Immutable.List(),
+      isFetched: false,
+      isFetching: false,
+    }
     const props = { ...defaultProps, ...ownProps }
     super(props, schemaFactory())
     Object.assign(this, props)

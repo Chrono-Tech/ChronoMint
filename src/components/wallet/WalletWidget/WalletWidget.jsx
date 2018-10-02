@@ -167,7 +167,7 @@ export default class WalletWidget extends PureComponent {
 
     let incoming = null
     this.props.pendingTransactions.forEach((t) => {
-      if (!incoming && t.from() !== this.props.address && t.confirmations() < 4) {
+      if (!incoming && t.from !== this.props.address && t.confirmations < 4) {
         incoming = t
       }
     })
@@ -178,7 +178,7 @@ export default class WalletWidget extends PureComponent {
 
     return (
       <div styleName='receive-container'>
-        <div styleName='receive-icon' className='chronobank-icon'>{'circle-' + incoming.confirmations()}</div>
+        <div styleName='receive-icon' className='chronobank-icon'>{'circle-' + incoming.confirmations}</div>
       </div>)
   }
 
@@ -190,7 +190,7 @@ export default class WalletWidget extends PureComponent {
     let sending = null
     this.props.pendingTransactions.forEach((t) => {
 
-      if (!sending && t.from() === this.props.address && t.confirmations() < 4) {
+      if (!sending && t.from === this.props.address && t.confirmations < 4) {
         sending = t
       }
     })
@@ -201,7 +201,7 @@ export default class WalletWidget extends PureComponent {
 
     return (
       <div styleName='send-container'>
-        <div styleName='send-icon' className='chronobank-icon'>{'circle-' + sending.confirmations()}</div>
+        <div styleName='send-icon' className='chronobank-icon'>{'circle-' + sending.confirmations}</div>
       </div>)
   }
 

@@ -11,6 +11,7 @@ import Amount from '../models/Amount'
 import { nemAddress } from '../models/validator'
 import { BLOCKCHAIN_NEM, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from './constants'
 import { NEM_XEM_SYMBOL } from './constants/NemDAO'
+import TxDescModel from '../models/TxDescModel'
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
@@ -89,17 +90,30 @@ export default class NemDAO extends EventEmitter {
       const txsResult = await this._nemProvider.getTransactionsList(account, id, skip, offset)
       for (const tx of txsResult) {
         if (tx.value > 0) {
-          txs.push(new TxModel({
-            txHash: tx.txHash,
-            blockHash: tx.blockHash,
-            blockNumber: tx.blockNumber,
+          txs.push(new TxDescModel({
+            confirmations: tx.confirmations,
+            title: tx.details ? tx.details.event : 'tx.transfer',
+            hash: tx.txHash,
             time: tx.time,
+            blockchain: this._name,
+            value: new Amount(tx.value, tx.symbol || this._symbol),
+            fee: new Amount(tx.fee, this._symbol),
             from: tx.from,
             to: tx.to,
-            symbol: this._symbol,
-            value: new Amount(tx.value, this._symbol),
-            fee: new Amount(tx.fee, this._symbol),
-            blockchain: BLOCKCHAIN_NEM,
+            params: [
+              {
+                name: 'from',
+                value: tx.from,
+              },
+              {
+                name: 'to',
+                value: tx.to,
+              },
+              {
+                name: 'amount',
+                value: new Amount(tx.value, tx.symbol || this._symbol),
+              },
+            ],
           }))
         }
       }
