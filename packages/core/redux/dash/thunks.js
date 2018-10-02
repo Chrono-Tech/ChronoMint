@@ -16,7 +16,7 @@ import { notify } from '../notifier/actions'
 
 import * as BitcoinActions from '../bitcoin-like-blockchain/actions'
 import { getAddressUTXOS } from '../bitcoin-like-blockchain/thunks'
-import * as BitcoinUtils from '../bitcoin/utils'
+import * as BitcoinUtils from '../bitcoin-like-blockchain/utils'
 
 import { getDashSigner } from './selectors'
 import DashMiddlewareService from './DashMiddlewareService'
