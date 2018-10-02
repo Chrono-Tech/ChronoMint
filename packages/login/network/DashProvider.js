@@ -10,8 +10,12 @@ import { selectDASHNode } from './BitcoinNode'
 import { BLOCKCHAIN_DASH } from './constants'
 
 export class DashProvider extends BitcoinProvider {
+  getNetworkType () {
+    return this.networkSettings[BLOCKCHAIN_DASH] === 'testnet' ? Networks.testnet : Networks.livenet
+  }
+
   isAddressValid (address) {
-    return Address.isValid(address, this.networkSettings[BLOCKCHAIN_DASH] === 'testnet' ? Networks.testnet : Networks.livenet)
+    return Address.isValid(address, this.getNetworkType())
   }
 }
 

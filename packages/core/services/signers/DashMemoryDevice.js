@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import bitcoin from 'bitcoinjs-lib'
-import { Address, Networks, PrivateKey, PublicKey } from 'dashcore-lib'
+import { Address, PrivateKey, PublicKey } from 'dashcore-lib'
+import { dashProvider } from '@chronobank/login/network/DashProvider'
 
 export default class DashMemoryDevice {
   constructor ({ privateKey, network }) {
@@ -14,8 +14,7 @@ export default class DashMemoryDevice {
   }
 
   getAddress () {
-    const networkType = this.network === bitcoin.networks.testnet ? Networks.testnet : Networks.livenet
-    return new Address(PublicKey(new PrivateKey(this.privateKey)), networkType).toString()
+    return new Address(PublicKey(new PrivateKey(this.privateKey)), dashProvider.getNetworkType()).toString()
   }
 
   signTransaction (tx) {
