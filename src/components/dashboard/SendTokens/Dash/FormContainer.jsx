@@ -4,8 +4,19 @@
  */
 
 import React from 'react'
-import Form from './Form'
+import { connect } from 'react-redux'
+import { estimateFee } from '@chronobank/core/redux/dash/thunks'
+
 import FormContainer from '../BitcoinLikeBockchain/FormContainer'
+import BitcoinLikeBlockchainForm, { mapStateToProps } from '../BitcoinLikeBockchain/Form'
+
+function mapDispatchToProps (dispatch) {
+  return {
+    estimateFee: (params) => dispatch(estimateFee(params)),
+  }
+}
+
+const Form = connect(mapStateToProps, mapDispatchToProps)(BitcoinLikeBlockchainForm)
 
 const bitcoinFormContainer = (props) => (
   <FormContainer {...props} form={Form} />
