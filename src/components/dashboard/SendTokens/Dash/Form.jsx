@@ -4,12 +4,12 @@
  */
 
 import { connect } from 'react-redux'
-import { estimateBtcFee } from '@chronobank/core/redux/bitcoin/thunks'
+import { estimateFee } from '@chronobank/core/redux/dash/thunks'
 import BitcoinLikeBlockchainForm, { mapStateToProps } from '../BitcoinLikeBockchain/Form'
 
 function mapDispatchToProps (dispatch) {
   return {
-    estimateFee: (params) => dispatch(estimateBtcFee(params)),
+    estimateFee: (params) => dispatch(estimateFee(params)),
   }
 }
 

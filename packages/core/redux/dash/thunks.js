@@ -2,7 +2,7 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-import { Address, Transaction } from 'dashcore-lib';
+import { Address, Transaction, Unit } from 'dashcore-lib';
 import BigNumber from 'bignumber.js'
 
 import { TransferNoticeModel, TxExecModel } from '../../models'
@@ -29,15 +29,8 @@ export const executeDashTransaction = ({ tx, options }) => async (dispatch, getS
     const network = getSelectedNetwork()(state)
     const blockchain = token.blockchain()
 
-    const utxosRawData = await dispatch(getAddressUTXOS(tx.from, blockchain))
-    const utxos = utxosRawData.map(utxo => new Transaction.UnspentOutput(utxo))
-
-    const transaction = new Transaction()
-      .from(utxos)
-      .to(Address.fromString(tx.to), tx.value.toNumber())
-      .change(Address.fromString(tx.from))
-
-    const transferFee = transaction.getFee()
+    const transaction = await getUnsignedTransaction(dispatch, tx.from, tx.to, tx.value.toNumber(), blockchain)
+    const transferFee = getTransferFee(transaction, options.feeMultiplier)
     transaction.fee(transferFee)
 
     const signer = getDashSigner(state, blockchain)
@@ -75,4 +68,28 @@ export const executeDashTransaction = ({ tx, options }) => async (dispatch, getS
   } catch (error) {
     dispatch(BitcoinActions.bitcoinExecuteTxFailure(error))
   }
+}
+
+export const estimateFee = (params) => async (dispatch) => {
+  const { address, recipient, amount, formFee, blockchain } = params
+  const transaction = await getUnsignedTransaction(dispatch, address, recipient, amount.toNumber(), blockchain)
+  return getTransferFee(transaction, formFee / 200)
+}
+
+async function getUnsignedTransaction (dispatch, from, to, amount, blockchain) {
+  const utxosRawData = await dispatch(getAddressUTXOS(from, blockchain))
+  const utxos = utxosRawData.map(utxo => new Transaction.UnspentOutput(utxo))
+
+  if (!utxosRawData) {
+    throw new Error('Can\'t find utxos for address: ', from)
+  }
+
+  return new Transaction()
+    .from(utxos)
+    .to(Address.fromString(to), amount)
+    .change(Address.fromString(from))
+}
+
+function getTransferFee (transaction, coefficient) {
+  return new Unit(coefficient * transaction.getFee(), Unit.satoshis).toSatoshis()
 }
