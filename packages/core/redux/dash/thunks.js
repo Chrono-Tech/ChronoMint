@@ -14,7 +14,7 @@ import { getSelectedNetwork } from '../persistAccount/selectors'
 import { modalsOpen } from '../modals/actions'
 import { notify } from '../notifier/actions'
 
-import * as BitcoinActions from '../bitcoin/actions'
+import * as BitcoinActions from '../bitcoin-like-blockchain/actions'
 import { getAddressUTXOS } from '../bitcoin/thunks'
 import * as BitcoinUtils from '../bitcoin/utils'
 
