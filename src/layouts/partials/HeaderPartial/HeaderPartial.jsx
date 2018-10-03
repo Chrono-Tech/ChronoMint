@@ -10,7 +10,7 @@ import Immutable from 'immutable'
 import Button from 'components/common/ui/Button/Button'
 import TopButtons from 'components/common/TopButtons/TopButtons'
 import { sidesOpen } from 'redux/sides/actions'
-import { pendingTransactionsSelector } from '@chronobank/core/redux/mainWallet/selectors/tokens'
+import { pendingTransactionsSelector } from '@chronobank/core/redux/wallets/selectors/tokens'
 import { DUCK_WATCHER } from '@chronobank/core/redux/watcher/constants'
 import { ethereumPendingCountSelector } from '@chronobank/core/redux/ethereum/selectors'
 

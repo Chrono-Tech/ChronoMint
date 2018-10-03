@@ -4,7 +4,7 @@
  */
 
 import { createSelector } from 'reselect'
-import { getMainWallets } from '../../wallets/selectors/models'
+import { getMainWallets } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
 
 export const getAllPendingTransactions = createSelector(
@@ -19,7 +19,7 @@ export const getAllPendingTransactions = createSelector(
     mainWallets.map((wallet: WalletModel) => {
       if (wallet.transactions.blocks && wallet.transactions.blocks['-1']) {
         wallet.transactions.blocks['-1'].transactions.map((tx) => {
-          pendingTransactions[tx.id()] = tx
+          pendingTransactions[tx.id] = tx
         })
       }
     })

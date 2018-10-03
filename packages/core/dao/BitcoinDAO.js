@@ -19,6 +19,7 @@ import {
   EVENT_UPDATE_LAST_BLOCK,
   EVENT_UPDATE_TRANSACTION,
 } from './constants'
+import TxDescModel from '../models/TxDescModel'
 
 const EVENT_TX = 'tx'
 const EVENT_TRANSACTION_MAINED = 'transaction'
@@ -84,19 +85,34 @@ export default class BitcoinDAO extends EventEmitter {
     try {
       const txsResult = await this._bitcoinProvider.getTransactionsList(account, skip, offset)
       for (const tx of txsResult) {
-        txs.push(new TxModel({
-          txHash: tx.txHash,
-          blockHash: tx.blockHash,
-          blockNumber: tx.blockNumber,
-          confirmations: tx.confirmations,
-          time: tx.time,
-          from: tx.from,
-          to: tx.to,
-          symbol: this._symbol,
-          value: new Amount(tx.value, this._symbol),
-          fee: new Amount(tx.fee, this._symbol),
-          blockchain: this._name,
-        }))
+        txs.push(
+          new TxDescModel({
+            confirmations: tx.confirmations,
+            hash: tx.txHash,
+            time: tx.time,
+            blockchain: this._name,
+            blockNumber: tx.blockNumber,
+            title: tx.details ? tx.details.event : 'tx.transfer',
+            value: new Amount(tx.value, tx.symbol || this._symbol),
+            fee: new Amount(tx.fee, this._symbol),
+            from: tx.from,
+            to: tx.to,
+            params: [
+              {
+                name: 'from',
+                value: tx.from,
+              },
+              {
+                name: 'to',
+                value: tx.to,
+              },
+              {
+                name: 'amount',
+                value: new Amount(tx.value, tx.symbol || this._symbol),
+              },
+            ],
+          }),
+        )
       }
     } catch (e) {
       // eslint-disable-next-line

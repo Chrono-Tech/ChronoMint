@@ -53,8 +53,8 @@ export const getMainAddresses = (state) => {
 }
 
 export const getWalletTransactions = (walletId) => (state) => {
-  const wallet = getWallet(walletId)(state)
-  return wallet ? wallet.transactions.transactions : null
+  const wallet = getWalletById(walletId)(state)
+  return wallet ? wallet.transactions : null
 }
 
 export const getTwoFaCheckedFromState = (state) => {

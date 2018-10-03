@@ -11,7 +11,7 @@ import { DUCK_NOTIFIER } from '@chronobank/core/redux/notifier/constants'
 import TxExecModel from '@chronobank/core/models/TxExecModel'
 import TxModel from '@chronobank/core/models/TxModel'
 import CurrentTransactionNotificationModel from '@chronobank/core/models/CurrentTransactionNotificationModel'
-import { pendingTransactionsSelector } from '@chronobank/core/redux/mainWallet/selectors/tokens'
+import { pendingTransactionsSelector } from '@chronobank/core/redux/wallets/selectors/tokens'
 import Immutable from 'immutable'
 import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
@@ -25,6 +25,7 @@ import { ethereumPendingFormatSelector } from '@chronobank/core/redux/ethereum/s
 import TxEntryModel from '@chronobank/core/models/TxEntryModel'
 import { sidesCloseAll } from 'redux/sides/actions'
 import { Icons } from 'components/icons'
+import TxDescModel from '@chronobank/core/models/TxDescModel'
 import { prefix } from './lang'
 import './NotificationContent.scss'
 
@@ -99,6 +100,15 @@ class NotificationContent extends PureComponent {
           title: `${transaction.symbol()} Transfer`,
           date: transaction.time(),
           details: transaction.details(),
+        })
+
+      case transaction instanceof TxDescModel:
+        return new CurrentTransactionNotificationModel({
+          id: transaction.hash,
+          hash: transaction.hash,
+          title: `${transaction.value.symbol()} Transfer`,
+          date: transaction.time,
+          details: transaction.details,
         })
 
       case transaction instanceof CurrentTransactionNotificationModel:

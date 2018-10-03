@@ -11,7 +11,7 @@ import React, { PureComponent } from 'react'
 import { getTxListForWallet } from '@chronobank/core/redux/wallets/selectors/transactions'
 import { formatDataAndGetTransactionsForWallet } from '@chronobank/core/redux/wallet/actions'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
-
+import TxHistoryModel from '@chronobank/core/models/wallet/TxHistoryModel'
 import { prefix } from './lang'
 import './TransactionsListWidget.scss'
 
@@ -19,12 +19,11 @@ function makeMapStateToProps (state, props) {
   const { wallet } = props
   const getTransactions = getTxListForWallet(wallet.id)
 
-  const mapStateToProps = (ownState) => {
+  return (ownState) => {
     return {
-      transactions: getTransactions(ownState),
+      transactionsHistory: getTransactions(ownState),
     }
   }
-  return mapStateToProps
 }
 
 function mapDispatchToProps (dispatch) {
@@ -37,7 +36,7 @@ function mapDispatchToProps (dispatch) {
 export default class TransactionsListWidget extends PureComponent {
   static propTypes = {
     wallet: PTWallet,
-    transactions: PropTypes.array,
+    transactionsHistory: PropTypes.instanceOf(TxHistoryModel),
     getTransactions: PropTypes.func,
   }
 
@@ -55,7 +54,7 @@ export default class TransactionsListWidget extends PureComponent {
   }
 
   render () {
-    const { wallet, transactions } = this.props
+    const { wallet, transactionsHistory } = this.props
 
     return (
       <div styleName='transactions'>
@@ -63,7 +62,7 @@ export default class TransactionsListWidget extends PureComponent {
           <Translate value={`${prefix}.transactions`} />
         </div>
         <TransactionsTable
-          transactions={transactions}
+          transactionsHistory={transactionsHistory}
           walletAddress={wallet.address}
           blockchain={wallet.blockchain}
           onGetTransactions={this.handleGetTransactions}

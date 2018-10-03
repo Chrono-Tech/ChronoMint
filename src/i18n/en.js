@@ -161,6 +161,7 @@ export default {
   notices: require('./en-notices'),
   tx: {
     title: 'New transaction',
+    transfer: 'Transfer',
     from: 'From',
     to: 'To',
     amount: 'Amount',
