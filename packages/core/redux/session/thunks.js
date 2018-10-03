@@ -19,6 +19,7 @@ import { watchStopMarket } from '../market/actions'
 import { initEthereum } from '../ethereum/thunks'
 import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
 import { DEFAULT_CBE_URL, DEFAULT_USER_URL, DUCK_SESSION } from './constants'
+import { getAccountAddresses } from './selectors/session'
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
@@ -148,15 +149,16 @@ export const bootstrap = () => async () => {
   return true //FIXME remove method
 }
 
-export const getProfileSignature = (signer, path) => async (dispatch) => {
+export const getProfileSignature = (signer, path) => async (dispatch, getState) => {
   if (!signer) {
     return
   }
 
   try {
-    const signDataString = ProfileService.getSignData()
+    const addresses = getAccountAddresses(getState())
+    const signDataString = ProfileService.getSignData(addresses)
     const signData = await signer.signData(signDataString, path)
-    const profileSignature = await dispatch(ProfileThunks.getUserProfile(signData.signature))
+    const profileSignature = await dispatch(ProfileThunks.getUserProfile(signData.signature, addresses))
     dispatch(SessionActions.setProfileSignature(profileSignature))
 
     return profileSignature

@@ -26,3 +26,16 @@ export function integerWithDelimiter (value: any, withFraction = false, fraction
   const sign = valueBN.lt(0) ? '-' : ''
   return sign + roundedValue.toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, '$1\u00a0')
 }
+
+export function deepSortByKey (obj) {
+  return Object.keys(obj).sort().reduce((acc, key) => {
+    if (Array.isArray(obj[key])) {
+      acc[key] = obj[key].map(deepSortByKey)
+    } else if (typeof obj[key] === 'object') {
+      acc[key] = deepSortByKey(obj[key])
+    } else {
+      acc[key] = obj[key]
+    }
+    return acc
+  }, {})
+}

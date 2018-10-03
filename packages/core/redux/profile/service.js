@@ -5,6 +5,7 @@
 
 import axios from 'axios'
 import * as Utils from './utils'
+import { deepSortByKey } from '../../utils/formatter'
 
 const URL_PROFILE_HOST = 'https://backend.profile.tp.ntr1x.com/'
 const URL_PROFILE_BASE_PATH = URL_PROFILE_HOST + 'api/v1/'
@@ -79,10 +80,15 @@ export default class ProfileService {
     })
   }
 
-  static getSignData () {
-    return JSON.stringify({
-      body: EXCHANGE_PURPOSE_DATA,
-      url: URL_PROFILE_SIGNATURE,
-    })
+  static getSignData (addresses) {
+    return JSON.stringify(
+      deepSortByKey({
+        url: URL_PROFILE_SIGNATURE,
+        body: {
+          ...EXCHANGE_PURPOSE_DATA,
+          addresses,
+        },
+      }),
+    )
   }
 }
