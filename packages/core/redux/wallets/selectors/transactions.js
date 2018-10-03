@@ -20,8 +20,6 @@ export const getTxListForWallet = (walletId: string) => createSelector(
     ethMultisigWalletTransactions,
     eosWalletTransactions,
   ) => {
-    // TODO @abdulov remove console.log
-    console.log('%c walletId', 'background: #222; color: #fff', walletId)
-    return Object.values(walletTransactions || ethMultisigWalletTransactions || {})
+    return Object.values(walletTransactions || ethMultisigWalletTransactions || eosWalletTransactions || {})
   },
 )

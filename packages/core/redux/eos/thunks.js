@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import BigNumber from 'bignumber.js'
 import Eos from 'eosjs'
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import * as EosActions from './actions'
@@ -12,7 +11,13 @@ import Amount from '../../models/Amount'
 import WalletModel from '../../models/wallet/WalletModel'
 import { BLOCKCHAIN_EOS, PAGE_SIZE } from './constants'
 import { describePendingEosTx } from '../../describers'
-import { eosPendingEntrySelector, EOSPendingSelector, EOSSelector, getEosSigner, getEOSWallet } from './selectors/mainSelectors'
+import {
+  eosPendingEntrySelector,
+  EOSPendingSelector,
+  EOSSelector,
+  getEosSigner,
+  getEOSWallet,
+} from './selectors/mainSelectors'
 import { ErrorNoticeModel, TransferNoticeModel } from '../../models'
 import { notify } from '../notifier/actions'
 import { getSelectedNetwork } from '../persistAccount/selectors'
@@ -281,7 +286,8 @@ export const getEOSWalletTransactions = (walletId) => async (dispatch, getState)
       }),
     })))
   } catch (error) {
-    // TODO @abdulov remove console.log
-    console.log('%c error', 'background: #222; color: #fff', error)
+    // eslint-disable-next-line no-console
+    console.error(error)
+    throw error
   }
 }

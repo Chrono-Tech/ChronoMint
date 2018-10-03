@@ -46,6 +46,7 @@ import EOSWalletWidget from 'components/wallet/EOSWalletWidget/lang'
 import EOSWalletsList from 'components/wallet/EOSWalletsList/lang'
 import EOSWalletWidgetMini from 'components/wallet/EOSWalletWidgetMini/lang'
 import EOSWalletWidgetDetail from 'components/wallet/EOSWalletWidgetDetail/lang'
+import ReceiveTokenModal from 'components/dashboard/ReceiveTokenModal/lang'
 
 export default {
   en: {
@@ -95,5 +96,6 @@ export default {
     EOSWalletsList: EOSWalletsList.en,
     EOSWalletWidgetMini: EOSWalletWidgetMini.en,
     EOSWalletWidgetDetail: EOSWalletWidgetDetail.en,
+    ReceiveTokenModal: ReceiveTokenModal.en,
   },
 }

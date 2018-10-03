@@ -715,16 +715,6 @@ export default {
       balanceAmount: 'Your balance',
       changeAmount: 'Change',
     },
-    ReceiveTokenModal: {
-      receive: 'Receive',
-      important: 'Important!',
-      warningText1: `Make sure you're receiving `,
-      warningText2: ` to the address provided below. Otherwise it can make the funds loss.`,
-      receivingTitle: 'Your receiving %{symbol} address',
-      qrTitle: 'Your QR code for the %{symbol} address',
-      buyTitle: 'Also, you can buy %{symbol} in exchanges',
-      error: 'Something wrong.',
-    },
     RewardsPeriod: {
       rewardsPeriodIndex: 'Bonus period #%{index}',
       ongoing: 'Ongoing',
