@@ -4,7 +4,17 @@
  */
 
 import { bccProvider, btcProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
-import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LITECOIN, BLOCKCHAIN_NEM, BLOCKCHAIN_WAVES, WALLET_HD_PATH } from '@chronobank/login/network/constants'
+import { dashProvider } from '@chronobank/login/network/DashProvider'
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_DASH,
+  BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_NEM,
+  BLOCKCHAIN_WAVES,
+  WALLET_HD_PATH,
+} from '@chronobank/login/network/constants'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import WalletModel from '../../models/wallet/WalletModel'
 import { subscribeOnTokens } from '../tokens/thunks'
@@ -18,6 +28,7 @@ import { getMainEthWallet, getWallet, getWallets } from './selectors/models'
 import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { AllowanceCollection } from '../../models'
+import { executeDashTransaction } from '../dash/thunks'
 import { executeTransaction } from '../ethereum/thunks'
 import { executeWavesTransaction } from '../waves/thunks'
 import * as BitcoinThunks from '../bitcoin/thunks'
@@ -25,12 +36,13 @@ import { WALLETS_SET, WALLETS_SET_NAME, WALLETS_UPDATE_BALANCE, WALLETS_UPDATE_W
 import { executeNemTransaction } from '../nem/thunks'
 import { getEthereumSigner, getPersistAccount } from '../persistAccount/selectors'
 import { getBitcoinCashSigner, getBitcoinSigner, getLitecoinSigner } from '../bitcoin/selectors'
+import { getDashSigner } from '../dash/selectors'
 import { getNemSigner } from '../nem/selectors'
 import { getWavesSigner } from '../waves/selectors'
 import { DUCK_TOKENS } from '../tokens/constants'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
-import { BCC, BTC, ETH, LTC, WAVES, XEM } from '../../dao/constants'
+import { BCC, BTC, DASH, ETH, LTC, WAVES, XEM } from '../../dao/constants'
 import TxDescModel from '../../models/TxDescModel'
 
 const isOwner = (wallet, account) => {
@@ -93,6 +105,16 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
     }))
   }
 
+  const dashSigner = getDashSigner(state)
+  if (dashSigner) {
+    wallets.push(new WalletModel({
+      address: dashSigner.getAddress(accountPath),
+      blockchain: BLOCKCHAIN_DASH,
+      isMain: true,
+      walletDerivedPath: accountPath,
+    }))
+  }
+
   const litecoinSigner = getLitecoinSigner(state)
   if (litecoinSigner) {
     wallets.push(new WalletModel({
@@ -147,6 +169,10 @@ const initDerivedWallets = () => async (dispatch, getState) => {
           bccProvider.createNewChildAddress(wallet.deriveNumber)
           bccProvider.subscribeNewWallet(wallet.address)
           break
+        case BLOCKCHAIN_DASH:
+          dashProvider.createNewChildAddress(wallet.deriveNumber)
+          dashProvider.subscribeNewWallet(wallet.address)
+          break
         case BLOCKCHAIN_LITECOIN:
           ltcProvider.createNewChildAddress(wallet.deriveNumber)
           ltcProvider.subscribeNewWallet(wallet.address)
@@ -180,9 +206,12 @@ export const updateWalletBalance = ({ wallet }) => async (dispatch) => {
     return dispatch(fallbackCallback(wallet))
   }
 
-  const isBtcLikeBlockchain = blockchain === BLOCKCHAIN_BITCOIN
-    || blockchain === BLOCKCHAIN_LITECOIN
-    || blockchain === BLOCKCHAIN_BITCOIN_CASH
+  const isBtcLikeBlockchain = [
+    BLOCKCHAIN_BITCOIN,
+    BLOCKCHAIN_BITCOIN_CASH,
+    BLOCKCHAIN_DASH,
+    BLOCKCHAIN_LITECOIN
+  ].includes(blockchain)
 
   if (isBtcLikeBlockchain) {
     return dispatch(BitcoinThunks.getAddressInfo(address, blockchain))
@@ -259,6 +288,7 @@ export const mainTransfer = (
       [BLOCKCHAIN_ETHEREUM]: executeTransaction,
       [BLOCKCHAIN_NEM]: executeNemTransaction,
       [BLOCKCHAIN_BITCOIN]: BitcoinThunks.executeBitcoinTransaction,
+      [BLOCKCHAIN_DASH]: executeDashTransaction,
       [BLOCKCHAIN_WAVES]: executeWavesTransaction,
     }
 
@@ -437,6 +467,9 @@ export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
       break
     case BLOCKCHAIN_BITCOIN_CASH:
       dao = tokenService.getDAO(BCC)
+      break
+    case BLOCKCHAIN_DASH:
+      dao = tokenService.getDAO(DASH)
       break
     case BLOCKCHAIN_LITECOIN:
       dao = tokenService.getDAO(LTC)

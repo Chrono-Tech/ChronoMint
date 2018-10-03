@@ -6,7 +6,7 @@
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import WavesDAO from '../../dao/WavesDAO'
-import { bccDAO, btcDAO, ltcDAO } from '../../dao/BitcoinDAO'
+import { bccDAO, btcDAO, dashDAO, ltcDAO } from '../../dao/BitcoinDAO'
 import ERC20ManagerDAO from '../../dao/ERC20ManagerDAO'
 import ethereumDAO from '../../dao/EthereumDAO'
 import NemDAO from '../../dao/NemDAO'
@@ -96,7 +96,7 @@ export const initTokens = () => async (dispatch, getState) => {
 
 export const initBtcLikeTokens = () => async (dispatch, getState) => {
   const state = getState()
-  const btcLikeTokens = [btcDAO, bccDAO, ltcDAO]
+  const btcLikeTokens = [btcDAO, bccDAO, dashDAO, ltcDAO]
   const currentCount = state.get(DUCK_TOKENS).leftToFetch()
   dispatch(TokensActions.setTokensFetchingCount(currentCount + btcLikeTokens.length))
 

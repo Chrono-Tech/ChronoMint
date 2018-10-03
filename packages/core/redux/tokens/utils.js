@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 import { bccProvider, btcProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import { dashProvider } from '@chronobank/login/network/DashProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
@@ -12,6 +13,7 @@ import { Amount } from '../../models'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_WAVES,
@@ -22,6 +24,7 @@ export const providersMap = {
   [BLOCKCHAIN_ETHEREUM]: ethereumProvider,
   [BLOCKCHAIN_BITCOIN]: btcProvider,
   [BLOCKCHAIN_BITCOIN_CASH]: bccProvider,
+  [BLOCKCHAIN_DASH]: dashProvider,
   [BLOCKCHAIN_LITECOIN]: ltcProvider,
   [BLOCKCHAIN_WAVES]: wavesProvider,
   [BLOCKCHAIN_NEM]: nemProvider,
