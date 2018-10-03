@@ -11,6 +11,7 @@
 
 export const BCC = 'BCC'
 export const BTC = 'BTC'
+export const DASH = 'DASH'
 export const ETH = 'ETH'
 export const LHT = 'LHT'
 export const LTC = 'LTC'
@@ -20,6 +21,7 @@ export const XEM = 'XEM'
 
 export const BLOCKCHAIN_BITCOIN = 'Bitcoin'
 export const BLOCKCHAIN_BITCOIN_CASH = 'Bitcoin Cash'
+export const BLOCKCHAIN_DASH = 'Dash'
 export const BLOCKCHAIN_ETHEREUM = 'Ethereum'
 export const BLOCKCHAIN_LITECOIN = 'Litecoin'
 export const BLOCKCHAIN_NEM = 'NEM'

@@ -4,9 +4,11 @@
  */
 
 import { bccProvider, btcProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import { dashProvider } from '@chronobank/login/network/DashProvider'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
@@ -28,6 +30,7 @@ import { getMainEthWallet, getWallets } from './selectors/models'
 import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { AllowanceCollection } from '../../models'
+import { executeDashTransaction } from '../dash/thunks'
 import { executeTransaction } from '../ethereum/thunks'
 import { executeWavesTransaction } from '../waves/thunks'
 import * as BitcoinThunks from '../bitcoin/thunks'
@@ -157,6 +160,10 @@ const initDerivedWallets = () => async (dispatch, getState) => {
           bccProvider.createNewChildAddress(wallet.deriveNumber)
           bccProvider.subscribeNewWallet(wallet.address)
           break
+        case BLOCKCHAIN_DASH:
+          dashProvider.createNewChildAddress(wallet.deriveNumber)
+          dashProvider.subscribeNewWallet(wallet.address)
+          break
         case BLOCKCHAIN_LITECOIN:
           ltcProvider.createNewChildAddress(wallet.deriveNumber)
           ltcProvider.subscribeNewWallet(wallet.address)
@@ -190,9 +197,12 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
     return dispatch(fallbackCallback(wallet))
   }
 
-  const isBtcLikeBlockchain = blockchain === BLOCKCHAIN_BITCOIN
-    || blockchain === BLOCKCHAIN_LITECOIN
-    || blockchain === BLOCKCHAIN_BITCOIN_CASH
+  const isBtcLikeBlockchain = [
+    BLOCKCHAIN_BITCOIN,
+    BLOCKCHAIN_BITCOIN_CASH,
+    BLOCKCHAIN_DASH,
+    BLOCKCHAIN_LITECOIN
+  ].includes(blockchain)
 
   if (isBtcLikeBlockchain) {
     return dispatch(BitcoinThunks.getAddressInfo(address, blockchain))
@@ -301,6 +311,7 @@ export const mainTransfer = (
       [BLOCKCHAIN_ETHEREUM]: executeTransaction,
       [BLOCKCHAIN_NEM]: executeNemTransaction,
       [BLOCKCHAIN_BITCOIN]: BitcoinThunks.executeBitcoinTransaction,
+      [BLOCKCHAIN_DASH]: executeDashTransaction,
       [BLOCKCHAIN_WAVES]: executeWavesTransaction,
     }
 
