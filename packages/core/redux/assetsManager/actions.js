@@ -4,9 +4,9 @@
  */
 
 import uuid from 'uuid/v1'
-import Amount from '@chronobank/core/models/Amount'
-import { ASSET_TOPICS } from '@chronobank/core/describers/topics'
-import { loadEvents } from '@chronobank/core/redux/events/actions'
+import Amount from '../../models/Amount'
+import { ASSET_TOPICS } from '../../describers/topics'
+import { loadEvents } from '../../redux/events/actions'
 import { notify } from '../notifier/actions'
 import web3Converter from '../../utils/Web3Converter'
 import ReissuableModel from '../../models/tokens/ReissuableModel'

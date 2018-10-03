@@ -7,23 +7,18 @@ import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import TxModel from '@chronobank/core/models/TxModel'
 import { TX_CONFIRMATIONS } from 'assets'
 import { DUCK_WALLET } from '@chronobank/core/redux/wallet/constants'
 import { makeGetLastBlockForBlockchain } from '@chronobank/core/redux/tokens/selectors'
-import {
-  BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_LITECOIN,
-} from '@chronobank/login/network/constants'
+import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/constants'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
+import TxDescModel from '@chronobank/core/models/TxDescModel'
 import { prefix } from './lang'
 import './TxConfirmations.scss'
 
 function mapStateToProps (state, ownProps) {
   return {
-    latestBlock: makeGetLastBlockForBlockchain(ownProps.transaction.symbol())(state),
+    latestBlock: makeGetLastBlockForBlockchain(ownProps.transaction.value.symbol())(state),
     account: state.get(DUCK_WALLET).address,
   }
 }
@@ -31,7 +26,7 @@ function mapStateToProps (state, ownProps) {
 @connect(mapStateToProps)
 export default class TxConfirmations extends PureComponent {
   static propTypes = {
-    transaction: PropTypes.instanceOf(TxModel).isRequired,
+    transaction: PropTypes.instanceOf(TxDescModel).isRequired,
     latestBlock: PropTypes.shape({
       blockNumber: PropTypes.number,
     }),
@@ -43,7 +38,6 @@ export default class TxConfirmations extends PureComponent {
     switch (blockchain) {
       case BLOCKCHAIN_BITCOIN:
       case BLOCKCHAIN_BITCOIN_CASH:
-      case BLOCKCHAIN_BITCOIN_GOLD:
       case BLOCKCHAIN_LITECOIN:
         return 600
 
@@ -58,8 +52,8 @@ export default class TxConfirmations extends PureComponent {
   renderConfirmations (confirmations) {
     const { account, transaction } = this.props
     let icon = null
-    const isFrom = transaction.from().split(',').some((from) => from === account)
-    const prefix = (!isFrom)? 's' : 'r'
+    const isFrom = transaction.from.split(',').some((from) => from === account)
+    const prefix = (!isFrom) ? 's' : 'r'
 
     if (confirmations <= 4) {
       icon = TX_CONFIRMATIONS[`${prefix}_${confirmations}`]
@@ -73,15 +67,15 @@ export default class TxConfirmations extends PureComponent {
   renderText () {
     const { transaction, latestBlock, textMode } = this.props
     let confirmations = 0
-    if (latestBlock && latestBlock.blockNumber && transaction.blockNumber() > 0) {
-      confirmations = latestBlock.blockNumber - transaction.blockNumber() + 1
+    if (latestBlock && latestBlock.blockNumber && transaction.blockNumber > 0) {
+      confirmations = latestBlock.blockNumber - transaction.blockNumber + 1
     } else {
-      confirmations = transaction.confirmations()
+      confirmations = transaction.confirmations
     }
 
     if (textMode) {
       let remaning
-      const miningTime = this.getBlockMiningTime(transaction.blockchain())
+      const miningTime = this.getBlockMiningTime(transaction.blockchain)
       if (confirmations < 4) {
         remaning = (4 - confirmations) * miningTime
         return <Translate value={`${prefix}.confirmations`} min={Math.ceil(remaning / 60)} confirmations={confirmations} />
@@ -94,10 +88,10 @@ export default class TxConfirmations extends PureComponent {
   render () {
     const { transaction, latestBlock, textMode } = this.props
     let confirmations = 0
-    if (latestBlock && latestBlock.blockNumber && transaction.blockNumber() > 0) {
-      confirmations = latestBlock.blockNumber - transaction.blockNumber() + 1
+    if (latestBlock && latestBlock.blockNumber && transaction.blockNumber > 0) {
+      confirmations = latestBlock.blockNumber - transaction.blockNumber + 1
     } else {
-      confirmations = transaction.confirmations()
+      confirmations = transaction.confirmations
     }
 
     return (

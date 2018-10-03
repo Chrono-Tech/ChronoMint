@@ -2,8 +2,9 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-import { modalsOpen } from '@chronobank/core/redux/modals/actions'
+
 import { nemProvider } from '@chronobank/login/network/NemProvider'
+import { modalsOpen } from '../../redux/modals/actions'
 import { ErrorNoticeModel, TransferNoticeModel } from '../../models'
 import { nemPendingSelector, pendingEntrySelector, getNemSigner } from './selectors'
 import { getSelectedNetwork } from '../persistAccount/selectors'
@@ -14,6 +15,8 @@ import * as NemUtils from './utils'
 import { getToken } from '../tokens/selectors'
 import { notify } from '../notifier/actions'
 import tokenService from '../../services/TokenService'
+import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
+import { showSignerModal, closeSignerModal } from '../modals/thunks'
 
 const notifyNemTransfer = (entry) => (dispatch, getState) => {
   const { tx } = entry
@@ -61,7 +64,7 @@ export const estimateNemFee = (params) => async (dispatch) => {
   const tx = nemDao.transfer(from, to, amount)
   const preparedTx = await dispatch(prepareTransaction({ tx }))
 
-  return { fee: NemUtils.formatFee(preparedTx.prepared.fee) }
+  return NemUtils.formatFee(preparedTx.prepared.fee)
 }
 
 export const executeNemTransaction = ({ tx, options }) => async (dispatch) => {
@@ -99,10 +102,14 @@ const processTransaction = ({ entry, signer }) => async (dispatch, getState) => 
 
 const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   try {
+    const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
+
     dispatch(NemActions.nemTxSignTransaction({ entry, signer }))
 
+    dispatch(showSignerModal())
     const { tx } = entry
-    const signed = NemUtils.createXemTransaction(tx.prepared, signer, getSelectedNetwork()(getState()))
+    const signed = await NemUtils.createXemTransaction(tx.prepared, signer, selectedWallet.encrypted[0].path)
+    dispatch(closeSignerModal())
 
     dispatch(NemActions.nemTxUpdate(entry.key, entry.tx.from, NemUtils.createNemTxEntryModel({
       ...entry,
@@ -113,6 +120,8 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     })))
 
   } catch (error) {
+    dispatch(closeSignerModal())
+
     dispatch(NemActions.nemTxSignTransactionError({ error }))
     dispatch(nemTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
     throw error
@@ -141,7 +150,7 @@ const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
   }
 
   if (res.code === 0) {
-    dispatch(NemActions.nemTxSendSignedTransactionError({ entry }))
+    dispatch(NemActions.nemTxSendSignedTransactionError({ entry, res }))
     dispatch(nemTxStatus(entry.key, entry.tx.from, { isErrored: true, error: res.message }))
     dispatch(notifyNemError(res))
   }

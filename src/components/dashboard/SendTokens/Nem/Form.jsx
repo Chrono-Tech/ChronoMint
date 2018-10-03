@@ -36,6 +36,7 @@ import {
   reduxForm,
 } from 'redux-form/immutable'
 import { prefix } from '../lang'
+import { normalizeAddress } from './normalize'
 
 import '../form.scss'
 import validate from '../validate'
@@ -109,7 +110,7 @@ export default class Nem extends PureComponent {
   }
 
   componentDidUpdate (prevProps) {
-    if (this.props.amount > 0 && prevProps.formValues !== prevProps.formValues) {
+    if (this.props.amount > 0 && this.props.formValues !== prevProps.formValues) {
       try {
         const value = new Amount(this.props.token.addDecimals(new BigNumber(this.props.amount)), this.props.symbol)
         this.handleEstimateFee(
@@ -253,6 +254,7 @@ export default class Nem extends PureComponent {
             name='recipient'
             label={<Translate value={`${prefix}.recipientAddress`} />}
             fullWidth
+            normalize={normalizeAddress}
           />
         </div>
         <div styleName='row'>

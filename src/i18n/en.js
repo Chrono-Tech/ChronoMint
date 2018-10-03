@@ -163,6 +163,7 @@ export default {
   notices,
   tx: {
     title: 'New transaction',
+    transfer: 'Transfer',
     from: 'From',
     to: 'To',
     amount: 'Amount',

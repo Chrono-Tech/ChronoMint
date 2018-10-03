@@ -17,8 +17,8 @@ export const WAVES_MAINNET_NODE = new WavesMiddlewareNode({
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
-      balance: '/exchange/events/mainnet-waves-middleware-02-chronobank-io_balance',
-      transaction: '/exchange/events/mainnet-waves-middleware-02-chronobank-io_transaction',
+      balance: '/exchange/events/mainnet-waves-middleware-chronobank-io_balance',
+      transaction: '/exchange/events/mainnet-waves-middleware-chronobank-io_transaction',
     },
   },
   trace: true,
@@ -34,15 +34,15 @@ export const WAVES_TESTNET_NODE = new WavesMiddlewareNode({
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
-      balance: '/exchange/events/testnet-waves-middleware-02-chronobank-io_balance',
-      transaction: '/exchange/events/testnet-waves-middleware-02-chronobank-io_transaction',
+      balance: '/exchange/events/testnet-waves-middleware-chronobank-io_balance',
+      transaction: '/exchange/events/testnet-waves-middleware-chronobank-io_transaction',
     },
   },
   trace: true,
 })
 
-export function selectWavesNode (engine) {
-  return engine && engine.getNetwork() === WavesApi.MAINNET_CONFIG
+export function selectWavesNode (network) {
+  return WavesApi[network['Waves']] === WavesApi.MAINNET_CONFIG
     ? WAVES_MAINNET_NODE
     : WAVES_TESTNET_NODE
 }

@@ -4,7 +4,6 @@
  */
 
 import axios from 'axios'
-import { networks } from 'bitcoinjs-lib'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_LITECOIN,
@@ -69,20 +68,20 @@ const BCC_TESTNET_NODE = new BitcoinBlockexplorerNode({
   trace: true,
 })
 
-const BTG_MAINNET_NODE = new BitcoinBlockexplorerNode({
+const DASH_MAINNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
-    baseURL: 'https://explorer.bitcoingold.org/insight-api',
+    baseURL: 'https://insight.dashevo.org/insight-api-dash',
     timeout: 10000,
   }),
   trace: false,
 })
 
-const BTG_TESTNET_NODE = new BitcoinBlockexplorerNode({
+const DASH_TESTNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
-    baseURL: 'https://test-explorer.bitcoingold.org/insight-api',
+    baseURL: 'https://testnet-insight.dashevo.org/insight-api-dash',
     timeout: 10000,
   }),
-  trace: false,
+  trace: true,
 })
 
 export const LTC_MAINNET_NODE = new BitcoinMiddlewareNode({
@@ -125,26 +124,26 @@ export const LTC_TESTNET_NODE = new BitcoinMiddlewareNode({
   trace: false,
 })
 
-export function selectBTCNode (engine) {
-  return engine.getNetwork() !== networks.bitcoin
+export function selectBTCNode (network) {
+  return network.Bitcoin === 'testnet'
     ? BTC_TESTNET_NODE
     : BTC_MAINNET_NODE
 }
 
-export function selectBCCNode (engine) {
-  return engine.getNetwork() !== networks.bitcoin
+export function selectBCCNode (network) {
+  return network['Bitcoin Cash'] === 'testnet'
     ? BCC_TESTNET_NODE
     : BCC_MAINNET_NODE
 }
 
-export function selectBTGNode (engine) {
-  return engine.getNetwork() !== networks.bitcoingold
-    ? BTG_TESTNET_NODE
-    : BTG_MAINNET_NODE
+export function selectDASHNode (network) {
+  return network.Dash === 'testnet'
+    ? DASH_TESTNET_NODE
+    : DASH_MAINNET_NODE
 }
 
-export function selectLTCNode (engine) {
-  return engine.getNetwork() !== networks.litecoin
+export function selectLTCNode (network) {
+  return network.Litecoin === 'testnet'
     ? LTC_TESTNET_NODE
     : LTC_MAINNET_NODE
 }

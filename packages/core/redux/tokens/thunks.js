@@ -5,8 +5,8 @@
 
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
-import WavesDAO from '@chronobank/core/dao/WavesDAO'
-import { bccDAO, btcDAO, btgDAO, ltcDAO } from '../../dao/BitcoinDAO'
+import WavesDAO from '../../dao/WavesDAO'
+import { bccDAO, btcDAO, dashDAO, ltcDAO } from '../../dao/BitcoinDAO'
 import ERC20ManagerDAO from '../../dao/ERC20ManagerDAO'
 import ethereumDAO from '../../dao/EthereumDAO'
 import NemDAO from '../../dao/NemDAO'
@@ -96,7 +96,7 @@ export const initTokens = () => async (dispatch, getState) => {
 
 export const initBtcLikeTokens = () => async (dispatch, getState) => {
   const state = getState()
-  const btcLikeTokens = [btcDAO, bccDAO, btgDAO, ltcDAO]
+  const btcLikeTokens = [btcDAO, bccDAO, dashDAO, ltcDAO]
   const currentCount = state.get(DUCK_TOKENS).leftToFetch()
   dispatch(TokensActions.setTokensFetchingCount(currentCount + btcLikeTokens.length))
 
@@ -112,6 +112,7 @@ export const initBtcLikeTokens = () => async (dispatch, getState) => {
             }
           })
           await dao.watchLastBlock()
+          dao.watch()
           const token = await dao.fetchToken()
           tokenService.registerDAO(token, dao)
           dispatch(TokensActions.tokenFetched(token))
@@ -130,6 +131,8 @@ export const initNemTokens = () => async (dispatch, getState) => {
     dispatch(TokensActions.setTokensFetchingCount(currentCount + 1))
 
     const dao = new NemDAO(NEM_XEM_NAME, NEM_XEM_SYMBOL, nemProvider, NEM_DECIMALS)
+    dao.watch()
+
     const nem = await dao.fetchToken()
     tokenService.registerDAO(nem, dao)
     dispatch(TokensActions.tokenFetched(nem))
@@ -164,6 +167,8 @@ export const initWavesTokens = () => async (dispatch, getState) => {
     const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
     dispatch(TokensActions.setTokensFetchingCount(currentCount + 1))
     const dao = new WavesDAO(WAVES_WAVES_NAME, WAVES_WAVES_SYMBOL, wavesProvider, WAVES_DECIMALS, 'WAVES')
+    dao.watch()
+
     const waves = await dao.fetchToken()
     tokenService.registerDAO(waves, dao)
     dispatch(TokensActions.tokenFetched(waves))

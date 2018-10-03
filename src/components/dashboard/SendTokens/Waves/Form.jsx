@@ -3,15 +3,16 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import PropTypes from 'prop-types'
+import { MenuItem, MuiThemeProvider, Paper } from '@material-ui/core'
 import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { TOKEN_ICONS } from 'assets'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import Amount from '@chronobank/core/models/Amount'
-import { MenuItem, MuiThemeProvider, Paper } from '@material-ui/core'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
-import PropTypes from 'prop-types'
+import { DEFAULT_TRANSACTION_FEE } from '@chronobank/core/redux/waves/constants'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -94,7 +95,7 @@ export default class Ethereum extends PureComponent {
   constructor () {
     super(...arguments)
     this.state = {
-      fee: new Amount(10000, WAVES),
+      fee: new Amount(DEFAULT_TRANSACTION_FEE, WAVES),
     }
 
     this.timeout = null

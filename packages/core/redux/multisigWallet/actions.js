@@ -27,7 +27,7 @@ import {
   EE_SINGLE_TRANSACTION,
 } from '../../services/constants'
 import multisigWalletService from '../../services/MultisigWalletService'
-import { getTxList } from '../mainWallet/actions'
+import { getTxList } from '../wallets/actions'
 import { ETH } from '../../dao/constants'
 import { getMultisigWallets } from '../wallet/selectors/models'
 import { getEthMultisigWallet } from './selectors/models'

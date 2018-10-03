@@ -6,13 +6,13 @@
 import { createSelector } from 'reselect'
 import { getTokens } from '../../tokens/selectors'
 import { selectMarketPricesListStore, selectMarketPricesSelectedCurrencyStore } from '../../wallet/selectors'
-import { getWallet } from './models'
+import { getWalletById } from './models'
 import { PTWallet } from '../../wallet/types'
 import { getEthMultisigWallet } from '../../multisigWallet/selectors/models'
 
 export const filteredBalancesAndTokens = (walletId, symbol) => createSelector(
   [
-    getWallet(walletId),
+    getWalletById(walletId),
     getEthMultisigWallet(walletId),
     getTokens,
   ],

@@ -6,20 +6,26 @@
 import bitcoin from 'bitcoinjs-lib'
 import type { Dispatch } from 'redux'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
-import { modalsOpen, modalsClose } from '../modals/actions'
-import * as converter from './converter'
+import { modalsOpen } from '../modals/actions'
+import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
+import { getBalanceDataParser } from './converter'
 import {
   TransferNoticeModel,
 } from '../../models'
 import * as BitcoinActions from './actions'
 import * as BitcoinUtils from './utils'
 import { getSelectedNetwork } from '../persistAccount/selectors'
+import { showSignerModal, closeSignerModal } from '../modals/thunks'
 
 import { describePendingBitcoinTx } from '../../describers'
 import { getToken } from '../tokens/selectors'
 import { pendingEntrySelector, getBitcoinSigner } from './selectors'
 import { notify, notifyError } from '../notifier/actions'
 import BitcoinMiddlewareService from './BitcoinMiddlewareService'
+
+import { getAddressUTXOS } from '../bitcoin-like-blockchain/thunks'
+
+export { getAddressUTXOS } from '../bitcoin-like-blockchain/thunks'
 
 /**
  * Start sending transaction. It will be signed and sent.
@@ -139,34 +145,10 @@ export const getAddressInfo =  (address: string, blockchain: string) => (dispatc
     .then((response) => {
       dispatch(BitcoinActions.bitcoinHttpGetAddressInfoSuccess(response.data, response.config.host))
       // TODO: need to check that res.status is equal 200 etc. Or it is better to check right in fetchPersonInfo.
-      return converter.addressInfo(response) // TODO: to verify, that 'data' is JSON, not HTML like 502.html or 404.html
+      return getBalanceDataParser(blockchain, netType)(response) // TODO: to verify, that 'data' is JSON, not HTML like 502.html or 404.html
     })
     .catch((error) => {
       dispatch(BitcoinActions.bitcoinHttpGetAddressInfoFailure(error))
-      throw new Error(error) // Rethrow for further processing, for example by SubmissionError
-    })
-}
-
-export const getAddressUTXOS = (address: string, blockchain: string) => (dispatch: Dispatch<any>, getState): Promise<*> => {
-  if (!blockchain || !address) {
-    const error = new Error('Malformed request. blockchain and/or address must be non-empty strings')
-    dispatch(BitcoinActions.bitcoinHttpGetUtxosFailure(error))
-    return Promise.reject(error)
-  }
-
-  const state = getState()
-  const { network } = getCurrentNetworkSelector(state)
-  const netType = network[blockchain]
-
-  dispatch(BitcoinActions.bitcoinHttpGetUtxos())
-  return BitcoinMiddlewareService.requestBitcoinAddressUTXOS(address, blockchain, netType)
-    .then((response) => {
-      dispatch(BitcoinActions.bitcoinHttpGetUtxosSuccess(response.data))
-      // TODO: need to check that res.status is equal 200 etc. Or it is better to check right in fetchPersonInfo.
-      return response.data // TODO: to verify, that 'data' is JSON, not HTML like 502.html or 404.html
-    })
-    .catch((error) => {
-      dispatch(BitcoinActions.bitcoinHttpGetUtxosFailure(error))
       throw new Error(error) // Rethrow for further processing, for example by SubmissionError
     })
 }
@@ -229,23 +211,16 @@ const processTransaction = ({ entry, signer }) => async (dispatch) => {
 
 const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   dispatch(BitcoinActions.bitcoinSignTx())
+
   try {
     const network = getSelectedNetwork()(getState())
+    const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
     const unsignedTxHex = entry.tx.prepared.buildIncomplete().toHex()
-    if (signer.isActionRequestedModalDialogShows()) {
-      dispatch(BitcoinActions.bitcoinShowSignTxConfirmationModalDialog())
-      dispatch(modalsOpen({
-        componentName: 'ActionRequestDeviceDialog',
-      }))
-    }
-    const signedHex = await signer.signTransaction(unsignedTxHex)
 
-    if (signer.isActionRequestedModalDialogShows()) {
-      dispatch(BitcoinActions.bitcoinCloseSignTxConfirmationModalDialog())
-      dispatch(modalsClose({
-        componentName: 'ActionRequestDeviceDialog',
-      }))
-    }
+    dispatch(showSignerModal())
+    const signedHex = await signer.signTransaction(unsignedTxHex, selectedWallet.encrypted[0].path)
+    dispatch(closeSignerModal())
+
     const bitcoinTransaction = bitcoin.Transaction.fromHex(signedHex)
     const bitcoinNetwork = bitcoin.networks[network[entry.blockchain]]
     const txb = new bitcoin.TransactionBuilder.fromTransaction(bitcoinTransaction, bitcoinNetwork)
@@ -261,12 +236,8 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     dispatch(BitcoinActions.bitcoinSignTxSuccess(bitcoinTxEntry))
     return bitcoinTxEntry
   } catch (error) {
-    if (signer.isActionRequestedModalDialogShows()) {
-      dispatch(BitcoinActions.bitcoinCloseSignTxConfirmationModalDialog())
-      dispatch(modalsClose({
-        componentName: 'ActionRequestDeviceDialog',
-      }))
-    }
+    dispatch(closeSignerModal())
+
     const bitcoinErrorTxEntry = BitcoinUtils.createBitcoinTxEntryModel({
       ...entry,
       isErrored: true,

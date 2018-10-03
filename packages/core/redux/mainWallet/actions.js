@@ -6,10 +6,6 @@
 // FIXME: to rework all methods below to avoid complexity
 /* eslint-disable complexity */
 
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
-import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
-import { nemProvider } from '@chronobank/login/network/NemProvider'
-import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import { getDeriveWalletsAddresses, getMultisigWallets } from '../wallet/selectors'
 import Amount from '../../models/Amount'
 import ApprovalNoticeModel from '../../models/notices/ApprovalNoticeModel'
@@ -17,49 +13,37 @@ import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import BalanceModel from '../../models/tokens/BalanceModel'
 import TokenModel from '../../models/tokens/TokenModel'
 import validator from '../../models/validator'
-import AddressModel from '../../models/wallet/AddressModel'
 import AllowanceModel from '../../models/wallet/AllowanceModel'
-import { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
 import { addMarketToken } from '../market/actions'
 import { notify } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { subscribeOnTokens } from '../tokens/thunks'
-import { DUCK_TOKENS } from '../tokens/constants'
 import tokenService from '../../services/TokenService'
 import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 import type TxModel from '../../models/TxModel'
 import { getMainAddresses, getMainEthWallet, getMainWalletForBlockchain, getWallet } from '../wallets/selectors/models'
-import TxHistoryModel from '../../models/wallet/TxHistoryModel'
-import WalletModel from '../../models/wallet/WalletModel'
 import { daoByType } from '../daos/selectors'
 import { estimateGas, executeTransaction } from '../ethereum/thunks'
-import { TX_DEPOSIT, ASSET_DEPOSIT_WITHDRAW } from '../../dao/constants/AssetHolderDAO'
+import { ASSET_DEPOSIT_WITHDRAW, TX_DEPOSIT } from '../../dao/constants/AssetHolderDAO'
 import { TX_APPROVE } from '../../dao/constants/ERC20DAO'
 import { DUCK_ETH_MULTISIG_WALLET, ETH_MULTISIG_BALANCE, ETH_MULTISIG_FETCHED } from '../multisigWallet/constants'
-import { WALLETS_SET_IS_TIME_REQUIRED, WALLETS_UPDATE_WALLET } from '../wallets/constants'
+import { WALLETS_SET_IS_TIME_REQUIRED, WALLETS_UPDATE_BALANCE } from '../wallets/constants'
 import {
-  BCC,
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
-  BTC,
-  BTG,
   ETH,
   EVENT_APPROVAL_TRANSFER,
   EVENT_NEW_TRANSFER,
   EVENT_UPDATE_BALANCE,
   EVENT_UPDATE_TRANSACTION,
-  LTC,
   TIME,
-  WAVES,
-  XEM,
 } from '../../dao/constants'
 import {
-  WALLET_ADDRESS,
   WALLET_ALLOWANCE,
   WALLET_ESTIMATE_GAS_FOR_DEPOSIT,
   WALLET_INIT,
@@ -67,6 +51,7 @@ import {
   WALLET_TRANSACTION,
   WALLET_TRANSACTION_UPDATED,
 } from './constants'
+import { getTransactionsForMainWallet } from '../wallets/actions'
 import { initEos } from '../eos/thunks'
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
@@ -107,6 +92,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
           if (!(tx.from() === account || tx.to() === account)) {
             return
           }
+
           // update donator
           if (tx.from() === assetDonatorDAO.getInitAddress()) {
             dispatch(updateIsTIMERequired())
@@ -142,27 +128,47 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       }
     })
     .on(EVENT_UPDATE_BALANCE, ({ account, balance }) => {
-      const wallets = getState().get(DUCK_ETH_MULTISIG_WALLET)
-      if (wallets.item(account)) {
-        dispatch({
-          type: ETH_MULTISIG_BALANCE,
-          walletId: account,
-          balance: new BalanceModel({
-            id: token.id(),
-            amount: new Amount(balance, token.symbol(), true),
-          }),
-        })
-      } else {
-        const addresses = getMainEthWallet(getState())
-        if (addresses.includes(account)) {
-          dispatch({
-            type: WALLET_TOKEN_BALANCE,
-            balance: new BalanceModel({
-              id: token.id(),
-              amount: new Amount(balance, token.symbol()),
-            }),
-          })
-        }
+
+      switch (token.blockchain()) {
+        case BLOCKCHAIN_ETHEREUM:
+          const wallets = getState().get(DUCK_ETH_MULTISIG_WALLET)
+          if (wallets.item(account)) {
+            dispatch({
+              type: ETH_MULTISIG_BALANCE,
+              walletId: account,
+              balance: new BalanceModel({
+                id: token.id(),
+                amount: new Amount(balance, token.symbol(), true),
+              }),
+            })
+          } else {
+            const addresses = getMainEthWallet(getState())
+            if (addresses.includes(account)) {
+              dispatch({
+                type: WALLET_TOKEN_BALANCE,
+                balance: new BalanceModel({
+                  id: token.id(),
+                  amount: new Amount(balance, token.symbol()),
+                }),
+              })
+            }
+          }
+          break
+
+        case BLOCKCHAIN_NEM:
+        case BLOCKCHAIN_BITCOIN:
+        case BLOCKCHAIN_BITCOIN_CASH:
+        case BLOCKCHAIN_DASH:
+        case BLOCKCHAIN_LITECOIN:
+        case BLOCKCHAIN_WAVES:
+          const wallet = getWallet(token.blockchain(), account)(getState())
+          dispatch({ type: WALLETS_UPDATE_BALANCE, walletId: wallet.id, balance: new Amount(balance, token.symbol()) })
+          break
+
+        default:
+          //eslint-disable-next-line no-console
+          console.warn('Update balance of unknown token blockchain: ', account, balance, token.toJSON())
+          break
       }
     })
     .on(EVENT_APPROVAL_TRANSFER, ({ spender, value }) => {
@@ -188,8 +194,6 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
         tx,
       })
     })
-
-  // dispatch(fetchTokenBalance(token, account))
 
   dispatch(addMarketToken(token.symbol()))
 
@@ -227,25 +231,6 @@ export const initMainWallet = () => async (dispatch) => {
   dispatch({ type: WALLET_INIT, isInited: true })
 
   dispatch(subscribeOnTokens(handleToken))
-
-  const providers = [
-    bccProvider,
-    btgProvider,
-    ltcProvider,
-    btcProvider,
-    nemProvider,
-    wavesProvider,
-    ethereumProvider,
-  ]
-  providers.forEach((provider) => {
-    dispatch({
-      type: WALLET_ADDRESS, address: new AddressModel({
-        id: provider.id(),
-        address: provider.getAddress(),
-      }),
-    })
-  })
-  await dispatch(initEos())
 }
 
 export const updateIsTIMERequired = () => async (dispatch, getState) => {
@@ -332,86 +317,4 @@ export const getTokensBalancesAndWatch = (address, blockchain, customTokens: Arr
   }
   // const dao = tokenService.getDAO(token)
   // await dao.watch(address)
-}
-
-export const getTransactionsForMainWallet = ({ wallet, forcedOffset }) => async (dispatch, getState) => {
-  if (!wallet) {
-    return null
-  }
-  const tokens = getState().get(DUCK_TOKENS)
-
-  dispatch({
-    type: WALLETS_UPDATE_WALLET,
-    wallet: new WalletModel({
-      ...wallet,
-      transactions: new TxHistoryModel(
-        {
-          ...wallet.transactions,
-          isFetching: true,
-        }),
-    }),
-  })
-
-  const transactions = await getTxList({ wallet, forcedOffset, tokens })
-
-  const newWallet = getWallet(wallet.id)(getState())
-  dispatch({
-    type: WALLETS_UPDATE_WALLET,
-    wallet: new WalletModel({ ...newWallet, transactions }),
-  })
-}
-
-export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
-
-  const transactions: TxHistoryModel = new TxHistoryModel({ ...wallet.transactions })
-  const offset = forcedOffset ? 0 : (transactions.transactions.length || 0)
-  const newOffset = offset + TXS_PER_PAGE
-
-  let txList = []
-  let dao
-
-  switch (wallet.blockchain) {
-    case BLOCKCHAIN_ETHEREUM:
-      dao = tokenService.getDAO(ETH)
-      break
-    case BLOCKCHAIN_BITCOIN:
-      dao = tokenService.getDAO(BTC)
-      break
-    case BLOCKCHAIN_BITCOIN_CASH:
-      dao = tokenService.getDAO(BCC)
-      break
-    case BLOCKCHAIN_BITCOIN_GOLD:
-      dao = tokenService.getDAO(BTG)
-      break
-    case BLOCKCHAIN_LITECOIN:
-      dao = tokenService.getDAO(LTC)
-      break
-    case BLOCKCHAIN_NEM:
-      dao = tokenService.getDAO(XEM)
-      break
-    case BLOCKCHAIN_WAVES:
-      dao = tokenService.getDAO(WAVES)
-      break
-  }
-
-  const blocks = transactions.blocks
-  let endOfList = false
-  if (dao) {
-    txList = await dao.getTransfer(wallet.address, wallet.address, offset, TXS_PER_PAGE, tokens)
-
-    txList.sort((a, b) => b.get('time') - a.get('time'))
-
-    for (const tx: TxModel of txList) {
-      if (!blocks[tx.blockNumber()]) {
-        blocks[tx.blockNumber()] = { transactions: [] }
-      }
-      blocks[tx.blockNumber()].transactions.push(tx)
-    }
-
-    if (transactions.transactions.length < newOffset) {
-      endOfList = true
-    }
-  }
-
-  return new TxHistoryModel({ ...transactions, blocks, endOfList })
 }

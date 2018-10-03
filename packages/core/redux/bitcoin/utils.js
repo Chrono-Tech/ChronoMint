@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import uuid from 'uuid/v1'
 import BigNumber from 'bignumber.js'
 import coinselect from 'coinselect'
 import bitcoin from 'bitcoinjs-lib'
@@ -11,23 +10,9 @@ import {
   COIN_TYPE_BTC_MAINNET,
   COIN_TYPE_BTC_TESTNET,
 } from '@chronobank/login/network/constants'
-import { TxEntryModel, TxExecModel } from '../../models'
+import { TxExecModel } from '../../models'
 
-/**
- * Create new TxEntryModel from provided data
- * @param {Object} entry - TODO
- * @param {Object} options - TODO
- * @return {TxEntryModel}
- */
-export const createBitcoinTxEntryModel = (entry, options = {}) =>
-  new TxEntryModel({
-    key: uuid(),
-    isSubmitted: true,
-    isAccepted: false,
-    walletDerivedPath: options && options.walletDerivedPath,
-    symbol: options && options.symbol,
-    ...entry,
-  })
+export { createBitcoinTxEntryModel } from '../bitcoin-like-blockchain/utils'
 
 /**
  * Get unused exits to create new transaction

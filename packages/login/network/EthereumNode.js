@@ -29,6 +29,15 @@ const ETHEREUM_TESTNET_NODE = new EthereumMiddlewareNode({
   trace: true,
 })
 
+/**
+ *
+ * @param network object from SessionThunks.getProviderSettings()
+ * @returns {EthereumMiddlewareNode}
+ */
+export default function selectEthereumNode (network) {
+  return (network.id === NETWORK_MAIN_ID) ? ETHEREUM_MAINNET_NODE : ETHEREUM_TESTNET_NODE
+}
+
 const ETHEREUM_MAINNET_NODE = new EthereumMiddlewareNode({
   api: axios.create({
     baseURL: 'https://middleware-ethereum-mainnet-rest.chronobank.io',
@@ -49,12 +58,3 @@ const ETHEREUM_MAINNET_NODE = new EthereumMiddlewareNode({
   },
   trace: true,
 })
-
-export default function selectEthereumNode (engine) {
-  switch (engine.getNetwork().id) {
-    case NETWORK_MAIN_ID :
-      return ETHEREUM_MAINNET_NODE
-    default:
-      return ETHEREUM_TESTNET_NODE
-  }
-}

@@ -11,6 +11,7 @@ import Amount from '../models/Amount'
 import { nemAddress } from '../models/validator'
 import { BLOCKCHAIN_NEM, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from './constants'
 import { NEM_XEM_SYMBOL } from './constants/NemDAO'
+import TxDescModel from '../models/TxDescModel'
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
@@ -58,26 +59,20 @@ export default class NemDAO extends EventEmitter {
     return this._nemProvider.isInitialized()
   }
 
-  hasBalancesStream () {
-    // Balance should not be fetched after transfer notification,
-    // it will be updated from the balances event stream
-    return true
-  }
-
   getDecimals () {
     return this._decimals
   }
 
-  getAccountBalances () {
-    return this._nemProvider.getAccountBalances(this._namespace)
+  getAccountBalances (address) {
+    return this._nemProvider.getAccountBalances(address)
   }
 
   /**
    * wrapper for getAccountBalances, is required for uniformity os DAOs
    * @returns {*|Promise<*>}
    */
-  getAccountBalance () {
-    return this.getAccountBalances()
+  getAccountBalance (address) {
+    return this.getAccountBalances(address)
   }
 
   transfer (from: string, to: string, amount: BigNumber) {
@@ -95,17 +90,30 @@ export default class NemDAO extends EventEmitter {
       const txsResult = await this._nemProvider.getTransactionsList(account, id, skip, offset)
       for (const tx of txsResult) {
         if (tx.value > 0) {
-          txs.push(new TxModel({
-            txHash: tx.txHash,
-            blockHash: tx.blockHash,
-            blockNumber: tx.blockNumber,
+          txs.push(new TxDescModel({
+            confirmations: tx.confirmations,
+            title: tx.details ? tx.details.event : 'tx.transfer',
+            hash: tx.txHash,
             time: tx.time,
+            blockchain: this._name,
+            value: new Amount(tx.value, tx.symbol || this._symbol),
+            fee: new Amount(tx.fee, this._symbol),
             from: tx.from,
             to: tx.to,
-            symbol: this._symbol,
-            value: new Amount(tx.value, this._symbol),
-            fee: new Amount(tx.fee, this._symbol),
-            blockchain: BLOCKCHAIN_NEM,
+            params: [
+              {
+                name: 'from',
+                value: tx.from,
+              },
+              {
+                name: 'to',
+                value: tx.to,
+              },
+              {
+                name: 'amount',
+                value: new Amount(tx.value, tx.symbol || this._symbol),
+              },
+            ],
           }))
         }
       }
@@ -142,8 +150,6 @@ export default class NemDAO extends EventEmitter {
   _createXemTxModel (tx) {
     return new TxModel({
       txHash: tx.txHash,
-      // blockHash: tx.blockhash,
-      // blockNumber: tx.blockheight,
       blockNumber: null,
       time: tx.time,
       from: tx.from || tx.signer,
@@ -157,8 +163,6 @@ export default class NemDAO extends EventEmitter {
   _createMosaicTxModel (tx) {
     return new TxModel({
       txHash: tx.txHash,
-      // blockHash: tx.blockhash,
-      // blockNumber: tx.blockheight,
       blockNumber: null,
       time: tx.time,
       from: tx.from || tx.signer,
@@ -177,19 +181,6 @@ export default class NemDAO extends EventEmitter {
         balance: readBalanceValue(this._symbol, balance, this._namespace),
       })
     })
-  }
-
-  // eslint-disable-next-line no-unused-vars
-  async watchApproval (callback) {
-    // Ignore
-  }
-
-  async stopWatching () {
-    // Ignore
-  }
-
-  resetFilterCache () {
-    // do nothing
   }
 
   async fetchToken () {

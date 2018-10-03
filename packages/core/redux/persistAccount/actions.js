@@ -107,19 +107,21 @@ export const createAccount = ({ name, wallet, type }) => async (dispatch) => {
 
 export const createMemoryAccount = ({ name, password, mnemonic, privateKey }) => async (dispatch) => {
   const wallet = await EthereumMemoryDevice.create({ privateKey, mnemonic, password })
-  const account = await dispatch(createAccount({ name, wallet, type: WALLET_TYPE_MEMORY }))
+  const account = await dispatch(createAccount({
+    name,
+    wallet,
+    type: WALLET_TYPE_MEMORY,
+  }))
   return account
 }
 
 export const downloadWallet = () => (dispatch, getState) => {
   const state = getState()
-
   const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
 
   if (selectedWallet) {
     const walletName = selectedWallet.name || 'Wallet'
-    const encrypted = selectedWallet.encrypted.length > 1 ? selectedWallet.encrypted : selectedWallet.encrypted[0]
-    const text = JSON.stringify(encrypted && encrypted.wallet)
+    const text = JSON.stringify(selectedWallet.encrypted.length > 1 ? selectedWallet.encrypted : selectedWallet.encrypted[0].wallet)
     const element = document.createElement('a')
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text))
     element.setAttribute('download', `${walletName}.wlt`)

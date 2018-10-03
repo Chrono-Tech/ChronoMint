@@ -118,3 +118,18 @@ export const getLitecoinSigner = (state) => {
     }
   }
 }
+
+export const getSignerModalComponentName = (state) => {
+  const { selectedWallet } = getPersistAccount(state)
+  switch (selectedWallet.encrypted[0].type) {
+    // feel free to add your components here. We have only one component at the moment
+    case WALLET_TYPE_TREZOR_MOCK:
+    case WALLET_TYPE_TREZOR:
+    case WALLET_TYPE_LEDGER_MOCK:
+    case WALLET_TYPE_LEDGER: {
+      return 'ActionRequestDeviceDialog'
+    }
+    default:
+      return null
+  }
+}

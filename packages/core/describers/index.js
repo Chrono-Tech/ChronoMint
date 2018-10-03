@@ -12,6 +12,7 @@ import { EVENT_DESCRIBERS_BY_TOPIC, decodeLog } from './events'
 import { TRANSACTION_DESCRIBERS_BY_TOPIC, decodeParameters, findFunctionABI } from './transactions'
 import { decodeTxData } from '../utils/DecodeUtils'
 import { ETH, XEM, WAVES } from '../dao/constants'
+import { getKey } from './events/lib/assetEventDescribers'
 
 export const describeEvent = (data, context = {}) => {
   const { log, block } = data
@@ -28,7 +29,7 @@ export const describeEvent = (data, context = {}) => {
   }
 
   return new LogEventModel({
-    key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
+    key: getKey(data),
     name: 'custom',
     date: new Date(block.timestamp * 1000),
     icon: 'event',

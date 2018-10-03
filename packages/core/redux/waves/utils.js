@@ -6,7 +6,12 @@
 import uuid from 'uuid/v1'
 import BigNumber from 'bignumber.js'
 import { TxEntryModel, TxExecModel } from '../../models'
-import { TRANSACTION_TYPE_TRANSFER, TRANSACTION_TYPE_ISSUE } from './constants'
+import {
+  TRANSACTION_TYPE_TRANSFER,
+  TRANSACTION_TYPE_ISSUE,
+  DEFAULT_TRANSACTION_FEE,
+  DEFAULT_ISSUE_FEE,
+} from './constants'
 import { WAVES } from '../../dao/constants'
 
 export const createWavesTxEntryModel = (entry, options = {}) => {
@@ -39,7 +44,7 @@ export const describeIssueTransaction = (name, description, amount, reissuable =
     quantity: amount,
     precision: 5,
     reissuable,
-    fee: 100000000,
+    fee: DEFAULT_ISSUE_FEE,
     timestamp: Date.now(),
   }
 }
@@ -50,7 +55,7 @@ export const describeTransferTransaction = (to, amount) => {
     assetId: WAVES,
     amount: +amount.toString(),
     feeAssetId: WAVES,
-    fee: 100000,
+    fee: DEFAULT_TRANSACTION_FEE,
     attachment: '',
     timestamp: Date.now(),
   }

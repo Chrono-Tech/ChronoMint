@@ -22,17 +22,3 @@ export const daoByType = (type) => createSelector(
       : null
   },
 )
-
-export const isFrontendInitialized = () => createSelector(
-  daosSelector(),
-  (daos) => daos.isInitialized,
-)
-
-export const getAbiByAddress = (address) => createSelector(
-  daoByAddress(address),
-  (dao) => {
-    return dao
-      ? dao.abi
-      : null
-  },
-)

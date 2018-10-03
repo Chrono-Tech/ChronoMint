@@ -70,7 +70,7 @@ export default class TxHistoryModel extends AbstractModel {
           : Object.values(block.transactions)
         transactions
           .map((tx) => {
-            txList[tx.id()] = tx
+            txList[tx.id] = tx
           })
       })
     return Object.values(txList)

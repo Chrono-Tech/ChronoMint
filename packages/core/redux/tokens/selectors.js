@@ -7,14 +7,14 @@ import { createSelector } from 'reselect'
 import {
   BCC,
   BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
   BTC,
-  BTG,
+  DASH,
   ETH,
   LTC,
   WAVES,
@@ -32,7 +32,7 @@ export const isBTCLikeBlockchain = (blockchain) => {
   return [
     BLOCKCHAIN_BITCOIN,
     BLOCKCHAIN_BITCOIN_CASH,
-    BLOCKCHAIN_BITCOIN_GOLD,
+    BLOCKCHAIN_DASH,
     BLOCKCHAIN_LITECOIN,
   ].includes(blockchain)
 }
@@ -43,10 +43,10 @@ export const getMainSymbolForBlockchain = (blockchain) => {
       return BTC
     case BLOCKCHAIN_BITCOIN_CASH:
       return BCC
-    case BLOCKCHAIN_BITCOIN_GOLD:
-      return BTG
     case BLOCKCHAIN_LITECOIN:
       return LTC
+    case BLOCKCHAIN_DASH:
+      return DASH
     case BLOCKCHAIN_ETHEREUM:
       return ETH
     case BLOCKCHAIN_NEM:

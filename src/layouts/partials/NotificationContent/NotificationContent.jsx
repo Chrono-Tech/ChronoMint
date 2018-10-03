@@ -6,6 +6,7 @@
 import AbstractNoticeModel from '@chronobank/core/models/notices/AbstractNoticeModel'
 import classnames from 'classnames'
 import CurrentTransactionNotificationModel from '@chronobank/core/models/CurrentTransactionNotificationModel'
+import { pendingTransactionsSelector } from '@chronobank/core/redux/wallets/selectors/tokens'
 import Immutable from 'immutable'
 import Moment from 'components/common/Moment'
 import PropTypes from 'prop-types'
@@ -23,8 +24,8 @@ import { ethereumPendingFormatSelector } from '@chronobank/core/redux/ethereum/s
 import { FULL_DATE } from '@chronobank/core/models/constants'
 import { IconButton } from '@material-ui/core'
 import { Icons } from 'components/icons'
-import { pendingTransactionsSelector } from '@chronobank/core/redux/mainWallet/selectors/tokens'
 import { sidesCloseAll } from 'redux/sides/actions'
+import TxDescModel from '@chronobank/core/models/TxDescModel'
 import { Translate } from 'react-redux-i18n'
 import './NotificationContent.scss'
 import { prefix } from './lang'
@@ -106,6 +107,15 @@ class NotificationContent extends PureComponent {
           title: `${transaction.symbol()} Transfer`,
           date: transaction.time(),
           details: transaction.details(),
+        })
+
+      case transaction instanceof TxDescModel:
+        return new CurrentTransactionNotificationModel({
+          id: transaction.hash,
+          hash: transaction.hash,
+          title: `${transaction.value.symbol()} Transfer`,
+          date: transaction.time,
+          details: transaction.details,
         })
 
       case transaction instanceof CurrentTransactionNotificationModel:

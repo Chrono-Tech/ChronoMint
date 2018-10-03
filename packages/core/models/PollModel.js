@@ -27,27 +27,26 @@ const schemaFactory = () => ({
   memberOption: PropTypes.instanceOf(BigNumber),
 })
 
-const defaultProps = {
-  id: null,
-  hash: null,
-  owner: null,
-  title: '',
-  description: '',
-  published: null,
-  voteLimitInTIME: null,
-  transactionHash: null,
-  deadline: null,
-  options: ['Support', 'Decline'],
-  files: null, // hash
-  active: false,
-  status: false,
-  isTransaction: false,
-  hasMember: false,
-  memberOption: null,
-}
-
 class PollModel extends AbstractModel {
   constructor (ownProps) {
+    const defaultProps = {
+      id: null,
+      hash: null,
+      owner: null,
+      title: '',
+      description: '',
+      published: null,
+      voteLimitInTIME: null,
+      transactionHash: null,
+      deadline: null,
+      options: ['Support', 'Decline'],
+      files: null, // hash
+      active: false,
+      status: false,
+      isTransaction: false,
+      hasMember: false,
+      memberOption: null,
+    }
     const props = { ...defaultProps, ...ownProps }
     super({
       ...props,

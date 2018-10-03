@@ -14,7 +14,7 @@ import { getEOSWallet } from '../../eos/selectors/mainSelectors'
 
 export const selectWallet = (blockchain, address) => createSelector(
   [
-    getWallet(`${blockchain}-${address}`),
+    getWallet(blockchain, address),
     getEOSWallet(`${blockchain}-${address}`),
     getEthMultisigWallet(`${blockchain}-${address}`),
   ],

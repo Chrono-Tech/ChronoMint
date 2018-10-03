@@ -3,9 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { getTransactionsForMainWallet } from '../mainWallet/actions'
-import { getTransactionsForEthMultisigWallet } from '../multisigWallet/actions'
+import { getTransactionsForMainWallet, updateWalletBalance } from '../wallets/actions'
+import { getTransactionsForEthMultisigWallet, updateEthMultisigWalletBalance } from '../multisigWallet/actions'
 import { WALLET_SELECT_WALLET } from './constants'
+import { BLOCKCHAIN_ETHEREUM } from '../../dao/constants'
+import ethereumDAO from '../../dao/EthereumDAO'
 
 export const selectWallet = (blockchain: string, address: string) => (dispatch) => {
   dispatch({ type: WALLET_SELECT_WALLET, blockchain, address })
@@ -25,5 +27,37 @@ export const formatDataAndGetTransactionsForWallet = ({ wallet, address, blockch
       return dispatch(getTransactionsForMainWallet({ wallet, address, blockchain }))
     case wallet && wallet.isMultisig:
       return dispatch(getTransactionsForEthMultisigWallet({ wallet, address, blockchain }))
+  }
+}
+
+export const subscribeWallet = ({ wallet }) => async (dispatch) => {
+  const listener = function (data) {
+    const checkedFrom = data.from ? data.from.toLowerCase() === wallet.address.toLowerCase() : false
+    const checkedTo = data.to ? data.to.toLowerCase() === wallet.address.toLowerCase() : false
+    if (checkedFrom || checkedTo) {
+      if (wallet.isMain || wallet.isDerived) {
+        dispatch(updateWalletBalance({ wallet }))
+      }
+      if (wallet.isMultisig) {
+        dispatch(updateEthMultisigWalletBalance({ wallet }))
+      }
+    }
+  }
+  switch (wallet.blockchain) {
+    case BLOCKCHAIN_ETHEREUM:
+      ethereumDAO.on('tx', listener)
+      return listener
+    default:
+      return
+  }
+}
+
+export const unsubscribeWallet = ({ wallet, listener }) => async () => {
+  switch (wallet.blockchain) {
+    case BLOCKCHAIN_ETHEREUM:
+      ethereumDAO.removeListener('tx', listener)
+      return listener
+    default:
+      return
   }
 }

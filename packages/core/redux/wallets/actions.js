@@ -3,11 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import { bccProvider, btcProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import { dashProvider } from '@chronobank/login/network/DashProvider'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
@@ -17,32 +18,32 @@ import {
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import WalletModel from '../../models/wallet/WalletModel'
 import { subscribeOnTokens } from '../tokens/thunks'
-import { formatBalances, getWalletBalances } from '../tokens/utils'
+import { formatBalances, getProviderByBlockchain, getWalletBalances } from '../tokens/utils'
 import TokenModel from '../../models/tokens/TokenModel'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 import tokenService from '../../services/TokenService'
 import Amount from '../../models/Amount'
 import { getAccount } from '../session/selectors'
-import { updateEthMultisigWalletBalance } from '../multisigWallet/actions'
-import ethereumDAO from '../../dao/EthereumDAO'
-import { getMainEthWallet, getWallets } from './selectors/models'
+import { getMainEthWallet, getWallet, getWallets } from './selectors/models'
 import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { AllowanceCollection } from '../../models'
+import { executeDashTransaction } from '../dash/thunks'
 import { executeTransaction } from '../ethereum/thunks'
 import { executeWavesTransaction } from '../waves/thunks'
 import * as BitcoinThunks from '../bitcoin/thunks'
-import {
-  WALLETS_SET,
-  WALLETS_SET_NAME,
-  WALLETS_UPDATE_BALANCE,
-  WALLETS_UPDATE_WALLET,
-} from './constants'
+import { WALLETS_SET, WALLETS_SET_NAME, WALLETS_UPDATE_BALANCE, WALLETS_UPDATE_WALLET } from './constants'
 import { executeNemTransaction } from '../nem/thunks'
-import { getPersistAccount, getEthereumSigner } from '../persistAccount/selectors'
+import { getEthereumSigner, getPersistAccount } from '../persistAccount/selectors'
 import { getBitcoinCashSigner, getBitcoinSigner, getLitecoinSigner } from '../bitcoin/selectors'
+import { getDashSigner } from '../dash/selectors'
 import { getNemSigner } from '../nem/selectors'
 import { getWavesSigner } from '../waves/selectors'
+import { DUCK_TOKENS } from '../tokens/constants'
+import TxHistoryModel from '../../models/wallet/TxHistoryModel'
+import { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
+import { BCC, BTC, DASH, ETH, LTC, WAVES, XEM } from '../../dao/constants'
+import TxDescModel from '../../models/TxDescModel'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -54,7 +55,12 @@ export const get2FAEncodedKey = (callback) => () => {
 
 export const setWalletName = (walletId, name) => (dispatch) => dispatch({ type: WALLETS_SET_NAME, walletId, name })
 
-export const setWallet = (wallet) => (dispatch) => dispatch({ type: WALLETS_SET, wallet })
+export const setWallet = (wallet) => (dispatch) => {
+  const provider = getProviderByBlockchain(wallet.blockchain)
+  provider.subscribe(wallet.address)
+
+  dispatch({ type: WALLETS_SET, wallet })
+}
 
 export const setWalletBalance = (walletId, balance) => (dispatch) => dispatch({ type: WALLETS_UPDATE_BALANCE, walletId, balance })
 
@@ -67,64 +73,75 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
   const state = getState()
   const account = getPersistAccount(state)
   const wallets = []
+  const accountPath = account.decryptedWallet.entry.encrypted[0].path
 
   const ethereumSigner = getEthereumSigner(state)
-  const ethAddress = await ethereumSigner.getAddress()
+  const ethAddress = await ethereumSigner.getAddress(accountPath)
 
   wallets.push(new WalletModel({
-    address: ethAddress,
+    address: ethAddress.toLowerCase(accountPath),
     blockchain: BLOCKCHAIN_ETHEREUM,
     isMain: true,
-    walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+    walletDerivedPath: accountPath,
   }))
 
   const bitcoinSigner = getBitcoinSigner(state)
   if (bitcoinSigner) {
     wallets.push(new WalletModel({
-      address: bitcoinSigner.getAddress(),
+      address: bitcoinSigner.getAddress(accountPath),
       blockchain: BLOCKCHAIN_BITCOIN,
       isMain: true,
-      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+      walletDerivedPath: accountPath,
     }))
   }
 
   const bitcoinCashSigner = getBitcoinCashSigner(state)
   if (bitcoinCashSigner) {
     wallets.push(new WalletModel({
-      address: bitcoinCashSigner.getAddress(),
+      address: bitcoinCashSigner.getAddress(accountPath),
       blockchain: BLOCKCHAIN_BITCOIN_CASH,
       isMain: true,
-      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+      walletDerivedPath: accountPath,
+    }))
+  }
+
+  const dashSigner = getDashSigner(state)
+  if (dashSigner) {
+    wallets.push(new WalletModel({
+      address: dashSigner.getAddress(accountPath),
+      blockchain: BLOCKCHAIN_DASH,
+      isMain: true,
+      walletDerivedPath: accountPath,
     }))
   }
 
   const litecoinSigner = getLitecoinSigner(state)
   if (litecoinSigner) {
     wallets.push(new WalletModel({
-      address: litecoinSigner.getAddress(),
+      address: litecoinSigner.getAddress(accountPath),
       blockchain: BLOCKCHAIN_LITECOIN,
       isMain: true,
-      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+      walletDerivedPath: accountPath,
     }))
   }
 
   const nemSigner = getNemSigner(state)
   if (nemSigner) {
     wallets.push(new WalletModel({
-      address: nemSigner.getAddress(),
+      address: nemSigner.getAddress(accountPath),
       blockchain: BLOCKCHAIN_NEM,
       isMain: true,
-      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+      walletDerivedPath: accountPath,
     }))
   }
 
   const wavesSigner = getWavesSigner(state)
   if (wavesSigner) {
     wallets.push(new WalletModel({
-      address: wavesSigner.getAddress(),
+      address: wavesSigner.getAddress(accountPath),
       blockchain: BLOCKCHAIN_WAVES,
       isMain: true,
-      walletDerivedPath: account.decryptedWallet.entry.encrypted[0].path,
+      walletDerivedPath: accountPath,
     }))
   }
 
@@ -152,9 +169,9 @@ const initDerivedWallets = () => async (dispatch, getState) => {
           bccProvider.createNewChildAddress(wallet.deriveNumber)
           bccProvider.subscribeNewWallet(wallet.address)
           break
-        case BLOCKCHAIN_BITCOIN_GOLD:
-          btgProvider.createNewChildAddress(wallet.deriveNumber)
-          btgProvider.subscribeNewWallet(wallet.address)
+        case BLOCKCHAIN_DASH:
+          dashProvider.createNewChildAddress(wallet.deriveNumber)
+          dashProvider.subscribeNewWallet(wallet.address)
           break
         case BLOCKCHAIN_LITECOIN:
           ltcProvider.createNewChildAddress(wallet.deriveNumber)
@@ -181,7 +198,7 @@ const fallbackCallback = (wallet) => (dispatch) => {
   dispatch(subscribeOnTokens(updateBalance))
 }
 
-const updateWalletBalance = ({ wallet }) => async (dispatch) => {
+export const updateWalletBalance = ({ wallet }) => async (dispatch) => {
   const blockchain = wallet.blockchain
   const address = wallet.address
 
@@ -189,10 +206,12 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
     return dispatch(fallbackCallback(wallet))
   }
 
-  const isBtcLikeBlockchain = blockchain === BLOCKCHAIN_BITCOIN
-    || blockchain === BLOCKCHAIN_LITECOIN
-    || blockchain === BLOCKCHAIN_BITCOIN_CASH
-    || blockchain === BLOCKCHAIN_BITCOIN_GOLD
+  const isBtcLikeBlockchain = [
+    BLOCKCHAIN_BITCOIN,
+    BLOCKCHAIN_BITCOIN_CASH,
+    BLOCKCHAIN_DASH,
+    BLOCKCHAIN_LITECOIN
+  ].includes(blockchain)
 
   if (isBtcLikeBlockchain) {
     return dispatch(BitcoinThunks.getAddressInfo(address, blockchain))
@@ -209,7 +228,7 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
       })
       .catch((e) => {
         // eslint-disable-next-line no-console
-        console.log('call balances from middleware is failed', e)
+        console.log('Balances call to middleware has failed [getAddressInfo]: ', blockchain, e)
         dispatch(fallbackCallback(wallet))
       })
   } else {
@@ -230,41 +249,9 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
       })
       .catch((e) => {
         // eslint-disable-next-line no-console
-        console.log('call balances from middleware is failed', e)
+        console.log('call balances from middleware is failed getWalletBalances', e)
         dispatch(fallbackCallback(wallet))
       })
-  }
-}
-
-export const subscribeWallet = ({ wallet }) => async (dispatch) => {
-  const listener = function (data) {
-    const checkedFrom = data.from ? data.from.toLowerCase() === wallet.address.toLowerCase() : false
-    const checkedTo = data.to ? data.to.toLowerCase() === wallet.address.toLowerCase() : false
-    if (checkedFrom || checkedTo) {
-      if (wallet.isMain || wallet.isDerived) {
-        dispatch(updateWalletBalance({ wallet }))
-      }
-      if (wallet.isMultisig) {
-        dispatch(updateEthMultisigWalletBalance({ wallet }))
-      }
-    }
-  }
-  switch (wallet.blockchain) {
-    case BLOCKCHAIN_ETHEREUM:
-      ethereumDAO.on('tx', listener)
-      return listener
-    default:
-      return
-  }
-}
-
-export const unsubscribeWallet = ({ wallet, listener }) => async (/*dispatch, getState*/) => {
-  switch (wallet.blockchain) {
-    case BLOCKCHAIN_ETHEREUM:
-      ethereumDAO.removeListener('tx', listener)
-      return listener
-    default:
-      return
   }
 }
 
@@ -301,6 +288,7 @@ export const mainTransfer = (
       [BLOCKCHAIN_ETHEREUM]: executeTransaction,
       [BLOCKCHAIN_NEM]: executeNemTransaction,
       [BLOCKCHAIN_BITCOIN]: BitcoinThunks.executeBitcoinTransaction,
+      [BLOCKCHAIN_DASH]: executeDashTransaction,
       [BLOCKCHAIN_WAVES]: executeWavesTransaction,
     }
 
@@ -413,7 +401,6 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
       ltcProvider.subscribeNewWallet(address)
       break
 
-    case BLOCKCHAIN_BITCOIN_GOLD:
     case BLOCKCHAIN_NEM:
     case BLOCKCHAIN_WAVES:
     default:
@@ -434,4 +421,92 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
 
   dispatch(setWallet(wallet))
   dispatch(updateWalletBalance({ wallet }))
+}
+
+export const getTransactionsForMainWallet = ({ wallet, forcedOffset }) => async (dispatch, getState) => {
+  if (!wallet) {
+    return null
+  }
+  const tokens = getState().get(DUCK_TOKENS)
+
+  dispatch({
+    type: WALLETS_UPDATE_WALLET,
+    wallet: new WalletModel({
+      ...wallet,
+      transactions: new TxHistoryModel(
+        {
+          ...wallet.transactions,
+          isFetching: true,
+        }),
+    }),
+  })
+
+  const transactions = await getTxList({ wallet, forcedOffset, tokens })
+
+  const newWallet = getWallet(wallet.blockchain, wallet.address)(getState())
+  dispatch({
+    type: WALLETS_UPDATE_WALLET,
+    wallet: new WalletModel({ ...newWallet, transactions }),
+  })
+}
+
+export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
+
+  const transactions: TxHistoryModel = new TxHistoryModel({ ...wallet.transactions })
+  const offset = forcedOffset ? 0 : (transactions.transactions.length || 0)
+  const newOffset = offset + TXS_PER_PAGE
+
+  let dao
+
+  switch (wallet.blockchain) {
+    case BLOCKCHAIN_ETHEREUM:
+      dao = tokenService.getDAO(ETH)
+      break
+    case BLOCKCHAIN_BITCOIN:
+      dao = tokenService.getDAO(BTC)
+      break
+    case BLOCKCHAIN_BITCOIN_CASH:
+      dao = tokenService.getDAO(BCC)
+      break
+    case BLOCKCHAIN_DASH:
+      dao = tokenService.getDAO(DASH)
+      break
+    case BLOCKCHAIN_LITECOIN:
+      dao = tokenService.getDAO(LTC)
+      break
+    case BLOCKCHAIN_NEM:
+      dao = tokenService.getDAO(XEM)
+      break
+    case BLOCKCHAIN_WAVES:
+      dao = tokenService.getDAO(WAVES)
+      break
+  }
+
+  const blocks = transactions.blocks
+  let endOfList = false
+  if (dao) {
+    const txList = await dao.getTransfer(wallet.address, wallet.address, offset, TXS_PER_PAGE, tokens)
+
+    txList.sort((a, b) => b.time - a.time)
+
+    for (const tx: TxDescModel of txList) {
+      if (!blocks[tx.blockNumber]) {
+        blocks[tx.blockNumber] = { transactions: [] }
+      }
+      blocks[tx.blockNumber].transactions.push(tx)
+    }
+
+    if (transactions.transactions.length < newOffset) {
+      endOfList = true
+    }
+  }
+
+  return new TxHistoryModel({
+    ...transactions,
+    blocks,
+    endOfList,
+    isFetching: false,
+    isFetched: true,
+    isLoaded: true,
+  })
 }
