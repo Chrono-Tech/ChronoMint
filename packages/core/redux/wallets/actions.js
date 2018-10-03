@@ -44,6 +44,7 @@ import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
 import { BCC, BTC, DASH, ETH, LTC, WAVES, XEM } from '../../dao/constants'
 import TxDescModel from '../../models/TxDescModel'
+import { initEos } from '../eos/thunks'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -149,6 +150,7 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
     dispatch(setWallet(wallet))
     dispatch(updateWalletBalance({ wallet }))
   })
+  dispatch(initEos())
 }
 
 const initDerivedWallets = () => async (dispatch, getState) => {

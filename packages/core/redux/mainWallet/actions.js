@@ -52,7 +52,6 @@ import {
   WALLET_TRANSACTION_UPDATED,
 } from './constants'
 import { getTransactionsForMainWallet } from '../wallets/actions'
-import { initEos } from '../eos/thunks'
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
