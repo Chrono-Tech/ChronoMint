@@ -6,6 +6,7 @@
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_LITECOIN,
 } from '@chronobank/login/network/constants'
 
@@ -22,6 +23,15 @@ export default {
   [BLOCKCHAIN_BITCOIN_CASH]: {
     transfer: {
       title: 'BCC Transfer',
+      from: 'From',
+      to: 'To',
+      amount: 'Amount',
+      fee: 'Fee',
+    },
+  },
+  [BLOCKCHAIN_DASH]: {
+    transfer: {
+      title: 'DASH Transfer',
       from: 'From',
       to: 'To',
       amount: 'Amount',

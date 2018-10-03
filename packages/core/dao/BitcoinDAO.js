@@ -4,6 +4,7 @@
  */
 
 import { bccProvider, btcProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import { dashProvider } from '@chronobank/login/network/DashProvider'
 import EventEmitter from 'events'
 import BigNumber from 'bignumber.js'
 import Amount from '../models/Amount'
@@ -13,6 +14,7 @@ import { bitcoinAddress } from '../models/validator'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_LITECOIN,
   EVENT_NEW_TRANSFER,
   EVENT_UPDATE_BALANCE,
@@ -196,4 +198,5 @@ export default class BitcoinDAO extends EventEmitter {
 
 export const btcDAO = new BitcoinDAO(BLOCKCHAIN_BITCOIN, 'BTC', btcProvider)
 export const bccDAO = new BitcoinDAO(BLOCKCHAIN_BITCOIN_CASH, 'BCC', bccProvider)
+export const dashDAO = new BitcoinDAO(BLOCKCHAIN_DASH, 'DASH', dashProvider)
 export const ltcDAO = new BitcoinDAO(BLOCKCHAIN_LITECOIN, 'LTC', ltcProvider)

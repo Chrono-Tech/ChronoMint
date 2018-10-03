@@ -7,6 +7,7 @@ import ModalDialog from 'components/dialogs/ModalDialog'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_WAVES,
@@ -21,6 +22,7 @@ import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { MultisigEthWalletModel } from '@chronobank/core/models'
 import Ethereum from './Ethereum/FormContainer'
 import Bitcoin from './Bitcoin/FormContainer'
+import Dash from './Dash/FormContainer'
 import Nem from './Nem/FormContainer'
 import Waves from './Waves/FormContainer'
 
@@ -47,6 +49,8 @@ export default class SendTokens extends PureComponent {
       case BLOCKCHAIN_BITCOIN_CASH:
       case BLOCKCHAIN_LITECOIN:
         return Bitcoin
+      case BLOCKCHAIN_DASH:
+        return Dash
       case BLOCKCHAIN_ETHEREUM:
         return Ethereum
       case BLOCKCHAIN_WAVES:

@@ -5,6 +5,16 @@
 
 import * as BtcConstants from './constants'
 
+export {
+  bitcoinExecuteTx,
+  bitcoinExecuteTxFailure,
+  bitcoinExecuteTxSuccess,
+  bitcoinHttpGetUtxos,
+  bitcoinHttpGetUtxosFailure,
+  bitcoinHttpGetUtxosSuccess,
+  bitcoinTxReject,
+} from '../bitcoin-like-blockchain/actions'
+
 export const bitcoinTxUpdate = (entry) => ({
   type: BtcConstants.BITCOIN_TX_UPDATE,
   key: entry.key,
@@ -17,26 +27,6 @@ export const bitcoinTxAccept = (entry) => ({
   entry,
   isAccepted: true,
   isPending: true,
-})
-
-export const bitcoinTxReject = (entry) => ({
-  type: BtcConstants.BITCOIN_TX_REJECT,
-  entry,
-  isRejected: true,
-})
-
-export const bitcoinHttpGetUtxos = () => ({
-  type: BtcConstants.BITCOIN_HTTP_GET_UTXOS,
-})
-
-export const bitcoinHttpGetUtxosSuccess = (data) => ({
-  type: BtcConstants.BITCOIN_HTTP_GET_UTXOS_SUCCESS,
-  data,
-})
-
-export const bitcoinHttpGetUtxosFailure = (error) => ({
-  type: BtcConstants.BITCOIN_HTTP_GET_UTXOS_FAILURE,
-  error,
 })
 
 export const bitcoinHttpGetBlocksHeight = () => ({
@@ -107,20 +97,6 @@ export const bitcoinHttpPostSendTxSuccess = (data) => ({
 
 export const bitcoinHttpPostSendTxFailure = (error) => ({
   type: BtcConstants.BITCOIN_HTTP_POST_SEND_TX_FAILURE,
-  error,
-})
-
-export const bitcoinExecuteTx = () => ({
-  type: BtcConstants.BITCOIN_EXECUTE_TX,
-})
-
-export const bitcoinExecuteTxSuccess = (data) => ({
-  type: BtcConstants.BITCOIN_EXECUTE_TX_SUCCESS,
-  data,
-})
-
-export const bitcoinExecuteTxFailure = (error) => ({
-  type: BtcConstants.BITCOIN_EXECUTE_TX_FAILURE,
   error,
 })
 
