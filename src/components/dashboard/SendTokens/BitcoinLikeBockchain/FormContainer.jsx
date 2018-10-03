@@ -4,7 +4,6 @@
  */
 
 import Amount from '@chronobank/core/models/Amount'
-import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -16,14 +15,9 @@ import {
   MODE_SIMPLE,
 } from 'components/constants'
 
-function mapStateToProps (state, props) {
-  const token = state.get(DUCK_TOKENS).item(props.tokenSymbol)
-
-  return {
-    tokens: state.get(DUCK_TOKENS),
-    token,
-  }
-}
+const mapStateToProps = (state, props) => ({
+  token: state.get(DUCK_TOKENS).item(props.tokenSymbol)
+})
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -35,9 +29,7 @@ function mapDispatchToProps (dispatch) {
 export default class SendTokens extends PureComponent {
   static propTypes = {
     wallet: PropTypes.oneOfType([PropTypes.instanceOf(WalletModel)]),
-    isModal: PropTypes.bool,
     mainTransfer: PropTypes.func,
-    tokens: PropTypes.instanceOf(TokensCollection),
     tokenSymbol: PropTypes.string.isRequired,
     token: PropTypes.instanceOf(TokenModel),
   }
