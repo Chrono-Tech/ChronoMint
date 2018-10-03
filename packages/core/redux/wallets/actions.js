@@ -43,7 +43,6 @@ import {
 import { executeNemTransaction } from '../nem/thunks'
 import { getPersistAccount, getEthereumSigner } from '../persistAccount/selectors'
 import { getBitcoinCashSigner, getBitcoinSigner, getLitecoinSigner } from '../bitcoin/selectors'
-import { getDashSigner } from '../dash/selectors'
 import { getNemSigner } from '../nem/selectors'
 import { getWavesSigner } from '../waves/selectors'
 
@@ -102,16 +101,6 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
     wallets.push(new WalletModel({
       address: bitcoinCashSigner.getAddress(accountPath),
       blockchain: BLOCKCHAIN_BITCOIN_CASH,
-      isMain: true,
-      walletDerivedPath: accountPath,
-    }))
-  }
-
-  const dashSigner = getDashSigner(state)
-  if (dashSigner) {
-    wallets.push(new WalletModel({
-      address: dashSigner.getAddress(accountPath),
-      blockchain: BLOCKCHAIN_DASH,
       isMain: true,
       walletDerivedPath: accountPath,
     }))

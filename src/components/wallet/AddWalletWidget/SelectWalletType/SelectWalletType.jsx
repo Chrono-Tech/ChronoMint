@@ -15,13 +15,11 @@ import { navigateToWallets } from 'redux/ui/navigation'
 import { createNewChildAddress } from '@chronobank/core/redux/wallets/actions'
 import {
   BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
   BTC,
-  DASH,
   ETH,
   LTC,
   WAVES,
@@ -67,12 +65,6 @@ export default class SelectWalletType extends PureComponent {
         blockchain: BLOCKCHAIN_BITCOIN,
         symbol: BTC,
         title: `${prefix}.btc`,
-      },
-      {
-        blockchain: BLOCKCHAIN_DASH,
-        symbol: DASH,
-        title: `${prefix}.dash`,
-        disabled: true,
       },
       {
         blockchain: BLOCKCHAIN_LITECOIN,

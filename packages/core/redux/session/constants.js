@@ -16,7 +16,6 @@ export const SET_PROFILE_SIGNATURE = 'session/SET_PROFILE_SIGNATURE'
 export const PROFILE_PANEL_TOKENS = [
   { symbol: 'BTC', blockchain: 'Bitcoin', title: 'BTC' },
   { symbol: 'BCC', blockchain: 'Bitcoin Cash', title: 'BCC' },
-  { symbol: 'DASH', blockchain: 'Dash', title: 'DASH' },
   { symbol: 'LTC', blockchain: 'Litecoin', title: 'LTC' },
   { symbol: 'ETH', blockchain: 'Ethereum', title: 'ETH' },
   { symbol: 'XEM', blockchain: 'NEM', title: 'NEM' },
