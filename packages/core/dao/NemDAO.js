@@ -84,11 +84,23 @@ export default class NemDAO extends EventEmitter {
     }
   }
 
-  async getTransfer (id, account, skip, offset): Promise<Array<TxModel>> {
+  async getTransfer (id, account, skip, offset, tokens): Promise<Array<TxModel>> {
     const txs = []
     try {
       const txsResult = await this._nemProvider.getTransactionsList(account, id, skip, offset)
       for (const tx of txsResult) {
+
+        let value = new Amount(tx.value, tx.symbol || this._symbol)
+        if (tx.mosaics) {
+          tokens.items().some((token) => {
+            if (token.mosaicDefinition() && tx.mosaics && tx.mosaics[token.mosaicDefinition()]) {
+              value = new Amount(tx.mosaics[token.mosaicDefinition()], token.symbol())
+              return true
+            }
+            return false
+          })
+        }
+
         if (tx.value > 0) {
           txs.push(new TxDescModel({
             confirmations: tx.confirmations,
@@ -96,7 +108,7 @@ export default class NemDAO extends EventEmitter {
             hash: tx.txHash,
             time: tx.time,
             blockchain: this._name,
-            value: new Amount(tx.value, tx.symbol || this._symbol),
+            value,
             fee: new Amount(tx.fee, this._symbol),
             from: tx.from,
             to: tx.to,
@@ -195,6 +207,7 @@ export default class NemDAO extends EventEmitter {
       name: this._name,
       decimals: this._decimals,
       symbol: this._symbol,
+      mosaicDefinition: this._namespace,
       isFetched: true,
       blockchain: BLOCKCHAIN_NEM,
     })

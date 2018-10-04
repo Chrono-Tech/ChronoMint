@@ -210,7 +210,7 @@ export const updateWalletBalance = ({ wallet }) => async (dispatch) => {
     BLOCKCHAIN_BITCOIN,
     BLOCKCHAIN_BITCOIN_CASH,
     BLOCKCHAIN_DASH,
-    BLOCKCHAIN_LITECOIN
+    BLOCKCHAIN_LITECOIN,
   ].includes(blockchain)
 
   if (isBtcLikeBlockchain) {
@@ -427,7 +427,6 @@ export const getTransactionsForMainWallet = ({ wallet, forcedOffset }) => async 
   if (!wallet) {
     return null
   }
-  const tokens = getState().get(DUCK_TOKENS)
 
   dispatch({
     type: WALLETS_UPDATE_WALLET,
@@ -441,6 +440,7 @@ export const getTransactionsForMainWallet = ({ wallet, forcedOffset }) => async 
     }),
   })
 
+  const tokens = getState().get(DUCK_TOKENS)
   const transactions = await getTxList({ wallet, forcedOffset, tokens })
 
   const newWallet = getWallet(wallet.blockchain, wallet.address)(getState())

@@ -215,7 +215,7 @@ export class EthereumDAO extends AbstractTokenDAO {
           }
         }
 
-        txs.push(this._getTxModel(tx, tx.timestamp, tokens))
+        txs.push(this._getTxModel(tx, tx.timestamp / 1000, tokens)) // convert milliseconds to seconds
       }
     } catch (e) {
       // eslint-disable-next-line
