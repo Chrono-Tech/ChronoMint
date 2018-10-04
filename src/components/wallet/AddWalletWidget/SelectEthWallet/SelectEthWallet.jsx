@@ -53,6 +53,7 @@ export default class SelectEthWallet extends PureComponent {
         type: 'ST',
         icon: 'wallet-circle',
         description: `${prefix}.st.description`,
+        disabled: true,
       },
       {
         title: `${prefix}.tl.title`,
@@ -78,6 +79,7 @@ export default class SelectEthWallet extends PureComponent {
         type: 'CW',
         icon: 'advanced-circle',
         description: `${prefix}.cw.description`,
+        disabled: true,
       },
     ]
 
