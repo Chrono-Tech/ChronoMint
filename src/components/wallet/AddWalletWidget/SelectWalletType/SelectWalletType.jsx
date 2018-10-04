@@ -72,7 +72,6 @@ export default class SelectWalletType extends PureComponent {
         blockchain: BLOCKCHAIN_DASH,
         symbol: DASH,
         title: `${prefix}.dash`,
-        disabled: true,
       },
       {
         blockchain: BLOCKCHAIN_LITECOIN,
