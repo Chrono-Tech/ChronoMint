@@ -18,6 +18,7 @@ import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { getMainSymbolForBlockchain, getTokens, isBTCLikeBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import { makeGetTxListForWallet } from '@chronobank/core/redux/wallet/selectors'
+import { walletAmountSelector } from '@chronobank/core/redux/wallets/selectors/balances'
 import { getWalletInfo } from '@chronobank/core/redux/wallets/selectors/wallet'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
@@ -36,11 +37,15 @@ function makeMapStateToProps (state, ownProps) {
 
   const mapStateToProps = (ownState) => {
     const tokens = getTokens(ownState)
+    const wallet = getWallet(ownState)
+    const getAmount = walletAmountSelector(wallet.id, getMainSymbolForBlockchain(wallet.blockchain))
+
     return {
-      wallet: getWallet(ownState),
+      isBalanceFetched: getAmount(ownState) !== null,
       pendingTransactions: getTransactions(ownState),
       token: tokens.item(getMainSymbolForBlockchain(ownProps.blockchain)),
       tokens: state.get(DUCK_TOKENS),
+      wallet,
     }
   }
   return mapStateToProps
@@ -206,7 +211,7 @@ export default class WalletWidget extends PureComponent {
   }
 
   render () {
-    const { address, token, blockchain, wallet, showGroupTitle } = this.props
+    const { address, blockchain, isBalanceFetched, token, wallet, showGroupTitle } = this.props
     const tokenIsFetched = (token && token.isFetched())
 
     return (
@@ -262,7 +267,7 @@ export default class WalletWidget extends PureComponent {
                 <div styleName='actions-container'>
                   <div styleName='action'>
                     <Button
-                      disabled={!tokenIsFetched}
+                      disabled={!tokenIsFetched || !isBalanceFetched}
                       type='submit'
                       label={<Translate value={`${prefix}.sendButton`} />}
                       onClick={this.handleSend(wallet)}
