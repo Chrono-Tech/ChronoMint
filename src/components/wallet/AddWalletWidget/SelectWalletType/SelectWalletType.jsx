@@ -67,6 +67,7 @@ export default class SelectWalletType extends PureComponent {
         blockchain: BLOCKCHAIN_BITCOIN,
         symbol: BTC,
         title: `${prefix}.btc`,
+        disabled: true,
       },
       {
         blockchain: BLOCKCHAIN_DASH,
@@ -78,6 +79,7 @@ export default class SelectWalletType extends PureComponent {
         blockchain: BLOCKCHAIN_LITECOIN,
         symbol: LTC,
         title: `${prefix}.ltc`,
+        disabled: true,
       },
       {
         blockchain: BLOCKCHAIN_ETHEREUM,
