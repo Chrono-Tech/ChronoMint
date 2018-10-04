@@ -64,7 +64,7 @@ export default class NemDAO extends EventEmitter {
   }
 
   getAccountBalances (address) {
-    return this._nemProvider.getAccountBalances(address)
+    return this._nemProvider.getAccountBalances(address, this._namespace)
   }
 
   /**
