@@ -10,6 +10,7 @@ import {
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
+  BLOCKCHAIN_BITCOIN_GOLD,
 } from './constants'
 
 export const NETWORK_MAIN_ID = 1
