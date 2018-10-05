@@ -306,11 +306,8 @@ export const initLoginPage = () =>
       selectedWallet,
       walletsList,
     } = state.get(DUCK_PERSIST_ACCOUNT)
-    console.log('selectedWallet', selectedWallet)
-    console.log('walletsList', walletsList)
-    console.log('walletsList && !walletsList.length', walletsList && !walletsList.length)
-    console.log('!selectedWallet', !selectedWallet)
     if (!selectedWallet) {
+
       dispatch(LoginUINavActions.navigateToSelectWallet())
       return
     }
