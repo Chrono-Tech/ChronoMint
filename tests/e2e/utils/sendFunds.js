@@ -2,8 +2,9 @@ import { clickText, typeFieldValue } from '.';
 import { openMyAccountsPage, signInByMnemonicKey, submitSignInForm, signOut } from './signInOutUp';
 
 async function getCurrencyMainJsHandle (page, address) {
-  return await page.evaluateHandle(addressNode => addressNode.parentNode.parentNode.parentNode,
-    (await page.$x(`//span[contains(@class,"WalletWidget__address-address_")][text()="${address}"]`))[0]);
+  const selector = `//span[contains(@class,"WalletWidget__address-address_")][text()="${address}"]`;
+  await page.waitForXPath(selector);
+  return await page.evaluateHandle(element => element.parentNode.parentNode.parentNode, (await page.$x(selector))[0]);
 }
 
 async function getBalance (page, address, currencyName) {
