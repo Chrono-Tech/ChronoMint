@@ -136,19 +136,6 @@ export const getAddressInfo =  (address: string, blockchain: string) => async (d
     return Promise.reject(error)
   }
 
-  const waitResult = await dispatch({
-    type: 'TEST',
-    payload: {
-      blockchain,
-      request: {
-        method: 'GET',
-        url: `addr/${address}/balance`,
-      },
-    },
-  })
-  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-  console.log(waitResult)
-
   const state = getState()
   const { network } = getCurrentNetworkSelector(state)
   const netType = network[blockchain]
