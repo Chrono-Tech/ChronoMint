@@ -3,22 +3,22 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { getNetworkById } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
+import { getNetworkById } from '@chronobank/login/network/settings'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
-import web3Provider from '@chronobank/login/network/Web3Provider'
 import metaMaskResolver from '@chronobank/login/network/metaMaskResolver'
-import * as SessionActions from './actions'
-import * as ProfileThunks from '../profile/thunks'
-import ProfileService from '../profile/service'
+import web3Provider from '@chronobank/login/network/Web3Provider'
 import { daoByType } from '../../redux/daos/selectors'
-import web3Factory from '../../web3'
+import { DEFAULT_CBE_URL, DEFAULT_USER_URL, DUCK_SESSION } from './constants'
+import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
+import { initEthereum } from '../ethereum/thunks'
 import { watcher } from '../watcher/actions'
 import { watchStopMarket } from '../market/actions'
-import { initEthereum } from '../ethereum/thunks'
-import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
-import { DEFAULT_CBE_URL, DEFAULT_USER_URL, DUCK_SESSION } from './constants'
+import * as ProfileThunks from '../profile/thunks'
+import * as SessionActions from './actions'
+import ProfileService from '../profile/service'
+import web3Factory from '../../web3'
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
