@@ -9,11 +9,18 @@ import { WALLET_TYPE_MEMORY } from '../../../models/constants/AccountEntryModel'
 import EosMemoryDevice from '../../../services/signers/EosMemoryDevice'
 import { getPersistAccount } from '../../persistAccount/selectors'
 
-export const EOSDuckSelector = (state) => state.get(DUCK_EOS)
+export const EOSDuckSelector = (state) => {
+  return state.get(DUCK_EOS)
+}
 
 export const EOSSelector = (state) => {
   const duck = EOSDuckSelector(state)
   return duck.eos
+}
+
+export const getEOSTokens = (state) => {
+  const duck = EOSDuckSelector(state)
+  return duck.tokens
 }
 
 export const EOSPendingSelector = () => createSelector(
@@ -76,5 +83,5 @@ export const eosPendingCountSelector = () => createSelector(
 
 export const getEOSWalletTransactions = (walletId) => (state) => {
   const wallet = getEOSWallet(walletId)(state)
-  return wallet ? wallet.transactions.transactions : null
+  return wallet ? wallet.transactions : null
 }

@@ -7,14 +7,17 @@ import { omit } from 'lodash'
 import {
   EOS_UPDATE,
   EOS_UPDATE_WALLET,
+  EOS_UPDATE_TOKEN,
   TX_CREATE,
   TX_REMOVE,
   TX_UPDATE,
 } from './constants'
+import TokensCollection from '../../models/tokens/TokensCollection'
 
 const initialState = {
   wallets: {},
   pending: {}, // pending transactions
+  tokens: new TokensCollection(),
 }
 
 const mutations = {
@@ -22,6 +25,12 @@ const mutations = {
     ...state,
     eos,
   }),
+  [EOS_UPDATE_TOKEN]: (state, { token }) => {
+    return {
+      ...state,
+      tokens: state.tokens.itemFetched(token),
+    }
+  },
   [EOS_UPDATE_WALLET]: (state, { wallet }) => {
     return {
       ...state,

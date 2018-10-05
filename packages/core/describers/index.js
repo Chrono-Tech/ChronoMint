@@ -307,7 +307,7 @@ export const describePendingEosTx = (entry) => {
         description: `${path}.to`,
       },
       {
-        value: tx.amount,
+        value: tx.quantity,
         description: `${path}.amount`,
       },
       {

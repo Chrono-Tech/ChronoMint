@@ -9,6 +9,7 @@ import {
   TX_REMOVE,
   EOS_UPDATE,
   EOS_UPDATE_WALLET,
+  EOS_UPDATE_TOKEN,
 } from './constants'
 
 export const updateEos = (eos) => ({
@@ -37,4 +38,9 @@ export const eosTxRemove = (key, address) => ({
   type: TX_REMOVE,
   address,
   key,
+})
+
+export const eosTokenUpdate = (token) => ({
+  type: EOS_UPDATE_TOKEN,
+  token,
 })

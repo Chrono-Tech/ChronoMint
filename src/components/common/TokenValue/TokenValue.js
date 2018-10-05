@@ -12,8 +12,8 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { DUCK_MARKET } from '@chronobank/core/redux/market/constants'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
+import { getAllTokens } from '@chronobank/core/redux/tokens/selectors'
 
 import './TokenValue.scss'
 
@@ -23,7 +23,7 @@ const mapStateToProps = (state) => {
     isInited,
     prices,
     selectedCurrency,
-    tokens: state.get(DUCK_TOKENS),
+    tokens: getAllTokens(state),
   }
 }
 

@@ -7,6 +7,8 @@ import uuid from 'uuid/v1'
 import Eos from 'eosjs'
 import { TxEntryModel } from '../../models'
 import { EOS_NETWORK_CONFIG } from './constants'
+import TxDescModel from '../../models/TxDescModel'
+import Amount from '../../models/Amount'
 
 export const createEosTxEntryModel = (entry) => {
   return new TxEntryModel({
@@ -37,4 +39,26 @@ export const prepareTransactionToOfflineSign = async (tx, { httpEndpoint, chainI
 
 export const getEOSNetworkConfig = (type) => {
   return EOS_NETWORK_CONFIG[type]
+}
+
+export const createDescModel = (action) => {
+  const act = action.action_trace.act
+  const { from, to, memo, quantity } = act.data
+  const [value, symbol] = quantity.split(' ')
+
+  return new TxDescModel({
+    hash: action.action_trace.trx_id,
+    type: action.action_trace.act.name,
+    title: action.action_trace.act.name,
+    address: action.action_trace.trx_id,
+    from: from,
+    to: to,
+    value: new Amount(value, symbol),
+    params: [
+      { name: 'from', value: from },
+      { name: 'to', value: to },
+      { name: 'quantity', value: quantity },
+      { name: 'memo', value: memo },
+    ],
+  })
 }

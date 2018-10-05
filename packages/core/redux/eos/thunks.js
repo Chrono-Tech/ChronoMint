@@ -16,13 +16,15 @@ import {
   EOSPendingSelector,
   EOSSelector,
   getEosSigner,
+  getEOSTokens,
   getEOSWallet,
+  getEosWallets,
 } from './selectors/mainSelectors'
 import { ErrorNoticeModel, TransferNoticeModel } from '../../models'
 import { notify } from '../notifier/actions'
 import { getSelectedNetwork } from '../persistAccount/selectors'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
-import TxDescModel from '../../models/TxDescModel'
+import TokenModel from '../../models/tokens/TokenModel'
 
 const notifyEosTransfer = (entry) => (dispatch) => {
   const { tx: { from, to, quantity } } = entry
@@ -170,6 +172,7 @@ const rejectTransaction = (entry) => (dispatch) => dispatch(eosTxStatus(entry.ke
 export const initEos = () => async (dispatch) => {
   dispatch(setEos())
   dispatch(createEosWallet())
+  dispatch(watchEOS())
 }
 
 export const createEosWallet = () => (dispatch) => {
@@ -188,11 +191,17 @@ export const getAccountBalances = (account) => async (dispatch, getState) => {
   try {
     const state = getState()
     const eos = EOSSelector(state)
+    const tokens = getEOSTokens(state)
     const wallet = getEOSWallet(`${BLOCKCHAIN_EOS }-${account}`)(state)
     const result = await eos.getCurrencyBalance('eosio.token', account)
     if (Array.isArray(result)) {
       const balances = result.reduce((accumulator, balance) => {
         const [value, symbol] = balance.split(' ')
+
+        if (!tokens.item(symbol).isFetched()) {
+          dispatch(EosActions.eosTokenUpdate(new TokenModel({ symbol, isFetched: true })))
+        }
+
         return {
           ...accumulator,
           [symbol]: new Amount(value, symbol),
@@ -234,6 +243,7 @@ export const getEOSWalletTransactions = (walletId) => async (dispatch, getState)
   try {
     const transactionsList = wallet.transactions
     let firstAction = transactionsList.firstAction
+    let lastAction = transactionsList.lastAction
 
     dispatch(EosActions.updateWallet(new WalletModel({
       ...wallet,
@@ -246,25 +256,14 @@ export const getEOSWalletTransactions = (walletId) => async (dispatch, getState)
       .reverse()
       .reduce((accumulator, action) => {
         const block = action.block_num
-        const act = action.action_trace.act
-        const { from, to, memo, quantity } = act.data
-        const [value, symbol] = quantity.split(' ')
+        const tx = EosUtils.createDescModel(action)
 
-        const tx = new TxDescModel({
-          hash: action.action_trace.trx_id,
-          type: action.action_trace.act.name,
-          title: action.action_trace.act.name,
-          address: action.action_trace.trx_id,
-          amount: new Amount(value, symbol),
-          params: [
-            { name: 'from', value: from },
-            { name: 'to', value: to },
-            { name: 'quantity', value: quantity },
-            { name: 'memo', value: memo },
-          ],
-        })
         firstAction = firstAction
           ? Math.min(action.account_action_seq, firstAction)
+          : action.account_action_seq
+
+        lastAction = lastAction
+          ? Math.max(action.account_action_seq, lastAction)
           : action.account_action_seq
 
         if (!accumulator.hasOwnProperty(block)) {
@@ -272,6 +271,7 @@ export const getEOSWalletTransactions = (walletId) => async (dispatch, getState)
             transactions: {},
           }
         }
+
         accumulator[block].transactions[tx.hash] = tx
         return accumulator
       }, { ...wallet.transactions.blocks })
@@ -281,8 +281,12 @@ export const getEOSWalletTransactions = (walletId) => async (dispatch, getState)
         ...wallet.transactions,
         blocks,
         firstAction,
-        isLoaded: true,
+        lastAction,
+        endOfList: !firstAction, // 0 || undefined
         isLoading: false,
+        isFetching: false,
+        isFetched: true,
+        isLoaded: true,
       }),
     })))
   } catch (error) {
@@ -290,4 +294,50 @@ export const getEOSWalletTransactions = (walletId) => async (dispatch, getState)
     console.error(error)
     throw error
   }
+}
+
+const watchEOS = () => async (dispatch, getState) => {
+  const state = getState()
+  const eos = EOSSelector(state)
+
+  const wallets = getEosWallets(state)
+  Object.values(wallets).forEach(async (wallet) => {
+    try {
+      const transactions = wallet.transactions
+      if (transactions.isFetched) {
+        const { actions } = await eos.getActions(wallet.address, wallet.transactions.lastAction + 1, 1)
+        const action = actions[0]
+        const blocks = transactions.blocks
+        if (action) {
+          const lastAction = action.account_action_seq
+          const block = action.block_num
+
+          if (!blocks.hasOwnProperty(block)) {
+            blocks[block] = {
+              transactions: {},
+            }
+          }
+          blocks[block].transactions[action.hash] = action
+
+          dispatch(EosActions.updateWallet(
+            new WalletModel({
+              ...wallet,
+              transactions: new TxHistoryModel({
+                ...wallet.transactions,
+                blocks,
+                lastAction,
+              }),
+            }),
+          ))
+
+        }
+      }
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e)
+    }
+    setTimeout(() => {
+      dispatch(watchEOS())
+    }, 5000)
+  })
 }
