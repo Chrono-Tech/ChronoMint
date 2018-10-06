@@ -21,9 +21,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    transfer: (wallet, amount, recipient) => {
+    transfer: (wallet, amount, recipient, memo) => {
       dispatch(modalsClose())
-      dispatch(executeEosTransaction(wallet, amount, recipient))
+      dispatch(executeEosTransaction(wallet, amount, recipient, memo))
     },
   }
 }
@@ -38,8 +38,8 @@ export default class SendTokens extends PureComponent {
 
   handleSubmit = (values) => {
     const { wallet } = this.props
-    const { symbol, amount, recipient } = values.toJS()
-    this.props.transfer(wallet, `${parseFloat(amount).toFixed(4)} ${symbol}`, recipient)
+    const { symbol, amount, recipient, memo } = values.toJS()
+    this.props.transfer(wallet, `${parseFloat(amount).toFixed(4)} ${symbol}`, recipient, memo)
   }
 
   render () {

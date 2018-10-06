@@ -13,6 +13,7 @@ export default {
     recipientAddress: 'Recipient address',
     recipientAccount: 'Recipient account',
     amount: 'Amount',
+    memo: 'Memo',
     transactionFee: 'Transaction fee:',
     basedOnLimit: 'Based on estimated gas limit: ',
     averageFee: '%{multiplier}x of average fee',

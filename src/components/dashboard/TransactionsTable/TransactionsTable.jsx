@@ -158,7 +158,7 @@ function buildTableData (transactions, locale) {
   moment.locale(locale)
   const groups = transactions
     .filter((tx) => {
-      return tx.value.gt(0)
+      return tx.value ? tx.value.gt(0) : false
     })
     .reduce((data, trx) => {
       const groupBy = moment(trx.time).format('YYYY-MM-DD')

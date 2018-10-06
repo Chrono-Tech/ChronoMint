@@ -3,8 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import EOSTokensListWidget from 'components/wallet/EOSTokensListWidget/EOSTokensListWidget'
-import EOSWalletWidgetDetail from 'components/wallet/EOSWalletWidgetDetail/EOSWalletWidgetDetail'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import OwnersListWidget from 'components/wallet/OwnersListWidget/OwnersListWidget'
 import PendingTxWidget from 'components/wallet/PendingTxWidget/PendingTxWidget'
@@ -84,9 +82,9 @@ export default class WalletContent extends Component {
       case BLOCKCHAIN_EOS:
         return (
           <div styleName='root'>
-            <EOSWalletWidgetDetail wallet={wallet} />
+            <WalletWidgetDetail wallet={wallet} />
 
-            <EOSTokensListWidget walletId={wallet.id} />
+            <TokensListWidget walletId={wallet.id} />
 
             <TransactionsListWidget wallet={wallet} />
           </div>

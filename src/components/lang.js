@@ -42,10 +42,6 @@ import PublishPollDialog from 'components/dialogs/PublishPollDialog/lang'
 import VotingWarningWidgets from 'components/voting/VotingWarningWidgets/lang'
 import TransactionsTable from 'components/dashboard/TransactionsTable/lang'
 import TransactionsListWidget from 'components/wallet/TransactionsListWidget/lang'
-import EOSWalletWidget from 'components/wallet/EOSWalletWidget/lang'
-import EOSWalletsList from 'components/wallet/EOSWalletsList/lang'
-import EOSWalletWidgetMini from 'components/wallet/EOSWalletWidgetMini/lang'
-import EOSWalletWidgetDetail from 'components/wallet/EOSWalletWidgetDetail/lang'
 import ReceiveTokenModal from 'components/dashboard/ReceiveTokenModal/lang'
 
 export default {
@@ -92,10 +88,6 @@ export default {
     TransactionsListWidget: TransactionsListWidget.en,
     CustomWalletForm: CustomWalletForm.en,
     StandardWalletForm: StandardWalletForm.en,
-    EOSWalletWidget: EOSWalletWidget.en,
-    EOSWalletsList: EOSWalletsList.en,
-    EOSWalletWidgetMini: EOSWalletWidgetMini.en,
-    EOSWalletWidgetDetail: EOSWalletWidgetDetail.en,
     ReceiveTokenModal: ReceiveTokenModal.en,
   },
 }

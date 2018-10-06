@@ -7,6 +7,7 @@ import EventEmitter from 'events'
 import Eos from 'eosjs'
 import ecc from 'eosjs-ecc'
 import ethUtils from 'ethereumjs-util'
+import { eddsa as EdDSA } from 'elliptic'
 
 export default class EosMemoryDevice extends EventEmitter {
   constructor ({ privateKey }) {
@@ -16,13 +17,17 @@ export default class EosMemoryDevice extends EventEmitter {
   }
 
   createEosKeys (ethereumPrivateKey) {
-    if (ethUtils.isValidPrivate(Buffer.from(ethereumPrivateKey, 'hex'))) {
+    const ethPkBuf = Buffer.from(ethereumPrivateKey, 'hex')
+    if (ethUtils.isValidPrivate(ethPkBuf)) {
       // Create EOS owner keys
-      const convertedEOSOwnerPrivateKey = ecc.PrivateKey(Buffer.from(ethereumPrivateKey, 'hex')).toWif()
+      const convertedEOSOwnerPrivateKey = ecc.PrivateKey(ethPkBuf).toWif()
       const convertedEOSOwnerPublicKey = ecc.privateToPublic(convertedEOSOwnerPrivateKey)
 
+      const ec = new EdDSA('ed25519') // ed25519 - preset from library
+      // Create key pair for active key
+      const keyPair = ec.keyFromSecret(ethPkBuf) // hex string, array or Buffer
       // Create EOS active keys
-      const convertedEOSActivePrivateKey = ecc.PrivateKey(Buffer.from(ethereumPrivateKey, 'hex').reverse()).toWif() // TODO implement something more smart
+      const convertedEOSActivePrivateKey = ecc.PrivateKey(Buffer.from(keyPair.priv().toString('hex'), 'hex')).toWif()
       const convertedEOSActivePublicKey = ecc.privateToPublic(convertedEOSActivePrivateKey)
 
       // eslint-disable-next-line

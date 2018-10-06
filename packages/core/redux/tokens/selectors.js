@@ -75,7 +75,7 @@ export const getToken = (tokenId: string) => createSelector(
 )
 
 export const getMainTokenForWalletByBlockchain = (blockchain) => createSelector(
-  [getTokens],
+  [getAllTokens],
   (tokens) => tokens.item(getMainSymbolForBlockchain(blockchain)),
 )
 

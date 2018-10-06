@@ -15,7 +15,6 @@ import { DUCK_UI } from 'redux/ui/constants'
 import { sectionsSelector } from '@chronobank/core/redux/wallets/selectors/wallets'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
-import EOSWalletsList from 'components/wallet/EOSWalletsList/EOSWalletsList'
 import './WalletsContent.scss'
 
 const mapStateToProps = (state) => {
@@ -67,7 +66,6 @@ export default class WalletsContent extends Component {
             })}
           </div>
         ))}
-        <EOSWalletsList />
       </div>
     )
   }

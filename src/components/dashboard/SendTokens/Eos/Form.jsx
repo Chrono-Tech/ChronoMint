@@ -186,6 +186,14 @@ export default class Eos extends PureComponent {
             fullWidth
           />
         </div>
+        <div styleName='row'>
+          <Field
+            component={TextField}
+            name='memo'
+            label={<Translate value={`${prefix}.memo`} />}
+            fullWidth
+          />
+        </div>
         <div styleName='eos-actions-row'>
           <div styleName='send'>
             <Button

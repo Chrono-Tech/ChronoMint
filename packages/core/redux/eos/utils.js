@@ -44,7 +44,6 @@ export const getEOSNetworkConfig = (type) => {
 export const createDescModel = (action) => {
   const act = action.action_trace.act
   const { from, to, memo, quantity } = act.data
-  const [value, symbol] = quantity.split(' ')
 
   return new TxDescModel({
     hash: action.action_trace.trx_id,
@@ -53,7 +52,7 @@ export const createDescModel = (action) => {
     address: action.action_trace.trx_id,
     from: from,
     to: to,
-    value: new Amount(value, symbol),
+    value: quantity ? new Amount(...quantity.split(' ')) : null,
     params: [
       { name: 'from', value: from },
       { name: 'to', value: to },
