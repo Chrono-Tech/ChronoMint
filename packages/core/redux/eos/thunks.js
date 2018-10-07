@@ -175,16 +175,29 @@ export const initEos = () => async (dispatch) => {
   dispatch(watchEOS())
 }
 
-export const createEosWallet = () => (dispatch) => {
-  // TODO refactor method somehow
-  const accountName = 'chronobank13'
-  dispatch(EosActions.updateWallet(new WalletModel({
-    address: accountName,
-    blockchain: BLOCKCHAIN_EOS,
-    isMain: true,
-  })))
+export const createEosWallet = () => async (dispatch, getState) => {
+  const state = getState()
+  const eos = EOSSelector(state)
+  const signer = getEosSigner(state)
+  try {
 
-  dispatch(getAccountBalances(accountName))
+    const accounts = await eos.getKeyAccounts(signer.keys.owner.pub)
+    if (accounts && accounts.account_names[0]) {
+      const accountName = accounts.account_names[0]
+      dispatch(EosActions.updateWallet(new WalletModel({
+        address: accountName,
+        blockchain: BLOCKCHAIN_EOS,
+        isMain: true,
+      })))
+      dispatch(getAccountBalances(accountName))
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('EOS account not found')
+    }
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e)
+  }
 }
 
 export const getAccountBalances = (account) => async (dispatch, getState) => {
