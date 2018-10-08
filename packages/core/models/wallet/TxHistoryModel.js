@@ -64,12 +64,12 @@ export default class TxHistoryModel extends AbstractModel {
   get transactions () {
     const txList = {}
     Object.entries(this.blocks)
-      .map(([, block]) => {
+      .forEach(([, block]) => {
         const transactions = Array.isArray(block.transactions)
           ? block.transactions
           : Object.values(block.transactions)
         transactions
-          .map((tx) => {
+          .forEach((tx) => {
             txList[tx.id] = tx
           })
       })

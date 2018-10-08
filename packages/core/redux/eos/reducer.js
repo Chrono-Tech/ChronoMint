@@ -21,10 +21,12 @@ const initialState = {
 }
 
 const mutations = {
-  [EOS_UPDATE]: (state, { eos }) => ({
-    ...state,
-    eos,
-  }),
+  [EOS_UPDATE]: (state, { eos }) => {
+    return {
+      ...state,
+      eos,
+    }
+  },
   [EOS_UPDATE_TOKEN]: (state, { token }) => {
     return {
       ...state,
