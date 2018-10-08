@@ -11,16 +11,16 @@ const validateEqualPasswords = (password, confirmPassword) => password === confi
 export default (values) => {
   const walletName = values.get('walletName')
 
-  let walletNameErrors = new ErrorList()
+  const walletNameErrors = new ErrorList()
   walletNameErrors.add(required(walletName))
 
   const password = values.get('password')
 
-  let passwordErrors = new ErrorList()
+  const passwordErrors = new ErrorList()
   passwordErrors.add(required(password))
 
   const confirmPassword = values.get('confirmPassword')
-  let confirmPasswordErrors = new ErrorList()
+  const confirmPasswordErrors = new ErrorList()
   confirmPasswordErrors.add(required(confirmPassword))
   confirmPasswordErrors.add(validateEqualPasswords(password, confirmPassword))
 

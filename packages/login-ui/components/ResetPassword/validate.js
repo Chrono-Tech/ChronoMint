@@ -12,11 +12,11 @@ export default (values) => {
 
   const password = values.get('password')
 
-  let passwordErrors = new ErrorList()
+  const passwordErrors = new ErrorList()
   passwordErrors.add(validator.required(password))
 
   const confirmPassword = values.get('confirmPassword')
-  let confirmPasswordErrors = new ErrorList()
+  const confirmPasswordErrors = new ErrorList()
   confirmPasswordErrors.add(validator.required(confirmPassword))
   confirmPasswordErrors.add(validateEqualPasswords(password, confirmPassword))
 
