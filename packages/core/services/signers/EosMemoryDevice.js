@@ -30,18 +30,6 @@ export default class EosMemoryDevice extends EventEmitter {
       const convertedEOSActivePrivateKey = ecc.PrivateKey(Buffer.from(keyPair.priv().toString('hex'), 'hex')).toWif()
       const convertedEOSActivePublicKey = ecc.privateToPublic(convertedEOSActivePrivateKey)
 
-      // eslint-disable-next-line
-      console.log(`eth pk: ${ethereumPrivateKey}`)
-      // eslint-disable-next-line
-      console.log(`EOS Private owner Key: ${convertedEOSOwnerPrivateKey}`)
-      // eslint-disable-next-line
-      console.log(`EOS Public owner Key: ${convertedEOSOwnerPublicKey}`)
-
-      // eslint-disable-next-line
-      console.log(`EOS Private active Key: ${convertedEOSActivePrivateKey}`)
-      // eslint-disable-next-line
-      console.log(`EOS Public active Key: ${convertedEOSActivePublicKey}`)
-
       return {
         owner: {
           priv: convertedEOSOwnerPrivateKey,
@@ -54,7 +42,7 @@ export default class EosMemoryDevice extends EventEmitter {
       }
     } else {
       // eslint-disable-next-line
-      console.log("Invalid Ethereum Private Key")
+      console.log('Invalid Ethereum Private Key')
     }
   }
 

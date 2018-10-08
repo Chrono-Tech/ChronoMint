@@ -5,10 +5,14 @@
 
 import PropTypes from 'prop-types'
 import AbstractModel from './AbstractModel'
+import TxExecModel from './TxExecModel'
 
 const schemaFactory = () => ({
   key: PropTypes.string.isRequired,
-  tx: PropTypes.object.isRequired,
+  tx: PropTypes.oneOfType([
+    PropTypes.instanceOf(TxExecModel), // for eth blockcchain
+    PropTypes.object, // for other blockchains
+  ]).isRequired,
   hash: PropTypes.string,
   raw: PropTypes.string,
   receipt: PropTypes.object,

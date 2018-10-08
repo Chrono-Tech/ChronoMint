@@ -9,9 +9,9 @@ export default {
   en: {
     receive: 'Receive',
     important: 'Important!',
-    warningTextEOS: `Make sure you’re receiving EOS to the account provided below. Otherwise it can make the funds loss.`,
-    warningText1: `Make sure you're receiving `,
-    warningText2: ` to the address provided below. Otherwise it can make the funds loss.`,
+    warningTextEOS: 'Make sure you’re receiving EOS to the account provided below. Otherwise it can make the funds loss.',
+    warningText1: 'Make sure you\'re receiving ',
+    warningText2: ' to the address provided below. Otherwise it can make the funds loss.',
     receivingTitleEOS: 'Your receiving EOS account',
     receivingTitle: 'Your receiving %{symbol} address',
     qrTitleEOS: 'Your QR code for the EOS account',

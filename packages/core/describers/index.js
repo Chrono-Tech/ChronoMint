@@ -286,7 +286,7 @@ export const describePendingBitcoinTx = (entry, context = {}) => {
 export const describePendingEosTx = (entry) => {
   const { tx, block } = entry
 
-  const path = `tx.eos.transfer`
+  const path = 'tx.eos.transfer'
 
   return new LogTxModel({
     key: tx.block ? `${block.hash}/${tx.transactionIndex}` : uuid(),

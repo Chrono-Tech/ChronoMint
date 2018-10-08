@@ -16,16 +16,27 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import Select from 'redux-form-material-ui/es/Select'
-import { Field, formPropTypes, formValueSelector, getFormSyncErrors, getFormValues, reduxForm } from 'redux-form/immutable'
-import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
+import {
+  Field,
+  formPropTypes,
+  formValueSelector,
+  getFormSyncErrors,
+  getFormValues,
+  reduxForm,
+} from 'redux-form/immutable'
 import inversedTheme from 'styles/themes/inversed'
 import { EOS } from '@chronobank/core/redux/eos/constants'
 import { MultisigEthWalletModel } from '@chronobank/core/models'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import { getEOSWalletsTokens } from '@chronobank/core/redux/eos/selectors/tokens'
-import { ACTION_TRANSFER, FORM_SEND_TOKENS } from 'components/constants'
-import { selectMarketPricesListStore, selectMarketPricesSelectedCurrencyStore } from '@chronobank/core/redux/wallet/selectors/models'
+import {
+  ACTION_TRANSFER,
+  FORM_SEND_TOKENS,
+} from 'components/constants'
+import {
+  selectMarketPricesListStore,
+  selectMarketPricesSelectedCurrencyStore,
+} from '@chronobank/core/redux/wallet/selectors/models'
 import { prefix } from '../lang'
 import '../form.scss'
 import validate from './validate'
@@ -50,8 +61,6 @@ function mapStateToProps (state, ownProps) {
 
   return {
     selectedCurrency,
-    tokens: state.get(DUCK_TOKENS),
-    account: state.get(DUCK_SESSION).account,
     amount,
     recipient,
     symbol,
@@ -73,7 +82,6 @@ export default class Eos extends PureComponent {
   static propTypes = {
     walletsTokens: PropTypes.arrayOf(PropTypes.string),
     selectedCurrency: PropTypes.string,
-    account: PropTypes.string,
     wallet: PropTypes.oneOfType([PropTypes.instanceOf(WalletModel), PropTypes.instanceOf(MultisigEthWalletModel)]),
     recipient: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
