@@ -15,6 +15,10 @@ import { getMainWallets } from '../../wallets/selectors/models'
 import { getGasSliderCollection, getIsCBE } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
 
+export const selectDuckSession = (state) => {
+  return state.get(DUCK_SESSION)
+}
+
 export const getGasPriceMultiplier = (blockchain) => createSelector([getGasSliderCollection],
   (gasSliderCollection) => {
     return gasSliderCollection.get(blockchain) || 1

@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { List, ListItem, IconButton } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -45,7 +45,7 @@ export default class DrawerPartial extends PureComponent {
         containerElement={!item.disabled
           ? <Link
             styleName='item'
-            activeClassName='drawer-item-active'
+            activeclassname='drawer-item-active'
             to={{ pathname: item.path }}
           />
           : <div />

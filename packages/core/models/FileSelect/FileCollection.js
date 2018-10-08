@@ -3,12 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Immutable from 'immutable'
+import { Map } from 'immutable'
 import { abstractModel } from '../AbstractModelOld'
 import FileModel from './FileModel'
 
 class FileCollection extends abstractModel({
-  files: new Immutable.Map(),
+  files: new Map(),
   hash: null,
   uploading: false,
   uploaded: false,

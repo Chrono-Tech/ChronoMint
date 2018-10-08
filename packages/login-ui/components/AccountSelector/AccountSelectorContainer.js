@@ -9,9 +9,7 @@ import React, { PureComponent } from 'react'
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/constants'
-import {
-  initAccountsSignature,
-} from '@chronobank/login/redux/network/thunks'
+import { onWalletSelect } from '@chronobank/login-ui/redux/thunks'
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 import './AccountSelector.scss'
 import {
@@ -20,15 +18,15 @@ import {
 } from '../../redux/navigation'
 import AccountSelector from './AccountSelector'
 
-function mapDispatchToProps (dispatch) {
+const mapDispatchToProps = (dispatch) => {
   return {
     navigateToCreateAccount: () => dispatch(navigateToCreateAccount()),
     navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
-    initAccountsSignature: () => dispatch(initAccountsSignature()),
+    onWalletSelect: (wallet) => dispatch(onWalletSelect(wallet)),
   }
 }
 
-function mapStateToProps (state) {
+const mapStateToProps = (state) => {
   return {
     walletsList: state.get(DUCK_PERSIST_ACCOUNT).walletsList.map(
       (wallet) => new AccountEntryModel({ ...wallet }),
@@ -36,7 +34,8 @@ function mapStateToProps (state) {
   }
 }
 
-class AccountSelectorContainer extends PureComponent {
+@connect(mapStateToProps, mapDispatchToProps)
+export default class AccountSelectorContainer extends PureComponent {
   static propTypes = {
     onWalletSelect: PropTypes.func,
     walletsList: PropTypes.arrayOf(
@@ -44,17 +43,12 @@ class AccountSelectorContainer extends PureComponent {
     ),
     navigateToSelectImportMethod: PropTypes.func,
     navigateToCreateAccount: PropTypes.func,
-    initAccountsSignature: PropTypes.func,
   }
 
   static defaultProps = {
     onWalletSelect: () => {
     },
     walletsList: [],
-  }
-
-  componentDidMount () {
-    this.props.initAccountsSignature()
   }
 
   render () {
@@ -64,7 +58,6 @@ class AccountSelectorContainer extends PureComponent {
       walletsList,
       onWalletSelect,
     } = this.props
-
     return (
       <AccountSelector
         navigateToSelectImportMethod={navigateToSelectImportMethod}
@@ -75,5 +68,3 @@ class AccountSelectorContainer extends PureComponent {
     )
   }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(AccountSelectorContainer)

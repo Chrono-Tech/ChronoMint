@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Immutable from 'immutable'
+import { Map, List } from 'immutable'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { unionBy } from 'lodash'
 import OwnerCollection from '../models/wallet/OwnerCollection'
@@ -175,7 +175,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
 
   async getBlacklist (symbol: string) {
     const blacklist = await ethereumProvider.getEventsData(`mint/blacklist`, `symbol='${web3Converter.stringToBytesWithZeros(symbol)}'`)
-    return new BlacklistModel({ list: new Immutable.List(blacklist) })
+    return new BlacklistModel({ list: new List(blacklist) })
   }
 
   // TODO @Abdulov remove this how txHash will be arrive from Middleware
@@ -190,7 +190,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     transactionsLists.map((transactionsList) => transactionsList.map((tx) => promises.push(this.getTxModel(tx, account))))
     const transactions = await Promise.all(promises)
 
-    let map = new Immutable.Map()
+    let map = new Map()
     transactions.map((tx) => map = map.set(tx.id(), tx))
     return map
   }
@@ -207,7 +207,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     transactionsLists.map((transactionsList) => transactionsList.map((tx) => promises.push(this.getTxModel(tx, account))))
     const transactions = await Promise.all(promises)
 
-    let map = new Immutable.Map()
+    let map = new Map()
     transactions.map((tx) => map = map.set(tx.id(), tx))
     return map
   }

@@ -26,15 +26,16 @@ import { toggleMainMenu } from 'redux/sides/actions'
 
 import './Markup.scss'
 
-function mapStateToProps (state) {
+const mapStateToProps = (state) => {
   return {
+    router: state.get('router'),
     notice: state.get(DUCK_NOTIFIER).notice,
     mainMenuIsOpen: state.get(DUCK_SIDES).mainMenuIsOpen,
     modalStackSize: state.get(DUCK_MODALS).stack.length,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+const mapDispatchToProps = (dispatch) => {
   return {
     handleCloseNotifier: () => dispatch(closeNotifier()),
     onToggleMainMenu: (mainMenuIsOpen) => dispatch(toggleMainMenu(mainMenuIsOpen)),
@@ -44,21 +45,13 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class Markup extends PureComponent {
   static propTypes = {
+    children: PropTypes.node,
+    handleCloseNotifier: PropTypes.func,
+    mainMenuIsOpen: PropTypes.bool,
     modalStackSize: PropTypes.number,
     notice: PropTypes.instanceOf(Object),
-    handleCloseNotifier: PropTypes.func,
-    children: PropTypes.node,
-    location: PropTypes.shape({
-      action: PropTypes.string,
-      hash: PropTypes.string,
-      key: PropTypes.string,
-      pathname: PropTypes.string,
-      query: PropTypes.object,
-      search: PropTypes.string,
-      state: PropTypes.string,
-    }),
     onToggleMainMenu: PropTypes.func,
-    mainMenuIsOpen: PropTypes.bool,
+    router: PropTypes.any,
   }
 
   handleToggleMainMenu = () => {
@@ -76,11 +69,11 @@ export default class Markup extends PureComponent {
   }
 
   renderPageTitle = () => {
-    const { pathname } = this.props.location
+    const location = this.props.router.toJS().location
     let currentPage = null
 
     const filter = (item) => {
-      if (item.path === pathname) {
+      if (item.path === location.pathname) {
         currentPage = item
       }
     }
@@ -91,7 +84,7 @@ export default class Markup extends PureComponent {
 
     if (!currentPage) {
       Object.keys(BUTTONS).forEach((path) => {
-        if (path === pathname) {
+        if (path === location.pathname) {
           currentPage = BUTTONS[path]
         }
       })
@@ -120,7 +113,7 @@ export default class Markup extends PureComponent {
               <div styleName='pageTitle'>
                 {this.renderPageTitle()}
               </div>
-              <HeaderPartial location={this.props.location} />
+              <HeaderPartial location={location} />
             </div>
             <div styleName='middleSnackbar'>
               <div styleName='middleSnackbarPanel'>
@@ -135,7 +128,7 @@ export default class Markup extends PureComponent {
                 }
               </div>
             </div>
-            <div styleName='middleContent' id='contentWrapper' ref={this.setRef}>
+            <div className={location.pathname} styleName='middleContent' id='contentWrapper' ref={this.setRef}>
               {this.props.children}
             </div>
           </div>

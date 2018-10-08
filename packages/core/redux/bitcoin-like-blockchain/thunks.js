@@ -4,11 +4,12 @@
  */
 
 import type { Dispatch } from 'redux'
-import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
+import { selectCurrentNetwork } from '@chronobank/nodes/redux/selectors'
 import * as BitcoinActions from './actions'
 
 import BitcoinMiddlewareService from './MiddlewareService'
 
+/* eslint-disable-next-line import/prefer-default-export */
 export const getAddressUTXOS = (address: string, blockchain: string) => (dispatch: Dispatch<any>, getState): Promise<*> => {
   if (!blockchain || !address) {
     const error = new Error('Malformed request. blockchain and/or address must be non-empty strings')
@@ -17,7 +18,7 @@ export const getAddressUTXOS = (address: string, blockchain: string) => (dispatc
   }
 
   const state = getState()
-  const { network } = getCurrentNetworkSelector(state)
+  const { network } = selectCurrentNetwork(state)
   const netType = network[blockchain]
 
   dispatch(BitcoinActions.bitcoinHttpGetUtxos())

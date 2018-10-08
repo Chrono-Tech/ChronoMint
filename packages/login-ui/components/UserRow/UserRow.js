@@ -6,7 +6,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { Link } from 'react-router'
 import actionIcon from 'assets/img/icons/list.svg'
 import './UserRow.scss'
 
@@ -82,13 +81,13 @@ export default class UserRow extends React.Component {
         </div>
         { !hideActionIcon ? (
           <div styleName={classnames('actionWrapper')}>
-            <Link
+            <div
               styleName={classnames('actionListTrigger', onClick ? '' : 'actionListTriggerDisabled')}
               onClick={onClick ? onClick : () => {}}
               title={linkTitle}
             >
               <img styleName={classnames(reverseIcon ? 'reverseIcon' : '')} src={actionIcon} alt='' />
-            </Link>
+            </div>
           </div>
         ) : null}
       </div>

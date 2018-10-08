@@ -1,0 +1,36 @@
+patch-package
+--- a/node_modules/redux-axios-middleware/dist/bundle.js
++++ b/node_modules/redux-axios-middleware/dist/bundle.js
+@@ -164,6 +164,23 @@ var multiClientMiddleware = exports.multiClientMiddleware = function multiClient
+   var middlewareOptions = _extends({}, defaultOptions, customMiddlewareOptions);
+   var setupedClients = {};
+ 
++  function getClientNameFromState (blockchain) {
++    var state = getState()
++    var network = state.get('currentNetworkSet').network
++    if (!network) {
++      var networkErrorMessage = 'Network does not selected. Please select amin or test network first'
++      throw new Error(networkErrorMessage)
++    }
++
++    var node = network[blockchain]
++    if (node) {
++      return node
++    } else {
++      var nodeErrorMessage = 'Can\'t find node for the ' + blockchain + ' in selected network ' + network.name
++      throw new Error(nodeErrorMessage)
++    }
++  }
++
+   return function (_ref) {
+     var getState = _ref.getState,
+         dispatch = _ref.dispatch;
+@@ -173,7 +190,7 @@ var multiClientMiddleware = exports.multiClientMiddleware = function multiClient
+           return next(action);
+         }
+ 
+-        var clientName = middlewareOptions.getClientName(action) || middlewareOptions.defaultClientName;
++        var clientName = middlewareOptions.getClientName(action) || getClientNameFromState(action.blockchain);
+ 
+         if (!clients[clientName]) {
+           throw new Error('Client with name "' + clientName + '" has not been defined in middleware');

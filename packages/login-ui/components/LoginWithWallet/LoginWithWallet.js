@@ -64,7 +64,7 @@ class LoginWithWallet extends Component {
     this.walletFileUploadInput.value = ''
   }
 
-  async handleSubmitForm (){
+  handleSubmitForm = async () => {
     const { onSubmit } = this.props
     const { wallet } = this.state
 
@@ -76,7 +76,7 @@ class LoginWithWallet extends Component {
     const { isUploading, isUploaded, fileName } = this.state
 
     return (
-      <form styleName='wrapper' name={FORM_WALLET_UPLOAD} onSubmit={handleSubmit(this.handleSubmitForm.bind(this))}>
+      <form styleName='wrapper' name={FORM_WALLET_UPLOAD} onSubmit={handleSubmit(this.handleSubmitForm)}>
         <div styleName='page-title'>
           <Translate value='LoginWithWallet.title' />
         </div>

@@ -10,9 +10,6 @@ import reducer from './reducer'
 
 const token = new TokenModel({ address: '0x123', symbol: 'TIME' })
 
-let list = new Immutable.Map()
-list = list.set(token.id(), token)
-
 describe('settings erc20 reducer', () => {
   it('should return the initial state', () => {
     expect(reducer(undefined, {})).toEqual({

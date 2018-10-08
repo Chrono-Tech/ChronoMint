@@ -44,10 +44,7 @@ import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
 import { BCC, BTC, DASH, ETH, LTC, WAVES, XEM } from '../../dao/constants'
 import TxDescModel from '../../models/TxDescModel'
-
-const isOwner = (wallet, account) => {
-  return wallet.owners.includes(account)
-}
+import { isOwner } from './utils'
 
 export const get2FAEncodedKey = (callback) => () => {
   return ethereumProvider.get2FAEncodedKey(callback)
@@ -210,7 +207,7 @@ export const updateWalletBalance = ({ wallet }) => async (dispatch) => {
     BLOCKCHAIN_BITCOIN,
     BLOCKCHAIN_BITCOIN_CASH,
     BLOCKCHAIN_DASH,
-    BLOCKCHAIN_LITECOIN
+    BLOCKCHAIN_LITECOIN,
   ].includes(blockchain)
 
   if (isBtcLikeBlockchain) {

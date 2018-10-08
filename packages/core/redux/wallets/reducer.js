@@ -15,16 +15,26 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case REHYDRATE: {
+      // action.payload is undefined if LocalStorage is empty
+      // See https://github.com/rt2zz/redux-persist/issues/719
+      if (!action.payload) {
+        return {
+          ...state,
+        }
+      }
       const incoming = action.payload.wallets
       if (incoming) {
+        const list = Object.entries(incoming.list)
+          .reduce((accumulator, [key, wallet]) => {
+            if (wallet.isDerived) {
+              accumulator[key] = wallet
+            }
+            return accumulator
+          }, {})
+
         return {
-          list: Object.entries(incoming.list)
-            .reduce((accumulator, [key, wallet]) => {
-              if (wallet.isDerived) {
-                accumulator[key] = wallet
-              }
-              return accumulator
-            }, {}),
+          ...state,
+          list,
         }
       }
       return state

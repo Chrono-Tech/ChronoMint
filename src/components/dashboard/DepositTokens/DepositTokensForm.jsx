@@ -7,8 +7,6 @@ import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { TextField } from 'redux-form-material-ui'
 
-import { isTestingNetwork } from '@chronobank/login/network/settings'
-import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import web3Converter from '@chronobank/core/utils/Web3Converter'
 import { TOKEN_ICONS } from 'assets'
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
@@ -19,8 +17,8 @@ import Slider from 'components/common/Slider'
 import Amount from '@chronobank/core/models/Amount'
 import AssetsCollection from '@chronobank/core/models/assetHolder/AssetsCollection'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
-import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
+import { selectCurrentNetworkType } from '@chronobank/nodes/redux/selectors'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
@@ -66,16 +64,17 @@ function mapStateToProps (state) {
   const wallet: WalletModel = getMainEthWallet(state)
   const assetHolder = state.get(DUCK_ASSETS_HOLDER)
   const tokens = state.get(DUCK_TOKENS)
-  const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
-
   const token = tokens.item(tokenId)
-  const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
   const balance = wallet.balances[tokenId] || new Amount(0, tokenId)
   const balanceEth = wallet.balances[ETH] || new Amount(0, ETH)
   const assets = assetHolder.assets()
   const spender = assetHolder.wallet()
+  const networkType =  selectCurrentNetworkType(state)
+  const isTestNetwork = networkType === 'testnet' // TODO: replace to TESTNET constant
+  const isShowTIMERequired = isTestNetwork && !wallet.isTIMERequired && balance.isZero() && token.symbol() === 'TIME'
 
   return {
+    isTestNetwork,
     wallet,
     balance,
     balanceEth,
@@ -85,9 +84,8 @@ function mapStateToProps (state) {
     amount: Number.parseFloat(amount) || 0,
     token,
     feeMultiplier,
-    tokens,
     assets,
-    isShowTIMERequired: isTesting && !wallet.isTIMERequired && balance && balance.isZero() && token.symbol() === 'TIME',
+    isShowTIMERequired,
     account: state.get(DUCK_SESSION).account,
     initialValues: {
       feeMultiplier: getGasPriceMultiplier(BLOCKCHAIN_ETHEREUM)(state),
@@ -123,7 +121,6 @@ export default class DepositTokensForm extends PureComponent {
     token: PropTypes.instanceOf(TokenModel),
     account: PropTypes.string,
     wallet: PropTypes.instanceOf(WalletModel),
-    tokens: PropTypes.instanceOf(TokensCollection),
     assets: PropTypes.instanceOf(AssetsCollection),
     requireTIME: PropTypes.func,
     dispatch: PropTypes.func,
@@ -149,6 +146,7 @@ export default class DepositTokensForm extends PureComponent {
     this.timeout = null
   }
 
+  // eslint-disable-next-line complexity
   componentWillReceiveProps (newProps) {
     const firstAsset = newProps.assets.first()
     if (!newProps.token.isFetched() && firstAsset) {
@@ -315,6 +313,7 @@ export default class DepositTokensForm extends PureComponent {
     )
   }
 
+  // eslint-disable-next-line complexity
   renderBody () {
     const { balance, balanceEth, amount, token, feeMultiplier } = this.props
     return (
@@ -389,6 +388,7 @@ export default class DepositTokensForm extends PureComponent {
     )
   }
 
+  // eslint-disable-next-line complexity
   renderFoot () {
     const {
       isShowTIMERequired,

@@ -19,14 +19,14 @@ import {
 } from '../../redux/navigation'
 import LoginWithTrezor from './LoginWithTrezor'
 
-function mapDispatchToProps (dispatch) {
+const mapDispatchToProps = (dispatch) => {
   return {
     navigateToCreateAccount: () => dispatch(navigateToCreateAccount()),
     initTrezorDevice: () => dispatch(initTrezorDevice()),
   }
 }
 
-function mapStateToProps (state) {
+const mapStateToProps = (state) => {
   return {
     deviceList: state.get(DUCK_DEVICE_ACCOUNT).deviceList.map(
       (wallet) => new DeviceEntryModel({ ...wallet }),
@@ -34,7 +34,8 @@ function mapStateToProps (state) {
   }
 }
 
-class LoginWithTrezorContainer extends PureComponent {
+@connect(mapStateToProps, mapDispatchToProps)
+export default class LoginWithTrezorContainer extends PureComponent {
   static propTypes = {
     onDeviceSelect: PropTypes.func,
     deviceList: PropTypes.array,
@@ -74,5 +75,3 @@ class LoginWithTrezorContainer extends PureComponent {
     )
   }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(LoginWithTrezorContainer)

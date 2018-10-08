@@ -73,7 +73,7 @@ export const executeNemTransaction = ({ tx, options }) => async (dispatch) => {
   const entry = NemUtils.createNemTxEntryModel({ tx: prepared }, options)
 
   await dispatch(NemActions.nemTxCreate(entry))
-  dispatch(submitTransaction(entry, options))
+  dispatch(submitTransaction(entry))
 }
 
 const prepareTransaction = ({ tx }) => async (dispatch, getState) => {
@@ -141,9 +141,9 @@ const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
   }
 
   const node = nemProvider.getNode()
-  const res = await node.send({ ...entry.tx.signed.tx, fee: entry.tx.signed.fee })
+  const res = await node.send({ ...entry.tx.signed.tx, fee: entry.tx.signed.fee }) || {}
 
-  if (res && res.meta && res.meta.hash) {
+  if (res.meta && res.meta.hash) {
     const hash = res.meta.hash.data
     dispatch(nemTxStatus(entry.key, entry.tx.from, { isSent: true, isMined: true, hash }))
     dispatch(notifyNemTransfer(entry))

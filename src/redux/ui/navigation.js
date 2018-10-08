@@ -6,7 +6,7 @@
 import {
   goBack,
   push,
-} from 'react-router-redux'
+} from 'connected-react-router/immutable'
 
 /*
  * Thunk dispatched by any screen.

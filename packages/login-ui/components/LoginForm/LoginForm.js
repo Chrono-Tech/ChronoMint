@@ -19,15 +19,12 @@ import {
   WALLET_TYPE_TREZOR,
   WALLET_TYPE_METAMASK,
 } from '@chronobank/core/models/constants/AccountEntryModel'
-
 import {
   getAccountAddress,
   getAccountAvatar,
   getAccountName,
 } from '@chronobank/core/redux/persistAccount/utils'
-import {
-  DUCK_NETWORK,
-} from '@chronobank/login/redux/network/constants'
+
 import {
   navigateToSelectWallet,
   navigateToRecoverAccountPage,
@@ -47,14 +44,11 @@ import styles from './styles'
 import './LoginForm.scss'
 
 function mapStateToProps (state) {
-  const network = state.get(DUCK_NETWORK)
   const selectedWallet = state.get(DUCK_PERSIST_ACCOUNT).selectedWallet
   const formSelector = formValueSelector(FORM_LOGIN_PAGE)
 
   return {
-    selectedNetworkId: network.selectedNetworkId,
-    selectedProvider: network.selectedProviderId,
-    selectedWallet: selectedWallet,
+    selectedWallet,
     successMessage: formSelector(state, FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE),
   }
 }
@@ -89,7 +83,7 @@ class LoginForm extends React.Component {
     this.props.initLoginPage()
   }
 
-  renderSuccessMessage () {
+  renderSuccessMessage = () => {
     const { successMessage } = this.props
 
     if (!successMessage) {
@@ -103,8 +97,8 @@ class LoginForm extends React.Component {
     )
   }
 
-  renderDefaultTypeForm () {
-    const { classes, submitting, error } = this.props
+  renderDefaultTypeForm = () => {
+    const { classes, submitting, error, navigateToRecoverAccountPage } = this.props
 
     return (
       <div>
@@ -127,9 +121,11 @@ class LoginForm extends React.Component {
             label={<Translate value='LoginForm.submitButton' />}
             isLoading={submitting}
           />
-
-          {error ? (<div styleName='form-error'>{error}</div>) : null}
-
+          {
+            error
+              ? (<div styleName='form-error'>{error}</div>)
+              : null
+          }
           <button onClick={navigateToRecoverAccountPage} styleName='link'>
             <Translate value='LoginForm.forgotPassword' />
           </button>
@@ -138,7 +134,7 @@ class LoginForm extends React.Component {
     )
   }
 
-  renderDeviceTypeForm () {
+  renderDeviceTypeForm = () => {
     const { error, submitting } = this.props
 
     return (
@@ -150,13 +146,16 @@ class LoginForm extends React.Component {
           label={<Translate value='LoginForm.submitButton' />}
           isLoading={submitting}
         />
-
-        {error ? (<div styleName='form-error'>{error}</div>) : null}
+        {
+          error
+            ? (<div styleName='form-error'>{error}</div>)
+            : null
+        }
       </div>
     )
   }
 
-  renderType () {
+  renderType = () => {
     const { selectedWallet } = this.props
 
     if (!selectedWallet || !selectedWallet.type) {
@@ -203,7 +202,9 @@ class LoginForm extends React.Component {
             linkTitle='My Accounts'
           />
 
-          {this.renderType()}
+          {
+            this.renderType()
+          }
 
         </div>
       </form>

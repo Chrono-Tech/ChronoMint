@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Immutable from 'immutable'
+import { Map } from 'immutable'
 import * as types from './constants'
 import ProfileModel from '../../models/ProfileModel'
 
@@ -12,7 +12,7 @@ const initialState = {
   isSession: false,
   profile: new ProfileModel(),
   isCBE: false,
-  gasPriceMultiplier: new Immutable.Map(),
+  gasPriceMultiplier: new Map(),
   profileSignature: null,
 }
 

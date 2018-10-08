@@ -21,7 +21,7 @@ export default class RecoverAccountContainer extends PureComponent {
     onSubmitSuccess: PropTypes.func,
   }
 
-  async handleSubmit (values) {
+  handleSubmit = async (values) => {
     const { selectedWallet } = this.props
 
     let words = [], mnemonic = ''
@@ -44,13 +44,13 @@ export default class RecoverAccountContainer extends PureComponent {
     }
   }
 
-  handleSubmitSuccess (result) {
+  handleSubmitSuccess = (result) => {
     const { onSubmitSuccess } = this.props
 
     onSubmitSuccess && onSubmitSuccess(result)
   }
 
-  handleSubmitFail (errors, dispatch, submitErrors) {
+  handleSubmitFail = (errors, dispatch, submitErrors) => {
     dispatch(stopSubmit(FORM_RECOVER_ACCOUNT, submitErrors && submitErrors.errors))
   }
 
@@ -59,9 +59,9 @@ export default class RecoverAccountContainer extends PureComponent {
       <RecoverAccount
         navigateToSelectWallet={this.props.navigateToSelectWallet}
         selectedWallet={this.props.selectedWallet}
-        onSubmit={this.handleSubmit.bind(this)}
-        onSubmitSuccess={this.handleSubmitSuccess.bind(this)}
-        onSubmitFail={this.handleSubmitFail.bind(this)}
+        onSubmit={this.handleSubmit}
+        onSubmitSuccess={this.handleSubmitSuccess}
+        onSubmitFail={this.handleSubmitFail}
         previousPage={this.props.previousPage}
       />
     )

@@ -5,9 +5,10 @@
 
 import BigNumber from 'bignumber.js'
 import nem from 'nem-sdk'
-import NemAbstractNode, { NemBalance, NemTx } from './NemAbstractNode'
+import { NemBalance, NemTx } from './NemAbstractNode'
+import AbstractNode from './AbstractNode'
 
-export default class NemMiddlewareNode extends NemAbstractNode {
+export default class NemMiddlewareNode extends AbstractNode {
   constructor ({ mosaics, ...args }) {
     super(args)
     this._mosaics = mosaics

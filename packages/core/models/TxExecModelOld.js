@@ -4,7 +4,7 @@
  */
 
 import BigNumber from 'bignumber.js'
-import Immutable from 'immutable'
+import { Map } from 'immutable'
 import moment from 'moment'
 import uuid from 'uuid/v1'
 import { abstractModel } from './AbstractModelOld'
@@ -131,7 +131,7 @@ class TxExecModel extends abstractModel({
 
   details () {
     const args = this.args()
-    const list = new Immutable.Map(Object.entries(args))
+    const list = new Map(Object.entries(args))
 
     return list.entrySeq().map(([key, value]) => {
       return ({

@@ -13,7 +13,7 @@ export default class AccountNameContainer extends PureComponent {
     onSubmit: PropTypes.func,
   }
 
-  handleSubmit (values) {
+  handleSubmit = (values) => {
     const { onSubmit } = this.props
     let accountName = values.get('accountName')
 
@@ -25,7 +25,7 @@ export default class AccountNameContainer extends PureComponent {
   render () {
     return (
       <AccountName
-        onSubmit={this.handleSubmit.bind(this)}
+        onSubmit={this.handleSubmit}
         previousPage={this.props.previousPage}
       />
     )

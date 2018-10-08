@@ -3,83 +3,109 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { persistReducer, REHYDRATE } from 'redux-persist'
-import storage from 'redux-persist/lib/storage'
-import * as a from './constants'
-
-const persistConfig = {
-  key: 'account',
-  storage: storage,
-  blacklist: ['decryptedWallet', 'rehydrated'],
-}
+import { REHYDRATE } from 'redux-persist'
+import * as persistAccountActionTypes from './constants'
 
 const initialState = {
-  walletsList: [],
-  selectedWallet: null,
-  decryptedWallet: null,
-  rehydrated: false,
   customNetworksList: [],
+  decryptedWallet: null,
+  isLoadingSignatures: false,
+  locale: 'en',
+  selectedWallet: null,
+  walletsList: [],
 }
 
-const persistAccount = (state = initialState, action) => {
-  switch (action.type) {
-    case REHYDRATE:
-      return {
-        ...state,
-        ...action.payload.persistAccount,
-        rehydrated: true,
-      }
-    case a.WALLETS_ADD :
-      return {
-        ...state,
-        walletsList: [
-          ...state.walletsList,
-          action.wallet,
-        ],
-      }
+const mutations = {
 
-    case a.WALLETS_SELECT :
-      return {
-        ...state,
-        selectedWallet: action.wallet,
-      }
-
-    case a.WALLETS_LOAD :
-      return {
-        ...state,
-        decryptedWallet: action.wallet,
-      }
-
-    case a.WALLETS_UPDATE_LIST :
-      return {
-        ...state,
-        walletsList: action.walletsList,
-      }
-
-    case a.CUSTOM_NETWORKS_LIST_ADD :
-      return {
-        ...state,
-        customNetworksList: [
-          ...state.customNetworksList,
-          action.network,
-        ],
-      }
-
-    case a.CUSTOM_NETWORKS_LIST_UPDATE :
-      return {
-        ...state,
-        customNetworksList: action.list,
-      }
-
-    case a.CUSTOM_NETWORKS_LIST_RESET :
-      return {
-        ...state,
-        customNetworksList: [],
-      }
-
-    default:
+  [REHYDRATE]: (state, payload) => {
+    // action.payload is undefined if LocalStorage is empty
+    // See https://github.com/rt2zz/redux-persist/issues/719
+    if (!payload) {
       return state
-  }
+    }
+
+    return {
+      ...state,
+      ...payload.persistAccount,
+    }
+  },
+
+  [persistAccountActionTypes.PERSIST_ACCOUNT_SIGNATURES_LOADING]: (state) => ({
+    ...state,
+    isLoadingSignatures: true,
+  }),
+
+  [persistAccountActionTypes.PERSIST_ACCOUNT_SIGNATURES_RESET_LOADING]: (state) => ({
+    ...state,
+    isLoadingSignatures: true,
+  }),
+
+  [persistAccountActionTypes.PERSIST_ACCOUNT_SET_LOCALE]: (state, payload) => {
+    return {
+      ...state,
+      locale: payload.locale,
+    }
+  },
+
+  [persistAccountActionTypes.WALLETS_ADD]: (state, payload) => {
+    return {
+      ...state,
+      walletsList: [
+        ...state.walletsList,
+        payload.wallet,
+      ],
+    }
+  },
+
+  [persistAccountActionTypes.WALLETS_SELECT]: (state, payload) => {
+    return {
+      ...state,
+      selectedWallet: payload.wallet,
+    }
+  },
+
+  [persistAccountActionTypes.WALLETS_LOAD]: (state, payload) => {
+    return {
+      ...state,
+      decryptedWallet: payload.wallet,
+    }
+  },
+
+  [persistAccountActionTypes.WALLETS_UPDATE_LIST]: (state, payload) => {
+    return {
+      ...state,
+      walletsList: payload.walletsList,
+    }
+  },
+
+  [persistAccountActionTypes.CUSTOM_NETWORKS_LIST_ADD]: (state, payload) => {
+    return {
+      ...state,
+      customNetworksList: [
+        ...state.customNetworksList,
+        payload.network,
+      ],
+    }
+  },
+
+  [persistAccountActionTypes.CUSTOM_NETWORKS_LIST_UPDATE]: (state, payload) => {
+    return {
+      ...state,
+      customNetworksList: payload.list,
+    }
+  },
+
+  [persistAccountActionTypes.CUSTOM_NETWORKS_LIST_RESET]: (state) => {
+    return {
+      ...state,
+      customNetworksList: [],
+    }
+  },
+
 }
 
-export default persistReducer(persistConfig, persistAccount)
+export default (state = initialState, { type, ...payload }) => {
+  return (type in mutations)
+    ? mutations[type](state, payload)
+    : state
+}

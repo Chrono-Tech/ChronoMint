@@ -5,10 +5,9 @@
 
 import bitcoin from 'bitcoinjs-lib'
 import type { Dispatch } from 'redux'
-import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
+import * as BitcoinMiddlewaresAPI from '@chronobank/nodes/httpNodes/api/chronobankNodes/bitcoins'
 import { modalsOpen } from '../modals/actions'
 import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
-import { getBalanceDataParser } from './converter'
 import {
   TransferNoticeModel,
 } from '../../models'
@@ -21,7 +20,6 @@ import { describePendingBitcoinTx } from '../../describers'
 import { getToken } from '../tokens/selectors'
 import { pendingEntrySelector, getBitcoinSigner } from './selectors'
 import { notify, notifyError } from '../notifier/actions'
-import BitcoinMiddlewareService from './BitcoinMiddlewareService'
 
 import { getAddressUTXOS } from '../bitcoin-like-blockchain/thunks'
 
@@ -57,100 +55,44 @@ export const executeBitcoinTransaction = ({ tx, options = {} }) => async (dispat
 
 // TODO: dispatch(setLatestBlock(blockchain, { blockNumber: data.currentBlock }))
 // in appropriate place
-export const getCurrentBlockHeight = (blockchain: string) => (dispatch: Dispatch<any>, getState): Promise<*> => {
+export const getCurrentBlockHeight = (blockchain: string) => (dispatch: Dispatch<any>): Promise<*> => {
   if (!blockchain) {
     const error = new Error('Malformed request. "blockchain" must be non-empty string')
     dispatch(BitcoinActions.bitcoinHttpGetBlocksHeightFailure(error))
     return Promise.reject(error)
   }
 
-  const state = getState()
-  const { network } = getCurrentNetworkSelector(state)
-  const netType = network[blockchain]
-
-  dispatch(BitcoinActions.bitcoinHttpGetBlocksHeight())
-  return BitcoinMiddlewareService.requestCurrentBlockHeight({ blockchain, type: netType })
-    .then((response) => {
-      dispatch(BitcoinActions.bitcoinHttpGetBlocksHeightSuccess(response.data))
-      // TODO: need to check that res.status is equal 200 etc. Or it is better to check right in fetchPersonInfo.
-      return response.data // TODO: to verify, that 'data' is JSON, not HTML like 502.html or 404.html
-    })
-    .catch((error) => {
-      dispatch(BitcoinActions.bitcoinHttpGetBlocksHeightFailure(error))
-      throw new Error(error) // Rethrow for further processing, for example by SubmissionError
-    })
+  return dispatch(BitcoinMiddlewaresAPI.requestBlocksHeight(blockchain))
 }
 
-export const getTransactionInfo = (txid: string, blockchain: string) => (dispatch: Dispatch<any>, getState): Promise<*> => {
+export const getTransactionInfo = (txid: string, blockchain: string) => (dispatch: Dispatch<any>): Promise<*> => {
   if (!blockchain || !txid) {
     const error = new Error('Malformed request. "blockchain" and "txid" must be non-empty string')
     dispatch(BitcoinActions.bitcoinHttpGetTransactionInfoFailure(error))
     return Promise.reject(error)
   }
 
-  const state = getState()
-  const { network } = getCurrentNetworkSelector(state)
-  const netType = network[blockchain]
-
-  dispatch(BitcoinActions.bitcoinHttpGetTransactionInfo())
-  return BitcoinMiddlewareService.requestBitcoinTransactionInfo({ blockchain, type: netType })
-    .then((response) => {
-      dispatch(BitcoinActions.bitcoinHttpGetTransactionInfoSuccess(response.data))
-      // TODO: need to check that res.status is equal 200 etc. Or it is better to check right in fetchPersonInfo.
-      return response.data // TODO: to verify, that 'data' is JSON, not HTML like 502.html or 404.html
-    })
-    .catch((error) => {
-      dispatch(BitcoinActions.bitcoinHttpGetTransactionInfoFailure(error))
-      throw new Error(error) // Rethrow for further processing, for example by SubmissionError
-    })
+  return dispatch(BitcoinMiddlewaresAPI.requestBitcoinTransactionByHash(blockchain, txid))
 }
 
-export const getTransactionsList = (address: string, id, skip = 0, offset = 0, blockchain: string) => (dispatch: Dispatch<any>, getState): Promise<*> => {
+export const getTransactionsList = (address: string, id, skip, offset, blockchain: string) => (dispatch: Dispatch<any>): Promise<*> => {
   if (!blockchain || !address || !id) {
     const error = new Error('Malformed request. blockchain and/or address must be non-empty strings')
     dispatch(BitcoinActions.bitcoinHttpGetTransactionListFailure(error))
     return Promise.reject(error)
   }
 
-  const state = getState()
-  const { network } = getCurrentNetworkSelector(state)
-  const networkType = network[blockchain]
-
-  dispatch(BitcoinActions.bitcoinHttpGetTransactionList())
-  return BitcoinMiddlewareService.requestBitcoinTransactionsList(address, id, skip, offset, blockchain, networkType)
-    .then((response) => {
-      dispatch(BitcoinActions.bitcoinHttpGetTransactionListSuccess(response.data))
-      // TODO: need to check that res.status is equal 200 etc. Or it is better to check right in fetchPersonInfo.
-      return response.data // TODO: to verify, that 'data' is JSON, not HTML like 502.html or 404.html
-    })
-    .catch((error) => {
-      dispatch(BitcoinActions.bitcoinHttpGetTransactionListFailure(error))
-      throw new Error(error) // Rethrow for further processing, for example by SubmissionError
-    })
+  return dispatch(BitcoinMiddlewaresAPI.requestBitcoinTransactionsHistoryByAddress(blockchain, address, skip, offset))
 }
 
-export const getAddressInfo =  (address: string, blockchain: string) => (dispatch: Dispatch<any>, getState): Promise<*> => {
+export const getAddressInfo =  (address: string, blockchain: string) => async (dispatch: Dispatch<any>): Promise<*> => {
   if (!blockchain || !address) {
     const error = new Error('Malformed request. blockchain and/or address must be non-empty strings')
     dispatch(BitcoinActions.bitcoinHttpGetAddressInfoFailure(error))
     return Promise.reject(error)
   }
 
-  const state = getState()
-  const { network } = getCurrentNetworkSelector(state)
-  const netType = network[blockchain]
-
-  dispatch(BitcoinActions.bitcoinHttpGetAddressInfo())
-  return BitcoinMiddlewareService.requestBitcoinAddressInfo(address, blockchain, netType)
-    .then((response) => {
-      dispatch(BitcoinActions.bitcoinHttpGetAddressInfoSuccess(response.data, response.config.host))
-      // TODO: need to check that res.status is equal 200 etc. Or it is better to check right in fetchPersonInfo.
-      return getBalanceDataParser(blockchain, netType)(response) // TODO: to verify, that 'data' is JSON, not HTML like 502.html or 404.html
-    })
-    .catch((error) => {
-      dispatch(BitcoinActions.bitcoinHttpGetAddressInfoFailure(error))
-      throw new Error(error) // Rethrow for further processing, for example by SubmissionError
-    })
+  return dispatch(BitcoinMiddlewaresAPI.requestBitcoinBalanceByAddress(blockchain, address))
 }
 
 const submitTransaction = (entry) => async (dispatch, getState) => {
@@ -176,7 +118,7 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
   dispatch(BitcoinActions.bitcoinTxAccept(entry))
 
   const state = getState()
-  const signer = getBitcoinSigner(state, entry.blockchain)
+  const signer = getBitcoinSigner(state)
 
   const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key, entry.blockchain)(state)
 
@@ -250,7 +192,7 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
 }
 
 // TODO: need to continue rework of this method. Pushed to merge with other changes.
-const sendSignedTransaction = (entry) => async (dispatch, getState) => {
+const sendSignedTransaction = (entry) => async (dispatch) => {
   if (!entry) {
     const error = new Error('Can\'t send empty Tx. There is no entry at BTC sendSignedTransaction')
     dispatch(BitcoinActions.bitcoinHttpPostSendTxFailure(error))
@@ -262,74 +204,56 @@ const sendSignedTransaction = (entry) => async (dispatch, getState) => {
     isPending: true,
   })))
 
-  try {
-    dispatch(BitcoinActions.bitcoinHttpPostSendTx())
+  const rawTx = entry.tx.signed.toHex()
+  const blockchain = entry.blockchain
 
-    const state = getState()
-    const rawTx = entry.tx.signed.toHex()
-    const blockchain = entry.blockchain
-    const network = getSelectedNetwork()(state)
-    const networkType = network[blockchain]
-
-    return BitcoinMiddlewareService
-      .requestBitcoinSendTx(rawTx, blockchain, networkType)
-      .then((response) => {
-        if (!response) {
-          dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
-            ...entry,
-            isErrored: true,
-          })))
-          throw new Error('Incorrect response from server. Can\'t send transaction.')
-        }
-        dispatch(BitcoinActions.bitcoinHttpPostSendTxSuccess(response.data))
-
-        if (response.data && response.data.code === 0) {
-          dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
-            ...entry,
-            tx: {
-              ...entry.tx,
-              isErrored: true,
-              error: response.data.message,
-            },
-          })))
-          dispatch(notifyError(response.data, 'Bitcoin: sendSignedTransaction'))
-        }
-
-        if (response.data && response.data.hash) {
-          const txEntry = BitcoinUtils.createBitcoinTxEntryModel({
-            ...entry,
-            tx: {
-              ...entry.tx,
-              isSent: true,
-              isMined: false,
-              hash: response.hash,
-            },
-          })
-
-          dispatch(BitcoinActions.bitcoinTxUpdate(txEntry))
-          dispatch(notifyBitcoinTransfer(txEntry))
-        }
-
-        dispatch(BitcoinActions.bitcoinExecuteTxSuccess(response.data)) // TODO: mve it to appropriate place
-        // TODO: need to check that res.status is equal 200 etc. Or it is better to check right in fetchPersonInfo.
-        return response.data // TODO: to verify, that 'data' is JSON, not HTML like 502.html or 404.html
-      })
-      .catch((error) => {
-        dispatch(BitcoinActions.bitcoinHttpPostSendTxFailure(error))
+  return dispatch(BitcoinMiddlewaresAPI.requestBitcoinSendRawTransaction(blockchain, rawTx))
+    .then((response) => {
+      if (!response) {
         dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
           ...entry,
           isErrored: true,
         })))
-        throw new Error(error) // Rethrow for further processing, for example by SubmissionError
-      })
-  } catch (error) {
-    dispatch(BitcoinActions.bitcoinHttpPostSendTxFailure(error))
-    dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
-      ...entry,
-      isErrored: true,
-    })))
-    return null
-  }
+        throw new Error('Incorrect response from server. Can\'t send transaction.')
+      }
+
+      if (response.data && response.data.code === 0) {
+        dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
+          ...entry,
+          tx: {
+            ...entry.tx,
+            isErrored: true,
+            error: response.data.message,
+          },
+        })))
+        dispatch(notifyError(response.data, 'Bitcoin: sendSignedTransaction'))
+      }
+
+      if (response.data && response.data.hash) {
+        const txEntry = BitcoinUtils.createBitcoinTxEntryModel({
+          ...entry,
+          tx: {
+            ...entry.tx,
+            isSent: true,
+            isMined: false,
+            hash: response.hash,
+          },
+        })
+
+        dispatch(BitcoinActions.bitcoinTxUpdate(txEntry))
+        dispatch(notifyBitcoinTransfer(txEntry))
+
+        return response.data
+      }
+    })
+    .catch((error) => {
+      // eslint-disable-next-line no-console
+      console.log(error)
+      dispatch(BitcoinActions.bitcoinTxUpdate(BitcoinUtils.createBitcoinTxEntryModel({
+        ...entry,
+        isErrored: true,
+      })))
+    })
 }
 
 const notifyBitcoinTransfer = (entry) => (dispatch, getState) => {
@@ -346,11 +270,9 @@ const notifyBitcoinTransfer = (entry) => (dispatch, getState) => {
 }
 
 export const estimateBtcFee = (params) => async (dispatch) => {
-  const { address, recipient, amount, formFee, blockchain } = params
+  const { address, blockchain } = params
   const utxos = await dispatch(getAddressUTXOS(address, blockchain))
   if (!utxos) {
-    throw new Error('Can\'t find utxos for address: ', address)
+    throw new Error(`Can't find utxos for address: ${address}`)
   }
-
-  return BitcoinUtils.getBtcFee(recipient, amount, formFee, utxos)
 }

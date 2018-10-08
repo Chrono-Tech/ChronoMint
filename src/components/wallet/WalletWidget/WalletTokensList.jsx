@@ -58,8 +58,10 @@ export default class WalletTokensList extends PureComponent {
   }
 
   handleChangeShowAll = () => {
+    const { isShowAll } = this.state
+
     this.setState({
-      isShowAll: !this.state.isShowAll,
+      isShowAll: !isShowAll,
     })
   }
 

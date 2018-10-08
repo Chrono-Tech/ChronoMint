@@ -6,7 +6,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { CommonNetworkSelector } from '@chronobank/login-ui/components'
+import CommonNetworkSelector from '@chronobank/login-ui/components/CommonNetworkSelector/CommonNetworkSelector'
 import {
   navigateToLoginPage,
 } from '@chronobank/login-ui/redux/navigation'
@@ -22,10 +22,15 @@ import ChronoLogo from 'assets/img/logo-chrono-bank-full.svg'
 import BackIcon from 'assets/img/icons/back.svg'
 
 import Footer from '../Footer/Footer'
-import PersistWrapper from '../partials/PersistWrapper/PersistWrapper'
 
 import './Splash.scss'
 import theme from './styles'
+
+const mapStateToProps = (state) => {
+  return {
+    router: state.get('router'),
+  }
+}
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -33,11 +38,14 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-class Splash extends Component {
+@connect(mapStateToProps, mapDispatchToProps)
+export default class Splash extends Component {
   static propTypes = {
     children: PropTypes.node,
     goBack: PropTypes.func,
+    navigateToLoginPage: PropTypes.func,
     navigatorText: PropTypes.string,
+    router: PropTypes.any,
   }
 
   static defaultProps = {
@@ -46,7 +54,8 @@ class Splash extends Component {
   }
 
   render () {
-    const { children, goBack, navigatorText, navigateToLoginPage } = this.props
+    const { children, goBack, navigatorText, navigateToLoginPage, router } = this.props
+    const location = router.toJS().location
 
     return (
       <MuiThemeProvider theme={theme}>
@@ -88,9 +97,9 @@ class Splash extends Component {
             ) : null
           }
 
-          <PersistWrapper>
+          <div className={location.pathname}>
             {children ? children: null}
-          </PersistWrapper>
+          </div>
 
           {!window.isMobile && (<Footer />)}
 
@@ -100,5 +109,3 @@ class Splash extends Component {
     )
   }
 }
-
-export default connect(null, mapDispatchToProps)(Splash)

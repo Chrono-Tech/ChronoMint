@@ -18,10 +18,10 @@ export default class DerivationPathFormContainer extends PureComponent {
   }
 
   static defaultProps = {
-    previousPage: () => {}
+    previousPage: () => {},
   }
 
-  async handleSubmit (values) {
+  handleSubmit = async (values) => {
     const { onSubmit } = this.props
 
     const path = values.get('path')
@@ -29,21 +29,21 @@ export default class DerivationPathFormContainer extends PureComponent {
     return onSubmit({ path })
   }
 
-  handleSubmitSuccess (result) {
+  handleSubmitSuccess = (result) => {
     const { onSubmitSuccess } = this.props
     onSubmitSuccess && onSubmitSuccess(result)
   }
 
-  handleSubmitFail (errors, dispatch, submitErrors) {
+  handleSubmitFail = (errors, dispatch, submitErrors) => {
     dispatch(stopSubmit(FORM_DERIVATION_PATH, submitErrors && submitErrors.errors))
   }
 
   render () {
     return (
       <DerivationPathForm
-        onSubmit={this.handleSubmit.bind(this)}
-        onSubmitSuccess={this.handleSubmitSuccess.bind(this)}
-        onSubmitFail={this.handleSubmitFail.bind(this)}
+        onSubmit={this.handleSubmit}
+        onSubmitSuccess={this.handleSubmitSuccess}
+        onSubmitFail={this.handleSubmitFail}
         previousPage={this.props.previousPage}
       />
     )

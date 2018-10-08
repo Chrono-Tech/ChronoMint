@@ -38,7 +38,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     onSubmit: (values: Map) => {
-      const tokens = Object.keys(values.get('tokens').filter((token) => token).toObject()) || []
+      const tokens = Object.keys(values.get('tokens').filter((token) => token).toObject())
       const name = values.get('name')
       dispatch(createNewChildAddress({ blockchain: BLOCKCHAIN_ETHEREUM, tokens, name }))
       dispatch(navigateToWallets())

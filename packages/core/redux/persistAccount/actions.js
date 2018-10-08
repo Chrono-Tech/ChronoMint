@@ -21,12 +21,23 @@ import {
   CUSTOM_NETWORKS_LIST_RESET,
   CUSTOM_NETWORKS_LIST_UPDATE,
   DUCK_PERSIST_ACCOUNT,
+  PERSIST_ACCOUNT_SET_LOCALE,
+  PERSIST_ACCOUNT_SIGNATURES_LOADING,
+  PERSIST_ACCOUNT_SIGNATURES_RESET_LOADING,
   WALLETS_ADD,
   WALLETS_DESELECT,
+  WALLETS_LOAD,
   WALLETS_SELECT,
   WALLETS_UPDATE_LIST,
-  WALLETS_LOAD,
 } from './constants'
+
+export const setSiganturesLoading = () => (dispatch) => {
+  dispatch({ type: PERSIST_ACCOUNT_SIGNATURES_LOADING })
+}
+
+export const setSiganturesLoadingReset = () => (dispatch) => {
+  dispatch({ type: PERSIST_ACCOUNT_SIGNATURES_RESET_LOADING })
+}
 
 export const accountAdd = (wallet) => (dispatch) => {
   dispatch({ type: WALLETS_ADD, wallet })
@@ -205,4 +216,8 @@ export const customNetworksListUpdate = (list) => (dispatch) => {
 
 export const customNetworksListReset = () => (dispatch) => {
   dispatch({ type: CUSTOM_NETWORKS_LIST_RESET })
+}
+
+export const setPersistAccountLocale = (locale) => (dispatch) => {
+  dispatch({ type: PERSIST_ACCOUNT_SET_LOCALE, locale })
 }

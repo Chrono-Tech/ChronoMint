@@ -8,7 +8,7 @@ const webpack = require('webpack')
 const babel = require('./babel.prod')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
-
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const config = require('./webpack.config.base.js')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -28,6 +28,7 @@ module.exports = config.buildConfig(
     },
     babel,
     plugins: [
+      new BundleAnalyzerPlugin(),
       new HtmlWebpackPlugin({
         inject: 'head',
         template: process.env.NODE_ENV === 'standalone'

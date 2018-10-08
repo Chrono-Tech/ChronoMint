@@ -19,14 +19,14 @@ import {
 } from '../../redux/navigation'
 import LoginWithMetamask from './LoginWithMetamask'
 
-function mapDispatchToProps (dispatch) {
+const mapDispatchToProps = (dispatch) => {
   return {
     navigateToCreateAccount: () => dispatch(navigateToCreateAccount()),
     initMetamaskPlugin: () => dispatch(initMetamaskPlugin()),
   }
 }
 
-function mapStateToProps (state) {
+const mapStateToProps = (state) => {
   return {
     deviceList: state.get(DUCK_DEVICE_ACCOUNT).deviceList.map(
       (wallet) => new DeviceEntryModel({ ...wallet }),
@@ -34,7 +34,8 @@ function mapStateToProps (state) {
   }
 }
 
-class LoginWithMetamaskContainer extends PureComponent {
+@connect(mapStateToProps, mapDispatchToProps)
+export default class LoginWithMetamaskContainer extends PureComponent {
   static propTypes = {
     onDeviceSelect: PropTypes.func,
     deviceList: PropTypes.array,
@@ -72,5 +73,3 @@ class LoginWithMetamaskContainer extends PureComponent {
     )
   }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(LoginWithMetamaskContainer)

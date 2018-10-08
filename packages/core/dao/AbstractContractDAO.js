@@ -3,6 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+/* eslint-disable no-underscore-dangle */
+
 import EventEmitter from 'events'
 import BigNumber from 'bignumber.js'
 import ipfs from '../utils/IPFS'
@@ -86,12 +88,8 @@ export default class AbstractContractDAO extends EventEmitter {
   _tx (func: string, args: Array = [], value: BigNumber = new BigNumber(0), from: string) {
     const data = this.contract.methods[func](...args).encodeABI()
 
-    if (!from) {
-      from = AbstractContractDAO.getAccount()
-    }
-
     return {
-      from,
+      from: from || AbstractContractDAO.getAccount(),
       to: this.contract._address,
       value,
       data,

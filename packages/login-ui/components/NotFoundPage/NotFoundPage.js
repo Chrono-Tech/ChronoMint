@@ -21,7 +21,8 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-class NotFoundPage extends PureComponent {
+@connect(null, mapDispatchToProps)
+export default class NotFoundPage extends PureComponent {
   render () {
     const { navigateToCreateAccount, navigateToSelectWallet } = this.props
 
@@ -48,5 +49,3 @@ class NotFoundPage extends PureComponent {
     )
   }
 }
-
-export default connect(null, mapDispatchToProps)(NotFoundPage)

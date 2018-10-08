@@ -8,6 +8,19 @@ import { getWallets, getWalletsLengthFromState } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
 import { getAccount } from '../../session/selectors/models'
 import { getEthMultisigWallets } from '../../multisigWallet/selectors/models'
+import { DUCK_WALLETS } from '../constants'
+
+export const selectDuckWallets = (state) => state.get(DUCK_WALLETS)
+
+export const selectWalletByBlockchain = (blockchain) => createSelector(
+  selectDuckWallets,
+  (wallets) => wallets.find((wallet) => wallet.blockchain === blockchain)
+)
+
+export const selectWalletAddressByBlockchain = (blockchain) => createSelector(
+  selectWalletByBlockchain(blockchain),
+  (wallet) => wallet.address
+)
 
 export const selectWalletsList = createSelector(
   [
@@ -32,6 +45,11 @@ export const selectWalletsList = createSelector(
         (a > b) - (a < b),
       )
   },
+)
+
+export const selectMainWalletsList = createSelector(
+  selectWalletsList,
+  (wallets) => wallets.filter((wallet) => wallet.isMain)
 )
 
 const createSectionsSelector = createSelectorCreator(

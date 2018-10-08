@@ -3,9 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import WavesAbstractNode, { WavesBalance, WavesTx } from './WavesAbstractNode'
+import { WavesBalance, WavesTx } from './WavesAbstractNode'
+import AbstractNode from './AbstractNode'
 
-export default class WavesMiddlewareNode extends WavesAbstractNode {
+export default class WavesMiddlewareNode extends AbstractNode {
   constructor ({ ...args }) {
     super(args)
     // TODO @dkchv: still can't combine async + arrow on class

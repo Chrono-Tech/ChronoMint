@@ -3,12 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Immutable from 'immutable'
+import { Map } from 'immutable'
 import TxExecModel from '../../models/TxExecModelOld'
 import * as a from './constants'
 
 export const initialState = {
-  pendingTxs: new Immutable.Map(),
+  pendingTxs: new Map(),
   confirmTx: new TxExecModel({}),
 }
 

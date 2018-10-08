@@ -1,0 +1,36 @@
+patch-package
+--- a/node_modules/redux-axios-middleware/dist/bundle.js
++++ b/node_modules/redux-axios-middleware/dist/bundle.js
+@@ -167,13 +167,31 @@ var multiClientMiddleware = exports.multiClientMiddleware = function multiClient
+   return function (_ref) {
+     var getState = _ref.getState,
+         dispatch = _ref.dispatch;
++
++    function getClientNameFromState (blockchain) {
++      var state = getState()
++      var chronobankMiddlewares = state.get('nodes').selected.chronobankMiddlewares
++      if (!chronobankMiddlewares) {
++        var networkErrorMessage = 'Network does not selected. Please select main or test network first'
++        throw new Error(networkErrorMessage)
++      }
++
++      var node = chronobankMiddlewares[blockchain]
++      if (node) {
++        return node
++      } else {
++        var nodeErrorMessage = 'Can\'t find node for the ' + blockchain + '
++        throw new Error(nodeErrorMessage)
++      }
++    }
++
+     return function (next) {
+       return function (action) {
+         if (!middlewareOptions.isAxiosRequest(action)) {
+           return next(action);
+         }
+
+-        var clientName = middlewareOptions.getClientName(action) || middlewareOptions.defaultClientName;
++        var clientName = middlewareOptions.getClientName(action) || getClientNameFromState(action.blockchain);
+
+         if (!clients[clientName]) {
+           throw new Error('Client with name "' + clientName + '" has not been defined in middleware');

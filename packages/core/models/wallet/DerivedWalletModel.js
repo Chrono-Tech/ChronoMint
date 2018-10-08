@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Immutable from 'immutable'
+import { Map } from 'immutable'
 import BalancesCollection from '../tokens/BalancesCollection'
 import TransactionsCollection from './TransactionsCollection'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
@@ -14,7 +14,7 @@ export default class DerivedWalletModel extends abstractFetchingModel({
   name: null,
   address: null, //
   balances: new BalancesCollection(),
-  tokens: new Immutable.Map(), //
+  tokens: new Map(), //
   isMultisig: false, //
   transactions: new TransactionsCollection(),
   owners: new OwnerCollection(),

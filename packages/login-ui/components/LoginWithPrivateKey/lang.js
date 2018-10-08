@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+// eslint-disable-next-line import/prefer-default-export
 export const en = {
   title: 'Enter a Private Key',
   description: 'Type or copy your private key into the box below',
@@ -10,5 +11,4 @@ export const en = {
   submit: 'Submit',
   or: 'or',
   back: 'back',
-
 }

@@ -28,39 +28,39 @@ export default class AccountSelector extends PureComponent {
   }
 
   static defaultProps = {
-    onWalletSelect: () => {
-    },
+    onWalletSelect: () => {},
     walletsList: [],
   }
 
-  renderWalletsList () {
+  renderUserRow = (w, i, handleUserRowClick) => (
+    <UserRow
+      key={i}
+      title={getAccountName(w)}
+      subtitle={getAccountAddress(w, true)}
+      avatar={getAccountAvatar(w)}
+      actionIcon={arrow}
+      reverseIcon
+      onClick={handleUserRowClick}
+    />
+  )
+
+  renderEmptyWalletsList = () => (
+    <div styleName='empty-list'>
+      <Translate value='AccountSelector.emptyList' />
+    </div>
+  )
+
+  renderWalletsList = () => {
     const { onWalletSelect, walletsList } = this.props
 
-    if (!walletsList || !walletsList.length) {
-      return (
-        <div styleName='empty-list'>
-          <Translate value='AccountSelector.emptyList' />
-        </div>
-      )
+    if (!walletsList || walletsList.length === 0) {
+      return this.renderEmptyWalletsList()
     }
 
-    return (
-      <div styleName='wallets-list'>
-        {
-          walletsList.map((w, i) => (
-            <UserRow
-              key={i}
-              title={getAccountName(w)}
-              subtitle={getAccountAddress(w, true)}
-              avatar={getAccountAvatar(w)}
-              actionIcon={arrow}
-              reverseIcon
-              onClick={() => onWalletSelect(w)}
-            />
-          ))
-        }
-      </div>
-    )
+    return walletsList.map((w, i) => {
+      const handleUserRowClick = () => onWalletSelect(w)
+      return this.renderUserRow(w, i, handleUserRowClick)
+    })
   }
 
   render () {
@@ -80,7 +80,11 @@ export default class AccountSelector extends PureComponent {
         </div>
 
         <div styleName='content'>
-          {this.renderWalletsList()}
+          <div styleName='wallets-list'>
+            {
+              this.renderWalletsList()
+            }
+          </div>
 
           <div styleName='actions'>
             <Button

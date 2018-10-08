@@ -5,14 +5,11 @@
 
 import { destroyNetworkSession, login, logout } from '@chronobank/core/redux/session/thunks'
 import { change, formValueSelector } from 'redux-form/immutable'
-import { history } from 'redux/configureStore'
-import { navigateToVoting, navigateToRoot, navigateToWallets, navigateToPoll } from 'redux/ui/navigation'
+import { navigateToVoting, navigateToRoot, navigateToWallets, navigateToPoll, navigateBack } from 'redux/ui/navigation'
 import { removeWatchersUserMonitor } from '@chronobank/login-ui/redux/thunks'
 import { PTPoll } from '@chronobank/core/redux/voting/types'
 import * as VotingThunks from '@chronobank/core/redux/voting/thunks'
 import { removeWallet } from '@chronobank/core/redux/multisigWallet/actions'
-import { replace } from 'react-router-redux'
-import localStorage from 'utils/LocalStorage'
 import type MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import type PollDetailsModel from '@chronobank/core/models/PollDetailsModel'
 import {
@@ -21,8 +18,6 @@ import {
 
 const destroyNetworkSessionInLocalStorage = (isReset = true) => (dispatch) => {
   dispatch(destroyNetworkSession(isReset))
-  localStorage.setLastURL(`${window.location.pathname}${window.location.search}`)
-  localStorage.destroySession()
 }
 
 export const removePollAndNavigateToVotings = (pollObject: PTPoll) => (dispatch) => {
@@ -53,8 +48,7 @@ export const removeWalletAndNavigateToWallets = (wallet: MultisigEthWalletModel)
 }
 
 export const loginAndSetLocalStorage = (account) => async (dispatch) => {
-  const defaultURL = await dispatch(login(account))
-  dispatch(replace(localStorage.getLastURL() || defaultURL))
+  await dispatch(login(account))
 }
 
 export const goBackForAddWalletsForm = () => (dispatch, getState) => {
@@ -72,7 +66,7 @@ export const goBackForAddWalletsForm = () => (dispatch, getState) => {
     dispatch(change(FORM_ADD_NEW_WALLET, 'blockchain', null))
     return
   }
-  history.goBack()
+  dispatch(navigateBack())
 }
 
 export const resetWalletsForm = () => (dispatch) => {
