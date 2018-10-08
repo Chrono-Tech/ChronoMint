@@ -25,8 +25,6 @@ export const closeSignerModal = () => (dispatch, getState) => {
   const modalComponentName = getSignerModalComponentName(getState())
 
   if (modalComponentName) {
-    dispatch(modalsClose({
-      componentName: modalComponentName,
-    }))
+    dispatch(modalsClose())
   }
 }

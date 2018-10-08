@@ -7,14 +7,17 @@ import BigNumber from 'bignumber.js'
 
 import { BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_DASH } from '../../dao/constants'
 
+/* eslint-disable-next-line import/prefer-default-export */
 export const getBalanceDataParser = (blockchain, netType) => {
-  if(blockchain === BLOCKCHAIN_DASH) {
+  if (blockchain === BLOCKCHAIN_DASH) {
     return parseDashBalanceData
-  } else if((blockchain === BLOCKCHAIN_BITCOIN_CASH) && (netType === 'testnet')) {
-    parseBitcoinCashBalanceData
-  } else {
-    return parseByDefaultBitcoinLikeBlockchainBalanceData
   }
+
+  if(blockchain === BLOCKCHAIN_BITCOIN_CASH && netType === 'testnet') {
+    return parseBitcoinCashBalanceData
+  }
+
+  return parseByDefaultBitcoinLikeBlockchainBalanceData
 }
 
 const parseBitcoinCashBalanceData = (response) => {

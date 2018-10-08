@@ -49,7 +49,7 @@ export default class PollInterfaceDAO extends AbstractContractDAO {
     options.map((option, i) => {
       const value = new BigNumber(values[i])
       if (!value.isZero()) {
-        votes = votes.set(option.toString(), new Amount(value || 0, 'TIME'))
+        votes = votes.set(option.toString(), new Amount(value.isZero() ? 0 : value, 'TIME'))
       }
     })
     return votes

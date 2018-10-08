@@ -27,7 +27,7 @@ export const watchEventsToHistory = () => async (dispatch, getState) => {
     const allHistory = eventsSelector()(getState())
     const topic = event.raw.topics[0]
 
-    Object.entries(allHistory).map(([, history]) => {
+    Object.entries(allHistory).forEach(([, history]) => {
       const isTopicsExists = history.topics.some((t) => t === topic)
       if (!isTopicsExists) {
         return
