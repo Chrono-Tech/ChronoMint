@@ -50,6 +50,7 @@ export const createDescModel = (action) => {
     type: action.action_trace.act.name,
     title: action.action_trace.act.name,
     address: action.action_trace.trx_id,
+    time: new Date(action.block_time).getTime() / 1000,
     from: from,
     to: to,
     value: quantity ? new Amount(...quantity.split(' ')) : null,
