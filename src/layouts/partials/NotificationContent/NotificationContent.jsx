@@ -153,9 +153,9 @@ class NotificationContent extends PureComponent {
             <div styleName='infoLabel'><Translate value={`${prefix}.hash`} /></div>
             {hash && <div styleName='infoValue'>{hash}</div>}
           </div>
-          {details && details.map((item) => {
+          {details && details.map((item, index) => {
             return (
-              <div key={item.label} styleName='infoRow'>
+              <div key={index} styleName='infoRow'>
                 <div styleName='infoLabel'><Translate value={item.label} />:</div>
                 <div styleName='infoValue'><Value value={item.value} /></div>
               </div>
@@ -188,8 +188,8 @@ class NotificationContent extends PureComponent {
               {...notice.message()}
             />
           </div>
-          {details && details.map((item) => (
-            <div key={item.label} styleName='infoRow'>
+          {details && details.map((item, index) => (
+            <div key={index} styleName='infoRow'>
               <div styleName='infoLabel'><Translate value={item.label} />:</div>
               &nbsp;
               <div styleName='infoValue'><Value value={item.value} /></div>
