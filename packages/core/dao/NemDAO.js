@@ -93,7 +93,9 @@ export default class NemDAO extends EventEmitter {
         let value = new Amount(tx.value, tx.symbol || this._symbol)
         if (tx.mosaics) {
           tokens.items().some((token) => {
-            if (token.mosaicDefinition() && tx.mosaics && tx.mosaics[token.mosaicDefinition()]) {
+            const mosaicDefinition = token.mosaicDefinition()
+            const mosaic = tx.mosaics && tx.mosaics[mosaicDefinition]
+            if (mosaicDefinition && mosaic) {
               value = new Amount(tx.mosaics[token.mosaicDefinition()], token.symbol())
               return true
             }
