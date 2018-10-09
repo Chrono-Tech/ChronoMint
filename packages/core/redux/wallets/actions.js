@@ -32,19 +32,24 @@ import { executeDashTransaction } from '../dash/thunks'
 import { executeTransaction } from '../ethereum/thunks'
 import { executeWavesTransaction } from '../waves/thunks'
 import * as BitcoinThunks from '../bitcoin/thunks'
-import { WALLETS_SET, WALLETS_SET_NAME, WALLETS_UPDATE_BALANCE, WALLETS_UPDATE_WALLET } from './constants'
+import {
+  WALLETS_SET,
+  WALLETS_SET_NAME,
+  WALLETS_UPDATE_BALANCE,
+  WALLETS_UPDATE_WALLET,
+} from './constants'
 import { executeNemTransaction } from '../nem/thunks'
 import { getEthereumSigner, getPersistAccount } from '../persistAccount/selectors'
 import { getBitcoinCashSigner, getBitcoinSigner, getLitecoinSigner } from '../bitcoin/selectors'
 import { getDashSigner } from '../dash/selectors'
 import { getNemSigner } from '../nem/selectors'
 import { getWavesSigner } from '../waves/selectors'
-import { DUCK_TOKENS } from '../tokens/constants'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
 import { BCC, BTC, DASH, ETH, LTC, WAVES, XEM } from '../../dao/constants'
 import TxDescModel from '../../models/TxDescModel'
 import { initEos } from '../eos/thunks'
+import { getTokens } from '../tokens/selectors'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -428,7 +433,6 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
 export const getTransactionsForMainWallet = ({ blockchain, address, forcedOffset }) => async (dispatch, getState) => {
   const state = getState()
   const wallet = getWallet(blockchain, address)(state)
-  const tokens = state.get(DUCK_TOKENS)
   if (!wallet) {
     return null
   }
@@ -445,7 +449,7 @@ export const getTransactionsForMainWallet = ({ blockchain, address, forcedOffset
     }),
   })
 
-  const tokens = getState().get(DUCK_TOKENS)
+  const tokens = getTokens(state)
   const transactions = await getTxList({ wallet, forcedOffset, tokens })
 
   const newWallet = getWallet(wallet.blockchain, wallet.address)(getState())
