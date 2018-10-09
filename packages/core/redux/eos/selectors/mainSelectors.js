@@ -67,10 +67,10 @@ export const eosPendingFormatSelector = () => createSelector(
   EOSPendingSelector(),
   (pending) => {
     return Object.values(pending)
-      .reduce((accumulator, txList) => {
-        return accumulator.concat(Object.values(txList)
-          .filter((tx) => tx.isAccepted && !tx.isMined))
-      }, [])
+      .flatMap((txList) => {
+        return Object.values(txList)
+          .filter((tx) => tx.isAccepted && !tx.isMined)
+      })
   },
 )
 

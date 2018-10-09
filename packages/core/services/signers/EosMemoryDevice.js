@@ -20,7 +20,7 @@ export default class EosMemoryDevice extends EventEmitter {
     const ethPkBuf = Buffer.from(ethereumPrivateKey, 'hex')
     if (ethUtils.isValidPrivate(ethPkBuf)) {
       // Create EOS owner keys
-      const convertedEOSOwnerPrivateKey = ecc.PrivateKey(ethPkBuf).toWif()
+      const convertedEOSOwnerPrivateKey = ecc.PrivateKey(ethPkBuf).toWif() // got from here https://gist.github.com/miracle2k/3012de6f7bbc3b0d3f390d273c01bf89
       const convertedEOSOwnerPublicKey = ecc.privateToPublic(convertedEOSOwnerPrivateKey)
 
       const ec = new EdDSA('ed25519') // ed25519 - preset from library

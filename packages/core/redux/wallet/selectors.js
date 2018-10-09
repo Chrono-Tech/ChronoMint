@@ -71,8 +71,8 @@ export const makeGetTxListForWallet = (blockchain: string, address: string) => c
     getEthMultisigWallet(`${blockchain}-${address}`),
     getEOSWallet(`${blockchain}-${address}`),
   ],
-  (wallet, ethMultisigWallet, eoSWallet) => {
-    const selectedWallet = wallet || ethMultisigWallet || eoSWallet
+  (wallet, ethMultisigWallet, eosWallet) => {
+    const selectedWallet = wallet || ethMultisigWallet || eosWallet
     if (selectedWallet) {
       return selectedWallet.transactions.transactions
     }

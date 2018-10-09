@@ -339,3 +339,13 @@ export const getNetworksSelectorGroup = () => {
   return groups
 }
 
+export const EOS_NETWORK_CONFIG = {
+  testnet: {
+    httpEndpoint: 'https://api.jungle.alohaeos.com:443', // jungle testnet
+    chainId: '038f4b0fc8ff18a4f0842a8f0564611f6e96e8535901dd45e43ac8691a1c4dca', // id of network, https://github.com/shniu/eosio/blob/dfec872f1569cfbd8e1cb997e2131d2ebccbb485/jungletestnet/readme.md
+  },
+  mainnet: {
+    httpEndpoint: 'https://api.eosdetroit.io:443',
+    chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906', // https://www.eosdocs.io/resources/apiendpoints/
+  },
+}

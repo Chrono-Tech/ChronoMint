@@ -9,7 +9,7 @@ import * as EosActions from './actions'
 import * as EosUtils from './utils'
 import Amount from '../../models/Amount'
 import WalletModel from '../../models/wallet/WalletModel'
-import { BLOCKCHAIN_EOS, PAGE_SIZE } from './constants'
+import { BLOCKCHAIN_EOS } from './constants'
 import { describePendingEosTx } from '../../describers'
 import {
   eosPendingEntrySelector,
@@ -25,6 +25,8 @@ import { notify } from '../notifier/actions'
 import { getSelectedNetwork } from '../persistAccount/selectors'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import TokenModel from '../../models/tokens/TokenModel'
+
+const PAGE_SIZE = 20
 
 const notifyEosTransfer = (entry) => (dispatch) => {
   const { tx: { from, to, quantity } } = entry
@@ -138,6 +140,7 @@ const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
         }),
       ))
       dispatch(getAccountBalances(entry.tx.from))
+      dispatch(getEOSWalletTransactions(`${BLOCKCHAIN_EOS }-${entry.tx.from}`, true))
     })
   } catch (error) {
     dispatch(eosTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
@@ -169,7 +172,7 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
 
 const rejectTransaction = (entry) => (dispatch) => dispatch(eosTxStatus(entry.key, entry.tx.from, { isRejected: true }))
 
-export const initEos = () => async (dispatch) => {
+export const initEos = () => (dispatch) => {
   dispatch(setEos())
   dispatch(createEosWallet())
   dispatch(watchEOS())
@@ -189,7 +192,8 @@ export const createEosWallet = () => async (dispatch, getState) => {
         blockchain: BLOCKCHAIN_EOS,
         isMain: true,
       })))
-      dispatch(getAccountBalances(accountName))
+      await dispatch(getAccountBalances(accountName))
+      dispatch(getEOSWalletTransactions(`${BLOCKCHAIN_EOS }-${accountName}`))
     } else {
       // eslint-disable-next-line no-console
       console.log('EOS account not found')
@@ -205,7 +209,6 @@ export const getAccountBalances = (account) => async (dispatch, getState) => {
     const state = getState()
     const eos = EOSSelector(state)
     const tokens = getEOSTokens(state)
-    const wallet = getEOSWallet(`${BLOCKCHAIN_EOS }-${account}`)(state)
     const result = await eos.getCurrencyBalance('eosio.token', account)
     if (Array.isArray(result)) {
       const balances = result.reduce((accumulator, balance) => {
@@ -221,8 +224,8 @@ export const getAccountBalances = (account) => async (dispatch, getState) => {
         }
       }, {})
 
+      const wallet = getEOSWallet(`${BLOCKCHAIN_EOS }-${account}`)(state)
       dispatch(EosActions.updateWallet(new WalletModel({ ...wallet, balances })))
-      dispatch(getEOSWalletTransactions(wallet.id))
     }
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -249,7 +252,7 @@ export const setEOSWalletName = (walletId, name) => (dispatch, getState) => {
   dispatch(EosActions.updateWallet(new WalletModel({ ...wallet, name })))
 }
 
-export const getEOSWalletTransactions = (walletId) => async (dispatch, getState) => {
+export const getEOSWalletTransactions = (walletId, isGetLatest = false) => async (dispatch, getState) => {
   const state = getState()
   const wallet = getEOSWallet(walletId)(state)
   const eos = EOSSelector(state)
@@ -263,7 +266,10 @@ export const getEOSWalletTransactions = (walletId) => async (dispatch, getState)
       transactions: new TxHistoryModel({ ...wallet.transactions, isLoading: true }),
     })))
 
-    const { actions } = await eos.getActions(wallet.address, firstAction || -1, -PAGE_SIZE)
+    const startAction = isGetLatest ? -1 : firstAction
+    const finishAction = isGetLatest ? 1 : PAGE_SIZE
+
+    const { actions } = await eos.getActions(wallet.address, startAction || -1, -finishAction)
 
     const blocks = actions
       .reverse()
