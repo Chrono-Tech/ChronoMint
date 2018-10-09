@@ -13,13 +13,11 @@ import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import Button from 'components/common/ui/Button/Button'
-import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import {
   getAllTokens,
   getMainSymbolForBlockchain,
   isBTCLikeBlockchain,
 } from '@chronobank/core/redux/tokens/selectors'
-import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import { makeGetTxListForWallet } from '@chronobank/core/redux/wallet/selectors'
 import { walletAmountSelector } from '@chronobank/core/redux/wallets/selectors/balances'
 import { getWalletInfo } from '@chronobank/core/redux/wallets/selectors/wallet'
