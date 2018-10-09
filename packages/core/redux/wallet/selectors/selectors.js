@@ -36,15 +36,14 @@ export const getWalletTokens = (walletId: string, isAmountGt: boolean) => {
           .removeDecimals(amount)
           .toNumber()
 
+      if (!wallets) return null
+
       const wallet = wallets[walletId] || ethMultisigWallets.item(walletId)
 
-      if (!wallets) {
-        return null
-      }
       const customTokens = wallet.customTokens
-      const balances = Object.values(wallet.balances)
+      const balances = Object.values(wallet.balances || {})
 
-      const walletTokensAndBalanceByAddress = (balances || [])
+      const walletTokensAndBalanceByAddress = balances
         .filter((balance) => balance.symbol() === "ETH" || (customTokens ? customTokens.includes(balance.symbol()) : true))
         .filter((balance) => tokens.item(balance.symbol()).isFetched())
         .map((balance) => {

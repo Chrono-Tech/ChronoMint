@@ -73,10 +73,10 @@ class NotificationContent extends PureComponent {
       .map((item) => {
         list.push(this.convertToCurrentTransactionNotification(item))
       })
-    ethTransactionsList.map((item) => {
+    ethTransactionsList.forEach((item) => {
       list.push(this.convertToCurrentTransactionNotification(item))
     })
-    btcTransactionsList.map((item) => {
+    btcTransactionsList.forEach((item) => {
       list.push(this.convertToCurrentTransactionNotification(item))
     })
     eosTxList

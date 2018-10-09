@@ -40,7 +40,7 @@ export default class EthereumMiddlewareNode extends AbstractNode {
       })
 
       this.executeOrSchedule(() => {
-        eventsList.map((event) => {
+        eventsList.forEach((event) => {
           this._openSubscription(`${this._socket.channels.events}.${event}`, (data) => {
             this.trace(event, data)
             this.emit(event, data)

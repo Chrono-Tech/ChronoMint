@@ -45,16 +45,18 @@ export class NemProvider extends AbstractProvider {
 
   async getAccountBalances (address, mosaic = null) {
     const node = this._selectNode(this.networkSettings)
-    let { balance, mosaics } = await node.getAddressInfo(address)
+    const { mosaics, balance: accountBalance } = await node.getAddressInfo(address)
+    let balance = accountBalance
+
     if (mosaic) {
       balance = (mosaics && (mosaic in mosaics))
         ? mosaics[mosaic]
         : { unconfirmed: new BigNumber(0) } // When no such mosaic specified
     }
 
-    if (balance) {
-      return balance ? balance.unconfirmed : null
-    }
+    if (!balance) return null
+
+    return balance.unconfirmed
   }
 
   async getTransactionsList (address, id, skip, offset) {

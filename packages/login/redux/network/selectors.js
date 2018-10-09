@@ -41,8 +41,8 @@ export const getCurrentNetworkSelector = createSelector(
     getCustomNetworksList,
   ],
   (networkDuck, customNetworksList) => {
-    const { selectedNetworkId, selectedProviderId, isLocal } = networkDuck
-    const network = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
+    const { selectedNetworkId, selectedProviderId } = networkDuck
+    const network = getNetworkById(selectedNetworkId, selectedProviderId)
     const { protocol, host } = network
 
     if (!host) {

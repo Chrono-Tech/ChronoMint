@@ -19,7 +19,7 @@ export const createNemTxEntryModel = (entry, options = {}) =>
     isSubmitted: true,
     isAccepted: false,
     walletDerivedPath: options && options.walletDerivedPath,
-    symbol: options.symbol,
+    symbol: options && options.symbol,
     ...entry,
   })
 

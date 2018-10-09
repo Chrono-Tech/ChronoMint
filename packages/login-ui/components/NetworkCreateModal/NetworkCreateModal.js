@@ -51,7 +51,7 @@ export default class NetworkCreateModal extends PureComponent {
     this.props.handleCloseModal()
   }
 
-  handleSubmit (values){
+  handleSubmit = (values) => {
     const { handleSubmitCreateNetwork, handleSubmitEditNetwork, network } = this.props
 
     const url = values.get('url')
@@ -73,7 +73,7 @@ export default class NetworkCreateModal extends PureComponent {
     }
   }
 
-  handleDeleteNetwork () {
+  handleDeleteNetwork = () => {
     const { network, openConfirmDeleteModal, handleCloseModal } = this.props
 
     if (network){
@@ -96,8 +96,8 @@ export default class NetworkCreateModal extends PureComponent {
         }
       >
         <NetworkCreateModalForm
-          onSubmit={this.handleSubmit.bind(this)}
-          onSubmitSuccess={this.handleSubmitSuccess.bind(this)}
+          onSubmit={this.handleSubmit}
+          onSubmitSuccess={this.handleSubmitSuccess}
           onCloseModal={this.props.handleCloseModal}
           network={network}
           initialValues={{
@@ -105,7 +105,7 @@ export default class NetworkCreateModal extends PureComponent {
             ws: network && network.ws,
             alias: network && network.name,
           }}
-          handleDeleteNetwork={this.handleDeleteNetwork.bind(this)}
+          handleDeleteNetwork={this.handleDeleteNetwork}
         />
       </ModalDialog>
     )
