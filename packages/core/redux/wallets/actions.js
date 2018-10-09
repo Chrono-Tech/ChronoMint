@@ -44,6 +44,7 @@ import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
 import { BCC, BTC, DASH, ETH, LTC, WAVES, XEM } from '../../dao/constants'
 import TxDescModel from '../../models/TxDescModel'
+import { initEos } from '../eos/thunks'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -149,6 +150,7 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
     dispatch(setWallet(wallet))
     dispatch(updateWalletBalance({ wallet }))
   })
+  dispatch(initEos())
 }
 
 const initDerivedWallets = () => async (dispatch, getState) => {
@@ -210,7 +212,7 @@ export const updateWalletBalance = ({ wallet }) => async (dispatch) => {
     BLOCKCHAIN_BITCOIN,
     BLOCKCHAIN_BITCOIN_CASH,
     BLOCKCHAIN_DASH,
-    BLOCKCHAIN_LITECOIN
+    BLOCKCHAIN_LITECOIN,
   ].includes(blockchain)
 
   if (isBtcLikeBlockchain) {
@@ -423,11 +425,13 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
   dispatch(updateWalletBalance({ wallet }))
 }
 
-export const getTransactionsForMainWallet = ({ wallet, forcedOffset }) => async (dispatch, getState) => {
+export const getTransactionsForMainWallet = ({ blockchain, address, forcedOffset }) => async (dispatch, getState) => {
+  const state = getState()
+  const wallet = getWallet(blockchain, address)(state)
+  const tokens = state.get(DUCK_TOKENS)
   if (!wallet) {
     return null
   }
-  const tokens = getState().get(DUCK_TOKENS)
 
   dispatch({
     type: WALLETS_UPDATE_WALLET,

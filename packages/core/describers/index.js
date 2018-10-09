@@ -282,3 +282,38 @@ export const describePendingBitcoinTx = (entry, context = {}) => {
     ],
   })
 }
+
+export const describePendingEosTx = (entry) => {
+  const { tx, block } = entry
+
+  const path = 'tx.eos.transfer'
+
+  return new LogTxModel({
+    key: tx.block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
+    type: 'tx',
+    name: 'transfer',
+    date: new Date(tx.time ? (tx.time * 1000) : null),
+    icon: 'event',
+    title: `${path}.title`,
+    message: tx.to,
+    target: null,
+    fields: [
+      {
+        value: tx.from,
+        description: `${path}.from`,
+      },
+      {
+        value: tx.to,
+        description: `${path}.to`,
+      },
+      {
+        value: tx.quantity,
+        description: `${path}.amount`,
+      },
+      {
+        value: tx.memo,
+        description: `${path}.memo`,
+      },
+    ],
+  })
+}
