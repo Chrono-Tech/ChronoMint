@@ -24,7 +24,7 @@ export const selectWallet = (blockchain: string, address: string) => (dispatch) 
 export const formatDataAndGetTransactionsForWallet = ({ wallet, address, blockchain }) => async (dispatch) => {
   switch (true) {
     case wallet && wallet.isMain:
-      return dispatch(getTransactionsForMainWallet({ wallet, address, blockchain }))
+      return dispatch(getTransactionsForMainWallet({ address, blockchain }))
     case wallet && wallet.isMultisig:
       return dispatch(getTransactionsForEthMultisigWallet({ wallet, address, blockchain }))
   }

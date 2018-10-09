@@ -13,7 +13,7 @@ import { getWalletInfo } from '@chronobank/core/redux/wallets/selectors/wallet'
 import { Translate } from 'react-redux-i18n'
 import { TOKEN_ICONS } from 'assets'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import { getMainSymbolForBlockchain, getTokens } from '@chronobank/core/redux/tokens/selectors'
+import { getAllTokens, getMainSymbolForBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import TokenValueSimple from 'components/common/TokenValueSimple/TokenValueSimple'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
@@ -27,7 +27,7 @@ import WalletName from '../WalletName/WalletName'
 function makeMapStateToProps (state, ownProps) {
   const getWallet = getWalletInfo(ownProps.blockchain, ownProps.address)
   const mapStateToProps = (ownState) => {
-    const tokens = getTokens(ownState)
+    const tokens = getAllTokens(ownState)
     return {
       wallet: getWallet(ownState),
       token: tokens.item(getMainSymbolForBlockchain(ownProps.blockchain)),

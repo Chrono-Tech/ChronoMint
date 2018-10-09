@@ -42,8 +42,8 @@ export default {
   },
   transfer: {
     title: 'Transfer',
-    receivedFrom: '%{amount} %{symbol} received from %{address}',
-    sentTo: '%{amount} %{symbol} sent to %{address}',
+    received: '%{amount} %{symbol} received from %{address}',
+    sent: '%{amount} %{symbol} sent to %{address}',
     errors: {
       TRANSFER_CANCELLED: 'Cancelled by user from tx confirmation modal',
       TRANSFER_UNKNOWN: 'Unknown transaction error',

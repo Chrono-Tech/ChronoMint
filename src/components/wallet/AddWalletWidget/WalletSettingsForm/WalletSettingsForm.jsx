@@ -16,6 +16,9 @@ import { modalsClose } from '@chronobank/core/redux/modals/actions'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
 import { setWalletName } from '@chronobank/core/redux/wallets/actions'
 import { FORM_WALLET_SETTINGS } from 'components/constants'
+import WalletModel from '@chronobank/core/models/wallet/WalletModel'
+import { BLOCKCHAIN_EOS } from '@chronobank/core/redux/eos/constants'
+import { setEOSWalletName } from '@chronobank/core/redux/eos/thunks'
 import { prefix } from './lang'
 import './WalletSettingsForm.scss'
 
@@ -32,10 +35,17 @@ function mapDispatchToProps (dispatch, ownProps) {
     onSubmit: (values: Map) => {
       const name = values.get('name')
       const { wallet } = ownProps
-      if (wallet.isMain) {
-        dispatch(setWalletName(wallet.id, name))
-      } else {
-        dispatch(setMultisigWalletName(wallet.id, name))
+      switch (wallet.blockchain) {
+        case BLOCKCHAIN_EOS:
+          dispatch(setEOSWalletName(wallet.id, name))
+          break
+        default:
+          // TODO refactor this after wallet refactoring
+          if (wallet.isMain) {
+            dispatch(setWalletName(wallet.id, name))
+          } else {
+            dispatch(setMultisigWalletName(wallet.id, name))
+          }
       }
       dispatch(modalsClose())
     },
@@ -48,7 +58,7 @@ export default class WalletSettingsForm extends PureComponent {
   static propTypes = {
     blockchain: PropTypes.string,
     address: PropTypes.string,
-    wallet: PTWallet.isRequired,
+    wallet: PropTypes.oneOfType([PTWallet || PropTypes.instanceOf(WalletModel)]).isRequired,
     ...formPropTypes,
   }
 
