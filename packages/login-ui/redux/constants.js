@@ -5,6 +5,7 @@
  * @flow
  */
 
+export const FORM_BLOCKCHAINS_SWITCH = 'BlockchainsSwitchForm'
 export const FORM_ACCOUNT_NAME = 'FormAccountName'
 export const FORM_CONFIRM_MNEMONIC = 'ConfirmMnemonicForm'
 export const FORM_CREATE_ACCOUNT = 'CreateAccountForm'
