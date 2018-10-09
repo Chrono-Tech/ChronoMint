@@ -4,24 +4,27 @@
  */
 
 import ErrorList from 'utils/ErrorList'
-import { required } from '@chronobank/core/models/validator'
+import { required, longerThan } from '@chronobank/core/models/validator'
+import { PASSWORD_LENGTH_MIN } from '../constants'
 
 const validateEqualPasswords = (password, confirmPassword) => password === confirmPassword ? null : 'Wrong password'
 
 export default (values) => {
   const walletName = values.get('walletName')
 
-  let walletNameErrors = new ErrorList()
+  const walletNameErrors = new ErrorList()
   walletNameErrors.add(required(walletName))
 
   const password = values.get('password')
 
-  let passwordErrors = new ErrorList()
+  const passwordErrors = new ErrorList()
   passwordErrors.add(required(password))
+  passwordErrors.add(longerThan(password, PASSWORD_LENGTH_MIN, true))
 
   const confirmPassword = values.get('confirmPassword')
-  let confirmPasswordErrors = new ErrorList()
+  const confirmPasswordErrors = new ErrorList()
   confirmPasswordErrors.add(required(confirmPassword))
+  confirmPasswordErrors.add(longerThan(password, PASSWORD_LENGTH_MIN, true))
   confirmPasswordErrors.add(validateEqualPasswords(password, confirmPassword))
 
   return {
