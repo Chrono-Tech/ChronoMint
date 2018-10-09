@@ -134,9 +134,9 @@ export const initNemTokens = () => async (dispatch, getState) => {
     dao.watch()
 
     const nem = await dao.fetchToken()
+    await dispatch(initNemMosaicTokens(nem))
     tokenService.registerDAO(nem, dao)
     dispatch(TokensActions.tokenFetched(nem))
-    dispatch(initNemMosaicTokens(nem))
   } catch (e) {
     dispatch(TokensActions.tokensLoadingFailed())
   }
