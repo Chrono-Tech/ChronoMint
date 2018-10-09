@@ -65,9 +65,13 @@ export default class TxHistoryModel extends AbstractModel {
     const txList = {}
     Object.entries(this.blocks)
       .forEach(([, block]) => {
-        block.transactions.map((tx) => {
-          txList[tx.id] = tx
-        })
+        const transactions = Array.isArray(block.transactions)
+          ? block.transactions
+          : Object.values(block.transactions)
+        transactions
+          .forEach((tx) => {
+            txList[tx.id] = tx
+          })
       })
     return Object.values(txList)
   }

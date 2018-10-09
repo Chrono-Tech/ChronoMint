@@ -33,7 +33,7 @@
   border-style: solid;
   border-color: $button-color-5;
   border-width: 0 0 1px;
-  &:hover, &:active {
+  &:hover, &:active, &.active {
     background-color: $button-color-2;
     border-color: $button-color-4;
   }
@@ -51,9 +51,14 @@
   right: 30px;
   top: 30px;
   cursor: pointer;
+  z-index: 100;
   @include sm-only {
     right: 10px;
     top: 10px;
+  }
+  &:hover ~ button {
+    background-color: $button-color-2;
+    border-color: $button-color-4;
   }
 }
 

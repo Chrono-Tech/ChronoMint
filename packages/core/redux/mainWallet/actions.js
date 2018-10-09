@@ -205,7 +205,6 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
     const wallet = getMainWalletForBlockchain(token.blockchain())(getState())
     if (wallet && wallet.address) {
       dispatch(getTransactionsForMainWallet({
-        wallet,
         address: wallet.address,
         blockchain: token.blockchain(),
         forcedOffset: true,

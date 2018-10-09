@@ -13,7 +13,13 @@ import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import Button from 'components/common/ui/Button/Button'
-import { getMainSymbolForBlockchain, getTokens, isBTCLikeBlockchain } from '@chronobank/core/redux/tokens/selectors'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import {
+  getAllTokens,
+  getMainSymbolForBlockchain,
+  isBTCLikeBlockchain,
+} from '@chronobank/core/redux/tokens/selectors'
+import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import { makeGetTxListForWallet } from '@chronobank/core/redux/wallet/selectors'
 import { walletAmountSelector } from '@chronobank/core/redux/wallets/selectors/balances'
 import { getWalletInfo } from '@chronobank/core/redux/wallets/selectors/wallet'
@@ -32,8 +38,8 @@ function makeMapStateToProps (state, ownProps) {
   const getWallet = getWalletInfo(ownProps.blockchain, ownProps.address)
   const getTransactions = makeGetTxListForWallet(ownProps.blockchain, ownProps.address)
 
-  const mapStateToProps = (ownState) => {
-    const tokens = getTokens(ownState)
+  return (ownState) => {
+    const tokens = getAllTokens(ownState)
     const wallet = getWallet(ownState)
     const getAmount = walletAmountSelector(wallet.id, getMainSymbolForBlockchain(wallet.blockchain))
 
@@ -45,7 +51,6 @@ function makeMapStateToProps (state, ownProps) {
       wallet,
     }
   }
-  return mapStateToProps
 }
 
 function mapDispatchToProps (dispatch) {
@@ -217,7 +222,7 @@ export default class WalletWidget extends PureComponent {
     return (
       <BalanceSubscription wallet={wallet}>
         <div styleName='header-container'>
-          {showGroupTitle && <h1 styleName='header-text' id={blockchain}><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>}
+          {showGroupTitle && <h1 styleName='header-text' id={blockchain}><Translate value={`${prefix}.walletTitle`} title={blockchain.toUpperCase()} /></h1>}
           <div styleName='wallet-list-container'>
 
             <div styleName='wallet-container'>

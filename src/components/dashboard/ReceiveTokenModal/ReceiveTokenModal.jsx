@@ -22,11 +22,13 @@ import LIVECOIN_PNG from 'assets/img/marketsLogos/livecoin.png'
 import LIQUI_PNG from 'assets/img/marketsLogos/liqui.png'
 import KUCOIN_PNG from 'assets/img/marketsLogos/kucoin.png'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
+import { BLOCKCHAIN_EOS, EOS } from '@chronobank/core/redux/eos/constants'
 import { getTokensForBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import { MenuItem, MuiThemeProvider } from '@material-ui/core'
 import { FORM_RECEIVE_TOKENS } from 'components/constants'
 import inversedTheme from 'styles/themes/inversed'
 import './ReceiveTokenModal.scss'
+import { prefix } from './lang'
 
 const marketsTIME = [
   {
@@ -51,20 +53,17 @@ const marketsTIME = [
   },
 ]
 
-function prefix (token) {
-  return `components.ReceiveTokenModal.${token}`
-}
-
 function mapStateToProps (state, ownProps) {
   const selector = formValueSelector(FORM_RECEIVE_TOKENS)
   const tokens = getTokensForBlockchain(ownProps.wallet.blockchain)(state)
 
+  const tokenId = ownProps.tokenId || tokens.length > 0 ? tokens[0].id() : null
   return {
     token: state.get(DUCK_TOKENS).item(selector(state, 'tokenId') || ownProps.tokenId),
     tokens,
     address: ownProps.wallet.address,
     initialValues: {
-      tokenId: ownProps.tokenId || tokens[0].id(),
+      tokenId,
     },
   }
 }
@@ -107,23 +106,30 @@ export default class ReceiveTokenModal extends PureComponent {
     this.props.dispatch(change(FORM_RECEIVE_TOKENS, 'tokenId', value))
   }
 
-  handleSubmit () {
-    // do nothing
-  }
-
   renderHead () {
-    const { token } = this.props
+    const { token, wallet } = this.props
     const symbol = token.symbol()
+
     return (
       <div styleName='head'>
-        <div styleName='mainTitle'><Translate value={prefix('receive')} /></div>
+        <div styleName='mainTitle'><Translate value={`${prefix}.receive`} /></div>
         <div styleName='icon'>
           <div styleName='imgWrapper'>
-            <IPFSImage
-              styleName='iconImg'
-              multihash={token.icon()}
-              fallback={TOKEN_ICONS[symbol] || TOKEN_ICONS.DEFAULT}
-            />
+            {wallet.blockchain === BLOCKCHAIN_EOS
+              ? (
+                <IPFSImage
+                  styleName='iconImg'
+                  multihash={token.icon()}
+                  fallback={TOKEN_ICONS[EOS]}
+                />
+              )
+              : (
+                <IPFSImage
+                  styleName='iconImg'
+                  multihash={token.icon()}
+                  fallback={TOKEN_ICONS[symbol] || TOKEN_ICONS.DEFAULT}
+                />
+              )}
           </div>
         </div>
         {this.props.tokens.length > 1 && (
@@ -156,16 +162,25 @@ export default class ReceiveTokenModal extends PureComponent {
   }
 
   renderBody () {
-    const { token, address } = this.props
+    const { wallet, token, address } = this.props
+    const isEos = wallet.blockchain === BLOCKCHAIN_EOS
     return (
       <div>
         <div styleName='warningWrapper'>
-          <div styleName='title'><Translate value={prefix('important')} /></div>
-          <div styleName='text'><Translate value={prefix('warningText1')} /><b>{token.symbol()}</b><Translate value={prefix('warningText2')} /></div>
+          <div styleName='title'><Translate value={`${prefix}.important`} /></div>
+          {isEos
+            ? (<div styleName='text'><Translate value={`${prefix}.warningTextEOS`} /></div>)
+            : (<div styleName='text'><Translate value={`${prefix}.warningText1`} /><b>{token.symbol()}</b><Translate value={`${prefix}.warningText2`} /></div>)
+          }
         </div>
         <div styleName='addressWrapper'>
           <div>
-            <div styleName='title'><Translate value={prefix('receivingTitle')} symbol={token.symbol()} /></div>
+            <div styleName='title'>
+              {isEos
+                ? <Translate value={`${prefix}.receivingTitleEOS`} />
+                : <Translate value={`${prefix}.receivingTitle`} symbol={token.symbol()} />
+              }
+            </div>
             <div styleName='address'>{address}</div>
           </div>
           <div styleName='copyIcon'>
@@ -173,13 +188,18 @@ export default class ReceiveTokenModal extends PureComponent {
           </div>
         </div>
         <div styleName='qrWrapper'>
-          <div styleName='title'><Translate value={prefix('qrTitle')} symbol={token.symbol()} /></div>
-          {this.state.error && <div styleName='error'><Translate value={prefix('error')} /></div>}
+          <div styleName='title'>
+            {isEos
+              ? <Translate value={`${prefix}.qrTitleEOS`} />
+              : <Translate value={`${prefix}.qrTitle`} symbol={token.symbol()} />
+            }
+          </div>
+          {this.state.error && <div styleName='error'><Translate value={`${prefix}.error`} /></div>}
           <div styleName='qrCode'><img alt='qr code' src={this.state.qrData} /></div>
         </div>
-        {token.id() === TIME && (
+        {token && token.id() === TIME && (
           <div styleName='marketWrapper'>
-            <div styleName='title'><Translate value={prefix('buyTitle')} symbol={token.symbol()} /></div>
+            <div styleName='title'><Translate value={`${prefix}.buyTitle`} symbol={token.symbol()} /></div>
             <div styleName='marketList'>
               {marketsTIME.map((market) => {
                 return (
