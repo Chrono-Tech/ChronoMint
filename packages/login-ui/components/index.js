@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+export BlockchainsSwitch from './BlockchainsSwitch/BlockchainsSwitchContainer'
 export GenerateMnemonicContainer from './GenerateMnemonic/GenerateMnemonicContainer'
 export LoginWithMnemonicContainer from './LoginWithMnemonic/LoginWithMnemonicContainer'
 export LoginWithPrivateKeyContainer from './LoginWithPrivateKey/LoginWithPrivateKeyContainer'
