@@ -4,7 +4,7 @@
  */
 
 import { getSignerModalComponentName } from '../bitcoin/selectors'
-import { modalsOpen, modalsClose } from '../modals/actions'
+import { modalsOpen, modalsClose } from './actions'
 
 /**
  * Copyright 2017–2018, LaborX PTY
@@ -25,8 +25,6 @@ export const closeSignerModal = () => (dispatch, getState) => {
   const modalComponentName = getSignerModalComponentName(getState())
 
   if (modalComponentName) {
-    dispatch(modalsClose({
-      componentName: modalComponentName,
-    }))
+    dispatch(modalsClose())
   }
 }

@@ -6,7 +6,6 @@
 import reducer from './reducer'
 import * as a from './actions'
 import RewardsModel from '../../models/rewards/RewardsModel'
-import RewardsPeriodModel from '../../models/rewards/RewardsPeriodModel'
 import { store } from '../../specsInit'
 
 let data: RewardsModel = new RewardsModel({ address: '0x10' })

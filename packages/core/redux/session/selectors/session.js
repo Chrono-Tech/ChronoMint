@@ -37,7 +37,7 @@ export const getBlockchainAddressesList = () => createSelector(
   (addresses) => {
     const result = []
     PROFILE_PANEL_TOKENS
-      .map((token) => {
+      .forEach((token) => {
         result.push({
           ...token,
           address: addresses[token.blockchain],

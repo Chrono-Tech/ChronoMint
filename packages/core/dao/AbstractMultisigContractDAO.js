@@ -97,7 +97,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
     args = await this._decodeArgs(tx.funcName(), args)
 
     const fields = {}
-    Object.entries(args).map(([key, value]) => {
+    Object.entries(args).forEach(([key, value]) => {
       fields[key] = {
         value,
         description: key,

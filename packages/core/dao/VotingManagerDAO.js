@@ -166,7 +166,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
               memberOption,
             })
 
-            const pollFiles = poll && await ipfs.get(poll.files)
+            const pollFiles = poll.files && await ipfs.get(poll.files)
 
             const pollDetailModel = new PollDetailsModel({
               id: pollAddress,

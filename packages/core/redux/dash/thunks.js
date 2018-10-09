@@ -33,7 +33,7 @@ export const executeDashTransaction = ({ tx, options }) => async (dispatch, getS
     const transferFee = getTransferFee(transaction, options.feeMultiplier)
     transaction.fee(transferFee)
 
-    const signer = getDashSigner(state, blockchain)
+    const signer = getDashSigner(state)
     signer.signTransaction(transaction)
 
     const txExecModel = new TxExecModel({
@@ -77,11 +77,11 @@ export const estimateFee = (params) => async (dispatch) => {
 }
 
 async function getUnsignedTransaction (dispatch, from, to, amount, blockchain) {
-  const utxosRawData = await dispatch(getAddressUTXOS(from, blockchain))
-  const utxos = utxosRawData.map(utxo => new Transaction.UnspentOutput(utxo))
+  const utxosRawData = await dispatch(getAddressUTXOS(from, blockchain)) || []
+  const utxos = utxosRawData.map((utxo) => new Transaction.UnspentOutput(utxo))
 
-  if (!utxosRawData) {
-    throw new Error('Can\'t find utxos for address: ', from)
+  if (utxosRawData.length < 1) {
+    throw new Error(`Can't find utxos for address: ${from}`)
   }
 
   return new Transaction()

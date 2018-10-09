@@ -176,7 +176,7 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
   dispatch(BitcoinActions.bitcoinTxAccept(entry))
 
   const state = getState()
-  const signer = getBitcoinSigner(state, entry.blockchain)
+  const signer = getBitcoinSigner(state)
 
   const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key, entry.blockchain)(state)
 
@@ -349,7 +349,7 @@ export const estimateBtcFee = (params) => async (dispatch) => {
   const { address, recipient, amount, formFee, blockchain } = params
   const utxos = await dispatch(getAddressUTXOS(address, blockchain))
   if (!utxos) {
-    throw new Error('Can\'t find utxos for address: ', address)
+    throw new Error(`Can't find utxos for address: ${address}`)
   }
 
   return BitcoinUtils.getBtcFee(recipient, amount, formFee, utxos)
