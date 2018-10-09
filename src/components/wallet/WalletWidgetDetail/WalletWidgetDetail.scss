@@ -154,7 +154,8 @@
 
 .actions-container {
   display: flex;
-  flex: 3
+  flex: 3;
+  padding-right: 10px;
 }
 
 .action {
@@ -351,11 +352,12 @@
 .body {
   display: flex;
   position: relative;
+  margin-bottom: 30px;
 }
 
 .footer {
   display: flex;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 
   .pendingOperations {
     display: flex;

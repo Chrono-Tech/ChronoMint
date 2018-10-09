@@ -17,7 +17,9 @@ export const notify = (notice: AbstractNoticeModel, isStorable = true) => ({
   notice,
   isStorable,
 })
+
 export const readNotices = () => ({ type: NOTIFIER_READ })
+
 export const closeNotifier = () => ({ type: NOTIFIER_CLOSE })
 
 export const notifyError = (e: Error, invoker: string = '') => (dispatch) => {
