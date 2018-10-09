@@ -152,6 +152,23 @@ export function countsMoreThan (value, limit, isEqual = false) {
   } : null
 }
 
+/**
+ * Returns error if length of value is more than limit
+ * @param {string|Array} value
+ * @param {number} limit
+ * @param {boolean} isEqual
+ */
+export function longerThan (value, limit, isEqual = false) {
+  const isPassed = isEqual ? (value && value.length) >= limit : value > limit
+
+  return !isPassed
+    ? {
+      value: isEqual ? 'errors.longerThanOrEqual' : 'errors.longerThan',
+      limit,
+    }
+    : null
+}
+
 export function unique (value, origin: Array | Immutable.Map | Immutable.List) {
   if (!origin || !value) {
     return

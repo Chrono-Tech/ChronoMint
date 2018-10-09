@@ -502,6 +502,8 @@ export default {
     moreThanOrEqual: 'Should be more or equal than %{limit}',
     countMoreThan: 'Count should be more than %{limit}',
     countMoreThanOrEqual: 'Count should be more or equal than %{limit}',
+    longerThan: 'Should be longer than %{limit}',
+    longerThanOrEqual: 'Should be longer than or equal %{limit}',
     invalidLatinString: 'String must have only Latin characters (A-z)',
     mustBeUnique: 'Value must be unique',
     invalidConfirm2FACode: 'Should be a 6-digit code',
