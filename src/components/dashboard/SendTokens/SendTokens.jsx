@@ -13,6 +13,7 @@ import {
   BLOCKCHAIN_WAVES,
   BLOCKCHAIN_NEM,
 } from '@chronobank/core/dao/constants'
+import { BLOCKCHAIN_EOS } from '@chronobank/core/redux/eos/constants'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -25,6 +26,7 @@ import Bitcoin from './Bitcoin/FormContainer'
 import Dash from './Dash/FormContainer'
 import Nem from './Nem/FormContainer'
 import Waves from './Waves/FormContainer'
+import Eos from './Eos/FormContainer'
 
 function mapStateToProps (state, props) {
   const token = state.get(DUCK_TOKENS).item(props.tokenSymbol)
@@ -39,7 +41,7 @@ export default class SendTokens extends PureComponent {
   static propTypes = {
     wallet: PropTypes.oneOfType([PropTypes.instanceOf(WalletModel), PropTypes.instanceOf(MultisigEthWalletModel)]),
     isModal: PropTypes.bool,
-    tokenSymbol: PropTypes.string.isRequired,
+    tokenSymbol: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
   }
 
@@ -57,14 +59,16 @@ export default class SendTokens extends PureComponent {
         return Waves
       case BLOCKCHAIN_NEM:
         return Nem
+      case BLOCKCHAIN_EOS:
+        return Eos
       default:
         return null
     }
   }
 
   renderSendTokensForm () {
-    const { token } = this.props
-    const SendTokenForm = this.getFormName(token.blockchain())
+    const { wallet } = this.props
+    const SendTokenForm = this.getFormName(wallet.blockchain)
 
     return (
       <SendTokenForm
@@ -79,7 +83,7 @@ export default class SendTokens extends PureComponent {
     if (isModal) {
       return (
         <ModalDialog>
-          { this.renderSendTokensForm() }
+          {this.renderSendTokensForm()}
         </ModalDialog>
       )
     }

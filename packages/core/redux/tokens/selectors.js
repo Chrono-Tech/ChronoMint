@@ -22,10 +22,22 @@ import {
 } from '../../dao/constants'
 
 import { DUCK_TOKENS } from './constants'
+import { BLOCKCHAIN_EOS, EOS } from '../eos/constants'
+import { getEOSTokens } from '../eos/selectors/mainSelectors'
+import TokensCollection from '../../models/tokens/TokensCollection'
 
 export const getTokens = (state) => {
   return state.get(DUCK_TOKENS)
 }
+
+export const getAllTokens = createSelector(
+  [getTokens, getEOSTokens],
+  (tokens, eosTokens) => {
+    return new TokensCollection({
+      list: tokens.list().merge(eosTokens.list()),
+    })
+  },
+)
 
 export const isBTCLikeBlockchain = (blockchain) => {
   return [
@@ -52,6 +64,8 @@ export const getMainSymbolForBlockchain = (blockchain) => {
       return XEM
     case BLOCKCHAIN_WAVES:
       return WAVES
+    case BLOCKCHAIN_EOS:
+      return EOS
   }
 }
 
@@ -61,7 +75,7 @@ export const getToken = (tokenId: string) => createSelector(
 )
 
 export const getMainTokenForWalletByBlockchain = (blockchain) => createSelector(
-  [getTokens],
+  [getAllTokens],
   (tokens) => tokens.item(getMainSymbolForBlockchain(blockchain)),
 )
 

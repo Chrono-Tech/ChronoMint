@@ -11,7 +11,9 @@ export default {
     slowTransaction: 'Slow transaction',
     balance: 'Balance',
     recipientAddress: 'Recipient address',
+    recipientAccount: 'Recipient account',
     amount: 'Amount',
+    memo: 'Memo',
     transactionFee: 'Transaction fee:',
     basedOnLimit: 'Based on estimated gas limit: ',
     averageFee: '%{multiplier}x of average fee',
@@ -24,5 +26,6 @@ export default {
     allowance: 'Allowance',
     send: 'Send',
     timeLockedWarn: 'You select Time-locked wallet. Outgoing transfers locked until',
+    accountName: 'Account name',
   },
 }
