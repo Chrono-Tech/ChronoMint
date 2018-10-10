@@ -40,7 +40,9 @@ export default class TheCookies extends React.Component {
         <div styleName='the-cookies'>
           <div styleName='info'>
             <span><Translate value={`${prefix}.cookiesWeUse`} />&nbsp;</span>
-            <Link route='cookies-policies' target='_blank' to='https://chronobank.io/cookies-policies'><span styleName='link'><Translate value={`${prefix}.cookiesPolicies`} /></span></Link>
+            <Link styleName='link' target='_blank' to='https://chronobank.io/cookies-policies'>
+              <Translate value={`${prefix}.cookiesPolicies`} />
+            </Link>
             <span>&nbsp;<Translate value={`${prefix}.cookiesLearnMore`} /></span>
           </div>
           <div styleName='action'>

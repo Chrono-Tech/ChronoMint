@@ -23,8 +23,8 @@
     left: 0;
     width: 100%;
     z-index: 9999;
-    padding: 0 30px;
-    height: 55px;
+    padding: 10px 30px;
+    min-height: 55px;
     font-size: 14px;
     font-weight: 400;
     font-family: 'Proxima Nova', sans-serif;
@@ -36,7 +36,7 @@
     transition: top 0.6s $cubic-animation;
     .link {
       color: $color-white;
-      text-decoration: none;
+      text-decoration: underline;
       cursor: pointer;
       &:hover {
         color: $color-hover;
@@ -45,6 +45,7 @@
     .info {
       flex-grow: 1;
       flex-shrink: 1;
+      padding-right: 30px;
     }
     .action {
       flex-grow: 0;
