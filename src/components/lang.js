@@ -35,6 +35,7 @@ import TwoFaConfirmModal from 'components/wallet/TwoFaConfirmModal/lang'
 import WalletWidgetMini from 'components/wallet/WalletWidgetMini/lang'
 import WalletName from 'components/wallet/WalletName/lang'
 import DepositWarningWidget from 'components/Deposits/DepositWarningWidget/lang'
+import LaborXConnectWidget from 'components/Deposits/LaborXConnectWidget/lang'
 import PollEditForm from 'components/voting/PollEditForm/lang'
 import Poll from 'components/voting/Poll/lang'
 import PollStatus from 'components/voting/PollStatus/lang'
@@ -79,6 +80,7 @@ export default {
     WalletWidgetMini: WalletWidgetMini.en,
     WalletName: WalletName.en,
     DepositWarningWidget: DepositWarningWidget.en,
+    LaborXConnectWidget: LaborXConnectWidget.en,
     PollEditForm: PollEditForm.en,
     Poll: Poll.en,
     PollStatus: PollStatus.en,

@@ -15,6 +15,7 @@ import DepositsList from 'components/Deposits/DepositsList/DepositsList'
 import Button from 'components/common/ui/Button/Button'
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import DepositWarningWidget from 'components/Deposits/DepositWarningWidget/DepositWarningWidget'
+import LaborXConnectWidget from 'components/Deposits/LaborXConnectWidget/LaborXConnectWidget'
 import { prefix } from './lang'
 import './DepositsContent.scss'
 
@@ -59,6 +60,7 @@ export default class DepositsContent extends Component {
       <div styleName='root'>
         <div styleName='content'>
           <div styleName='inner'>
+            <LaborXConnectWidget />
             <DepositWarningWidget />
             {this.props.deposit.isZero()
               ? (
