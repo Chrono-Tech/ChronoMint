@@ -56,6 +56,21 @@ const persistAccount = (state = initialState, action) => {
         walletsList: action.walletsList,
       }
 
+    case a.WALLETS_UPDATE_ADDRESS_CACHE : {
+      return {
+        ...state,
+        walletsList: [
+          ...state.walletsList.map((wallet) => {
+            if (wallet.key !== action.walletKey) return wallet
+
+            wallet.addressCache = action.addressCache
+
+            return wallet
+          }),
+        ],
+      }
+    }
+
     case a.CUSTOM_NETWORKS_LIST_ADD :
       return {
         ...state,

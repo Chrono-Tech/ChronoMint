@@ -50,6 +50,7 @@ import { BCC, BTC, DASH, ETH, LTC, WAVES, XEM } from '../../dao/constants'
 import TxDescModel from '../../models/TxDescModel'
 import { initEos } from '../eos/thunks'
 import { getTokens } from '../tokens/selectors'
+import { accountUpdateAddressCache } from '../persistAccount/actions'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -78,83 +79,88 @@ export const initWallets = () => (dispatch) => {
 const initWalletsFromKeys = () => async (dispatch, getState) => {
   const state = getState()
   const account = getPersistAccount(state)
-  const wallets = []
-  const accountPath = account.decryptedWallet.entry.encrypted[0].path
+  const wallets = account.selectedWallet.addressCache || []
 
-  const ethereumSigner = getEthereumSigner(state)
-  const ethAddress = await ethereumSigner.getAddress(accountPath)
+  if (wallets.length <= 0) {
+    const accountPath = account.decryptedWallet.entry.encrypted[0].path
+    const ethereumSigner = getEthereumSigner(state)
+    const ethAddress = await ethereumSigner.getAddress(accountPath)
 
-  wallets.push(new WalletModel({
-    address: ethAddress.toLowerCase(accountPath),
-    blockchain: BLOCKCHAIN_ETHEREUM,
-    isMain: true,
-    walletDerivedPath: accountPath,
-  }))
-
-  const bitcoinSigner = getBitcoinSigner(state)
-  if (bitcoinSigner) {
     wallets.push(new WalletModel({
-      address: bitcoinSigner.getAddress(accountPath),
-      blockchain: BLOCKCHAIN_BITCOIN,
+      address: ethAddress.toLowerCase(accountPath),
+      blockchain: BLOCKCHAIN_ETHEREUM,
       isMain: true,
       walletDerivedPath: accountPath,
     }))
-  }
 
-  const bitcoinCashSigner = getBitcoinCashSigner(state)
-  if (bitcoinCashSigner) {
-    wallets.push(new WalletModel({
-      address: bitcoinCashSigner.getAddress(accountPath),
-      blockchain: BLOCKCHAIN_BITCOIN_CASH,
-      isMain: true,
-      walletDerivedPath: accountPath,
-    }))
-  }
+    const bitcoinSigner = getBitcoinSigner(state)
+    if (bitcoinSigner) {
+      wallets.push(new WalletModel({
+        address: bitcoinSigner.getAddress(accountPath),
+        blockchain: BLOCKCHAIN_BITCOIN,
+        isMain: true,
+        walletDerivedPath: accountPath,
+      }))
+    }
 
-  const dashSigner = getDashSigner(state)
-  if (dashSigner) {
-    wallets.push(new WalletModel({
-      address: dashSigner.getAddress(accountPath),
-      blockchain: BLOCKCHAIN_DASH,
-      isMain: true,
-      walletDerivedPath: accountPath,
-    }))
-  }
+    const bitcoinCashSigner = getBitcoinCashSigner(state)
+    if (bitcoinCashSigner) {
+      wallets.push(new WalletModel({
+        address: bitcoinCashSigner.getAddress(accountPath),
+        blockchain: BLOCKCHAIN_BITCOIN_CASH,
+        isMain: true,
+        walletDerivedPath: accountPath,
+      }))
+    }
 
-  const litecoinSigner = getLitecoinSigner(state)
-  if (litecoinSigner) {
-    wallets.push(new WalletModel({
-      address: litecoinSigner.getAddress(accountPath),
-      blockchain: BLOCKCHAIN_LITECOIN,
-      isMain: true,
-      walletDerivedPath: accountPath,
-    }))
-  }
+    const dashSigner = getDashSigner(state)
+    if (dashSigner) {
+      wallets.push(new WalletModel({
+        address: dashSigner.getAddress(accountPath),
+        blockchain: BLOCKCHAIN_DASH,
+        isMain: true,
+        walletDerivedPath: accountPath,
+      }))
+    }
 
-  const nemSigner = getNemSigner(state)
-  if (nemSigner) {
-    wallets.push(new WalletModel({
-      address: nemSigner.getAddress(accountPath),
-      blockchain: BLOCKCHAIN_NEM,
-      isMain: true,
-      walletDerivedPath: accountPath,
-    }))
-  }
+    const litecoinSigner = getLitecoinSigner(state)
+    if (litecoinSigner) {
+      wallets.push(new WalletModel({
+        address: litecoinSigner.getAddress(accountPath),
+        blockchain: BLOCKCHAIN_LITECOIN,
+        isMain: true,
+        walletDerivedPath: accountPath,
+      }))
+    }
 
-  const wavesSigner = getWavesSigner(state)
-  if (wavesSigner) {
-    wallets.push(new WalletModel({
-      address: wavesSigner.getAddress(accountPath),
-      blockchain: BLOCKCHAIN_WAVES,
-      isMain: true,
-      walletDerivedPath: accountPath,
-    }))
+    const nemSigner = getNemSigner(state)
+    if (nemSigner) {
+      wallets.push(new WalletModel({
+        address: nemSigner.getAddress(accountPath),
+        blockchain: BLOCKCHAIN_NEM,
+        isMain: true,
+        walletDerivedPath: accountPath,
+      }))
+    }
+
+    const wavesSigner = getWavesSigner(state)
+    if (wavesSigner) {
+      wallets.push(new WalletModel({
+        address: wavesSigner.getAddress(accountPath),
+        blockchain: BLOCKCHAIN_WAVES,
+        isMain: true,
+        walletDerivedPath: accountPath,
+      }))
+    }
+
+    dispatch(accountUpdateAddressCache({ walletKey: account.selectedWallet.key, addressCache: wallets }))
   }
 
   wallets.forEach((wallet) => {
     dispatch(setWallet(wallet))
     dispatch(updateWalletBalance({ wallet }))
   })
+
   dispatch(initEos())
 }
 
