@@ -3,7 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import { bccProvider, btcProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import { dashProvider } from '@chronobank/login/network/DashProvider'
 import EventEmitter from 'events'
 import BigNumber from 'bignumber.js'
 import Amount from '../models/Amount'
@@ -13,13 +14,14 @@ import { bitcoinAddress } from '../models/validator'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_LITECOIN,
   EVENT_NEW_TRANSFER,
   EVENT_UPDATE_BALANCE,
   EVENT_UPDATE_LAST_BLOCK,
   EVENT_UPDATE_TRANSACTION,
 } from './constants'
+import TxDescModel from '../models/TxDescModel'
 
 const EVENT_TX = 'tx'
 const EVENT_TRANSACTION_MAINED = 'transaction'
@@ -60,12 +62,6 @@ export default class BitcoinDAO extends EventEmitter {
     return this._bitcoinProvider.isInitialized()
   }
 
-  hasBalancesStream () {
-    // Balance should not be fetched after transfer notification,
-    // it will be updated from the balances event stream
-    return true
-  }
-
   async getFeeRate () {
     return this._bitcoinProvider.getFeeRate()
   }
@@ -91,19 +87,34 @@ export default class BitcoinDAO extends EventEmitter {
     try {
       const txsResult = await this._bitcoinProvider.getTransactionsList(account, skip, offset)
       for (const tx of txsResult) {
-        txs.push(new TxModel({
-          txHash: tx.txHash,
-          blockHash: tx.blockHash,
-          blockNumber: tx.blockNumber,
-          confirmations: tx.confirmations,
-          time: tx.time,
-          from: tx.from,
-          to: tx.to,
-          symbol: this._symbol,
-          value: new Amount(tx.value, this._symbol),
-          fee: new Amount(tx.fee, this._symbol),
-          blockchain: this._name,
-        }))
+        txs.push(
+          new TxDescModel({
+            confirmations: tx.confirmations,
+            hash: tx.txHash,
+            time: tx.time,
+            blockchain: this._name,
+            blockNumber: tx.blockNumber,
+            title: tx.details ? tx.details.event : 'tx.transfer',
+            value: new Amount(tx.value, tx.symbol || this._symbol),
+            fee: new Amount(tx.fee, this._symbol),
+            from: tx.from,
+            to: tx.to,
+            params: [
+              {
+                name: 'from',
+                value: tx.from,
+              },
+              {
+                name: 'to',
+                value: tx.to,
+              },
+              {
+                name: 'amount',
+                value: new Amount(tx.value, tx.symbol || this._symbol),
+              },
+            ],
+          }),
+        )
       }
     } catch (e) {
       // eslint-disable-next-line
@@ -141,8 +152,6 @@ export default class BitcoinDAO extends EventEmitter {
         EVENT_NEW_TRANSFER,
         new TxModel({
           txHash: tx.txHash,
-          // blockHash: tx.blockhash,
-          // blockNumber: tx.blockheight,
           blockNumber: null,
           time: tx.time,
           from: tx.from,
@@ -205,5 +214,5 @@ export default class BitcoinDAO extends EventEmitter {
 
 export const btcDAO = new BitcoinDAO(BLOCKCHAIN_BITCOIN, 'BTC', btcProvider)
 export const bccDAO = new BitcoinDAO(BLOCKCHAIN_BITCOIN_CASH, 'BCC', bccProvider)
-export const btgDAO = new BitcoinDAO(BLOCKCHAIN_BITCOIN_GOLD, 'BTG', btgProvider)
+export const dashDAO = new BitcoinDAO(BLOCKCHAIN_DASH, 'DASH', dashProvider)
 export const ltcDAO = new BitcoinDAO(BLOCKCHAIN_LITECOIN, 'LTC', ltcProvider)

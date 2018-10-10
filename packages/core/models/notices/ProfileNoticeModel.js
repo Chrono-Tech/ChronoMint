@@ -10,12 +10,11 @@ const schemaFactory = () => ({
   profile: PropTypes.instanceOf(ProfileModel),
 })
 
-const defaultProps = {
-  profile: null,
-}
-
 class ProfileNoticeModel extends AbstractModel {
   constructor (ownProps) {
+    const defaultProps = {
+      profile: null,
+    }
     const props = { ...defaultProps, ...ownProps }
     super({ ...props }, schemaFactory())
     Object.freeze(this)

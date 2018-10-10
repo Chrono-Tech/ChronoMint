@@ -11,39 +11,44 @@ import { connect } from 'react-redux'
 import { selectWallet } from '@chronobank/core/redux/wallet/actions'
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
-import { TOKEN_ICONS } from 'assets'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import Button from 'components/common/ui/Button/Button'
-import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import { getMainSymbolForBlockchain, getTokens, isBTCLikeBlockchain } from '@chronobank/core/redux/tokens/selectors'
-import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
+import {
+  getAllTokens,
+  getMainSymbolForBlockchain,
+  isBTCLikeBlockchain,
+} from '@chronobank/core/redux/tokens/selectors'
 import { makeGetTxListForWallet } from '@chronobank/core/redux/wallet/selectors'
+import { walletAmountSelector } from '@chronobank/core/redux/wallets/selectors/balances'
 import { getWalletInfo } from '@chronobank/core/redux/wallets/selectors/wallet'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import './WalletWidget.scss'
 import { prefix } from './lang'
 import Moment from '../../common/Moment'
-import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
 import WalletMainCoinBalance from './WalletMainCoinBalance'
 import WalletTokensList from './WalletTokensList'
 import WalletName from '../WalletName/WalletName'
 import BalanceSubscription from '../../micros/BalanceSubscription/BalanceSubscription'
+import WalletToken from '../WalletToken/WalletToken'
 
 function makeMapStateToProps (state, ownProps) {
   const getWallet = getWalletInfo(ownProps.blockchain, ownProps.address)
   const getTransactions = makeGetTxListForWallet(ownProps.blockchain, ownProps.address)
 
-  const mapStateToProps = (ownState) => {
-    const tokens = getTokens(ownState)
+  return (ownState) => {
+    const tokens = getAllTokens(ownState)
+    const wallet = getWallet(ownState)
+    const getAmount = walletAmountSelector(wallet.id, getMainSymbolForBlockchain(wallet.blockchain))
+
     return {
-      wallet: getWallet(ownState),
+      isBalanceFetched: getAmount(ownState) !== null,
       pendingTransactions: getTransactions(ownState),
       token: tokens.item(getMainSymbolForBlockchain(ownProps.blockchain)),
       tokens: state.get(DUCK_TOKENS),
+      wallet,
     }
   }
-  return mapStateToProps
 }
 
 function mapDispatchToProps (dispatch) {
@@ -142,14 +147,17 @@ export default class WalletWidget extends PureComponent {
         <div styleName='owners-list'>
           {ownersList.slice(0, 2).map((owner) => {
             return (
-              <div styleName='owner-icon'>
+              <div
+                key={owner}
+                styleName='owner-icon'
+              >
                 <div styleName='owner' className='chronobank-icon' title={owner}>profile</div>
               </div>
             )
           })
           }
           <div styleName='owner-counter'>
-            <div styleName='counter'>+{ownersList.length - 2}</div>
+            <div>+{ownersList.length - 2}</div>
           </div>
         </div>
       </div>
@@ -167,7 +175,7 @@ export default class WalletWidget extends PureComponent {
 
     let incoming = null
     this.props.pendingTransactions.forEach((t) => {
-      if (!incoming && t.from() !== this.props.address && t.confirmations() < 4) {
+      if (!incoming && t.from !== this.props.address && t.confirmations < 4) {
         incoming = t
       }
     })
@@ -178,7 +186,7 @@ export default class WalletWidget extends PureComponent {
 
     return (
       <div styleName='receive-container'>
-        <div styleName='receive-icon' className='chronobank-icon'>{'circle-' + incoming.confirmations()}</div>
+        <div styleName='receive-icon' className='chronobank-icon'>{'circle-' + incoming.confirmations}</div>
       </div>)
   }
 
@@ -190,7 +198,7 @@ export default class WalletWidget extends PureComponent {
     let sending = null
     this.props.pendingTransactions.forEach((t) => {
 
-      if (!sending && t.from() === this.props.address && t.confirmations() < 4) {
+      if (!sending && t.from === this.props.address && t.confirmations < 4) {
         sending = t
       }
     })
@@ -201,18 +209,18 @@ export default class WalletWidget extends PureComponent {
 
     return (
       <div styleName='send-container'>
-        <div styleName='send-icon' className='chronobank-icon'>{'circle-' + sending.confirmations()}</div>
+        <div styleName='send-icon' className='chronobank-icon'>{'circle-' + sending.confirmations}</div>
       </div>)
   }
 
   render () {
-    const { address, token, blockchain, wallet, showGroupTitle } = this.props
+    const { address, blockchain, isBalanceFetched, token, wallet, showGroupTitle } = this.props
     const tokenIsFetched = (token && token.isFetched())
 
     return (
       <BalanceSubscription wallet={wallet}>
         <div styleName='header-container'>
-          {showGroupTitle && <h1 styleName='header-text' id={blockchain}><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>}
+          {showGroupTitle && <h1 styleName='header-text' id={blockchain}><Translate value={`${prefix}.walletTitle`} title={blockchain.toUpperCase()} /></h1>}
           <div styleName='wallet-list-container'>
 
             <div styleName='wallet-container'>
@@ -227,12 +235,11 @@ export default class WalletWidget extends PureComponent {
                 <div styleName='settings-icon' className='chronobank-icon' onClick={this.handleOpenSettings}>settings
                 </div>
               </div>
-              <div styleName='token-container'>
-                {blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}
-                <div styleName='token-icon'>
-                  <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()] || TOKEN_ICONS.DEFAULT} />
-                </div>
-              </div>
+              <WalletToken
+                blockchain={blockchain}
+                wallet={wallet}
+                token={token}
+              />
               <div styleName='content-container'>
                 <Link styleName='addressWrapper' href='' to='/wallet' onClick={this.handleSelectWallet}>
                   <div styleName='address-title'>
@@ -262,7 +269,7 @@ export default class WalletWidget extends PureComponent {
                 <div styleName='actions-container'>
                   <div styleName='action'>
                     <Button
-                      disabled={!tokenIsFetched}
+                      disabled={!tokenIsFetched || !isBalanceFetched}
                       type='submit'
                       label={<Translate value={`${prefix}.sendButton`} />}
                       onClick={this.handleSend(wallet)}

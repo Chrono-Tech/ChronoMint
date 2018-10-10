@@ -13,20 +13,19 @@ import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import Button from 'components/common/ui/Button/Button'
 import { walletTokensAmountAndBalanceSelector } from '@chronobank/core/redux/wallets/selectors/balances'
-import { getTokens } from '@chronobank/core/redux/tokens/selectors'
+import { getAllTokens } from '@chronobank/core/redux/tokens/selectors'
 import { prefix } from './lang'
 import './TokensListWidget.scss'
 
 function makeMapStateToProps (state, props) {
   const { walletId } = props
   const getTokensBalances = walletTokensAmountAndBalanceSelector(walletId)
-  const mapStateToProps = (ownState) => {
+  return (ownState) => {
     return {
       tokensBalances: getTokensBalances(ownState),
-      tokens: getTokens(ownState),
+      tokens: getAllTokens(ownState),
     }
   }
-  return mapStateToProps
 }
 
 @connect(makeMapStateToProps)

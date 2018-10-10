@@ -18,6 +18,7 @@ import { FORM_2FA_STEPS, FORM_2FA_WALLET } from '@chronobank/core/redux/multisig
 import {
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_ETHEREUM,
 } from '@chronobank/core/dao/constants'
@@ -176,15 +177,11 @@ export default class AddWalletWidget extends PureComponent {
     if (blockchain) {
       switch (blockchain) {
         case BLOCKCHAIN_BITCOIN:
-          return (
-            <WidgetContainer title={`${prefix}.createWallet`} blockchain={BLOCKCHAIN_BITCOIN}>
-              <StandardWalletForm initialValues={{ blockchain: BLOCKCHAIN_BITCOIN }} />
-            </WidgetContainer>
-          )
+        case BLOCKCHAIN_DASH:
         case BLOCKCHAIN_LITECOIN:
           return (
-            <WidgetContainer title={`${prefix}.createWallet`} blockchain={BLOCKCHAIN_LITECOIN}>
-              <StandardWalletForm initialValues={{ blockchain: BLOCKCHAIN_LITECOIN }} />
+            <WidgetContainer title={`${prefix}.createWallet`} blockchain={blockchain}>
+              <StandardWalletForm initialValues={{ blockchain }} />
             </WidgetContainer>
           )
         case BLOCKCHAIN_NEM:

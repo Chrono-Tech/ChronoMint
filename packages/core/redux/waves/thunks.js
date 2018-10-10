@@ -13,6 +13,8 @@ import { getSelectedNetwork } from '../persistAccount/selectors'
 import TxExecModel from '../../models/TxExecModel'
 import { DUCK_TOKENS } from '../tokens/constants'
 import tokenService from '../../services/TokenService'
+import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
+import { showSignerModal, closeSignerModal } from '../modals/thunks'
 
 export const executeWavesTransaction = ({ tx, options }) => async (dispatch, getState) => {
   const state = getState()
@@ -22,7 +24,7 @@ export const executeWavesTransaction = ({ tx, options }) => async (dispatch, get
   const entry = WavesUtils.createWavesTxEntryModel({ tx: prepared }, options)
 
   await dispatch(WavesActions.wavesTxCreate(entry))
-  dispatch(submitTransaction(entry, options))
+  dispatch(submitTransaction(entry))
 }
 
 const submitTransaction = (entry) => async (dispatch, getState) => {
@@ -46,9 +48,9 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
   dispatch(WavesActions.wavesTxAccept(entry))
 
   const state = getState()
-  const signer = getWavesSigner(state, entry.blockchain)
+  const signer = getWavesSigner(state)
 
-  const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key, entry.blockchain)(state)
+  const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key)(state)
   if (!selectedEntry) {
     // eslint-disable-next-line no-console
     console.error('entry is null', entry)
@@ -81,11 +83,15 @@ const processTransaction = ({ entry, signer }) => async (dispatch) => {
   }
 }
 
-const signTransaction = ({ entry, signer }) => async (dispatch) => {
+const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   try {
+    const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
     dispatch(WavesActions.wavesTxSignTransaction({ entry, signer }))
 
-    const signedPreparedTx = await signer.signTransaction(entry.tx.prepared)
+    dispatch(showSignerModal())
+    const signedPreparedTx = await signer.signTransaction(entry.tx.prepared, selectedWallet.encrypted[0].path)
+    dispatch(closeSignerModal())
+
     const newEntry = WavesUtils.createWavesTxEntryModel({ ...entry, tx: new TxExecModel({
       ...entry.tx,
       prepared: signedPreparedTx,
@@ -94,6 +100,8 @@ const signTransaction = ({ entry, signer }) => async (dispatch) => {
 
     return newEntry
   } catch (error) {
+    dispatch(closeSignerModal())
+
     dispatch(WavesActions.wavesTxSignTransactionError({ error }))
     throw error
   }

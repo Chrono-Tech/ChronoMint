@@ -11,13 +11,11 @@ import {
   WALLET_TYPE_TREZOR_MOCK,
   WALLET_TYPE_LEDGER,
   WALLET_TYPE_LEDGER_MOCK,
-} from '@chronobank/core/models/constants/AccountEntryModel'
+} from '../../models/constants/AccountEntryModel'
 import { DUCK_PERSIST_ACCOUNT } from './constants'
 
 import EthereumTrezorDeviceMock from '../../services/signers/EthereumTrezorDeviceMock'
-import EthereumTrezorDevice from '../../services/signers/EthereumTrezorDevice'
 import EthereumLedgerDeviceMock from '../../services/signers/EthereumLedgerDeviceMock'
-// import EthereumLedgerDevice from '../../services/signers/EthereumLedgerDevice'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 
 export const getPersistAccount = (state) => {
@@ -31,14 +29,14 @@ export const getEthereumSigner = (state) => {
     case WALLET_TYPE_TREZOR_MOCK: {
       return new EthereumTrezorDeviceMock()
     }
+    case WALLET_TYPE_TREZOR: {
+      return new EthereumTrezorDeviceMock()
+    }
     case WALLET_TYPE_LEDGER_MOCK: {
       return new EthereumLedgerDeviceMock()
     }
-    case WALLET_TYPE_TREZOR: {
-      return new EthereumTrezorDevice()
-    }
     case WALLET_TYPE_LEDGER: {
-      return new EthereumTrezorDeviceMock()
+      return new EthereumLedgerDeviceMock()
     }
     case WALLET_TYPE_MEMORY: {
       return new EthereumMemoryDevice(account.decryptedWallet.privateKey)

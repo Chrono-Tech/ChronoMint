@@ -4,27 +4,34 @@
  */
 
 import { createSelector } from 'reselect'
-import { getTokens } from '../../tokens/selectors'
-import { selectMarketPricesListStore, selectMarketPricesSelectedCurrencyStore } from '../../wallet/selectors'
-import { getWallet } from './models'
+import { getAllTokens } from '../../tokens/selectors'
+import {
+  selectMarketPricesListStore,
+  selectMarketPricesSelectedCurrencyStore,
+} from '../../wallet/selectors'
+import { getWalletById } from './models'
 import { PTWallet } from '../../wallet/types'
 import { getEthMultisigWallet } from '../../multisigWallet/selectors/models'
+import { getEOSWallet } from '../../eos/selectors/mainSelectors'
 
 export const filteredBalancesAndTokens = (walletId, symbol) => createSelector(
   [
-    getWallet(walletId),
+    getWalletById(walletId),
     getEthMultisigWallet(walletId),
-    getTokens,
+    getEOSWallet(walletId),
+    getAllTokens,
   ],
   (
     wallet,
     ethMultisigWallet,
+    eosWallet,
     tokens,
   ) => {
-    if (!wallet && !ethMultisigWallet) {
+
+    if (!wallet && !ethMultisigWallet && !eosWallet) {
       return []
     }
-    const resWallet = wallet || ethMultisigWallet
+    const resWallet = wallet || ethMultisigWallet || eosWallet
     return Object.values(resWallet.balances)
       .filter((balance) => {
         if (tokens.item(balance.symbol()).isFetched()) {

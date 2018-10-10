@@ -7,14 +7,14 @@ import { createSelector } from 'reselect'
 import {
   BCC,
   BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
   BTC,
-  BTG,
+  DASH,
   ETH,
   LTC,
   WAVES,
@@ -22,16 +22,28 @@ import {
 } from '../../dao/constants'
 
 import { DUCK_TOKENS } from './constants'
+import { BLOCKCHAIN_EOS, EOS } from '../eos/constants'
+import { getEOSTokens } from '../eos/selectors/mainSelectors'
+import TokensCollection from '../../models/tokens/TokensCollection'
 
 export const getTokens = (state) => {
   return state.get(DUCK_TOKENS)
 }
 
+export const getAllTokens = createSelector(
+  [getTokens, getEOSTokens],
+  (tokens, eosTokens) => {
+    return new TokensCollection({
+      list: tokens.list().merge(eosTokens.list()),
+    })
+  },
+)
+
 export const isBTCLikeBlockchain = (blockchain) => {
   return [
     BLOCKCHAIN_BITCOIN,
     BLOCKCHAIN_BITCOIN_CASH,
-    BLOCKCHAIN_BITCOIN_GOLD,
+    BLOCKCHAIN_DASH,
     BLOCKCHAIN_LITECOIN,
   ].includes(blockchain)
 }
@@ -42,16 +54,18 @@ export const getMainSymbolForBlockchain = (blockchain) => {
       return BTC
     case BLOCKCHAIN_BITCOIN_CASH:
       return BCC
-    case BLOCKCHAIN_BITCOIN_GOLD:
-      return BTG
     case BLOCKCHAIN_LITECOIN:
       return LTC
+    case BLOCKCHAIN_DASH:
+      return DASH
     case BLOCKCHAIN_ETHEREUM:
       return ETH
     case BLOCKCHAIN_NEM:
       return XEM
     case BLOCKCHAIN_WAVES:
       return WAVES
+    case BLOCKCHAIN_EOS:
+      return EOS
   }
 }
 
@@ -61,7 +75,7 @@ export const getToken = (tokenId: string) => createSelector(
 )
 
 export const getMainTokenForWalletByBlockchain = (blockchain) => createSelector(
-  [getTokens],
+  [getAllTokens],
   (tokens) => tokens.item(getMainSymbolForBlockchain(blockchain)),
 )
 

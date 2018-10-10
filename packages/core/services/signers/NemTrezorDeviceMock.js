@@ -38,4 +38,5 @@ export default class NemTrezorMockDevice extends EventEmitter {
 
     return nem.crypto.keyPair.create(this.privateKey)
   }
+
 }

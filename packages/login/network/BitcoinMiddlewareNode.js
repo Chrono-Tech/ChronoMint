@@ -4,8 +4,8 @@
  */
 
 import BigNumber from 'bignumber.js'
+import { DECIMALS } from '@chronobank/core/redux/bitcoin/constants'
 import BitcoinAbstractNode, { BitcoinBalance, BitcoinTx } from './BitcoinAbstractNode'
-import { DECIMALS } from './BitcoinEngine'
 
 export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   constructor ({ feeRate, blockchain, symbol, ...args }) {

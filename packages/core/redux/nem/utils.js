@@ -19,7 +19,7 @@ export const createNemTxEntryModel = (entry, options = {}) =>
     isSubmitted: true,
     isAccepted: false,
     walletDerivedPath: options && options.walletDerivedPath,
-    symbol: options.symbol,
+    symbol: options && options.symbol,
     ...entry,
   })
 
@@ -78,13 +78,14 @@ export const describeMosaicTransaction = (tx, network) => {
   })
 }
 
-export const createXemTransaction = (prepared, signer) => {
+export const createXemTransaction = async (prepared, signer, signerPath) => {
   const serialized = nemSdk.utils.serialization.serializeTransaction({ ...prepared, signer: signer.getPublicKey() })
-  const signature = signer.sign(serialized)
+  const signature = await signer.signTransaction(serialized, signerPath)
+  const address = await signer.getAddress(signerPath)
 
   return {
     tx: {
-      address: signer.getAddress(),
+      address,
       data: nemSdk.utils.convert.ua2hex(serialized),
       signature: signature.toString(),
     },

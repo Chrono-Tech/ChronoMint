@@ -59,7 +59,7 @@ class AssetsManagerService extends EventEmitter {
 
     if (!dao) {
       // eslint-disable-next-line
-      throw new Error('wallet not found with address:', address)
+      throw new Error(`wallet not found with address: ${address}`)
     }
 
     return Promise.all([

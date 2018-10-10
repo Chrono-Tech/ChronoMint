@@ -6,7 +6,12 @@
 import { DUCK_WALLETS } from '../constants'
 import { BLOCKCHAIN_ETHEREUM } from '../../../dao/constants'
 
-export const getWallet = (walletId) => (state) => {
+export const getWallet = (blockchain, address) => (state) => {
+  const walletId = `${blockchain}-${address}`
+  return state.get(DUCK_WALLETS).list[walletId]
+}
+
+export const getWalletById = (walletId) => (state) => {
   return state.get(DUCK_WALLETS).list[walletId]
 }
 
@@ -48,8 +53,8 @@ export const getMainAddresses = (state) => {
 }
 
 export const getWalletTransactions = (walletId) => (state) => {
-  const wallet = getWallet(walletId)(state)
-  return wallet ? wallet.transactions.transactions : null
+  const wallet = getWalletById(walletId)(state)
+  return wallet ? wallet.transactions : null
 }
 
 export const getTwoFaCheckedFromState = (state) => {

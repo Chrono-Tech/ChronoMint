@@ -87,7 +87,7 @@ function mapStateToProps (state) {
     feeMultiplier,
     tokens,
     assets,
-    isShowTIMERequired: isTesting && !wallet.isTIMERequired && balance && balance.isZero() && token.symbol() === 'TIME',
+    isShowTIMERequired: isTesting && !wallet.isTIMERequired && balance.isZero() && token.symbol() === 'TIME',
     account: state.get(DUCK_SESSION).account,
     initialValues: {
       feeMultiplier: getGasPriceMultiplier(BLOCKCHAIN_ETHEREUM)(state),

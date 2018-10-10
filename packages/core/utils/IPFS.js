@@ -5,8 +5,8 @@
 
 import ipfsAPI from 'ipfs-api'
 import promisify from 'promisify-node-callback'
-import FileCollection from '@chronobank/core/models/FileSelect/FileCollection'
-import FileModel, { fileConfig } from '@chronobank/core/models/FileSelect/FileModel'
+import FileModel, { fileConfig } from '../models/FileSelect/FileModel'
+import FileCollection from '../models/FileSelect/FileCollection'
 import { checkImageFile, FileReader } from './imageValidator'
 
 const DEFAULT_CONFIG = {

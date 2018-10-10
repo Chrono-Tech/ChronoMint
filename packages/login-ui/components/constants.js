@@ -4,3 +4,5 @@
  */
 
 export const FORM_CREATE_HW_ACCOUNT = 'CreateAccountForm'
+
+export const PASSWORD_LENGTH_MIN = 8

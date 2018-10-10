@@ -19,5 +19,5 @@ export const getEthMultisigWallet = (walletId) => (state) => {
 
 export const getEthMultisigWalletTransactions = (walletId) => (state) => {
   const wallet = getEthMultisigWallet(walletId)(state)
-  return wallet ? wallet.transactions.transactions : null
+  return wallet ? wallet.transactions : null
 }

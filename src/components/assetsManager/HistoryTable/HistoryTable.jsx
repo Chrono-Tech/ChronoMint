@@ -34,7 +34,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    loadMoreEvents: () => dispatch(loadEvents(ASSET_TOPICS)),
+    onLoadMoreEvents: () => dispatch(loadEvents(ASSET_TOPICS)),
   }
 }
 
@@ -42,8 +42,7 @@ function mapDispatchToProps (dispatch) {
 export default class HistoryTable extends PureComponent {
   static propTypes = {
     events: PropTypes.instanceOf(LogListModel),
-    locale: PropTypes.string,
-    loadMoreEvents: PropTypes.func,
+    onLoadMoreEvents: PropTypes.func,
   }
 
   getEventTypePath (eventType: string) {
@@ -100,7 +99,7 @@ export default class HistoryTable extends PureComponent {
   render () {
     const { events } = this.props
     const isLoading = events && events.isLoading
-    const eventsList = Array.isArray(events.entries) ? events.entries : []
+    const eventsList = Array.isArray(events && events.entries) ? events.entries : []
     const data = this.buildTableData(eventsList)
 
     return (
@@ -124,7 +123,7 @@ export default class HistoryTable extends PureComponent {
         </div>
         { !isLoading &&
           <div styleName='load-more'>
-            <button styleName='load-more-button' onClick={this.props.loadMoreEvents}>Load more</button>
+            <button styleName='load-more-button' onClick={this.props.onLoadMoreEvents}>Load more</button>
           </div>
         }
         { isLoading &&

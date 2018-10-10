@@ -19,7 +19,9 @@ import layouts from 'layouts/lang'
 import * as votingManager from '@chronobank/core/dao/constants/VotingManagerDAO'
 import * as chronoBankAsset from '@chronobank/core/dao/constants/ChronoBankAssetDAO'
 import bitcoin from './en-tx-bitcoin'
+import notices from './en-notices'
 import nem from './en-tx-nem'
+import eos from './en-tx-eos'
 
 export default {
   copyright: 'Copyright © 2018 LaborX Pty Ltd. All Rights Reserved.',
@@ -158,9 +160,10 @@ export default {
       },
     },
   },
-  notices: require('./en-notices'),
+  notices,
   tx: {
     title: 'New transaction',
+    transfer: 'Transfer',
     from: 'From',
     to: 'To',
     amount: 'Amount',
@@ -255,6 +258,7 @@ export default {
     General: require('./en-tx-general'),
     ...bitcoin, // bitcoin-like
     nem,
+    eos,
     Waves: require('./en-tx-waves'),
     /* eslint-enable global-require */
     ContractsManager: {},
@@ -489,6 +493,7 @@ export default {
     invalidLength: 'Should have length more than or equal 3 symbols',
     invalidMaxLength: 'Should have length less than or equal 32 symbols',
     invalidAddress: 'Should be valid %{blockchain} address',
+    invalidEOSAccount: 'Should be valid %{blockchain} account, a-z, 1-5 are allowed only, length 12.',
     validIpfsFileList: 'Should be valid file list',
     between: 'Should be between %{min} and %{max}',
     lowerThan: 'Should be lower than %{limit}',
@@ -497,6 +502,8 @@ export default {
     moreThanOrEqual: 'Should be more or equal than %{limit}',
     countMoreThan: 'Count should be more than %{limit}',
     countMoreThanOrEqual: 'Count should be more or equal than %{limit}',
+    longerThan: 'Should be longer than %{limit}',
+    longerThanOrEqual: 'Should be longer than or equal %{limit}',
     invalidLatinString: 'String must have only Latin characters (A-z)',
     mustBeUnique: 'Value must be unique',
     invalidConfirm2FACode: 'Should be a 6-digit code',
@@ -710,16 +717,6 @@ export default {
       depositAmount: 'Amount on deposit',
       balanceAmount: 'Your balance',
       changeAmount: 'Change',
-    },
-    ReceiveTokenModal: {
-      receive: 'Receive',
-      important: 'Important!',
-      warningText1: `Make sure you're receiving `,
-      warningText2: ` to the address provided below. Otherwise it can make the funds loss.`,
-      receivingTitle: 'Your receiving %{symbol} address',
-      qrTitle: 'Your QR code for the %{symbol} address',
-      buyTitle: 'Also, you can buy %{symbol} in exchanges',
-      error: 'Something wrong.',
     },
     RewardsPeriod: {
       rewardsPeriodIndex: 'Bonus period #%{index}',

@@ -3,11 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import bip39 from 'bip39'
 import uuid from 'uuid/v1'
 import { WALLET_TYPE_MEMORY } from '../../models/constants/AccountEntryModel'
 import { AccountEntryModel } from '../../models/wallet/persistAccount'
-import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
+import EthereumMemoryDevice, { DEFAULT_PATH } from '../../services/signers/EthereumMemoryDevice'
 
 export const replaceWallet = (wallet, walletList) => {
   const index = walletList.findIndex((item) => item.key === wallet.key)
@@ -21,12 +20,12 @@ export const getAddress = (address, /*hexFormat = false*/) => {
   return address//`${ hexFormat ? '0x' : ''}${address}`
 }
 
-export const getAccountAddress = (account: AccountEntryModel, hexFormat = false) => {
-  return account && account.encrypted && account.encrypted[0] && getAddress(account.encrypted[0].address, hexFormat) || ''
+export const getAccountAddress = (account: AccountEntryModel) => {
+  return account && account.encrypted && account.encrypted[0] && getAddress(account.encrypted[0].address) || ''
 }
 
 export const getWalletsListAddresses = (walletsList = []) => {
-  return walletsList.map((wallet) => getAccountAddress(wallet, true))
+  return walletsList.map((wallet) => getAccountAddress(wallet))
 }
 
 export const walletAddressExistInWalletsList = (wallet, walletsList = []) => {
@@ -49,16 +48,21 @@ export const getAccountAvatar = (account) => {
   return ''
 }
 
-export const generateMnemonic = () => {
-  return bip39.generateMnemonic()
-}
-
 export const createAccountEntry = (name, walletFileImportObject, profile = null) => {
+
+  // wallet JSON updated for our format to list it on login page
+  const updatedWalletJSON = {
+    wallet: walletFileImportObject,
+    type: WALLET_TYPE_MEMORY,
+    path: DEFAULT_PATH,
+    address: `0x${walletFileImportObject.address}`,
+  }
+
   return new AccountEntryModel({
     key: uuid(),
     name,
     type: WALLET_TYPE_MEMORY,
-    encrypted: [walletFileImportObject],
+    encrypted: [updatedWalletJSON],
     profile,
   })
 }
@@ -78,7 +82,7 @@ export const createDeviceAccountEntry = (name, device, profile = null, walletTyp
 }
 
 export const validateMnemonicForAccount = (mnemonic, selectedWallet: AccountEntryModel) => {
-  const addressFromWallet = selectedWallet && getAccountAddress(selectedWallet, true)
+  const addressFromWallet = selectedWallet && getAccountAddress(selectedWallet)
   const address = getAddressByMnemonic(mnemonic)
 
   return addressFromWallet === address

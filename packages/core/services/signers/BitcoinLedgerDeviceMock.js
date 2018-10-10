@@ -42,8 +42,4 @@ export default class BitcoinLedgerDeviceMock extends EventEmitter {
   getKeyPair () {
     return new bitcoin.ECPair.fromPrivateKey(Buffer.from(this.privateKey, 'hex'), { network: this.network })
   }
-
-  isActionRequestedModalDialogShows () {
-    return true
-  }
 }

@@ -35,6 +35,7 @@ export default class TokenModel extends abstractFetchingModel({
   isPaused: new PausedModel(),
   blacklist: new BlacklistModel(),
   latestBlock: null,
+  mosaicDefinition: null, // need for nem mosaics
 }) {
   id () {
     return this.get('transactionHash') || this.symbol() || this.address()
@@ -114,6 +115,10 @@ export default class TokenModel extends abstractFetchingModel({
     return amountBN.div(Math.pow(10, this.decimals()))
   }
 
+  mosaicDefinition () {
+    return this.get('mosaicDefinition')
+  }
+
   /**
    * @deprecated
    */
@@ -125,7 +130,7 @@ export default class TokenModel extends abstractFetchingModel({
    * @deprecated
    */
   updateBalance (isCredited, amount: Amount): TokenModel {
-    const newBalance = this.balance()[ isCredited ? 'plus' : 'minus' ](amount)
+    const newBalance = this.balance()[isCredited ? 'plus' : 'minus'](amount)
     return this.set('balance', newBalance)
   }
 

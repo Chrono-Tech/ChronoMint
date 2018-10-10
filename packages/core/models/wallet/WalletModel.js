@@ -29,18 +29,18 @@ const schemaFactory = () => ({
   allowances: PropTypes.instanceOf(AllowanceCollection),
 })
 
-const defaultProps = {
-  balances: {},
-  transactions: new TxHistoryModel(),
-  owners: [],
-  pendingTxList: null,
-  customTokens: null,
-  isTIMERequired: false,
-  allowances: new AllowanceCollection({}),
-}
-
 export default class WalletModel extends AbstractModel {
   constructor (ownProps) {
+    const defaultProps = {
+      balances: {},
+      transactions: new TxHistoryModel(),
+      owners: [],
+      pendingTxList: null,
+      customTokens: null,
+      isTIMERequired: false,
+      allowances: new AllowanceCollection({}),
+    }
+
     const props = { ...defaultProps, ...ownProps }
     super(props, schemaFactory())
     Object.assign(this, props)

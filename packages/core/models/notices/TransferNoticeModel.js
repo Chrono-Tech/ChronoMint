@@ -9,7 +9,7 @@ import type TxModel from '../TxModel'
 
 export default class TransferNoticeModel extends abstractNoticeModel({
   amount: new BigNumber(0), // with decimals
-  symbol: null,
+  symbol: '',
   from: null, // address
   to: null, // address
   credited: false,
@@ -29,8 +29,8 @@ export default class TransferNoticeModel extends abstractNoticeModel({
   message () {
     const isDeposited = this.get('credited')
     const value = isDeposited
-      ? 'notices.transfer.receivedFrom'
-      : 'notices.transfer.sentTo'
+      ? 'notices.transfer.received'
+      : 'notices.transfer.sent'
     const address = isDeposited
       ? this.get('from')
       : this.get('to')

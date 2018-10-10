@@ -20,6 +20,7 @@ import {
   EVENT_APPROVAL_TRANSFER,
   EVENT_NEW_TRANSFER,
 } from './constants'
+import TxDescModel from '../models/TxDescModel'
 
 const EVENT_TRANSFER = 'Transfer'
 const EVENT_APPROVAL = 'Approval'
@@ -143,21 +144,31 @@ export default class ERC20DAO extends AbstractTokenDAO {
     const gasPrice = new BigNumber(tx.gasPrice)
     const gasFee = gasPrice.mul(tx.gas)
 
-    return new TxModel({
-      txHash: tx.transactionHash,
-      blockHash: tx.blockHash,
+    return new TxDescModel({
+      title: tx.details ? tx.details.event : 'tx.transfer',
+      hash: tx.transactionHash,
+      time,
+      blockchain: BLOCKCHAIN_ETHEREUM,
       blockNumber: block,
-      transactionIndex: tx.transactionIndex,
+      fee: gasFee,
       from: tx.args.from,
       to: tx.args.to,
       symbol: this._symbol,
       value: new Amount(tx.args.value, this._symbol),
-      gas: tx.gas,
-      gasPrice,
-      gasFee,
-      time,
-      token: this.getInitAddress(),
-      blockchain: BLOCKCHAIN_ETHEREUM,
+      params: [
+        {
+          name: 'from',
+          value: tx.args.from,
+        },
+        {
+          name: 'to',
+          value: tx.args.to,
+        },
+        {
+          name: 'amount',
+          value: new Amount(tx.args.value, this._symbol),
+        },
+      ],
     })
   }
 

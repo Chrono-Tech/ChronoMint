@@ -288,6 +288,14 @@
   flex: 1;
 }
 
+.eos-actions-row {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
 .actions-row {
   display: flex;
   flex-direction: row;

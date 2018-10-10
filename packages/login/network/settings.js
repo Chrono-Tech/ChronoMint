@@ -3,10 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { BLOCKCHAIN_EOS } from '@chronobank/core/redux/eos/constants'
 import {
   BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
@@ -38,9 +39,9 @@ const blockExplorersMap = {
     mainnet: 'https://bcc.blockdozer.com/insight/tx',
     testnet: 'https://tbcc.blockdozer.com/insight/tx',
   },
-  [BLOCKCHAIN_BITCOIN_GOLD]: {
-    mainnet: 'https://btgexplorer.com/tx',
-    testnet: null,
+  [BLOCKCHAIN_DASH]: {
+    mainnet: 'https://insight.dashevo.org/insight-api-dash/tx',
+    testnet: 'https://testnet-insight.dashevo.org/insight-api-dash/tx',
   },
   [BLOCKCHAIN_LITECOIN]: {
     mainnet: 'https://live.blockcypher.com/ltc/tx',
@@ -55,10 +56,11 @@ const MAINNET_BASE = {
   scanner: blockExplorersMap.Ethereum.mainnet,
   [BLOCKCHAIN_BITCOIN]: 'bitcoin',
   [BLOCKCHAIN_BITCOIN_CASH]: 'bitcoin',
-  [BLOCKCHAIN_BITCOIN_GOLD]: 'bitcoingold',
+  [BLOCKCHAIN_DASH]: 'bitcoin',
   [BLOCKCHAIN_LITECOIN]: 'litecoin',
   [BLOCKCHAIN_NEM]: 'mainnet',
   [BLOCKCHAIN_WAVES]: 'MAINNET_CONFIG',
+  [BLOCKCHAIN_EOS]: 'mainnet',
 }
 
 const RINKEBY_BASE = {
@@ -68,10 +70,11 @@ const RINKEBY_BASE = {
   scanner: blockExplorersMap.Ethereum.testnet,
   [BLOCKCHAIN_BITCOIN]: 'testnet',
   [BLOCKCHAIN_BITCOIN_CASH]: 'testnet',
-  [BLOCKCHAIN_BITCOIN_GOLD]: 'bitcoingold_testnet',
+  [BLOCKCHAIN_DASH]: 'testnet',
   [BLOCKCHAIN_LITECOIN]: 'litecoin_testnet',
   [BLOCKCHAIN_NEM]: 'testnet',
   [BLOCKCHAIN_WAVES]: 'TESTNET_CONFIG',
+  [BLOCKCHAIN_EOS]: 'testnet',
 }
 
 // descriptions only, without hosts
@@ -106,7 +109,7 @@ const mewMainnet = {
   scanner: blockExplorersMap.Ethereum.mainnet,
   [BLOCKCHAIN_BITCOIN]: 'bitcoin',
   [BLOCKCHAIN_BITCOIN_CASH]: 'bitcoin',
-  [BLOCKCHAIN_BITCOIN_GOLD]: 'bitcoingold',
+  [BLOCKCHAIN_DASH]: 'bitcoin',
   [BLOCKCHAIN_LITECOIN]: 'litecoin',
   [BLOCKCHAIN_NEM]: 'mainnet',
   host: `api.myetherapi.com/eth`,
@@ -123,7 +126,7 @@ const givethMainnet = {
   scanner: blockExplorersMap.Ethereum.mainnet,
   [BLOCKCHAIN_BITCOIN]: 'bitcoin',
   [BLOCKCHAIN_BITCOIN_CASH]: 'bitcoin',
-  [BLOCKCHAIN_BITCOIN_GOLD]: 'bitcoingold',
+  [BLOCKCHAIN_DASH]: 'bitcoin',
   [BLOCKCHAIN_LITECOIN]: 'litecoin',
   [BLOCKCHAIN_NEM]: 'mainnet',
   [BLOCKCHAIN_WAVES]: 'MAINNET_CONFIG',
@@ -158,7 +161,7 @@ export const chronoBankPrivate = {
   name: 'Private (develop network)',
   [BLOCKCHAIN_BITCOIN]: 'testnet',
   [BLOCKCHAIN_BITCOIN_CASH]: 'testnet',
-  // [BLOCKCHAIN_BITCOIN_GOLD]: 'bitcoingold_testnet',
+  [BLOCKCHAIN_DASH]: 'testnet',
   [BLOCKCHAIN_LITECOIN]: 'litecoin_testnet',
   [BLOCKCHAIN_NEM]: 'testnet',
   [BLOCKCHAIN_WAVES]: 'TESTNET_CONFIG',
@@ -336,3 +339,13 @@ export const getNetworksSelectorGroup = () => {
   return groups
 }
 
+export const EOS_NETWORK_CONFIG = {
+  testnet: {
+    httpEndpoint: 'https://api.jungle.alohaeos.com:443', // jungle testnet
+    chainId: '038f4b0fc8ff18a4f0842a8f0564611f6e96e8535901dd45e43ac8691a1c4dca', // id of network, https://github.com/shniu/eosio/blob/dfec872f1569cfbd8e1cb997e2131d2ebccbb485/jungletestnet/readme.md
+  },
+  mainnet: {
+    httpEndpoint: 'https://api.eosdetroit.io:443',
+    chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906', // https://www.eosdocs.io/resources/apiendpoints/
+  },
+}

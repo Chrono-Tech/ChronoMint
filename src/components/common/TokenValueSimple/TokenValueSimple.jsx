@@ -8,13 +8,13 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
+import { getAllTokens } from '@chronobank/core/redux/tokens/selectors'
 
 const mapStateToProps = (state) => {
   return {
-    tokens: state.get(DUCK_TOKENS),
+    tokens: getAllTokens(state),
   }
 }
 

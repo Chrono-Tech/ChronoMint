@@ -4,14 +4,13 @@
  */
 
 import EventEmitter from 'events'
-import type { BitcoinEngine } from './BitcoinEngine'
-import type { NemEngine } from './NemEngine'
-import type { WavesEngine } from './WavesEngine'
+import bitcoin from 'bitcoinjs-lib'
+import { BLOCKCHAIN_BITCOIN } from './constants'
 
 export default class AbstractProvider extends EventEmitter {
   constructor (selectNode) {
     super()
-    this._engine = null
+    this.networkSettings = null
     this._selectNode = selectNode
     this._handleTransaction = (tx) => this.onTransaction(tx)
     this._handleBalance = (balance) => this.onBalance(balance)
@@ -21,38 +20,32 @@ export default class AbstractProvider extends EventEmitter {
     return this._id
   }
 
+  setNetworkSettings (networkSettings) {
+    this.networkSettings = networkSettings
+  }
+
   isInitialized () {
-    // Initialized by design if and only if it has an associated engine
-    return !!this._engine
-
+    return !!this.networkSettings
   }
 
-  setEngine (engine: NemEngine | BitcoinEngine | WavesEngine) {
-    if (this._engine != null) {
-      this.unsubscribe(this._engine)
-      this._engine = null
-    }
-    this._engine = engine
-    this.subscribe(this._engine)
-  }
-
-  subscribe (engine: NemEngine | BitcoinEngine | WavesEngine) {
-    const node = this._selectNode(engine)
-    node.emit('subscribe', engine.getAddress())
+  subscribe (address) {
+    const node = this._selectNode(this.networkSettings)
+    node.emit('subscribe', address)
     return node
   }
 
-  unsubscribe (engine: NemEngine | BitcoinEngine | WavesEngine) {
-    const node = this._selectNode(engine)
-    node.emit('unsubscribe', engine.getAddress())
+  unsubscribe (address) {
+    const node = this._selectNode(this.networkSettings)
+    node.emit('unsubscribe', address)
     return node
-  }
-
-  getAddress () {
-    return this._engine && this._engine.getAddress() || null
   }
 
   isAddressValid (address) {
-    return this._engine && this._engine.isAddressValid(address)
+    try {
+      bitcoin.address.toOutputScript(address, bitcoin.networks[this.networkSettings[BLOCKCHAIN_BITCOIN]])
+      return true
+    } catch (e) {
+      return false
+    }
   }
 }

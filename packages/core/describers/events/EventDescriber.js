@@ -16,6 +16,9 @@ export class EventDescriber {
 
 export const decodeLog = (abi, log) => {
   const [, ...topics] = log.topics
+  if (!log.data || log.data === '0x' || log.data === '0X') {
+    log.data = getDataFromLog(log)
+  }
   const params = Web3ABI.decodeLog(abi.inputs, log.data, topics)
 
   const inputs = abi.inputs.map(
@@ -28,6 +31,15 @@ export const decodeLog = (abi, log) => {
     params,
     inputs,
   }
+}
+
+const getDataFromLog = (log) => {
+  const dataIndexStart = log.dataIndexStart
+  let data = ''
+  for (let i = dataIndexStart; i < log.topics.length; i++) {
+    data += log.topics[i].replace(/^0[xX]/, '')
+  }
+  return data
 }
 
 export const findEventABI = (abi, name) => {

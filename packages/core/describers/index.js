@@ -12,6 +12,7 @@ import { EVENT_DESCRIBERS_BY_TOPIC, decodeLog } from './events'
 import { TRANSACTION_DESCRIBERS_BY_TOPIC, decodeParameters, findFunctionABI } from './transactions'
 import { decodeTxData } from '../utils/DecodeUtils'
 import { ETH, XEM, WAVES } from '../dao/constants'
+import { getKey } from './events/lib/assetEventDescribers'
 
 export const describeEvent = (data, context = {}) => {
   const { log, block } = data
@@ -28,7 +29,7 @@ export const describeEvent = (data, context = {}) => {
   }
 
   return new LogEventModel({
-    key: `${log.blockHash}/${log.transactionIndex}/${log.logIndex}`,
+    key: getKey(data),
     name: 'custom',
     date: new Date(block.timestamp * 1000),
     icon: 'event',
@@ -277,6 +278,41 @@ export const describePendingBitcoinTx = (entry, context = {}) => {
       {
         value: fee,
         description: `${path}.fee`,
+      },
+    ],
+  })
+}
+
+export const describePendingEosTx = (entry) => {
+  const { tx, block } = entry
+
+  const path = 'tx.eos.transfer'
+
+  return new LogTxModel({
+    key: tx.block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
+    type: 'tx',
+    name: 'transfer',
+    date: new Date(tx.time ? (tx.time * 1000) : null),
+    icon: 'event',
+    title: `${path}.title`,
+    message: tx.to,
+    target: null,
+    fields: [
+      {
+        value: tx.from,
+        description: `${path}.from`,
+      },
+      {
+        value: tx.to,
+        description: `${path}.to`,
+      },
+      {
+        value: tx.quantity,
+        description: `${path}.amount`,
+      },
+      {
+        value: tx.memo,
+        description: `${path}.memo`,
       },
     ],
   })
