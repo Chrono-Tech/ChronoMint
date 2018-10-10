@@ -4,11 +4,13 @@
  */
 
 import axios from 'axios'
+import { NETWORK_MAIN_ID } from '@chronobank/login/network/settings'
 import * as Utils from './utils'
 import { deepSortByKey } from '../../utils/formatter'
 
-const URL_PROFILE_HOST = 'https://backend.profile.tp.ntr1x.com/'
-const URL_PROFILE_BASE_PATH = URL_PROFILE_HOST + 'api/v1/'
+const URL_PROFILE_HOST = 'https://profile-stage.laborx.io/'
+const URL_PROFILE_HOST_TESTNET = 'https://profile-stage-testnet.laborx.io/'
+const URL_PROFILE_BASE_PATH = 'api/v1/'
 
 const URL_PROFILE_USER_INFO = 'security/persons/query'
 const URL_PROFILE_SIGNATURE = 'security/signin/signature/chronomint'
@@ -21,7 +23,10 @@ const URL_PROFILE_IMAGE_UPLOAD = 'media/image/upload'
 const EXCHANGE_PURPOSE_DATA = { purpose: 'middleware' }
 
 export default class ProfileService {
-  static service = axios.create({ baseURL: URL_PROFILE_BASE_PATH })
+  static init = (networkID) => {
+    const baseURL = `${networkID === NETWORK_MAIN_ID ? URL_PROFILE_HOST : URL_PROFILE_HOST_TESTNET}${URL_PROFILE_BASE_PATH}`
+    ProfileService.service = axios.create({ baseURL })
+  }
 
   static requestProfileUserInfo (addresses: string[]) {
     return ProfileService.service.request({

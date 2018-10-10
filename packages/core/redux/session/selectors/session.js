@@ -11,7 +11,7 @@ import {
 import {
   DUCK_PERSIST_ACCOUNT,
 } from '../../persistAccount/constants'
-import { getWallets, getMainWallets } from '../../wallets/selectors/models'
+import { getMainWallets } from '../../wallets/selectors/models'
 import { getGasSliderCollection, getIsCBE } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
 import {
@@ -21,7 +21,10 @@ import {
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
+  BLOCKCHAIN_DASH,
 } from '../../../dao/constants'
+import { getEosWallets } from '../../eos/selectors/mainSelectors'
+import { BLOCKCHAIN_EOS } from '../../eos/constants'
 
 export const getGasPriceMultiplier = (blockchain) => createSelector([getGasSliderCollection],
   (gasSliderCollection) => {
@@ -103,38 +106,45 @@ export const getAccountProfileSummary = createSelector(
 
 export const getAccountAddresses = createSelector(
   [
-    getWallets,
+    getMainWallets,
+    getEosWallets,
   ],
-  (wallets) => {
-    let type = null
-    return Object.values(wallets).reduce((accumulator, wallet) => {
-      switch (wallet.blockchain) {
-        case BLOCKCHAIN_BITCOIN:
-          type = 'bitcoin-address'
-          break
-        case BLOCKCHAIN_BITCOIN_CASH:
-          type = 'bitcoin-cash-address'
-          break
-        case BLOCKCHAIN_LITECOIN:
-          type = 'bitcoin-litecoin-address'
-          break
-        case BLOCKCHAIN_ETHEREUM:
-          type = 'ethereum-public-key'
-          break
-        case BLOCKCHAIN_NEM:
-          type = 'nem-address'
-          break
-        case BLOCKCHAIN_WAVES:
-          type = 'waves-address'
-          break
-      }
+  (wallets, eosWallets) => {
+    return Object.values({ ...wallets, ...eosWallets })
+      .reduce((accumulator, wallet) => {
 
-      if (!wallet.isMain || !type) {
-        return accumulator
-      }
+        let type = null
+        switch (wallet.blockchain) {
+          case BLOCKCHAIN_BITCOIN:
+            type = 'bitcoin-address'
+            break
+          case BLOCKCHAIN_BITCOIN_CASH:
+            type = 'bitcoin-cash-address'
+            break
+          case BLOCKCHAIN_LITECOIN:
+            type = 'bitcoin-litecoin-address'
+            break
+          case BLOCKCHAIN_ETHEREUM:
+            type = 'ethereum-public-key'
+            break
+          case BLOCKCHAIN_NEM:
+            type = 'nem-address'
+            break
+          case BLOCKCHAIN_WAVES:
+            type = 'waves-address'
+            break
+          case BLOCKCHAIN_DASH:
+            type = 'dash-address'
+            break
+          case BLOCKCHAIN_EOS:
+            type = 'eos-address'
+            break
+          default:
+            return accumulator
+        }
 
-      return [...accumulator, { type, value: wallet.address },
-      ]
-    }, {})
+        return [...accumulator, { type, value: wallet.address },
+        ]
+      }, {})
   },
 )

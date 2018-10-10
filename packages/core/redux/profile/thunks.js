@@ -9,8 +9,9 @@ import type { Dispatch } from 'redux'
 import * as ProfileActions from './actions'
 import ProfileService from './service'
 import { DUCK_SESSION } from '../session/constants'
+import { getSelectedNetworkId } from '../persistAccount/selectors'
 
-export const getUserInfo = (addresses: string[]) => (dispatch: Dispatch<any>/*, getState*/): Promise<*> => {
+export const getUserInfo = (addresses: string[]) => (dispatch: Dispatch<any>, getState): Promise<*> => {
   // TODO: kept this part commented for further investigation.
   // Somethimes we need to repeat requests
   // const state = getState()
@@ -18,6 +19,9 @@ export const getUserInfo = (addresses: string[]) => (dispatch: Dispatch<any>/*, 
   // if (userInfo.status.isFetching) {
   //   return Promise.resolve('IN_PROGRESS') // it is safe to silently ignore duplicated request
   // }
+
+  const selectedNetworkId = getSelectedNetworkId(getState())
+  ProfileService.init(selectedNetworkId)
 
   if (!Array.isArray(addresses) || !addresses.length) {
     return Promise.reject('Malformed request. "addresses" must be non-empty array')
