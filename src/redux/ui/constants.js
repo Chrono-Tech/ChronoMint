@@ -6,4 +6,6 @@
 export const DUCK_UI = 'ui'
 
 export const CHANGE_WALLET_VIEW = 'ui/CHANGE_WALLET_VIEW'
-export const OPEN_BRAND_PARTIAL = 'ui/OPEN_BRAND_PARTIAL'
+export const SET_VISIBLE_COOKIES_BAR = 'ui/SET_VISIBLE_COOKIES_BAR'
+
+export const STORAGE_COOKIES_BAR = 'cookiesBar'
