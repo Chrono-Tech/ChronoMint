@@ -24,7 +24,7 @@ import qrSvg from 'assets/img/icons/qr.svg'
 import { toggleMainMenu } from 'redux/sides/actions'
 import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED, SYNC_STATUS_SYNCING } from '@chronobank/login/network/MonitorService'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
-import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
+import { BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LABOR_HOUR } from '@chronobank/core/dao/constants'
 import './MenuTokenMoreInfo.scss'
 import { prefix } from './lang'
 import { getSelectedToken, getSelectedWalletAddress, getWalletCompactWalletsList } from './selectors'
@@ -210,7 +210,7 @@ export default class MenuTokenMoreInfo extends PureComponent {
 
           {wallets.map(this.renderWallet)}
 
-          {selectedToken && selectedToken.blockchain === BLOCKCHAIN_ETHEREUM && (
+          {selectedToken && [BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LABOR_HOUR].includes(selectedToken.blockchain) && (
             <div styleName='network'>
               <div styleName='networkTitle'>
                 <Translate value={`${prefix}.networkTitle`} />

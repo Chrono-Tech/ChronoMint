@@ -9,13 +9,15 @@ import WavesDAO from '../../dao/WavesDAO'
 import { bccDAO, btcDAO, dashDAO, ltcDAO } from '../../dao/BitcoinDAO'
 import ERC20ManagerDAO from '../../dao/ERC20ManagerDAO'
 import ethereumDAO from '../../dao/EthereumDAO'
+import laborHourDAO from '../../dao/LaborHourDAO'
 import NemDAO from '../../dao/NemDAO'
 import TokenModel from '../../models/tokens/TokenModel'
 import tokenService from '../../services/TokenService'
 import Amount from '../../models/Amount'
 import { daoByType } from '../daos/selectors'
 import { web3Selector } from '../ethereum/selectors'
-import { estimateGas } from '../ethereum/thunks'
+import { estimateGas as estimateEthereumGas } from '../ethereum/thunks'
+import { estimateLaborHourGas } from '../laborHour/thunks'
 
 import {
   DUCK_TOKENS,
@@ -31,10 +33,11 @@ import {
 } from '../../dao/constants/NemDAO'
 import {
   BLOCKCHAIN_ETHEREUM,
-  ETH,
+  BLOCKCHAIN_LABOR_HOUR,
   EVENT_NEW_BLOCK,
   EVENT_NEW_TOKEN,
   EVENT_UPDATE_LAST_BLOCK,
+  LHT,
 } from '../../dao/constants'
 import {
   WAVES_DECIMALS,
@@ -52,6 +55,7 @@ export const initTokens = () => async (dispatch, getState) => {
   }
   const web3 = web3Selector()(state)
   ethereumDAO.connect(web3)
+  laborHourDAO.connect(web3)
 
   dispatch(TokensActions.tokensInit())
   dispatch(TokensActions.setTokensFetchingCount(0))
@@ -61,16 +65,24 @@ export const initTokens = () => async (dispatch, getState) => {
   erc20
     .on(EVENT_ERC20_TOKENS_COUNT, async (count) => {
       const currentCount = state.get(DUCK_TOKENS).leftToFetch()
-      dispatch(TokensActions.setTokensFetchingCount(currentCount + count + 1 /*eth*/))
+      dispatch(TokensActions.setTokensFetchingCount(currentCount + count + 1 /*+eth+lht-lht(ERC20)*/))
+      const ethLikeDAOs = [ethereumDAO, laborHourDAO]
 
-      // eth
-      const eth: TokenModel = await ethereumDAO.getToken()
-      if (eth) {
-        dispatch(TokensActions.tokenFetched(eth))
-        tokenService.registerDAO(eth, ethereumDAO)
-      }
+      ethLikeDAOs.map(async (dao) => {
+        const ethLikeToken: TokenModel = await dao.getToken()
+
+        if (ethLikeToken) {
+          dispatch(TokensActions.tokenFetched(ethLikeToken))
+          tokenService.registerDAO(ethLikeToken, dao)
+        }
+      })
     })
     .on(EVENT_NEW_ERC20_TOKEN, (token: TokenModel) => {
+      if(!isERC20TokenUsed(token)) {
+        // eslint-disable-next-line no-console
+        return console.warn(`Unsupported ERC20 token ${token.get('symbol')} received`)
+      }
+
       dispatch(TokensActions.tokenFetched(token))
       const dao = tokenService.createDAO(token, web3)
 
@@ -207,22 +219,47 @@ export const subscribeOnTokens = (callback) => (dispatch, getState) => {
 }
 
 export const watchLatestBlock = () => async (dispatch) => {
-  ethereumDAO.on(EVENT_NEW_BLOCK, (block) => {
-    dispatch(TokensActions.setLatestBlock(BLOCKCHAIN_ETHEREUM, block))
+  const daosMap = [
+    {
+      blockchain: BLOCKCHAIN_ETHEREUM,
+      dao: ethereumDAO,
+    },
+    {
+      blockchain: BLOCKCHAIN_LABOR_HOUR,
+      dao: laborHourDAO,
+    },
+  ]
+
+  await daosMap.map(async (daoData) => {
+    daoData.dao.on(EVENT_NEW_BLOCK, (block) => {
+      dispatch(TokensActions.setLatestBlock(daoData.blockchain, block))
+    })
+    const block = await daoData.dao.getBlockNumber()
+    dispatch(TokensActions.setLatestBlock(daoData.blockchain, { blockNumber: block }))
   })
-  const block = await ethereumDAO.getBlockNumber()
-  dispatch(TokensActions.setLatestBlock(BLOCKCHAIN_ETHEREUM, { blockNumber: block }))
 }
 
-export const estimateGasTransfer = (tokenId, params, gasPriceMultiplier = 1, address) => async (dispatch) => {
-  const tokenDao = tokenService.getDAO(tokenId)
-  const [to, amount] = params
-  const tx = tokenDao.transfer(address, to, amount)
-  const { gasLimit, gasFee, gasPrice } = await dispatch(estimateGas(tx))
+export const estimateGasTransfer = (tokenId, params, gasPriceMultiplier = 1, address) => (
+  estimateEthereumLikeBlockchainGasTransfer(tokenId, params, gasPriceMultiplier, address, estimateEthereumGas)
+)
 
-  return {
-    gasLimit,
-    gasFee: new Amount(gasFee.mul(gasPriceMultiplier).toString(), ETH),
-    gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier).toString(), ETH),
+export const estimateLaborHourGasTransfer = (tokenId, params, gasPriceMultiplier = 1, address) => (
+  estimateEthereumLikeBlockchainGasTransfer(tokenId, params, gasPriceMultiplier, address, estimateLaborHourGas)
+)
+
+const estimateEthereumLikeBlockchainGasTransfer = (tokenId, params, gasPriceMultiplier = 1, address, estimateGas) => (
+  async (dispatch) => {
+    const tokenDao = tokenService.getDAO(tokenId)
+    const [to, amount] = params
+    const tx = tokenDao.transfer(address, to, amount)
+    const { gasLimit, gasFee, gasPrice } = await dispatch(estimateGas(tx))
+
+    return {
+      gasLimit,
+      gasFee: new Amount(gasFee.mul(gasPriceMultiplier).toString(), tokenDao.getSymbol()),
+      gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier).toString(), tokenDao.getSymbol()),
+    }
   }
-}
+)
+
+const isERC20TokenUsed = (token) => token.get('symbol') !== LHT

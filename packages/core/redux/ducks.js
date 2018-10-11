@@ -13,6 +13,7 @@ import device from './device/reducer'
 import ethereum from './ethereum/reducer'
 import ethMultisigWallet from './multisigWallet/reducer'
 import events from './events/reducer'
+import laborHour from './laborHour/reducer'
 import mainWallet from './mainWallet/reducer'
 import market from './market/reducer'
 import modals from './modals/reducer'
@@ -40,6 +41,7 @@ const coreReducers = {
   ethereum,
   ethMultisigWallet,
   events,
+  laborHour,
   mainWallet,
   market,
   modals,

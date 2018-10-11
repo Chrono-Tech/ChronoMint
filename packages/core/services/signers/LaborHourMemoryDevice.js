@@ -5,5 +5,4 @@
 
 import EthereumLikeBlockchainMemoryDevice from './EthereumLikeBlockchainMemoryDevice'
 
-export { DEFAULT_PATH } from './EthereumLikeBlockchainMemoryDevice'
-export default class EthereumMemoryDevice extends EthereumLikeBlockchainMemoryDevice {}
+export default class LaborHourMemoryDevice extends EthereumLikeBlockchainMemoryDevice {}

@@ -2,6 +2,7 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
+import { BLOCKCHAIN_LABOR_HOUR, LHT } from '../../dao/constants'
 
 // export const CURRENT_PROFILE_VERSION = 1
 export const DEFAULT_CBE_URL = '/wallets'
@@ -17,6 +18,7 @@ export const PROFILE_PANEL_TOKENS = [
   { symbol: 'BTC', blockchain: 'Bitcoin', title: 'BTC' },
   { symbol: 'BCC', blockchain: 'Bitcoin Cash', title: 'BCC' },
   { symbol: 'DASH', blockchain: 'Dash', title: 'DASH' },
+  { symbol: LHT, blockchain: BLOCKCHAIN_LABOR_HOUR, title: LHT },
   { symbol: 'LTC', blockchain: 'Litecoin', title: 'LTC' },
   { symbol: 'ETH', blockchain: 'Ethereum', title: 'ETH' },
   { symbol: 'XEM', blockchain: 'NEM', title: 'NEM' },

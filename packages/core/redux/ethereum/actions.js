@@ -4,29 +4,20 @@
  */
 
 import {
-  NONCE_UPDATE,
-  TX_CREATE,
-  TX_UPDATE,
   WEB3_UPDATE,
 } from './constants'
 
-export const ethTxCreate = (entry) => ({
-  type: TX_CREATE,
-  entry,
-})
+import {
+  nonceUpdate as ethNonceUpdate,
+  txCreate as ethTxCreate,
+  txUpdate as ethTxUpdate,
+} from '../ethereumLikeBlockchain/actions'
 
-export const ethTxUpdate = (key, address, tx) => ({
-  type: TX_UPDATE,
-  address,
-  key,
-  tx,
-})
-
-export const ethNonceUpdate = (address, nonce) => ({
-  type: NONCE_UPDATE,
-  address,
-  nonce,
-})
+export {
+  ethNonceUpdate,
+  ethTxCreate,
+  ethTxUpdate
+}
 
 export const ethWeb3Update = (web3) => ({
   type: WEB3_UPDATE,

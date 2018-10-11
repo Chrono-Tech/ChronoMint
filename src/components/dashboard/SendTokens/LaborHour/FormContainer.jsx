@@ -4,8 +4,8 @@
  */
 
 import { connect } from 'react-redux'
-import { ETH } from '@chronobank/core/dao/constants'
-import { estimateGasTransfer } from '@chronobank/core/redux/tokens/thunks'
+import { LHT } from '@chronobank/core/dao/constants'
+import { estimateLaborHourGasTransfer } from '@chronobank/core/redux/tokens/thunks'
 
 import Form, { mapStateToProps as mapFormStateToProps } from '../EthereumLikeBlockchain/Form'
 import FormContainer, {
@@ -16,17 +16,17 @@ import FormContainer, {
 function mapFormDispatchToProps (dispatch) {
   return {
     estimateGas: (tokenId, params, gasPriceMultiplier, address) => (
-      dispatch(estimateGasTransfer(tokenId, params, gasPriceMultiplier, address))
+      dispatch(estimateLaborHourGasTransfer(tokenId, params, gasPriceMultiplier, address))
     ),
   }
 }
 
-const EthereumForm = connect(mapFormStateToProps, mapFormDispatchToProps)(Form)
+const LaborHourForm = connect(mapFormStateToProps, mapFormDispatchToProps)(Form)
 
 export function mapStateToProps (state, props) {
   const fields = mapContainerStateToProps(state, props)
-  fields.form = EthereumForm
-  fields.symbol = ETH
+  fields.form = LaborHourForm
+  fields.symbol = LHT
   return fields
 }
 
