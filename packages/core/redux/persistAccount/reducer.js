@@ -19,6 +19,7 @@ const initialState = {
   decryptedWallet: null,
   rehydrated: false,
   customNetworksList: [],
+  addressCache: {},
 }
 
 const persistAccount = (state = initialState, action) => {
