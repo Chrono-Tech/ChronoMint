@@ -7,6 +7,7 @@ import type MultisigWalletDAO from './MultisigWalletDAO'
 import AddressesCollection from '../models/wallet/AddressesCollection'
 import AddressModel from '../models/wallet/AddressModel'
 import MultisigEthWalletModel from '../models/wallet/MultisigEthWalletModel'
+import MultisigEthLikeWalletModel from '../models/wallet/MultisigEthLikeWalletModel'
 import multisigWalletService from '../services/MultisigWalletService'
 import AbstractContractDAO from './AbstractContractDAO'
 
@@ -20,9 +21,10 @@ import {
 } from './constants'
 
 export default class WalletsManagerDAO extends AbstractContractDAO {
-
-  constructor ({ address, history, abi }) {
+  constructor ({ address, history, abi }, blockchain, multiSigWalletModel) {
     super({ address, history, abi })
+    this.blockchain = blockchain
+    this.multiSigWalletModel = multiSigWalletModel
   }
 
   isInited () {
@@ -76,11 +78,11 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
    * @returns {Promise<void>}
    */
   handleWalletRemoved (data) {
-    this.emit(EE_MS_WALLET_REMOVED, `${BLOCKCHAIN_ETHEREUM}-${data.returnValues.wallet}`)
+    this.emit(EE_MS_WALLET_REMOVED, `${this.blockchain}-${data.returnValues.wallet}`)
   }
 
   /**
-   * fetch ethereum multisig wallets
+   * fetch multisig wallets
    * @returns {Promise<void>}
    */
   async fetchWallets () {
@@ -114,11 +116,11 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
 
     let addresses = new AddressesCollection()
     addresses = addresses.add(new AddressModel({
-      id: BLOCKCHAIN_ETHEREUM,
+      id: this.blockchain,
       address,
     }))
 
-    const wallet = new MultisigEthWalletModel({
+    const wallet = new this.multiSigWalletModel({
       address,
       owners: owners.map((owner) => owner.toLowerCase()),
       transactionHash,
@@ -128,7 +130,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
       pendingTxList,
       addresses,
       releaseTime: releaseTime > 0 ? new Date(releaseTime * 1000) : null,
-      blockchain: BLOCKCHAIN_ETHEREUM,
+      blockchain: this.blockchain,
       isMultisig: true,
       isTimeLocked: releaseTime > 0,
     })
@@ -137,9 +139,9 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
 
   /**
    * create wallet tx
-   * @param wallet - MulMultisigEthWalletModel - wallet model from form
+   * @param wallet - MulMultisigWalletModel - wallet model from form
    */
-  createWallet (wallet: MultisigEthWalletModel) {
+  createWallet (wallet: MultisigEthLikeWalletModel) {
     return this._tx(
       'createWallet',
       [
@@ -152,11 +154,11 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
 
   /**
    * create 2fa wallet tx
-   * @param wallet - MultisigEthWalletModel - wallet model from form
+   * @param wallet - MultisigEthLikeWalletModel - wallet model from form
    * @param feeMultiplier - number - gas price multiplier
    * @returns {Promise<void>}
    */
-  create2FAWallet (wallet: MultisigEthWalletModel) {
+  create2FAWallet (wallet: MultisigEthLikeWalletModel) {
     return this._tx(
       'create2FAWallet',
       [Math.floor(wallet.releaseTime() / 1000)],
@@ -173,4 +175,10 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
 
   //#endregion
 
+}
+
+export class EthereumWalletsManagerDAO extends WalletsManagerDAO {
+  constructor ({ address, history, abi }) {
+    super({ address, history, abi }, BLOCKCHAIN_ETHEREUM, MultisigEthWalletModel)
+  }
 }
