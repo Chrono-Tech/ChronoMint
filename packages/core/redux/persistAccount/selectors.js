@@ -78,3 +78,10 @@ export const getCustomNetworksList = createSelector(
   (state) => state.get(DUCK_PERSIST_ACCOUNT),
   (persistAccount) => persistAccount.customNetworksList,
 )
+
+export const getAddressCache = createSelector(
+  getPersistAccount,
+  (account) => {
+    return account.addressCache
+  }
+)
