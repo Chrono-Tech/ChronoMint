@@ -24,12 +24,12 @@ import {
 
 import ContractsManagerDAO from './ContractsManagerDAO'
 import AssetHolderDAO from './AssetHolderDAO'
-import ERC20ManagerDAO from './ERC20ManagerDAO'
+import { EthereumERC20ManagerDAO } from './ERC20ManagerDAO'
 import VotingManagerDAO from './VotingManagerDAO'
 import PollInterfaceDAO from './PollInterfaceDAO'
 import AssetDonatorDAO from './AssetDonatorDAO'
 import UserManagerDAO from './UserManagerDAO'
-import WalletsManagerDAO from './WalletsManagerDAO'
+import { EthereumWalletsManagerDAO } from './WalletsManagerDAO'
 import AssetsManagerDAO from './AssetsManagerDAO'
 import PlatformManagerDAO from './PlatformsManagerDAO'
 import TokenManagementExtensionDAO from './TokenManagementExtensionDAO'
@@ -99,7 +99,7 @@ export const VOTING_MANAGER_LIBRARY = new ContractModel({
 export const ERC20_MANAGER = new ContractModel({
   type: 'ERC20Manager',
   abi: ERC20ManagerABI,
-  DAOClass: ERC20ManagerDAO,
+  DAOClass: EthereumERC20ManagerDAO,
 })
 
 export const MULTI_EVENTS_HISTORY = new ContractModel({
@@ -111,7 +111,7 @@ export const MULTI_EVENTS_HISTORY = new ContractModel({
 export const WALLETS_MANAGER = new ContractModel({
   type: 'WalletsManager',
   abi: WalletsManagerABI,
-  DAOClass: WalletsManagerDAO,
+  DAOClass: EthereumWalletsManagerDAO,
 })
 
 export const REWARDS = new ContractModel({

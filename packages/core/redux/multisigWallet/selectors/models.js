@@ -4,20 +4,27 @@
  */
 
 import { DUCK_ETH_MULTISIG_WALLET } from '../constants'
+import { BLOCKCHAIN_ETHEREUM } from '../../../dao/constants'
 
-export const getWallets = (state) => {
-  return state.get(DUCK_ETH_MULTISIG_WALLET)
+const duckMap = {
+  [BLOCKCHAIN_ETHEREUM]: DUCK_ETH_MULTISIG_WALLET
 }
 
-export const getEthMultisigWallets = (state) => {
-  return state.get(DUCK_ETH_MULTISIG_WALLET)
-}
+export const getEthLikeMultisigWallets = (state, blockchain) => state.get(duckMap[blockchain])
 
-export const getEthMultisigWallet = (walletId) => (state) => {
-  return state.get(DUCK_ETH_MULTISIG_WALLET).item(walletId)
-}
+export const getEthLikeMultisigWallet = (walletId, blockchain) => (
+  (state) => state.get(duckMap[blockchain]).item(walletId)
+)
 
-export const getEthMultisigWalletTransactions = (walletId) => (state) => {
-  const wallet = getEthMultisigWallet(walletId)(state)
+export const getEthLikeMultisigWalletTransactions = (walletId, blockchain) => (state) => {
+  const wallet = getEthLikeMultisigWallet(walletId, blockchain)(state)
   return wallet ? wallet.transactions : null
 }
+
+export const getWallets = (state) => getEthLikeMultisigWallets(state, BLOCKCHAIN_ETHEREUM)
+export const getEthMultisigWallets = (state) => getEthLikeMultisigWallets(state, BLOCKCHAIN_ETHEREUM)
+export const getEthMultisigWallet = (walletId) => getEthLikeMultisigWallet(walletId, BLOCKCHAIN_ETHEREUM)
+
+export const getEthMultisigWalletTransactions = (walletId) => (
+  getEthLikeMultisigWalletTransactions(walletId, BLOCKCHAIN_ETHEREUM)
+)

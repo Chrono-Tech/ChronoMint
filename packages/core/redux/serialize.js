@@ -44,6 +44,7 @@ function serialize (Immutable, refs) {
       if (value instanceof Date) return mark(value, 'Date', 'toString')
       if (value instanceof models.WalletModel) return mark(value, 'WalletModel', 'transform')
       if (value instanceof models.MultisigEthWalletModel) return mark(value, 'MultisigEthWalletModel', 'transform')
+      if (value instanceof models.MultisigEthLikeWalletModel) return mark(value, 'MultisigEthLikeWalletModel', 'transform')
       if (value instanceof models.TxHistoryModel) return mark(value, 'TxHistoryModel', 'transform')
       if (value instanceof models.Amount) return mark(value, 'Amount', 'transform')
       if (value instanceof BigNumber) return mark(value, 'BigNumber', 'toString')
@@ -89,6 +90,8 @@ function serialize (Immutable, refs) {
             return new models.WalletModel(data)
           case 'MultisigEthWalletModel':
             return new models.MultisigEthWalletModel(data)
+          case 'MultisigEthLikeWalletModel':
+            return new models.MultisigEthLikeWalletModel(data)
           case 'TxHistoryModel':
             return new models.TxHistoryModel(data)
           case 'BalanceModel':
