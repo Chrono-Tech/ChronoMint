@@ -79,6 +79,13 @@ export const getCustomNetworksList = createSelector(
   (persistAccount) => persistAccount.customNetworksList,
 )
 
+export const getSelectedWalletKey = createSelector(
+  getPersistAccount,
+  (account) => {
+    return account.selectedWallet.key
+  }
+)
+
 export const getAddressCache = createSelector(
   getPersistAccount,
   (account) => {
