@@ -80,150 +80,91 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
   const state = getState()
   const account = getPersistAccount(state)
   const addressCache = getAddressCache(state)
+
+  const signerSelectors = {
+    [BLOCKCHAIN_ETHEREUM]: getEthereumSigner,
+    [BLOCKCHAIN_BITCOIN]: getBitcoinSigner,
+    [BLOCKCHAIN_BITCOIN_CASH]: getBitcoinCashSigner,
+    [BLOCKCHAIN_DASH]: getDashSigner,
+    [BLOCKCHAIN_LITECOIN]: getLitecoinSigner,
+    [BLOCKCHAIN_NEM]: getNemSigner,
+    [BLOCKCHAIN_WAVES]: getWavesSigner,
+  }
+
+  Object.entries(signerSelectors).forEach(([ blockchain, signerSelector ]) => {
+    let address = addressCache[blockchain]
+    if(address) {
+      const signer = signerSelector(state)
+      if (signer) {
+        address = signer.getAddress(accountPath)
+
+        addressCache[blockchain] = address
+
+        dispatch(accountCacheAddress({ blockchain, address }))
+      }
+    }
+  })
+
   const wallets = []
   const accountPath = account.decryptedWallet.entry.encrypted[0].path
 
-  let ethereumAddress = addressCache[BLOCKCHAIN_ETHEREUM]
-  if(!ethereumAddress) {
-    const ethereumSigner = getEthereumSigner(state)
-    if (ethereumSigner) {
-      ethereumAddress = ethereumSigner.getAddress(accountPath)
-
-      dispatch(accountCacheAddress({
-        blockchain: BLOCKCHAIN_ETHEREUM,
-        address: ethereumAddress,
-      }))
-    }
-  }
-  if (ethereumAddress) {
+  if (addressCache[BLOCKCHAIN_ETHEREUM]) {
     wallets.push(new WalletModel({
-      address: ethereumAddress.toLowerCase(),
+      address: addressCache[BLOCKCHAIN_ETHEREUM].toLowerCase(),
       blockchain: BLOCKCHAIN_ETHEREUM,
       isMain: true,
       walletDerivedPath: accountPath,
     }))
   }
 
-  let bitcoinAddress = addressCache[BLOCKCHAIN_BITCOIN]
-  if (!bitcoinAddress) {
-    const bitcoinSigner = getBitcoinSigner(state)
-    if (bitcoinSigner) {
-      bitcoinAddress = bitcoinSigner.getAddress(accountPath)
-
-      dispatch(accountCacheAddress({
-        blockchain: BLOCKCHAIN_BITCOIN,
-        address: bitcoinAddress,
-      }))
-    }
-  }
-  if (bitcoinAddress) {
+  if (addressCache[BLOCKCHAIN_BITCOIN]) {
     wallets.push(new WalletModel({
-      address: bitcoinAddress,
+      address: addressCache[BLOCKCHAIN_BITCOIN],
       blockchain: BLOCKCHAIN_BITCOIN,
       isMain: true,
       walletDerivedPath: accountPath,
     }))
   }
 
-  let bitcoinCashAddress = addressCache[BLOCKCHAIN_BITCOIN_CASH]
-  if (!bitcoinCashAddress) {
-    const bitcoinCashSigner = getBitcoinCashSigner(state)
-    if (bitcoinCashSigner) {
-      bitcoinCashAddress = bitcoinCashSigner.getAddress(accountPath)
-
-      dispatch(accountCacheAddress({
-        blockchain: BLOCKCHAIN_BITCOIN_CASH,
-        address: bitcoinCashAddress,
-      }))
-    }
-  }
-  if (bitcoinCashAddress) {
+  if (addressCache[BLOCKCHAIN_BITCOIN_CASH]) {
     wallets.push(new WalletModel({
-      address: bitcoinCashAddress,
+      address: addressCache[BLOCKCHAIN_BITCOIN_CASH],
       blockchain: BLOCKCHAIN_BITCOIN_CASH,
       isMain: true,
       walletDerivedPath: accountPath,
     }))
   }
 
-  let dashAddress = addressCache[BLOCKCHAIN_DASH]
-  if (!dashAddress) {
-    const dashSigner = getDashSigner(state)
-    if (dashSigner) {
-      dashAddress = dashSigner.getAddress(accountPath)
-
-      dispatch(accountCacheAddress({
-        blockchain: BLOCKCHAIN_DASH,
-        address: dashAddress,
-      }))
-    }
-  }
-  if (dashAddress) {
+  if (addressCache[BLOCKCHAIN_DASH]) {
     wallets.push(new WalletModel({
-      address: dashAddress,
+      address: addressCache[BLOCKCHAIN_DASH],
       blockchain: BLOCKCHAIN_DASH,
       isMain: true,
       walletDerivedPath: accountPath,
     }))
   }
 
-  let litecoinAddress = addressCache[BLOCKCHAIN_LITECOIN]
-  if (!litecoinAddress) {
-    const litecoinSigner = getLitecoinSigner(state)
-    if (litecoinSigner) {
-      litecoinAddress = litecoinSigner.getAddress(accountPath)
-
-      dispatch(accountCacheAddress({
-        blockchain: BLOCKCHAIN_LITECOIN,
-        address: litecoinAddress,
-      }))
-    }
-  }
-  if (litecoinAddress) {
+  if (addressCache[BLOCKCHAIN_LITECOIN]) {
     wallets.push(new WalletModel({
-      address: litecoinAddress,
+      address: addressCache[BLOCKCHAIN_LITECOIN],
       blockchain: BLOCKCHAIN_LITECOIN,
       isMain: true,
       walletDerivedPath: accountPath,
     }))
   }
 
-  let nemAddress = addressCache[BLOCKCHAIN_NEM]
-  if (!nemAddress) {
-    const nemSigner = getNemSigner(state)
-    if (nemSigner) {
-      nemAddress = nemSigner.getAddress(accountPath)
-
-      dispatch(accountCacheAddress({
-        blockchain: BLOCKCHAIN_NEM,
-        address: nemAddress,
-      }))
-    }
-  }
-  if (nemAddress) {
+  if (addressCache[BLOCKCHAIN_NEM]) {
     wallets.push(new WalletModel({
-      address: nemAddress,
+      address: addressCache[BLOCKCHAIN_NEM],
       blockchain: BLOCKCHAIN_NEM,
       isMain: true,
       walletDerivedPath: accountPath,
     }))
   }
 
-  let wavesAddress = addressCache[BLOCKCHAIN_WAVES]
-  if (!wavesAddress) {
-    const wavesSigner = getWavesSigner(state)
-    if (wavesSigner) {
-      wavesAddress = wavesSigner.getAddress(accountPath)
-
-      dispatch(accountCacheAddress({
-        blockchain: BLOCKCHAIN_WAVES,
-        address: wavesAddress,
-      }))
-    }
-  }
-  if (wavesAddress) {
+  if (addressCache[BLOCKCHAIN_WAVES]) {
     wallets.push(new WalletModel({
-      address: wavesAddress,
+      address: addressCache[BLOCKCHAIN_WAVES],
       blockchain: BLOCKCHAIN_WAVES,
       isMain: true,
       walletDerivedPath: accountPath,
