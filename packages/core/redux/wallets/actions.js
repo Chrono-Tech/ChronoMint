@@ -82,14 +82,18 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
   const accountPath = account.decryptedWallet.entry.encrypted[0].path
 
   const ethereumSigner = getEthereumSigner(state)
-  const ethAddress = await ethereumSigner.getAddress(accountPath)
+  const ethAddress = await ethereumSigner.getAddress(accountPath);
 
-  wallets.push(new WalletModel({
-    address: ethAddress.toLowerCase(accountPath),
-    blockchain: BLOCKCHAIN_ETHEREUM,
-    isMain: true,
-    walletDerivedPath: accountPath,
-  }))
+  [
+    BLOCKCHAIN_ETHEREUM,
+  ].map((ethLikeBlockchain) => {
+    wallets.push(new WalletModel({
+      address: ethAddress.toLowerCase(accountPath),
+      blockchain: ethLikeBlockchain,
+      isMain: true,
+      walletDerivedPath: accountPath,
+    }))
+  })
 
   const bitcoinSigner = getBitcoinSigner(state)
   if (bitcoinSigner) {
@@ -292,10 +296,10 @@ export const mainTransfer = (
     const tokenDAO = tokenService.getDAO(token.id())
     const tx = tokenDAO.transfer(wallet.address, recipient, amount)
     const executeMap = {
-      [BLOCKCHAIN_ETHEREUM]: executeTransaction,
-      [BLOCKCHAIN_NEM]: executeNemTransaction,
       [BLOCKCHAIN_BITCOIN]: BitcoinThunks.executeBitcoinTransaction,
       [BLOCKCHAIN_DASH]: executeDashTransaction,
+      [BLOCKCHAIN_ETHEREUM]: executeTransaction,
+      [BLOCKCHAIN_NEM]: executeNemTransaction,
       [BLOCKCHAIN_WAVES]: executeWavesTransaction,
     }
 

@@ -31,7 +31,6 @@ import {
 } from '../../dao/constants/NemDAO'
 import {
   BLOCKCHAIN_ETHEREUM,
-  ETH,
   EVENT_NEW_BLOCK,
   EVENT_NEW_TOKEN,
   EVENT_UPDATE_LAST_BLOCK,
@@ -207,11 +206,20 @@ export const subscribeOnTokens = (callback) => (dispatch, getState) => {
 }
 
 export const watchLatestBlock = () => async (dispatch) => {
-  ethereumDAO.on(EVENT_NEW_BLOCK, (block) => {
-    dispatch(TokensActions.setLatestBlock(BLOCKCHAIN_ETHEREUM, block))
+  const daosMap = [
+    {
+      blockchain: BLOCKCHAIN_ETHEREUM,
+      dao: ethereumDAO,
+    }
+  ]
+
+  await daosMap.map(async (daoData) => {
+    daoData.dao.on(EVENT_NEW_BLOCK, (block) => {
+      dispatch(TokensActions.setLatestBlock(daoData.blockchain, block))
+    })
+    const block = await daoData.dao.getBlockNumber()
+    dispatch(TokensActions.setLatestBlock(daoData.blockchain, { blockNumber: block }))
   })
-  const block = await ethereumDAO.getBlockNumber()
-  dispatch(TokensActions.setLatestBlock(BLOCKCHAIN_ETHEREUM, { blockNumber: block }))
 }
 
 export const estimateGasTransfer = (tokenId, params, gasPriceMultiplier = 1, address) => async (dispatch) => {
@@ -222,7 +230,7 @@ export const estimateGasTransfer = (tokenId, params, gasPriceMultiplier = 1, add
 
   return {
     gasLimit,
-    gasFee: new Amount(gasFee.mul(gasPriceMultiplier).toString(), ETH),
-    gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier).toString(), ETH),
+    gasFee: new Amount(gasFee.mul(gasPriceMultiplier).toString(), tokenDao.getSymbol()),
+    gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier).toString(), tokenDao.getSymbol()),
   }
 }
