@@ -93,7 +93,7 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
 
   Object.entries(signerSelectors).forEach(([ blockchain, signerSelector ]) => {
     let address = addressCache[blockchain]
-    if(address) {
+    if(!address) {
       const signer = signerSelector(state)
       if (signer) {
         address = signer.getAddress(accountPath)
