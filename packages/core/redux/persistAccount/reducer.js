@@ -58,11 +58,16 @@ const persistAccount = (state = initialState, action) => {
       }
 
     case a.WALLETS_CACHE_ADDRESS: {
+      const selectedWalletKey = state.selectedWallet.key
+
       return {
         ...state,
         addressCache: {
           ...state.addressCache,
-          [action.blockchain]: action.address,
+          [selectedWalletKey]: {
+            ...state.addressCache[selectedWalletKey],
+            [action.blockchain]: action.address,
+          },
         },
       }
     }
