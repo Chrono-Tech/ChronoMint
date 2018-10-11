@@ -26,7 +26,7 @@ import {
   WALLETS_SELECT,
   WALLETS_UPDATE_LIST,
   WALLETS_LOAD,
-  WALLETS_UPDATE_ADDRESS_CACHE,
+  WALLETS_CACHE_ADDRESS,
 } from './constants'
 
 export const accountAdd = (wallet) => (dispatch) => {
@@ -49,10 +49,10 @@ export const accountUpdateList = (walletList) => (dispatch) => {
   dispatch({ type: WALLETS_UPDATE_LIST, walletList })
 }
 
-export const accountUpdateAddressCache = ({ walletKey, addressCache }) => ({
-  type: WALLETS_UPDATE_ADDRESS_CACHE,
-  walletKey,
-  addressCache,
+export const accountCacheAddress = ({ blockchain, address }) => ({
+  type: WALLETS_CACHE_ADDRESS,
+  blockchain,
+  address,
 })
 
 export const accountUpdate = (wallet) => (dispatch, getState) => {
