@@ -87,8 +87,8 @@ export const getSelectedWalletKey = createSelector(
 )
 
 export const getAddressCache = createSelector(
-  getPersistAccount,
-  (account) => {
-    return account.addressCache
+  [getPersistAccount, getSelectedWalletKey],
+  (account, selectedWalletKey) => {
+    return account.addressCache[selectedWalletKey]
   }
 )
