@@ -79,7 +79,7 @@ export const initWallets = () => (dispatch) => {
 const initWalletsFromKeys = () => async (dispatch, getState) => {
   const state = getState()
   const account = getPersistAccount(state)
-  const addressCache = getAddressCache(state)
+  const addressCache = { ...getAddressCache(state) }
 
   const signerSelectors = {
     [BLOCKCHAIN_ETHEREUM]: getEthereumSigner,
