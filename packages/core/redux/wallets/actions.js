@@ -51,6 +51,7 @@ import TxDescModel from '../../models/TxDescModel'
 import { initEos } from '../eos/thunks'
 import { getTokens } from '../tokens/selectors'
 import { accountCacheAddress } from '../persistAccount/actions'
+import { getBlockchainsList } from '../blockchains/selectors'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -105,6 +106,7 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
     }
   })
 
+  const blockchains = getBlockchainsList(state)
   const wallets = []
   const accountPath = account.decryptedWallet.entry.encrypted[0].path
 
