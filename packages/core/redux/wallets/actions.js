@@ -87,7 +87,7 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
   if(!ethereumAddress) {
     const ethereumSigner = getEthereumSigner(state)
     if (ethereumSigner) {
-      ethereumAddress = await ethereumSigner.getAddress(accountPath)
+      ethereumAddress = ethereumSigner.getAddress(accountPath)
 
       dispatch(accountCacheAddress({
         blockchain: BLOCKCHAIN_ETHEREUM,
