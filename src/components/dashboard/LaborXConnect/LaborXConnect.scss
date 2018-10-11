@@ -1,0 +1,264 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.root {
+  overflow: hidden;
+  min-width: 390px;
+  max-width: 390px;
+
+  @include xs-only {
+    min-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+.head {
+  background: $sideMenu-background;
+}
+
+.mainTitle {
+  font-size: 30px;
+  color: $color-white;
+  line-height: 36px;
+  font-weight: 400;
+  padding: 15px 30px;
+  &.bordered {
+    border-bottom: 1px solid $border-color;
+  }
+}
+
+.headContent {
+  .title {
+    font-weight: 400;
+    line-height: 19px;
+    font-size: 16px;
+    color: $color-white;
+    .address {
+      color: $additionalData-color;
+    }
+  }
+
+  .balance {
+    line-height: 25px;
+    color: $color-white;
+    font-size: 30px;
+    white-space: nowrap;
+    :global {
+      .TokenValue__root {
+        span {
+          line-height: 36px;
+          color: $color-white;
+          font-size: 30px;
+          opacity: 1;
+        }
+      }
+    }
+  }
+  .balanceFiat {
+    white-space: nowrap;
+    span {
+      color: $color-white;
+      font-size: 16px;
+      line-height: 19px;
+      margin: 0;
+    }
+  }
+  .preloader {
+    display: flex;
+    justify-content: left;
+    :global {
+      .Preloader__root {
+        flex-grow: 0;
+      }
+    }
+  }
+  .stepsWrapper {
+    border-top: 1px solid $color-blue-3;
+    padding: 20px 30px;
+    display: flex;
+    line-height: 19px;
+    .step {
+      color: $additionalData-color;
+      margin-right: 32px;
+    }
+    .active {
+      color: $color-white;
+      font-weight: 500;
+    }
+  }
+}
+
+.body {
+  background: $color-white;
+  padding: 0 30px 30px;
+
+  .fieldWrapperHide {
+    display: none;
+  }
+  .fieldWrapper {
+    position: relative;
+    .amountInFiat {
+      color: $color-grey-2;
+      font-size: 14px;
+      line-height: 17px;
+      position: absolute;
+      right: 0;
+      top: 38px;
+    }
+  }
+  .transactionsInfo {
+    padding-top: 20px;
+    font-size: 14px;
+    > div {
+      padding-top: 10px;
+    }
+    .infoText {
+      :global {
+        .TokenValue__root {
+          span {
+            font-size: 14px;
+            color: $color-primary-3;
+          }
+        }
+      }
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+.action {
+  margin-left: 10px;
+  &:first-child {
+    margin-left: 0;
+  }
+}
+
+.actionButton {
+  @include xs-only {
+    width: 100%;
+  }
+}
+
+.warning {
+  color: $color-warning;
+  font-size: 12px;
+}
+
+.hint {
+  color: $color-white;
+}
+
+.ellipsis {
+  @include ellipsis;
+  color: $color-white
+}
+
+.feeRate {
+  padding-top: 40px;
+}
+
+.feeMultiplier {
+}
+
+.tagsWrap {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 7px;
+  color: $border-color;
+  font-weight: 400;
+  line-height: 19px;
+  font-size: 16px;
+}
+
+.tagDefault {
+}
+
+.noteTwo {
+  border-bottom: 1px solid $color-grey-3;
+  line-height: 20px;
+  padding: 30px 30px 40px;
+  margin: 0 -30px;
+}
+
+.headItemWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px 30px 0;
+  .headItem {
+    padding-bottom: 20px;
+    .headItemTitle {
+      color: $additionalData-color;
+      line-height: 17px;
+      font-size: 14px;
+    }
+  }
+}
+
+.notesWrapper {
+  margin: 0 -30px;
+  .note {
+    border-top: 1px solid $color-grey-3;
+    padding: 30px;
+    margin: 0;
+    display: flex;
+    .icon {
+      border: none;
+      width: 60px;
+      height: 60px;
+      line-height: 60px;
+      font-size: 60px;
+      color: $color-red-3;
+      padding: 0 25px 0 0;
+    }
+  }
+}
+
+.flowPoints {
+  margin-top: 10px;
+  border-top: 1px solid $border-color;
+  display: flex;
+  padding: 0 30px;
+  height: 30px;
+  .point {
+    justify-content: left;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: $border-color;
+    margin-right: 10px;
+    margin-top: -6px;
+    &.active {
+      background: $color-white;
+    }
+  }
+}
+
+.note {
+  padding: 25px 30px 20px;
+  background: $color-white;
+  border-bottom: 1px solid $color-grey-3;
+  .noteTitle {
+    line-height: 28px;
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .noteText {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+  }
+}
+
+.amountLabel {
+  top: 12px !important;
+}

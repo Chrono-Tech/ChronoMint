@@ -44,6 +44,7 @@ import VotingWarningWidgets from 'components/voting/VotingWarningWidgets/lang'
 import TransactionsTable from 'components/dashboard/TransactionsTable/lang'
 import TransactionsListWidget from 'components/wallet/TransactionsListWidget/lang'
 import ReceiveTokenModal from 'components/dashboard/ReceiveTokenModal/lang'
+import LaborXConnect from 'components/dashboard/LaborXConnect/lang'
 
 export default {
   en: {
@@ -91,5 +92,6 @@ export default {
     CustomWalletForm: CustomWalletForm.en,
     StandardWalletForm: StandardWalletForm.en,
     ReceiveTokenModal: ReceiveTokenModal.en,
+    LaborXConnect: LaborXConnect.en,
   },
 }

@@ -32,6 +32,7 @@ import TwoFaConfirmModal from 'components/wallet/TwoFaConfirmModal/TwoFaConfirmM
 import UpdateProfileDialog from 'components/dialogs/UpdateProvideDialog/UpdateProfileDialog'
 import UserActiveDialog from 'components/dialogs/UserActiveDialog/UserActiveDialog'
 import WalletSettingsForm from 'components/wallet/AddWalletWidget/WalletSettingsForm/WalletSettingsForm'
+import LaborXConnectModal from 'components/dashboard/LaborXConnect/LaborXConnectModal'
 
 export default class ModalSelector extends PureComponent {
   // Keep Map alphabetically sorted
@@ -60,6 +61,7 @@ export default class ModalSelector extends PureComponent {
     'UpdateProfileDialog': UpdateProfileDialog,
     'UserActiveDialog': UserActiveDialog,
     'WalletSettingsForm': WalletSettingsForm,
+    'LaborXConnectModal': LaborXConnectModal,
   })
 
   static getModal (modalProps) {

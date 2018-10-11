@@ -1,0 +1,128 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+import { isTestingNetwork } from '@chronobank/login/network/settings'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
+import Amount from '@chronobank/core/models/Amount'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import { change, formValueSelector } from 'redux-form/immutable'
+import { DUCK_ASSETS_HOLDER } from '@chronobank/core/redux/assetsHolder/constants'
+import { ETH } from '@chronobank/core/dao/constants'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
+import AllowanceModel from '@chronobank/core/models/wallet/AllowanceModel'
+import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
+import WalletModel from '@chronobank/core/models/wallet/WalletModel'
+import { FORM_LABOR_X_CONNECT } from 'components/constants'
+import {
+  depositAsset,
+  initAssetsHolder,
+  withdrawAsset,
+} from '@chronobank/core/redux/assetsHolder/actions'
+import { mainApprove } from '@chronobank/core/redux/wallets/actions'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
+import AssetsCollection from '@chronobank/core/models/assetHolder/AssetsCollection'
+import LaborXConnectForm from './LaborXConnectForm'
+import './LaborXConnect.scss'
+
+function mapStateToProps (state) {
+  // form
+  const selector = formValueSelector(FORM_LABOR_X_CONNECT)
+  const tokenId = selector(state, 'symbol')
+  const amount = Number.parseFloat(selector(state, 'amount') || 0)
+  const feeMultiplier = selector(state, 'feeMultiplier')
+
+  // state
+  const wallet: WalletModel = getMainEthWallet(state)
+  const assetHolder = state.get(DUCK_ASSETS_HOLDER)
+  const tokens = state.get(DUCK_TOKENS)
+  const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
+
+  const token = tokens.item(tokenId)
+  const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
+  const balance = wallet.balances[tokenId] || new Amount(0, tokenId)
+  const balanceEth = wallet.balances[ETH] || new Amount(0, ETH)
+  const assets = assetHolder.assets()
+  const spender = assetHolder.wallet()
+
+  return {
+    wallet,
+    balance,
+    balanceEth,
+    deposit: assets.item(token.address()).deposit(),
+    allowance: wallet.allowances.list[`${spender}-${token.id()}`] || new AllowanceModel(),
+    spender,
+    amount,
+    token,
+    feeMultiplier,
+    tokens,
+    assets,
+    isShowTIMERequired: isTesting && !wallet.isTIMERequired && balance.isZero() && token.symbol() === 'TIME',
+    account: state.get(DUCK_SESSION).account,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    initAssetsHolder: () => dispatch(initAssetsHolder()),
+    mainApprove: (token, amount, spender, feeMultiplier, advancedOptions) => dispatch(mainApprove(token, amount, spender, feeMultiplier, advancedOptions)),
+    depositAsset: (amount, token) => dispatch(depositAsset(amount, token)),
+    withdrawAsset: (amount, token) => dispatch(withdrawAsset(amount, token)),
+    onChangeField: (field, value) => dispatch(change(FORM_LABOR_X_CONNECT, field, value)),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
+export default class LaborXConnect extends PureComponent {
+  static propTypes = {
+    deposit: PropTypes.instanceOf(Amount),
+    balanceEth: PropTypes.instanceOf(Amount),
+    token: PropTypes.instanceOf(TokenModel),
+    assets: PropTypes.instanceOf(AssetsCollection),
+    initAssetsHolder: PropTypes.func,
+    mainApprove: PropTypes.func,
+    depositAsset: PropTypes.func,
+    withdrawAsset: PropTypes.func,
+    handleSubmitSuccess: PropTypes.func,
+    onChangeField: PropTypes.func,
+    amount: PropTypes.number,
+  }
+
+  componentDidMount () {
+    this.props.initAssetsHolder()
+  }
+
+  componentWillReceiveProps (newProps) {
+    const firstAsset = newProps.assets.first()
+    this.props.onChangeField('symbol', firstAsset.symbol())
+  }
+
+  handleSubmit = () => {
+  }
+
+  handleSubmitSuccess = () => {
+    if (typeof this.props.handleSubmitSuccess === 'function') {
+      this.props.handleSubmitSuccess()
+    }
+  }
+
+  render () {
+    const { amount, assets, token, deposit, balanceEth, onChangeField } = this.props
+
+    return (
+      <LaborXConnectForm
+        amount={amount}
+        onChangeField={onChangeField}
+        deposit={deposit}
+        balanceEth={balanceEth}
+        token={token}
+        assets={assets}
+        onSubmit={this.handleSubmit}
+        onSubmitSuccess={this.handleSubmitSuccess}
+      />
+    )
+  }
+}

@@ -39,7 +39,7 @@ function mapDispatchToProps (dispatch) {
     })),
     handleOpenDepositForm: () => dispatch(modalsOpen({ componentName: 'DepositTokensModal' })),
     handleOpenUnlockForm: () => dispatch(modalsOpen({ componentName: 'UnlockLaborXModal' })),
-    handleOpenLockForm: () => dispatch(modalsOpen({ componentName: 'LockLaborXModal' })),
+    handleOpenLockForm: () => dispatch(modalsOpen({ componentName: 'LaborXConnectModal' })),
   }
 }
 
