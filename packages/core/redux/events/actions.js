@@ -106,7 +106,7 @@ export const pushEvent = (historyKey, log) => async (dispatch, getState) => {
   })
 }
 
-export const loadEvents = (topics = null, address: string = null, blockScanLimit = 100000, logScanLimit = 10) => async (dispatch, getState) => {
+export const loadEvents = (symbol, topics = null, address: string = null, blockScanLimit = 100000, logScanLimit = 10) => async (dispatch, getState) => {
 
   const web3 = web3Selector()(getState())
   const account = getState().get(DUCK_SESSION).account
@@ -267,7 +267,7 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
       }
 
       if (tx.from.toLowerCase() === address || tx.to.toLowerCase() === address) {
-        const description = describeTx({ tx, receipt, block }, context)
+        const description = describeTx({ tx, receipt, block }, symbol, context)
         if (Array.isArray(description)) {
           entries.push(...description)
         } else {
