@@ -21,6 +21,7 @@ import {
   BLOCKCHAIN_DASH,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_ETHEREUM,
+  ETH
 } from '@chronobank/core/dao/constants'
 import './AddWalletWidget.scss'
 import SelectWalletType from './SelectWalletType/SelectWalletType'
@@ -158,6 +159,7 @@ export default class AddWalletWidget extends PureComponent {
       case 'CW':
         title = `${prefix}.customWallet`
         Component = CustomWalletForm
+        componentProps = { symbol: ETH, blockchain: BLOCKCHAIN_ETHEREUM }
         break
       case '2FA':
         title = `${prefix}.twoFA`
