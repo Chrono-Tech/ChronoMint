@@ -36,7 +36,11 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
   const currentNetwork = state.get(DUCK_NETWORK).selectedNetworkId
   AbstractContractDAO.setAccount(account)
   const currentNetworkId = currentNetwork
-  const contractManagerAddress = ContractsManagerABI.networks[currentNetworkId].address
+  // TODO @abdulov remove console.log
+  console.log('%c ContractsManagerABI', 'background: #222; color: #fff', ContractsManagerABI)
+  // TODO @abdulov remove console.log
+  console.log('%c currentNetworkId', 'background: #222; color: #fff', currentNetworkId)
+  const contractManagerAddress = ContractsManagerABI.networks[1539345399111].address
   const contractManagerDAO = CONTRACTS_MANAGER.create(contractManagerAddress)
   await contractManagerDAO.connect(web3)
 

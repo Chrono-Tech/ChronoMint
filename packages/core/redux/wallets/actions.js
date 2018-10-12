@@ -91,7 +91,8 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
     walletDerivedPath: accountPath,
   }))
 
-  const bitcoinSigner = getBitcoinSigner(state)
+  // TODO @Abdulov  uncommentsYY
+  /*const bitcoinSigner = getBitcoinSigner(state)
   if (bitcoinSigner) {
     wallets.push(new WalletModel({
       address: bitcoinSigner.getAddress(accountPath),
@@ -149,13 +150,13 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
       isMain: true,
       walletDerivedPath: accountPath,
     }))
-  }
+  }*/
 
   wallets.forEach((wallet) => {
     dispatch(setWallet(wallet))
     dispatch(updateWalletBalance({ wallet }))
   })
-  dispatch(initEos())
+  // dispatch(initEos())
 }
 
 const initDerivedWallets = () => async (dispatch, getState) => {
@@ -209,7 +210,7 @@ export const updateWalletBalance = ({ wallet }) => async (dispatch) => {
   const blockchain = wallet.blockchain
   const address = wallet.address
 
-  if (blockchain === BLOCKCHAIN_NEM) {
+  if (blockchain === BLOCKCHAIN_NEM || blockchain === BLOCKCHAIN_ETHEREUM) {
     return dispatch(fallbackCallback(wallet))
   }
 

@@ -78,14 +78,14 @@ class NetworkCreateModalForm extends PureComponent {
         />
 
         <div styleName='actions'>
-          { network ? (
+          {network ? (
             <Button
               styleName='button buttonDelete'
               buttonType='login'
               onClick={handleDeleteNetwork}
               label={<div styleName='deleteIcon' className='chronobank-icon'>delete</div>}
             />
-          ) : null }
+          ) : null}
 
           <Button
             styleName='button buttonCancel'
@@ -106,7 +106,7 @@ class NetworkCreateModalForm extends PureComponent {
             }
           />
 
-          { error ? (<div styleName='form-error'>{error}</div>) : null }
+          {error ? (<div styleName='form-error'>{error}</div>) : null}
         </div>
 
       </form>
