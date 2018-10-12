@@ -26,7 +26,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_ASSETS_HOLDER } from '@chronobank/core/redux/assetsHolder/constants'
-import { ETH, BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
+import { getMainSymbolForBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
 import { estimateGasForDeposit, requireTIME } from '@chronobank/core/redux/mainWallet/actions'
 import { mainApprove, mainRevoke } from '@chronobank/core/redux/wallets/actions'
@@ -71,7 +71,8 @@ function mapStateToProps (state) {
   const token = tokens.item(tokenId)
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
   const balance = wallet.balances[tokenId] || new Amount(0, tokenId)
-  const balanceEth = wallet.balances[ETH] || new Amount(0, ETH)
+  const symbol = getMainSymbolForBlockchain(wallet.blockchain)
+  const balanceEth = wallet.balances[symbol] || new Amount(0, symbol)
   const assets = assetHolder.assets()
   const spender = assetHolder.wallet()
 
@@ -90,7 +91,7 @@ function mapStateToProps (state) {
     isShowTIMERequired: isTesting && !wallet.isTIMERequired && balance.isZero() && token.symbol() === 'TIME',
     account: state.get(DUCK_SESSION).account,
     initialValues: {
-      feeMultiplier: getGasPriceMultiplier(BLOCKCHAIN_ETHEREUM)(state),
+      feeMultiplier: getGasPriceMultiplier(wallet.blockchain)(state),
     },
   }
 }
@@ -421,7 +422,7 @@ export default class DepositTokensForm extends PureComponent {
             <Button
               styleName='actionButton'
               label={<Translate value={prefix('receiveEth')} />}
-              onClick={this.handleReceiveToken(ETH, wallet)}
+              onClick={this.handleReceiveToken(getMainSymbolForBlockchain(wallet.blockchain), wallet)}
             />
           </div>
         )}
