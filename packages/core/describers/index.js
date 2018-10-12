@@ -76,6 +76,7 @@ const defaultDescription = (entry, symbol, context) => {
   const path = `tx`
   return new LogTxModel({
     key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
+    symbol,
     type: 'tx',
     name: 'custom',
     date: new Date(block ? (block.timestamp * 1000) : null),

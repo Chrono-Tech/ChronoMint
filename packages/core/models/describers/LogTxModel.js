@@ -10,6 +10,7 @@ import { EVENT_TYPE_TRANSACTION } from '../../describers/constants'
 
 const schemaFactory = () => ({
   key: PropTypes.string.isRequired,
+  symbol: PropTypes.string,
   type: PropTypes.string,
   name: PropTypes.string.isRequired,
   category: PropTypes.string,
