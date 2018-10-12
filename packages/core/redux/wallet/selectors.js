@@ -4,6 +4,7 @@
  */
 
 import { createSelector } from 'reselect'
+import { BLOCKCHAIN_ETHEREUM } from '../../dao/constants'
 import { DUCK_ETH_MULTISIG_WALLET } from '../multisigWallet/constants'
 import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 import Amount from '../../models/Amount'
@@ -11,6 +12,10 @@ import { getMultisigWallets, selectMarketPricesListStore, selectMarketPricesSele
 import { getWallet } from '../wallets/selectors/models'
 import { getEthMultisigWallet } from '../multisigWallet/selectors/models'
 import { getEOSWallet } from '../eos/selectors/mainSelectors'
+
+const ducksMap = {
+  [BLOCKCHAIN_ETHEREUM]: DUCK_ETH_MULTISIG_WALLET,
+}
 
 export {
   getMultisigWallets,
@@ -21,7 +26,7 @@ export {
 
 export const getDeriveWalletsAddresses = (state, blockchain) => {
   const accounts = []
-  state.get(DUCK_ETH_MULTISIG_WALLET)
+  state.get(ducksMap[blockchain])
     .list()
     .map((wallet) => {
       if (wallet instanceof DerivedWalletModel && wallet.blockchain() === blockchain) {

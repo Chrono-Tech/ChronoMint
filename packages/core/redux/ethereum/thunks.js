@@ -130,7 +130,7 @@ const submitTransaction = (entry) => async (dispatch, getState) => {
   const account = getAccount(state)
   const dao = daoByAddress(entry.tx.to)(state) || ethereumDAO
 
-  const description = describePendingTx(entry, {
+  const description = describePendingTx(entry, dao.symbol, {
     address: account,
     abi: dao.abi,
     token: dao.token,
