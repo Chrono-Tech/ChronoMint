@@ -30,6 +30,7 @@ import {
 import { STORAGE_COOKIES_BAR } from './constants'
 import * as UIActions from './actions'
 import { getValueSessionStorage } from './selectors'
+import { FORM_ADD_NEW_WALLET } from '@chronobank/core/redux/wallets/constants'
 
 const destroyNetworkSessionInLocalStorage = (isReset = true) => (dispatch) => {
   dispatch(destroyNetworkSession(isReset))

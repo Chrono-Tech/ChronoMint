@@ -26,11 +26,11 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_ASSETS_HOLDER } from '@chronobank/core/redux/assetsHolder/constants'
-import { ETH, BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
-import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
-import { estimateGasForDeposit, requireTIME } from '@chronobank/core/redux/mainWallet/actions'
+import { BLOCKCHAIN_ETHEREUM, ETH } from '@chronobank/core/dao/constants'
+import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/wallets/constants'
+import { estimateGasForDeposit, requireTIME } from '@chronobank/core/redux/assetsHolder/actions'
 import { mainApprove, mainRevoke } from '@chronobank/core/redux/wallets/actions'
-import { TX_DEPOSIT, ASSET_DEPOSIT_WITHDRAW } from '@chronobank/core/dao/constants/AssetHolderDAO'
+import { ASSET_DEPOSIT_WITHDRAW, TX_DEPOSIT } from '@chronobank/core/dao/constants/AssetHolderDAO'
 import { TX_APPROVE } from '@chronobank/core/dao/constants/ERC20DAO'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
@@ -39,12 +39,7 @@ import classnames from 'classnames'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
 import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
-import {
-  FORM_DEPOSIT_TOKENS,
-  ACTION_APPROVE,
-  ACTION_DEPOSIT,
-  ACTION_WITHDRAW,
-} from 'components/constants'
+import { ACTION_APPROVE, ACTION_DEPOSIT, ACTION_WITHDRAW, FORM_DEPOSIT_TOKENS } from 'components/constants'
 import './DepositTokensForm.scss'
 import validate from './validate'
 

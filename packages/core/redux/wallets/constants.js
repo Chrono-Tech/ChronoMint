@@ -3,6 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+export const FEE_RATE_MULTIPLIER = {
+  min: 0.1,
+  max: 1.9,
+  step: 0.1,
+}
+
+export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
 export const DUCK_WALLETS = 'wallets'
 export const WALLETS_SET = 'wallet/set'
 export const WALLETS_UNSET = 'wallet/unset'

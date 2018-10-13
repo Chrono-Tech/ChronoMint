@@ -21,8 +21,9 @@ import TokenModel from '../../models/tokens/TokenModel'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 import tokenService from '../../services/TokenService'
 import Amount from '../../models/Amount'
-import { getMainEthWallet, getWallet, getWallets } from './selectors/models'
-import { notifyError } from '../notifier/actions'
+import { getAccount } from '../session/selectors'
+import { getMainAddresses, getMainEthWallet, getMainWalletForBlockchain, getWallet, getWallets } from './selectors/models'
+import { notify, notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { AllowanceCollection } from '../../models'
 import { executeDashTransaction } from '../dash/thunks'
@@ -31,6 +32,7 @@ import { executeWavesTransaction } from '../waves/thunks'
 import { executeBitcoinTransaction } from '../bitcoin/thunks'
 import {
   WALLETS_SET,
+  WALLETS_SET_IS_TIME_REQUIRED,
   WALLETS_UNSET,
   WALLETS_SET_NAME,
   WALLETS_UPDATE_BALANCE,
@@ -40,9 +42,18 @@ import { executeNemTransaction } from '../nem/thunks'
 import { getEthereumSigner } from '../persistAccount/selectors'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
-import { BCC, BTC, DASH, ETH, LTC, WAVES, XEM } from '../../dao/constants'
+import { BCC, BTC, DASH, ETH, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, LTC, WAVES, XEM } from '../../dao/constants'
 import TxDescModel from '../../models/TxDescModel'
 import { getTokens } from '../tokens/selectors'
+import { daoByType } from '../daos/selectors'
+// import TxModel from '../../models/TxModel'
+// import { getDeriveWalletsAddresses } from '../wallet/selectors'
+// import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
+// import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
+// import { DUCK_ETH_MULTISIG_WALLET, ETH_MULTISIG_BALANCE, ETH_MULTISIG_FETCHED } from '../multisigWallet/constants'
+// import BalanceModel from '../../models/tokens/BalanceModel'
+// import { getMultisigWallets } from '../wallet/selectors/models'
+// import { addMarketToken } from '../market/actions'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -510,4 +521,21 @@ export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
     isFetched: true,
     isLoaded: true,
   })
+}
+
+export const updateIsTIMERequired = () => async (dispatch, getState) => {
+  const { account } = getState().get(DUCK_SESSION)
+  const wallet = getMainEthWallet(getState())
+  try {
+    const assetDonatorDAO = daoByType('AssetDonator')(getState())
+    const isTIMERequired = await assetDonatorDAO.isTIMERequired(account)
+    dispatch({
+      type: WALLETS_SET_IS_TIME_REQUIRED,
+      walletId: wallet.id,
+      isTIMERequired,
+    })
+  } catch (e) {
+    // eslint-disable-next-line
+    console.error('require time error', e.message)
+  }
 }

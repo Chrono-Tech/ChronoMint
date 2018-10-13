@@ -5,7 +5,6 @@
 
 import { watchInitMonitor } from '@chronobank/login/redux/monitor/actions'
 import { watchInitTokens, watchPlatformManager } from '../assetsManager/actions'
-import { initMainWallet } from '../mainWallet/actions'
 import { watchInitMarket } from '../market/actions'
 import { watchEventsToHistory } from '../events/actions'
 // import { initTokens } from '../tokens/thunks'
