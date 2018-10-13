@@ -11,12 +11,12 @@ import { DUCK_SESSION } from '../session/constants'
 import { subscribeOnTokens } from '../tokens/thunks'
 import tokenService from '../../services/TokenService'
 import { daoByType } from '../daos/selectors'
-import { BLOCKCHAIN_ETHEREUM } from '../../dao/constants'
+import { BLOCKCHAIN_ETHEREUM, ETH, TIME } from '../../dao/constants'
 import { getWallet } from '../wallets/selectors/models'
 import { WALLETS_UPDATE_WALLET } from '../wallets/constants'
 import WalletModel from '../../models/wallet/WalletModel'
 import AllowanceCollection from '../../models/AllowanceCollection'
-import { executeTransaction } from '../ethereum/thunks'
+import { estimateGas, executeTransaction } from '../ethereum/thunks'
 
 import {
   DUCK_ASSETS_HOLDER,
@@ -24,6 +24,8 @@ import {
   ASSET_HOLDER_ADDRESS,
   ASSET_HOLDER_ASSET_UPDATE,
 } from './constants'
+import { TX_APPROVE } from '../../dao/constants/ChronoBankPlatformDAO'
+import { ASSET_DEPOSIT_WITHDRAW, TX_DEPOSIT } from '../../dao/constants/AssetHolderDAO'
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const assetHolder = getState().get(DUCK_ASSETS_HOLDER)
@@ -166,5 +168,47 @@ export const withdrawAsset = (amount: Amount, token: TokenModel, feeMultiplier: 
   } catch (e) {
     // eslint-disable-next-line
     console.error('withdraw error', e)
+  }
+}
+
+export const requireTIME = () => async (dispatch, getState) => {
+  try {
+    const state = getState()
+    const assetDonatorDAO = daoByType('AssetDonator')(state)
+
+    const tx = await assetDonatorDAO.requireTIME()
+
+    if (tx) {
+      await dispatch(executeTransaction({ tx }))
+    }
+  } catch (e) {
+    // eslint-disable-next-line
+    console.error('require time error', e.message)
+  }
+}
+
+export const estimateGasForDeposit = (mode: string, params, callback, gasPriceMultiplier = 1) => async (dispatch, getState) => {
+  let dao
+  let tx
+  switch (mode) {
+    case TX_APPROVE:
+      dao = await tokenService.getDAO(TIME)
+      tx = dao[TX_APPROVE](...params)
+      break
+    case TX_DEPOSIT:
+    case ASSET_DEPOSIT_WITHDRAW:
+      dao = daoByType('TimeHolder')(getState())
+      tx = dao[mode](...params)
+      break
+  }
+  try {
+    const { gasLimit, gasFee, gasPrice } = await dispatch(estimateGas(tx))
+    callback(null, {
+      gasLimit,
+      gasFee: new Amount(gasFee.mul(gasPriceMultiplier), ETH),
+      gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier), ETH),
+    })
+  } catch (e) {
+    callback(e)
   }
 }

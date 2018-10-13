@@ -24,8 +24,8 @@ import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 import tokenService from '../../services/TokenService'
 import Amount from '../../models/Amount'
 import { getAccount } from '../session/selectors'
-import { getMainEthWallet, getWallet, getWallets } from './selectors/models'
-import { notifyError } from '../notifier/actions'
+import { getMainAddresses, getMainEthWallet, getMainWalletForBlockchain, getWallet, getWallets } from './selectors/models'
+import { notify, notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { AllowanceCollection } from '../../models'
 import { executeDashTransaction } from '../dash/thunks'
@@ -34,6 +34,7 @@ import { executeWavesTransaction } from '../waves/thunks'
 import * as BitcoinThunks from '../bitcoin/thunks'
 import {
   WALLETS_SET,
+  WALLETS_SET_IS_TIME_REQUIRED,
   WALLETS_SET_NAME,
   WALLETS_UPDATE_BALANCE,
   WALLETS_UPDATE_WALLET,
@@ -46,10 +47,19 @@ import { getNemSigner } from '../nem/selectors'
 import { getWavesSigner } from '../waves/selectors'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
-import { BCC, BTC, DASH, ETH, LTC, WAVES, XEM } from '../../dao/constants'
+import { BCC, BTC, DASH, ETH, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, LTC, WAVES, XEM } from '../../dao/constants'
 import TxDescModel from '../../models/TxDescModel'
 import { initEos } from '../eos/thunks'
 import { getTokens } from '../tokens/selectors'
+import { daoByType } from '../daos/selectors'
+import TxModel from '../../models/TxModel'
+import { getDeriveWalletsAddresses } from '../wallet/selectors'
+import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
+import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
+import { DUCK_ETH_MULTISIG_WALLET, ETH_MULTISIG_BALANCE, ETH_MULTISIG_FETCHED } from '../multisigWallet/constants'
+import BalanceModel from '../../models/tokens/BalanceModel'
+import { getMultisigWallets } from '../wallet/selectors/models'
+import { addMarketToken } from '../market/actions'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -70,9 +80,136 @@ export const setWallet = (wallet) => (dispatch) => {
 
 export const setWalletBalance = (walletId, balance) => (dispatch) => dispatch({ type: WALLETS_UPDATE_BALANCE, walletId, balance })
 
+const handleToken = (token: TokenModel) => async (dispatch, getState) => {
+  const { account } = getState().get(DUCK_SESSION)
+
+  const symbol = token.symbol()
+  const tokenDAO = tokenService.getDAO(token.id())
+
+  // subscribe
+  tokenDAO
+    .on(EVENT_NEW_TRANSFER, (tx: TxModel) => {
+      const walletsAccounts = getDeriveWalletsAddresses(getState(), token.blockchain())
+      const mainWalletAddresses = getMainAddresses(getState())
+      const assetDonatorDAO = daoByType('AssetDonator')(getState())
+
+      const isMainWalletFrom = tx.from().split(',').some((from) => mainWalletAddresses.includes(from))
+      const isMainWalletTo = tx.to().split(',').some((to) => mainWalletAddresses.includes(to))
+      const isMultiSigWalletsFrom = tx.from().split(',').some((from) => walletsAccounts.includes(from))
+      const isMultiSigWalletsTo = tx.to().split(',').some((to) => walletsAccounts.includes(to))
+
+      if (isMainWalletFrom || isMainWalletTo || isMultiSigWalletsFrom || isMultiSigWalletsTo || tx.from() === account || tx.to() === account) {
+        if (mainWalletAddresses.includes(tx.from()) || mainWalletAddresses.includes(tx.to()) ||
+          walletsAccounts.includes(tx.from()) || walletsAccounts.includes(tx.to()) ||
+          tx.from() === account || tx.to() === account) {
+          dispatch(notify(new TransferNoticeModel({
+            amount: token.removeDecimals(tx.value()),
+            symbol,
+            from: tx.from(),
+            to: tx.to(),
+          })))
+        }
+
+        if (isMainWalletFrom || isMainWalletTo || tx.from() === account || tx.to() === account) { // for main wallet
+
+          if (!(tx.from() === account || tx.to() === account)) {
+            return
+          }
+
+          // update donator
+          if (tx.from() === assetDonatorDAO.getInitAddress()) {
+            dispatch(updateIsTIMERequired())
+          }
+        }
+
+        if (walletsAccounts.includes(tx.from()) || walletsAccounts.includes(tx.to())) { // for derive wallets
+          const setDerivedWalletBalance = async (wallet: DerivedWalletModel) => {
+
+            dispatch({ type: ETH_MULTISIG_FETCHED, wallet: wallet.set('transactions', wallet.transactions().add(tx)) })
+
+            const dao = tokenService.getDAO(token)
+            const balance = await dao.getAccountBalance(wallet.address())
+            dispatch({
+              type: ETH_MULTISIG_BALANCE,
+              walletId: wallet.address(),
+              balance: new BalanceModel({
+                id: token.id(),
+                amount: new Amount(balance, token.symbol(), true),
+              }),
+            })
+          }
+
+          const walletFrom = getState().get(DUCK_ETH_MULTISIG_WALLET).item(tx.from())
+          if (walletFrom && walletFrom.isFetched()) {
+            setDerivedWalletBalance(walletFrom)
+          }
+          const walletTo = getMultisigWallets(getState()).item(tx.to())
+          if (walletTo && walletTo.isFetched()) {
+            setDerivedWalletBalance(walletTo)
+          }
+        }
+      }
+    })
+    .on(EVENT_UPDATE_BALANCE, ({ account, balance }) => {
+
+      switch (token.blockchain()) {
+        case BLOCKCHAIN_ETHEREUM:
+          const wallets = getState().get(DUCK_ETH_MULTISIG_WALLET)
+          if (wallets.item(account)) {
+            dispatch({
+              type: ETH_MULTISIG_BALANCE,
+              walletId: account,
+              balance: new BalanceModel({
+                id: token.id(),
+                amount: new Amount(balance, token.symbol(), true),
+              }),
+            })
+          } else {
+            const wallet = getWallet(token.blockchain(), account)(getState())
+            dispatch({ type: WALLETS_UPDATE_BALANCE, walletId: wallet.id, balance: new Amount(balance, token.symbol()) })
+          }
+          break
+
+        case BLOCKCHAIN_NEM:
+        case BLOCKCHAIN_BITCOIN:
+        case BLOCKCHAIN_BITCOIN_CASH:
+        case BLOCKCHAIN_DASH:
+        case BLOCKCHAIN_LITECOIN:
+        case BLOCKCHAIN_WAVES:
+          const wallet = getWallet(token.blockchain(), account)(getState())
+          dispatch({ type: WALLETS_UPDATE_BALANCE, walletId: wallet.id, balance: new Amount(balance, token.symbol()) })
+          break
+
+        default:
+          //eslint-disable-next-line no-console
+          console.warn('Update balance of unknown token blockchain: ', account, balance, token.toJSON())
+          break
+      }
+    })
+
+  dispatch(addMarketToken(token.symbol()))
+
+  if (token.symbol() === 'TIME') {
+    dispatch(updateIsTIMERequired())
+  }
+
+  // loading transaction for Current transaction list
+  if (token.blockchain() && !token.isERC20()) {
+    const wallet = getMainWalletForBlockchain(token.blockchain())(getState())
+    if (wallet && wallet.address) {
+      dispatch(getTransactionsForMainWallet({
+        address: wallet.address,
+        blockchain: token.blockchain(),
+        forcedOffset: true,
+      }))
+    }
+  }
+}
+
 export const initWallets = () => (dispatch) => {
   dispatch(initWalletsFromKeys())
   dispatch(initDerivedWallets())
+  dispatch(subscribeOnTokens(handleToken))
 }
 
 const initWalletsFromKeys = () => async (dispatch, getState) => {
@@ -519,4 +656,21 @@ export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
     isFetched: true,
     isLoaded: true,
   })
+}
+
+export const updateIsTIMERequired = () => async (dispatch, getState) => {
+  const { account } = getState().get(DUCK_SESSION)
+  const wallet = getMainEthWallet(getState())
+  try {
+    const assetDonatorDAO = daoByType('AssetDonator')(getState())
+    const isTIMERequired = await assetDonatorDAO.isTIMERequired(account)
+    dispatch({
+      type: WALLETS_SET_IS_TIME_REQUIRED,
+      walletId: wallet.id,
+      isTIMERequired,
+    })
+  } catch (e) {
+    // eslint-disable-next-line
+    console.error('require time error', e.message)
+  }
 }
