@@ -16,15 +16,11 @@ import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import AllowanceModel from '@chronobank/core/models/wallet/AllowanceModel'
 import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
-import { FORM_LABOR_X_CONNECT } from 'components/constants'
-import {
-  depositAsset,
-  initAssetsHolder,
-  withdrawAsset,
-} from '@chronobank/core/redux/assetsHolder/actions'
-import { mainApprove } from '@chronobank/core/redux/wallets/actions'
+import { initAssetsHolder, lockDeposit } from '@chronobank/core/redux/assetsHolder/actions'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
+import { TX_LOCK, TX_UNLOCK } from '@chronobank/core/dao/constants/AssetHolderDAO'
 import AssetsCollection from '@chronobank/core/models/assetHolder/AssetsCollection'
+import { FORM_LABOR_X_CONNECT } from 'components/constants'
 import LaborXConnectForm from './LaborXConnectForm'
 import './LaborXConnect.scss'
 
@@ -68,9 +64,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     initAssetsHolder: () => dispatch(initAssetsHolder()),
-    mainApprove: (token, amount, spender, feeMultiplier, advancedOptions) => dispatch(mainApprove(token, amount, spender, feeMultiplier, advancedOptions)),
-    depositAsset: (amount, token) => dispatch(depositAsset(amount, token)),
-    withdrawAsset: (amount, token) => dispatch(withdrawAsset(amount, token)),
+    lockDeposit: (amount, token) => dispatch(lockDeposit(amount, token)),
     onChangeField: (field, value) => dispatch(change(FORM_LABOR_X_CONNECT, field, value)),
   }
 }
@@ -79,13 +73,11 @@ function mapDispatchToProps (dispatch) {
 export default class LaborXConnect extends PureComponent {
   static propTypes = {
     deposit: PropTypes.instanceOf(Amount),
+    lockDeposit: PropTypes.func,
     balanceEth: PropTypes.instanceOf(Amount),
     token: PropTypes.instanceOf(TokenModel),
     assets: PropTypes.instanceOf(AssetsCollection),
     initAssetsHolder: PropTypes.func,
-    mainApprove: PropTypes.func,
-    depositAsset: PropTypes.func,
-    withdrawAsset: PropTypes.func,
     handleSubmitSuccess: PropTypes.func,
     onChangeField: PropTypes.func,
     amount: PropTypes.number,
@@ -100,7 +92,19 @@ export default class LaborXConnect extends PureComponent {
     this.props.onChangeField('symbol', firstAsset.symbol())
   }
 
-  handleSubmit = () => {
+  handleSubmit = (values) => {
+    const token = values.get('token')
+    const amount = new Amount(token.addDecimals(values.get('amount')), token.id())
+    const feeMultiplier = values.get('feeMultiplier') || 1
+
+    switch (values.get('action')) {
+      case TX_LOCK:
+        this.props.lockDeposit(amount, token, feeMultiplier)
+        break
+      case TX_UNLOCK:
+        // TODO @Abdulov implement the method
+        break
+    }
   }
 
   handleSubmitSuccess = () => {

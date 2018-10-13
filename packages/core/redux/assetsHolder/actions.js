@@ -24,7 +24,7 @@ import {
   ASSET_HOLDER_ADDRESS,
   ASSET_HOLDER_ASSET_UPDATE,
 } from './constants'
-import { TX_APPROVE } from '../../dao/constants/ChronoBankPlatformDAO'
+import { TX_APPROVE } from '../../dao/constants/ERC20DAO'
 import { ASSET_DEPOSIT_WITHDRAW, TX_DEPOSIT } from '../../dao/constants/AssetHolderDAO'
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
@@ -210,5 +210,20 @@ export const estimateGasForDeposit = (mode: string, params, callback, gasPriceMu
     })
   } catch (e) {
     callback(e)
+  }
+}
+
+export const lockDeposit = (amount: Amount, token: TokenModel, feeMultiplier: number = 1) => async (dispatch, getState) => {
+  try {
+    const state = getState()
+    const assetHolderDAO = daoByType('TimeHolder')(state)
+    const tx = assetHolderDAO.deposit(token.address(), amount)
+    if (tx) {
+      await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
+    }
+  } catch (e) {
+
+    // eslint-disable-next-line
+    console.error('deposit error', e)
   }
 }
