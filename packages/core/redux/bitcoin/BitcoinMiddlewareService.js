@@ -109,9 +109,9 @@ export default class BitcoinMiddlewareService extends BitcoinLikeBlockchainMiddl
       )
 
       if (confirmedBalance instanceof Error || unconfirmedBalance instanceof Error) {
-        return Promise.reject({ confirmedBalance, unconfirmedBalance, config: { host: 'https://35.225.28.29' } })
+        return Promise.reject({ confirmedBalance, unconfirmedBalance, config: { host: 'https://test-bcc.chronobank.io' } })
       } else {
-        return Promise.resolve({ confirmedBalance, unconfirmedBalance, config: { host: 'https://35.225.28.29' } })
+        return Promise.resolve({ confirmedBalance, unconfirmedBalance, config: { host: 'https://test-bcc.chronobank.io' } })
       }
     }
 

@@ -59,7 +59,7 @@ export const BTC_TESTNET_NODE = new BitcoinMiddlewareNode({
 
 const BCC_MAINNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
-    baseURL: 'https://35.225.28.29',
+    baseURL: 'https://test-bcc.chronobank.io',
     timeout: 10000,
   }),
   blockchain: BLOCKCHAIN_BITCOIN_CASH,
@@ -79,7 +79,7 @@ const BCC_MAINNET_NODE = new BitcoinBlockexplorerNode({
 
 const BCC_TESTNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
-    baseURL: 'https://35.225.28.29', // Ask Egor when chronobank node url is ready
+    baseURL: 'https://test-bcc.chronobank.io', // Ask Egor when chronobank node url is ready
     timeout: 10000,
   }),
   blockchain: BLOCKCHAIN_BITCOIN_CASH,
