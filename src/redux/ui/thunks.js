@@ -3,10 +3,19 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { destroyNetworkSession, login, logout } from '@chronobank/core/redux/session/thunks'
+import {
+  destroyNetworkSession,
+  login,
+  logout,
+} from '@chronobank/core/redux/session/thunks'
 import { change, formValueSelector } from 'redux-form/immutable'
 import { history } from 'redux/configureStore'
-import { navigateToVoting, navigateToRoot, navigateToWallets, navigateToPoll } from 'redux/ui/navigation'
+import {
+  navigateToVoting,
+  navigateToRoot,
+  navigateToWallets,
+  navigateToPoll,
+} from 'redux/ui/navigation'
 import { removeWatchersUserMonitor } from '@chronobank/login-ui/redux/thunks'
 import { PTPoll } from '@chronobank/core/redux/voting/types'
 import * as VotingThunks from '@chronobank/core/redux/voting/thunks'
@@ -15,7 +24,12 @@ import { replace } from 'react-router-redux'
 import localStorage from 'utils/LocalStorage'
 import type MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import type PollDetailsModel from '@chronobank/core/models/PollDetailsModel'
-import { FORM_ADD_NEW_WALLET } from '@chronobank/core/redux/wallets/constants'
+import {
+  FORM_ADD_NEW_WALLET,
+} from '@chronobank/core/redux/mainWallet/constants'
+import { STORAGE_COOKIES_BAR } from './constants'
+import * as UIActions from './actions'
+import { getValueSessionStorage } from './selectors'
 
 const destroyNetworkSessionInLocalStorage = (isReset = true) => (dispatch) => {
   dispatch(destroyNetworkSession(isReset))
@@ -81,4 +95,22 @@ export const resetWalletsForm = () => (dispatch) => {
 export const selectPoll = (id) => (dispatch) => {
   dispatch(VotingThunks.selectPoll(id))
   dispatch(navigateToPoll())
+}
+
+export const initCookiesBar = () => (dispatch) => {
+  if (typeof sessionStorage !== 'undefined') {
+    const isCookiesBarVisible = getValueSessionStorage(STORAGE_COOKIES_BAR)(sessionStorage) !== 'false'
+    dispatch(setCookiesBarVisible(isCookiesBarVisible))
+  }
+}
+
+export const saveToSessionStorage = (key, value) => () => {
+  if (typeof sessionStorage !== 'undefined') {
+    sessionStorage.setItem(key, value)
+  }
+}
+
+export const setCookiesBarVisible = (isCookiesBarVisible) => (dispatch) => {
+  dispatch(saveToSessionStorage(STORAGE_COOKIES_BAR, isCookiesBarVisible))
+  return dispatch(UIActions.setVisibleCookiesBar(isCookiesBarVisible))
 }
