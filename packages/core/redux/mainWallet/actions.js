@@ -33,6 +33,7 @@ import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_LABOR_HOUR_TOKEN,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
@@ -41,6 +42,7 @@ import {
   EVENT_NEW_TRANSFER,
   EVENT_UPDATE_BALANCE,
   EVENT_UPDATE_TRANSACTION,
+  LHT,
   TIME,
 } from '../../dao/constants'
 import {
@@ -141,7 +143,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
         [BLOCKCHAIN_ETHEREUM]: {
           multiSigWalletDuck: DUCK_ETH_MULTISIG_WALLET,
           multiSigBalance: ETH_MULTISIG_BALANCE,
-          getMainWallet: getMainEthWallet,
+          getMainWallet: getMainWalletForBlockchain,
         }
       }
 
@@ -160,7 +162,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
               }),
             })
           } else {
-            const addresses = settings.getMainWallet(getState())
+            const addresses = settings.getMainWallet(token.blockchain())(getState())
             if (addresses.includes(account)) {
               dispatch({
                 type: WALLET_TOKEN_BALANCE,
@@ -234,7 +236,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
 
 export const fetchTokenBalance = (token: TokenModel, account) => async (dispatch) => {
   const tokenDAO = tokenService.getDAO(token.id())
-  const balance = await tokenDAO.getAccountBalance(token.blockchain() === BLOCKCHAIN_ETHEREUM ? account : null)
+  const balance = await tokenDAO.getAccountBalance([BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LABOR_HOUR_TOKEN].includes(token.blockchain()) ? account : null)
   dispatch({
     type: WALLET_TOKEN_BALANCE,
     balance: new BalanceModel({
@@ -329,7 +331,7 @@ export const estimateGasForDeposit = (mode: string, params, callback, gasPriceMu
 }
 
 export const getTokensBalancesAndWatch = (address, blockchain, customTokens: Array<string>) => (token) => async (/*dispatch*/) => {
-  if (blockchain !== token.blockchain() || (![ETH].includes(token.symbol()) && customTokens && !customTokens.includes(token.symbol()))) {
+  if (blockchain !== token.blockchain() || (![LHT, ETH].includes(token.symbol()) && customTokens && !customTokens.includes(token.symbol()))) {
     return null
   }
   // const dao = tokenService.getDAO(token)

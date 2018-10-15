@@ -8,6 +8,7 @@ import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_DASH,
+  BLOCKCHAIN_LABOR_HOUR_TOKEN,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
@@ -42,6 +43,16 @@ const blockExplorersMap = {
   [BLOCKCHAIN_DASH]: {
     mainnet: 'https://insight.dashevo.org/insight-api-dash/tx',
     testnet: 'https://testnet-insight.dashevo.org/insight-api-dash/tx',
+  },
+  [BLOCKCHAIN_LABOR_HOUR_TOKEN]: {
+    mainnet: [
+      'https://test-5.chronobank.io/tx',
+      'https://test-5.chronobank.io',
+    ],
+    testnet: [
+      'https://test-5.chronobank.io/tx',
+      'https://test-5.chronobank.io',
+    ],
   },
   [BLOCKCHAIN_LITECOIN]: {
     mainnet: 'https://live.blockcypher.com/ltc/tx',

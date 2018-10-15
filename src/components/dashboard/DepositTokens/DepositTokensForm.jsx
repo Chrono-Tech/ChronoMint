@@ -37,7 +37,7 @@ import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import AllowanceModel from '@chronobank/core/models/wallet/AllowanceModel'
 import classnames from 'classnames'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
-import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
+import { getMainWalletForBlockchain } from '@chronobank/core/redux/wallets/selectors/models'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import {
   FORM_DEPOSIT_TOKENS,
@@ -63,12 +63,13 @@ function mapStateToProps (state) {
   const feeMultiplier = selector(state, 'feeMultiplier')
 
   // state
-  const wallet: WalletModel = getMainEthWallet(state)
   const assetHolder = state.get(DUCK_ASSETS_HOLDER)
   const tokens = state.get(DUCK_TOKENS)
   const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
 
   const token = tokens.item(tokenId)
+  const wallet: WalletModel = getMainWalletForBlockchain(token.blockchain())(state)
+
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
   const balance = wallet.balances[tokenId] || new Amount(0, tokenId)
   const symbol = getMainSymbolForBlockchain(wallet.blockchain)

@@ -9,6 +9,7 @@ import WavesDAO from '../../dao/WavesDAO'
 import { bccDAO, btcDAO, dashDAO, ltcDAO } from '../../dao/BitcoinDAO'
 import ERC20ManagerDAO from '../../dao/ERC20ManagerDAO'
 import ethereumDAO from '../../dao/EthereumDAO'
+import laborHourTokenDAO from '../../dao/LaborHourTokenDAO'
 import NemDAO from '../../dao/NemDAO'
 import TokenModel from '../../models/tokens/TokenModel'
 import tokenService from '../../services/TokenService'
@@ -31,6 +32,7 @@ import {
 } from '../../dao/constants/NemDAO'
 import {
   BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_LABOR_HOUR_TOKEN,
   EVENT_NEW_BLOCK,
   EVENT_NEW_TOKEN,
   EVENT_UPDATE_LAST_BLOCK,
@@ -51,6 +53,7 @@ export const initTokens = () => async (dispatch, getState) => {
   }
   const web3 = web3Selector()(state)
   ethereumDAO.connect(web3)
+  laborHourTokenDAO.connect(web3)
 
   dispatch(TokensActions.tokensInit())
   dispatch(TokensActions.setTokensFetchingCount(0))
@@ -210,7 +213,11 @@ export const watchLatestBlock = () => async (dispatch) => {
     {
       blockchain: BLOCKCHAIN_ETHEREUM,
       dao: ethereumDAO,
-    }
+    },
+    {
+      blockchain: BLOCKCHAIN_LABOR_HOUR_TOKEN,
+      dao: laborHourTokenDAO,
+    },
   ]
 
   await daosMap.map(async (daoData) => {

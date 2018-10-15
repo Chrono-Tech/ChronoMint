@@ -10,6 +10,7 @@ import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_LABOR_HOUR_TOKEN,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
@@ -24,7 +25,7 @@ import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 import tokenService from '../../services/TokenService'
 import Amount from '../../models/Amount'
 import { getAccount } from '../session/selectors'
-import { getMainEthWallet, getWallet, getWallets } from './selectors/models'
+import { getMainWalletForBlockchain, getMainEthWallet, getWallet, getWallets } from './selectors/models'
 import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { AllowanceCollection } from '../../models'
@@ -46,7 +47,7 @@ import { getNemSigner } from '../nem/selectors'
 import { getWavesSigner } from '../waves/selectors'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
-import { BCC, BTC, DASH, ETH, LTC, WAVES, XEM } from '../../dao/constants'
+import { BCC, BTC, DASH, ETH, LHT, LTC, WAVES, XEM } from '../../dao/constants'
 import TxDescModel from '../../models/TxDescModel'
 import { initEos } from '../eos/thunks'
 import { getTokens } from '../tokens/selectors'
@@ -86,6 +87,7 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
 
   [
     BLOCKCHAIN_ETHEREUM,
+    BLOCKCHAIN_LABOR_HOUR_TOKEN,
   ].map((ethLikeBlockchain) => {
     wallets.push(new WalletModel({
       address: ethAddress.toLowerCase(accountPath),
@@ -323,7 +325,7 @@ export const mainTransfer = (
 
 export const mainApprove = (token: TokenModel, amount: Amount, spender: string, feeMultiplier: number) => async (dispatch, getState) => {
   const state = getState()
-  const wallet = getMainEthWallet(state)
+  const wallet = getMainWalletForBlockchain(token.blockchain())(state)
   const allowance = wallet.allowances.list[`${spender}-${token.id()}`]
   const { account } = state.get(DUCK_SESSION)
 
@@ -342,7 +344,7 @@ export const mainApprove = (token: TokenModel, amount: Amount, spender: string, 
 
 export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: number = 1) => async (dispatch, getState) => {
   const state = getState()
-  const wallet = getMainEthWallet(state)
+  const wallet = getMainWalletForBlockchain(token.blockchain())(state)
   const allowance = wallet.allowances.list[`${spender}-${token.id()}`]
   dispatch(updateAllowance(allowance.isFetching(true)))
 
@@ -384,6 +386,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
 
   switch (blockchain) {
     case BLOCKCHAIN_ETHEREUM:
+    case BLOCKCHAIN_LABOR_HOUR_TOKEN:
       if (newDeriveNumber === undefined || newDeriveNumber === null) {
         newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
       }
@@ -483,6 +486,9 @@ export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
       break
     case BLOCKCHAIN_DASH:
       dao = tokenService.getDAO(DASH)
+      break
+    case BLOCKCHAIN_LABOR_HOUR_TOKEN:
+      dao = tokenService.getDAO(LHT)
       break
     case BLOCKCHAIN_LITECOIN:
       dao = tokenService.getDAO(LTC)
