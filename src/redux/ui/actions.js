@@ -7,7 +7,10 @@ import moment from 'moment'
 import { setLocale } from 'react-redux-i18n'
 import localStorage from 'utils/LocalStorage'
 import ipfs from '@chronobank/core/utils/IPFS'
-import { CHANGE_WALLET_VIEW } from './constants'
+import {
+  CHANGE_WALLET_VIEW,
+  SET_VISIBLE_COOKIES_BAR,
+} from './constants'
 
 export const changeMomentLocale = (locale) => (dispatch) => {
   moment.locale(locale)
@@ -28,6 +31,9 @@ export const download = (hash, name) => async () => {
   document.body.removeChild(ref)
 }
 
-export const changeWalletView = () => (dispatch) => {
-  dispatch({ type: CHANGE_WALLET_VIEW })
-}
+export const changeWalletView = () => ({ type: CHANGE_WALLET_VIEW })
+
+export const setVisibleCookiesBar = (isCookiesBarVisible) => ({
+  type: SET_VISIBLE_COOKIES_BAR,
+  isCookiesBarVisible,
+})

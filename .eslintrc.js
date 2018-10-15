@@ -40,7 +40,7 @@ module.exports = {
     "react/jsx-no-bind": "warn",
     "react/no-array-index-key": "warn",
     "react/prop-types": "warn",
-    "semi": "warn",
+    "semi": ["error", "never"],
     "space-before-function-paren": ["error", "always"],
   },
 }

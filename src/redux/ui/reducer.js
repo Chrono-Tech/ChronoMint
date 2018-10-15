@@ -4,28 +4,32 @@
  */
 
 import {
-  OPEN_BRAND_PARTIAL,
   CHANGE_WALLET_VIEW,
+  SET_VISIBLE_COOKIES_BAR,
 } from './constants'
 
 const initialState = {
-  open: false,
   isCompactWalletView: false,
+  isCookiesBarVisible: false,
 }
 
-export default (state = initialState, action) => {
-  switch (action.type) {
-    case OPEN_BRAND_PARTIAL:
-      return {
-        ...state,
-        open: action.payload.open,
-      }
-    case CHANGE_WALLET_VIEW:
-      return {
-        ...state,
-        isCompactWalletView: !state.isCompactWalletView,
-      }
-    default:
-      return state
-  }
+const mutations = {
+  [CHANGE_WALLET_VIEW]: (state) => {
+    return {
+      ...state,
+      isCompactWalletView: !state.isCompactWalletView,
+    }
+  },
+  [SET_VISIBLE_COOKIES_BAR]: (state, { isCookiesBarVisible }) => {
+    return {
+      ...state,
+      isCookiesBarVisible,
+    }
+  },
+}
+
+export default (state = initialState, { type, ...payload }) => {
+  return (type in mutations)
+    ? mutations[type](state, payload)
+    : state
 }
