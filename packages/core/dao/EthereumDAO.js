@@ -3,12 +3,14 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
+
 import { EthereumLikeDAO } from './EthereumLikeDAO'
 import { BLOCKCHAIN_ETHEREUM, ETH } from './constants'
 
 export class EthereumDAO extends EthereumLikeDAO {
   constructor () {
-    super(ETH, BLOCKCHAIN_ETHEREUM, ...arguments)
+    super(ETH, BLOCKCHAIN_ETHEREUM, ethereumProvider, ...arguments)
   }
 }
 

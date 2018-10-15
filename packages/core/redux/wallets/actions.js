@@ -47,10 +47,11 @@ import { getNemSigner } from '../nem/selectors'
 import { getWavesSigner } from '../waves/selectors'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
-import { BCC, BTC, DASH, ETH, LHT, LTC, WAVES, XEM } from '../../dao/constants'
+import { BCC, BTC, DASH, ETH, LTC, WAVES, XEM } from '../../dao/constants'
 import TxDescModel from '../../models/TxDescModel'
 import { initEos } from '../eos/thunks'
 import { getTokens } from '../tokens/selectors'
+import laborHourTokenDAO from '../../dao/LaborHourTokenDAO'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -488,7 +489,7 @@ export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
       dao = tokenService.getDAO(DASH)
       break
     case BLOCKCHAIN_LABOR_HOUR_TOKEN:
-      dao = tokenService.getDAO(LHT)
+      dao = laborHourTokenDAO
       break
     case BLOCKCHAIN_LITECOIN:
       dao = tokenService.getDAO(LTC)

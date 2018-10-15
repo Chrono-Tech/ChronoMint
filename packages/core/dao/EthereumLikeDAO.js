@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import solidityEvent from 'web3/lib/web3/event'
 import BigNumber from 'bignumber.js'
 import Amount from '../models/Amount'
@@ -38,12 +37,13 @@ const signatureDefinition = {
 }
 
 export class EthereumLikeDAO extends AbstractTokenDAO {
-  constructor (symbol, contractName, ...rest) {
+  constructor (symbol, contractName, provider, ...rest) {
     super(...rest)
 
     this._decimals = 18
     this._symbol = symbol
     this._contractName = contractName
+    this.provider = provider
   }
 
   connect (web3) {
@@ -89,7 +89,7 @@ export class EthereumLikeDAO extends AbstractTokenDAO {
   }
 
   getAccountBalances (account): Promise {
-    return ethereumProvider.getAccountBalances(account)
+    return this.provider.getAccountBalances(account)
   }
 
   getAccountBalance (account): Promise {
@@ -188,7 +188,7 @@ export class EthereumLikeDAO extends AbstractTokenDAO {
     })
     const txs = []
     try {
-      const txsResult = await ethereumProvider.getTransactionsList(account, skip, offset)
+      const txsResult = await this.provider.getTransactionsList(account, skip, offset)
       for (const tx of txsResult) {
         if (tx.logs.length > 0) {
           let txToken
