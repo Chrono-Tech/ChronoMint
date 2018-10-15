@@ -61,7 +61,6 @@ function serialize (Immutable, refs) {
       if (value instanceof models.MultisigWalletCollection) return refer(value, 'MultisigWalletCollection', 'toObject', refs)
       if (value instanceof models.AllowanceModel) return refer(value, 'AllowanceModel', 'toObject', refs)
       if (value instanceof models.AllowanceCollection) return mark(value, 'AllowanceCollection', 'transform')
-      if (value instanceof models.MainWalletModel) return refer(value, 'MainWalletModel', 'toObject', refs)
       if (value instanceof Immutable.Record) return refer(value, 'ImmutableRecord', 'toObject', refs)
       if (value instanceof Immutable.Range) return extract(value, 'ImmutableRange')
       if (value instanceof Immutable.Repeat) return extract(value, 'ImmutableRepeat')
@@ -119,8 +118,6 @@ function serialize (Immutable, refs) {
             return new models.AllowanceModel(data)
           case 'AllowanceCollection':
             return new models.AllowanceCollection(data)
-          case 'MainWalletModel':
-            return new models.MainWalletModel(data)
           case 'AccountModel':
             return null
 

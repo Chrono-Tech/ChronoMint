@@ -8,7 +8,6 @@ import WalletWidget from 'components/wallet/WalletWidget/WalletWidget'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import MainWalletModel from '@chronobank/core/models/wallet/MainWalletModel'
 import TwoFAWarningWidget from 'components/wallet/TwoFAWarningWidget/TwoFAWarningWidget'
 import WalletWidgetMini from 'components/wallet/WalletWidgetMini/WalletWidgetMini'
 import { DUCK_UI } from 'redux/ui/constants'
@@ -38,7 +37,6 @@ export default class WalletsContent extends Component {
         title: PropTypes.string,
         address: PropTypes.string,
         wallet: PropTypes.oneOfType([
-          PropTypes.instanceOf(MainWalletModel),
           PropTypes.instanceOf(MultisigEthWalletModel),
         ]),
       }),

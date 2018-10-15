@@ -24,9 +24,7 @@ import { replace } from 'react-router-redux'
 import localStorage from 'utils/LocalStorage'
 import type MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import type PollDetailsModel from '@chronobank/core/models/PollDetailsModel'
-import {
-  FORM_ADD_NEW_WALLET,
-} from '@chronobank/core/redux/mainWallet/constants'
+import { FORM_ADD_NEW_WALLET } from '@chronobank/core/redux/wallets/constants'
 import { STORAGE_COOKIES_BAR } from './constants'
 import * as UIActions from './actions'
 import { getValueSessionStorage } from './selectors'
