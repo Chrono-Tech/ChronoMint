@@ -109,9 +109,9 @@ export default class BitcoinMiddlewareService extends BitcoinLikeBlockchainMiddl
       )
 
       if (confirmedBalance instanceof Error || unconfirmedBalance instanceof Error) {
-        return Promise.reject({ confirmedBalance, unconfirmedBalance, config: { host: 'https://tbcc.blockdozer.com/insight-api' } })
+        return Promise.reject({ confirmedBalance, unconfirmedBalance, config: { host: 'https://35.225.28.29' } })
       } else {
-        return Promise.resolve({ confirmedBalance, unconfirmedBalance, config: { host: 'https://tbcc.blockdozer.com/insight-api' } })
+        return Promise.resolve({ confirmedBalance, unconfirmedBalance, config: { host: 'https://35.225.28.29' } })
       }
     }
 

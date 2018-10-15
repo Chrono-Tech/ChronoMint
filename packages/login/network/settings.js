@@ -36,8 +36,8 @@ const blockExplorersMap = {
     testnet: 'https://live.blockcypher.com/btc-testnet/tx',
   },
   [BLOCKCHAIN_BITCOIN_CASH]: {
-    mainnet: 'https://bcc.blockdozer.com/insight/tx',
-    testnet: 'https://tbcc.blockdozer.com/insight/tx',
+    mainnet: 'https://35.225.28.29/tx',
+    testnet: 'https://35.225.28.29/tx',
   },
   [BLOCKCHAIN_DASH]: {
     mainnet: 'https://insight.dashevo.org/insight-api-dash/tx',

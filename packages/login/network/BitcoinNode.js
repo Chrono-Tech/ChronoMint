@@ -7,6 +7,11 @@ import axios from 'axios'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+
+  BTC,
+  BCC,
+  LTC,
 } from '@chronobank/login/network/constants'
 import BitcoinBlockexplorerNode from './BitcoinBlockexplorerNode'
 import BitcoinMiddlewareNode from './BitcoinMiddlewareNode'
@@ -38,7 +43,7 @@ export const BTC_TESTNET_NODE = new BitcoinMiddlewareNode({
     timeout: 10000,
   }),
   blockchain: BLOCKCHAIN_BITCOIN,
-  symbol: 'BTC',
+  symbol: BTC,
   socket: {
     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
     user: 'rabbitmq_user',
@@ -54,17 +59,41 @@ export const BTC_TESTNET_NODE = new BitcoinMiddlewareNode({
 
 const BCC_MAINNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
-    baseURL: 'https://bitcoincash.blockexplorer.com/api',
+    baseURL: 'https://35.225.28.29',
     timeout: 10000,
   }),
+  blockchain: BLOCKCHAIN_BITCOIN_CASH,
+  symbol: BCC,
+  socket: {
+    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
+    user: 'rabbitmq_user',
+    password: '38309100024',
+    channels: {
+      balance: '/exchange/events/internal-testnet-bitcoin-middleware-chronobank-io_balance',
+      transaction: '/exchange/events/internal-testnet-bitcoin-middleware-chronobank-io_transaction',
+      block: '/exchange/events/internal-testnet-bitcoin-middleware-chronobank-io_block',
+    },
+  },
   trace: false,
 })
 
 const BCC_TESTNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
-    baseURL: 'https://tbcc.blockdozer.com/insight-api',
+    baseURL: 'https://35.225.28.29', // Ask Egor when chronobank node url is ready
     timeout: 10000,
   }),
+  blockchain: BLOCKCHAIN_BITCOIN_CASH,
+  symbol: BCC,
+  socket: {
+    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
+    user: 'rabbitmq_user',
+    password: '38309100024',
+    channels: {
+      balance: '/exchange/events/internal-testnet-bitcoin-middleware-chronobank-io_balance',
+      transaction: '/exchange/events/internal-testnet-bitcoin-middleware-chronobank-io_transaction',
+      block: '/exchange/events/internal-testnet-bitcoin-middleware-chronobank-io_block',
+    },
+  },
   trace: true,
 })
 
@@ -91,7 +120,7 @@ export const LTC_MAINNET_NODE = new BitcoinMiddlewareNode({
     timeout: 10000,
   }),
   blockchain: BLOCKCHAIN_LITECOIN,
-  symbol: 'LTC',
+  symbol: LTC,
   socket: {
     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
     user: 'rabbitmq_user',
