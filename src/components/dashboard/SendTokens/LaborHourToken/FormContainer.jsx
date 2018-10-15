@@ -4,12 +4,12 @@
  */
 
 import React from 'react'
-import { ETH } from '@chronobank/core/dao/constants'
+import { LHT } from '@chronobank/core/dao/constants'
 
 import FormContainer from '../EthereumLikeBlockchain/FormContainer'
 
-const ethereumFormContainer = (props) => (
-  <FormContainer {...props} symbol={ETH} />
+const lhtFormContainer = (props) => (
+  <FormContainer {...props} symbol={LHT} />
 )
 
-export default ethereumFormContainer
+export default lhtFormContainer

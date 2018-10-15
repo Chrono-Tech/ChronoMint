@@ -16,12 +16,13 @@ import WidgetContainer from 'components/WidgetContainer/WidgetContainer'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import { FORM_2FA_STEPS, FORM_2FA_WALLET } from '@chronobank/core/redux/multisigWallet/constants'
 import {
-  BLOCKCHAIN_NEM,
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_DASH,
-  BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_ETHEREUM,
-  ETH
+  BLOCKCHAIN_LABOR_HOUR_TOKEN,
+  BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_NEM,
+  ETH,
 } from '@chronobank/core/dao/constants'
 import './AddWalletWidget.scss'
 import SelectWalletType from './SelectWalletType/SelectWalletType'
@@ -180,6 +181,7 @@ export default class AddWalletWidget extends PureComponent {
       switch (blockchain) {
         case BLOCKCHAIN_BITCOIN:
         case BLOCKCHAIN_DASH:
+        case BLOCKCHAIN_LABOR_HOUR_TOKEN:
         case BLOCKCHAIN_LITECOIN:
           return (
             <WidgetContainer title={`${prefix}.createWallet`} blockchain={blockchain}>

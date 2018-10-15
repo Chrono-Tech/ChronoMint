@@ -14,7 +14,7 @@ import { Translate } from 'react-redux-i18n'
 import { TOKEN_ICONS } from 'assets'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { getAllTokens, getMainSymbolForBlockchain } from '@chronobank/core/redux/tokens/selectors'
-import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
+import { BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LABOR_HOUR_TOKEN } from '@chronobank/core/dao/constants'
 import TokenValueSimple from 'components/common/TokenValueSimple/TokenValueSimple'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
 import './WalletWidgetMini.scss'
@@ -68,7 +68,7 @@ export default class WalletWidgetMini extends PureComponent {
           <div styleName='wallet-container'>
             <div styleName='main-info'>
               <div styleName='token-container'>
-                {blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}
+                {[BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LABOR_HOUR_TOKEN].includes(blockchain) && <SubIconForWallet wallet={wallet} />}
                 <div styleName='token-icon'>
                   <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()] || TOKEN_ICONS.DEFAULT} />
                 </div>

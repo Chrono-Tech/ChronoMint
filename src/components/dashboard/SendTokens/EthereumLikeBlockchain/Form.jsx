@@ -5,7 +5,6 @@
 
 import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import { ETH } from '@chronobank/core/dao/constants'
 import { TOKEN_ICONS } from 'assets'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
@@ -22,9 +21,9 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
-import Select from 'redux-form-material-ui/es/Select'
+import Select from '../../../../../node_modules/redux-form-material-ui/es/Select'
 import Slider from 'components/common/Slider'
-import { change, Field, formPropTypes, formValueSelector, getFormSyncErrors, getFormValues, reduxForm } from 'redux-form/immutable'
+import { change, Field, formPropTypes, formValueSelector, getFormSyncErrors, getFormValues, reduxForm } from '../../../../../node_modules/redux-form/immutable'
 import { getSpendersAllowance } from '@chronobank/core/redux/mainWallet/actions'
 import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
@@ -204,7 +203,7 @@ export default class Ethereum extends PureComponent {
         if (!validators.positiveNumber(props.gweiPerGas)) {
           const customGasLimit = props.gasLimit || this.state.gasLimitEstimated
           return {
-            gasFee: new Amount(web3Converter.toWei(props.gweiPerGas || 0, 'gwei') * customGasLimit, ETH),
+            gasFee: new Amount(web3Converter.toWei(props.gweiPerGas || 0, 'gwei') * customGasLimit, this.props.symbol),
             gasPrice: web3Converter.toWei(props.gweiPerGas || 0, 'gwei'),
             gasFeeError: false,
             gasFeeLoading: false,
@@ -263,7 +262,7 @@ export default class Ethereum extends PureComponent {
     return (
       <span styleName='description'>
         {this.state.gasFee && (
-          <span>{`ETH ${web3Converter.fromWei(this.state.gasFee, 'wei').toString()} (≈${this.props.selectedCurrency} `}
+          <span>{`this.props.symbol ${web3Converter.fromWei(this.state.gasFee, 'wei').toString()} (≈${this.props.selectedCurrency} `}
             <TokenValue renderOnlyPrice onlyPriceValue value={this.state.gasFee} />{')'}
           </span>
         )}

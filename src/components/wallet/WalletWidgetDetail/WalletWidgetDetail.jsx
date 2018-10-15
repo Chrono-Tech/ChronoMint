@@ -13,7 +13,7 @@ import { TOKEN_ICONS } from 'assets'
 import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { getMainTokenForWalletByBlockchain } from '@chronobank/core/redux/tokens/selectors'
-import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
+import { BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LABOR_HOUR_TOKEN } from '@chronobank/core/dao/constants'
 import Moment from 'components/common/Moment'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
@@ -105,7 +105,7 @@ export default class WalletWidgetDetail extends PureComponent {
                 token={token}
               />
               <div styleName='token-container'>
-                {wallet.blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}
+                {[BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LABOR_HOUR_TOKEN].includes(wallet.blockchain) && <SubIconForWallet wallet={wallet} />}
                 <div styleName='token-icon'>
                   <IPFSImage styleName='image' multihash={token && token.icon()} fallback={TOKEN_ICONS[token && token.symbol()] || TOKEN_ICONS.DEFAULT} />
                 </div>

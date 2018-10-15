@@ -10,6 +10,7 @@ import {
   BLOCKCHAIN_DASH,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_LABOR_HOUR_TOKEN,
   BLOCKCHAIN_WAVES,
   BLOCKCHAIN_NEM,
 } from '@chronobank/core/dao/constants'
@@ -21,12 +22,13 @@ import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { MultisigEthWalletModel } from '@chronobank/core/models'
-import Ethereum from './Ethereum/FormContainer'
 import Bitcoin from './Bitcoin/FormContainer'
 import Dash from './Dash/FormContainer'
+import Eos from './Eos/FormContainer'
+import Ethereum from './Ethereum/FormContainer'
+import LaborHourToken from './LaborHourToken/FormContainer'
 import Nem from './Nem/FormContainer'
 import Waves from './Waves/FormContainer'
-import Eos from './Eos/FormContainer'
 
 function mapStateToProps (state, props) {
   const token = state.get(DUCK_TOKENS).item(props.tokenSymbol)
@@ -55,6 +57,8 @@ export default class SendTokens extends PureComponent {
         return Dash
       case BLOCKCHAIN_ETHEREUM:
         return Ethereum
+      case BLOCKCHAIN_LABOR_HOUR_TOKEN:
+        return LaborHourToken
       case BLOCKCHAIN_WAVES:
         return Waves
       case BLOCKCHAIN_NEM:
