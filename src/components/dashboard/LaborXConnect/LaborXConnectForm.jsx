@@ -27,6 +27,8 @@ const LABOR_X_CONNECT_SECOND = 'laborXConnectSecond'
 @reduxForm({ form: FORM_LABOR_X_CONNECT, validate })
 export default class LaborXConnectForm extends PureComponent {
   static propTypes = {
+    feeLoading: PropTypes.bool,
+    gasFee: PropTypes.instanceOf(Amount),
     onChangeField: PropTypes.func,
     deposit: PropTypes.instanceOf(Amount),
     balanceEth: PropTypes.instanceOf(Amount),
@@ -40,7 +42,6 @@ export default class LaborXConnectForm extends PureComponent {
     super(props)
     let step = LABOR_X_CONNECT_FIRST
     this.state = { step }
-    this.timeout = null
   }
 
   handleProceed = (values) => {
@@ -93,7 +94,7 @@ export default class LaborXConnectForm extends PureComponent {
   }
 
   renderBody () {
-    const { amount, token } = this.props
+    const { amount, token, gasFee, feeLoading } = this.props
 
     if (this.state.step === LABOR_X_CONNECT_SECOND) {
       return null
@@ -124,7 +125,8 @@ export default class LaborXConnectForm extends PureComponent {
           <div>
             <b><Translate value={`${prefix}.transactionFee`} />: </b>
             <span styleName='infoText'>
-              {this.state.gasFee && <TokenValue value={this.state.gasFee} />}
+              {feeLoading && <Preloader />}
+              {gasFee && <TokenValue value={gasFee} />}
             </span>
           </div>
         </div>

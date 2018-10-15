@@ -16,7 +16,7 @@ import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import AllowanceModel from '@chronobank/core/models/wallet/AllowanceModel'
 import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
-import { initAssetsHolder, lockDeposit } from '@chronobank/core/redux/assetsHolder/actions'
+import { estimateGasForAssetHolder, initAssetsHolder, lockDeposit } from '@chronobank/core/redux/assetsHolder/actions'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { TX_LOCK, TX_UNLOCK } from '@chronobank/core/dao/constants/AssetHolderDAO'
 import AssetsCollection from '@chronobank/core/models/assetHolder/AssetsCollection'
@@ -66,6 +66,7 @@ function mapDispatchToProps (dispatch) {
     initAssetsHolder: () => dispatch(initAssetsHolder()),
     lockDeposit: (amount, token) => dispatch(lockDeposit(amount, token)),
     onChangeField: (field, value) => dispatch(change(FORM_LABOR_X_CONNECT, field, value)),
+    handleEstimateGas: (mode, params, callback, gasPriceMultiplier) => dispatch(estimateGasForAssetHolder(mode, params, callback, gasPriceMultiplier)),
   }
 }
 
@@ -83,6 +84,14 @@ export default class LaborXConnect extends PureComponent {
     amount: PropTypes.number,
   }
 
+  constructor (props) {
+    super(props)
+    this.state = {
+      feeLoading: false,
+    }
+    this.timeout = null
+  }
+
   componentDidMount () {
     this.props.initAssetsHolder()
   }
@@ -90,6 +99,34 @@ export default class LaborXConnect extends PureComponent {
   componentWillReceiveProps (newProps) {
     const firstAsset = newProps.assets.first()
     this.props.onChangeField('symbol', firstAsset.symbol())
+
+    if (newProps.amount > 0 && newProps.amount !== this.props.amount && newProps.token.isFetched) {
+      this.handleGetGasPrice(TX_LOCK, newProps.amount, newProps.token)
+    }
+  }
+
+  handleGetGasPrice = (action: string, amount: number, token: string, feeMultiplier: number) => {
+    clearTimeout(this.timeout)
+    this.timeout = setTimeout(() => {
+      this.setState({ feeLoading: true })
+      this.props.handleEstimateGas(
+        action,
+        [token.address(), amount],
+        (error, result) => {
+          const { gasFee } = result
+          if (!error) {
+            this.setState({
+              gasFee,
+              feeLoading: false,
+            })
+          } else {
+            // eslint-disable-next-line
+            console.error(error)
+          }
+        },
+        feeMultiplier,
+      )
+    }, 1000)
   }
 
   handleSubmit = (values) => {
@@ -115,9 +152,12 @@ export default class LaborXConnect extends PureComponent {
 
   render () {
     const { amount, assets, token, deposit, balanceEth, onChangeField } = this.props
+    const { gasFee, feeLoading } = this.state
 
     return (
       <LaborXConnectForm
+        feeLoading={feeLoading}
+        gasFee={gasFee}
         amount={amount}
         onChangeField={onChangeField}
         deposit={deposit}

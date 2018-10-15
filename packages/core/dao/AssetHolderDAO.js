@@ -34,10 +34,7 @@ export default class AssetHolderDAO extends AbstractContractDAO {
   }
 
   async watchLock (callback) {
-    return this.on('Lock', (a, b, c, d) => {
-      // TODO @abdulov remove console.log
-      console.log('%c a,b,c,d', 'background: #222; color: #fff', a, b, c, d)
-    })
+    return this.on('Lock', callback)
   }
 
   async getSharesContract (): Promise {
@@ -57,7 +54,7 @@ export default class AssetHolderDAO extends AbstractContractDAO {
     return this._tx(TX_DEPOSIT, [tokenAddress, new BigNumber(amount)])
   }
 
-  lock (tokenAddress, amount: Amount) {
+  lock (tokenAddress, amount: BigNumber) {
     return this._tx(TX_LOCK, [tokenAddress, new BigNumber(amount)])
   }
 

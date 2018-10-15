@@ -18,7 +18,7 @@ export default class TokensCollection extends abstractFetchingCollection({
     if (!symbol) {
       return null
     }
-    return this.latestBlocks()[ this.item(symbol).blockchain() ]
+    return this.latestBlocks()[this.item(symbol).blockchain()]
   }
 
   getBySymbol (symbol: string) {
@@ -35,7 +35,7 @@ export default class TokensCollection extends abstractFetchingCollection({
   getByAddress (address: string) {
     let resultItem = this.get('emptyModel')
     this.items().some((item: TokenModel) => {
-      if (item.transactionHash() === address || item.address() === address) {
+      if (item.transactionHash() === address.toLowerCase() || item.address() === address.toLowerCase()) {
         resultItem = item
         return true
       }

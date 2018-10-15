@@ -18,14 +18,13 @@ import WalletModel from '../../models/wallet/WalletModel'
 import AllowanceCollection from '../../models/AllowanceCollection'
 import { estimateGas, executeTransaction } from '../ethereum/thunks'
 
-import {
-  DUCK_ASSETS_HOLDER,
-  ASSET_HOLDER_INIT,
-  ASSET_HOLDER_ADDRESS,
-  ASSET_HOLDER_ASSET_UPDATE,
-} from './constants'
+import { ASSET_HOLDER_ADDRESS, ASSET_HOLDER_ASSET_UPDATE, ASSET_HOLDER_INIT, DUCK_ASSETS_HOLDER } from './constants'
 import { TX_APPROVE } from '../../dao/constants/ERC20DAO'
-import { ASSET_DEPOSIT_WITHDRAW, TX_DEPOSIT } from '../../dao/constants/AssetHolderDAO'
+import { ASSET_DEPOSIT_WITHDRAW, TX_DEPOSIT, TX_LOCK } from '../../dao/constants/AssetHolderDAO'
+import { notify } from '../notifier/actions'
+import AssetsHolderNoticeModel from '../../models/notices/AssetsHolderNoticeModel'
+import { getTokens } from '../tokens/selectors'
+import ErrorNoticeModel from '../../models/notices/ErrorNoticeModel'
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const assetHolder = getState().get(DUCK_ASSETS_HOLDER)
@@ -137,6 +136,29 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
   })
 
   dispatch(subscribeOnTokens(handleToken))
+
+  const handleLock = async (event) => {
+    try {
+      const params = event.returnValues
+      const tokens = getTokens(getState())
+      const token = tokens.getByAddress(params.token)
+      dispatch(notify(new AssetsHolderNoticeModel({
+        title: 'locked',
+        value: 'lockedMessage',
+        params: {
+          amount: token.removeDecimals(params.amount).toString(),
+          symbol: token.symbol(),
+        },
+      })))
+      dispatch(fetchAssetDeposit(token))
+    } catch (e) {
+      dispatch(notify(ErrorNoticeModel({
+        message: e.message,
+      })))
+    }
+  }
+
+  assetHolderDAO.watchLock(handleLock)
 }
 
 export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: number = 1) => async (dispatch, getState) => {
@@ -187,7 +209,7 @@ export const requireTIME = () => async (dispatch, getState) => {
   }
 }
 
-export const estimateGasForDeposit = (mode: string, params, callback, gasPriceMultiplier = 1) => async (dispatch, getState) => {
+export const estimateGasForAssetHolder = (mode: string, params, callback, gasPriceMultiplier = 1) => async (dispatch, getState) => {
   let dao
   let tx
   switch (mode) {
@@ -197,6 +219,7 @@ export const estimateGasForDeposit = (mode: string, params, callback, gasPriceMu
       break
     case TX_DEPOSIT:
     case ASSET_DEPOSIT_WITHDRAW:
+    case TX_LOCK:
       dao = daoByType('TimeHolder')(getState())
       tx = dao[mode](...params)
       break
@@ -217,7 +240,7 @@ export const lockDeposit = (amount: Amount, token: TokenModel, feeMultiplier: nu
   try {
     const state = getState()
     const assetHolderDAO = daoByType('TimeHolder')(state)
-    const tx = assetHolderDAO.deposit(token.address(), amount)
+    const tx = assetHolderDAO.lock(token.address(), amount)
     if (tx) {
       await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
     }

@@ -788,4 +788,8 @@ export default {
     addToken: 'Add a token',
     voteHistory: 'Changes History',
   },
+  assetsHolder: {
+    locked: 'Locked',
+    lockedMessage: 'Locked %{amount} %{symbol}',
+  },
 }

@@ -112,13 +112,21 @@
   }
   .transactionsInfo {
     padding-top: 20px;
+    height: 60px;
     font-size: 14px;
     > div {
       padding-top: 10px;
+      display: flex;
+      align-items: center;
+      line-height: 26px;
     }
     .infoText {
       :global {
+        .Preloader__root {
+          width: 60px;
+        }
         .TokenValue__root {
+          padding-left: 10px;
           span {
             font-size: 14px;
             color: $color-primary-3;

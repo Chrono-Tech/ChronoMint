@@ -66,8 +66,6 @@ export const executeTransaction = ({ tx, options }) => async (dispatch, getState
 }
 
 export const prepareTransaction = ({ web3, tx, options }) => async (dispatch) => {
-  // TODO @abdulov remove console.log
-  console.log('%c tx', 'background: #222; color: #fff', tx)
   const { feeMultiplier } = options || {}
   const nonce = await dispatch(nextNonce({ web3, address: tx.from }))
   const gasPrice = new BigNumber(await web3.eth.getGasPrice()).mul(feeMultiplier || 1)
@@ -113,19 +111,13 @@ export const sendSignedTransaction = ({ web3, entry }) => async (dispatch, getSt
   return new Promise((resolve, reject) => {
     web3.eth.sendSignedTransaction(entry.raw)
       .on('transactionHash', (hash) => {
-        // TODO @abdulov remove console.log
-        console.log('%c hash', 'background: #222; color: #fff', hash)
         dispatch(ethTxStatus(entry.key, entry.tx.from, { isSent: true, hash }))
       })
       .on('receipt', (receipt) => {
-        // TODO @abdulov remove console.log
-        console.log('%c receipt', 'background: #222; color: #fff', receipt)
         dispatch(ethTxStatus(entry.key, entry.tx.from, { isMined: true, receipt }))
         resolve(receipt)
       })
       .on('error', (error) => {
-        // TODO @abdulov remove console.log
-        console.error('%c error', 'background: #222; color: #fff', error)
         dispatch(ethTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
         reject(error)
       })

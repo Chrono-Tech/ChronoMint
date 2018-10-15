@@ -57,7 +57,7 @@ export default class Snackbar extends PureComponent {
 
   render () {
     const notice = this.props.notice
-    const address = notice.address()
+    const address = typeof notice.address === 'function' ? notice.address() : notice.address
     const isErrorNotice = notice.constructor.name.toLowerCase().indexOf('error') >= 0
 
     return (

@@ -28,7 +28,7 @@ import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redu
 import { DUCK_ASSETS_HOLDER } from '@chronobank/core/redux/assetsHolder/constants'
 import { BLOCKCHAIN_ETHEREUM, ETH } from '@chronobank/core/dao/constants'
 import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/wallets/constants'
-import { estimateGasForDeposit, requireTIME } from '@chronobank/core/redux/assetsHolder/actions'
+import { estimateGasForAssetHolder, requireTIME } from '@chronobank/core/redux/assetsHolder/actions'
 import { mainApprove, mainRevoke } from '@chronobank/core/redux/wallets/actions'
 import { ASSET_DEPOSIT_WITHDRAW, TX_DEPOSIT } from '@chronobank/core/dao/constants/AssetHolderDAO'
 import { TX_APPROVE } from '@chronobank/core/dao/constants/ERC20DAO'
@@ -183,7 +183,7 @@ export default class DepositTokensForm extends PureComponent {
   handleGetGasPrice = (action: string, amount: number, feeMultiplier: number, spender: string) => {
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
-      this.props.dispatch(estimateGasForDeposit(
+      this.props.dispatch(estimateGasForAssetHolder(
         action,
         [spender, new BigNumber(amount), this.props.account],
         (error, r) => {
