@@ -51,6 +51,8 @@ import TxDescModel from '../../models/TxDescModel'
 import { initEos } from '../eos/thunks'
 import { getTokens } from '../tokens/selectors'
 import { accountCacheAddress } from '../persistAccount/actions'
+import { getBitcoinDerivedPath } from '../bitcoin/utils'
+import { getNemDerivedPath } from '../nem/utils'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -81,32 +83,51 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
   const account = getPersistAccount(state)
   const addressCache = { ...getAddressCache(state) }
 
+  const wallets = []
+  const accountPath = account.decryptedWallet.entry.encrypted[0].path
+
   const signerSelectors = {
-    [BLOCKCHAIN_ETHEREUM]: getEthereumSigner,
-    [BLOCKCHAIN_BITCOIN]: getBitcoinSigner,
-    [BLOCKCHAIN_BITCOIN_CASH]: getBitcoinCashSigner,
-    [BLOCKCHAIN_DASH]: getDashSigner,
-    [BLOCKCHAIN_LITECOIN]: getLitecoinSigner,
-    [BLOCKCHAIN_NEM]: getNemSigner,
-    [BLOCKCHAIN_WAVES]: getWavesSigner,
+    [BLOCKCHAIN_ETHEREUM]: {
+      signer: getEthereumSigner,
+      path: WALLET_HD_PATH,
+    },
+    [BLOCKCHAIN_BITCOIN]: {
+      signer: getBitcoinSigner,
+      path: getBitcoinDerivedPath(),
+    },
+    [BLOCKCHAIN_BITCOIN_CASH]: {
+      signer: getBitcoinCashSigner,
+      path: getBitcoinDerivedPath(),
+    },
+    [BLOCKCHAIN_DASH]: {
+      signer: getDashSigner,
+      path: getBitcoinDerivedPath(),
+    },
+    [BLOCKCHAIN_LITECOIN]: {
+      signer: getLitecoinSigner,
+      path: getBitcoinDerivedPath(),
+    },
+    [BLOCKCHAIN_NEM]: {
+      signer: getNemSigner,
+      path: getNemDerivedPath(),
+    },
+    [BLOCKCHAIN_WAVES]: {
+      signer: getWavesSigner,
+      // path: getWavesDerivedPath(),
+    },
   }
 
-  Object.entries(signerSelectors).forEach(([ blockchain, signerSelector ]) => {
+  Object.entries(signerSelectors).forEach(async ([ blockchain, signerSelector ]) => {
     let address = addressCache[blockchain]
     if(!address) {
       const signer = signerSelector(state)
       if (signer) {
-        address = signer.getAddress(accountPath)
-
+        address = await signer.getAddress(accountPath)
         addressCache[blockchain] = address
-
         dispatch(accountCacheAddress({ blockchain, address }))
       }
     }
   })
-
-  const wallets = []
-  const accountPath = account.decryptedWallet.entry.encrypted[0].path
 
   if (addressCache[BLOCKCHAIN_ETHEREUM]) {
     wallets.push(new WalletModel({

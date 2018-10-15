@@ -9,8 +9,8 @@ import {
   BLOCKCHAIN_NEM,
 } from '@chronobank/login/network/constants'
 import { TxEntryModel, TxExecModel } from '../../models'
-
-export const DECIMALS = 1000000
+import { DECIMALS, NEM_COIN_TYPE } from './constants'
+import { getDerivedPath } from '../wallets/utils'
 
 export const createNemTxEntryModel = (entry, options = {}) =>
   new TxEntryModel({
@@ -91,4 +91,8 @@ export const createXemTransaction = async (prepared, signer, signerPath) => {
     },
     fee: prepared.fee,
   }
+}
+
+export const getNemDerivedPath = () => {
+  return getDerivedPath(NEM_COIN_TYPE)
 }
