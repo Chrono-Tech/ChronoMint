@@ -44,8 +44,8 @@ export const selectCoins = (to, amount: BigNumber, feeRate, utxos) => {
   return { inputs, outputs, fee }
 }
 
-export const getBitcoinDerivedPath = (network) => {
-  const coinType = network === bitcoin.networks.testnet
+export const getBitcoinDerivedPath = (networkName) => {
+  const coinType = networkName === bitcoin.networks.testnet
     ? COIN_TYPE_ALLCOINS_TESTNET
     : COIN_TYPE_BTC_MAINNET
   return getDerivedPath(coinType)
