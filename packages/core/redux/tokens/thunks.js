@@ -36,6 +36,7 @@ import {
   EVENT_NEW_BLOCK,
   EVENT_NEW_TOKEN,
   EVENT_UPDATE_LAST_BLOCK,
+  LHT,
 } from '../../dao/constants'
 import {
   WAVES_DECIMALS,
@@ -63,16 +64,24 @@ export const initTokens = () => async (dispatch, getState) => {
   erc20
     .on(EVENT_ERC20_TOKENS_COUNT, async (count) => {
       const currentCount = state.get(DUCK_TOKENS).leftToFetch()
-      dispatch(TokensActions.setTokensFetchingCount(currentCount + count + 1 /*eth*/))
+      dispatch(TokensActions.setTokensFetchingCount(currentCount + count + 1 /*+eth+lht-lht(ERC20)*/))
+      const ethLikeDAOs = [ethereumDAO, laborHourTokenDAO]
 
-      // eth
-      const eth: TokenModel = await ethereumDAO.getToken()
-      if (eth) {
-        dispatch(TokensActions.tokenFetched(eth))
-        tokenService.registerDAO(eth, ethereumDAO)
-      }
+      ethLikeDAOs.map(async (dao) => {
+        const ethLikeToken: TokenModel = await dao.getToken()
+
+        if (ethLikeToken) {
+          dispatch(TokensActions.tokenFetched(ethLikeToken))
+          tokenService.registerDAO(ethLikeToken, dao)
+        }
+      })
     })
     .on(EVENT_NEW_ERC20_TOKEN, (token: TokenModel) => {
+      if(!isERC20TokenUsed(token)) {
+        // eslint-disable-next-line no-console
+        return console.warn(`Unsupported ERC20 token ${token.get('symbol')} received`)
+      }
+
       dispatch(TokensActions.tokenFetched(token))
       const dao = tokenService.createDAO(token, web3)
 
@@ -241,3 +250,5 @@ export const estimateGasTransfer = (tokenId, params, gasPriceMultiplier = 1, add
     gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier).toString(), tokenDao.getSymbol()),
   }
 }
+
+const isERC20TokenUsed = (token) => token.get('symbol') !== LHT
