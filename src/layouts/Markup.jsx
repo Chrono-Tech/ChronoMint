@@ -8,6 +8,7 @@ import Snackbar from 'components/common/Snackbar/Snackbar'
 import SideStack from 'components/common/SideStack/SideStack'
 import ModalStack from 'components/common/ModalStack/ModalStack'
 import BUTTONS from 'components/common/TopButtons/buttons'
+import TheCookies from 'components/common/TheCookies/TheCookies'
 import menu from 'menu'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
@@ -125,6 +126,7 @@ export default class Markup extends PureComponent {
     } = this.props
     return (
       <MuiThemeProvider theme={theme}>
+        <TheCookies />
         <div styleName={classnames('root', { 'noScroll': modalStackSize > 0 })}>
           <div styleName={classnames('mainMenu', { 'open': mainMenuIsOpen || isSelectedBlockchain })}>
             <DrawerMainMenu onSelectLink={this.handleToggleMainMenuAndScroll} />

@@ -12,6 +12,7 @@ import {
 } from '@chronobank/login-ui/redux/navigation'
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 import ModalStack from 'components/common/ModalStack/ModalStack'
+import TheCookies from 'components/common/TheCookies/TheCookies'
 import { MuiThemeProvider } from '@material-ui/core/styles'
 
 import WalletTitleBG from 'assets/img/wallet-title-bg.png'
@@ -50,6 +51,7 @@ class Splash extends Component {
 
     return (
       <MuiThemeProvider theme={theme}>
+        <TheCookies />
         <div styleName='root'>
           <div styleName='header-container'>
             <a styleName='header-logo' href='https://chronobank.io/'>
@@ -82,14 +84,14 @@ class Splash extends Component {
                   <img src={BackIcon} alt='' />
                 </button>
                 <span styleName='navigator-text'>
-                  { navigatorText }
+                  {navigatorText}
                 </span>
               </div>
             ) : null
           }
 
           <PersistWrapper>
-            {children ? children: null}
+            {children ? children : null}
           </PersistWrapper>
 
           {!window.isMobile && (<Footer />)}

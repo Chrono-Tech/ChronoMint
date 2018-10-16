@@ -1,0 +1,70 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+.root {
+  height: 55px;
+  transition: margin 0.6s $cubic-animation;
+  &.the-cookies-visible {
+    margin-top: 0;
+  }
+  &.the-cookies-hidden {
+    .the-cookies {
+      top: -100px;
+    }
+    margin-top: -55px;
+  }
+  .the-cookies {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+    padding: 10px 30px;
+    min-height: 55px;
+    font-size: 14px;
+    font-weight: 400;
+    font-family: 'Proxima Nova', sans-serif;
+    color: $color-white;
+    background-color: $color-blue-4;
+    border-bottom: 1px solid $border-color;
+    display: flex;
+    align-items: center;
+    transition: top 0.6s $cubic-animation;
+    .link {
+      color: $color-white;
+      text-decoration: underline;
+      cursor: pointer;
+      &:hover {
+        color: $color-hover;
+      }
+    }
+    .info {
+      flex-grow: 1;
+      flex-shrink: 1;
+      padding-right: 30px;
+    }
+    .action {
+      flex-grow: 0;
+      flex-shrink: 0;
+      :global {
+        .Button_root {
+          button {
+            min-height: 28px;
+            padding-top: 4px;
+            padding-bottom: 4px;
+            width: 100px;
+            border: 1px solid $color-white;
+            text-transform: capitalize;
+            &:hover {
+              border-color: $color-hover;
+            }
+          }
+        }
+      }
+    }
+  }
+}
