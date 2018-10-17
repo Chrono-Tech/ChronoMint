@@ -3,7 +3,23 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { EthereumProvider } from './EthereumProvider'
+import { BLOCKCHAIN_LABOR_HOUR_TOKEN } from './constants'
+import EthereumLikeProvider from './EthereumLikeProvider'
 import selectLhtNode from './LhtNode'
 
-export const lhtProvider = new EthereumProvider(selectLhtNode)
+export class LaborHourProvider extends EthereumLikeProvider {
+  constructor () {
+    super(BLOCKCHAIN_LABOR_HOUR_TOKEN, ...arguments)
+  }
+
+  async getAccountBalances (address) {
+    const node = this._selectNode(this.networkSettings)
+    const data = await node.getAddressInfo(address.toLowerCase())
+    return {
+      balance: data.balance,
+      tokens: data.erc20token,
+    }
+  }
+}
+
+export const lhtProvider = new LaborHourProvider(selectLhtNode)
