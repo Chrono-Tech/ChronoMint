@@ -55,7 +55,7 @@ import TxDescModel from '../../models/TxDescModel'
 import { initEos } from '../eos/thunks'
 import { getTokens } from '../tokens/selectors'
 import { accountCacheAddress } from '../persistAccount/actions'
-import { getBlockchainsList } from '../blockchains/selectors'
+// import { getBlockchainsList } from '../blockchains/selectors'
 import { getBitcoinDerivedPath } from '../bitcoin/utils'
 import { getNemDerivedPath } from '../nem/utils'
 import { getWavesDerivedPath } from '../waves/utils'
@@ -141,15 +141,15 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
     }
   })
 
-  const blockchains = getBlockchainsList(state)
+  // const blockchains = getBlockchainsList(state)
   Object.entries(addressCache).forEach(async ([ blockchain, { address, path } ]) => {
-      wallets.push(new WalletModel({
-        address,
-        blockchain,
-        isMain: true,
-        walletDerivedPath: path,
-    })
-  }
+    wallets.push(new WalletModel({
+      address,
+      blockchain,
+      isMain: true,
+      walletDerivedPath: path,
+    }))
+  })
 
   wallets.forEach((wallet) => {
     dispatch(setWallet(wallet))
