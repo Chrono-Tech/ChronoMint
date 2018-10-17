@@ -68,9 +68,7 @@ export default class EthereumMemoryDevice extends EventEmitter {
     const wallets = accounts.wallet.create()
 
     if (privateKey) {
-      const hdWallet = hdKey.fromMasterSeed(Buffer.from(privateKey, 'hex'))
-      const hdkey = hdWallet.derivePath(WALLET_HD_PATH)._hdkey
-      account = accounts.privateKeyToAccount(`0x${hdkey._privateKey.toString('hex')}`)
+      account = accounts.privateKeyToAccount(`0x${privateKey}`)
     }
 
     if (mnemonic) {

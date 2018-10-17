@@ -56,7 +56,7 @@ class LoginWithPrivateKey extends PureComponent {
             <Translate value='LoginWithPrivateKey.submit' />
           </Button>
 
-          { error ? (<div styleName='form-error'>{error}</div>) : null }
+          {error ? (<div styleName='form-error'>{error}</div>) : null}
 
           <Translate value='LoginWithPrivateKey.or' />
           <br />
