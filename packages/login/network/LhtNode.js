@@ -10,11 +10,11 @@ import EthereumMiddlewareNode from './EthereumMiddlewareNode'
 // TODO @dkchv: update to actual config
 const LHT_TESTNET_NODE = new EthereumMiddlewareNode({
   api: axios.create({
-    baseURL: 'https://test-5.chronobank.io',
+    baseURL: 'https://middleware-sidechain-laborx.chronobank.io',
     timeout: 10000,
   }),
   twoFA: axios.create({
-    baseURL: 'https://test-5.chronobank.io/2fa',
+    baseURL: 'https://middleware-sidechain-laborx.chronobank.io/2fa',
     timeout: 10000,
   }),
   trace: true,
@@ -31,11 +31,11 @@ export default function selectEthereumNode (network) {
 
 const LHT_MAINNET_NODE = new EthereumMiddlewareNode({
   api: axios.create({
-    baseURL: 'https://test-5.chronobank.io',
+    baseURL: 'https://middleware-sidechain-laborx.chronobank.io',
     timeout: 10000,
   }),
   twoFA: axios.create({
-    baseURL: 'https://test-5.chronobank.io/2fa',
+    baseURL: 'https://middleware-sidechain-laborx.chronobank.io/2fa',
     timeout: 10000,
   }),
   trace: true,

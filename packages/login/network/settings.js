@@ -46,12 +46,12 @@ const blockExplorersMap = {
   },
   [BLOCKCHAIN_LABOR_HOUR_TOKEN]: {
     mainnet: [
-      'https://test-5.chronobank.io/tx',
-      'https://test-5.chronobank.io',
+      'https://middleware-sidechain-laborx.chronobank.io/tx',
+      'https://middleware-sidechain-laborx.chronobank.io',
     ],
     testnet: [
-      'https://test-5.chronobank.io/tx',
-      'https://test-5.chronobank.io',
+      'https://middleware-sidechain-laborx.chronobank.io/tx',
+      'https://middleware-sidechain-laborx.chronobank.io',
     ],
   },
   [BLOCKCHAIN_LITECOIN]: {
