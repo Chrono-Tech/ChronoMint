@@ -6,10 +6,6 @@
 import BigNumber from 'bignumber.js'
 import coinselect from 'coinselect'
 import bitcoin from 'bitcoinjs-lib'
-import {
-  COIN_TYPE_BTC_MAINNET,
-  COIN_TYPE_BTC_TESTNET,
-} from '@chronobank/login/network/constants'
 import { TxExecModel } from '../../models'
 
 export { createBitcoinTxEntryModel } from '../bitcoin-like-blockchain/utils'
@@ -39,30 +35,6 @@ export const selectCoins = (to, amount: BigNumber, feeRate, utxos) => {
 
   // TODO: need to process a case, if some of inputs, outputs or fee is undefined... Here or outside
   return { inputs, outputs, fee }
-}
-
-////////////////////////////////////////////////
-// @todo remove after refactor providers/engines
-////////////////////////////////////////////////
-export const createBitcoinWalletFromPK = (privateKey, network, networkName) => {
-  const btcPrivateKey = (privateKey.slice(0, 2) === '0x' && privateKey.length === 66) ? privateKey.substring(2, 66) : privateKey
-  const keyPair = new bitcoin.ECPair.fromPrivateKey(Buffer.from(btcPrivateKey, 'hex'), { network })
-  return {
-    keyPair,
-    get network () {
-      return keyPair.network
-    },
-    get address () {
-      const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network })
-      return address
-    },
-    get derivePath () {
-      const coinType = networkName === bitcoin.networks.testnet
-        ? COIN_TYPE_BTC_TESTNET
-        : COIN_TYPE_BTC_MAINNET
-      return `m/44'/${coinType}'/0'/0/0`
-    },
-  }
 }
 
 export const getBtcFee = (
