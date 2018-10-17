@@ -123,7 +123,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
               multiSigFetched: ETH_MULTISIG_FETCHED,
               multiSigBalance: ETH_MULTISIG_BALANCE,
             }
-          ];
+          ]
 
           ethLikeSettings.map((settings) => {
             const walletFrom = getState().get(settings.multiSigWalletDuck).item(tx.from())
