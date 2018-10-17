@@ -155,6 +155,7 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
     dispatch(setWallet(wallet))
     dispatch(updateWalletBalance({ wallet }))
   })
+
   dispatch(initEos())
 }
 

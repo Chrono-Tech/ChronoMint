@@ -5,7 +5,6 @@
 
 /** @module core/redux/bitcoin/BitcoinMiddlewareService */
 
-import { BLOCKCHAIN_BITCOIN_CASH } from '../../dao/constants'
 import BitcoinLikeBlockchainMiddlewareService from '../bitcoin-like-blockchain/MiddlewareService'
 
 const URL_BLOCKS_HEIGHT = 'blocks/height'
@@ -97,28 +96,33 @@ export default class BitcoinMiddlewareService extends BitcoinLikeBlockchainMiddl
       return Promise.reject(error)
     }
 
-    // In the testnet we are using blockdozer to get BCC balances
-    if (blockchain === BLOCKCHAIN_BITCOIN_CASH && networkType === 'testnet') {
-      const [confirmedBalance, unconfirmedBalance] = await Promise.all(
-        [
-          BitcoinMiddlewareService.requestBlockdozerConfirmedBalance(currentNode, address),
-          BitcoinMiddlewareService.requestBlockdozerUnconfirmedBalance(currentNode, address),
-        ].map((promise) => promise.catch((error) => {
-          return error
-        })) // We will handle errors by ourselves
-      )
-
-      if (confirmedBalance instanceof Error || unconfirmedBalance instanceof Error) {
-        return Promise.reject({ confirmedBalance, unconfirmedBalance, config: { host: 'https://tbcc.blockdozer.com/insight-api' } })
-      } else {
-        return Promise.resolve({ confirmedBalance, unconfirmedBalance, config: { host: 'https://tbcc.blockdozer.com/insight-api' } })
-      }
-    }
-
     return currentNode.request({
       method: 'GET',
       url: URL_ADDRESS_INFO(address),
     })
+  }
+
+  static async fallbackBalance (address, blockchain, networkType) {
+    const currentNode = BitcoinMiddlewareService.getCurrentNode(blockchain, networkType)
+    if (!currentNode) {
+      const error = BitcoinMiddlewareService.genErrorMessage(blockchain, networkType, `GET: ${URL_ADDRESS_INFO(address)}`)
+      return Promise.reject(error)
+    }
+
+    const [confirmedBalance, unconfirmedBalance] = await Promise.all(
+      [
+        BitcoinMiddlewareService.requestBlockdozerConfirmedBalance(currentNode, address),
+        BitcoinMiddlewareService.requestBlockdozerUnconfirmedBalance(currentNode, address),
+      ].map((promise) => promise.catch((error) => {
+        return error
+      })) // We will handle errors by ourselves
+    )
+
+    if (confirmedBalance instanceof Error || unconfirmedBalance instanceof Error) {
+      return Promise.reject({ confirmedBalance, unconfirmedBalance, config: { host: 'https://test-bcc.chronobank.io' } })
+    } else {
+      return Promise.resolve({ confirmedBalance, unconfirmedBalance, config: { host: 'https://test-bcc.chronobank.io' } })
+    }
   }
 
   /**
