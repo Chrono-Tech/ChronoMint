@@ -9,40 +9,46 @@ import {
   SIDES_CLOSE,
   SIDES_OPEN,
   SIDES_TOGGLE_MAIN_MENU,
-  SIDES_TOGGLE,
+  SIDES_TOGGLE, SIDES_SELECT_BLOCKCHAIN_IN_MAIN_MENU,
 } from './constants'
 
-export const sidesOpen = (props) => (dispatch) =>
-  dispatch({
+export const sidesOpen = (props) =>
+  ({
     type: SIDES_OPEN,
     ...props,
   })
 
-export const sidesClose = (key) => (dispatch) =>
-  dispatch({
+export const sidesClose = (key) =>
+  ({
     type: SIDES_CLOSE,
     key,
   })
 
-export const sidesClear = () => (dispatch) =>
-  dispatch({
+export const sidesClear = () =>
+  ({
     type: SIDES_CLEAR,
   })
 
-export const sidesCloseAll = () => (dispatch) =>
-  dispatch({
+export const sidesCloseAll = () =>
+  ({
     type: SIDES_CLOSE_ALL,
   })
 
-export const toggleSidePanel = (panelKey, isOpened) => (dispatch) =>
-  dispatch({
+export const toggleSidePanel = (panelKey, isOpened) =>
+  ({
     type: SIDES_TOGGLE,
     panelKey,
     isOpened,
   })
 
-export const toggleMainMenu = (mainMenuIsOpen) => (dispatch) =>
-  dispatch({
+export const toggleMainMenu = (mainMenuIsOpen) =>
+  ({
     type: SIDES_TOGGLE_MAIN_MENU,
     mainMenuIsOpen,
+  })
+
+export const selectBlockchainInMainMenu = (selectedBlockchain) =>
+  ({
+    type: SIDES_SELECT_BLOCKCHAIN_IN_MAIN_MENU,
+    selectedBlockchain,
   })

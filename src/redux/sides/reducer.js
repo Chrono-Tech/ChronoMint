@@ -12,7 +12,7 @@ import {
   SIDES_CLOSE,
   SIDES_OPEN,
   SIDES_TOGGLE_MAIN_MENU,
-  SIDES_TOGGLE,
+  SIDES_TOGGLE, SIDES_SELECT_BLOCKCHAIN_IN_MAIN_MENU,
 } from './constants'
 
 const initialState = {
@@ -101,6 +101,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         mainMenuIsOpen: action.mainMenuIsOpen,
+      }
+    case SIDES_SELECT_BLOCKCHAIN_IN_MAIN_MENU:
+      return {
+        ...state,
+        selectedBlockchain: action.selectedBlockchain,
       }
     default:
       return state

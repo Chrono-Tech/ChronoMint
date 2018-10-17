@@ -26,14 +26,13 @@ import WalletName from '../WalletName/WalletName'
 
 function makeMapStateToProps (state, ownProps) {
   const getWallet = getWalletInfo(ownProps.blockchain, ownProps.address)
-  const mapStateToProps = (ownState) => {
+  return (ownState) => {
     const tokens = getAllTokens(ownState)
     return {
       wallet: getWallet(ownState),
       token: tokens.item(getMainSymbolForBlockchain(ownProps.blockchain)),
     }
   }
-  return mapStateToProps
 }
 
 function mapDispatchToProps (dispatch) {
