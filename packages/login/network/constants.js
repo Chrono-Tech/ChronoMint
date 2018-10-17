@@ -3,7 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-// coin_types 8, 9, 16, 17 used, but they are not standardized
+// coin_types list you can find there
+// https://github.com/satoshilabs/slips/blob/master/slip-0044.md
 export const COIN_TYPE_ALLCOINS_TESTNET = 1
 export const COIN_TYPE_BTC_MAINNET = 0
 export const COIN_TYPE_BTC_TESTNET = 1
