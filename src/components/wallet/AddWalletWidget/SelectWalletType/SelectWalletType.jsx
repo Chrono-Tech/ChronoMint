@@ -27,11 +27,14 @@ import {
   WAVES,
   XEM,
 } from '@chronobank/core/dao/constants'
+import { getBlockchainsList } from '@chronobank/core/redux/blockchains/selectors'
 import { prefix } from '../lang'
 import './SelectWalletType.scss'
 
-function mapStateToProps () {
-  return {}
+function mapStateToProps (state) {
+  return {
+    blockchains: getBlockchainsList(state),
+  }
 }
 
 function mapDispatchToProps (dispatch) {
@@ -47,6 +50,7 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class SelectWalletType extends PureComponent {
   static propTypes = {
+    blockchains: PropTypes.arrayOf(PropTypes.string),
     handleTouchTap: PropTypes.func,
     onCreateWallet: PropTypes.func,
   }
@@ -61,59 +65,63 @@ export default class SelectWalletType extends PureComponent {
     this.props.onCreateWallet(blockchain)
   }
 
+  wallets = [
+    {
+      blockchain: BLOCKCHAIN_BITCOIN,
+      symbol: BTC,
+      title: `${prefix}.btc`,
+      disabled: true,
+    },
+    {
+      blockchain: BLOCKCHAIN_DASH,
+      symbol: DASH,
+      title: `${prefix}.dash`,
+      disabled: true,
+    },
+    {
+      blockchain: BLOCKCHAIN_LITECOIN,
+      symbol: LTC,
+      title: `${prefix}.ltc`,
+      disabled: true,
+    },
+    {
+      blockchain: BLOCKCHAIN_ETHEREUM,
+      symbol: ETH,
+      title: `${prefix}.eth`,
+      disabled: false,
+    },
+    {
+      blockchain: BLOCKCHAIN_NEM,
+      symbol: XEM,
+      title: `${prefix}.nem`,
+      disabled: true,
+    },
+    {
+      blockchain: BLOCKCHAIN_WAVES,
+      symbol: WAVES,
+      title: `${prefix}.waves`,
+      disabled: true,
+    },
+  ]
+
   render () {
-    const wallets = [
-      {
-        blockchain: BLOCKCHAIN_BITCOIN,
-        symbol: BTC,
-        title: `${prefix}.btc`,
-        disabled: true,
-      },
-      {
-        blockchain: BLOCKCHAIN_DASH,
-        symbol: DASH,
-        title: `${prefix}.dash`,
-        disabled: true,
-      },
-      {
-        blockchain: BLOCKCHAIN_LITECOIN,
-        symbol: LTC,
-        title: `${prefix}.ltc`,
-        disabled: true,
-      },
-      {
-        blockchain: BLOCKCHAIN_ETHEREUM,
-        symbol: ETH,
-        title: `${prefix}.eth`,
-        disabled: false,
-      },
-      {
-        blockchain: BLOCKCHAIN_NEM,
-        symbol: XEM,
-        title: `${prefix}.nem`,
-        disabled: true,
-      },
-      {
-        blockchain: BLOCKCHAIN_WAVES,
-        symbol: WAVES,
-        title: `${prefix}.waves`,
-        disabled: true,
-      },
-    ]
+    const { blockchains } = this.props
 
     return (
       <div styleName='root'>
         {
-          wallets.map((type) => (
-            <div key={type.blockchain} styleName={classnames('walletType', { 'disabled': type.disabled })} onClick={type.action || this.handleTouchTap(type)}>
-              <div styleName='icon'><IPFSImage fallback={TOKEN_ICONS[type.symbol]} /></div>
-              <div styleName='title'>
-                <Translate value={type.title} />
-                {type.disabled && <div styleName='soon'><Translate value={`${prefix}.soon`} /></div>}
+          this.wallets
+            .filter(({ blockchain }) => blockchains.includes(blockchain))
+            .map((type) => (
+              <div key={type.blockchain} styleName={classnames('walletType', { 'disabled': type.disabled })} onClick={type.action || this.handleTouchTap(type)}>
+                <div styleName='icon'><IPFSImage fallback={TOKEN_ICONS[type.symbol]} /></div>
+                <div styleName='title'>
+                  <Translate value={type.title} />
+                  {type.disabled && <div styleName='soon'><Translate value={`${prefix}.soon`} /></div>}
+                </div>
+                <div styleName='arrow'><i className='chronobank-icon'>next</i></div>
               </div>
-              <div styleName='arrow'><i className='chronobank-icon'>next</i></div>
-            </div>
-          ))
+            ))
         }
       </div>
     )

@@ -19,6 +19,7 @@ const initialState = {
   decryptedWallet: null,
   rehydrated: false,
   customNetworksList: [],
+  addressCache: {},
 }
 
 const persistAccount = (state = initialState, action) => {
@@ -55,6 +56,21 @@ const persistAccount = (state = initialState, action) => {
         ...state,
         walletsList: action.walletsList,
       }
+
+    case a.WALLETS_CACHE_ADDRESS: {
+      const selectedWalletKey = state.selectedWallet.key
+
+      return {
+        ...state,
+        addressCache: {
+          ...state.addressCache,
+          [selectedWalletKey]: {
+            ...state.addressCache[selectedWalletKey],
+            [action.blockchain]: action.address,
+          },
+        },
+      }
+    }
 
     case a.CUSTOM_NETWORKS_LIST_ADD :
       return {

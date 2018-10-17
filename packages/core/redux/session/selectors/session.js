@@ -35,16 +35,13 @@ export const getAddressesList = () => createSelector(
 export const getBlockchainAddressesList = () => createSelector(
   [getAddressesList()],
   (addresses) => {
-    const result = []
-    PROFILE_PANEL_TOKENS
-      .forEach((token) => {
-        result.push({
-          ...token,
-          address: addresses[token.blockchain],
-        })
-      })
-    return result
-  },
+    return PROFILE_PANEL_TOKENS
+      .map((token) =>({
+        ...token,
+        address: addresses[token.blockchain],
+      }))
+      .filter(({ blockchain }) => Object.keys(addresses).includes(blockchain))
+  }
 )
 
 export const isCBE = () => createSelector(
