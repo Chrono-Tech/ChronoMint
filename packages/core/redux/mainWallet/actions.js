@@ -6,6 +6,7 @@
 // FIXME: to rework all methods below to avoid complexity
 /* eslint-disable complexity */
 
+import { marketAddToken } from '@chronobank/market/redux/actions'
 import { getDeriveWalletsAddresses, getMultisigWallets } from '../wallet/selectors'
 import Amount from '../../models/Amount'
 import ApprovalNoticeModel from '../../models/notices/ApprovalNoticeModel'
@@ -14,7 +15,6 @@ import BalanceModel from '../../models/tokens/BalanceModel'
 import TokenModel from '../../models/tokens/TokenModel'
 import validator from '../../models/validator'
 import AllowanceModel from '../../models/wallet/AllowanceModel'
-import { addMarketToken } from '../market/actions'
 import { notify } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { subscribeOnTokens } from '../tokens/thunks'
@@ -194,7 +194,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       })
     })
 
-  dispatch(addMarketToken(token.symbol()))
+  dispatch(marketAddToken(token.symbol()))
 
   if (token.symbol() === 'TIME') {
     dispatch(updateIsTIMERequired())

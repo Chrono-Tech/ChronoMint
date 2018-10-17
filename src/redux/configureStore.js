@@ -21,6 +21,8 @@ import loginReducers from '@chronobank/login/redux/ducks'
 import { DUCK_I18N } from 'redux/i18n/constants'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import { DUCK_WALLETS } from '@chronobank/core/redux/wallets/constants'
+import createCryptoCompareMiddleware from '@chronobank/market/middleware'
+import market from '@chronobank/market/redux/reducers'
 import transformer from '@chronobank/core/redux/serialize'
 import ducks from './ducks'
 import routingReducer from './routing'
@@ -40,6 +42,7 @@ const configureStore = () => {
     form: formReducer,
     i18n: i18nReducer,
     routing: routingReducer,
+    market,
   })
 
   const rootReducer = (state, action) => {
@@ -62,6 +65,7 @@ const configureStore = () => {
     ? composeWithDevTools({ realtime: true })
     : compose
   const middleware = [
+    createCryptoCompareMiddleware(), // this middleware will dispatch thunks, so it MUST be placed before 'thunks'
     thunk,
     historyMiddleware,
   ]

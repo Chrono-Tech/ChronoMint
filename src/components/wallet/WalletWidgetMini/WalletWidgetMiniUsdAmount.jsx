@@ -10,14 +10,14 @@ import { walletBalanceSelector } from '@chronobank/core/redux/wallets/selectors/
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
 import { connect } from 'react-redux'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
-import { getMarket } from '@chronobank/core/redux/market/selectors'
+import { selectCurrentCurrency } from '@chronobank/market/redux/selectors'
 
 function makeMapStateToProps (state, ownProps) {
   const { wallet } = ownProps
   const mainSymbol = getMainSymbolForBlockchain(wallet.blockchain)
   let getBalance = walletBalanceSelector(wallet.id, mainSymbol)
   const mapStateToProps = (ownState) => {
-    const { selectedCurrency } = getMarket(state)
+    const selectedCurrency = selectCurrentCurrency(state)
     return {
       selectedCurrency,
       balance: getBalance(ownState),
