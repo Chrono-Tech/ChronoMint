@@ -22,21 +22,21 @@ export const selectWallet = (blockchain, address) => createSelector(
     const mainSymbol = getMainSymbolForBlockchain(blockchain)
 
     if (wallet) {
-      const balance: Amount = wallet.balances[mainSymbol] || new Amount(0, mainSymbol)
+      const balance: Amount = wallet.balances[mainSymbol] || null
       return new WalletModel({
         ...wallet,
         amount: balance,
       })
     }
     if (eosWallet) {
-      const balance: Amount = eosWallet ? eosWallet.balances[mainSymbol] : new Amount(0, mainSymbol)
+      const balance: Amount = eosWallet ? eosWallet.balances[mainSymbol] : null
       return new WalletModel({
         ...eosWallet,
         amount: balance,
       })
     }
     if (ethMultisigWallet) {
-      const balance: Amount = ethMultisigWallet.balances[mainSymbol] || new Amount(0, mainSymbol)
+      const balance: Amount = ethMultisigWallet.balances[mainSymbol] || null
       return new MultisigEthWalletModel({
         ...ethMultisigWallet,
         amount: balance,

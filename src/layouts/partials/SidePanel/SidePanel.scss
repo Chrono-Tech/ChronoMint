@@ -9,8 +9,11 @@
   left: 300px;
   width: 300px;
   right: auto;
-  position: absolute;
+  position: fixed;
   height: 100%;
+  @include xs-only {
+    left: 0;
+  }
 }
 
 .notifications {
