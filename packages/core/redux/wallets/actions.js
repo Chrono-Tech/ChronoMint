@@ -33,6 +33,7 @@ import { executeTransaction } from '../ethereum/thunks'
 import { executeWavesTransaction } from '../waves/thunks'
 import * as BitcoinThunks from '../bitcoin/thunks'
 import {
+  WALLETS_LOGOUT,
   WALLETS_SET,
   WALLETS_SET_NAME,
   WALLETS_UPDATE_BALANCE,
@@ -519,3 +520,8 @@ export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
     isLoaded: true,
   })
 }
+
+export const cleanWalletsList = () =>
+  ({
+    type: WALLETS_LOGOUT,
+  })

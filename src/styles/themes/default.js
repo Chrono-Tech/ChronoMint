@@ -7,6 +7,9 @@ import { createMuiTheme } from '@material-ui/core/styles'
 import variables from './variables'
 
 export default createMuiTheme({
+  typography: {
+    useNextVariants: true,
+  },
   palette: {
     accent1Color: variables.colorAccent1,
     textColor: variables.colorPrimary0,

@@ -19,6 +19,7 @@ import { watchStopMarket } from '../market/actions'
 import { initEthereum } from '../ethereum/thunks'
 import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
 import { DEFAULT_CBE_URL, DEFAULT_USER_URL, DUCK_SESSION } from './constants'
+import { cleanWalletsList } from '../wallets/actions'
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
@@ -103,6 +104,7 @@ export const createNetworkSession = (account, provider, network) => (dispatch) =
 export const logout = () => async (dispatch) => {
   try {
     dispatch(watchStopMarket())
+    dispatch(cleanWalletsList())
     dispatch(destroyNetworkSession())
   } catch (e) {
     // eslint-disable-next-line no-console
