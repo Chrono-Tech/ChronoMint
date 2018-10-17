@@ -14,6 +14,9 @@ import {
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
   WALLET_HD_PATH,
+  COIN_TYPE_LTC_MAINNET,
+  COIN_TYPE_DASH_MAINNET,
+  COIN_TYPE_BCC_MAINNET,
 } from '@chronobank/login/network/constants'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
@@ -101,15 +104,15 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
     },
     [BLOCKCHAIN_BITCOIN_CASH]: {
       signerSelector: getBitcoinCashSigner,
-      path: getBitcoinDerivedPath(network[BLOCKCHAIN_BITCOIN_CASH]),
+      path: getBitcoinDerivedPath(network[BLOCKCHAIN_BITCOIN_CASH], COIN_TYPE_BCC_MAINNET),
     },
     [BLOCKCHAIN_DASH]: {
       signerSelector: getDashSigner,
-      path: getBitcoinDerivedPath(network[BLOCKCHAIN_DASH]),
+      path: getBitcoinDerivedPath(network[BLOCKCHAIN_DASH], COIN_TYPE_DASH_MAINNET),
     },
     [BLOCKCHAIN_LITECOIN]: {
       signerSelector: getLitecoinSigner,
-      path: getBitcoinDerivedPath(network[BLOCKCHAIN_LITECOIN]),
+      path: getBitcoinDerivedPath(network[BLOCKCHAIN_LITECOIN], COIN_TYPE_LTC_MAINNET),
     },
     [BLOCKCHAIN_NEM]: {
       signerSelector: getNemSigner,
