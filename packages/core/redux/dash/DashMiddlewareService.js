@@ -5,7 +5,7 @@
 
 /** @module core/redux/dash/DashMiddlewareService */
 
-import BitcoinMiddlewareService from '../bitcoin-like-blockchain/MiddlewareService';
+import BitcoinMiddlewareService from '../bitcoin-like-blockchain/MiddlewareService'
 
 const URL_SEND = 'tx/send'
 

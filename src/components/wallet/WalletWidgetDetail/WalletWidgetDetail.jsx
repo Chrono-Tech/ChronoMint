@@ -9,16 +9,12 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
-import { TOKEN_ICONS } from 'assets'
 import Button from 'components/common/ui/Button/Button'
-import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { getMainTokenForWalletByBlockchain } from '@chronobank/core/redux/tokens/selectors'
-import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import Moment from 'components/common/Moment'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import { removeWalletAndNavigateToWallets } from 'redux/ui/thunks'
-import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
 import './WalletWidgetDetail.scss'
 import { prefix } from './lang'
 import WalletMainCoinBalance from '../WalletWidget/WalletMainCoinBalance'
@@ -104,12 +100,6 @@ export default class WalletWidgetDetail extends PureComponent {
                 wallet={wallet}
                 token={token}
               />
-              <div styleName='token-container'>
-                {wallet.blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}
-                <div styleName='token-icon'>
-                  <IPFSImage styleName='image' multihash={token && token.icon()} fallback={TOKEN_ICONS[token && token.symbol()] || TOKEN_ICONS.DEFAULT} />
-                </div>
-              </div>
               <div styleName='content-container'>
                 <div styleName='address-title'>
                   <h3><WalletName wallet={wallet} /></h3>

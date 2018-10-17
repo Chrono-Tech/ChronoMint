@@ -16,11 +16,9 @@ import './WalletWidget.scss'
 function makeMapStateToProps (state, props) {
   const { wallet } = props
   const mainSymbol = getMainSymbolForBlockchain(wallet.blockchain)
-  let getAmount
-  let getBalance
-  getAmount = walletAmountSelector(wallet.id, mainSymbol)
-  getBalance = walletBalanceSelector(wallet.id, mainSymbol)
-  const mapStateToProps = (ownState) => {
+  const getAmount = walletAmountSelector(wallet.id, mainSymbol)
+  const getBalance = walletBalanceSelector(wallet.id, mainSymbol)
+  return (ownState) => {
     const { selectedCurrency } = getMarket(ownState)
     return {
       mainSymbol,
@@ -29,7 +27,6 @@ function makeMapStateToProps (state, props) {
       selectedCurrency,
     }
   }
-  return mapStateToProps
 }
 
 @connect(makeMapStateToProps)
