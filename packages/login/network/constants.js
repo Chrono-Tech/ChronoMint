@@ -3,12 +3,16 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-// coin_types 8, 9, 16, 17 used, but they are not standardized
-export const COIN_TYPE_ETH = 60
+// coin_types list you can find there
+// https://github.com/satoshilabs/slips/blob/master/slip-0044.md
+export const COIN_TYPE_ALLCOINS_TESTNET = 1
 export const COIN_TYPE_BTC_MAINNET = 0
 export const COIN_TYPE_BTC_TESTNET = 1
-export const COIN_TYPE_LTC_MAINNET = 9
-export const COIN_TYPE_LTC_TESTNET = 8
+export const COIN_TYPE_LTC_MAINNET = 2
+export const COIN_TYPE_DASH_MAINNET = 5
+export const COIN_TYPE_BCC_MAINNET = 145
+export const COIN_TYPE_ETH = 60
+
 // get the first account using the standard hd path
 export const WALLET_HD_PATH = `m/44'/${COIN_TYPE_ETH}'/0'/0/0`
 
