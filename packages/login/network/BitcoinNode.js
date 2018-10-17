@@ -57,9 +57,9 @@ export const BTC_TESTNET_NODE = new BitcoinMiddlewareNode({
   trace: true,
 })
 
-const BCC_MAINNET_NODE = new BitcoinBlockexplorerNode({
+const BCC_MAINNET_NODE = new BitcoinMiddlewareNode({
   api: axios.create({
-    baseURL: 'https://test-bcc.chronobank.io',
+    baseURL: 'https://test-bcc.chronobank.io',  // @todo MINT-2028 Ask Egor when BCC prod node is ready
     timeout: 10000,
   }),
   blockchain: BLOCKCHAIN_BITCOIN_CASH,
@@ -77,9 +77,9 @@ const BCC_MAINNET_NODE = new BitcoinBlockexplorerNode({
   trace: false,
 })
 
-const BCC_TESTNET_NODE = new BitcoinBlockexplorerNode({
+const BCC_TESTNET_NODE = new BitcoinMiddlewareNode({
   api: axios.create({
-    baseURL: 'https://test-bcc.chronobank.io', // Ask Egor when chronobank node url is ready
+    baseURL: 'https://test-bcc.chronobank.io',
     timeout: 10000,
   }),
   blockchain: BLOCKCHAIN_BITCOIN_CASH,
