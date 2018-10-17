@@ -14,8 +14,12 @@ import {
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
   WALLET_HD_PATH,
+  COIN_TYPE_LTC_MAINNET,
+  COIN_TYPE_DASH_MAINNET,
+  COIN_TYPE_BCC_MAINNET,
 } from '@chronobank/login/network/constants'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
+import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 import WalletModel from '../../models/wallet/WalletModel'
 import { subscribeOnTokens } from '../tokens/thunks'
 import { formatBalances, getProviderByBlockchain, getWalletBalances } from '../tokens/utils'
@@ -52,6 +56,9 @@ import { initEos } from '../eos/thunks'
 import { getTokens } from '../tokens/selectors'
 import { accountCacheAddress } from '../persistAccount/actions'
 import { getBlockchainsList } from '../blockchains/selectors'
+import { getBitcoinDerivedPath } from '../bitcoin/utils'
+import { getNemDerivedPath } from '../nem/utils'
+import { getWavesDerivedPath } from '../waves/utils'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -80,97 +87,68 @@ export const initWallets = () => (dispatch) => {
 const initWalletsFromKeys = () => async (dispatch, getState) => {
   const state = getState()
   const account = getPersistAccount(state)
+  const { network } = getCurrentNetworkSelector(state)
+
   const addressCache = { ...getAddressCache(state) }
 
+  const wallets = []
+  const accountEthereumPath = account.decryptedWallet.entry.encrypted[0].path
+
   const signerSelectors = {
-    [BLOCKCHAIN_ETHEREUM]: getEthereumSigner,
-    [BLOCKCHAIN_BITCOIN]: getBitcoinSigner,
-    [BLOCKCHAIN_BITCOIN_CASH]: getBitcoinCashSigner,
-    [BLOCKCHAIN_DASH]: getDashSigner,
-    [BLOCKCHAIN_LITECOIN]: getLitecoinSigner,
-    [BLOCKCHAIN_NEM]: getNemSigner,
-    [BLOCKCHAIN_WAVES]: getWavesSigner,
+    [BLOCKCHAIN_ETHEREUM]: {
+      signerSelector: getEthereumSigner,
+      path: accountEthereumPath,
+    },
+    [BLOCKCHAIN_BITCOIN]: {
+      signerSelector: getBitcoinSigner,
+      path: getBitcoinDerivedPath(network[BLOCKCHAIN_BITCOIN]),
+    },
+    [BLOCKCHAIN_BITCOIN_CASH]: {
+      signerSelector: getBitcoinCashSigner,
+      path: getBitcoinDerivedPath(network[BLOCKCHAIN_BITCOIN_CASH], COIN_TYPE_BCC_MAINNET),
+    },
+    [BLOCKCHAIN_DASH]: {
+      signerSelector: getDashSigner,
+      path: getBitcoinDerivedPath(network[BLOCKCHAIN_DASH], COIN_TYPE_DASH_MAINNET),
+    },
+    [BLOCKCHAIN_LITECOIN]: {
+      signerSelector: getLitecoinSigner,
+      path: getBitcoinDerivedPath(network[BLOCKCHAIN_LITECOIN], COIN_TYPE_LTC_MAINNET),
+    },
+    [BLOCKCHAIN_NEM]: {
+      signerSelector: getNemSigner,
+      path: getNemDerivedPath(network[BLOCKCHAIN_NEM]),
+    },
+    [BLOCKCHAIN_WAVES]: {
+      signerSelector: getWavesSigner,
+      path: getWavesDerivedPath(network[BLOCKCHAIN_WAVES]),
+    },
   }
 
-  Object.entries(signerSelectors).forEach(([ blockchain, signerSelector ]) => {
+  Object.entries(signerSelectors).forEach(async ([ blockchain, { signerSelector, path } ]) => {
     let address = addressCache[blockchain]
     if(!address) {
       const signer = signerSelector(state)
       if (signer) {
-        address = signer.getAddress(accountPath)
+        address = await signer.getAddress(path)
+        addressCache[blockchain] = {
+          address,
+          path,
+        }
 
-        addressCache[blockchain] = address
-
-        dispatch(accountCacheAddress({ blockchain, address }))
+        dispatch(accountCacheAddress({ blockchain, address, path }))
       }
     }
   })
 
   const blockchains = getBlockchainsList(state)
-  const wallets = []
-  const accountPath = account.decryptedWallet.entry.encrypted[0].path
-
-  if (addressCache[BLOCKCHAIN_ETHEREUM]) {
-    wallets.push(new WalletModel({
-      address: addressCache[BLOCKCHAIN_ETHEREUM].toLowerCase(),
-      blockchain: BLOCKCHAIN_ETHEREUM,
-      isMain: true,
-      walletDerivedPath: accountPath,
-    }))
-  }
-
-  if (addressCache[BLOCKCHAIN_BITCOIN]) {
-    wallets.push(new WalletModel({
-      address: addressCache[BLOCKCHAIN_BITCOIN],
-      blockchain: BLOCKCHAIN_BITCOIN,
-      isMain: true,
-      walletDerivedPath: accountPath,
-    }))
-  }
-
-  if (addressCache[BLOCKCHAIN_BITCOIN_CASH]) {
-    wallets.push(new WalletModel({
-      address: addressCache[BLOCKCHAIN_BITCOIN_CASH],
-      blockchain: BLOCKCHAIN_BITCOIN_CASH,
-      isMain: true,
-      walletDerivedPath: accountPath,
-    }))
-  }
-
-  if (addressCache[BLOCKCHAIN_DASH]) {
-    wallets.push(new WalletModel({
-      address: addressCache[BLOCKCHAIN_DASH],
-      blockchain: BLOCKCHAIN_DASH,
-      isMain: true,
-      walletDerivedPath: accountPath,
-    }))
-  }
-
-  if (addressCache[BLOCKCHAIN_LITECOIN]) {
-    wallets.push(new WalletModel({
-      address: addressCache[BLOCKCHAIN_LITECOIN],
-      blockchain: BLOCKCHAIN_LITECOIN,
-      isMain: true,
-      walletDerivedPath: accountPath,
-    }))
-  }
-
-  if (addressCache[BLOCKCHAIN_NEM]) {
-    wallets.push(new WalletModel({
-      address: addressCache[BLOCKCHAIN_NEM],
-      blockchain: BLOCKCHAIN_NEM,
-      isMain: true,
-      walletDerivedPath: accountPath,
-    }))
-  }
-
-  if (addressCache[BLOCKCHAIN_WAVES]) {
-    wallets.push(new WalletModel({
-      address: addressCache[BLOCKCHAIN_WAVES],
-      blockchain: BLOCKCHAIN_WAVES,
-      isMain: true,
-      walletDerivedPath: accountPath,
-    }))
+  Object.entries(addressCache).forEach(async ([ blockchain, { address, path } ]) => {
+      wallets.push(new WalletModel({
+        address,
+        blockchain,
+        isMain: true,
+        walletDerivedPath: path,
+    })
   }
 
   wallets.forEach((wallet) => {

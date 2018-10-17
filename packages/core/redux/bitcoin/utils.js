@@ -6,7 +6,14 @@
 import BigNumber from 'bignumber.js'
 import coinselect from 'coinselect'
 import bitcoin from 'bitcoinjs-lib'
+import {
+  COIN_TYPE_BTC_MAINNET,
+  COIN_TYPE_ALLCOINS_TESTNET,
+} from '@chronobank/login/network/constants'
 import { TxExecModel } from '../../models'
+import { getDerivedPath } from '../wallets/utils'
+
+const SATOSHI_TO_BTC = 100000000
 
 export { createBitcoinTxEntryModel } from '../bitcoin-like-blockchain/utils'
 
@@ -37,6 +44,13 @@ export const selectCoins = (to, amount: BigNumber, feeRate, utxos) => {
   return { inputs, outputs, fee }
 }
 
+export const getBitcoinDerivedPath = (networkName, mainnetCoinType = COIN_TYPE_BTC_MAINNET) => {
+  const coinType = networkName === bitcoin.networks.testnet
+    ? COIN_TYPE_ALLCOINS_TESTNET
+    : mainnetCoinType
+  return getDerivedPath(coinType)
+}
+
 export const getBtcFee = (
   recipient,
   amount,
@@ -48,7 +62,7 @@ export const getBtcFee = (
 }
 
 export const convertSatoshiToBTC = (satoshiAmount) => {
-  return new BigNumber(satoshiAmount / 100000000)
+  return new BigNumber(satoshiAmount / SATOSHI_TO_BTC)
 }
 
 const describeBitcoinTransaction = (tx, options, utxos) => {

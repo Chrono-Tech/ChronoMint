@@ -22,7 +22,7 @@ const BTC_MAINNET_NODE = new BitcoinMiddlewareNode({
     timeout: 10000,
   }),
   blockchain: BLOCKCHAIN_BITCOIN,
-  symbol: 'BTC',
+  symbol: BTC,
   socket: {
     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
     user: 'rabbitmq_user',
@@ -139,7 +139,7 @@ export const LTC_TESTNET_NODE = new BitcoinMiddlewareNode({
     timeout: 10000,
   }),
   blockchain: BLOCKCHAIN_LITECOIN,
-  symbol: 'LTC',
+  symbol: LTC,
   socket: {
     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
     user: 'rabbitmq_user',

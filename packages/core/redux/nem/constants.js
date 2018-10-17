@@ -18,3 +18,7 @@ export const TX_EXECUTE = 'TX/NEM/EXECUTE'
 export const TX_PREPARE = 'TX/NEM/PREPARE'
 export const TX_PROCESS = 'TX/NEM/PROCESS'
 export const TX_SUBMIT = 'TX/NEM/SUBMIT'
+
+export const DECIMALS = 1000000
+
+export const NEM_COIN_TYPE = 43
