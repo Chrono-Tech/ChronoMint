@@ -188,7 +188,6 @@
   @include xs-only {
     flex: 1;
     width: 100%;
-    max-width: 264px;
   }
 
   :global {
@@ -241,6 +240,7 @@
   font-weight: 700;
   line-height: 22px;
   word-break: break-all;
+  padding-right: 30px;
 }
 
 .address-address {

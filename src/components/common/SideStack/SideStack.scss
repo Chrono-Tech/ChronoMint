@@ -12,4 +12,7 @@
   @include sm-only {
     z-index: 1600;
   }
+  @include xs-only {
+    z-index: 1700;
+  }
 }

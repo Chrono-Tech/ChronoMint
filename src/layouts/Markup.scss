@@ -119,7 +119,7 @@
 
 .mainMenu {
   position: absolute;
-  z-index: 1600;
+  z-index: 1700;
   top: 0;
   left: 0;
   bottom: 0;
@@ -128,27 +128,12 @@
     height: 100vh;
     overflow: hidden;
   }
-  .overlay {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    left: -100%;
-    opacity: 0;
-    transition: left 0ms $cubic-animation 400ms, opacity 400ms $cubic-animation 0ms;
-    background: rgba(0, 0, 0, 0.7);
-  }
   @include sm-only {
     left: -300px;
     &.open {
       left: 0;
       height: auto;
       overflow: inherit;
-      .overlay {
-        left: 0;
-        opacity: 1;
-        transition: left 0ms $cubic-animation 0ms, opacity 400ms $cubic-animation 0ms;
-      }
     }
   }
 }
@@ -168,4 +153,23 @@
     }
   }
 }
+
+.overlay {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  left: -100%;
+  opacity: 0;
+  transition: left 0ms $cubic-animation 400ms, opacity 400ms $cubic-animation 0ms;
+  background: rgba(0, 0, 0, 0.7);
+  @include sm-only {
+    &.open {
+      left: 0;
+      opacity: 1;
+      transition: left 0ms $cubic-animation 0ms, opacity 400ms $cubic-animation 0ms;
+    }
+  }
+}
+
 

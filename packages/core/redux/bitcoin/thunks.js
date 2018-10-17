@@ -129,7 +129,7 @@ export const getTransactionsList = (address: string, id, skip = 0, offset = 0, b
     })
 }
 
-export const getAddressInfo =  (address: string, blockchain: string) => (dispatch: Dispatch<any>, getState): Promise<*> => {
+export const getAddressInfo = (address: string, blockchain: string) => (dispatch: Dispatch<any>, getState): Promise<*> => {
   if (!blockchain || !address) {
     const error = new Error('Malformed request. blockchain and/or address must be non-empty strings')
     dispatch(BitcoinActions.bitcoinHttpGetAddressInfoFailure(error))
@@ -338,7 +338,7 @@ const notifyBitcoinTransfer = (entry) => (dispatch, getState) => {
   const token = getToken(entry.symbol)(state)
 
   dispatch(notify(new TransferNoticeModel({
-    value: token.removeDecimals(tx.amount),
+    amount: token.removeDecimals(tx.amount),
     symbol: token.symbol(),
     from: entry.tx.from,
     to: entry.tx.to,

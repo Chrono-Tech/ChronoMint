@@ -54,7 +54,7 @@ export const executeDashTransaction = ({ tx, options }) => async (dispatch, getS
         accept: () => async (dispatch) => {
           const response = await DashMiddlewareService.requestSendTx(transaction, blockchain, network[blockchain])
           dispatch(notify(new TransferNoticeModel({
-            value: token.removeDecimals(tx.value),
+            amount: token.removeDecimals(tx.value),
             symbol: token.symbol(),
             from: tx.from,
             to: tx.to,
