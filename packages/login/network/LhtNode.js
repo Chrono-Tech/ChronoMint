@@ -10,13 +10,14 @@ import EthereumMiddlewareNode from './EthereumMiddlewareNode'
 // TODO @dkchv: update to actual config
 const LHT_TESTNET_NODE = new EthereumMiddlewareNode({
   api: axios.create({
-    baseURL: 'https://middleware-sidechain-laborx.chronobank.io',
+    baseURL: 'http://parity.tp.ntr1x.com:8545',
     timeout: 10000,
   }),
   twoFA: axios.create({
-    baseURL: 'https://middleware-sidechain-laborx.chronobank.io/2fa',
+    baseURL: 'http://parity.tp.ntr1x.com:8545/2fa',
     timeout: 10000,
   }),
+  wss: 'wss://parity.tp.ntr1x.com:8546',
   trace: true,
 })
 
@@ -31,12 +32,13 @@ export default function selectEthereumNode (network) {
 
 const LHT_MAINNET_NODE = new EthereumMiddlewareNode({
   api: axios.create({
-    baseURL: 'https://middleware-sidechain-laborx.chronobank.io',
+    baseURL: 'http://parity.tp.ntr1x.com:8545',
     timeout: 10000,
   }),
   twoFA: axios.create({
-    baseURL: 'https://middleware-sidechain-laborx.chronobank.io/2fa',
+    baseURL: 'http://parity.tp.ntr1x.com:8545/2fa',
     timeout: 10000,
   }),
+  wss: 'wss://parity.tp.ntr1x.com:8546',
   trace: true,
 })
