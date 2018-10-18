@@ -792,4 +792,10 @@ export default {
     locked: 'Locked',
     lockedMessage: 'Locked %{amount} %{symbol}',
   },
+  atomicSwapERC20: {
+    lock: {
+      title: 'SIDECHAIN',
+      message: 'New swap created: %{id}',
+    },
+  },
 }

@@ -349,3 +349,10 @@ export const EOS_NETWORK_CONFIG = {
     chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906', // https://www.eosdocs.io/resources/apiendpoints/
   },
 }
+
+export const LABOR_X_SIDECHAIN_NETWORK_CONFIG = {
+  id: '9999',
+  name: 'LaborX sidechain',
+  url: 'http://localhost:8546',
+  ws: 'ws://localhost:8546',
+}

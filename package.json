@@ -87,7 +87,8 @@
     "webpack": "3.10.0",
     "webpack-compile-time-plugin": "^1.0.0",
     "webpack-dev-server": "2.9.4",
-    "webpack-filter-warnings-plugin": "^1.2.0"
+    "webpack-filter-warnings-plugin": "^1.2.0",
+    "LXsidechain-sc": "github:ChronoBank/LXsidechain-sc"
   },
   "dependencies": {
     "@material-ui/core": "latest",

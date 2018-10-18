@@ -60,6 +60,7 @@ import { DUCK_ETH_MULTISIG_WALLET, ETH_MULTISIG_BALANCE, ETH_MULTISIG_FETCHED } 
 import BalanceModel from '../../models/tokens/BalanceModel'
 import { getMultisigWallets } from '../wallet/selectors/models'
 import { addMarketToken } from '../market/actions'
+import { initLXSidechain } from '../laborXSidechain/thunks'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -294,6 +295,7 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
     dispatch(updateWalletBalance({ wallet }))
   })
   // dispatch(initEos())
+  dispatch(initLXSidechain())
 }
 
 const initDerivedWallets = () => async (dispatch, getState) => {

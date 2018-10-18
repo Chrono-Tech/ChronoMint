@@ -22,6 +22,8 @@ const Icons = {
         return <i className='material-icons'>alarm</i>
       case 'notices.polls.icon':
         return <i className='material-icons'>poll</i>
+      case 'lock':
+        return <i className='chronobank-icon'>lock</i>
       case 'notices.transfer.icon':
       default:
         return <i className='material-icons'>alarm</i>

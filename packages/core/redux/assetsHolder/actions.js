@@ -22,7 +22,7 @@ import { ASSET_HOLDER_ADDRESS, ASSET_HOLDER_ASSET_UPDATE, ASSET_HOLDER_INIT, DUC
 import { TX_APPROVE } from '../../dao/constants/ERC20DAO'
 import { ASSET_DEPOSIT_WITHDRAW, TX_DEPOSIT, TX_LOCK } from '../../dao/constants/AssetHolderDAO'
 import { notify } from '../notifier/actions'
-import AssetsHolderNoticeModel from '../../models/notices/AssetsHolderNoticeModel'
+import SimpleNoticeModel from '../../models/notices/SimpleNoticeModel'
 import { getTokens } from '../tokens/selectors'
 import ErrorNoticeModel from '../../models/notices/ErrorNoticeModel'
 
@@ -142,9 +142,10 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
       const params = event.returnValues
       const tokens = getTokens(getState())
       const token = tokens.getByAddress(params.token)
-      dispatch(notify(new AssetsHolderNoticeModel({
-        title: 'locked',
-        value: 'lockedMessage',
+      dispatch(notify(new SimpleNoticeModel({
+        icon: 'lock',
+        title: 'assetsHolder.locked',
+        message: 'assetsHolder.lockedMessage',
         params: {
           amount: token.removeDecimals(params.amount).toString(),
           symbol: token.symbol(),
