@@ -7,15 +7,17 @@ import {
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_DASH,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_LITECOIN,
 } from '@chronobank/login/network/constants'
-import {
-  BLOCKCHAINS_LIST_UPDATE,
-} from './constants'
+import { BLOCKCHAINS_LIST_UPDATE } from './constants'
 
 const initialState = {
   list: [
     BLOCKCHAIN_ETHEREUM,
     BLOCKCHAIN_BITCOIN,
+    BLOCKCHAIN_BITCOIN_CASH,
+    BLOCKCHAIN_LITECOIN,
     BLOCKCHAIN_DASH,
   ],
 }

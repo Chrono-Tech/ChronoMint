@@ -3,6 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { BLOCKCHAIN_WAVES } from '@chronobank/login/network/constants'
+import { setWallet } from '../wallets/actions'
 import * as WavesUtils from './utils'
 import * as WavesActions from './actions'
 import { getToken } from '../tokens/selectors'
@@ -15,6 +17,8 @@ import { DUCK_TOKENS } from '../tokens/constants'
 import tokenService from '../../services/TokenService'
 import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
 import { showSignerModal, closeSignerModal } from '../modals/thunks'
+import { formatBalances, getWalletBalances } from '../tokens/utils'
+import WalletModel from '../../models/wallet/WalletModel'
 
 export const executeWavesTransaction = ({ tx, options }) => async (dispatch, getState) => {
   const state = getState()
@@ -128,4 +132,26 @@ const sendSignedTransaction = (entry) => async (dispatch, getState) => {
     console.log('Send WAVES errors: ', error)
     dispatch(WavesActions.wavesTxSendSignedTransactionError(error))
   }
+}
+
+export const updateWalletBalance = (wallet) => (dispatch) => {
+  getWalletBalances({ wallet })
+    .then((balancesResult) => {
+      try {
+        dispatch(setWallet(new WalletModel({
+          ...wallet,
+          balances: {
+            ...wallet.balances,
+            ...formatBalances(BLOCKCHAIN_WAVES, balancesResult),
+          },
+        })))
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(e.message)
+      }
+    })
+    .catch((e) => {
+      // eslint-disable-next-line no-console
+      console.log('call balances from middleware is failed getWalletBalances', e)
+    })
 }

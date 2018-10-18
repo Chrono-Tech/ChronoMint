@@ -8,13 +8,14 @@ import { watchInitTokens, watchPlatformManager } from '../assetsManager/actions'
 import { initMainWallet } from '../mainWallet/actions'
 import { watchInitMarket } from '../market/actions'
 import { watchEventsToHistory } from '../events/actions'
-import { initTokens } from '../tokens/thunks'
+// import { initTokens } from '../tokens/thunks'
 import { initDAOs } from '../daos/actions'
 import { initProviders } from '../providers/thunks'
 import { watchInitPolls } from '../voting/thunks'
 import { initMultisigWalletManager } from '../multisigWallet/actions'
-import { initWallets } from '../wallets/actions'
+// import { initWallets } from '../wallets/actions'
 import { WATCHER } from './constants'
+import { enableActiveBlockchains } from '../blockchains/thunks'
 
 // for all users on all pages
 export const globalWatcher = () => async (dispatch) => {
@@ -26,9 +27,8 @@ export const watcher = ({ web3 }) => async (dispatch) => {
   await dispatch(initDAOs({ web3 }))
   dispatch(initProviders())
   dispatch(initMultisigWalletManager())
-  dispatch(initTokens())
   dispatch(initMainWallet())
-  dispatch(initWallets())
+  dispatch(enableActiveBlockchains())
   dispatch(watchPlatformManager())
   dispatch(watchInitTokens())
   dispatch(watchInitMonitor())

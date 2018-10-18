@@ -24,6 +24,9 @@ import { notify, notifyError } from '../notifier/actions'
 import BitcoinMiddlewareService from './BitcoinMiddlewareService'
 
 import { getAddressUTXOS } from '../bitcoin-like-blockchain/thunks'
+import { formatBalances } from '../tokens/utils'
+import WalletModel from '../../models/wallet/WalletModel'
+import { setWallet } from '../wallets/actions'
 
 export { getAddressUTXOS } from '../bitcoin-like-blockchain/thunks'
 
@@ -207,6 +210,28 @@ const processTransaction = ({ entry, signer }) => async (dispatch) => {
   } catch (error) {
     throw error
   }
+}
+
+export const updateWalletBalance = (wallet) => async (dispatch) => {
+  const blockchain = wallet.blockchain
+  const address = wallet.address
+
+  return dispatch(getAddressInfo(address, blockchain))
+    .then((balancesResult) => {
+      const formattedBalances = formatBalances(blockchain, balancesResult)
+      const newWallet = new WalletModel({
+        ...wallet,
+        balances: {
+          ...wallet.balances,
+          ...formattedBalances,
+        },
+      })
+      dispatch(setWallet(newWallet))
+    })
+    .catch((e) => {
+      // eslint-disable-next-line no-console
+      console.log('Balances call to middleware has failed [getAddressInfo]: ', blockchain, e)
+    })
 }
 
 const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {

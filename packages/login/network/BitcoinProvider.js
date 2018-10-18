@@ -66,6 +66,7 @@ export class BitcoinProvider extends AbstractProvider {
 
   async getCurrentBlockHeight () {
     const node = this._selectNode(this.networkSettings)
+    console.log('getCurrentBlockHeight: ', this.networkSettings, node)
     return node.getCurrentBlockHeight()
   }
 

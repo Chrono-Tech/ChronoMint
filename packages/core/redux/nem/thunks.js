@@ -4,6 +4,9 @@
  */
 
 import { nemProvider } from '@chronobank/login/network/NemProvider'
+import TokenModel from '../../models/tokens/TokenModel'
+import Amount from '../../models/Amount'
+import { subscribeOnTokens } from '../tokens/thunks'
 import { modalsOpen } from '../../redux/modals/actions'
 import { ErrorNoticeModel, TransferNoticeModel } from '../../models'
 import { nemPendingSelector, pendingEntrySelector, getNemSigner } from './selectors'
@@ -13,6 +16,7 @@ import { getAccount } from '../session/selectors/models'
 import * as NemActions from './actions'
 import * as NemUtils from './utils'
 import { getToken } from '../tokens/selectors'
+import { setWalletBalance } from '../wallets/actions'
 import { notify } from '../notifier/actions'
 import tokenService from '../../services/TokenService'
 import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
@@ -178,6 +182,19 @@ const submitTransaction = (entry) => async (dispatch, getState) => {
       reject: rejectTransaction,
     },
   }))
+}
+
+export const updateWalletBalance = (wallet) => (dispatch) => {
+  const updateBalance = (token: TokenModel) => async () => {
+    if (token.blockchain() === wallet.blockchain) {
+      const dao = tokenService.getDAO(token)
+      const balance = await dao.getAccountBalance(wallet.address)
+      if (balance) {
+        dispatch(setWalletBalance(wallet.id, new Amount(balance, token.symbol(), true)))
+      }
+    }
+  }
+  dispatch(subscribeOnTokens(updateBalance))
 }
 
 const acceptTransaction = (entry) => async (dispatch, getState) => {

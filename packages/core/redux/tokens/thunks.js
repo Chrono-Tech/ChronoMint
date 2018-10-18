@@ -94,36 +94,36 @@ export const initTokens = () => async (dispatch, getState) => {
   dispatch(watchLatestBlock())
 }
 
-export const initBtcLikeTokens = () => async (dispatch, getState) => {
-  const state = getState()
-  const btcLikeTokens = [btcDAO, bccDAO, dashDAO, ltcDAO]
-  const currentCount = state.get(DUCK_TOKENS).leftToFetch()
-  dispatch(TokensActions.setTokensFetchingCount(currentCount + btcLikeTokens.length))
-
-  return Promise.all(
-    btcLikeTokens
-      .map(async (dao) => {
-        try {
-          dao.on(EVENT_UPDATE_LAST_BLOCK, (newBlock) => {
-            const blocks = state.get(DUCK_TOKENS).latestBlocks()
-            const currentBlock = blocks[dao.getBlockchain()]
-            if (currentBlock && newBlock.block.blockNumber > currentBlock.blockNumber) {
-              dispatch(TokensActions.setLatestBlock(newBlock.blockchain, newBlock.block))
-            }
-          })
-          await dao.watchLastBlock()
-          dao.watch()
-          const token = await dao.fetchToken()
-          tokenService.registerDAO(token, dao)
-          dispatch(TokensActions.tokenFetched(token))
-          const currentBlock = await dao.getCurrentBlockHeight()
-          dispatch(TokensActions.setLatestBlock(token.blockchain(), { blockNumber: currentBlock.currentBlock }))
-        } catch (e) {
-          dispatch(TokensActions.tokensLoadingFailed())
-        }
-      }),
-  )
-}
+// export const initBtcLikeTokens = () => async (dispatch, getState) => {
+//   const state = getState()
+//   const btcLikeTokens = [btcDAO, bccDAO, dashDAO, ltcDAO]
+//   const currentCount = state.get(DUCK_TOKENS).leftToFetch()
+//   dispatch(TokensActions.setTokensFetchingCount(currentCount + btcLikeTokens.length))
+//
+//   return Promise.all(
+//     btcLikeTokens
+//       .map(async (dao) => {
+//         try {
+//           dao.on(EVENT_UPDATE_LAST_BLOCK, (newBlock) => {
+//             const blocks = state.get(DUCK_TOKENS).latestBlocks()
+//             const currentBlock = blocks[dao.getBlockchain()]
+//             if (currentBlock && newBlock.block.blockNumber > currentBlock.blockNumber) {
+//               dispatch(TokensActions.setLatestBlock(newBlock.blockchain, newBlock.block))
+//             }
+//           })
+//           await dao.watchLastBlock()
+//           dao.watch()
+//           const token = await dao.fetchToken()
+//           tokenService.registerDAO(token, dao)
+//           dispatch(TokensActions.tokenFetched(token))
+//           const currentBlock = await dao.getCurrentBlockHeight()
+//           dispatch(TokensActions.setLatestBlock(token.blockchain(), { blockNumber: currentBlock.currentBlock }))
+//         } catch (e) {
+//           dispatch(TokensActions.tokensLoadingFailed())
+//         }
+//       }),
+//   )
+// }
 
 export const initNemTokens = () => async (dispatch, getState) => {
   try {

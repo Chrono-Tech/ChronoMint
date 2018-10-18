@@ -55,6 +55,7 @@ export default class BitcoinDAO extends EventEmitter {
   }
 
   getCurrentBlockHeight () {
+    console.log('this._bitcoinProvider: ', this._bitcoinProvider)
     return this._bitcoinProvider.getCurrentBlockHeight()
   }
 
@@ -182,6 +183,7 @@ export default class BitcoinDAO extends EventEmitter {
 
   async stopWatching () {
     // Ignore
+
   }
 
   resetFilterCache () {
@@ -195,7 +197,7 @@ export default class BitcoinDAO extends EventEmitter {
       console.warn(message)
       throw new Error(message)
     }
-    // const feeRate = await this.getFeeRate()
+    const feeRate = await this.getFeeRate()
 
     return new TokenModel({
       name: this._name,
@@ -203,7 +205,7 @@ export default class BitcoinDAO extends EventEmitter {
       symbol: this._symbol,
       isFetched: true,
       blockchain: this._name,
-      feeRate: 200,
+      feeRate: feeRate,
     })
   }
 
@@ -212,7 +214,7 @@ export default class BitcoinDAO extends EventEmitter {
   }
 }
 
-export const btcDAO = new BitcoinDAO(BLOCKCHAIN_BITCOIN, 'BTC', btcProvider)
-export const bccDAO = new BitcoinDAO(BLOCKCHAIN_BITCOIN_CASH, 'BCC', bccProvider)
+export const bitcoinDAO = new BitcoinDAO(BLOCKCHAIN_BITCOIN, 'BTC', btcProvider)
+export const bitcoinCashDAO = new BitcoinDAO(BLOCKCHAIN_BITCOIN_CASH, 'BCC', bccProvider)
 export const dashDAO = new BitcoinDAO(BLOCKCHAIN_DASH, 'DASH', dashProvider)
-export const ltcDAO = new BitcoinDAO(BLOCKCHAIN_LITECOIN, 'LTC', ltcProvider)
+export const litecoinDAO = new BitcoinDAO(BLOCKCHAIN_LITECOIN, 'LTC', ltcProvider)
