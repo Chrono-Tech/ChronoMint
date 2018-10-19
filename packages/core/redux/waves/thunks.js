@@ -4,21 +4,30 @@
  */
 
 import { BLOCKCHAIN_WAVES } from '@chronobank/login/network/constants'
-import { setWallet } from '../wallets/actions'
+import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
+import { wavesProvider } from '@chronobank/login/network/WavesProvider'
+
 import * as WavesUtils from './utils'
 import * as WavesActions from './actions'
 import { getToken } from '../tokens/selectors'
 import { modalsOpen } from '../modals/actions'
 import { getWavesSigner, pendingEntrySelector } from './selectors'
 import { describePendingWavesTx } from '../../describers'
-import { getSelectedNetwork } from '../persistAccount/selectors'
+import { getSelectedNetwork, getAddressCache } from '../persistAccount/selectors'
 import TxExecModel from '../../models/TxExecModel'
 import { DUCK_TOKENS } from '../tokens/constants'
 import tokenService from '../../services/TokenService'
 import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
 import { showSignerModal, closeSignerModal } from '../modals/thunks'
-import { formatBalances, getWalletBalances } from '../tokens/utils'
+import {formatBalances, getProviderByBlockchain, getWalletBalances} from '../tokens/utils'
 import WalletModel from '../../models/wallet/WalletModel'
+
+import * as TokensActions from '../tokens/actions'
+import { accountCacheAddress } from '../persistAccount/actions'
+import { WAVES_DECIMALS, WAVES_WAVES_NAME, WAVES_WAVES_SYMBOL } from '../../dao/constants/WavesDAO'
+import WavesDAO from '../../dao/WavesDAO'
+import TokenModel from '../../models/tokens/TokenModel'
+import {WALLETS_SET} from '../wallets/constants';
 
 export const executeWavesTransaction = ({ tx, options }) => async (dispatch, getState) => {
   const state = getState()
@@ -138,13 +147,16 @@ export const updateWalletBalance = (wallet) => (dispatch) => {
   getWalletBalances({ wallet })
     .then((balancesResult) => {
       try {
-        dispatch(setWallet(new WalletModel({
+        const newWallet = new WalletModel({
           ...wallet,
           balances: {
             ...wallet.balances,
             ...formatBalances(BLOCKCHAIN_WAVES, balancesResult),
           },
-        })))
+        })
+
+        wavesProvider.subscribe(wallet.address)
+        dispatch({ type: WALLETS_SET, newWallet })
       } catch (e) {
         // eslint-disable-next-line no-console
         console.log(e.message)
@@ -155,3 +167,74 @@ export const updateWalletBalance = (wallet) => (dispatch) => {
       console.log('call balances from middleware is failed getWalletBalances', e)
     })
 }
+
+export const enableWaves = () => async (dispatch) => {
+  dispatch(initToken())
+  dispatch(initWalletFromKeys())
+}
+
+const initToken = () => async (dispatch) => {
+
+  const dao = new WavesDAO(WAVES_WAVES_NAME, WAVES_WAVES_SYMBOL, wavesProvider, WAVES_DECIMALS, 'WAVES')
+  dao.watch()
+
+  const waves = await dao.fetchToken()
+  tokenService.registerDAO(waves, dao)
+  dispatch(TokensActions.tokenFetched(waves))
+  dispatch(initWavesAssetTokens(waves))
+}
+
+export const initWavesAssetTokens = (waves: TokenModel) => async (dispatch) => {
+  const assets = await wavesProvider.getAssets()
+  // do not wait until initialized, it is ok to lazy load all the tokens
+  return Promise.all(
+    Object.keys(assets)
+      .map((m) => new WavesDAO(m, m, wavesProvider, assets[m]['decimals'], assets[m]['id'], waves))
+      .map(async (dao) => {
+        try {
+          const token = await dao.fetchToken()
+          tokenService.registerDAO(token, dao)
+          dispatch(TokensActions.tokenFetched(token))
+        } catch (e) {
+          dispatch(TokensActions.tokensLoadingFailed())
+        }
+      }),
+  )
+}
+
+const initWalletFromKeys = () => async (dispatch, getState) => {
+  const state = getState()
+  const { network } = getCurrentNetworkSelector(state)
+  const addressCache = { ...getAddressCache(state) }
+
+  if (!addressCache[BLOCKCHAIN_WAVES]) {
+    const path = WavesUtils.getWavesDerivedPath(network[BLOCKCHAIN_WAVES])
+    const signer = getWavesSigner(state)
+
+    if (signer) {
+      const address = await signer.getAddress(path)
+      addressCache[BLOCKCHAIN_WAVES] = {
+        address,
+        path,
+      }
+
+      dispatch(accountCacheAddress({ BLOCKCHAIN_WAVES, address, path }))
+    }
+  }
+
+  const { address, path } = addressCache[BLOCKCHAIN_WAVES]
+  const wallet = new WalletModel({
+    address,
+    blockchain: BLOCKCHAIN_WAVES,
+    isMain: true,
+    walletDerivedPath: path,
+  })
+
+  dispatch(setWallet(wallet))
+  dispatch(updateWalletBalance({ wallet }))
+}
+
+export const disableBlockchain = () => async (dispatch) => {
+  // ...
+}
+

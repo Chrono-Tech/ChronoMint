@@ -9,6 +9,8 @@ import {
   BLOCKCHAIN_DASH,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_NEM,
+  BLOCKCHAIN_WAVES,
 } from '@chronobank/login/network/constants'
 import { BLOCKCHAINS_LIST_UPDATE } from './constants'
 
@@ -19,6 +21,8 @@ const initialState = {
     BLOCKCHAIN_BITCOIN_CASH,
     BLOCKCHAIN_LITECOIN,
     BLOCKCHAIN_DASH,
+    BLOCKCHAIN_NEM,
+    BLOCKCHAIN_WAVES,
   ],
 }
 

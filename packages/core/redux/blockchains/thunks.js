@@ -8,31 +8,38 @@ import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_DASH,
   BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_NEM,
+  BLOCKCHAIN_WAVES,
 } from '@chronobank/login/network/constants'
 
 import { getBlockchains } from './selectors'
-import { enableBlockchain } from '../bitcoin/initialization'
+import { enableBitcoin } from '../bitcoin/thunks'
+import { enableEthereum } from '../ethereum/thunks'
+import { enableNem } from '../nem/thunks'
+import { enableWaves } from '../waves/thunks'
 
 const enableMap = {
-  [BLOCKCHAIN_BITCOIN]: enableBlockchain(BLOCKCHAIN_BITCOIN),
-  [BLOCKCHAIN_BITCOIN_CASH]: enableBlockchain(BLOCKCHAIN_BITCOIN_CASH),
-  [BLOCKCHAIN_LITECOIN]: enableBlockchain(BLOCKCHAIN_LITECOIN),
-  [BLOCKCHAIN_DASH]: enableBlockchain(BLOCKCHAIN_DASH),
+  [BLOCKCHAIN_ETHEREUM]: enableEthereum(),
+  [BLOCKCHAIN_BITCOIN]: enableBitcoin(BLOCKCHAIN_BITCOIN),
+  [BLOCKCHAIN_BITCOIN_CASH]: enableBitcoin(BLOCKCHAIN_BITCOIN_CASH),
+  [BLOCKCHAIN_LITECOIN]: enableBitcoin(BLOCKCHAIN_LITECOIN),
+  [BLOCKCHAIN_DASH]: enableBitcoin(BLOCKCHAIN_DASH),
+  [BLOCKCHAIN_NEM]: enableNem(),
+  [BLOCKCHAIN_WAVES]: enableWaves(),
 }
 
 export const enableActiveBlockchains = () => (dispatch, getState) => {
-
   const state = getState()
   const activeBlockchains = getBlockchains(state)
-
   console.log('activeBlockchains: ', activeBlockchains)
 
   activeBlockchains.forEach((blockchain) => {
-    console.log('blockchain: ', blockchain)
     if (!enableMap[blockchain]) {
-      console.log('Blockchain to enable is not found')
+      console.log('not found blockchain: ', blockchain)
       return
     }
+    console.log('enable blockchain: ', blockchain)
 
     dispatch(enableMap[blockchain])
   })

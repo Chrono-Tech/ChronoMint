@@ -45,3 +45,7 @@ export const estimateEthTxGas = (web3, tx, gasPrice, nonce, chainId) =>
     nonce,
     chainId,
   })
+
+export const getEthereumDerivedPath = () => {
+
+}

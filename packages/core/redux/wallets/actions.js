@@ -3,8 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { bccProvider, btcProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
-import { dashProvider } from '@chronobank/login/network/DashProvider'
+import { btcProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
@@ -14,20 +13,14 @@ import {
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
   WALLET_HD_PATH,
-  COIN_TYPE_LTC_MAINNET,
-  COIN_TYPE_DASH_MAINNET,
-  COIN_TYPE_BCC_MAINNET,
 } from '@chronobank/login/network/constants'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
-import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 import WalletModel from '../../models/wallet/WalletModel'
-import { subscribeOnTokens } from '../tokens/thunks'
-import { formatBalances, getProviderByBlockchain, getWalletBalances } from '../tokens/utils'
+import { getProviderByBlockchain } from '../tokens/utils'
 import TokenModel from '../../models/tokens/TokenModel'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 import tokenService from '../../services/TokenService'
 import Amount from '../../models/Amount'
-import { getAccount } from '../session/selectors'
 import { getMainEthWallet, getWallet, getWallets } from './selectors/models'
 import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
@@ -44,22 +37,12 @@ import {
   WALLETS_UPDATE_WALLET,
 } from './constants'
 import { executeNemTransaction } from '../nem/thunks'
-import { getEthereumSigner, getPersistAccount, getAddressCache } from '../persistAccount/selectors'
-// import { getBitcoinCashSigner, getBitcoinSigner, getLitecoinSigner } from '../bitcoin/selectors'
-// import { getDashSigner } from '../dash/selectors'
-// import { getNemSigner } from '../nem/selectors'
-// import { getWavesSigner } from '../waves/selectors'
+import { getEthereumSigner } from '../persistAccount/selectors'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
 import { BCC, BTC, DASH, ETH, LTC, WAVES, XEM } from '../../dao/constants'
 import TxDescModel from '../../models/TxDescModel'
-import { initEos } from '../eos/thunks'
 import { getTokens } from '../tokens/selectors'
-// import { accountCacheAddress } from '../persistAccount/actions'
-// // import { getBlockchainsList } from '../blockchains/selectors'
-// import { getBitcoinDerivedPath } from '../bitcoin/utils'
-// import { getNemDerivedPath } from '../nem/utils'
-// import { getWavesDerivedPath } from '../waves/utils'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
