@@ -6,7 +6,7 @@
 import { LABOR_X_SIDECHAIN_NETWORK_CONFIG } from '@chronobank/login/network/settings'
 import web3Factory from '../../web3'
 import * as LXSidechainActions from './actions'
-import { daoByType, getLXWeb3 } from './selectors/mainSelectors'
+import { daoByType, getLXTokenByAddress, getLXWeb3 } from './selectors/mainSelectors'
 import { ATOMIC_SWAP_ERC20, CHRONOBANK_PLATFORM_SIDECHAIN } from './dao/ContractList'
 import ContractDAOModel from '../../models/contracts/ContractDAOModel'
 import { EVENT_CLOSE, EVENT_EXPIRE, EVENT_OPEN } from './constants'
@@ -18,12 +18,17 @@ import ERC20TokenDAO from '../../dao/ERC20TokenDAO'
 import web3Converter from '../../utils/Web3Converter'
 import TokenModel from '../../models/tokens/TokenModel'
 import ContractModel from '../../models/contracts/ContractModel'
+import SidechainMiddlewareService from './SidechainMiddlewareService'
+import { getEthereumSigner } from '../persistAccount/selectors'
+import ErrorNoticeModel from '../../models/notices/ErrorNoticeModel'
+import { getMainEthWallet } from '../wallets/selectors/models'
 
 export const initLXSidechain = () => async (dispatch) => {
   await dispatch(initWeb3())
   await dispatch(initContracts())
   await dispatch(initTokens())
   await dispatch(watch())
+  await dispatch(obtainAllOpenSwaps())
 }
 
 const initWeb3 = () => async (dispatch) => {
@@ -73,13 +78,17 @@ const watch = () => (dispatch, getState) => {
       },
     })))
     const swapDetail = await dao.check(swapId)
-    dispatch(LXSidechainActions.swapUpdate(new SwapModel({
-      id: swapId,
-      value: new Amount(swapDetail.erc20Value),
+    const token = getLXTokenByAddress(swapDetail.erc20ContractAddress)(getState())
+    const swap = new SwapModel({
+      id: web3Converter.bytesToString(swapId),
+      value: new Amount(swapDetail.erc20Value, token.symbol()),
       contractAddress: swapDetail.erc20ContractAddress,
       withdrawTrader: swapDetail.withdrawTrader,
       secretLock: swapDetail.secretLock,
-    })))
+    })
+    dispatch(LXSidechainActions.swapUpdate(swap))
+    // obtain swap
+    dispatch(obtainSwapByMiddleware(swap.id))
   })
   dao.watchEvent(EVENT_CLOSE, (/*event*/) => {
     // TODO @Abdulov do something
@@ -90,12 +99,22 @@ const watch = () => (dispatch, getState) => {
 }
 
 const initTokens = () => async (dispatch, getState) => {
-  const web3 = getLXWeb3(getState())
   const platformDao = daoByType('ChronoBankPlatformSidechain')(getState())
   const symbolsCount = await platformDao.symbolsCount()
   dispatch(LXSidechainActions.setTokensFetchingCount(symbolsCount))
+  const promises = []
   for (let i = 0; i < symbolsCount; i++) {
-    const symbol = await platformDao.symbols(symbolsCount) // bytes32
+    promises.push(dispatch(loadTokenByIndex(i)))
+  }
+  await Promise.all(promises)
+}
+
+const loadTokenByIndex = (symbolIndex) => async (dispatch, getState) => {
+  try {
+    const state = getState()
+    const web3 = getLXWeb3(state)
+    const platformDao = daoByType('ChronoBankPlatformSidechain')(state)
+    const symbol = await platformDao.symbols(symbolIndex) // bytes32
     const address = await platformDao.proxies(symbol)
     const token = new TokenModel({
       address: address.toLowerCase(),
@@ -118,5 +137,32 @@ const initTokens = () => async (dispatch, getState) => {
         dao: tokenDao,
       }),
     ))
+    return Promise.resolve({ e: null, res: true })
+  } catch (e) {
+    return Promise.resolve({ e })
   }
+}
+
+const obtainSwapByMiddleware = (swapId) => async (dispatch, getState) => {
+  try {
+    const signer = getEthereumSigner(getState())
+    await SidechainMiddlewareService.obtainSwapInSidechain(swapId, signer.getPublicKey())
+    return Promise.resolve({ e: null, res: true })
+  } catch (e) {
+    notify(new ErrorNoticeModel({ message: e.message }))
+    return Promise.resolve({ e })
+  }
+}
+
+const obtainAllOpenSwaps = () => async (dispatch, getState) => {
+  const mainEthWallet = getMainEthWallet(getState())
+  const { data } = await SidechainMiddlewareService.getSwapListByAddress(mainEthWallet.address)
+  const promises = []
+  data.forEach((swap) => {
+    if (swap.isActive) {
+      promises.push(dispatch(obtainSwapByMiddleware(swap.swap_id)))
+    }
+  })
+  await Promise.all(promises)
+  // TODO @Abdulov do something
 }

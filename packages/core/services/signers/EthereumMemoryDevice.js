@@ -6,6 +6,7 @@
 import bip39 from 'bip39'
 import EventEmitter from 'events'
 import hdKey from 'ethereumjs-wallet/hdkey'
+import utils from 'ethereumjs-util'
 import Accounts from 'web3-eth-accounts'
 import { WALLET_HD_PATH } from '@chronobank/login/network/constants'
 import { WALLET_TYPE_MEMORY } from '../../models/constants/AccountEntryModel'
@@ -33,7 +34,11 @@ export default class EthereumMemoryDevice extends EventEmitter {
       return this.wallet.privateKey
     }
 
-    return EthereumMemoryDevice.getDerivedWallet(this.wallet.privateKey, path).address
+    return EthereumMemoryDevice.getDerivedWallet(this.wallet.privateKey, path).privateKey
+  }
+
+  getPublicKey (path) {
+    return utils.privateToPublic(Buffer.from(this.getPrivateKey(path).slice(2, 66), 'hex')).toString('hex')
   }
 
   getAddress (path) {

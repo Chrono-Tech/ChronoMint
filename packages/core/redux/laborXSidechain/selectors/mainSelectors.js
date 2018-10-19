@@ -35,3 +35,15 @@ export const daoByType = (type) => createSelector(
       : null
   },
 )
+
+export const getLXTokens = (state) => {
+  const { tokens } = LXSDuckSelector(state)
+  return tokens
+}
+
+export const getLXTokenByAddress = (address) => createSelector(
+  getLXTokens,
+  (tokens) => {
+    return tokens.getByAddress(address)
+  },
+)

@@ -28,7 +28,7 @@ export default class ChronoBankPlatformDAO extends AbstractContractDAO {
   }
 
   symbols (count) {
-    return this.contract.methods.symbols(count - 1).call() // returned only one symbol
+    return this.contract.methods.symbols(count).call()
   }
 
   symbolsCount () {
