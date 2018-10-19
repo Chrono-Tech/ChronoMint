@@ -46,12 +46,12 @@ const blockExplorersMap = {
   },
   [BLOCKCHAIN_LABOR_HOUR_TOKEN]: {
     mainnet: [
-      'http://parity.tp.ntr1x.com:8545/tx',
-      'http://parity.tp.ntr1x.com:8545',
+      'https://middleware-sidechain-laborx.chronobank.io/tx',
+      'https://middleware-sidechain-laborx.chronobank.io',
     ],
     testnet: [
-      'http://parity.tp.ntr1x.com:8545/tx',
-      'http://parity.tp.ntr1x.com:8545',
+      'https://middleware-sidechain-laborx.chronobank.io/tx',
+      'https://middleware-sidechain-laborx.chronobank.io',
     ],
   },
   [BLOCKCHAIN_LITECOIN]: {
