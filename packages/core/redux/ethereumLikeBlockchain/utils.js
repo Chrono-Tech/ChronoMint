@@ -3,11 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import uuid from 'uuid/v1'
 import BigNumber from 'bignumber.js'
+import uuid from 'uuid/v1'
+
 import { TxEntryModel, TxExecModel } from '../../models'
 
-export const createEthTxEntryModel = (tx, options) =>
+export const createTxEntryModel = (tx, options) =>
   new TxEntryModel({
     key: uuid(),
     tx,
@@ -17,7 +18,7 @@ export const createEthTxEntryModel = (tx, options) =>
     walletDerivedPath: options && options.walletDerivedPath,
   })
 
-export const createEthTxExecModel = (tx, gasLimit, gasPrice, nonce, chainId) => {
+export const createTxExecModel = (tx, gasLimit, gasPrice, nonce, chainId) => {
   const data = tx.data != null
     ? tx.data
     : null
@@ -35,7 +36,7 @@ export const createEthTxExecModel = (tx, gasLimit, gasPrice, nonce, chainId) => 
   })
 }
 
-export const estimateEthTxGas = (web3, tx, gasPrice, nonce, chainId) =>
+export const estimateTxGas = (web3, tx, gasPrice, nonce, chainId) =>
   web3.eth.estimateGas({
     from: tx.from,
     to: tx.to,

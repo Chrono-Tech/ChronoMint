@@ -4,7 +4,9 @@
  */
 
 import { createSelector } from 'reselect'
+
 import { DUCK_ETHEREUM } from './constants'
+import { pendingSubSelector, getPendingEntrySubSelector } from '../ethereumLikeBlockchain/selectors'
 
 export const ethereumSelector = () => (state) =>
   state.get(DUCK_ETHEREUM)
@@ -18,12 +20,7 @@ export const web3Selector = () => createSelector(
   },
 )
 
-export const ethereumPendingSelector = () => createSelector(
-  ethereumSelector(),
-  (ethereum) => ethereum == null // nil check
-    ? null
-    : ethereum.pending,
-)
+export const ethereumPendingSelector = () => createSelector(ethereumSelector(), pendingSubSelector)
 
 export const ethereumPendingFormatSelector = () => createSelector(
   ethereumSelector(),
@@ -47,20 +44,6 @@ export const ethereumPendingCountSelector = () => createSelector(
   },
 )
 
-export const pendingEntrySelector = (address, key) => createSelector(
-  ethereumPendingSelector(),
-  (pending) => {
-    if (address in pending) {
-      const res = pending[address][key] || null
-      if (!res) {
-        // eslint-disable-next-line
-        console.log('res null', address, key, pending, new Error())
-      }
-      return res
-    }
-
-    // eslint-disable-next-line
-    console.log('res null', address, key, pending, new Error())
-    return null
-  },
+export const pendingEntrySelector = (address, key) => (
+  createSelector(ethereumPendingSelector(), getPendingEntrySubSelector(address, key))
 )
