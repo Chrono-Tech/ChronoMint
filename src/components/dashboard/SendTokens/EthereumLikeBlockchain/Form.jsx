@@ -21,9 +21,9 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
-import Select from '../../../../../node_modules/redux-form-material-ui/es/Select'
+import Select from 'redux-form-material-ui/es/Select'
 import Slider from 'components/common/Slider'
-import { change, Field, formPropTypes, formValueSelector, getFormSyncErrors, getFormValues, reduxForm } from '../../../../../node_modules/redux-form/immutable'
+import { change, Field, formPropTypes, formValueSelector, getFormSyncErrors, getFormValues, reduxForm } from 'redux-form/immutable'
 import { getSpendersAllowance } from '@chronobank/core/redux/mainWallet/actions'
 import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
@@ -262,7 +262,7 @@ export default class Ethereum extends PureComponent {
     return (
       <span styleName='description'>
         {this.state.gasFee && (
-          <span>{`this.props.symbol ${web3Converter.fromWei(this.state.gasFee, 'wei').toString()} (≈${this.props.selectedCurrency} `}
+          <span>{`${this.props.symbol} ${web3Converter.fromWei(this.state.gasFee, 'wei').toString()} (≈${this.props.selectedCurrency} `}
             <TokenValue renderOnlyPrice onlyPriceValue value={this.state.gasFee} />{')'}
           </span>
         )}
