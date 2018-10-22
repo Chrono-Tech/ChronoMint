@@ -17,6 +17,7 @@ import {
   navigateToPoll,
 } from 'redux/ui/navigation'
 import { removeWatchersUserMonitor } from '@chronobank/login-ui/redux/thunks'
+import { FORM_ADD_NEW_WALLET } from '@chronobank/core/redux/wallets/constants'
 import { PTPoll } from '@chronobank/core/redux/voting/types'
 import * as VotingThunks from '@chronobank/core/redux/voting/thunks'
 import { removeWallet } from '@chronobank/core/redux/multisigWallet/actions'
@@ -24,13 +25,9 @@ import { replace } from 'react-router-redux'
 import localStorage from 'utils/LocalStorage'
 import type MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import type PollDetailsModel from '@chronobank/core/models/PollDetailsModel'
-import {
-  FORM_ADD_NEW_WALLET,
-} from '@chronobank/core/redux/mainWallet/constants'
 import { STORAGE_COOKIES_BAR } from './constants'
 import * as UIActions from './actions'
 import { getValueSessionStorage } from './selectors'
-import { FORM_ADD_NEW_WALLET } from '@chronobank/core/redux/wallets/constants'
 
 const destroyNetworkSessionInLocalStorage = (isReset = true) => (dispatch) => {
   dispatch(destroyNetworkSession(isReset))

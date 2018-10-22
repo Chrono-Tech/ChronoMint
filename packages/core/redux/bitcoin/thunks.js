@@ -37,11 +37,12 @@ import WalletModel from '../../models/wallet/WalletModel'
 import { accountCacheAddress } from '../persistAccount/actions'
 import * as TokensActions from '../tokens/actions'
 import { bitcoinCashDAO, bitcoinDAO, dashDAO, litecoinDAO } from '../../dao/BitcoinDAO'
-import { WALLETS_SET } from '../wallets/constants'
+import { WALLETS_SET, WALLETS_UNSET } from '../wallets/constants'
 import { DUCK_TOKENS } from '../tokens/constants'
 import tokenService from '../../services/TokenService'
 import { getDashSigner } from '../dash/selectors'
 import { EVENT_UPDATE_LAST_BLOCK } from '../../dao/constants'
+import { getWalletsByBlockchain } from '../wallets/selectors/models'
 
 const daoMap = {
   [BLOCKCHAIN_BITCOIN]: bitcoinDAO,
@@ -252,7 +253,7 @@ export const updateWalletBalance = (wallet) => async (dispatch) => {
       const provider = getProviderByBlockchain(wallet.blockchain)
       provider.subscribe(wallet.address)
 
-      dispatch({ type: WALLETS_SET, newWallet })
+      dispatch({ type: WALLETS_SET, wallet: newWallet })
     })
     .catch((e) => {
       // eslint-disable-next-line no-console
@@ -493,14 +494,19 @@ const initWalletFromKeys = (blockchainName) => async (dispatch, getState) => {
   provider.subscribe(wallet.address)
 
   dispatch({ type: WALLETS_SET, wallet })
-
   dispatch(updateWalletBalance(wallet))
 }
 
-export const disableBlockchain = (blockchainName) => async (dispatch) => {
-  if (!blockchainName || !daoMap[blockchainName]) {
-    throw new Error('Blockchain name is empty or not a BTC like')
-  }
+export const disableBlockchain = (blockchainName) => async (dispatch, getState) => {
+  console.log('disableBlockchain: ', blockchainName)
+  const wallets = getWalletsByBlockchain(blockchainName)(getState())
+  wallets.forEach((wallet) => {
+    console.log('disableBlockchain: ', wallet)
 
-  // ...
+    const provider = getProviderByBlockchain(blockchainName)
+    provider.unsubscribe(wallet.address)
+    console.log('disableBlockchain: provider: ', provider)
+
+    dispatch({ type: WALLETS_UNSET, wallet })
+  })
 }

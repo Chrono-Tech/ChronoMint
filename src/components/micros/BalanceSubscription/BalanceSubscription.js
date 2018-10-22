@@ -40,7 +40,6 @@ export default class BalanceSubscription extends React.Component {
         wallet,
         listener,
       }
-
     }
   }
 

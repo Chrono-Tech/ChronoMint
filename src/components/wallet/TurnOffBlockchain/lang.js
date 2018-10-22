@@ -3,12 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export const prefix = 'ActionRequestDeviceDialog'
+export const prefix = 'TurnOffBlockchain'
 
 export default {
   en: {
-    title: 'Action required',
-    pleaseConfirm: 'Please confirm the operation on your device.',
-    closeAutomatically: 'The window will close automatically upon your confirmation.',
+    title: 'Active wallets',
   },
 }

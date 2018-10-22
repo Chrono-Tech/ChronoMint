@@ -19,7 +19,7 @@ import { DUCK_TOKENS } from '../tokens/constants'
 import tokenService from '../../services/TokenService'
 import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
 import { showSignerModal, closeSignerModal } from '../modals/thunks'
-import {formatBalances, getProviderByBlockchain, getWalletBalances} from '../tokens/utils'
+import { formatBalances, getWalletBalances } from '../tokens/utils'
 import WalletModel from '../../models/wallet/WalletModel'
 
 import * as TokensActions from '../tokens/actions'
@@ -27,7 +27,7 @@ import { accountCacheAddress } from '../persistAccount/actions'
 import { WAVES_DECIMALS, WAVES_WAVES_NAME, WAVES_WAVES_SYMBOL } from '../../dao/constants/WavesDAO'
 import WavesDAO from '../../dao/WavesDAO'
 import TokenModel from '../../models/tokens/TokenModel'
-import {WALLETS_SET} from '../wallets/constants';
+import { WALLETS_SET } from '../wallets/constants'
 
 export const executeWavesTransaction = ({ tx, options }) => async (dispatch, getState) => {
   const state = getState()
@@ -230,8 +230,9 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
     walletDerivedPath: path,
   })
 
-  dispatch(setWallet(wallet))
-  dispatch(updateWalletBalance({ wallet }))
+  wavesProvider.subscribe(wallet.address)
+  dispatch({ type: WALLETS_SET, wallet })
+  dispatch(updateWalletBalance(wallet))
 }
 
 export const disableBlockchain = () => async (dispatch) => {

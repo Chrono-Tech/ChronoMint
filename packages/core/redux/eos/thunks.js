@@ -191,6 +191,7 @@ export const createEosWallet = () => async (dispatch, getState) => {
         address: accountName,
         blockchain: BLOCKCHAIN_EOS,
         isMain: true,
+        walletDerivedPath: null,
       })))
       await dispatch(getAccountBalances(accountName))
       dispatch(getEOSWalletTransactions(`${BLOCKCHAIN_EOS }-${accountName}`))

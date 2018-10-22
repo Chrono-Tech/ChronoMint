@@ -5,10 +5,6 @@
 
 import { DUCK_BLOCKCHAINS } from './constants'
 
-export const getBlockchains = (state) => {
-  return state.get(DUCK_BLOCKCHAINS).list || []
-}
-
 export const getBlockchainsList = (state) => {
-  return getBlockchains(state).list || []
+  return state.get(DUCK_BLOCKCHAINS).list || []
 }

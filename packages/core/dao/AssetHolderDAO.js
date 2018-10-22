@@ -33,7 +33,7 @@ export default class AssetHolderDAO extends AbstractContractDAO {
       .on('data', this.handleEventsData)
   }
 
-  async watchLock (callback) {
+  async watchLock (/*callback*/) {
     return this.on('Lock', (a, b, c, d) => {
       // TODO @abdulov remove console.log
       console.log('%c a,b,c,d', 'background: #222; color: #fff', a, b, c, d)

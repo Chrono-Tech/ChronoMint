@@ -39,7 +39,7 @@ export default (state = initialState, action) => {
       }
     case a.WALLETS_UNSET:
       const list = { ...state.list }
-      delete action.wallet.id
+      delete list[action.wallet.id]
       return {
         ...state,
         list: {

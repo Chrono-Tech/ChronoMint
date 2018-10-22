@@ -6,18 +6,17 @@
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
+import ModalDialog from 'components/dialogs/ModalDialog'
 import CONFIRM_OPERATION_SVG from 'assets/img/confirm-operation.svg'
 import React, { PureComponent } from 'react'
 import { modalsClear, modalsClose } from '@chronobank/core/redux/modals/actions'
-import ModalDialog from 'components/dialogs/ModalDialog'
 
 import { prefix } from './lang'
-import './ActionRequestDeviceDialog.scss'
+import './TurnOffBlockchain.scss'
 
-function mapStateToProps (dispatch) {
+function mapStateToProps (state) {
   return {
-    modalsClear: () => dispatch(modalsClear()),
-    modalsClose: () => dispatch(modalsClose()),
+
   }
 }
 
@@ -28,8 +27,8 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-@connect(null, mapDispatchToProps)
-export default class ShowTurnOffOnPopup extends PureComponent {
+@connect(mapStateToProps, mapDispatchToProps)
+export default class TurnOffBlockchain extends PureComponent {
   static propTypes = {
     modalsClear: PropTypes.func.isRequired,
     modalsClose: PropTypes.func.isRequired,
