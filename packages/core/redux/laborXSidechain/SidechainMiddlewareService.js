@@ -25,10 +25,9 @@ export default class SidechainMiddlewareService {
     return SidechainMiddlewareService.service.request({
       method: 'POST',
       url: `${URL_SWAP_OBTAIN}${swapId}`,
-      body: {
+      data: {
         pubkey: userPubKey,
       },
-      json: true,
     })
   }
 }

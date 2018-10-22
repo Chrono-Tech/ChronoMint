@@ -24,4 +24,8 @@ export default class AtomicSwapERC20DAO extends AbstractContractDAO {
   check (swapId): Promise {
     return this.contract.methods.check(swapId).call()
   }
+
+  close (swapId, secretKey) {
+    return this._tx('close', [swapId, secretKey])
+  }
 }

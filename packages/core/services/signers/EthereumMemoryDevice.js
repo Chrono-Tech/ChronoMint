@@ -8,6 +8,7 @@ import EventEmitter from 'events'
 import hdKey from 'ethereumjs-wallet/hdkey'
 import utils from 'ethereumjs-util'
 import Accounts from 'web3-eth-accounts'
+import EthCrypto from 'eth-crypto'
 import { WALLET_HD_PATH } from '@chronobank/login/network/constants'
 import { WALLET_TYPE_MEMORY } from '../../models/constants/AccountEntryModel'
 
@@ -91,6 +92,10 @@ export default class EthereumMemoryDevice extends EventEmitter {
       path: DEFAULT_PATH,
       type: WALLET_TYPE_MEMORY,
     }
+  }
+
+  decryptWithPrivateKey (keyEncoded) {
+    return EthCrypto.decryptWithPrivateKey(this.getPrivateKey(), keyEncoded)
   }
 
   // Should be synchronous by design
