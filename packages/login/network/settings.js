@@ -60,7 +60,7 @@ const blockExplorersMap = {
   },
 }
 
-const LABORHOUR_WSS = 'wss://parity.tp.ntr1x.com:8546'
+export const LABOR_HOUR_WSS = 'wss://parity.tp.ntr1x.com:8546'
 
 const MAINNET_BASE = {
   id: NETWORK_MAIN_ID,
@@ -70,7 +70,7 @@ const MAINNET_BASE = {
   [BLOCKCHAIN_BITCOIN]: 'bitcoin',
   [BLOCKCHAIN_BITCOIN_CASH]: 'bitcoin',
   [BLOCKCHAIN_DASH]: 'bitcoin',
-  [BLOCKCHAIN_LABOR_HOUR_TOKEN]: { type: 'mainnet', wss: LABORHOUR_WSS },
+  [BLOCKCHAIN_LABOR_HOUR_TOKEN]: { type: 'mainnet', wss: LABOR_HOUR_WSS },
   [BLOCKCHAIN_LITECOIN]: 'litecoin',
   [BLOCKCHAIN_NEM]: 'mainnet',
   [BLOCKCHAIN_WAVES]: 'MAINNET_CONFIG',
@@ -85,7 +85,7 @@ const RINKEBY_BASE = {
   [BLOCKCHAIN_BITCOIN]: 'testnet',
   [BLOCKCHAIN_BITCOIN_CASH]: 'testnet',
   [BLOCKCHAIN_DASH]: 'testnet',
-  [BLOCKCHAIN_LABOR_HOUR_TOKEN]: { type: 'testnet', wss: LABORHOUR_WSS },
+  [BLOCKCHAIN_LABOR_HOUR_TOKEN]: { type: 'testnet', wss: LABOR_HOUR_WSS },
   [BLOCKCHAIN_LITECOIN]: 'litecoin_testnet',
   [BLOCKCHAIN_NEM]: 'testnet',
   [BLOCKCHAIN_WAVES]: 'TESTNET_CONFIG',
@@ -125,7 +125,7 @@ const mewMainnet = {
   [BLOCKCHAIN_BITCOIN]: 'bitcoin',
   [BLOCKCHAIN_BITCOIN_CASH]: 'bitcoin',
   [BLOCKCHAIN_DASH]: 'bitcoin',
-  [BLOCKCHAIN_LABOR_HOUR_TOKEN]: { type: 'mainnet', wss: LABORHOUR_WSS },
+  [BLOCKCHAIN_LABOR_HOUR_TOKEN]: { type: 'mainnet', wss: LABOR_HOUR_WSS },
   [BLOCKCHAIN_LITECOIN]: 'litecoin',
   [BLOCKCHAIN_NEM]: 'mainnet',
   host: `api.myetherapi.com/eth`,
@@ -143,7 +143,7 @@ const givethMainnet = {
   [BLOCKCHAIN_BITCOIN]: 'bitcoin',
   [BLOCKCHAIN_BITCOIN_CASH]: 'bitcoin',
   [BLOCKCHAIN_DASH]: 'bitcoin',
-  [BLOCKCHAIN_LABOR_HOUR_TOKEN]: { type: 'mainnet', wss: LABORHOUR_WSS },
+  [BLOCKCHAIN_LABOR_HOUR_TOKEN]: { type: 'mainnet', wss: LABOR_HOUR_WSS },
   [BLOCKCHAIN_LITECOIN]: 'litecoin',
   [BLOCKCHAIN_NEM]: 'mainnet',
   [BLOCKCHAIN_WAVES]: 'MAINNET_CONFIG',
@@ -179,7 +179,7 @@ export const chronoBankPrivate = {
   [BLOCKCHAIN_BITCOIN]: 'testnet',
   [BLOCKCHAIN_BITCOIN_CASH]: 'testnet',
   [BLOCKCHAIN_DASH]: 'testnet',
-  [BLOCKCHAIN_LABOR_HOUR_TOKEN]: { type: 'testnet', wss: LABORHOUR_WSS },
+  [BLOCKCHAIN_LABOR_HOUR_TOKEN]: { type: 'testnet', wss: LABOR_HOUR_WSS },
   [BLOCKCHAIN_LITECOIN]: 'litecoin_testnet',
   [BLOCKCHAIN_NEM]: 'testnet',
   [BLOCKCHAIN_WAVES]: 'TESTNET_CONFIG',

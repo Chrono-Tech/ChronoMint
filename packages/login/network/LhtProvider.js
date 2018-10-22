@@ -9,6 +9,8 @@ import { BLOCKCHAIN_LABOR_HOUR_TOKEN } from './constants'
 import EthereumLikeProvider from './EthereumLikeProvider'
 import selectLhtNode from './LhtNode'
 
+export const getLaborHourWeb3 = (wssWeb3) => new Web3(new Web3.providers.WebsocketProvider(wssWeb3))
+
 export class LaborHourProvider extends EthereumLikeProvider {
   constructor () {
     super(BLOCKCHAIN_LABOR_HOUR_TOKEN, ...arguments)
@@ -18,7 +20,7 @@ export class LaborHourProvider extends EthereumLikeProvider {
     const balanceData = { tokens: {} }
 
     try {
-      const web3 = new Web3(new Web3.providers.WebsocketProvider(this.networkSettings[BLOCKCHAIN_LABOR_HOUR_TOKEN].wss))
+      const web3 = getLaborHourWeb3(this.networkSettings[BLOCKCHAIN_LABOR_HOUR_TOKEN].wss)
       balanceData.balance = await web3.eth.getBalance(address)
       web3.currentProvider.connection.close()
     } catch(error) {

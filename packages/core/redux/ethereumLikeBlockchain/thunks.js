@@ -42,20 +42,22 @@ export const acceptEthereumLikeBlockchainTransaction = (
   }
 )
 
-export const estimateEthereumLikeBlockchainGas = (tx, feeMultiplier, getWeb3, duckId) => async (dispatch, getState) => {
-  const web3 = getWeb3(getState())
-  const nonce = await dispatch(nextEthereumLikeBlockchainNonce({ web3, address: tx.from }, duckId))
-  const gasPrice = new BigNumber(await web3.eth.getGasPrice()).mul(feeMultiplier)
-  const chainId = await web3.eth.net.getId()
-  const gasLimit = await estimateTxGas(web3, tx, gasPrice, nonce, chainId)
-  const gasFee = gasPrice.mul(gasLimit)
+export const estimateEthereumLikeBlockchainGas = (tx, feeMultiplier, getWeb3, duckId, getEstimateGasRequestFieldSet) => (
+  async (dispatch, getState) => {
+    const web3 = getWeb3(getState())
+    const nonce = await dispatch(nextEthereumLikeBlockchainNonce({ web3, address: tx.from }, duckId))
+    const gasPrice = new BigNumber(await web3.eth.getGasPrice()).mul(feeMultiplier)
+    const chainId = await web3.eth.net.getId()
+    const gasLimit = await estimateTxGas(web3, getEstimateGasRequestFieldSet(tx, gasPrice, nonce, chainId))
+    const gasFee = gasPrice.mul(gasLimit)
 
-  return {
-    gasLimit,
-    gasFee,
-    gasPrice,
+    return {
+      gasLimit,
+      gasFee,
+      gasPrice,
+    }
   }
-}
+)
 
 export const ethereumLikeBlockchainTxStatus = (pendingSelector, key, address, props) => (dispatch, getState) => {
   const pending = pendingSelector()(getState())
@@ -81,10 +83,17 @@ export const ethereumLikeBlockchainTxStatus = (pendingSelector, key, address, pr
   ))
 }
 
-export const executeEthereumLikeBlockchainTransaction = ({ tx, options }, getWeb3, duckId, submitTransaction) => (
+export const executeEthereumLikeBlockchainTransaction = (
+  { tx, options },
+  getWeb3,
+  duckId,
+  getEstimateGasRequestFieldSet,
+  submitTransaction
+) => (
   async (dispatch, getState) => {
     const web3 = getWeb3(getState())
-    const prepared = await dispatch(prepareEthereumLikeBlockchainTransaction({ web3, tx, options }, duckId))
+    const prepared = await dispatch(prepareEthereumLikeBlockchainTransaction({ web3, tx, options },
+      duckId, getEstimateGasRequestFieldSet))
     const entry = createTxEntryModel(prepared, options)
 
     await dispatch(txCreate(entry))
@@ -136,14 +145,16 @@ const nextEthereumLikeBlockchainNonce = ({ web3, address }, duckId) => async (di
   )
 }
 
-const prepareEthereumLikeBlockchainTransaction = ({ web3, tx, options }, duckId) => async (dispatch) => {
-  const { feeMultiplier } = options || {}
-  const nonce = await dispatch(nextEthereumLikeBlockchainNonce({ web3, address: tx.from }, duckId))
-  const gasPrice = new BigNumber(await web3.eth.getGasPrice()).mul(feeMultiplier || 1)
-  const chainId = await web3.eth.net.getId()
-  const gasLimit = await estimateTxGas(web3, tx, gasPrice, nonce, chainId)
-  return createTxExecModel(tx, gasLimit, gasPrice, nonce, chainId)
-}
+const prepareEthereumLikeBlockchainTransaction = ({ web3, tx, options }, duckId, getEstimateGasRequestFieldSet) => (
+  async (dispatch) => {
+    const { feeMultiplier } = options || {}
+    const nonce = await dispatch(nextEthereumLikeBlockchainNonce({ web3, address: tx.from }, duckId))
+    const gasPrice = new BigNumber(await web3.eth.getGasPrice()).mul(feeMultiplier || 1)
+    const chainId = await web3.eth.net.getId()
+    const gasLimit = await estimateTxGas(web3, getEstimateGasRequestFieldSet(tx, gasPrice, nonce, chainId))
+    return createTxExecModel(tx, gasLimit, gasPrice, nonce, chainId)
+  }
+)
 
 const sendSignedEthereumLikeBlockchainTransaction = ({ web3, entry }, txStatus, pendingEntrySelector) => (
   async (dispatch, getState) => {

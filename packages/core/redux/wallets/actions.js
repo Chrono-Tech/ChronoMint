@@ -31,6 +31,7 @@ import { DUCK_SESSION } from '../session/constants'
 import { AllowanceCollection } from '../../models'
 import { executeDashTransaction } from '../dash/thunks'
 import { executeTransaction } from '../ethereum/thunks'
+import { executeLaborHourTransaction } from '../laborHour/thunks'
 import { executeWavesTransaction } from '../waves/thunks'
 import * as BitcoinThunks from '../bitcoin/thunks'
 import {
@@ -302,6 +303,7 @@ export const mainTransfer = (
       [BLOCKCHAIN_BITCOIN]: BitcoinThunks.executeBitcoinTransaction,
       [BLOCKCHAIN_DASH]: executeDashTransaction,
       [BLOCKCHAIN_ETHEREUM]: executeTransaction,
+      [BLOCKCHAIN_LABOR_HOUR_TOKEN]: executeLaborHourTransaction,
       [BLOCKCHAIN_NEM]: executeNemTransaction,
       [BLOCKCHAIN_WAVES]: executeWavesTransaction,
     }
