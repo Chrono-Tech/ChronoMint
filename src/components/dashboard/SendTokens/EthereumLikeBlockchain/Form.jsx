@@ -18,7 +18,6 @@ import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import Select from 'redux-form-material-ui/es/Select'
@@ -29,7 +28,6 @@ import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
 import { walletInfoSelector } from '@chronobank/core/redux/wallet/selectors/selectors'
-import { estimateGasTransfer } from '@chronobank/core/redux/tokens/thunks'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import inversedTheme from 'styles/themes/inversed'
 import { getMarket } from '@chronobank/core/redux/market/selectors'
@@ -42,14 +40,7 @@ import validate from '../validate'
 
 const DEBOUNCE_ESTIMATE_FEE_TIMEOUT = 1000
 
-function mapDispatchToProps (dispatch) {
-  return {
-    estimateGas: (tokenId, params, gasPriceMultiplier, address) => dispatch(estimateGasTransfer(tokenId, params, gasPriceMultiplier, address)),
-  }
-}
-
-function mapStateToProps (state, ownProps) {
-
+export function mapStateToProps (state, ownProps) {
   const walletInfo = walletInfoSelector(ownProps.wallet, false, state)
   const { selectedCurrency } = getMarket(state)
   const selector = formValueSelector(FORM_SEND_TOKENS)
@@ -88,7 +79,6 @@ function mapStateToProps (state, ownProps) {
   }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_SEND_TOKENS, validate })
 export default class Ethereum extends PureComponent {
 

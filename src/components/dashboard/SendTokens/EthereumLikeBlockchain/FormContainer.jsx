@@ -9,7 +9,6 @@ import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
 import web3Converter from '@chronobank/core/utils/Web3Converter'
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
 import { mainApprove, mainTransfer } from '@chronobank/core/redux/wallets/actions'
 import { multisigTransfer } from '@chronobank/core/redux/multisigWallet/actions'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
@@ -22,26 +21,30 @@ import {
   MODE_ADVANCED,
   MODE_SIMPLE,
 } from 'components/constants'
-import EthereumForm from './Form'
 
-function mapStateToProps (state, props) {
-  const token = state.get(DUCK_TOKENS).item(props.tokenSymbol)
+export function mapStateToProps (state, props) {
+  const tokens = state.get(DUCK_TOKENS)
 
   return {
-    tokens: state.get(DUCK_TOKENS),
-    token,
+    tokens,
+    token: tokens.item(props.tokenSymbol),
   }
 }
 
-function mapDispatchToProps (dispatch) {
+export function mapDispatchToProps (dispatch) {
   return {
-    multisigTransfer: (wallet, token, amount, recipient, feeMultiplier) => dispatch(multisigTransfer(wallet, token, amount, recipient, feeMultiplier)),
-    mainApprove: (token, amount, spender, feeMultiplier) => dispatch(mainApprove(token, amount, spender, feeMultiplier)),
-    mainTransfer: (wallet, token, amount, recipient, feeMultiplier, advancedModeParams) => dispatch(mainTransfer(wallet, token, amount, recipient, feeMultiplier, advancedModeParams)),
+    multisigTransfer: (wallet, token, amount, recipient, feeMultiplier) => (
+      dispatch(multisigTransfer(wallet, token, amount, recipient, feeMultiplier))
+    ),
+    mainApprove: (token, amount, spender, feeMultiplier) => (
+      dispatch(mainApprove(token, amount, spender, feeMultiplier))
+    ),
+    mainTransfer: (wallet, token, amount, recipient, feeMultiplier, advancedModeParams) => (
+      dispatch(mainTransfer(wallet, token, amount, recipient, feeMultiplier, advancedModeParams))
+    ),
   }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
 export default class SendTokens extends PureComponent {
   static propTypes = {
     wallet: PropTypes.oneOfType([PropTypes.instanceOf(WalletModel), PropTypes.instanceOf(MultisigEthWalletModel)]),
@@ -94,10 +97,10 @@ export default class SendTokens extends PureComponent {
   })
 
   render () {
-    const { symbol, token } = this.props
+    const { form: Form, symbol, token } = this.props
 
     return (
-      <EthereumForm
+      <Form
         initialValues={this.getInitialValues(token)}
         onSubmit={this.handleSubmit}
         symbol={symbol}

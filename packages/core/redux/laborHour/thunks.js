@@ -10,6 +10,7 @@ import laborHourDAO from '../../dao/LaborHourTokenDAO'
 import LaborHourMemoryDevice from '../../services/signers/LaborHourMemoryDevice'
 import {
   acceptEthereumLikeBlockchainTransaction,
+  estimateEthereumLikeBlockchainGas,
   ethereumLikeBlockchainTxStatus,
   executeEthereumLikeBlockchainTransaction,
   processEthereumLikeBlockchainTransaction,
@@ -19,24 +20,30 @@ import { getEstimateGasRequestBasicFieldSet } from '../ethereumLikeBlockchain/ut
 import { DUCK_LABOR_HOUR } from './constants'
 import { getLaborHourSigner, laborHourPendingSelector, laborHourPendingEntrySelector } from './selectors'
 
+export const estimateLaborHourGas = (tx, feeMultiplier = 1) => (
+  estimateEthereumLikeBlockchainGas(tx, feeMultiplier, getWeb3, DUCK_LABOR_HOUR, getEstimateGasRequestBasicFieldSet)
+)
+
 export const executeLaborHourTransaction = ({ tx, options }) => (
-  executeEthereumLikeBlockchainTransaction({ tx, options }, () => getLaborHourWeb3(LABOR_HOUR_WSS), DUCK_LABOR_HOUR,
+  executeEthereumLikeBlockchainTransaction({ tx, options }, getWeb3, DUCK_LABOR_HOUR,
     getEstimateGasRequestBasicFieldSet, submitTransaction)
 )
 
 const acceptTransaction = (entry) => (
   acceptEthereumLikeBlockchainTransaction(entry, getLaborHourSigner, LaborHourMemoryDevice.getDerivedWallet,
-    () => getLaborHourWeb3(LABOR_HOUR_WSS), laborHourPendingEntrySelector, laborHourTxStatus, processTransaction)
+    getWeb3, laborHourPendingEntrySelector, laborHourTxStatus, processTransaction)
 )
+
+const getWeb3 = () => getLaborHourWeb3(LABOR_HOUR_WSS)
 
 const laborHourTxStatus = (key, address, props) => (
   ethereumLikeBlockchainTxStatus(laborHourPendingSelector, key, address, props)
 )
 
-export const processTransaction = ({ web3, entry, signer }) => (
+const processTransaction = ({ web3, entry, signer }) => (
   processEthereumLikeBlockchainTransaction({ web3, entry, signer }, laborHourTxStatus, laborHourPendingEntrySelector)
 )
 
-export const submitTransaction = (entry) => (
+const submitTransaction = (entry) => (
   submitEthereumLikeBlockchainTransaction(entry, () => laborHourDAO, acceptTransaction, laborHourTxStatus)
 )

@@ -3,13 +3,31 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import React from 'react'
+import { connect } from 'react-redux'
 import { ETH } from '@chronobank/core/dao/constants'
+import { estimateGasTransfer } from '@chronobank/core/redux/tokens/thunks'
 
-import FormContainer from '../EthereumLikeBlockchain/FormContainer'
+import Form, { mapStateToProps as mapFormStateToProps } from '../EthereumLikeBlockchain/Form'
+import FormContainer, {
+  mapStateToProps as mapContainerStateToProps,
+  mapDispatchToProps
+} from '../EthereumLikeBlockchain/FormContainer'
 
-const ethereumFormContainer = (props) => (
-  <FormContainer {...props} symbol={ETH} />
-)
+function mapFormDispatchToProps (dispatch) {
+  return {
+    estimateGas: (tokenId, params, gasPriceMultiplier, address) => (
+      dispatch(estimateGasTransfer(tokenId, params, gasPriceMultiplier, address))
+    ),
+  }
+}
 
-export default ethereumFormContainer
+const EthereumForm = connect(mapFormStateToProps, mapFormDispatchToProps)(Form)
+
+export function mapStateToProps (state, props) {
+  const fields = mapContainerStateToProps(state, props)
+  fields.form = EthereumForm
+  fields.symbol = ETH
+  return fields
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FormContainer)

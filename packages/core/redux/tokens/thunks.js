@@ -16,7 +16,8 @@ import tokenService from '../../services/TokenService'
 import Amount from '../../models/Amount'
 import { daoByType } from '../daos/selectors'
 import { web3Selector } from '../ethereum/selectors'
-import { estimateGas } from '../ethereum/thunks'
+import { estimateGas as estimateEthereumGas } from '../ethereum/thunks'
+import { estimateLaborHourGas } from '../laborHour/thunks'
 
 import {
   DUCK_TOKENS,
@@ -238,17 +239,27 @@ export const watchLatestBlock = () => async (dispatch) => {
   })
 }
 
-export const estimateGasTransfer = (tokenId, params, gasPriceMultiplier = 1, address) => async (dispatch) => {
-  const tokenDao = tokenService.getDAO(tokenId)
-  const [to, amount] = params
-  const tx = tokenDao.transfer(address, to, amount)
-  const { gasLimit, gasFee, gasPrice } = await dispatch(estimateGas(tx))
+export const estimateGasTransfer = (tokenId, params, gasPriceMultiplier = 1, address) => (
+  estimateEthereumLikeBlockchainGasTransfer(tokenId, params, gasPriceMultiplier, address, estimateEthereumGas)
+)
 
-  return {
-    gasLimit,
-    gasFee: new Amount(gasFee.mul(gasPriceMultiplier).toString(), tokenDao.getSymbol()),
-    gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier).toString(), tokenDao.getSymbol()),
+export const estimateLaborHourGasTransfer = (tokenId, params, gasPriceMultiplier = 1, address) => (
+  estimateEthereumLikeBlockchainGasTransfer(tokenId, params, gasPriceMultiplier, address, estimateLaborHourGas)
+)
+
+const estimateEthereumLikeBlockchainGasTransfer = (tokenId, params, gasPriceMultiplier = 1, address, estimateGas) => (
+  async (dispatch) => {
+    const tokenDao = tokenService.getDAO(tokenId)
+    const [to, amount] = params
+    const tx = tokenDao.transfer(address, to, amount)
+    const { gasLimit, gasFee, gasPrice } = await dispatch(estimateGas(tx))
+
+    return {
+      gasLimit,
+      gasFee: new Amount(gasFee.mul(gasPriceMultiplier).toString(), tokenDao.getSymbol()),
+      gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier).toString(), tokenDao.getSymbol()),
+    }
   }
-}
+)
 
 const isERC20TokenUsed = (token) => token.get('symbol') !== LHT
