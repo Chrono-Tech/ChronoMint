@@ -1,6 +1,6 @@
 {
   "name": "@chronobank/mint",
-  "version": "0.9.7",
+  "version": "0.9.8",
   "description": "Control panel for ChronoBank",
   "private": true,
   "author": "chronobank",
@@ -80,7 +80,6 @@
     "webpack-dev-server": "2.9.4"
   },
   "dependencies": {
-    "@ledgerhq/hw-transport-u2f": "^4.13.0",
     "@waves/waves-api": "0.28.2",
     "axios": "^0.16.2",
     "babel-plugin-react-css-modules": "^2.7.1",
