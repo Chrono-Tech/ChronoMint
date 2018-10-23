@@ -4,8 +4,6 @@
  */
 
 import { createSelector } from 'reselect'
-
-import { ETH } from '../../../dao/constants'
 import { getWallets } from '../../wallets/selectors/models'
 import { getTokens } from '../../tokens/selectors'
 import { selectMarketPricesListStore, selectMarketPricesSelectedCurrencyStore } from './models'
@@ -46,7 +44,7 @@ export const getWalletTokens = (walletId: string, isAmountGt: boolean) => {
       const balances = Object.values(wallet.balances || {})
 
       const walletTokensAndBalanceByAddress = balances
-        .filter((balance) => [ETH].includes(balance.symbol()) || (customTokens ? customTokens.includes(balance.symbol()) : true))
+        .filter((balance) => balance.symbol() === "ETH" || (customTokens ? customTokens.includes(balance.symbol()) : true))
         .filter((balance) => tokens.item(balance.symbol()).isFetched())
         .map((balance) => {
           const bAmount = balance

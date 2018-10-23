@@ -33,7 +33,6 @@ import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
-  BLOCKCHAIN_LABOR_HOUR,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
@@ -42,7 +41,6 @@ import {
   EVENT_NEW_TRANSFER,
   EVENT_UPDATE_BALANCE,
   EVENT_UPDATE_TRANSACTION,
-  LHT,
   TIME,
 } from '../../dao/constants'
 import {
@@ -101,14 +99,14 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
         }
 
         if (walletsAccounts.includes(tx.from()) || walletsAccounts.includes(tx.to())) { // for derive wallets
-          const setDerivedWalletBalance = async (wallet: DerivedWalletModel, settings) => {
+          const setDerivedWalletBalance = async (wallet: DerivedWalletModel) => {
 
-            dispatch({ type: settings.multiSigFetched, wallet: wallet.set('transactions', wallet.transactions().add(tx)) })
+            dispatch({ type: ETH_MULTISIG_FETCHED, wallet: wallet.set('transactions', wallet.transactions().add(tx)) })
 
             const dao = tokenService.getDAO(token)
             const balance = await dao.getAccountBalance(wallet.address())
             dispatch({
-              type: settings.multiSigBalance,
+              type: ETH_MULTISIG_BALANCE,
               walletId: wallet.address(),
               balance: new BalanceModel({
                 id: token.id(),
@@ -117,44 +115,25 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
             })
           }
 
-          const ethLikeSettings = [
-            {
-              multiSigWalletDuck: DUCK_ETH_MULTISIG_WALLET,
-              multiSigFetched: ETH_MULTISIG_FETCHED,
-              multiSigBalance: ETH_MULTISIG_BALANCE,
-            }
-          ]
-
-          ethLikeSettings.map((settings) => {
-            const walletFrom = getState().get(settings.multiSigWalletDuck).item(tx.from())
-            if (walletFrom && walletFrom.isFetched()) {
-              setDerivedWalletBalance(walletFrom, settings)
-            }
-            const walletTo = getMultisigWallets(getState()).item(tx.to())
-            if (walletTo && walletTo.isFetched()) {
-              setDerivedWalletBalance(walletTo, settings)
-            }
-          })
+          const walletFrom = getState().get(DUCK_ETH_MULTISIG_WALLET).item(tx.from())
+          if (walletFrom && walletFrom.isFetched()) {
+            setDerivedWalletBalance(walletFrom)
+          }
+          const walletTo = getMultisigWallets(getState()).item(tx.to())
+          if (walletTo && walletTo.isFetched()) {
+            setDerivedWalletBalance(walletTo)
+          }
         }
       }
     })
     .on(EVENT_UPDATE_BALANCE, ({ account, balance }) => {
-      const ethLikeBlockchainSettings = {
-        [BLOCKCHAIN_ETHEREUM]: {
-          multiSigWalletDuck: DUCK_ETH_MULTISIG_WALLET,
-          multiSigBalance: ETH_MULTISIG_BALANCE,
-          getMainWallet: getMainWalletForBlockchain,
-        }
-      }
 
       switch (token.blockchain()) {
         case BLOCKCHAIN_ETHEREUM:
-          const settings = ethLikeBlockchainSettings[token.blockchain()]
-          const wallets = getState().get(settings.multiSigWalletDuck)
-
+          const wallets = getState().get(DUCK_ETH_MULTISIG_WALLET)
           if (wallets.item(account)) {
             dispatch({
-              type: settings.multiSigBalance,
+              type: ETH_MULTISIG_BALANCE,
               walletId: account,
               balance: new BalanceModel({
                 id: token.id(),
@@ -162,7 +141,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
               }),
             })
           } else {
-            const addresses = settings.getMainWallet(token.blockchain())(getState())
+            const addresses = getMainEthWallet(getState())
             if (addresses.includes(account)) {
               dispatch({
                 type: WALLET_TOKEN_BALANCE,
@@ -236,7 +215,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
 
 export const fetchTokenBalance = (token: TokenModel, account) => async (dispatch) => {
   const tokenDAO = tokenService.getDAO(token.id())
-  const balance = await tokenDAO.getAccountBalance([BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LABOR_HOUR].includes(token.blockchain()) ? account : null)
+  const balance = await tokenDAO.getAccountBalance(token.blockchain() === BLOCKCHAIN_ETHEREUM ? account : null)
   dispatch({
     type: WALLET_TOKEN_BALANCE,
     balance: new BalanceModel({
@@ -321,8 +300,8 @@ export const estimateGasForDeposit = (mode: string, params, callback, gasPriceMu
     const { gasLimit, gasFee, gasPrice } = await dispatch(estimateGas(tx))
     callback(null, {
       gasLimit,
-      gasFee: new Amount(gasFee.mul(gasPriceMultiplier), dao.getSymbol()),
-      gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier), dao.getSymbol()),
+      gasFee: new Amount(gasFee.mul(gasPriceMultiplier), ETH),
+      gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier), ETH),
     })
   } catch (e) {
     callback(e)
@@ -331,7 +310,7 @@ export const estimateGasForDeposit = (mode: string, params, callback, gasPriceMu
 }
 
 export const getTokensBalancesAndWatch = (address, blockchain, customTokens: Array<string>) => (token) => async (/*dispatch*/) => {
-  if (blockchain !== token.blockchain() || (![LHT, ETH].includes(token.symbol()) && customTokens && !customTokens.includes(token.symbol()))) {
+  if (blockchain !== token.blockchain() || (token.symbol() !== ETH && customTokens && !customTokens.includes(token.symbol()))) {
     return null
   }
   // const dao = tokenService.getDAO(token)

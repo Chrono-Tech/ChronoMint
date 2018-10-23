@@ -16,6 +16,7 @@ import {
 } from './constants/ERC20DAO'
 
 import {
+  BLOCKCHAIN_ETHEREUM,
   EVENT_APPROVAL_TRANSFER,
   EVENT_NEW_TRANSFER,
 } from './constants'
@@ -147,7 +148,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
       title: tx.details ? tx.details.event : 'tx.transfer',
       hash: tx.transactionHash,
       time,
-      blockchain: this.token.blockchain(),
+      blockchain: BLOCKCHAIN_ETHEREUM,
       blockNumber: block,
       fee: gasFee,
       from: tx.args.from,

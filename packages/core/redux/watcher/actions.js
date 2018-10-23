@@ -15,7 +15,6 @@ import { watchInitPolls } from '../voting/thunks'
 import { initMultisigWalletManager } from '../multisigWallet/actions'
 import { initWallets } from '../wallets/actions'
 import { WATCHER } from './constants'
-import { ETH, LHT } from '../../dao/constants'
 
 // for all users on all pages
 export const globalWatcher = () => async (dispatch) => {
@@ -31,8 +30,7 @@ export const watcher = ({ web3 }) => async (dispatch) => {
   dispatch(initMainWallet())
   dispatch(initWallets())
   dispatch(watchPlatformManager())
-  dispatch(watchInitTokens(ETH))
-  dispatch(watchInitTokens(LHT))
+  dispatch(watchInitTokens())
   dispatch(watchInitMonitor())
   dispatch(watchInitMarket())
   dispatch(watchInitPolls())

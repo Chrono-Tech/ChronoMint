@@ -21,7 +21,6 @@ import {
   EE_SINGLE_TRANSACTION,
 } from './constants'
 import MultisigEthWalletModel from '../models/wallet/MultisigEthWalletModel'
-import { getMainSymbolForBlockchain } from '../redux/tokens/selectors'
 
 class MultisigWalletService extends EventEmitter {
 
@@ -71,7 +70,7 @@ class MultisigWalletService extends EventEmitter {
         this.emit(EE_CONFIRMATION_NEEDED, wallet.id, pendingTxModel)
       }),
       dao.watchDeposit(() => {
-        this.emit(EE_DEPOSIT, wallet.id, getMainSymbolForBlockchain(wallet.blockchain))
+        this.emit(EE_DEPOSIT, wallet.id, 'ETH')
       }),
       dao.watchRevoke((id) => {
         this.emit(EE_REVOKE, wallet.id, id)

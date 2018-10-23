@@ -19,7 +19,10 @@ export const getWallets = (state) => {
   return state.get(DUCK_WALLETS).list
 }
 
-export const getMainEthWallet = (state) => getMainWalletForBlockchain(BLOCKCHAIN_ETHEREUM)(state)
+export const getMainEthWallet = (state) => {
+  const wallets = getWallets(state)
+  return Object.values(wallets).find((wallet) => wallet.isMain && wallet.blockchain === BLOCKCHAIN_ETHEREUM)
+}
 
 export const getMainWalletForBlockchain = (blockchain) => (state) => {
   const wallets = getWallets(state)

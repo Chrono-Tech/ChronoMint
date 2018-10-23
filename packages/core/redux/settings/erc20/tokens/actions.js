@@ -13,7 +13,6 @@ import tokenService from '../../../../services/TokenService'
 import Amount from '../../../../models/Amount'
 import { daoByType } from '../../../daos/selectors'
 
-import { ETH } from '../../../../dao/constants'
 import { TOKENS_FORM_FETCH } from './constants'
 
 const setToken = (token: TokenModel) => ({ type: TOKENS_UPDATE, token })
@@ -59,7 +58,7 @@ export const formTokenLoadMetaData = (token: TokenModel, ownProps) => async (dis
     errors.address = 'settings.erc20.tokens.errors.addressInUse'
   }
 
-  if ((symbolAddress !== null && token.address() !== symbolAddress) || (token.symbol() && [ETH].includes(token.symbol().toUpperCase()) )) {
+  if ((symbolAddress !== null && token.address() !== symbolAddress) || (token.symbol() && token.symbol().toUpperCase() === 'ETH')) {
     errors.symbol = 'settings.erc20.tokens.errors.symbolInUse'
   }
 

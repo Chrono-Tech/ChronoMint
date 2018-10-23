@@ -407,14 +407,14 @@ export const setManagers = (tx) => async (dispatch, getState) => {
   }
 }
 
-export const watchInitTokens = (symbol) => async (dispatch, getState) => {
+export const watchInitTokens = () => async (dispatch, getState) => {
   await dispatch(getAssetsManagerData())
 
   const state = getState()
   const account = getAccount(state)
   const tokens = state.get(DUCK_TOKENS)
 
-  dispatch(loadEvents(symbol, ASSET_TOPICS, account))
+  dispatch(loadEvents(ASSET_TOPICS, account))
 
   assetsManagerService.setPlatformTokenExtensionGatewayManagerEmitterDAO(daoByType('PlatformTokenExtensionGatewayManagerEmitterDAO')(state))
   await Promise.all([
