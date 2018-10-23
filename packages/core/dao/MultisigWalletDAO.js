@@ -15,7 +15,7 @@ import MultisigTransactionModel from '../models/wallet/MultisigTransactionModel'
 import MultisigWalletPendingTxModel from '../models/wallet/MultisigWalletPendingTxModel'
 import OwnerModel from '../models/wallet/OwnerModel'
 import { WalletABI } from './abi'
-import MultisigEthLikeWalletModel from '../models/wallet/MultisigEthLikeWalletModel'
+import MultisigEthWalletModel from '../models/wallet/MultisigEthWalletModel'
 import web3Converter from '../utils/Web3Converter'
 
 export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
@@ -213,7 +213,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     return this._tx('removeOwner', [ownerAddress])
   }
 
-  transfer (wallet: MultisigEthLikeWalletModel, token: TokenModel, amount, to, value) {
+  transfer (wallet: MultisigEthWalletModel, token: TokenModel, amount, to, value) {
     return this._tx(
       'transfer',
       [

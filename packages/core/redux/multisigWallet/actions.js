@@ -28,12 +28,11 @@ import {
 } from '../../services/constants'
 import multisigWalletService from '../../services/MultisigWalletService'
 import { getTxList } from '../wallets/actions'
-import { BLOCKCHAIN_ETHEREUM, ETH } from '../../dao/constants'
+import { ETH } from '../../dao/constants'
 import { getMultisigWallets } from '../wallet/selectors/models'
-import { getEthLikeMultisigWallet } from './selectors/models'
+import { getEthMultisigWallet } from './selectors/models'
 import { daoByType } from '../daos/selectors'
 import MultisigEthWalletModel from '../../models/wallet/MultisigEthWalletModel'
-import MultisigEthLikeWalletModel from '../../models/wallet/MultisigEthLikeWalletModel'
 import tokenService from '../../services/TokenService'
 
 import {
@@ -50,35 +49,15 @@ import { getTokens } from '../tokens/selectors'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import { executeTransaction } from '../ethereum/thunks'
 
-const actionTypes = {
-  [BLOCKCHAIN_ETHEREUM]: {
-    authConfirmed: ETH_MULTISIG_2_FA_CONFIRMED,
-    balance: ETH_MULTISIG_BALANCE,
-    fetched: ETH_MULTISIG_FETCHED,
-    fetching: ETH_MULTISIG_FETCHING,
-    init: ETH_MULTISIG_INIT,
-    remove: ETH_MULTISIG_REMOVE,
-    update: ETH_MULTISIG_UPDATE,
-  }
-}
+const updateEthMultisigWallet = (wallet: MultisigEthWalletModel) => ({ type: ETH_MULTISIG_UPDATE, wallet })
 
-const ethLikeProviders = {
-  [BLOCKCHAIN_ETHEREUM]: ethereumProvider,
-}
-
-const ethLikeWalletModels = {
-  [BLOCKCHAIN_ETHEREUM]: MultisigEthWalletModel,
-}
-
-const updateEthMultisigWallet = (wallet: MultisigEthLikeWalletModel) => ({ type: actionTypes[wallet.blockchain].update, wallet })
-
-const setEthMultisigWalletBalance = (wallet, balance) => ({
-  type: actionTypes[wallet.blockchain].balance,
-  walletId: wallet.id,
+const setEthMultisigWalletBalance = (walletId, balance) => ({
+  type: ETH_MULTISIG_BALANCE,
+  walletId,
   balance,
 })
 
-export const watchMultisigWallet = (wallet: MultisigEthLikeWalletModel): Promise => {
+export const watchMultisigWallet = (wallet: MultisigEthWalletModel): Promise => {
   try {
     return multisigWalletService.subscribeToWalletDAO(wallet)
   } catch (e) {
@@ -90,16 +69,16 @@ export const watchMultisigWallet = (wallet: MultisigEthLikeWalletModel): Promise
 const subscribeOnWalletManager = () => (dispatch, getState) => {
   const walletsManagerDAO = daoByType('WalletsManager')(getState())
   walletsManagerDAO
-    .on(EE_MS_WALLET_ADDED, async (wallet: MultisigEthLikeWalletModel) => {
+    .on(EE_MS_WALLET_ADDED, async (wallet: MultisigEthWalletModel) => {
       const wallets = getMultisigWallets(getState())
-      ethLikeProviders[walletsManagerDAO.blockchain].subscribeNewWallet(wallet.address)
+      ethereumProvider.subscribeNewWallet(wallet.address)
 
       const walletFromDuck = wallets.item(wallet.id)
       const walletName = walletFromDuck && walletFromDuck.name ? walletFromDuck.name : ''
 
       dispatch({
-        type: actionTypes[wallet.blockchain].fetched,
-        wallet: new ethLikeWalletModels[wallet.blockchain]({
+        type: ETH_MULTISIG_FETCHED,
+        wallet: new MultisigEthWalletModel({
           ...wallet,
           transactionHash: null,
           isPending: false,
@@ -112,7 +91,7 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
       if (txHash) {
         // created via event
         // address arrived, delete temporary hash
-        dispatch({ type: actionTypes[wallet.blockchain].remove, id: txHash })
+        dispatch({ type: ETH_MULTISIG_REMOVE, id: txHash })
         dispatch(notify(new WalletNoticeModel({
           address: wallet.address,
           action: statuses.CREATED,
@@ -124,17 +103,17 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
       await watchMultisigWallet(wallet)
     })
     .on(EE_MS_WALLETS_COUNT, (count) => {
-      dispatch({ type: actionTypes[walletsManagerDAO.blockchain].fetching, count })
+      dispatch({ type: ETH_MULTISIG_FETCHING, count })
     })
     .on(EE_MS_WALLET_REMOVED, (walletId) => {
-      dispatch({ type: actionTypes[walletsManagerDAO.blockchain].remove, id: walletId })
+      dispatch({ type: ETH_MULTISIG_REMOVE, id: walletId })
     })
 }
 
 const handleTransfer = (walletId, multisigTransactionModel) => async (dispatch, getState) => {
   let wallet = getMultisigWallets(getState()).item(walletId)
   const pendingTxList = wallet.pendingTxList.remove(multisigTransactionModel)
-  wallet = new ethLikeWalletModels[wallet.blockchain]({
+  wallet = new MultisigEthWalletModel({
     ...wallet,
     pendingTxList,
   })
@@ -149,7 +128,7 @@ const subscribeOnMultisigWalletService = () => (dispatch, getState) => {
       if (!wallet) {
         return
       }
-      dispatch(updateEthMultisigWallet(new ethLikeWalletModels[wallet.blockchain]({
+      dispatch(updateEthMultisigWallet(new MultisigEthWalletModel({
         ...wallet,
         owners: wallet.owners.add(owner),
       })))
@@ -157,7 +136,7 @@ const subscribeOnMultisigWalletService = () => (dispatch, getState) => {
     .on(EE_OWNER_REMOVED, (walletId, owner: OwnerModel) => {
       const wallet = getMultisigWallets(getState()).item(walletId)
       const owners = wallet.owners().remove(owner)
-      dispatch(updateEthMultisigWallet(new ethLikeWalletModels[wallet.blockchain]({
+      dispatch(updateEthMultisigWallet(new MultisigEthWalletModel({
         ...wallet,
         owners,
       })))
@@ -165,7 +144,7 @@ const subscribeOnMultisigWalletService = () => (dispatch, getState) => {
     .on(EE_MULTI_TRANSACTION, (walletId, multisigTransactionModel) => dispatch(handleTransfer(walletId, multisigTransactionModel)))
     .on(EE_SINGLE_TRANSACTION, (walletId, multisigTransactionModel) => dispatch(handleTransfer(walletId, multisigTransactionModel)))
     .on(EE_REVOKE, (walletId, id) => {
-      const wallet: MultisigEthLikeWalletModel = getMultisigWallets(getState()).item(walletId)
+      const wallet: MultisigEthWalletModel = getMultisigWallets(getState()).item(walletId)
       const pendingTxList = wallet.pendingTxList
       const pendingTx = new MultisigWalletPendingTxModel({ ...pendingTxList[id], isConfirmed: false })
       dispatch(updateEthMultisigWallet(wallet.updatePendingTx(pendingTx)))
@@ -174,7 +153,7 @@ const subscribeOnMultisigWalletService = () => (dispatch, getState) => {
       if (owner !== getAccount(getState())) {
         return
       }
-      const wallet: MultisigEthLikeWalletModel = getMultisigWallets(getState()).item(walletId)
+      const wallet: MultisigEthWalletModel = getMultisigWallets(getState()).item(walletId)
       if (!wallet) {
         return
       }
@@ -189,17 +168,17 @@ const subscribeOnMultisigWalletService = () => (dispatch, getState) => {
       dispatch(updateEthMultisigWallet(wallet.updatePendingTx(pendingTx)))
     })
     .on(EE_CONFIRMATION_NEEDED, (walletId, pendingTx: MultisigWalletPendingTxModel) => {
-      const wallet: MultisigEthLikeWalletModel = getMultisigWallets(getState()).item(walletId)
+      const wallet: MultisigEthWalletModel = getMultisigWallets(getState()).item(walletId)
       const pendingTxList = wallet.pendingTxList
-      dispatch(updateEthMultisigWallet(new ethLikeWalletModels[wallet.blockchain]({
+      dispatch(updateEthMultisigWallet(new MultisigEthWalletModel({
         ...wallet,
         pendingTxList: pendingTxList.update(pendingTx),
       })))
     })
     .on(EE_REQUIREMENT_CHANGED, (walletId, required) => {
-      const wallet: MultisigEthLikeWalletModel = getMultisigWallets(getState()).item(walletId)
+      const wallet: MultisigEthWalletModel = getMultisigWallets(getState()).item(walletId)
 
-      dispatch(updateEthMultisigWallet(new ethLikeWalletModels[wallet.blockchain]({
+      dispatch(updateEthMultisigWallet(new MultisigEthWalletModel({
         ...wallet,
         requiredSignatures: required,
       })))
@@ -210,11 +189,7 @@ export const initMultisigWalletManager = () => async (dispatch, getState) => {
   if (getMultisigWallets(getState()).isInited()) {
     return
   }
-
-  [
-    ETH_MULTISIG_INIT
-  ].map((actionType) => dispatch({ type: actionType, isInited: true }))
-
+  dispatch({ type: ETH_MULTISIG_INIT, isInited: true })
   const walletsManagerDAO = daoByType('WalletsManager')(getState())
   dispatch(subscribeOnWalletManager())
   dispatch(subscribeOnMultisigWalletService())
@@ -223,7 +198,7 @@ export const initMultisigWalletManager = () => async (dispatch, getState) => {
   walletsManagerDAO.fetchWallets()
 }
 
-export const createWallet = (wallet: MultisigEthLikeWalletModel) => (dispatch, getState) => {
+export const createWallet = (wallet: MultisigEthWalletModel) => (dispatch, getState) => {
   try {
     const state = getState()
     const walletsManagerDAO = daoByType('WalletsManager')(state)
@@ -238,7 +213,7 @@ export const createWallet = (wallet: MultisigEthLikeWalletModel) => (dispatch, g
   }
 }
 
-export const create2FAWallet = (wallet: MultisigEthLikeWalletModel, feeMultiplier) => async (dispatch, getState) => {
+export const create2FAWallet = (wallet: MultisigEthWalletModel, feeMultiplier) => async (dispatch, getState) => {
   try {
     const walletsManagerDAO = daoByType('WalletsManager')(getState())
     const tx = walletsManagerDAO.create2FAWallet(wallet)
@@ -252,10 +227,10 @@ export const create2FAWallet = (wallet: MultisigEthLikeWalletModel, feeMultiplie
   }
 }
 
-export const removeWallet = (wallet: MultisigEthLikeWalletModel) => async (dispatch, getState) => {
+export const removeWallet = (wallet: MultisigEthWalletModel) => async (dispatch, getState) => {
   try {
     const { account } = getState().get(DUCK_SESSION)
-    dispatch({ type: actionTypes[wallet.blockchain].remove, id: wallet.id })
+    dispatch({ type: ETH_MULTISIG_REMOVE, id: wallet.id })
     const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address)
     const tx = dao.removeWallet(account)
     if (tx) {
@@ -268,7 +243,7 @@ export const removeWallet = (wallet: MultisigEthLikeWalletModel) => async (dispa
   }
 }
 
-export const addOwner = (wallet: MultisigEthLikeWalletModel, ownerAddress: string) => async (/*dispatch*/) => {
+export const addOwner = (wallet: MultisigEthWalletModel, ownerAddress: string) => async (/*dispatch*/) => {
   // dispatch(updateEthMultisigWallet(wallet.isPending(true)))
   try {
     const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address)
@@ -290,7 +265,7 @@ export const removeOwner = (wallet, ownerAddress) => async (/*dispatch*/) => {
   }
 }
 
-export const multisigTransfer = (wallet: MultisigEthLikeWalletModel, token, amount, recipient, feeMultiplier) => async (dispatch, getState) => {
+export const multisigTransfer = (wallet: MultisigEthWalletModel, token, amount, recipient, feeMultiplier) => async (dispatch, getState) => {
   try {
     let value
     if (wallet.is2FA) {
@@ -333,7 +308,7 @@ export const changeRequirement = (wallet, newRequired: number) => async (dispatc
   }
 }
 
-export const revokeMultisigTx = (wallet: MultisigEthLikeWalletModel, tx: MultisigWalletPendingTxModel) => async (dispatch) => {
+export const revokeMultisigTx = (wallet: MultisigEthWalletModel, tx: MultisigWalletPendingTxModel) => async (dispatch) => {
   try {
     const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address)
     const newTx = dao.revokePendingTx(tx)
@@ -386,7 +361,7 @@ export const updatePendingTx = (walletAddress: string, tx: MultisigWalletPending
 export const setMultisigWalletName = (walletId, name) => (dispatch, getState) => {
   const wallet = getMultisigWallets(getState()).item(walletId)
   if (wallet) {
-    dispatch(updateEthMultisigWallet(new ethLikeWalletModels[wallet.blockchain]({
+    dispatch(updateEthMultisigWallet(new MultisigEthWalletModel({
       ...wallet,
       name,
     })))
@@ -396,7 +371,7 @@ export const setMultisigWalletName = (walletId, name) => (dispatch, getState) =>
 export const updateEthMultisigWalletBalance = ({ wallet }) => async (dispatch) => {
   getWalletBalances({ wallet })
     .then((balancesResult) => {
-      dispatch(updateEthMultisigWallet(new ethLikeWalletModels[wallet.blockchain]({
+      dispatch(updateEthMultisigWallet(new MultisigEthWalletModel({
         ...wallet,
         balances: {
           ...wallet.balances,
@@ -412,7 +387,7 @@ export const updateEthMultisigWalletBalance = ({ wallet }) => async (dispatch) =
           const dao = tokenService.getDAO(token)
           const balance = await dao.getAccountBalance(wallet.address)
           if (balance) {
-            dispatch(setEthMultisigWalletBalance(wallet, new Amount(balance, token.symbol(), true)))
+            dispatch(setEthMultisigWalletBalance(wallet.id, new Amount(balance, token.symbol(), true)))
           }
         }
       }
@@ -425,7 +400,7 @@ export const getTransactionsForEthMultisigWallet = ({ wallet, forcedOffset }) =>
     return null
   }
   const tokens = getTokens(getState())
-  dispatch(updateEthMultisigWallet(new ethLikeWalletModels[wallet.blockchain]({
+  dispatch(updateEthMultisigWallet(new MultisigEthWalletModel({
     ...wallet,
     transactions: new TxHistoryModel(
       {
@@ -434,6 +409,6 @@ export const getTransactionsForEthMultisigWallet = ({ wallet, forcedOffset }) =>
       }),
   })))
   const transactions = await getTxList({ wallet, forcedOffset, tokens })
-  const newWallet = getEthLikeMultisigWallet(wallet.id, wallet.blockchain)(getState())
-  dispatch(updateEthMultisigWallet(new ethLikeWalletModels[wallet.blockchain]({ ...newWallet, transactions })))
+  const newWallet = getEthMultisigWallet(wallet.id)(getState())
+  dispatch(updateEthMultisigWallet(new MultisigEthWalletModel({ ...newWallet, transactions })))
 }

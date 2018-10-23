@@ -21,10 +21,8 @@ import {
 } from './constants/ERC20ManagerDAO'
 
 export default class ERC20ManagerDAO extends AbstractContractDAO {
-  constructor ({ address, history, abi }, blockchain, dao) {
+  constructor ({ address, history, abi }) {
     super({ address, history, abi })
-    this.blockchain = blockchain
-    this.dao = dao
   }
 
   addWatchers = (callback) => {
@@ -45,7 +43,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     const [addresses, names, symbols, urls, decimalsArr, ipfsHashes] = Object.values(res)
 
     this.emit(EVENT_ERC20_TOKENS_COUNT, addresses.length)
-    const feeRate = await this.dao.getGasPrice()
+    const feeRate = await ethereumDAO.getGasPrice()
 
     addresses.forEach((address, i) => {
       const symbol = web3Converter.bytesToString(symbols[i]).toUpperCase()
@@ -57,7 +55,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         decimals: parseInt(decimalsArr[i]),
         icon: web3Converter.bytes32ToIPFSHash(ipfsHashes[i]),
         isFetched: true,
-        blockchain: this.blockchain,
+        blockchain: BLOCKCHAIN_ETHEREUM,
         isERC20: true,
         feeRate: web3Converter.toWei(web3Converter.fromWei(feeRate), 'gwei'), // gas price in gwei
       })
@@ -133,7 +131,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         url: web3Converter.bytesToString(result.args.url),
         decimals: result.args.decimals.toNumber(),
         icon: web3Converter.bytes32ToIPFSHash(result.args.ipfsHash),
-        blockchain: this.blockchain,
+        blockchain: BLOCKCHAIN_ETHEREUM,
         isERC20: true,
         isFetched: true,
       }),
@@ -141,10 +139,4 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     ))
   }
 
-}
-
-export class EthereumERC20ManagerDAO extends ERC20ManagerDAO {
-  constructor ({ address, history, abi }) {
-    super({ address, history, abi }, BLOCKCHAIN_ETHEREUM, ethereumDAO)
-  }
 }

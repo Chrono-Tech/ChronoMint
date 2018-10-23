@@ -5,7 +5,7 @@
 
 import { abstractFetchingCollection } from '../AbstractFetchingCollection'
 import type MultisigWalletPendingTxModel from './MultisigWalletPendingTxModel'
-import MultisigEthLikeWalletModel from './MultisigEthLikeWalletModel'
+import MultisigEthWalletModel from './MultisigEthWalletModel'
 import Amount from '../Amount'
 
 export default class MultisigWalletCollection extends abstractFetchingCollection({
@@ -17,16 +17,16 @@ export default class MultisigWalletCollection extends abstractFetchingCollection
   }
 
   balance (walletId, balance: Amount) {
-    const wallet: MultisigEthLikeWalletModel = this.item(walletId)
+    const wallet: MultisigEthWalletModel = this.item(walletId)
     return this.update(wallet.updateBalance(balance))
   }
 
   allPendingsCount () {
-    return this.list().reduce((memo, item: MultisigEthLikeWalletModel) => memo + item.pendingCount(), 0)
+    return this.list().reduce((memo, item: MultisigEthWalletModel) => memo + item.pendingCount(), 0)
   }
 
   pending (walletId, pending: MultisigWalletPendingTxModel) {
-    const wallet: MultisigEthLikeWalletModel = this.item(walletId)
+    const wallet: MultisigEthWalletModel = this.item(walletId)
     return this.update(wallet.updatePendingTx(pending))
   }
 
