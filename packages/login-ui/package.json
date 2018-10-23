@@ -4,6 +4,6 @@
   "author": "chronobank",
   "license": "AGPL-3.0",
   "dependencies": {
-    "@chronobank/login": "0.6.1"
+    "@chronobank/login": "0.6.2"
   }
 }
