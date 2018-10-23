@@ -19,7 +19,7 @@ import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
-  BLOCKCHAIN_LABOR_HOUR_TOKEN,
+  BLOCKCHAIN_LABOR_HOUR,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   ETH,
@@ -181,7 +181,7 @@ export default class AddWalletWidget extends PureComponent {
       switch (blockchain) {
         case BLOCKCHAIN_BITCOIN:
         case BLOCKCHAIN_DASH:
-        case BLOCKCHAIN_LABOR_HOUR_TOKEN:
+        case BLOCKCHAIN_LABOR_HOUR:
         case BLOCKCHAIN_LITECOIN:
           return (
             <WidgetContainer title={`${prefix}.createWallet`} blockchain={blockchain}>

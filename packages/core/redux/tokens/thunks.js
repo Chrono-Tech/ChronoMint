@@ -33,7 +33,7 @@ import {
 } from '../../dao/constants/NemDAO'
 import {
   BLOCKCHAIN_ETHEREUM,
-  BLOCKCHAIN_LABOR_HOUR_TOKEN,
+  BLOCKCHAIN_LABOR_HOUR,
   EVENT_NEW_BLOCK,
   EVENT_NEW_TOKEN,
   EVENT_UPDATE_LAST_BLOCK,
@@ -225,7 +225,7 @@ export const watchLatestBlock = () => async (dispatch) => {
       dao: ethereumDAO,
     },
     {
-      blockchain: BLOCKCHAIN_LABOR_HOUR_TOKEN,
+      blockchain: BLOCKCHAIN_LABOR_HOUR,
       dao: laborHourTokenDAO,
     },
   ]

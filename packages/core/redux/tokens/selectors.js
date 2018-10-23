@@ -10,7 +10,7 @@ import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
-  BLOCKCHAIN_LABOR_HOUR_TOKEN,
+  BLOCKCHAIN_LABOR_HOUR,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
@@ -62,7 +62,7 @@ export const getMainSymbolForBlockchain = (blockchain) => {
       return DASH
     case BLOCKCHAIN_ETHEREUM:
       return ETH
-    case BLOCKCHAIN_LABOR_HOUR_TOKEN:
+    case BLOCKCHAIN_LABOR_HOUR:
       return LHT
     case BLOCKCHAIN_NEM:
       return XEM

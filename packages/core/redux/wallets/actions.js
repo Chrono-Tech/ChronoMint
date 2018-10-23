@@ -10,7 +10,7 @@ import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
-  BLOCKCHAIN_LABOR_HOUR_TOKEN,
+  BLOCKCHAIN_LABOR_HOUR,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
@@ -89,7 +89,7 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
 
   [
     BLOCKCHAIN_ETHEREUM,
-    BLOCKCHAIN_LABOR_HOUR_TOKEN,
+    BLOCKCHAIN_LABOR_HOUR,
   ].map((ethLikeBlockchain) => {
     wallets.push(new WalletModel({
       address: ethAddress.toLowerCase(accountPath),
@@ -303,7 +303,7 @@ export const mainTransfer = (
       [BLOCKCHAIN_BITCOIN]: BitcoinThunks.executeBitcoinTransaction,
       [BLOCKCHAIN_DASH]: executeDashTransaction,
       [BLOCKCHAIN_ETHEREUM]: executeTransaction,
-      [BLOCKCHAIN_LABOR_HOUR_TOKEN]: executeLaborHourTransaction,
+      [BLOCKCHAIN_LABOR_HOUR]: executeLaborHourTransaction,
       [BLOCKCHAIN_NEM]: executeNemTransaction,
       [BLOCKCHAIN_WAVES]: executeWavesTransaction,
     }
@@ -389,7 +389,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
 
   switch (blockchain) {
     case BLOCKCHAIN_ETHEREUM:
-    case BLOCKCHAIN_LABOR_HOUR_TOKEN:
+    case BLOCKCHAIN_LABOR_HOUR:
       if (newDeriveNumber === undefined || newDeriveNumber === null) {
         newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
       }
@@ -490,7 +490,7 @@ export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
     case BLOCKCHAIN_DASH:
       dao = tokenService.getDAO(DASH)
       break
-    case BLOCKCHAIN_LABOR_HOUR_TOKEN:
+    case BLOCKCHAIN_LABOR_HOUR:
       dao = laborHourTokenDAO
       break
     case BLOCKCHAIN_LITECOIN:

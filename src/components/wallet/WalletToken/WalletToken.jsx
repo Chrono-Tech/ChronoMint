@@ -6,7 +6,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
-import { BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LABOR_HOUR_TOKEN } from '@chronobank/core/dao/constants'
+import { BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LABOR_HOUR } from '@chronobank/core/dao/constants'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import { TOKEN_ICONS } from 'assets'
@@ -36,7 +36,7 @@ export default class WalletToken extends PureComponent {
 
     return (
       <div styleName='token-container'>
-        { [BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LABOR_HOUR_TOKEN].includes(blockchain)
+        { [BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LABOR_HOUR].includes(blockchain)
           && <SubIconForWallet wallet={wallet} />
         }
         <div styleName='token-icon'>

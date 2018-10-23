@@ -17,7 +17,7 @@ import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
-  BLOCKCHAIN_LABOR_HOUR_TOKEN,
+  BLOCKCHAIN_LABOR_HOUR,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
@@ -90,7 +90,7 @@ export default class SelectWalletType extends PureComponent {
         disabled: false,
       },
       {
-        blockchain: BLOCKCHAIN_LABOR_HOUR_TOKEN,
+        blockchain: BLOCKCHAIN_LABOR_HOUR,
         symbol: LHT,
         title: `${prefix}.lht`,
         disabled: true,

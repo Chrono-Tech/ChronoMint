@@ -14,7 +14,7 @@ import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_ETHEREUM,
-  BLOCKCHAIN_LABOR_HOUR_TOKEN,
+  BLOCKCHAIN_LABOR_HOUR,
   BLOCKCHAIN_LITECOIN
 } from '@chronobank/core/dao/constants'
 import TxDescModel from '@chronobank/core/models/TxDescModel'
@@ -47,7 +47,7 @@ export default class TxConfirmations extends PureComponent {
         return 600
 
       case BLOCKCHAIN_ETHEREUM:
-      case BLOCKCHAIN_LABOR_HOUR_TOKEN:
+      case BLOCKCHAIN_LABOR_HOUR:
         return 30
 
       default:

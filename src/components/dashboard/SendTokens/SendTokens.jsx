@@ -10,7 +10,7 @@ import {
   BLOCKCHAIN_DASH,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_ETHEREUM,
-  BLOCKCHAIN_LABOR_HOUR_TOKEN,
+  BLOCKCHAIN_LABOR_HOUR,
   BLOCKCHAIN_WAVES,
   BLOCKCHAIN_NEM,
 } from '@chronobank/core/dao/constants'
@@ -57,7 +57,7 @@ export default class SendTokens extends PureComponent {
         return Dash
       case BLOCKCHAIN_ETHEREUM:
         return Ethereum
-      case BLOCKCHAIN_LABOR_HOUR_TOKEN:
+      case BLOCKCHAIN_LABOR_HOUR:
         return LaborHourToken
       case BLOCKCHAIN_WAVES:
         return Waves

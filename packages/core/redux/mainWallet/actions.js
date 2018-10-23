@@ -33,7 +33,7 @@ import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
-  BLOCKCHAIN_LABOR_HOUR_TOKEN,
+  BLOCKCHAIN_LABOR_HOUR,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
@@ -236,7 +236,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
 
 export const fetchTokenBalance = (token: TokenModel, account) => async (dispatch) => {
   const tokenDAO = tokenService.getDAO(token.id())
-  const balance = await tokenDAO.getAccountBalance([BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LABOR_HOUR_TOKEN].includes(token.blockchain()) ? account : null)
+  const balance = await tokenDAO.getAccountBalance([BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LABOR_HOUR].includes(token.blockchain()) ? account : null)
   dispatch({
     type: WALLET_TOKEN_BALANCE,
     balance: new BalanceModel({

@@ -11,7 +11,7 @@ import { DUCK_SESSION } from '../session/constants'
 import { subscribeOnTokens } from '../tokens/thunks'
 import tokenService from '../../services/TokenService'
 import { daoByType } from '../daos/selectors'
-import { BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LABOR_HOUR_TOKEN } from '../../dao/constants'
+import { BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LABOR_HOUR } from '../../dao/constants'
 import { getWallet } from '../wallets/selectors/models'
 import { WALLETS_UPDATE_WALLET } from '../wallets/constants'
 import WalletModel from '../../models/wallet/WalletModel'
@@ -86,7 +86,7 @@ export const fetchAssetAllowance = (token: TokenModel) => async (dispatch, getSt
 
   [
     BLOCKCHAIN_ETHEREUM,
-    BLOCKCHAIN_LABOR_HOUR_TOKEN,
+    BLOCKCHAIN_LABOR_HOUR,
   ].map((blockchain) => {
     const wallet = getWallet(blockchain, account)(getState())
     const allowance = new AllowanceModel({
