@@ -27,13 +27,13 @@ import {
   WAVES,
   XEM,
 } from '@chronobank/core/dao/constants'
-import { getBlockchainsList } from '@chronobank/core/redux/blockchains/selectors'
+import { getBlockchainList } from '@chronobank/core/redux/persistAccount/selectors'
 import { prefix } from '../lang'
 import './SelectWalletType.scss'
 
 function mapStateToProps (state) {
   return {
-    blockchains: getBlockchainsList(state),
+    blockchains: getBlockchainList(state),
   }
 }
 

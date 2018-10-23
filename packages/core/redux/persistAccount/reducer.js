@@ -20,6 +20,7 @@ const initialState = {
   rehydrated: false,
   customNetworksList: [],
   addressCache: {},
+  blockchainList: [],
 }
 
 const persistAccount = (state = initialState, action) => {
@@ -94,6 +95,12 @@ const persistAccount = (state = initialState, action) => {
       return {
         ...state,
         customNetworksList: [],
+      }
+
+    case a.BLOCKCHAIN_LIST_UPDATE:
+      return {
+        ...state,
+        list: action.list,
       }
 
     default:

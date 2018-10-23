@@ -12,7 +12,7 @@ import { initProviders } from '../providers/thunks'
 import { watchInitPolls } from '../voting/thunks'
 import { initMultisigWalletManager } from '../multisigWallet/actions'
 import { WATCHER } from './constants'
-import { enableActiveBlockchains } from '../blockchains/thunks'
+import { enableActiveBlockchains } from '../persistAccount/actions'
 
 // for all users on all pages
 export const globalWatcher = () => async (dispatch) => {

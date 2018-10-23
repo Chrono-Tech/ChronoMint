@@ -36,29 +36,68 @@
   text-align: center;
 }
 
-.icon-container {
+.blockchain-list-container {
   display: flex;
+  flex-direction: column;
   flex: 1;
   justify-content: center;
   margin-top: 20px;
 }
 
-.operation-icon {
-  width: 234px;
-  height: 200px;
+.blockchain-row {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  flex-direction: row;
+  height: 80px;
+  margin-left: 20px;
 }
 
-.confirm-text {
-  font-size: 14px;
-  line-height: 17px;
+.row-save-button {
+  display: flex;
+  flex: 1;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  margin-bottom: 15px;
+}
+
+.blockchain-list-container div:not(:first-child) {
+  border-top: 1px solid #F2F2F2;
+}
+
+.row-label {
+  display: flex;
+  flex: 3;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.row-label-text {
   font-family: $font-proxima;
   font-weight: 500;
+  font-size: 14px;
+  text-align: left;
+  color: #333333;
+  line-height: 18px;
+  margin-left: 15px;
 }
 
-.close-text {
-  font-size: 14px;
-  line-height: 17px;
-  font-family: $font-proxima;
-  font-weight: 300;
-  color: $color-primary-0;
+.row-icon-image {
+  width: 40px;
+  height: 40px;
+}
+
+.row-switch {
+  display: flex;
+  flex: 1;
+}
+
+.save-button {
+
+}
+
+.blockchain-checkbox-field {
+
 }

@@ -5,6 +5,16 @@
 
 import uuid from 'uuid/v1'
 import Accounts from 'web3-eth-accounts'
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_DASH,
+  BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_NEM,
+  BLOCKCHAIN_WAVES,
+} from '@chronobank/login/network/constants'
+
 import * as ProfileThunks from '../profile/thunks'
 import * as AccountUtils from './utils'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
@@ -27,7 +37,40 @@ import {
   WALLETS_UPDATE_LIST,
   WALLETS_LOAD,
   WALLETS_CACHE_ADDRESS,
+  BLOCKCHAIN_LIST_UPDATE,
 } from './constants'
+
+import { getBlockchainList } from './selectors'
+import { enableBitcoin } from '../bitcoin/thunks'
+import { enableEthereum } from '../ethereum/thunks'
+import { enableNem } from '../nem/thunks'
+import { enableWaves } from '../waves/thunks'
+
+const enableMap = {
+  [BLOCKCHAIN_ETHEREUM]: enableEthereum(),
+  [BLOCKCHAIN_BITCOIN]: enableBitcoin(BLOCKCHAIN_BITCOIN),
+  [BLOCKCHAIN_BITCOIN_CASH]: enableBitcoin(BLOCKCHAIN_BITCOIN_CASH),
+  [BLOCKCHAIN_LITECOIN]: enableBitcoin(BLOCKCHAIN_LITECOIN),
+  [BLOCKCHAIN_DASH]: enableBitcoin(BLOCKCHAIN_DASH),
+  [BLOCKCHAIN_NEM]: enableNem(),
+  [BLOCKCHAIN_WAVES]: enableWaves(),
+}
+
+export const enableActiveBlockchains = () => (dispatch, getState) => {
+  const state = getState()
+  const activeBlockchains = getBlockchainList(state)
+  console.log('activeBlockchains: ', activeBlockchains)
+
+  activeBlockchains.forEach((blockchain) => {
+    if (!enableMap[blockchain]) {
+      console.log('not found blockchain: ', blockchain)
+      return
+    }
+    console.log('enable blockchain: ', blockchain)
+
+    dispatch(enableMap[blockchain])
+  })
+}
 
 export const accountAdd = (wallet) => (dispatch) => {
   dispatch({ type: WALLETS_ADD, wallet })
@@ -67,6 +110,12 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
 
   dispatch({ type: WALLETS_UPDATE_LIST, walletsList: copyWalletList })
 }
+
+/* eslint-disable-next-line import/prefer-default-export */
+export const updateBlockchainsList = (blockchainsList) => ({
+  type: BLOCKCHAIN_LIST_UPDATE,
+  blockchainsList,
+})
 
 export const decryptAccount = (entry, password) => async () => {
   const privateKey = EthereumMemoryDevice.decrypt({ entry: entry.encrypted[0].wallet, password })

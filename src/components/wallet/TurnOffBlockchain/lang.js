@@ -8,5 +8,6 @@ export const prefix = 'TurnOffBlockchain'
 export default {
   en: {
     title: 'Active wallets',
+    saveButtonTitle: 'Save',
   },
 }
