@@ -21,9 +21,6 @@ branches:
 jobs:
   include:
     - stage: build docker image
-      before_script:
-        - yarn testrpc > /dev/null &
-        - yarn contracts
       script:
         - yarn test --coverage; export TEST_RESULT=$?
         - yarn build --production
