@@ -1,9 +1,6 @@
 {
   "name": "@chronobank/login",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "author": "chronobank",
-  "license": "AGPL-3.0",
-  "dependencies": {
-    "ledger-wallet-provider": "github:mikefluff/ledger-wallet-provider"
-  }
+  "license": "AGPL-3.0"
 }
