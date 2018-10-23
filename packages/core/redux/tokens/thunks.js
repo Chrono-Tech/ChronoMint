@@ -9,7 +9,7 @@ import WavesDAO from '../../dao/WavesDAO'
 import { bccDAO, btcDAO, dashDAO, ltcDAO } from '../../dao/BitcoinDAO'
 import ERC20ManagerDAO from '../../dao/ERC20ManagerDAO'
 import ethereumDAO from '../../dao/EthereumDAO'
-import laborHourTokenDAO from '../../dao/LaborHourTokenDAO'
+import laborHourDAO from '../../dao/LaborHourDAO'
 import NemDAO from '../../dao/NemDAO'
 import TokenModel from '../../models/tokens/TokenModel'
 import tokenService from '../../services/TokenService'
@@ -55,7 +55,7 @@ export const initTokens = () => async (dispatch, getState) => {
   }
   const web3 = web3Selector()(state)
   ethereumDAO.connect(web3)
-  laborHourTokenDAO.connect(web3)
+  laborHourDAO.connect(web3)
 
   dispatch(TokensActions.tokensInit())
   dispatch(TokensActions.setTokensFetchingCount(0))
@@ -66,7 +66,7 @@ export const initTokens = () => async (dispatch, getState) => {
     .on(EVENT_ERC20_TOKENS_COUNT, async (count) => {
       const currentCount = state.get(DUCK_TOKENS).leftToFetch()
       dispatch(TokensActions.setTokensFetchingCount(currentCount + count + 1 /*+eth+lht-lht(ERC20)*/))
-      const ethLikeDAOs = [ethereumDAO, laborHourTokenDAO]
+      const ethLikeDAOs = [ethereumDAO, laborHourDAO]
 
       ethLikeDAOs.map(async (dao) => {
         const ethLikeToken: TokenModel = await dao.getToken()
@@ -226,7 +226,7 @@ export const watchLatestBlock = () => async (dispatch) => {
     },
     {
       blockchain: BLOCKCHAIN_LABOR_HOUR,
-      dao: laborHourTokenDAO,
+      dao: laborHourDAO,
     },
   ]
 

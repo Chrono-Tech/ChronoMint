@@ -26,7 +26,7 @@ import Bitcoin from './Bitcoin/FormContainer'
 import Dash from './Dash/FormContainer'
 import Eos from './Eos/FormContainer'
 import Ethereum from './Ethereum/FormContainer'
-import LaborHourToken from './LaborHourToken/FormContainer'
+import LaborHour from './LaborHour/FormContainer'
 import Nem from './Nem/FormContainer'
 import Waves from './Waves/FormContainer'
 
@@ -58,7 +58,7 @@ export default class SendTokens extends PureComponent {
       case BLOCKCHAIN_ETHEREUM:
         return Ethereum
       case BLOCKCHAIN_LABOR_HOUR:
-        return LaborHourToken
+        return LaborHour
       case BLOCKCHAIN_WAVES:
         return Waves
       case BLOCKCHAIN_NEM:

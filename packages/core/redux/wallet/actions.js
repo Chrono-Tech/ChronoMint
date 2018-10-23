@@ -8,7 +8,7 @@ import { getTransactionsForEthMultisigWallet, updateEthMultisigWalletBalance } f
 import { WALLET_SELECT_WALLET } from './constants'
 import { BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LABOR_HOUR } from '../../dao/constants'
 import ethereumDAO from '../../dao/EthereumDAO'
-import lhtDAO from '../../dao/LaborHourTokenDAO'
+import laborHourDAO from '../../dao/LaborHourDAO'
 
 export const selectWallet = (blockchain: string, address: string) => (dispatch) => {
   dispatch({ type: WALLET_SELECT_WALLET, blockchain, address })
@@ -49,7 +49,7 @@ export const subscribeWallet = ({ wallet }) => async (dispatch) => {
       ethereumDAO.on('tx', listener)
       return listener
     case BLOCKCHAIN_LABOR_HOUR:
-      lhtDAO.on('tx', listener)
+      laborHourDAO.on('tx', listener)
       return listener
     default:
       return
@@ -62,7 +62,7 @@ export const unsubscribeWallet = ({ wallet, listener }) => async () => {
       ethereumDAO.removeListener('tx', listener)
       return listener
     case BLOCKCHAIN_LABOR_HOUR:
-      lhtDAO.removeListener('tx', listener)
+      laborHourDAO.removeListener('tx', listener)
       return listener
     default:
       return

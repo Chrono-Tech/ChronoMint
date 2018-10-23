@@ -3,10 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { getLaborHourWeb3 } from '@chronobank/login/network/LhtProvider'
+import { getLaborHourWeb3 } from '@chronobank/login/network/LaborHourProvider'
 import { LABOR_HOUR_WSS } from '@chronobank/login/network/settings'
 
-import laborHourDAO from '../../dao/LaborHourTokenDAO'
+import laborHourDAO from '../../dao/LaborHourDAO'
 import LaborHourMemoryDevice from '../../services/signers/LaborHourMemoryDevice'
 import {
   acceptEthereumLikeBlockchainTransaction,
