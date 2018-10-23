@@ -102,6 +102,7 @@
     "js-file-download": "^0.4.1",
     "jsan": "^3.1.10",
     "keythereum": "^0.5.2",
+    "ledger-wallet-provider": "github:mikefluff/ledger-wallet-provider#50dbc9d7176db0cfc934bf55f564aa412aeeab45",
     "lodash": "^4.17.4",
     "material-colors-scss": "^1.0.0",
     "material-ui": "^0.19.4",
