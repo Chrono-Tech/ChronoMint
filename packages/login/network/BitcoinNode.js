@@ -48,9 +48,9 @@ export const BTC_TESTNET_NODE = new BitcoinMiddlewareNode({
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
-      balance: '/exchange/events/internal-testnet-bitcoin-middleware-chronobank-io_balance',
-      transaction: '/exchange/events/internal-testnet-bitcoin-middleware-chronobank-io_transaction',
-      block: '/exchange/events/internal-testnet-bitcoin-middleware-chronobank-io_block',
+      balance: '/exchange/events/testnet-bitcoin-middleware-chronobank-io_balance',
+      transaction: '/exchange/events/testnet-bitcoin-middleware-chronobank-io_transaction',
+      block: '/exchange/events/testnet-bitcoin-middleware-chronobank-io_block',
     },
   },
   trace: true,
