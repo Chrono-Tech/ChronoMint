@@ -4,4 +4,6 @@
  */
 
 export AtomicSwapERC20ABI from 'LXsidechain-sc/build/contracts/AtomicSwapERC20.json'
-export ChronoBankPlatform from 'LXsidechain-sc/build/contracts/ChronoBankPlatform.json'
+export ChronoBankPlatformABI from 'LXsidechain-sc/build/contracts/ChronoBankPlatform.json'
+export MultiEventsHistoryABI from 'LXsidechain-sc/build/contracts/MultiEventsHistory.json'
+

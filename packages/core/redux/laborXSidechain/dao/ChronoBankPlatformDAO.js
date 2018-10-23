@@ -3,10 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import BigNumber from 'bignumber.js'
 import AbstractContractDAO from '../../../dao/AbstractContractDAO'
 
 export default class ChronoBankPlatformDAO extends AbstractContractDAO {
-
   constructor ({ address, history, abi }) {
     super({ address, history, abi })
   }
@@ -16,6 +16,7 @@ export default class ChronoBankPlatformDAO extends AbstractContractDAO {
 
     this.allEventsEmitter = this.contract.events.allEvents({})
       .on('data', this.handleEventsData)
+      .on('error', this.handleEventsData)
   }
 
   disconnect () {
@@ -25,6 +26,10 @@ export default class ChronoBankPlatformDAO extends AbstractContractDAO {
       this.history = null
       this.web3 = null
     }
+  }
+
+  watchEvent (eventName, callback) {
+    return this.on(eventName, callback)
   }
 
   symbols (count) {
@@ -37,5 +42,9 @@ export default class ChronoBankPlatformDAO extends AbstractContractDAO {
 
   proxies (symbol) {
     return this.contract.methods.proxies(symbol).call()
+  }
+
+  revokeAsset (symbol, value) {
+    return this._tx('revokeAsset', [symbol, new BigNumber(value)])
   }
 }

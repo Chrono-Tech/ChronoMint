@@ -5,15 +5,15 @@
 
 import AbstractContractDAO from '../../../dao/AbstractContractDAO'
 
-export default class AtomicSwapERC20DAO extends AbstractContractDAO {
+export default class MultiEventsHistoryDAO extends AbstractContractDAO {
   constructor ({ address, history, abi }) {
     super({ address, history, abi })
   }
 
-  connect (web3, options) {
+  connect (web3, options = {}) {
     super.connect(web3, options)
 
-    this.allEventsEmitter = this.history.events.allEvents({})
+    this.allEventsEmitter = this.contract.events.allEvents({})
       .on('data', this.handleEventsData)
   }
 
@@ -28,13 +28,5 @@ export default class AtomicSwapERC20DAO extends AbstractContractDAO {
 
   watchEvent (eventName, callback) {
     return this.on(eventName, callback)
-  }
-
-  check (swapId): Promise {
-    return this.contract.methods.check(swapId).call()
-  }
-
-  close (swapId, secretKey) {
-    return this._tx('close', [swapId, secretKey])
   }
 }

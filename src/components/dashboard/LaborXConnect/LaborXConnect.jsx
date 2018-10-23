@@ -17,6 +17,7 @@ import AllowanceModel from '@chronobank/core/models/wallet/AllowanceModel'
 import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import { estimateGasForAssetHolder, initAssetsHolder, lockDeposit } from '@chronobank/core/redux/assetsHolder/actions'
+import { sidechainWithdraw } from '@chronobank/core/redux/laborXSidechain/thunks'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { TX_LOCK, TX_UNLOCK } from '@chronobank/core/dao/constants/AssetHolderDAO'
 import AssetsCollection from '@chronobank/core/models/assetHolder/AssetsCollection'
@@ -65,6 +66,7 @@ function mapDispatchToProps (dispatch) {
   return {
     initAssetsHolder: () => dispatch(initAssetsHolder()),
     lockDeposit: (amount, token) => dispatch(lockDeposit(amount, token)),
+    sidechainWithdraw: (amount, token) => dispatch(sidechainWithdraw(amount, token)),
     onChangeField: (field, value) => dispatch(change(FORM_LABOR_X_CONNECT, field, value)),
     handleEstimateGas: (mode, params, callback, gasPriceMultiplier) => dispatch(estimateGasForAssetHolder(mode, params, callback, gasPriceMultiplier)),
   }
@@ -75,6 +77,7 @@ export default class LaborXConnect extends PureComponent {
   static propTypes = {
     deposit: PropTypes.instanceOf(Amount),
     lockDeposit: PropTypes.func,
+    sidechainWithdraw: PropTypes.func,
     balanceEth: PropTypes.instanceOf(Amount),
     token: PropTypes.instanceOf(TokenModel),
     assets: PropTypes.instanceOf(AssetsCollection),
@@ -139,7 +142,7 @@ export default class LaborXConnect extends PureComponent {
         this.props.lockDeposit(amount, token, feeMultiplier)
         break
       case TX_UNLOCK:
-        // TODO @Abdulov implement the method
+        this.props.sidechainWithdraw(amount, token, feeMultiplier)
         break
     }
   }

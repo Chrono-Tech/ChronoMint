@@ -797,5 +797,13 @@ export default {
       title: 'SIDECHAIN',
       message: 'New swap created: %{id}',
     },
+    close: {
+      title: 'SIDECHAIN',
+      message: 'Swap %{id} was closed',
+    },
+    expire: {
+      title: 'SIDECHAIN',
+      message: 'Swap %{id} was expired',
+    },
   },
 }

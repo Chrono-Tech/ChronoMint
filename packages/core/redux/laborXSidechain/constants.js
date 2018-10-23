@@ -24,3 +24,6 @@ export const EVENT_CLOSE = 'Close'
 export const EVENT_EXPIRE = 'Expire'
 export const EVENT_OPEN = 'Open'
 
+// ChronoBankPlatformSidechain events
+export const EVENT_REVOKE = 'Revoke'
+

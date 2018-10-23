@@ -3,13 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import utils from 'ethereumjs-util'
 import { LABOR_X_SIDECHAIN_NETWORK_CONFIG } from '@chronobank/login/network/settings'
 import web3Factory from '../../web3'
 import { daoByType, getLXTokenByAddress, getLXWeb3 } from './selectors/mainSelectors'
-import { ATOMIC_SWAP_ERC20, CHRONOBANK_PLATFORM_SIDECHAIN } from './dao/ContractList'
+import { ATOMIC_SWAP_ERC20, CHRONOBANK_PLATFORM_SIDECHAIN, MULTI_EVENTS_HISTORY } from './dao/ContractList'
 import ContractDAOModel from '../../models/contracts/ContractDAOModel'
-import { EVENT_CLOSE, EVENT_EXPIRE, EVENT_OPEN } from './constants'
+import { EVENT_CLOSE, EVENT_EXPIRE, EVENT_OPEN, EVENT_REVOKE } from './constants'
 import { notify } from '../notifier/actions'
 import SimpleNoticeModel from '../../models/notices/SimpleNoticeModel'
 import SwapModel from '../../models/SwapModel'
@@ -30,7 +29,7 @@ export const initLXSidechain = () => async (dispatch) => {
   await dispatch(initContracts())
   await dispatch(initTokens())
   await dispatch(watch())
-  await dispatch(obtainAllOpenSwaps())
+  // await dispatch(obtainAllOpenSwaps())
 }
 
 const initWeb3 = () => async (dispatch) => {
@@ -44,11 +43,13 @@ const initContracts = () => async (dispatch, getState) => {
   const contracts = [
     ATOMIC_SWAP_ERC20,
     CHRONOBANK_PLATFORM_SIDECHAIN,
+    // MULTI_EVENTS_HISTORY,
   ]
+  const historyAddress = MULTI_EVENTS_HISTORY.abi.networks[networkId].address
 
   const getDaoModel = async (contract) => {
     const contractAddress = contract.abi.networks[networkId].address
-    const contractDAO = contract.create(contractAddress)
+    const contractDAO = contract.create(contractAddress, historyAddress)
     await contractDAO.connect(web3)
 
     dispatch(LXSidechainActions.daosRegister(
@@ -68,8 +69,8 @@ const initContracts = () => async (dispatch, getState) => {
 }
 
 const watch = () => (dispatch, getState) => {
-  const dao = daoByType('AtomicSwapERC20')(getState())
-  dao.watchEvent(EVENT_OPEN, async (event) => {
+  const atomicSwapERC20DAO = daoByType('AtomicSwapERC20')(getState())
+  atomicSwapERC20DAO.watchEvent(EVENT_OPEN, async (event) => {
     const swapId = web3Converter.bytesToString(event.returnValues._swapID)
     dispatch(notify(new SimpleNoticeModel({
       icon: 'lock',
@@ -79,7 +80,7 @@ const watch = () => (dispatch, getState) => {
         id: swapId,
       },
     })))
-    const swapDetail = await dao.check(event.returnValues._swapID) // in bytes
+    const swapDetail = await atomicSwapERC20DAO.check(event.returnValues._swapID) // in bytes
     const token = getLXTokenByAddress(swapDetail.erc20ContractAddress)(getState())
     const swap = new SwapModel({
       id: swapId,
@@ -95,11 +96,34 @@ const watch = () => (dispatch, getState) => {
       dispatch(closeSwap(data, swapId))
     }
   })
-  dao.watchEvent(EVENT_CLOSE, (/*event*/) => {
-    // TODO @Abdulov do something
+  atomicSwapERC20DAO.watchEvent(EVENT_CLOSE, (event) => {
+    const { _swapID: swapId } = event.returnValues
+    dispatch(notify(new SimpleNoticeModel({
+      title: 'atomicSwapERC20.close.title',
+      message: 'atomicSwapERC20.close.message',
+      params: {
+        id: web3Converter.bytesToString(swapId),
+      },
+    })))
+    // TODO @Abdulov update balance
   })
-  dao.watchEvent(EVENT_EXPIRE, (/*event*/) => {
-    // TODO @Abdulov do something
+  atomicSwapERC20DAO.watchEvent(EVENT_EXPIRE, (event) => {
+    const { _swapID: swapId } = event.returnValues
+    dispatch(notify(new SimpleNoticeModel({
+      title: 'atomicSwapERC20.expire.title',
+      message: 'atomicSwapERC20.expire.message',
+      params: {
+        id: web3Converter.bytesToString(swapId),
+      },
+    })))
+  })
+
+  const ChronoBankPlatformSidechainDAO = daoByType('ChronoBankPlatformSidechain')(getState())
+  // TODO @abdulov remove console.log
+  console.log('%c chronoBankPlatformSidechainDAO', 'background: #222; color: #fff', ChronoBankPlatformSidechainDAO)
+  ChronoBankPlatformSidechainDAO.watchEvent(EVENT_REVOKE, (event) => {
+    // TODO @abdulov remove console.log
+    console.log('%c event', 'background: #222; color: #fff', EVENT_REVOKE, event)
   })
 }
 
@@ -131,17 +155,11 @@ const loadTokenByIndex = (symbolIndex) => async (dispatch, getState) => {
     tokenDao.connect(web3)
     const decimals = await tokenDao.getDecimals()
 
+    dispatch(LXSidechainActions.tokenFetched(token.set('decimals', decimals)))
     const mainEthWallet = getMainEthWallet(getState())
     const balance = await tokenDao.getAccountBalance(mainEthWallet.address)
-    const dao = daoByType('AtomicSwapERC20')(getState())
     // TODO @abdulov remove console.log
-    console.log('%c dao', 'background: #222; color: #fff', dao.address)
-    const balanceSwap = await tokenDao.getAccountBalance(mainEthWallet.address)
-    // TODO @abdulov remove console.log
-    console.log('%c balanceSwap', 'background: #222; color: #fff', balanceSwap.toString())
-    // TODO @abdulov remove console.log
-    console.log('%c balance', 'background: #222; color: #fff', balance.toString(), token.symbol())
-    dispatch(LXSidechainActions.tokenFetched(token.set('decimals', decimals)))
+    console.log('%c balance', 'background: #222; color: #fff', mainEthWallet.address, token.set('decimals', decimals).removeDecimals(balance).toString(), token.symbol())
     dispatch(LXSidechainActions.daosRegister(
       new ContractDAOModel({
         contract: new ContractModel({
@@ -169,35 +187,26 @@ const obtainSwapByMiddleware = (swapId) => async (dispatch, getState) => {
   }
 }
 
-const closeSwap = (encodedKey, swapId) => async (dispatch, getState) => {
-  // TODO @abdulov remove console.log
-  console.log('%c encodedKey, swapId', 'background: #222; color: #fff', encodedKey, swapId)
-
+const closeSwap = (encodedKey, swapId, index) => async (dispatch, getState) => {
   const dao = daoByType('AtomicSwapERC20')(getState())
-
-  const swapDetail = await dao.check(web3Converter.stringToBytes(swapId))
-  // TODO @abdulov remove console.log
-  console.log('%c swapDetail', 'background: #222; color: #fff', swapDetail)
-  // TODO @abdulov remove console.log
-  console.log('%c swapDetail.secretLock', 'background: #222; color: #fff', swapDetail.secretLock)
-
   const web3 = web3Factory(LABOR_X_SIDECHAIN_NETWORK_CONFIG)
   const mainEthWallet = getMainEthWallet(getState())
-  const chainId = await web3.eth.net.getId()
-  const nonce = await web3.eth.getTransactionCount(mainEthWallet.address, 'pending')
   const signer = getEthereumSigner(getState())
-  const key = await signer.decryptWithPrivateKey(encodedKey)
-  // TODO @abdulov remove console.log
-  console.log('%c decoded key', 'background: #222; color: #fff', key)
-  console.log('%c decoded key sha256', 'background: #222; color: #fff', utils.sha256(key).toString('hex'))
   const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
+
+  const promises = [
+    web3.eth.net.getId(),
+    web3.eth.getTransactionCount(mainEthWallet.address, 'pending'),
+    signer.decryptWithPrivateKey(encodedKey),
+  ]
+  const [chainId, nonce, key] = await Promise.all(promises)
+
   const tx = {
     ... dao.close(web3Converter.stringToBytes(swapId), web3Converter.stringToBytes(key)),
-    gasLimit: "80000",
-    gasPrice: await web3.eth.getGasPrice(),
-    nonce: nonce,
-    chainId,
-    value: 0,
+    gas: 5700000, // TODO @Abdulov remove hard code and do something
+    gasPrice: 80000000000,
+    nonce: nonce + (index || 0), // increase nonce because transactions send at the same time
+    chainId: chainId,
   }
   const signedTx = await signer.signTransaction({ ...tx }, selectedWallet.encrypted[0].path)
   try {
@@ -212,6 +221,7 @@ const obtainAllOpenSwaps = () => async (dispatch, getState) => {
   const mainEthWallet = getMainEthWallet(getState())
   const { data } = await SidechainMiddlewareService.getSwapListByAddress(mainEthWallet.address)
   const promises = []
+  // promises.push(dispatch(obtainSwapByMiddleware(data[0].swap_id)))
   data.forEach((swap) => {
     if (swap.isActive) {
       promises.push(dispatch(obtainSwapByMiddleware(swap.swap_id)))
@@ -219,9 +229,43 @@ const obtainAllOpenSwaps = () => async (dispatch, getState) => {
   })
   const results = await Promise.all(promises)
 
-  results.forEach(async ({ data, swapId }) => {
+  results.forEach(async ({ data, swapId }, i) => {
     if (data) {
-      dispatch(closeSwap(data, swapId))
+      dispatch(closeSwap(data, swapId, i))
     }
   })
+}
+
+export const sidechainWithdraw = (amount: Amount, token: TokenModel) => async (dispatch, getState) => {
+  try {
+    const platformDao = daoByType('ChronoBankPlatformSidechain')(getState())
+    const web3 = web3Factory(LABOR_X_SIDECHAIN_NETWORK_CONFIG)
+    const mainEthWallet = getMainEthWallet(getState())
+    const signer = getEthereumSigner(getState())
+    const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
+
+    const promises = [
+      web3.eth.net.getId(),
+      web3.eth.getTransactionCount(mainEthWallet.address, 'pending'),
+    ]
+    const [chainId, nonce] = await Promise.all(promises)
+
+    const tx = {
+      ... platformDao.revokeAsset(web3Converter.stringToBytes(token.symbol()), amount),
+      gas: 5700000, // TODO @Abdulov remove hard code and do something
+      gasPrice: 80000000000,
+      nonce: nonce,
+      chainId: chainId,
+    }
+    // TODO @abdulov remove console.log
+    console.log('%c tx', 'background: #222; color: #fff', tx)
+    const signedTx = await signer.signTransaction({ ...tx }, selectedWallet.encrypted[0].path)
+    const res = await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+    // TODO @abdulov remove console.log
+    console.log('%c  res', 'background: #222; color: #fff', res)
+  } catch (e) {
+
+    // eslint-disable-next-line
+    console.error('deposit error', e)
+  }
 }

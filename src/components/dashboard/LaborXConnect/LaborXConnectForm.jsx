@@ -10,7 +10,7 @@ import TokenValue from 'components/common/TokenValue/TokenValue'
 import Amount from '@chronobank/core/models/Amount'
 import AssetsCollection from '@chronobank/core/models/assetHolder/AssetsCollection'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
-import { TX_LOCK } from '@chronobank/core/dao/constants/AssetHolderDAO'
+import { TX_LOCK, TX_UNLOCK } from '@chronobank/core/dao/constants/AssetHolderDAO'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -47,6 +47,13 @@ export default class LaborXConnectForm extends PureComponent {
   handleProceed = (values) => {
     this.props.onSubmit(values
       .set('action', TX_LOCK)
+      .set('token', this.props.token),
+    )
+  }
+
+  handleUnlock = (values) => {
+    this.props.onSubmit(values
+      .set('action', TX_UNLOCK)
       .set('token', this.props.token),
     )
   }
@@ -146,6 +153,16 @@ export default class LaborXConnectForm extends PureComponent {
               styleName='actionButton'
               label={<Translate value={`${prefix}.proceed`} />}
               onClick={handleSubmit(this.handleProceed)}
+              disabled={isInvalid}
+            />
+          </div>
+        )}
+        {balanceEth && balanceEth.gt(0) && this.state.step === LABOR_X_CONNECT_FIRST && (
+          <div styleName='action'>
+            <Button
+              styleName='actionButton'
+              label={<Translate value={`${prefix}.unlock`} />}
+              onClick={handleSubmit(this.handleUnlock)}
               disabled={isInvalid}
             />
           </div>
