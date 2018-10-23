@@ -60,7 +60,7 @@ const blockExplorersMap = {
   },
 }
 
-export const LABOR_HOUR_WSS = 'wss://parity.tp.ntr1x.com:8546'
+const LABOR_HOUR_WSS = 'wss://parity.tp.ntr1x.com:8546'
 
 const MAINNET_BASE = {
   id: NETWORK_MAIN_ID,

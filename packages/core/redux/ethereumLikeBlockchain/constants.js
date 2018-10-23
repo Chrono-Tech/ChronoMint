@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+export const DUCK_ETHEREUM_LIKE_BLOCKCHAIN = 'ethereum'
 export const DUCK_PERSIST_ACCOUNT = 'persistAccount'
 
 export const NONCE_UPDATE = 'TX/ETH/NONCE_UPDATE'

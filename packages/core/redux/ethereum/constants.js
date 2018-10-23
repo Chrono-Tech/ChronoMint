@@ -3,7 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export const DUCK_ETHEREUM = 'ethereum'
+import { DUCK_ETHEREUM_LIKE_BLOCKCHAIN as DUCK_ETHEREUM } from '../ethereumLikeBlockchain/constants'
+
+export { DUCK_ETHEREUM }
 
 export {
   NONCE_UPDATE,
