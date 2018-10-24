@@ -20,7 +20,7 @@ import {
 
 import { modalsClear, modalsClose } from '@chronobank/core/redux/modals/actions'
 import { Field, reduxForm } from 'redux-form/immutable'
-import { updateAndEnableBlockchainList, updateBlockchainActivity } from '@chronobank/core/redux/persistAccount/actions'
+import { updateBlockchainActivity } from '@chronobank/core/redux/persistAccount/actions'
 
 import { prefix } from './lang'
 import './TurnOffBlockchain.scss'
@@ -43,7 +43,6 @@ function mapDispatchToProps (dispatch) {
     modalsClear: () => dispatch(modalsClear()),
     modalsClose: () => dispatch(modalsClose()),
     updateBlockchains: (values) => {
-      console.log('handleSubmit: ', values, values.toJS())
       dispatch(updateBlockchainActivity(values.toJS()))
       dispatch(modalsClose())
     },
@@ -63,7 +62,6 @@ export default class TurnOffBlockchain extends React.Component {
   }
 
   render () {
-    console.log('TurnOffBlockchain: ', this.props)
 
     const { allBlockchainList, handleSubmit, updateBlockchains } = this.props
 

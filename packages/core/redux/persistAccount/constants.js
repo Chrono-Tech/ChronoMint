@@ -35,3 +35,4 @@ export const DEFAULT_ACTIVE_BLOCKCHAINS = [
 ]
 
 export const FORM_BLOCKCHAIN_ACTIVATE = 'FormBlockchainActivate'
+export const FORM_BLOCKCHAIN_CHOICE_LOGIN_STEP = 'FormBlockchainChoiceLoginStep'

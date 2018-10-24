@@ -18,6 +18,7 @@ import {
   LoginWithPrivateKeyContainer,
   CreateAccountContainer,
   GenerateWalletContainer,
+  BlockchainChoiseContainer,
 } from '@chronobank/login-ui/components'
 import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
 import AccountProfileModel from '@chronobank/core/models/wallet/persistAccount/AccountProfileModel'
@@ -38,7 +39,8 @@ class PrivateKeyImportPage extends PureComponent {
   static PAGES = {
     PRIVATE_KEY_FORM: 1,
     CREATE_ACCOUNT_FORM: 2,
-    DOWNLOAD_WALLET_PAGE: 3,
+    BLOCKCHAIN_CHOISE_FORM: 3,
+    DOWNLOAD_WALLET_PAGE: 4,
   }
 
   static propTypes = {
@@ -79,6 +81,11 @@ class PrivateKeyImportPage extends PureComponent {
             previousPage={this.previousPage.bind(this)}
             onSubmit={this.onSubmitCreateAccount.bind(this)}
           />
+        )
+
+      case PrivateKeyImportPage.PAGES.BLOCKCHAIN_CHOISE_FORM:
+        return (
+          <BlockchainChoiseContainer />
         )
 
       case PrivateKeyImportPage.PAGES.DOWNLOAD_WALLET_PAGE:
