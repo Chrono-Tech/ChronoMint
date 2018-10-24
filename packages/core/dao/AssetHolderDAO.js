@@ -11,7 +11,7 @@ import type ERC20DAO from './ERC20DAO'
 import Amount from '../models/Amount'
 import {
   TX_DEPOSIT,
-  TX_LOCK,
+  TX_LOCK, TX_UNLOCK_SHARES,
   TX_WITHDRAW_SHARES,
 } from './constants/AssetHolderDAO'
 
@@ -29,12 +29,18 @@ export default class AssetHolderDAO extends AbstractContractDAO {
   connect (web3, options) {
     super.connect(web3, options)
 
+    // TODO @abdulov remove console.log
+    console.log('%c connect', 'background: #222; color: #fff', this.history.events)
     this.allEventsEmitter = this.history.events.allEvents({})
       .on('data', this.handleEventsData)
   }
 
   async watchLock (callback) {
     return this.on('Lock', callback)
+  }
+
+  async watchUnlockShares (callback) {
+    return this.on('UnlockShares', callback)
   }
 
   async getSharesContract (): Promise {
@@ -68,5 +74,9 @@ export default class AssetHolderDAO extends AbstractContractDAO {
 
   getDeposit (tokenAddress: string, account: string): Promise {
     return this.contract.methods.getDepositBalance(tokenAddress, account).call()
+  }
+
+  unlockShares (swapId, key) {
+    return this._tx(TX_UNLOCK_SHARES, [swapId, key])
   }
 }

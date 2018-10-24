@@ -104,6 +104,8 @@ export const describePendingTx = (entry, context = {}) => {
   const { tx } = entry
   const { abi } = context
 
+  // TODO @abdulov remove console.log
+  console.log('%c entry, context', 'background: #222; color: #fff', entry, context)
   if (!abi) {
     return defaultDescription(entry, context)
   }

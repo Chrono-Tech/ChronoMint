@@ -41,6 +41,13 @@ export const getLXTokens = (state) => {
   return tokens
 }
 
+export const getLXToken = (symbol) => createSelector(
+  getLXTokens,
+  (tokens) => {
+    return tokens.item(symbol)
+  },
+)
+
 export const getLXTokenByAddress = (address) => createSelector(
   getLXTokens,
   (tokens) => {

@@ -6,17 +6,16 @@
 import BigNumber from 'bignumber.js'
 import AbstractContractDAO from '../../../dao/AbstractContractDAO'
 
-export default class ChronoBankPlatformDAO extends AbstractContractDAO {
+export default class AtomicSwapERC20DAO extends AbstractContractDAO {
   constructor ({ address, history, abi }) {
     super({ address, history, abi })
   }
 
-  connect (web3, options = {}) {
+  connect (web3, options) {
     super.connect(web3, options)
 
-    this.allEventsEmitter = this.contract.events.allEvents({})
+    this.allEventsEmitter = this.history.events.allEvents({})
       .on('data', this.handleEventsData)
-      .on('error', this.handleEventsData)
   }
 
   disconnect () {

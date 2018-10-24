@@ -80,11 +80,11 @@ export const pushEvent = (historyKey, log) => async (dispatch, getState) => {
   const [tx, receipt, block] = await Promise.all([
     web3.eth.getTransaction(log.transactionHash),
     web3.eth.getTransactionReceipt(log.transactionHash),
-    web3.eth.getBlock(log.blockHash),
+    web3.eth.getBlock(log.blockNumber || log.blockHash),
   ])
 
   const desciption = describeEvent(
-    { log, tx, receipt, block: block || { timestamp: +new Date() } },
+    { log, tx: tx || {}, receipt, block: block || { timestamp: +new Date() } },
   )
 
   const entries = Array.isArray(desciption)
@@ -124,7 +124,7 @@ export const loadEvents = (topics = null, address: string = null, blockScanLimit
   const history = allHistory[historyKey]
 
   const toBlock = await web3.eth.getBlock(
-    (history && history.cursor == null) ? 'latest' : Math.max(0, ( history && history.cursor ) - 1)
+    (history && history.cursor == null) ? 'latest' : Math.max(0, (history && history.cursor) - 1),
   )
 
   let fromBlock = await web3.eth.getBlock(

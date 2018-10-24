@@ -806,4 +806,10 @@ export default {
       message: 'Swap %{id} was expired',
     },
   },
+  chronoBankPlatformSidechain: {
+    revoke: {
+      title: 'SIDECHAIN',
+      message: '%{amount} %{symbol} was revoked',
+    },
+  },
 }

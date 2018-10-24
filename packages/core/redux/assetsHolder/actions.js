@@ -160,6 +160,10 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
   }
 
   assetHolderDAO.watchLock(handleLock)
+  assetHolderDAO.watchUnlockShares((event) => {
+    // TODO @abdulov remove console.log
+    console.log('%c event', 'background: #222; color: #fff', event)
+  })
 }
 
 export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: number = 1) => async (dispatch, getState) => {

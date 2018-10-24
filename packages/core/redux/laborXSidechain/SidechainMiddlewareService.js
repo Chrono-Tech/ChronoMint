@@ -6,13 +6,13 @@
 import axios from 'axios'
 
 const URL_MIDDLEWARE_SIDECHAIN_HOST = 'http://localhost:8081/'
-const URL_MIDDLEWARE_SIDECHAIN_BASE_PATH = URL_MIDDLEWARE_SIDECHAIN_HOST + 'mainnet/'
 
-const URL_SWAPS_LIST = 'swaps/'
-const URL_SWAP_OBTAIN = 'swaps/obtain/'
+const URL_SWAPS_LIST = 'mainnet/swaps/'
+const URL_SWAP_OBTAIN = 'mainnet/swaps/obtain/'
+const URL_SWAP_OBTAIN_TO_MAINNET = 'sidechain/swaps/obtain/'
 
 export default class SidechainMiddlewareService {
-  static service = axios.create({ baseURL: URL_MIDDLEWARE_SIDECHAIN_BASE_PATH })
+  static service = axios.create({ baseURL: URL_MIDDLEWARE_SIDECHAIN_HOST })
 
   static getSwapListByAddress (userAddress: string) {
     return SidechainMiddlewareService.service.request({
@@ -21,10 +21,20 @@ export default class SidechainMiddlewareService {
     })
   }
 
-  static obtainSwapInSidechain (swapId: string, userPubKey: string) {
+  static obtainSwapFromMainnetToSidechain (swapId: string, userPubKey: string) {
     return SidechainMiddlewareService.service.request({
       method: 'POST',
       url: `${URL_SWAP_OBTAIN}${swapId}`,
+      data: {
+        pubkey: userPubKey,
+      },
+    })
+  }
+
+  static obtainSwapFromSidechainToMainnet (swapId: string, userPubKey: string) {
+    return SidechainMiddlewareService.service.request({
+      method: 'POST',
+      url: `${URL_SWAP_OBTAIN_TO_MAINNET}${swapId}`,
       data: {
         pubkey: userPubKey,
       },
