@@ -6,36 +6,34 @@
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
+
 import ModalDialog from 'components/dialogs/ModalDialog'
-import React, { PureComponent } from 'react'
-import { Switch } from '@material-ui/core'
+import React from 'react'
+import { Switch } from 'redux-form-material-ui'
 import { BLOCKCHAIN_ICONS } from 'assets'
 import Button from 'components/common/ui/Button/Button'
-import { getBlockchainsList } from '@chronobank/core/redux/persistAccount/selectors'
+import { getBlockchainList } from '@chronobank/core/redux/persistAccount/selectors'
 import {
-  DEFAULT_ACTIVE_WALLETS_LIST,
+  DEFAULT_ACTIVE_BLOCKCHAINS,
   FORM_BLOCKCHAIN_ACTIVATE,
 } from '@chronobank/core/redux/persistAccount/constants'
 
 import { modalsClear, modalsClose } from '@chronobank/core/redux/modals/actions'
 import { Field, reduxForm } from 'redux-form/immutable'
-import { updateBlockchainsList } from '@chronobank/core/redux/persistAccount/actions'
+import { updateAndEnableBlockchainList, updateBlockchainActivity } from '@chronobank/core/redux/persistAccount/actions'
 
 import { prefix } from './lang'
 import './TurnOffBlockchain.scss'
 
 function mapStateToProps (state) {
-  const activeList = getBlockchainsList(state)
-  const initialBlockchains = DEFAULT_ACTIVE_WALLETS_LIST.reduce((result, item) => {
+  const activeList = getBlockchainList(state)
+  const initialBlockchains = DEFAULT_ACTIVE_BLOCKCHAINS.reduce((result, item) => {
     result[item] = activeList.includes(item)
     return result
   }, {})
 
-  console.log('initialBlockchains: ', initialBlockchains)
-
   return {
-    activeBlockchainList: getBlockchainsList(state),
-    allBlockchainList: DEFAULT_ACTIVE_WALLETS_LIST,
+    allBlockchainList: DEFAULT_ACTIVE_BLOCKCHAINS,
     initialValues: initialBlockchains,
   }
 }
@@ -44,20 +42,22 @@ function mapDispatchToProps (dispatch) {
   return {
     modalsClear: () => dispatch(modalsClear()),
     modalsClose: () => dispatch(modalsClose()),
-    handleSubmit: (values) => {
-      console.log('handleSubmit: ', values, values.toJSON())
-      dispatch(updateBlockchainsList(values))
+    updateBlockchains: (values) => {
+      console.log('handleSubmit: ', values, values.toJS())
+      dispatch(updateBlockchainActivity(values.toJS()))
+      dispatch(modalsClose())
     },
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_BLOCKCHAIN_ACTIVATE })
-export default class TurnOffBlockchain extends PureComponent {
+export default class TurnOffBlockchain extends React.Component {
   static propTypes = {
     modalsClear: PropTypes.func.isRequired,
     modalsClose: PropTypes.func.isRequired,
     handleSubmit: PropTypes.func.isRequired,
+    updateBlockchains: PropTypes.func.isRequired,
     activeBlockchainList: PropTypes.arrayOf(PropTypes.string),
     allBlockchainList: PropTypes.arrayOf(PropTypes.string),
   }
@@ -65,11 +65,11 @@ export default class TurnOffBlockchain extends PureComponent {
   render () {
     console.log('TurnOffBlockchain: ', this.props)
 
-    const { allBlockchainList } = this.props
+    const { allBlockchainList, handleSubmit, updateBlockchains } = this.props
 
     return (
       <ModalDialog>
-        <form styleName='content' onSubmit={this.props.handleSubmit}>
+        <form styleName='content' onSubmit={handleSubmit(updateBlockchains)}>
           <div styleName='root'>
             <div styleName='content'>
               <div styleName='header'>
@@ -77,7 +77,6 @@ export default class TurnOffBlockchain extends PureComponent {
               </div>
               <div styleName='blockchain-list-container'>
                 {allBlockchainList.map((blockchainName) => {
-                  console.log('blockchainName: ', blockchainName)
                   return (
                     <div styleName='blockchain-row' key={`blc-${blockchainName}`}>
                       <div styleName='row-label'>

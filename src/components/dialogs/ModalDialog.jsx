@@ -37,6 +37,7 @@ export default class ModalDialog extends PureComponent {
   }
 
   handleStopPropagation = (e) => {
+    console.log('handleStopPropagation: ', e)
     e.stopPropagation()
   }
 

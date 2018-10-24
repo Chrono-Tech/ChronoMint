@@ -13,7 +13,6 @@ import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import Button from 'components/common/ui/Button/Button'
-import { disableBlockchain } from '@chronobank/core/redux/bitcoin/thunks'
 import {
   getAllTokens,
   getMainSymbolForBlockchain,
@@ -74,10 +73,6 @@ function mapDispatchToProps (dispatch) {
       componentName: 'DepositTokensModal',
       props,
     })),
-    disableBlockchain: (blockchain) => {
-      console.log('disableBlockchain: blockchain: ', blockchain)
-      dispatch(disableBlockchain(blockchain))
-    },
     selectWallet: (blockchain, address) => dispatch(selectWallet(blockchain, address)),
     setWalletName: (wallet, blockchain, address) => dispatch(modalsOpen({
       componentName: 'WalletSettingsForm',
@@ -278,7 +273,7 @@ export default class WalletWidget extends PureComponent {
                       disabled={!tokenIsFetched || !isBalanceFetched}
                       type='submit'
                       label={<Translate value={`${prefix}.sendButton`} />}
-                      onClick={() => this.props.disableBlockchain(wallet.blockchain)}
+                      onClick={this.handleSend(wallet)}
                     />
                   </div>
                   <div styleName='action'>

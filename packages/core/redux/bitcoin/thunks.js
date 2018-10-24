@@ -504,7 +504,7 @@ const initWalletFromKeys = (blockchainName) => async (dispatch, getState) => {
   dispatch(updateWalletBalance(wallet))
 }
 
-export const disableBlockchain = (blockchainName) => async (dispatch, getState) => {
+export const disableBitcoin = (blockchainName) => async (dispatch, getState) => {
   console.log('disableBlockchain: ', blockchainName)
   const wallets = getWalletsByBlockchain(blockchainName)(getState())
   wallets.forEach((wallet) => {

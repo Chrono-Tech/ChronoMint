@@ -34,7 +34,6 @@ const coreReducers = {
   assetsHolder,
   assetsManager,
   bitcoin,
-  blockchains,
   dao,
   device,
   ethereum,

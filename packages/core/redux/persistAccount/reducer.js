@@ -20,7 +20,7 @@ const initialState = {
   rehydrated: false,
   customNetworksList: [],
   addressCache: {},
-  blockchainList: [],
+  blockchainList: a.DEFAULT_ACTIVE_BLOCKCHAINS,
 }
 
 const persistAccount = (state = initialState, action) => {
@@ -98,9 +98,16 @@ const persistAccount = (state = initialState, action) => {
       }
 
     case a.BLOCKCHAIN_LIST_UPDATE:
+      console.log('a.BLOCKCHAIN_LIST_UPDATE update: ', action)
+      if (!Array.isArray(action.blockchainList)) {
+        return {
+          ...state,
+        }
+      }
+
       return {
         ...state,
-        list: action.list,
+        blockchainList: action.blockchainList,
       }
 
     default:

@@ -10,7 +10,6 @@ import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_DASH,
   BLOCKCHAIN_LITECOIN,
-  BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
 } from '@chronobank/login/network/constants'
@@ -40,13 +39,12 @@ import {
 } from './constants'
 
 import { getBlockchainList } from './selectors'
-import { enableBitcoin } from '../bitcoin/thunks'
+import { enableBitcoin, disableBitcoin } from '../bitcoin/thunks'
 import { enableEthereum } from '../ethereum/thunks'
-import { enableNem } from '../nem/thunks'
-import { enableWaves } from '../waves/thunks'
+import { enableNem, disableNem } from '../nem/thunks'
+import { enableWaves, disableWaves } from '../waves/thunks'
 
 const enableMap = {
-  [BLOCKCHAIN_ETHEREUM]: enableEthereum(),
   [BLOCKCHAIN_BITCOIN]: enableBitcoin(BLOCKCHAIN_BITCOIN),
   [BLOCKCHAIN_BITCOIN_CASH]: enableBitcoin(BLOCKCHAIN_BITCOIN_CASH),
   [BLOCKCHAIN_LITECOIN]: enableBitcoin(BLOCKCHAIN_LITECOIN),
@@ -54,16 +52,40 @@ const enableMap = {
   [BLOCKCHAIN_NEM]: enableNem(),
   [BLOCKCHAIN_WAVES]: enableWaves(),
 }
+const disableMap = {
+  [BLOCKCHAIN_BITCOIN]: disableBitcoin(BLOCKCHAIN_BITCOIN),
+  [BLOCKCHAIN_BITCOIN_CASH]: disableBitcoin(BLOCKCHAIN_BITCOIN_CASH),
+  [BLOCKCHAIN_LITECOIN]: disableBitcoin(BLOCKCHAIN_LITECOIN),
+  [BLOCKCHAIN_DASH]: disableBitcoin(BLOCKCHAIN_DASH),
+  [BLOCKCHAIN_NEM]: disableNem(),
+  [BLOCKCHAIN_WAVES]: disableWaves(),
+}
 
-export const enableActiveBlockchains = () => (dispatch, getState) => {
+export const enableDefaultBlockchains = () => (dispatch, getState) => {
   const state = getState()
   const activeBlockchains = getBlockchainList(state)
 
-  activeBlockchains.forEach((blockchain) => {
+  dispatch(enableEthereum())
+  dispatch(enableBlockchains(activeBlockchains))
+}
+
+export const enableBlockchains = (blockchains) => (dispatch) => {
+  console.log('activateBlockchains: ', blockchains)
+  blockchains.forEach((blockchain) => {
     if (!enableMap[blockchain]) {
       return
     }
     dispatch(enableMap[blockchain])
+  })
+}
+
+export const disableBlockchains = (blockchains) => (dispatch) => {
+  console.log('disactivateBlockchains: ', blockchains)
+  blockchains.forEach((blockchain) => {
+    if (!disableMap[blockchain]) {
+      return
+    }
+    dispatch(disableMap[blockchain])
   })
 }
 
@@ -99,10 +121,34 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
   dispatch({ type: WALLETS_UPDATE_LIST, walletsList: copyWalletList })
 }
 
+export const updateBlockchainActivity = (blockchainList) => (dispatch, getState) => {
+  const state = getState()
+  const currentBlockchains = state.get(DUCK_PERSIST_ACCOUNT).blockchainList
+
+  const blockchainToEnable = Object.entries(blockchainList)
+    .filter(([name, isEnabled]) => isEnabled && !currentBlockchains.includes(name))
+    .map(([name]) => name)
+  if (blockchainToEnable) {
+    dispatch(enableBlockchains(blockchainToEnable))
+  }
+
+  const blockchainToDisable = Object.entries(blockchainList).filter(([, isEnabled]) => !isEnabled).map(([name]) => name)
+  if (blockchainToDisable) {
+    dispatch(disableBlockchains(blockchainToDisable))
+  }
+
+  const newBlockchainList = Object.entries(blockchainList).filter(([, isEnabled]) => isEnabled).map(([name]) => name)
+  dispatch(updateBlockchainsList(newBlockchainList))
+
+  console.log('currentBlockchains: ', currentBlockchains)
+  console.log('blockchainToEnable: ', blockchainToEnable)
+  console.log('blockchainToDisable: ', blockchainToDisable)
+}
+
 /* eslint-disable-next-line import/prefer-default-export */
-export const updateBlockchainsList = (blockchainsList) => ({
+export const updateBlockchainsList = (blockchainList) => ({
   type: BLOCKCHAIN_LIST_UPDATE,
-  blockchainsList,
+  blockchainList,
 })
 
 export const decryptAccount = (entry, password) => async () => {

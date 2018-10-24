@@ -281,7 +281,7 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
 
       dispatch({
         type: WALLETS_CACHE_ADDRESS,
-        blockchain: blockchainName,
+        blockchain: BLOCKCHAIN_ETHEREUM,
         address,
         path,
       })
@@ -301,9 +301,3 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
 
   dispatch(updateWalletBalance(wallet))
 }
-
-export const disableBlockchain = () => async (dispatch) => {
-  // ...
-
-}
-

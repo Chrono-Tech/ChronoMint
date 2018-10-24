@@ -8,7 +8,8 @@ import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_DASH,
   BLOCKCHAIN_LITECOIN,
-  BLOCKCHAIN_NEM, BLOCKCHAIN_WAVES,
+  BLOCKCHAIN_NEM,
+  BLOCKCHAIN_WAVES,
 } from '@chronobank/login/network/constants'
 
 export const DUCK_PERSIST_ACCOUNT = 'persistAccount'
@@ -24,7 +25,7 @@ export const WALLETS_UPDATE_LIST = 'persistAccount/WALLETS_UPDATE_LIST'
 export const WALLETS_CACHE_ADDRESS = 'persistAccount/WALLETS_CACHE_ADDRESS'
 export const BLOCKCHAIN_LIST_UPDATE = 'persistAccount/BLOCKCHAIN_LIST_UPDATE'
 
-export const DEFAULT_ACTIVE_WALLETS_LIST = [
+export const DEFAULT_ACTIVE_BLOCKCHAINS = [
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_LITECOIN,
@@ -33,4 +34,4 @@ export const DEFAULT_ACTIVE_WALLETS_LIST = [
   BLOCKCHAIN_WAVES,
 ]
 
-export const FORM_BLOCKCHAIN_ACTIVATE = 'formBlockchainActivate'
+export const FORM_BLOCKCHAIN_ACTIVATE = 'FormBlockchainActivate'
