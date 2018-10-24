@@ -20,11 +20,13 @@ import * as NemUtils from './utils'
 import { getToken } from '../tokens/selectors'
 import { notify } from '../notifier/actions'
 import tokenService from '../../services/TokenService'
-import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
+import {
+  DUCK_PERSIST_ACCOUNT,
+  WALLETS_CACHE_ADDRESS,
+} from '../persistAccount/constants'
 import { showSignerModal, closeSignerModal } from '../modals/thunks'
 
 import * as TokensActions from '../tokens/actions'
-import { accountCacheAddress } from '../persistAccount/actions'
 import WalletModel from '../../models/wallet/WalletModel'
 
 import { NEM_DECIMALS, NEM_XEM_NAME, NEM_XEM_SYMBOL } from '../../dao/constants/NemDAO'
@@ -280,7 +282,12 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
         path,
       }
 
-      dispatch(accountCacheAddress({ BLOCKCHAIN_NEM, address, path }))
+      dispatch(dispatch({
+        type: WALLETS_CACHE_ADDRESS,
+        blockchain: BLOCKCHAIN_NEM,
+        address,
+        path,
+      }))
     }
   }
 

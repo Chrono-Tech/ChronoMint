@@ -15,7 +15,10 @@ import type { Dispatch } from 'redux'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 
 import { modalsOpen } from '../modals/actions'
-import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
+import {
+  DUCK_PERSIST_ACCOUNT,
+  WALLETS_CACHE_ADDRESS,
+} from '../persistAccount/constants'
 import { getBalanceDataParser } from './converter'
 import {
   TransferNoticeModel,
@@ -34,7 +37,6 @@ import { getAddressUTXOS } from '../bitcoin-like-blockchain/thunks'
 import { formatBalances, getProviderByBlockchain } from '../tokens/utils'
 import { pendingEntrySelector, getBitcoinCashSigner, getBitcoinSigner, getLitecoinSigner } from './selectors'
 import WalletModel from '../../models/wallet/WalletModel'
-import { accountCacheAddress } from '../persistAccount/actions'
 import * as TokensActions from '../tokens/actions'
 import { bitcoinCashDAO, bitcoinDAO, dashDAO, litecoinDAO } from '../../dao/BitcoinDAO'
 import { WALLETS_SET, WALLETS_UNSET } from '../wallets/constants'
@@ -478,7 +480,12 @@ const initWalletFromKeys = (blockchainName) => async (dispatch, getState) => {
         path,
       }
 
-      dispatch(accountCacheAddress({ blockchainName, address, path }))
+      dispatch({
+        type: WALLETS_CACHE_ADDRESS,
+        blockchain: blockchainName,
+        address,
+        path,
+      })
     }
   }
 

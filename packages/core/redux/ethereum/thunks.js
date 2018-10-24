@@ -18,7 +18,9 @@ import { modalsOpen } from '../modals/actions'
 import { describePendingTx } from '../../describers'
 import { daoByAddress, daoByType } from '../daos/selectors'
 import { getAccount } from '../session/selectors/models'
-import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
+import { DUCK_PERSIST_ACCOUNT,
+  WALLETS_CACHE_ADDRESS,
+} from '../persistAccount/constants'
 import * as ethActions from './actions'
 import * as Utils from './utils'
 import { showSignerModal, closeSignerModal } from '../modals/thunks'
@@ -29,7 +31,6 @@ import { WALLETS_SET } from '../wallets/constants'
 import { DUCK_TOKENS } from '../tokens/constants'
 import * as TokensActions from '../tokens/actions'
 import tokenService from '../../services/TokenService'
-import { accountCacheAddress } from '../persistAccount/actions'
 import { DAOS_REGISTER } from '../daos/constants'
 import ERC20ManagerDAO from '../../dao/ERC20ManagerDAO'
 import TokenModel from '../../models/tokens/TokenModel'
@@ -278,7 +279,12 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
         path,
       }
 
-      dispatch(accountCacheAddress({ BLOCKCHAIN_ETHEREUM, address, path }))
+      dispatch({
+        type: WALLETS_CACHE_ADDRESS,
+        blockchain: blockchainName,
+        address,
+        path,
+      })
     }
   }
 

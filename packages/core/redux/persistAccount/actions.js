@@ -36,7 +36,6 @@ import {
   WALLETS_SELECT,
   WALLETS_UPDATE_LIST,
   WALLETS_LOAD,
-  WALLETS_CACHE_ADDRESS,
   BLOCKCHAIN_LIST_UPDATE,
 } from './constants'
 
@@ -59,15 +58,11 @@ const enableMap = {
 export const enableActiveBlockchains = () => (dispatch, getState) => {
   const state = getState()
   const activeBlockchains = getBlockchainList(state)
-  console.log('activeBlockchains: ', activeBlockchains)
 
   activeBlockchains.forEach((blockchain) => {
     if (!enableMap[blockchain]) {
-      console.log('not found blockchain: ', blockchain)
       return
     }
-    console.log('enable blockchain: ', blockchain)
-
     dispatch(enableMap[blockchain])
   })
 }
@@ -91,13 +86,6 @@ export const accountLoad = (wallet) => (dispatch) => {
 export const accountUpdateList = (walletList) => (dispatch) => {
   dispatch({ type: WALLETS_UPDATE_LIST, walletList })
 }
-
-export const accountCacheAddress = ({ blockchain, address, path }) => ({
-  type: WALLETS_CACHE_ADDRESS,
-  blockchain,
-  address,
-  path,
-})
 
 export const accountUpdate = (wallet) => (dispatch, getState) => {
   const state = getState()

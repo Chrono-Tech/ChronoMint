@@ -17,13 +17,14 @@ import { getSelectedNetwork, getAddressCache } from '../persistAccount/selectors
 import TxExecModel from '../../models/TxExecModel'
 import { DUCK_TOKENS } from '../tokens/constants'
 import tokenService from '../../services/TokenService'
-import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
+import {
+  DUCK_PERSIST_ACCOUNT, WALLETS_CACHE_ADDRESS,
+} from '../persistAccount/constants'
 import { showSignerModal, closeSignerModal } from '../modals/thunks'
 import { formatBalances, getWalletBalances } from '../tokens/utils'
 import WalletModel from '../../models/wallet/WalletModel'
 
 import * as TokensActions from '../tokens/actions'
-import { accountCacheAddress } from '../persistAccount/actions'
 import { WAVES_DECIMALS, WAVES_WAVES_NAME, WAVES_WAVES_SYMBOL } from '../../dao/constants/WavesDAO'
 import WavesDAO from '../../dao/WavesDAO'
 import TokenModel from '../../models/tokens/TokenModel'
@@ -218,7 +219,12 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
         path,
       }
 
-      dispatch(accountCacheAddress({ BLOCKCHAIN_WAVES, address, path }))
+      dispatch({
+        type: WALLETS_CACHE_ADDRESS,
+        blockchain: BLOCKCHAIN_WAVES,
+        address,
+        path,
+      })
     }
   }
 
