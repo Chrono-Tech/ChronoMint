@@ -109,6 +109,16 @@ const DASH_TESTNET_NODE = new BitcoinMiddlewareNode({
     baseURL: 'https://middleware-dash-dev.chronobank.io',
     timeout: 10000,
   }),
+  socket: {
+    baseURL: 'https://rabbitmq-stage-webstomp.chronobank.io/stomp',
+    user: 'rabbit',
+    password: 'nC865xfpbU41',
+    channels: {
+      balance: '/exchange/events/testnet-dash-middleware-chronobank-io_balance',
+      transaction: '/exchange/events/testnet-dash-middleware-chronobank-io_transaction',
+      block: '/exchange/events/testnet-dash-middleware-chronobank-io_block',
+    },
+  },
   trace: true,
 })
 
