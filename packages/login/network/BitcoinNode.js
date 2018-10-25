@@ -8,11 +8,12 @@ import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_DASH,
   BTC,
   BCC,
+  DASH,
   LTC,
 } from '@chronobank/login/network/constants'
-import BitcoinBlockexplorerNode from './BitcoinBlockexplorerNode'
 import BitcoinMiddlewareNode from './BitcoinMiddlewareNode'
 
 const BTC_MAINNET_NODE = new BitcoinMiddlewareNode({
@@ -96,11 +97,23 @@ const BCC_TESTNET_NODE = new BitcoinMiddlewareNode({
   trace: true,
 })
 
-const DASH_MAINNET_NODE = new BitcoinBlockexplorerNode({
+const DASH_MAINNET_NODE = new BitcoinMiddlewareNode({
   api: axios.create({
-    baseURL: 'https://insight.dashevo.org/insight-api-dash',
+    baseURL: 'https://middleware-dash-mainnet-stage.chronobank.io',
     timeout: 10000,
   }),
+  blockchain: BLOCKCHAIN_DASH,
+  symbol: DASH,
+  socket: {
+    baseURL: 'https://rabbitmq-stage-webstomp.chronobank.io/stomp',
+    user: 'rabbit',
+    password: 'nC865xfpbU41',
+    channels: {
+      balance: '/exchange/events/mainnet-dash-middleware-chronobank-io_balance',
+      transaction: '/exchange/events/mainnet-dash-middleware-chronobank-io_transaction',
+      block: '/exchange/events/mainnet-dash-middleware-chronobank-io_block',
+    },
+  },
   trace: false,
 })
 
@@ -109,6 +122,8 @@ const DASH_TESTNET_NODE = new BitcoinMiddlewareNode({
     baseURL: 'https://middleware-dash-dev.chronobank.io',
     timeout: 10000,
   }),
+  blockchain: BLOCKCHAIN_DASH,
+  symbol: DASH,
   socket: {
     baseURL: 'https://rabbitmq-stage-webstomp.chronobank.io/stomp',
     user: 'rabbit',
