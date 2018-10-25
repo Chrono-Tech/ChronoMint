@@ -5,14 +5,10 @@
 
 import BigNumber from 'bignumber.js'
 
-import { BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_DASH } from '../../dao/constants'
+import { BLOCKCHAIN_BITCOIN_CASH } from '../../dao/constants'
 
 /* eslint-disable-next-line import/prefer-default-export */
 export const getBalanceDataParser = (blockchain, netType) => {
-  if ((blockchain === BLOCKCHAIN_DASH) && (netType !== 'testnet')) {
-    return parseDashBalanceData
-  }
-
   // condition for blockdozer
   if (blockchain === BLOCKCHAIN_BITCOIN_CASH && netType === 'testnet' && 0) {
     return parseBitcoinCashBalanceData
@@ -31,8 +27,6 @@ const parseBitcoinCashBalanceData = (response) => {
   }
   return result.balance0 || result.balance6
 }
-
-const parseDashBalanceData = (response) => new BigNumber(response.data)
 
 // eslint-disable-next-line import/prefer-default-export
 const parseByDefaultBitcoinLikeBlockchainBalanceData = (response) => {
