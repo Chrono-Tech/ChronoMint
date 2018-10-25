@@ -523,6 +523,12 @@ export default {
         haveToBeString: 'Have to be string',
       },
     },
+    labotHour: {
+      unknown: {
+        title: 'LHT Mining Deposit',
+        message: 'Unknown Error. Please try again',
+      },
+    },
   },
   forms: {
     selectFile: 'Please select a file',

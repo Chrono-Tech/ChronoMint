@@ -25,7 +25,6 @@ import ErrorNoticeModel from '../../models/notices/ErrorNoticeModel'
 import { getMainEthWallet } from '../wallets/selectors/models'
 import * as LXSidechainActions from './actions'
 import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
-import { web3Selector } from '../ethereum/selectors'
 import { executeTransaction } from '../ethereum/thunks'
 
 export const initLXSidechain = () => async (dispatch) => {
@@ -73,6 +72,7 @@ const initContracts = () => async (dispatch, getState) => {
 
 const watch = () => (dispatch, getState) => {
   const ChronoBankPlatformSidechainDAO = daoByType('ChronoBankPlatformSidechain')(getState())
+
   ChronoBankPlatformSidechainDAO.watchEvent(EVENT_REVOKE, async (event) => {
     const { symbol, value } = event.returnValues
     const token = getLXToken(web3Converter.bytesToString(symbol))(getState())
@@ -87,20 +87,18 @@ const watch = () => (dispatch, getState) => {
     })))
 
     const mainEthWallet = getMainEthWallet(getState())
-    const { data } = await SidechainMiddlewareService.getSwapListByAddress(mainEthWallet.address)
+    const { data } = await SidechainMiddlewareService.getSwapListFromSidechainToMainnetByAddress(mainEthWallet.address)
     const swap = data[data.length - 1] // last swap.
     if (swap) {
       const { data } = await dispatch(obtainSwapByMiddlewareFromSidechainToMainnet(swap.swap_id))
       if (data) {
-        dispatch(unlockShares(data, swap.swap_id))
+        dispatch(unlockShares(swap.swap_id, data))
       }
     }
   })
 
   const atomicSwapERC20DAO = daoByType('AtomicSwapERC20')(getState())
   atomicSwapERC20DAO.watchEvent(EVENT_OPEN, async (event) => {
-    // TODO @abdulov remove console.log
-    console.log('%c event OPEN', 'background: #222; color: #fff', event)
     const swapId = web3Converter.bytesToString(event.returnValues._swapID)
     dispatch(notify(new SimpleNoticeModel({
       icon: 'lock',
@@ -206,7 +204,9 @@ const obtainSwapByMiddlewareFromMainnetToSidechain = (swapId) => async (dispatch
     const { data } = await SidechainMiddlewareService.obtainSwapFromMainnetToSidechain(swapId, signer.getPublicKey())
     return Promise.resolve({ e: null, data, swapId })
   } catch (e) {
-    notify(new ErrorNoticeModel({ message: e.message }))
+    // eslint-disable-next-line no-console
+    console.error(e)
+    dispatch(notifyUnknownError())
     return Promise.resolve({ e, swapId })
   }
 }
@@ -214,10 +214,12 @@ const obtainSwapByMiddlewareFromMainnetToSidechain = (swapId) => async (dispatch
 const obtainSwapByMiddlewareFromSidechainToMainnet = (swapId) => async (dispatch, getState) => {
   try {
     const signer = getEthereumSigner(getState())
-    const { data } = await SidechainMiddlewareService.obtainSwapFromMainnetToSidechain(swapId, signer.getPublicKey())
+    const { data } = await SidechainMiddlewareService.obtainSwapFromSidechainToMainnet(swapId, signer.getPublicKey())
     return Promise.resolve({ e: null, data, swapId })
   } catch (e) {
-    notify(new ErrorNoticeModel({ message: e.message }))
+    // eslint-disable-next-line no-console
+    console.error(e)
+    dispatch(notifyUnknownError())
     return Promise.resolve({ e, swapId })
   }
 }
@@ -254,7 +256,7 @@ const closeSwap = (encodedKey, swapId, index) => async (dispatch, getState) => {
 
 const obtainAllOpenSwaps = () => async (dispatch, getState) => {
   const mainEthWallet = getMainEthWallet(getState())
-  const { data } = await SidechainMiddlewareService.getSwapListByAddress(mainEthWallet.address)
+  const { data } = await SidechainMiddlewareService.getSwapListFromMainnetToSidechainByAddress(mainEthWallet.address)
   const promises = []
   // promises.push(dispatch(obtainSwapByMiddlewareFromMainnetToSidechain(data[0].swap_id)))
   data.forEach((swap) => {
@@ -286,7 +288,7 @@ export const sidechainWithdraw = (amount: Amount, token: TokenModel) => async (d
     const [chainId, nonce] = await Promise.all(promises)
 
     const tx = {
-      ... platformDao.revokeAsset(web3Converter.stringToBytes(token.symbol()), amount),
+      ...platformDao.revokeAsset(web3Converter.stringToBytes(token.symbol()), amount),
       gas: 5700000, // TODO @Abdulov remove hard code and do something
       gasPrice: 80000000000,
       nonce: nonce,
@@ -308,16 +310,28 @@ export const sidechainWithdraw = (amount: Amount, token: TokenModel) => async (d
         console.log('%c error', 'background: #222; color: #fff', error)
       })
   } catch (e) {
-
     // eslint-disable-next-line
     console.error('deposit error', e)
   }
 }
 
-const unlockShares = (encodedKey, swapId) => async (dispatch, getState) => {
-  const timeHolderDAO = daoByTypeMainnet('TimeHolder')(getState())
-  const signer = getEthereumSigner(getState())
-  const key = await signer.decryptWithPrivateKey(encodedKey)
-  const tx = timeHolderDAO.unlockShares(web3Converter.stringToBytes(swapId), web3Converter.stringToBytes(key))
-  dispatch(executeTransaction({ tx }))
+const unlockShares = (swapId, encodedKey) => async (dispatch, getState) => {
+  try {
+    const timeHolderDAO = daoByTypeMainnet('TimeHolder')(getState())
+    const signer = getEthereumSigner(getState())
+    const key = await signer.decryptWithPrivateKey(encodedKey)
+    const tx = timeHolderDAO.unlockShares(web3Converter.stringToBytes(swapId), web3Converter.stringToBytes(key))
+    dispatch(executeTransaction({ tx }))
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e)
+    dispatch(notifyUnknownError())
+  }
+}
+
+export const notifyUnknownError = () => {
+  notify(new ErrorNoticeModel({
+    title: 'errors.labotHour.unknown.title',
+    message: 'errors.labotHour.unknown.message',
+  }))
 }

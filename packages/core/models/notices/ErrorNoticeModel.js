@@ -7,13 +7,14 @@ import { abstractNoticeModel } from './AbstractNoticeModel'
 
 export default class ErrorNoticeModel extends abstractNoticeModel({
   message: null,
+  params: {},
 }) {
   icon () {
-    return 'notices.error.icon'
+    return this.get('icon') || 'notices.error.icon'
   }
 
   title () {
-    return 'notices.error.title'
+    return this.get('title') || 'notices.error.title'
   }
 
   details () {
@@ -23,6 +24,7 @@ export default class ErrorNoticeModel extends abstractNoticeModel({
   message () {
     return {
       value: this.get('message'),
+      ...this.get('params'),
     }
   }
 }

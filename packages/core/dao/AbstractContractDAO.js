@@ -154,6 +154,10 @@ export default class AbstractContractDAO extends EventEmitter {
   }
 
   handleEventsData = (data) => {
+    // TODO @abdulov remove console.log
+    console.log('%c handleEventsData', 'background: red; color: #fff', this.constructor.name, data.event, ' -> ', data.raw.topics[0])
+    // TODO @abdulov remove console.log
+    console.log('%c handleEventsData data', 'background: blue; color: #fff', data)
     if (!data || !data.event) {
       return
     }

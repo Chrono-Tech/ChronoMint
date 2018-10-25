@@ -29,8 +29,6 @@ export default class AssetHolderDAO extends AbstractContractDAO {
   connect (web3, options) {
     super.connect(web3, options)
 
-    // TODO @abdulov remove console.log
-    console.log('%c connect', 'background: #222; color: #fff', this.history.events)
     this.allEventsEmitter = this.history.events.allEvents({})
       .on('data', this.handleEventsData)
   }
@@ -41,6 +39,10 @@ export default class AssetHolderDAO extends AbstractContractDAO {
 
   async watchUnlockShares (callback) {
     return this.on('UnlockShares', callback)
+  }
+
+  async watchRegisterUnlockShares (callback) {
+    return this.on('RegisterUnlockShares', callback)
   }
 
   async getSharesContract (): Promise {
