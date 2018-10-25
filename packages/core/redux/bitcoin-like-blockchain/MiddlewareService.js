@@ -20,7 +20,7 @@ const BTC_TESTNET_NODE = axios.create({ baseURL: 'https://middleware-bitcoin-tes
 const BCC_MAINNET_NODE = axios.create({ baseURL: 'https://test-bcc.chronobank.io', timeout: 10000 })
 const BCC_TESTNET_NODE = axios.create({ baseURL: 'https://test-bcc.chronobank.io', timeout: 10000, withCredentials: false })
 const DASH_MAINNET_NODE = axios.create({ baseURL: 'https://insight.dashevo.org/insight-api-dash', timeout: 10000 })
-const DASH_TESTNET_NODE = axios.create({ baseURL: 'https://testnet-insight.dashevo.org/insight-api-dash', timeout: 10000 })
+const DASH_TESTNET_NODE = axios.create({ baseURL: 'https://middleware-dash-dev.chronobank.io', timeout: 10000 })
 const LTC_MAINNET_NODE = axios.create({ baseURL: 'https://middleware-litecoin-mainnet-rest.chronobank.io', timeout: HTTP_TIMEOUT })
 const LTC_TESTNET_NODE = axios.create({ baseURL: 'https://middleware-litecoin-testnet-rest.chronobank.io', timeout: HTTP_TIMEOUT })
 

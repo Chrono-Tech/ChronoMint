@@ -9,7 +9,7 @@ import { BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_DASH } from '../../dao/constants'
 
 /* eslint-disable-next-line import/prefer-default-export */
 export const getBalanceDataParser = (blockchain, netType) => {
-  if (blockchain === BLOCKCHAIN_DASH) {
+  if ((blockchain === BLOCKCHAIN_DASH) && (netType !== 'testnet')) {
     return parseDashBalanceData
   }
 
