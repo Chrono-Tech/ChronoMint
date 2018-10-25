@@ -8,7 +8,7 @@ import PropTypes from 'prop-types'
 import Amount from '@chronobank/core/models/Amount'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { TIME } from '@chronobank/core/dao/constants'
+import { TIME, BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import { getDeposit } from '@chronobank/core/redux/mainWallet/selectors'
 import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
@@ -78,7 +78,7 @@ export default class Deposit extends PureComponent {
   }
 
   render () {
-    const { deposit, token, transactions, spender, wallet } = this.props
+    const { deposit, token, transactions, spender } = this.props
 
     return (
       <div styleName='root'>
@@ -105,7 +105,7 @@ export default class Deposit extends PureComponent {
             </div>
           </div>
           <div styleName='transactions'>
-            <TransactionsTable transactions={transactions} walletAddress={spender} blockchain={wallet.blockchain} onGetTransactions={this.handleGetTransactions} />
+            <TransactionsTable transactions={transactions} walletAddress={spender} blockchain={BLOCKCHAIN_ETHEREUM} onGetTransactions={this.handleGetTransactions} />
           </div>
         </div>
       </div>

@@ -13,10 +13,6 @@ const LHT_TESTNET_NODE = new EthereumMiddlewareNode({
     baseURL: 'https://middleware-sidechain-laborx.chronobank.io',
     timeout: 10000,
   }),
-  twoFA: axios.create({
-    baseURL: 'https://middleware-sidechain-laborx.chronobank.io/2fa',
-    timeout: 10000,
-  }),
   trace: true,
 })
 
@@ -25,17 +21,13 @@ const LHT_TESTNET_NODE = new EthereumMiddlewareNode({
  * @param network object from SessionThunks.getProviderSettings()
  * @returns {EthereumMiddlewareNode}
  */
-export default function selectEthereumNode (network) {
+export default function selectLaborHourNode (network) {
   return (network.id === NETWORK_MAIN_ID) ? LHT_MAINNET_NODE : LHT_TESTNET_NODE
 }
 
 const LHT_MAINNET_NODE = new EthereumMiddlewareNode({
   api: axios.create({
     baseURL: 'https://middleware-sidechain-laborx.chronobank.io',
-    timeout: 10000,
-  }),
-  twoFA: axios.create({
-    baseURL: 'https://middleware-sidechain-laborx.chronobank.io/2fa',
     timeout: 10000,
   }),
   trace: true,
