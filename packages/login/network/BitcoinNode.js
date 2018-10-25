@@ -104,9 +104,9 @@ const DASH_MAINNET_NODE = new BitcoinBlockexplorerNode({
   trace: false,
 })
 
-const DASH_TESTNET_NODE = new BitcoinBlockexplorerNode({
+const DASH_TESTNET_NODE = new BitcoinMiddlewareNode({
   api: axios.create({
-    baseURL: 'https://testnet-insight.dashevo.org/insight-api-dash',
+    baseURL: 'https://middleware-dash-dev.chronobank.io',
     timeout: 10000,
   }),
   trace: true,

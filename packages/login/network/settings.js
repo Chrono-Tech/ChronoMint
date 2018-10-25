@@ -42,7 +42,7 @@ const blockExplorersMap = {
   },
   [BLOCKCHAIN_DASH]: {
     mainnet: 'https://insight.dashevo.org/insight-api-dash/tx',
-    testnet: 'https://testnet-insight.dashevo.org/insight-api-dash/tx',
+    testnet: 'https://middleware-dash-dev.chronobank.io/tx',
   },
   [BLOCKCHAIN_LABOR_HOUR]: {
     mainnet: [
