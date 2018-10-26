@@ -5,91 +5,77 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
-import { modalsClear, modalsClose } from '@chronobank/core/redux/modals/actions'
-import { updateBlockchainActivity } from '@chronobank/core/redux/persistAccount/actions'
+import { BLOCKCHAIN_ICONS } from 'assets'
+import Button from 'components/common/ui/Button/Button'
+import {
+  FORM_BLOCKCHAIN_CHOICE_LOGIN_STEP,
+} from '@chronobank/core/redux/persistAccount/constants'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { Switch } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
-import Button from 'components/common/ui/Button/Button'
-import AccountProfileModel from '@chronobank/core/models/wallet/persistAccount/AccountProfileModel'
-import {
-  FORM_CREATE_ACCOUNT,
-} from '../../redux/constants'
-import './BlockchainChoise.scss'
+import { prefix } from './lang'
 
-function mapStateToProps (state) {
-  const activeList = getBlockchainList(state)
-  const initialBlockchains = DEFAULT_ACTIVE_BLOCKCHAINS.reduce((result, item) => {
-    result[item] = activeList.includes(item)
-    return result
-  }, {})
+import './BlockchainChoice.scss'
 
-  return {
-    allBlockchainList: DEFAULT_ACTIVE_BLOCKCHAINS,
-    initialValues: initialBlockchains,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    modalsClear: () => dispatch(modalsClear()),
-    modalsClose: () => dispatch(modalsClose()),
-    updateBlockchains: (values) => {
-      dispatch(updateBlockchainActivity(values.toJS()))
-      dispatch(modalsClose())
-    },
-  }
-}
-
-@connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({ form: FORM_BLOCKCHAIN_ACTIVATE })
+@reduxForm({ form: FORM_BLOCKCHAIN_CHOICE_LOGIN_STEP })
 class BlockchainChoice extends PureComponent {
   static propTypes = {
-    navigateToSelectWallet: PropTypes.func,
-    accountProfile: PropTypes.instanceOf(AccountProfileModel),
+    onHandleSubmitSuccess: PropTypes.func.isRequired,
+    handleSubmit: PropTypes.func,
+    allBlockchainList: PropTypes.arrayOf(PropTypes.string),
   }
 
   render () {
-    const { handleSubmit } = this.props
+    const { handleSubmit, allBlockchainList, onHandleSubmitSuccess } = this.props
 
     return (
-      <form styleName='content' onSubmit={handleSubmit(updateBlockchains)}>
-        <div styleName='root'>
-          <div styleName='content'>
-            <div styleName='blockchain-list-container'>
-              {allBlockchainList.map((blockchainName) => {
-                return (
-                  <div styleName='blockchain-row' key={`blc-${blockchainName}`}>
-                    <div styleName='row-label'>
-                      <img styleName='row-icon-image' src={BLOCKCHAIN_ICONS[blockchainName]} />
-                      <span styleName='row-label-text'>{blockchainName}</span>
-                    </div>
-                    <div styleName='row-switch'>
-                      <Field
-                        styleName='blockchain-checkbox-field'
-                        component={Switch}
-                        name={blockchainName}
-                        color='primary'
-                      />
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-            <div styleName='row-save-button'>
-              <Button
-                styleName='save-button'
-                type='submit'
-                label={<Translate value={`${prefix}.saveButtonTitle`} />}
-              />
+      <div styleName='root'>
+        <form onSubmit={handleSubmit(onHandleSubmitSuccess)}>
+          <div styleName='header'>
+            <h3><Translate value={`${prefix}.title`} /></h3>
+          </div>
+          <div styleName='header-description'>
+            <span styleName='text'><Translate value={`${prefix}.description`} /></span>
+          </div>
+          <div styleName='body'>
+            <div styleName='root'>
+              <div styleName='content'>
+                <div styleName='blockchain-list-container'>
+                  {allBlockchainList.map((blockchainName) => {
+                    return (
+                      <div styleName='blockchain-row' key={`blc-${blockchainName}`}>
+                        <div styleName='row-label'>
+                          <img styleName='row-icon-image' src={BLOCKCHAIN_ICONS[blockchainName]} />
+                          <span styleName='row-label-text'>{blockchainName}</span>
+                        </div>
+                        <div styleName='row-switch'>
+                          <Field
+                            styleName='blockchain-checkbox-field'
+                            component={Switch}
+                            name={blockchainName}
+                            color='primary'
+                          />
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </form>
+          <div styleName='finish'>
+            <Button
+              styleName='save-button'
+              type='submit'
+              buttonType='login'
+              label={<Translate value={`${prefix}.saveButtonTitle`} />}
+            />
+          </div>
+        </form>
+      </div>
     )
   }
 }
 
-export default reduxForm({ form: FORM_CREATE_ACCOUNT, validate })(BlockchainChoice)
+export default BlockchainChoice
 

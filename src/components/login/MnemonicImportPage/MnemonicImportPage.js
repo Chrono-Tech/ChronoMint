@@ -7,9 +7,8 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import AccountProfileModel from '@chronobank/core/models/wallet/persistAccount/AccountProfileModel'
-import {
-  getAddressByMnemonic,
-} from '@chronobank/core/redux/persistAccount/utils'
+import { getAddressByMnemonic } from '@chronobank/core/redux/persistAccount/utils'
+import { updateBlockchainActivity } from '@chronobank/core/redux/persistAccount/actions'
 import {
   onSubmitCreateAccountImportMnemonic,
 } from '@chronobank/login-ui/redux/thunks'
@@ -22,11 +21,13 @@ import {
   LoginWithMnemonicContainer,
   CreateAccountContainer,
   GenerateWalletContainer,
+  BlockchainChoiceContainer,
 } from '@chronobank/login-ui/components'
 import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
 
 function mapDispatchToProps (dispatch) {
   return {
+    updateBlockchainsList: (blockchainList) => dispatch(updateBlockchainActivity(blockchainList)),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
     navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
     onSubmitCreateAccountImportMnemonic: async (name, password, mnemonic) => await dispatch(onSubmitCreateAccountImportMnemonic(name, password, mnemonic)),
@@ -41,12 +42,14 @@ class MnemonicImportPage extends PureComponent {
     CREATE_ACCOUNT_FORM: 2,
     DOWNLOAD_WALLET_PAGE: 3,
     CREATE_ACCOUNT_LOADED_PROFILE: 4,
+    BLOCKCHAIN_CHOICE_FORM: 5,
   }
 
   static propTypes = {
     navigateToSelectWallet: PropTypes.func,
     navigateToSelectImportMethod: PropTypes.func,
     navigateBack: PropTypes.func,
+    updateBlockchainsList: PropTypes.func,
     onSubmitCreateAccountImportMnemonic: PropTypes.func,
   }
 
@@ -61,7 +64,7 @@ class MnemonicImportPage extends PureComponent {
   }
 
   getCurrentPage () {
-    switch(this.state.page){
+    switch(this.state.page) {
       case MnemonicImportPage.PAGES.MNEMONIC_FORM:
         return (
           <LoginWithMnemonicContainer
@@ -78,6 +81,14 @@ class MnemonicImportPage extends PureComponent {
             previousPage={this.previousPage.bind(this)}
             onSubmit={this.onSubmitCreateAccount.bind(this)}
             onSubmitSuccess={this.onSubmitCreateAccountSuccess.bind(this)}
+          />
+        )
+
+      case MnemonicImportPage.PAGES.BLOCKCHAIN_CHOICE_FORM:
+        return (
+          <BlockchainChoiceContainer
+            previousPage={this.previousPage.bind(this)}
+            onSubmitSuccess={this.onSubmitBlockchainChoiceFormSuccess.bind(this)}
           />
         )
 
@@ -107,7 +118,6 @@ class MnemonicImportPage extends PureComponent {
       accountProfile: profile && profile.userName ? new AccountProfileModel(profile): null,
       page: MnemonicImportPage.PAGES.CREATE_ACCOUNT_FORM,
     })
-
   }
 
   async onSubmitCreateAccount ({ walletName, password }) {
@@ -116,9 +126,17 @@ class MnemonicImportPage extends PureComponent {
     return onSubmitCreateAccountImportMnemonic(walletName, password, this.state.mnemonic)
   }
 
-  onSubmitCreateAccountSuccess () {
+  async onSubmitBlockchainChoiceFormSuccess (blockchainList) {
+    await this.props.updateBlockchainsList(blockchainList.toJS())
+
     this.setState({
       page: MnemonicImportPage.PAGES.DOWNLOAD_WALLET_PAGE,
+    })
+  }
+
+  onSubmitCreateAccountSuccess () {
+    this.setState({
+      page: MnemonicImportPage.PAGES.BLOCKCHAIN_CHOICE_FORM,
     })
   }
 

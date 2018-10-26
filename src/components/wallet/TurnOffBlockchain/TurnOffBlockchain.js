@@ -43,7 +43,7 @@ function mapDispatchToProps (dispatch) {
     modalsClear: () => dispatch(modalsClear()),
     modalsClose: () => dispatch(modalsClose()),
     updateBlockchains: (values) => {
-      dispatch(updateBlockchainActivity(values.toJS()))
+      dispatch(updateBlockchainActivity(values.toJS(), true))
       dispatch(modalsClose())
     },
   }
@@ -62,7 +62,6 @@ export default class TurnOffBlockchain extends React.Component {
   }
 
   render () {
-
     const { allBlockchainList, handleSubmit, updateBlockchains } = this.props
 
     return (

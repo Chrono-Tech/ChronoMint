@@ -33,7 +33,7 @@ export default {
         action: () => changeWalletView(),
       },
       {
-        chronobankIcon: 'list',
+        chronobankIcon: 'menu',
         action: () => showTurnOffPopup(),
       },
       {

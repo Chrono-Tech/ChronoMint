@@ -27,6 +27,7 @@ import {
 } from '@chronobank/login/redux/network/constants'
 import {
   DUCK_PERSIST_ACCOUNT,
+  DEFAULT_ACTIVE_BLOCKCHAINS,
 } from '@chronobank/core/redux/persistAccount/constants'
 import * as NetworkThunks from '@chronobank/login/redux/network/thunks'
 import * as SessionThunks from '@chronobank/core/redux/session/thunks'
@@ -180,11 +181,12 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
  * TODO: to remove throws
  * TODO: to rework it
  */
-export const onSubmitCreateAccountImportMnemonic = (name, password, mnemonic) => async (dispatch) => {
+export const onSubmitCreateAccountImportMnemonic = (name, password, mnemonic, blockchainList) => async (dispatch) => {
   await dispatch(onSubmitImportAccount({
     name,
     password,
     mnemonic,
+    blockchainList,
   }))
 }
 
@@ -194,11 +196,12 @@ export const onSubmitCreateAccountImportMnemonic = (name, password, mnemonic) =>
  * TODO: to remove throws
  * TODO: to rework it
  */
-export const onSubmitCreateAccountImportPrivateKey = (name, password, privateKey) => async (dispatch) => {
+export const onSubmitCreateAccountImportPrivateKey = (name, password, privateKey, blockchainList) => async (dispatch) => {
   await dispatch(onSubmitImportAccount({
     name,
     password,
     privateKey,
+    blockchainList,
   }))
 }
 
@@ -206,7 +209,7 @@ export const onSubmitCreateAccountImportPrivateKey = (name, password, privateKey
  * Thunk dispatched by
  * LoginWithMnemonic, LoginWithPrivateKey screen.
  */
-export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKey = '' }) => async (dispatch) => {
+export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKey = '', blockchainList = DEFAULT_ACTIVE_BLOCKCHAINS }) => async (dispatch) => {
   try {
     const account = await dispatch(PersistAccountActions.createMemoryAccount({
       name,
@@ -215,7 +218,10 @@ export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKe
       privateKey,
     }))
 
-    dispatch(PersistAccountActions.accountAdd(account))
+    dispatch(PersistAccountActions.accountAdd({
+      ...account,
+      blockchainList,
+    }))
     dispatch(PersistAccountActions.accountSelect(account))
 
   } catch (e) {

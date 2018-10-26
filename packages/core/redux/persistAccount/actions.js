@@ -38,7 +38,7 @@ import {
   BLOCKCHAIN_LIST_UPDATE,
 } from './constants'
 
-import { getBlockchainList } from './selectors'
+import { getBlockchainList, getPersistAccount } from './selectors'
 import { enableBitcoin, disableBitcoin } from '../bitcoin/thunks'
 import { enableEthereum } from '../ethereum/thunks'
 import { enableNem, disableNem } from '../nem/thunks'
@@ -64,13 +64,13 @@ const disableMap = {
 export const enableDefaultBlockchains = () => (dispatch, getState) => {
   const state = getState()
   const activeBlockchains = getBlockchainList(state)
+  console.log('activeBlockchains: ', activeBlockchains)
 
   dispatch(enableEthereum())
   dispatch(enableBlockchains(activeBlockchains))
 }
 
 export const enableBlockchains = (blockchains) => (dispatch) => {
-  console.log('activateBlockchains: ', blockchains)
   blockchains.forEach((blockchain) => {
     if (!enableMap[blockchain]) {
       return
@@ -80,7 +80,6 @@ export const enableBlockchains = (blockchains) => (dispatch) => {
 }
 
 export const disableBlockchains = (blockchains) => (dispatch) => {
-  console.log('disactivateBlockchains: ', blockchains)
   blockchains.forEach((blockchain) => {
     if (!disableMap[blockchain]) {
       return
@@ -121,35 +120,39 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
   dispatch({ type: WALLETS_UPDATE_LIST, walletsList: copyWalletList })
 }
 
-export const updateBlockchainActivity = (blockchainList) => (dispatch, getState) => {
+export const updateBlockchainActivity = (blockchainList, enableDisable = false) => (dispatch, getState) => {
+  console.log('updateBlockchainActivity: ', blockchainList)
   const state = getState()
-  const currentBlockchains = state.get(DUCK_PERSIST_ACCOUNT).blockchainList
+  const currentBlockchains = getBlockchainList(state)
 
   const blockchainToEnable = Object.entries(blockchainList)
     .filter(([name, isEnabled]) => isEnabled && !currentBlockchains.includes(name))
     .map(([name]) => name)
-  if (blockchainToEnable) {
+  if (enableDisable && blockchainToEnable) {
     dispatch(enableBlockchains(blockchainToEnable))
   }
 
   const blockchainToDisable = Object.entries(blockchainList).filter(([, isEnabled]) => !isEnabled).map(([name]) => name)
-  if (blockchainToDisable) {
+  if (enableDisable && blockchainToDisable) {
     dispatch(disableBlockchains(blockchainToDisable))
   }
 
   const newBlockchainList = Object.entries(blockchainList).filter(([, isEnabled]) => isEnabled).map(([name]) => name)
   dispatch(updateBlockchainsList(newBlockchainList))
-
-  console.log('currentBlockchains: ', currentBlockchains)
-  console.log('blockchainToEnable: ', blockchainToEnable)
-  console.log('blockchainToDisable: ', blockchainToDisable)
 }
 
 /* eslint-disable-next-line import/prefer-default-export */
-export const updateBlockchainsList = (blockchainList) => ({
-  type: BLOCKCHAIN_LIST_UPDATE,
-  blockchainList,
-})
+export const updateBlockchainsList = (blockchainList) => async (dispatch, getState) => {
+  const account = getPersistAccount(getState())
+  console.log('updateBlockchainsList: ', account)
+  const walletKey = account.selectedWallet.key
+
+  dispatch({
+    type: BLOCKCHAIN_LIST_UPDATE,
+    blockchainList,
+    walletKey,
+  })
+}
 
 export const decryptAccount = (entry, password) => async () => {
   const privateKey = EthereumMemoryDevice.decrypt({ entry: entry.encrypted[0].wallet, password })

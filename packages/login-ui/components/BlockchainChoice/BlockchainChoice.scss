@@ -9,6 +9,7 @@
 .root {
   z-index: 2500;
   width: 350px;
+  margin: 0 auto;
 }
 
 .content {
@@ -17,8 +18,7 @@
 }
 
 .header {
-  padding: 16px 24px;
-  background-color: $color-blue-4;
+  text-align: center;
 
   h3 {
     font-size: 26px;
@@ -31,8 +31,26 @@
   }
 }
 
+.header-description {
+  text-align: center;
+
+  span.text {
+    font-family: $font-proxima;
+    font-weight: 400;
+    color: $color-white;
+    line-height: 22px;
+    text-align: center;
+    font-size: 16px;
+  }
+}
+
 .body {
-  padding: 16px 45px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.finish {
+  margin-top: 20px;
   text-align: center;
 }
 

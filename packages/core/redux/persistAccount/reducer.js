@@ -20,7 +20,6 @@ const initialState = {
   rehydrated: false,
   customNetworksList: [],
   addressCache: {},
-  blockchainList: a.DEFAULT_ACTIVE_BLOCKCHAINS,
 }
 
 const persistAccount = (state = initialState, action) => {
@@ -98,8 +97,10 @@ const persistAccount = (state = initialState, action) => {
       }
 
     case a.BLOCKCHAIN_LIST_UPDATE:
-      console.log('a.BLOCKCHAIN_LIST_UPDATE update: ', action)
-      if (!Array.isArray(action.blockchainList)) {
+      const wallet = state.walletsList.find((w) => w.key === action.walletKey)
+      wallet.blockchainList = action.blockchainList
+
+      if (!wallet) {
         return {
           ...state,
         }
@@ -107,7 +108,10 @@ const persistAccount = (state = initialState, action) => {
 
       return {
         ...state,
-        blockchainList: action.blockchainList,
+        walletsList: [
+          ...state.walletsList.filter((w) => w.key !== action.walletKey),
+          wallet,
+        ],
       }
 
     default:

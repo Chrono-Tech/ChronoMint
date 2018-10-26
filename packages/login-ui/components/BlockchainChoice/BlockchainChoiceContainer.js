@@ -5,70 +5,49 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { stopSubmit } from 'redux-form/immutable'
 import { connect } from 'react-redux'
-import AccountProfileModel from '@chronobank/core/models/wallet/persistAccount/AccountProfileModel'
-import {
-  navigateToSelectWallet,
-} from '../../redux/navigation'
-import {
-  FORM_CREATE_ACCOUNT,
-} from '../../redux/constants'
+import { DEFAULT_ACTIVE_BLOCKCHAINS } from '@chronobank/core/redux/persistAccount/constants'
 import BlockchainChoice from './BlockchainChoice'
 
-const mapDispatchToProps = (dispatch) => {
+function mapStateToProps () {
+  const initialBlockchains = DEFAULT_ACTIVE_BLOCKCHAINS.reduce((result, item) => {
+    result[item] = true
+    return result
+  }, {})
+
   return {
-    navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
+    allBlockchainList: DEFAULT_ACTIVE_BLOCKCHAINS,
+    initialBlockchains,
   }
 }
 
+@connect(mapStateToProps, null)
 class BlockchainChoiceContainer extends PureComponent {
   static propTypes = {
     previousPage: PropTypes.func,
-    onSubmit: PropTypes.func,
     onSubmitSuccess: PropTypes.func,
+    updateBlockchainsList: PropTypes.func,
     navigateToSelectWallet: PropTypes.func,
-    accountProfile: PropTypes.instanceOf(AccountProfileModel),
+    allBlockchainList: PropTypes.arrayOf(PropTypes.string),
   }
 
-  async handleSubmit (values) {
-    const { onSubmit } = this.props
-
-    const walletName = values.get('walletName')
-    const password = values.get('password')
-
-    return onSubmit({
-      walletName,
-      password,
-    })
-  }
-
-  handleSubmitSuccess (result) {
-    const { onSubmitSuccess } = this.props
-
-    onSubmitSuccess && onSubmitSuccess(result)
-  }
-
-  handleSubmitFail (errors, dispatch, submitErrors) {
-    dispatch(stopSubmit(FORM_CREATE_ACCOUNT, submitErrors && submitErrors.errors))
+  handleSubmitSuccess = async (blockchainValuesList) => {
+    console.log('onSaveBlockchainForm: ', blockchainValuesList, blockchainValuesList.toJS())
+    this.props.onSubmitSuccess(blockchainValuesList)
   }
 
   render () {
-    const { accountProfile } = this.props
+    const { initialBlockchains, allBlockchainList } = this.props
 
     return (
       <BlockchainChoice
-        accountProfile={accountProfile}
-        initialValues={{
-          walletName: accountProfile ? accountProfile.userName : '',
-        }}
-        onSubmit={this.handleSubmit.bind(this)}
-        onSubmitFail={this.handleSubmitFail.bind(this)}
-        onSubmitSuccess={this.handleSubmitSuccess.bind(this)}
+        initialValues={initialBlockchains}
+        onHandleSubmitSuccess={this.handleSubmitSuccess}
+        allBlockchainList={allBlockchainList}
         navigateToSelectWallet={this.props.navigateToSelectWallet}
       />
     )
   }
 }
 
-export default connect(null, mapDispatchToProps)(BlockchainChoiceContainer)
+export default BlockchainChoiceContainer

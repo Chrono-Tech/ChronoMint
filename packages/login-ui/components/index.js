@@ -5,7 +5,7 @@
 
 export BlockchainsSwitch from './BlockchainsSwitch/BlockchainsSwitchContainer'
 export GenerateMnemonicContainer from './GenerateMnemonic/GenerateMnemonicContainer'
-export BlockchainChoiseContainer from './BlockchainChoice/BlockchainChoiseContainer'
+export BlockchainChoiceContainer from './BlockchainChoice/BlockchainChoiceContainer'
 export LoginWithMnemonicContainer from './LoginWithMnemonic/LoginWithMnemonicContainer'
 export LoginWithPrivateKeyContainer from './LoginWithPrivateKey/LoginWithPrivateKeyContainer'
 export LoginForm from './LoginForm/LoginForm'

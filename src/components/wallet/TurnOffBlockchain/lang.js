@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export const prefix = 'TurnOffBlockchain'
+export const prefix = 'BlockchainChoice'
 
 export default {
   en: {

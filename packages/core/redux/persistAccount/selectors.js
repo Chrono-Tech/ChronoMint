@@ -45,7 +45,10 @@ export const getEthereumSigner = (state) => {
 }
 
 export const getBlockchainList = (state) => {
-  return state.get(DUCK_PERSIST_ACCOUNT).blockchainList || []
+  const account = getPersistAccount(state)
+  console.log('getBlockchainList: ', account, state.get(DUCK_PERSIST_ACCOUNT))
+
+  return account.selectedWallet.blockchainList || []
 }
 
 export const getNetwork = (state) => {

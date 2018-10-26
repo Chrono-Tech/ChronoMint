@@ -3,14 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+export const prefix = 'BlockchainChoice'
+
 export const en = {
-  title: 'Create New Account',
-  description: 'Created account will be encrypted using given password and stored in your\n' +
-    '            browser\'s local storage.',
-  walletName: 'Account name',
-  password: 'Password',
-  confirmPassword: 'Confirm Password',
-  login: 'Create new account',
-  or: 'or',
-  useAccount: 'Use an existing account',
+  title: 'Set Your Wallets',
+  description: 'Enable wallets you need to store funds in. You may also change these settings later.',
+  saveButtonTitle: 'Finish',
 }

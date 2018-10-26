@@ -12,6 +12,7 @@ import * as CreateAccount from './components/CreateAccount/lang'
 import * as RecoverAccount from './components/RecoverAccount/lang'
 import * as ResetPassword from './components/ResetPassword/lang'
 import * as GenerateWallet from './components/GenerateWallet/lang'
+import * as BlockchainChoice from './components/BlockchainChoice/lang'
 import * as LoginForm from './components/LoginForm/lang'
 import * as LoginUPort from './components/LoginUPort/lang'
 import * as LoginWithLedger from './components/LoginWithLedger/lang'
@@ -37,6 +38,7 @@ export const en = {
   RecoverAccount: RecoverAccount.en,
   ResetPassword: ResetPassword.en,
   LoginForm: LoginForm.en,
+  BlockchainChoice: BlockchainChoice.en,
   LoginWithLedger: LoginWithLedger.en,
   LoginWithTrezor: LoginWithTrezor.en,
   LoginWithMetamask: LoginWithMetamask.en,
