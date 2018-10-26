@@ -55,7 +55,6 @@ export default class BitcoinDAO extends EventEmitter {
   }
 
   getCurrentBlockHeight () {
-    console.log('this._bitcoinProvider: ', this._bitcoinProvider)
     return this._bitcoinProvider.getCurrentBlockHeight()
   }
 

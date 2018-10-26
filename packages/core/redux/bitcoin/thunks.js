@@ -505,14 +505,11 @@ const initWalletFromKeys = (blockchainName) => async (dispatch, getState) => {
 }
 
 export const disableBitcoin = (blockchainName) => async (dispatch, getState) => {
-  console.log('disableBlockchain: ', blockchainName)
   const wallets = getWalletsByBlockchain(blockchainName)(getState())
-  wallets.forEach((wallet) => {
-    console.log('disableBlockchain: ', wallet)
 
+  wallets.forEach((wallet) => {
     const provider = getProviderByBlockchain(blockchainName)
     provider.unsubscribe(wallet.address)
-    console.log('disableBlockchain: provider: ', provider)
 
     dispatch({ type: WALLETS_UNSET, wallet })
   })

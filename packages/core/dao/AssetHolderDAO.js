@@ -36,6 +36,7 @@ export default class AssetHolderDAO extends AbstractContractDAO {
   async watchLock (/*callback*/) {
     return this.on('Lock', (a, b, c, d) => {
       // TODO @abdulov remove console.log
+      // eslint-disable-next-line
       console.log('%c a,b,c,d', 'background: #222; color: #fff', a, b, c, d)
     })
   }

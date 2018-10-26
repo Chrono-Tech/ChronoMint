@@ -64,7 +64,6 @@ const disableMap = {
 export const enableDefaultBlockchains = () => (dispatch, getState) => {
   const state = getState()
   const activeBlockchains = getBlockchainList(state)
-  console.log('activeBlockchains: ', activeBlockchains)
 
   dispatch(enableEthereum())
   dispatch(enableBlockchains(activeBlockchains))
@@ -121,7 +120,6 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
 }
 
 export const updateBlockchainActivity = (blockchainList, enableDisable = false) => (dispatch, getState) => {
-  console.log('updateBlockchainActivity: ', blockchainList)
   const state = getState()
   const currentBlockchains = getBlockchainList(state)
 
@@ -144,7 +142,6 @@ export const updateBlockchainActivity = (blockchainList, enableDisable = false) 
 /* eslint-disable-next-line import/prefer-default-export */
 export const updateBlockchainsList = (blockchainList) => async (dispatch, getState) => {
   const account = getPersistAccount(getState())
-  console.log('updateBlockchainsList: ', account)
   const walletKey = account.selectedWallet.key
 
   dispatch({

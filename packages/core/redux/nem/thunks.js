@@ -31,9 +31,12 @@ import WalletModel from '../../models/wallet/WalletModel'
 
 import { NEM_DECIMALS, NEM_XEM_NAME, NEM_XEM_SYMBOL } from '../../dao/constants/NemDAO'
 import NemDAO from '../../dao/NemDAO'
-import {WALLETS_SET, WALLETS_UNSET, WALLETS_UPDATE_BALANCE} from '../wallets/constants'
-import {getProviderByBlockchain} from '../tokens/utils';
-import {getWalletsByBlockchain} from '../wallets/selectors/models';
+import {
+  WALLETS_SET,
+  WALLETS_UNSET,
+  WALLETS_UPDATE_BALANCE,
+} from '../wallets/constants'
+import { getWalletsByBlockchain } from '../wallets/selectors/models'
 
 const notifyNemTransfer = (entry) => (dispatch, getState) => {
   const { tx } = entry
@@ -308,12 +311,9 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
 }
 
 export const disableNem = () => async (dispatch, getState) => {
-  console.log('disableBlockchain: ', BLOCKCHAIN_NEM)
   const wallets = getWalletsByBlockchain(BLOCKCHAIN_NEM)(getState())
   wallets.forEach((wallet) => {
-    console.log('disableBlockchain: ', wallet)
     nemProvider.unsubscribe(wallet.address)
-    console.log('disableBlockchain: provider: ', nemProvider)
     dispatch({ type: WALLETS_UNSET, wallet })
   })
 }

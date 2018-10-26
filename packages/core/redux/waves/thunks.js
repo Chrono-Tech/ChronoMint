@@ -6,6 +6,7 @@
 import { BLOCKCHAIN_WAVES } from '@chronobank/login/network/constants'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
+import { getWalletsByBlockchain } from '../wallets/selectors/models'
 
 import * as WavesUtils from './utils'
 import * as WavesActions from './actions'
@@ -18,7 +19,8 @@ import TxExecModel from '../../models/TxExecModel'
 import { DUCK_TOKENS } from '../tokens/constants'
 import tokenService from '../../services/TokenService'
 import {
-  DUCK_PERSIST_ACCOUNT, WALLETS_CACHE_ADDRESS,
+  DUCK_PERSIST_ACCOUNT,
+  WALLETS_CACHE_ADDRESS,
 } from '../persistAccount/constants'
 import { showSignerModal, closeSignerModal } from '../modals/thunks'
 import { formatBalances, getWalletBalances } from '../tokens/utils'
@@ -28,10 +30,7 @@ import * as TokensActions from '../tokens/actions'
 import { WAVES_DECIMALS, WAVES_WAVES_NAME, WAVES_WAVES_SYMBOL } from '../../dao/constants/WavesDAO'
 import WavesDAO from '../../dao/WavesDAO'
 import TokenModel from '../../models/tokens/TokenModel'
-import {WALLETS_SET, WALLETS_UNSET} from '../wallets/constants'
-import {BLOCKCHAIN_NEM} from '../../../login/network/constants';
-import {nemProvider} from '../../../login/network/NemProvider';
-import {getWalletsByBlockchain} from '../wallets/selectors/models';
+import { WALLETS_SET, WALLETS_UNSET } from '../wallets/constants'
 
 export const executeWavesTransaction = ({ tx, options }) => async (dispatch, getState) => {
   const state = getState()
@@ -245,12 +244,10 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
 }
 
 export const disableWaves = () => async (dispatch, getState) => {
-  console.log('disableBlockchain: ', BLOCKCHAIN_WAVES)
   const wallets = getWalletsByBlockchain(BLOCKCHAIN_WAVES)(getState())
+
   wallets.forEach((wallet) => {
-    console.log('disableBlockchain: ', wallet)
     wavesProvider.unsubscribe(wallet.address)
-    console.log('disableBlockchain: provider: ', wavesProvider)
     dispatch({ type: WALLETS_UNSET, wallet })
   })
 }

@@ -32,7 +32,6 @@ class BlockchainChoiceContainer extends PureComponent {
   }
 
   handleSubmitSuccess = async (blockchainValuesList) => {
-    console.log('onSaveBlockchainForm: ', blockchainValuesList, blockchainValuesList.toJS())
     this.props.onSubmitSuccess(blockchainValuesList)
   }
 

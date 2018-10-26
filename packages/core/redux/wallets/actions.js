@@ -21,9 +21,8 @@ import TokenModel from '../../models/tokens/TokenModel'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 import tokenService from '../../services/TokenService'
 import Amount from '../../models/Amount'
-import { getAccount } from '../session/selectors'
-import { getMainAddresses, getMainEthWallet, getMainWalletForBlockchain, getWallet, getWallets } from './selectors/models'
-import { notify, notifyError } from '../notifier/actions'
+import { getMainEthWallet, getWallet, getWallets } from './selectors/models'
+import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { AllowanceCollection } from '../../models'
 import { executeDashTransaction } from '../dash/thunks'
@@ -42,18 +41,10 @@ import { executeNemTransaction } from '../nem/thunks'
 import { getEthereumSigner } from '../persistAccount/selectors'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
-import { BCC, BTC, DASH, ETH, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, LTC, WAVES, XEM } from '../../dao/constants'
+import { BCC, BTC, DASH, ETH, LTC, WAVES, XEM } from '../../dao/constants'
 import TxDescModel from '../../models/TxDescModel'
 import { getTokens } from '../tokens/selectors'
 import { daoByType } from '../daos/selectors'
-// import TxModel from '../../models/TxModel'
-// import { getDeriveWalletsAddresses } from '../wallet/selectors'
-// import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
-// import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
-// import { DUCK_ETH_MULTISIG_WALLET, ETH_MULTISIG_BALANCE, ETH_MULTISIG_FETCHED } from '../multisigWallet/constants'
-// import BalanceModel from '../../models/tokens/BalanceModel'
-// import { getMultisigWallets } from '../wallet/selectors/models'
-// import { addMarketToken } from '../market/actions'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -80,190 +71,6 @@ export const setWallet = (wallet) => (dispatch) => {
 }
 
 export const setWalletBalance = (walletId, balance) => (dispatch) => dispatch({ type: WALLETS_UPDATE_BALANCE, walletId, balance })
-
-// export const initWallets = () => (dispatch) => {
-//   dispatch(initWalletsFromKeys())
-//   dispatch(initDerivedWallets())
-// }
-//
-// const initWalletsFromKeys = () => async (dispatch, getState) => {
-//   const state = getState()
-//   const account = getPersistAccount(state)
-//   const { network } = getCurrentNetworkSelector(state)
-//
-//   const addressCache = { ...getAddressCache(state) }
-//
-//   const wallets = []
-//   const accountEthereumPath = account.decryptedWallet.entry.encrypted[0].path
-//
-//   const signerSelectors = {
-//     [BLOCKCHAIN_ETHEREUM]: {
-//       signerSelector: getEthereumSigner,
-//       path: accountEthereumPath,
-//     },
-//     [BLOCKCHAIN_BITCOIN]: {
-//       signerSelector: getBitcoinSigner,
-//       path: getBitcoinDerivedPath(network[BLOCKCHAIN_BITCOIN]),
-//     },
-//     [BLOCKCHAIN_BITCOIN_CASH]: {
-//       signerSelector: getBitcoinCashSigner,
-//       path: getBitcoinDerivedPath(network[BLOCKCHAIN_BITCOIN_CASH], COIN_TYPE_BCC_MAINNET),
-//     },
-//     [BLOCKCHAIN_DASH]: {
-//       signerSelector: getDashSigner,
-//       path: getBitcoinDerivedPath(network[BLOCKCHAIN_DASH], COIN_TYPE_DASH_MAINNET),
-//     },
-//     [BLOCKCHAIN_LITECOIN]: {
-//       signerSelector: getLitecoinSigner,
-//       path: getBitcoinDerivedPath(network[BLOCKCHAIN_LITECOIN], COIN_TYPE_LTC_MAINNET),
-//     },
-//     [BLOCKCHAIN_NEM]: {
-//       signerSelector: getNemSigner,
-//       path: getNemDerivedPath(network[BLOCKCHAIN_NEM]),
-//     },
-//     [BLOCKCHAIN_WAVES]: {
-//       signerSelector: getWavesSigner,
-//       path: getWavesDerivedPath(network[BLOCKCHAIN_WAVES]),
-//     },
-//   }
-//
-//   Object.entries(signerSelectors).forEach(async ([ blockchain, { signerSelector, path } ]) => {
-//     let address = addressCache[blockchain]
-//     if(!address) {
-//       const signer = signerSelector(state)
-//       if (signer) {
-//         address = await signer.getAddress(path)
-//         addressCache[blockchain] = {
-//           address,
-//           path,
-//         }
-//
-//         dispatch(accountCacheAddress({ blockchain, address, path }))
-//       }
-//     }
-//   })
-//
-//   // const blockchains = getBlockchainsList(state)
-//   Object.entries(addressCache).forEach(async ([ blockchain, { address, path } ]) => {
-//     wallets.push(new WalletModel({
-//       address,
-//       blockchain,
-//       isMain: true,
-//       walletDerivedPath: path,
-//     }))
-//   })
-//
-//   wallets.forEach((wallet) => {
-//     dispatch(setWallet(wallet))
-//     dispatch(updateWalletBalance({ wallet }))
-//   })
-//
-//   dispatch(initEos())
-// }
-//
-// const initDerivedWallets = () => async (dispatch, getState) => {
-//   const state = getState()
-//   const account = getAccount(state)
-//   const wallets = getWallets(state)
-//
-//   Object.values(wallets).forEach((wallet: WalletModel) => {
-//     if (wallet.isDerived && !wallet.isMain && isOwner(wallet, account)) {
-//       dispatch(updateWalletBalance({ wallet }))
-//
-//       switch (wallet.blockchain) {
-//         case BLOCKCHAIN_BITCOIN:
-//           btcProvider.createNewChildAddress(wallet.deriveNumber)
-//           btcProvider.subscribeNewWallet(wallet.address)
-//           break
-//         case BLOCKCHAIN_BITCOIN_CASH:
-//           bccProvider.createNewChildAddress(wallet.deriveNumber)
-//           bccProvider.subscribeNewWallet(wallet.address)
-//           break
-//         case BLOCKCHAIN_DASH:
-//           dashProvider.createNewChildAddress(wallet.deriveNumber)
-//           dashProvider.subscribeNewWallet(wallet.address)
-//           break
-//         case BLOCKCHAIN_LITECOIN:
-//           ltcProvider.createNewChildAddress(wallet.deriveNumber)
-//           ltcProvider.subscribeNewWallet(wallet.address)
-//           break
-//         case BLOCKCHAIN_ETHEREUM:
-//           break
-//         default:
-//       }
-//     }
-//   })
-// }
-//
-// const fallbackCallback = (wallet) => (dispatch) => {
-//   const updateBalance = (token: TokenModel) => async () => {
-//     if (token.blockchain() === wallet.blockchain) {
-//       const dao = tokenService.getDAO(token)
-//       const balance = await dao.getAccountBalance(wallet.address)
-//       if (balance) {
-//         dispatch(setWalletBalance(wallet.id, new Amount(balance, token.symbol(), true)))
-//       }
-//     }
-//   }
-//   dispatch(subscribeOnTokens(updateBalance))
-// }
-//
-// export const updateWalletBalance = ({ wallet }) => async (dispatch) => {
-//   const blockchain = wallet.blockchain
-//   const address = wallet.address
-//
-//   if (blockchain === BLOCKCHAIN_NEM) {
-//     return dispatch(fallbackCallback(wallet))
-//   }
-//
-//   const isBtcLikeBlockchain = [
-//     BLOCKCHAIN_BITCOIN,
-//     BLOCKCHAIN_BITCOIN_CASH,
-//     BLOCKCHAIN_DASH,
-//     BLOCKCHAIN_LITECOIN,
-//   ].includes(blockchain)
-//
-//   if (isBtcLikeBlockchain) {
-//     return dispatch(BitcoinThunks.getAddressInfo(address, blockchain))
-//       .then((balancesResult) => {
-//         const formattedBalances = formatBalances(blockchain, balancesResult)
-//         const newWallet = new WalletModel({
-//           ...wallet,
-//           balances: {
-//             ...wallet.balances,
-//             ...formattedBalances,
-//           },
-//         })
-//         dispatch(setWallet(newWallet))
-//       })
-//       .catch((e) => {
-//         // eslint-disable-next-line no-console
-//         console.log('Balances call to middleware has failed [getAddressInfo]: ', blockchain, e)
-//         dispatch(fallbackCallback(wallet))
-//       })
-//   } else {
-//     getWalletBalances({ wallet })
-//       .then((balancesResult) => {
-//         try {
-//           dispatch(setWallet(new WalletModel({
-//             ...wallet,
-//             balances: {
-//               ...wallet.balances,
-//               ...formatBalances(blockchain, balancesResult),
-//             },
-//           })))
-//         } catch (e) {
-//           // eslint-disable-next-line no-console
-//           console.log(e.message)
-//         }
-//       })
-//       .catch((e) => {
-//         // eslint-disable-next-line no-console
-//         console.log('call balances from middleware is failed getWalletBalances', e)
-//         dispatch(fallbackCallback(wallet))
-//       })
-//   }
-// }
 
 const updateAllowance = (allowance) => (dispatch, getState) => {
   const wallet = getMainEthWallet(getState())
@@ -430,7 +237,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
   })
 
   dispatch(setWallet(wallet))
-  dispatch(updateWalletBalance({ wallet }))
+  // dispatch(updateWalletBalance({ wallet })) // @todo
 }
 
 export const getTransactionsForMainWallet = ({ blockchain, address, forcedOffset }) => async (dispatch, getState) => {
