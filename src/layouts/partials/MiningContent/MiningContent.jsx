@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
@@ -11,12 +10,10 @@ import { TIME } from '@chronobank/core/dao/constants'
 import { initAssetsHolder } from '@chronobank/core/redux/assetsHolder/actions'
 import { getDeposit } from '@chronobank/core/redux/assetsHolder/selectors'
 import Amount from '@chronobank/core/models/Amount'
-import DepositsList from 'components/Deposits/DepositsList/DepositsList'
 import Button from 'components/common/ui/Button/Button'
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
-import DepositWarningWidget from 'components/Deposits/DepositWarningWidget/DepositWarningWidget'
-import { prefix } from './lang'
-import './DepositsContent.scss'
+import LaborXConnectWidget from 'components/Deposits/LaborXConnectWidget/LaborXConnectWidget'
+import './MiningContent.scss'
 
 function mapStateToProps (state) {
   return {
@@ -35,7 +32,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class DepositsContent extends Component {
+export default class MiningContent extends Component {
   static propTypes = {
     deposit: PropTypes.instanceOf(Amount),
     initAssetsHolder: PropTypes.func,
@@ -59,16 +56,7 @@ export default class DepositsContent extends Component {
       <div styleName='root'>
         <div styleName='content'>
           <div styleName='inner'>
-            <DepositWarningWidget />
-            {this.props.deposit.isZero()
-              ? (
-                <div styleName='warning'>
-                  <Translate value={`${prefix}.warning`} />
-                </div>
-              )
-              : (
-                <DepositsList onAddDeposit={this.handleAddDeposit} onWithdrawDeposit={this.handleWithdrawDeposit} />
-              )}
+            <LaborXConnectWidget />
           </div>
           <Button styleName='addDeposit' onClick={this.handleAddDeposit}>
             <i className='chronobank-icon'>add</i>

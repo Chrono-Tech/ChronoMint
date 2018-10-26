@@ -26,6 +26,7 @@ import {
   TwoFAPage,
   NewPollPage,
   VoteHistoryPage,
+  MiningPage,
 } from 'pages/lib'
 import MnemonicImportPage from 'components/login/MnemonicImportPage/MnemonicImportPage'
 import PrivateKeyImportPage from 'components/login/PrivateKeyImportPage/PrivateKeyImportPage'
@@ -73,6 +74,7 @@ const router = (
         <Route path='add-wallet' component={AddWalletPage} />
         <Route path='deposits' component={DepositsPage} />
         <Route path='deposit' component={DepositPage} />
+        <Route path='mining' component={MiningPage} />
         <Route path='rewards' component={RewardsPage} />
         <Route path='voting' component={VotingPage} />
         <Route path='poll' component={PollPage} />

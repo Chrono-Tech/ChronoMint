@@ -4,7 +4,6 @@
  */
 
 import React, { PureComponent } from 'react'
-import { TOKEN_ICONS } from 'assets'
 import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { connect } from 'react-redux'
@@ -38,8 +37,6 @@ function mapDispatchToProps (dispatch) {
       },
     })),
     handleOpenDepositForm: () => dispatch(modalsOpen({ componentName: 'DepositTokensModal' })),
-    handleOpenUnlockForm: () => dispatch(modalsOpen({ componentName: 'LaborXConnectModal' })),
-    handleOpenLockForm: () => dispatch(modalsOpen({ componentName: 'LaborXConnectModal' })),
   }
 }
 
@@ -57,11 +54,18 @@ export default class LaborXConnectWidget extends PureComponent {
     this.props.onOpenReceiveForm(this.props.wallet)
   }
 
+  handleOpenSettings = () => {
+
+  }
+
   render () {
     return (
       <div styleName='header-container'>
         <div styleName='wallet-list-container'>
           <div styleName='wallet-container'>
+            <div styleName='settingsIcon'>
+              <button className='chronobank-icon' onClick={this.handleOpenSettings}>settings</button>
+            </div>
             <div styleName='token-container'>
               <div styleName='token-icon'>
                 <IPFSImage styleName='imageIcon' fallback={LABOR_X_LOGO_SVG} />
@@ -70,24 +74,28 @@ export default class LaborXConnectWidget extends PureComponent {
             <div styleName='content-container'>
               <div styleName='title'><Translate value={`${prefix}.title`} /></div>
               <div styleName='text'><Translate value={`${prefix}.message`} /></div>
-              <div styleName='steps'>
-                <div styleName='step'>
-                  <div styleName='icon'>1</div>
-                  <div styleName='title'><Translate value={`${prefix}.step1`} /></div>
+              <div styleName='text'><Translate value={`${prefix}.messageSubTitle`} /></div>
+
+              <div styleName='title'><Translate value={`${prefix}.title`} /></div>
+              <div styleName='text'><Translate value={`${prefix}.message2`} /></div>
+
+              <div styleName='title addressTittle'><Translate value={`${prefix}.title`} /></div>
+              <div styleName='address'>{this.props.wallet.address}</div>
+
+              <div styleName='balance'>{TIME}&nbsp;{integerWithDelimiter('10.00', true)}</div>
+
+              <div styleName='infoList'>
+                <div styleName='infoItem'>
+                  <div styleName='icon'>
+                    <div className='chronobank-icon' styleName='active'>check-circle</div>
+                  </div>
+                  <div styleName='title'>Mining is ON (ChronoBank)</div>
                 </div>
-                <div styleName='step'>
-                  <div styleName='icon'>2</div>
-                  <div styleName='title'><Translate value={`${prefix}.step2`} /></div>
+                <div styleName='infoItem'>
+                  <div styleName='title'>Reward: LHT 0.02 / block</div>
                 </div>
-                <div styleName='step'>
-                  <div styleName='icon'>3</div>
-                  <div styleName='title'><Translate value={`${prefix}.step3`} /></div>
-                </div>
-              </div>
-              <div styleName='tokensList'>
-                <div styleName='token'>
-                  <div styleName='icon'><IPFSImage styleName='imageIcon' fallback={TOKEN_ICONS.TIME} /></div>
-                  <div styleName='title'>{TIME}&nbsp;{integerWithDelimiter('10.00', true)}</div>
+                <div styleName='infoItem'>
+                  <div styleName='title'>Total rewards: LHT 0.04</div>
                 </div>
               </div>
               <div styleName='actions-container'>
@@ -102,18 +110,6 @@ export default class LaborXConnectWidget extends PureComponent {
                     type='submit'
                     label={<Translate value={`${prefix}.continue`} />}
                     onClick={this.props.handleOpenDepositForm}
-                  />
-                  <Button
-                    disabled={false}
-                    type='submit'
-                    label={<Translate value={`${prefix}.unlock`} />}
-                    onClick={this.props.handleOpenUnlockForm}
-                  />
-                  <Button
-                    disabled={false}
-                    type='submit'
-                    label={<Translate value={`${prefix}.lock`} />}
-                    onClick={this.props.handleOpenLockForm}
                   />
                 </div>
               </div>

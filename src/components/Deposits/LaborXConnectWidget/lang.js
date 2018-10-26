@@ -8,7 +8,9 @@ export const prefix = 'LaborXConnectWidget'
 export default {
   en: {
     title: 'LaborX Connect',
-    message: 'Interested in Labor-Hour mining? Your deposit in ChronoBank allows you to make this possible. As bigger your deposit as bigger your reward!',
+    message: 'Interested in LHT mining? Click Get Started and and we\'ll prepare solution for you.',
+    messageSubTitle: 'Bigger deposit gives bigger reward!',
+    message2: 'LHT Mining Deposit setup hadn\'t been completed. Please complete the setup by clicking Continue button below.',
     getStarted: 'get started',
     continue: 'continue',
     unlock: 'unlock',

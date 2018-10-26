@@ -15,6 +15,7 @@ import DepositPage from './DepositPage'
 import TwoFAPage from './TwoFAPage'
 import NewPollPage from './NewPollPage'
 import VoteHistoryPage from './VoteHistoryPage'
+import MiningPage from './MiningPage'
 
 export {
   WalletsPage,
@@ -29,6 +30,7 @@ export {
   TwoFAPage,
   NewPollPage,
   VoteHistoryPage,
+  MiningPage,
 }
 
 export default {
@@ -44,4 +46,5 @@ export default {
   TwoFAPage,
   NewPollPage,
   VoteHistoryPage,
+  MiningPage,
 }

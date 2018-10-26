@@ -1,0 +1,50 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.root {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+}
+
+.content {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.inner {
+  margin: 0 80px;
+  @include xs-only {
+    margin: 30px 20px;
+  }
+  position: relative;
+}
+
+.warning {
+  color: $color-white;
+  text-align: center;
+}
+
+.addDeposit {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  display: none;
+  @include xs-only {
+    display: block;
+  }
+  button {
+    text-transform: none;
+    border-radius: 50%;
+    font-size: 35px;
+    width: 60px;
+    height: 60px;
+  }
+}
