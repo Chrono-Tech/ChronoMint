@@ -14,17 +14,7 @@ import {
 import { getMainWallets } from '../../wallets/selectors/models'
 import { getGasSliderCollection, getIsCBE } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
-import {
-  BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_LITECOIN,
-  BLOCKCHAIN_ETHEREUM,
-  BLOCKCHAIN_NEM,
-  BLOCKCHAIN_WAVES,
-  BLOCKCHAIN_DASH,
-} from '../../../dao/constants'
 import { getEosWallets } from '../../eos/selectors/mainSelectors'
-import { BLOCKCHAIN_EOS } from '../../eos/constants'
 
 export const getGasPriceMultiplier = (blockchain) => createSelector([getGasSliderCollection],
   (gasSliderCollection) => {
@@ -112,38 +102,13 @@ export const getAccountAddresses = createSelector(
   (wallets, eosWallets) => {
     return Object.values({ ...wallets, ...eosWallets })
       .reduce((accumulator, wallet) => {
-
-        let type = null
-        switch (wallet.blockchain) {
-          case BLOCKCHAIN_BITCOIN:
-            type = 'bitcoin-address'
-            break
-          case BLOCKCHAIN_BITCOIN_CASH:
-            type = 'bitcoin-cash-address'
-            break
-          case BLOCKCHAIN_LITECOIN:
-            type = 'bitcoin-litecoin-address'
-            break
-          case BLOCKCHAIN_ETHEREUM:
-            type = 'ethereum-public-key'
-            break
-          case BLOCKCHAIN_NEM:
-            type = 'nem-address'
-            break
-          case BLOCKCHAIN_WAVES:
-            type = 'waves-address'
-            break
-          case BLOCKCHAIN_DASH:
-            type = 'dash-address'
-            break
-          case BLOCKCHAIN_EOS:
-            type = 'eos-address'
-            break
-          default:
-            return accumulator
-        }
-
-        return [...accumulator, { type, value: wallet.address },
+        const blockchain = wallet.blockchain.toLowerCase().replace(/\W/, '-')
+        return [
+          ...accumulator,
+          {
+            type: `${blockchain}-address`,
+            value: wallet.address,
+          },
         ]
       }, {})
   },

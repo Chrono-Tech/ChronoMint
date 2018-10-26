@@ -134,7 +134,7 @@ export const login = (account) => async (dispatch, getState) => {
   await dispatch(watcher({ web3 }))
 
   const userManagerDAO = daoByType('UserManager')(getState())
-  const [isCBE, profile /*memberId*/] = await Promise.all([
+  const [isCBE, profile /*memberId*/ ] = await Promise.all([
     userManagerDAO.isCBE(account),
     userManagerDAO.getMemberProfile(account, web3),
     userManagerDAO.getMemberId(account),
