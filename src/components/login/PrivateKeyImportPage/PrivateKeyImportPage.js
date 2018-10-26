@@ -8,6 +8,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import EthereumMemoryDevice from '@chronobank/core/services/signers/EthereumMemoryDevice'
 import { downloadWallet, accountDeselect } from '@chronobank/core/redux/persistAccount/actions'
+import { formatBlockchainListToArray } from '@chronobank/core/redux/persistAccount/utils'
 import { onSubmitCreateAccountImportPrivateKey } from '@chronobank/login-ui/redux/thunks'
 import {
   navigateToSelectWallet,
@@ -131,7 +132,12 @@ class PrivateKeyImportPage extends PureComponent {
 
   async onSubmitBlockchainChoiceFormSuccess (blockchainListValues) {
     const { walletName, password, privateKey } = this.state
-    await this.props.onSubmitCreateAccountImportPrivateKey(walletName, password, privateKey, blockchainListValues.toJS())
+    await this.props.onSubmitCreateAccountImportPrivateKey(
+      walletName,
+      password,
+      privateKey,
+      formatBlockchainListToArray(blockchainListValues.toJS(), (name, isEnable) => isEnable)
+    )
 
     this.setState({
       page: PrivateKeyImportPage.PAGES.DOWNLOAD_WALLET_PAGE,

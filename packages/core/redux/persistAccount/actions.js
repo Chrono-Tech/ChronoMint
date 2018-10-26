@@ -123,19 +123,18 @@ export const updateBlockchainActivity = (blockchainList, enableDisable = false) 
   const state = getState()
   const currentBlockchains = getBlockchainList(state)
 
-  const blockchainToEnable = Object.entries(blockchainList)
-    .filter(([name, isEnabled]) => isEnabled && !currentBlockchains.includes(name))
-    .map(([name]) => name)
+  const blockchainToEnable = AccountUtils.formatBlockchainListToArray(blockchainList, (name, isEnabled) => isEnabled && !currentBlockchains.includes(name))
+
   if (enableDisable && blockchainToEnable) {
     dispatch(enableBlockchains(blockchainToEnable))
   }
 
-  const blockchainToDisable = Object.entries(blockchainList).filter(([, isEnabled]) => !isEnabled).map(([name]) => name)
+  const blockchainToDisable = AccountUtils.formatBlockchainListToArray(blockchainList, (name, isEnabled) => !isEnabled)
   if (enableDisable && blockchainToDisable) {
     dispatch(disableBlockchains(blockchainToDisable))
   }
 
-  const newBlockchainList = Object.entries(blockchainList).filter(([, isEnabled]) => isEnabled).map(([name]) => name)
+  const newBlockchainList = AccountUtils.formatBlockchainListToArray(blockchainList, (name, isEnabled) => isEnabled)
   dispatch(updateBlockchainsList(newBlockchainList))
 }
 

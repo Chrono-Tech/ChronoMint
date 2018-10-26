@@ -17,6 +17,16 @@ export const replaceWallet = (wallet, walletList) => {
   return copyWalletList
 }
 
+/**
+ *
+ * @param blockchainList {Bitcoin: true, Litecoin: false} an example of blockchainList format
+ */
+export const formatBlockchainListToArray = (blockchainList, filterFunction) => {
+  return Object.entries(blockchainList)
+    .filter(([name, isEnabled]) => filterFunction(name, isEnabled))
+    .map(([name]) => name)
+}
+
 export const getAddress = (address, /*hexFormat = false*/) => {
   return address//`${ hexFormat ? '0x' : ''}${address}`
 }
