@@ -135,8 +135,6 @@ class PrivateKeyImportPage extends PureComponent {
 
     this.setState({
       page: PrivateKeyImportPage.PAGES.DOWNLOAD_WALLET_PAGE,
-      password: null,
-      privateKey: null,
     })
   }
 
