@@ -19,14 +19,6 @@ export const navigateBack = () => (dispatch) => {
   dispatch(goBack())
 }
 
-/**
- * Thunk dispatched by "CreateAccount" screen
- * At this screen user can enable or disable some blockchains to new wallet
- */
-export const navigateToBlockchainsSwitch = () => (dispatch) => {
-  dispatch(push('/login/blockchains-switch'))
-}
-
 /*
  * Thunk dispatched by "LoginWithOptions" screen.
  * Resetting account import mode and navigate to CreateAccount screen

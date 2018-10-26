@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import * as BlockchainsSwitch from './components/BlockchainsSwitch/lang'
 import * as AccountSelector from './components/AccountSelector/lang'
 import * as BackButton from './components/BackButton/lang'
 import * as GenerateMnemonic from './components/GenerateMnemonic/lang'
@@ -32,7 +31,6 @@ import * as NotFoundPage from './components/NotFoundPage/lang'
 
 // eslint-disable-next-line import/prefer-default-export
 export const en = {
-  BlockchainsSwitch: BlockchainsSwitch.en,
   ConfirmMnemonic: ConfirmMnemonic.en,
   CreateAccount: CreateAccount.en,
   RecoverAccount: RecoverAccount.en,
