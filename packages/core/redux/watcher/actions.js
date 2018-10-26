@@ -13,6 +13,7 @@ import { watchInitPolls } from '../voting/thunks'
 import { initMultisigWalletManager } from '../multisigWallet/actions'
 import { WATCHER } from './constants'
 import { enableDefaultBlockchains } from '../persistAccount/actions'
+import { initTokenSubscription } from '../wallets/actions'
 
 // for all users on all pages
 export const globalWatcher = () => async (dispatch) => {
@@ -24,6 +25,7 @@ export const watcher = ({ web3 }) => async (dispatch) => {
   await dispatch(initDAOs({ web3 }))
   dispatch(initProviders())
   dispatch(initMultisigWalletManager())
+  dispatch(initTokenSubscription())
   dispatch(enableDefaultBlockchains())
   dispatch(watchPlatformManager())
   dispatch(watchInitTokens())
