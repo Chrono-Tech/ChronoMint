@@ -218,10 +218,8 @@ export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKe
       privateKey,
     }))
 
-    dispatch(PersistAccountActions.accountAdd({
-      ...account,
-      blockchainList,
-    }))
+    account.blockchainList = blockchainList
+    dispatch(PersistAccountActions.accountAdd(account))
     dispatch(PersistAccountActions.accountSelect(account))
 
   } catch (e) {
@@ -292,6 +290,7 @@ export const onSubmitCreateHWAccountPageFail = (errors, submitErrors) => {
 export const onCreateWalletFromJSON = (name, walletObject, profile) => (dispatch) => {
   const account = createAccountEntry(name, walletObject, profile)
   dispatch(PersistAccountActions.accountAdd(account))
+  dispatch(PersistAccountActions.accountSelect(account))
 }
 
 /*
@@ -301,8 +300,8 @@ export const onCreateWalletFromJSON = (name, walletObject, profile) => (dispatch
 */
 export const onCreateWalletFromDevice = (name, device, profile, walletType) => (dispatch) => {
   const account = createDeviceAccountEntry(name, device, profile, walletType)
-
   dispatch(PersistAccountActions.accountAdd(account))
+  dispatch(PersistAccountActions.accountSelect(account))
 }
 
 /*

@@ -7,6 +7,7 @@ import uuid from 'uuid/v1'
 import { WALLET_TYPE_MEMORY } from '../../models/constants/AccountEntryModel'
 import { AccountEntryModel } from '../../models/wallet/persistAccount'
 import EthereumMemoryDevice, { DEFAULT_PATH } from '../../services/signers/EthereumMemoryDevice'
+import { DEFAULT_ACTIVE_BLOCKCHAINS } from './constants'
 
 export const replaceWallet = (wallet, walletList) => {
   const index = walletList.findIndex((item) => item.key === wallet.key)
@@ -64,6 +65,7 @@ export const createAccountEntry = (name, walletFileImportObject, profile = null)
     type: WALLET_TYPE_MEMORY,
     encrypted: [updatedWalletJSON],
     profile,
+    blockchainList: DEFAULT_ACTIVE_BLOCKCHAINS,
   })
 }
 
@@ -78,6 +80,7 @@ export const createDeviceAccountEntry = (name, device, profile = null, walletTyp
     type: walletType,
     encrypted: [device],
     profile,
+    blockchainList: DEFAULT_ACTIVE_BLOCKCHAINS,
   })
 }
 

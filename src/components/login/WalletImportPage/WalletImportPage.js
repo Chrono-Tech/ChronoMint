@@ -16,13 +16,16 @@ import {
 import {
   LoginWithWalletContainer,
   AccountNameContainer,
+  BlockchainChoiceContainer,
 } from '@chronobank/login-ui/components'
 import { SubmissionError } from 'redux-form'
 import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
 import { getAddress } from '@chronobank/core/redux/persistAccount/utils'
+import { updateBlockchainActivity } from '@chronobank/core/redux/persistAccount/actions'
 
 function mapDispatchToProps (dispatch) {
   return {
+    updateBlockchainsList: (blockchainList) => dispatch(updateBlockchainActivity(blockchainList)),
     getUserInfo: (addresses: string[]) => dispatch(ProfileThunks.getUserInfo(addresses)),
     navigateBack: () => dispatch(navigateBack()),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
@@ -34,9 +37,11 @@ class WalletImportPage extends PureComponent {
   static PAGES = {
     WALLET_UPLOAD_FORM: 1,
     ACCOUNT_NAME_FORM: 2,
+    BLOCKCHAINCE_CHOICE_FORM: 3,
   }
 
   static propTypes = {
+    updateBlockchainsList: PropTypes.func,
     getUserInfo: PropTypes.func,
     navigateBack: PropTypes.func,
     navigateToSelectWallet: PropTypes.func,
@@ -67,6 +72,14 @@ class WalletImportPage extends PureComponent {
           <AccountNameContainer
             previousPage={this.previousPage.bind(this)}
             onSubmit={this.onSubmitAccountName.bind(this)}
+          />
+        )
+
+      case WalletImportPage.PAGES.BLOCKCHAINCE_CHOICE_FORM:
+        return (
+          <BlockchainChoiceContainer
+            previousPage={this.previousPage.bind(this)}
+            onSubmitSuccess={this.onSubmitBlockchainChoiceFormSuccess.bind(this)}
           />
         )
 
@@ -101,6 +114,13 @@ class WalletImportPage extends PureComponent {
     return restoredWalletJSON
   }
 
+  async onSubmitBlockchainChoiceFormSuccess (blockchainList) {
+    const { navigateToSelectWallet, updateBlockchainsList } = this.props
+    await updateBlockchainsList(blockchainList.toJS())
+
+    navigateToSelectWallet()
+  }
+
   async onSubmitWallet (walletString) {
     const walletJSON = this.convertWalletFileToJSON(walletString)
     this.setState({ walletJSON })
@@ -116,7 +136,9 @@ class WalletImportPage extends PureComponent {
 
       if (userName){
         this.props.onCreateWalletFromJSON(userName, walletJSON, profile)
-        this.props.navigateToSelectWallet()
+        this.setState({
+          page: WalletImportPage.PAGES.BLOCKCHAINCE_CHOICE_FORM,
+        })
       } else {
         this.setState({
           page: WalletImportPage.PAGES.ACCOUNT_NAME_FORM,
@@ -131,10 +153,12 @@ class WalletImportPage extends PureComponent {
   }
 
   async onSubmitAccountName (accountName) {
-    const { onCreateWalletFromJSON, navigateToSelectWallet } = this.props
+    const { onCreateWalletFromJSON } = this.props
+    await onCreateWalletFromJSON(accountName, this.state.walletJSON, null)
 
-    onCreateWalletFromJSON(accountName, this.state.walletJSON, null)
-    navigateToSelectWallet()
+    this.setState({
+      page: WalletImportPage.PAGES.BLOCKCHAINCE_CHOICE_FORM,
+    })
   }
 
   previousPage () {
@@ -146,7 +170,6 @@ class WalletImportPage extends PureComponent {
   }
 
   render () {
-
     return this.getCurrentPage()
   }
 }
