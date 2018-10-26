@@ -4,12 +4,23 @@
  */
 
 import React from 'react'
+import { connect } from 'react-redux'
 
-import FormContainer from '../BitcoinLikeBockchain/FormContainer'
+import FormContainer, { mapStateToProps, mapDispatchToProps } from '../BitcoinLikeBockchain/FormContainer'
 import Form from './Form'
 
-const bitcoinFormContainer = (props) => (
-  <FormContainer {...props} form={Form} />
+class DashFormContainer extends FormContainer {
+  getAdvancedParams (formFields) {
+    const params = super.getAdvancedParams(formFields)
+    params.instantSend = formFields.instantSend
+    return params
+  }
+}
+
+const DashConnectedFormContainer = connect(mapStateToProps, mapDispatchToProps)(DashFormContainer)
+
+const DashFormWrapper = (props) => (
+  <DashConnectedFormContainer {...props} form={Form} />
 )
 
-export default bitcoinFormContainer
+export default DashFormWrapper
