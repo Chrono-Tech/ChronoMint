@@ -36,7 +36,7 @@ class TokenValueSimple extends PureComponent {
     const { value, tokens, withFraction, fractionPrecision } = this.props
 
     if (!value) {
-      return null
+      return <span>--</span>
     }
 
     const token = tokens.item(value.symbol())

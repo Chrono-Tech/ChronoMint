@@ -13,7 +13,8 @@ export const getBalanceDataParser = (blockchain, netType) => {
     return parseDashBalanceData
   }
 
-  if(blockchain === BLOCKCHAIN_BITCOIN_CASH && netType === 'testnet') {
+  // condition for blockdozer
+  if (blockchain === BLOCKCHAIN_BITCOIN_CASH && netType === 'testnet' && 0) {
     return parseBitcoinCashBalanceData
   }
 

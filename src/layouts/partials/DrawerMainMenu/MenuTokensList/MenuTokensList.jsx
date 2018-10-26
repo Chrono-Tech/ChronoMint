@@ -4,7 +4,7 @@
  */
 
 import { getNetworkName } from '@chronobank/login/redux/network/thunks'
-import { Translate, I18n } from 'react-redux-i18n'
+import { I18n, Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import { DUCK_MONITOR } from '@chronobank/login/redux/monitor/constants'
@@ -14,15 +14,15 @@ import { drawerHide, drawerToggle } from 'redux/drawer/actions'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { logoutAndNavigateToRoot } from 'redux/ui/thunks'
 import { getBlockchainAddressesList } from '@chronobank/core/redux/session/selectors'
-import { sidesCloseAll, sidesOpen } from 'redux/sides/actions'
+import { selectBlockchainInMainMenu, sidesCloseAll, sidesOpen } from 'redux/sides/actions'
 import { MENU_TOKEN_MORE_INFO_PANEL_KEY } from 'redux/sides/constants'
+import { getSelectedBlockchain } from 'redux/sides/selectors'
 import { prefix } from './lang'
-
 import './MenuTokensList.scss'
 
 function makeMapStateToProps () {
   const getwallets = getBlockchainAddressesList()
-  const mapStateToProps = (ownState) => {
+  return (ownState) => {
     const session = ownState.get(DUCK_SESSION)
     const monitor = ownState.get(DUCK_MONITOR)
     return {
@@ -30,9 +30,9 @@ function makeMapStateToProps () {
       tokens: getwallets(ownState),
       networkStatus: monitor.network,
       syncStatus: monitor.sync,
+      selectedBlockchain: getSelectedBlockchain(ownState),
     }
   }
-  return mapStateToProps
 }
 
 function mapDispatchToProps (dispatch) {
@@ -41,6 +41,7 @@ function mapDispatchToProps (dispatch) {
     handleDrawerToggle: () => dispatch(drawerToggle()),
     handleDrawerHide: () => dispatch(drawerHide()),
     handleLogout: () => dispatch(logoutAndNavigateToRoot()),
+    handleSelectBLockchain: (selectedBlockchain) => dispatch(selectBlockchainInMainMenu(selectedBlockchain)),
     initTokenSide: (token) => dispatch(sidesOpen({
       componentName: 'MenuTokenMoreInfo',
       panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY + '_' + token.blockchain,
@@ -76,11 +77,8 @@ export default class MenuTokensList extends PureComponent {
     handleTokenMoreInfo: PropTypes.func,
     initTokenSide: PropTypes.func,
     getNetworkName: PropTypes.func,
-  }
-
-  constructor (props) {
-    super(props)
-    this.state = {}
+    selectedBlockchain: PropTypes.objectOf(PropTypes.string),
+    handleSelectBLockchain: PropTypes.func,
   }
 
   componentDidMount () {
@@ -91,9 +89,9 @@ export default class MenuTokensList extends PureComponent {
 
   handleSelectToken = (selectedToken, isClose) => {
     const handleClose = () => {
-      this.setState({ selectedToken: null })
+      this.props.handleSelectBLockchain(null)
     }
-    this.setState({ selectedToken })
+    this.props.handleSelectBLockchain(selectedToken)
     this.props.handleTokenMoreInfo(selectedToken, handleClose, isClose)
   }
 
@@ -116,14 +114,14 @@ export default class MenuTokensList extends PureComponent {
         }
       }
     }
-    const network =  this.props.getNetworkName()
-    const { selectedToken } = this.state
+    const network = this.props.getNetworkName()
+    const { selectedBlockchain, tokens } = this.props
 
     return (
       <div styleName='root'>
-        {this.props.tokens
+        {tokens
           .map((token) => {
-            const isSelect = selectedToken && selectedToken.title === token.title
+            const isSelect = selectedBlockchain && selectedBlockchain.title === token.title
             return (
               <div styleName='item' key={token.blockchain}>
                 <div styleName='syncIcon'>

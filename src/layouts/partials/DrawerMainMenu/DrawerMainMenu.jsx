@@ -54,7 +54,7 @@ function mapDispatchToProps (dispatch) {
     handleDrawerHide: () => dispatch(drawerHide()),
     handleLogout: () => dispatch(logoutAndNavigateToRoot()),
     handleProfileEdit: () => dispatch(modalsOpen({
-      componentName: 'UpdateProfileDialog'
+      componentName: 'UpdateProfileDialog',
     })),
     handle: (handleClose) => {
       dispatch(sidesCloseAll())
@@ -180,7 +180,7 @@ export default class DrawerMainMenu extends PureComponent {
             styleName='menu'
             ref={this.setRef}
           >
-            <div styleName='chronWalletLogo'>
+            <div styleName='chronoWalletLogo'>
               <img src={chronoWalletLogoSVG} alt='ChronoWallet logo' />
               <div styleName='subtitle'>{require('../../../../package.json').version}</div>
             </div>

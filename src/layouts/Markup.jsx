@@ -8,6 +8,7 @@ import Snackbar from 'components/common/Snackbar/Snackbar'
 import SideStack from 'components/common/SideStack/SideStack'
 import ModalStack from 'components/common/ModalStack/ModalStack'
 import BUTTONS from 'components/common/TopButtons/buttons'
+import TheCookies from 'components/common/TheCookies/TheCookies'
 import menu from 'menu'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
@@ -22,7 +23,8 @@ import MuiThemeProvider from '@material-ui/core/es/styles/MuiThemeProvider'
 import IconButton from '@material-ui/core/es/IconButton/IconButton'
 import DrawerMainMenu from 'layouts/partials/DrawerMainMenu/DrawerMainMenu'
 import HeaderPartial from 'layouts/partials/HeaderPartial/HeaderPartial'
-import { toggleMainMenu } from 'redux/sides/actions'
+import { selectBlockchainInMainMenu, sidesCloseAll, toggleMainMenu } from 'redux/sides/actions'
+import { getSelectedBlockchain } from 'redux/sides/selectors'
 
 import './Markup.scss'
 
@@ -31,12 +33,15 @@ function mapStateToProps (state) {
     notice: state.get(DUCK_NOTIFIER).notice,
     mainMenuIsOpen: state.get(DUCK_SIDES).mainMenuIsOpen,
     modalStackSize: state.get(DUCK_MODALS).stack.length,
+    isSelectedBlockchain: !!getSelectedBlockchain(state),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     handleCloseNotifier: () => dispatch(closeNotifier()),
+    handleCLoseAllSides: () => dispatch(sidesCloseAll()),
+    handleSelectBLockchain: (selectedBlockchain) => dispatch(selectBlockchainInMainMenu(selectedBlockchain)),
     onToggleMainMenu: (mainMenuIsOpen) => dispatch(toggleMainMenu(mainMenuIsOpen)),
   }
 }
@@ -48,6 +53,7 @@ export default class Markup extends PureComponent {
     notice: PropTypes.instanceOf(Object),
     handleCloseNotifier: PropTypes.func,
     children: PropTypes.node,
+    isSelectedBlockchain: PropTypes.bool,
     location: PropTypes.shape({
       action: PropTypes.string,
       hash: PropTypes.string,
@@ -59,10 +65,16 @@ export default class Markup extends PureComponent {
     }),
     onToggleMainMenu: PropTypes.func,
     mainMenuIsOpen: PropTypes.bool,
+    handleCLoseAllSides: PropTypes.func,
+    handleSelectBLockchain: PropTypes.func,
   }
 
   handleToggleMainMenu = () => {
     this.props.onToggleMainMenu(!this.props.mainMenuIsOpen)
+    if (this.props.mainMenuIsOpen) {
+      this.props.handleCLoseAllSides()
+      this.props.handleSelectBLockchain(null)
+    }
   }
 
   handleToggleMainMenuAndScroll = () => {
@@ -103,12 +115,21 @@ export default class Markup extends PureComponent {
   }
 
   render () {
+    const {
+      isSelectedBlockchain,
+      mainMenuIsOpen,
+      modalStackSize,
+      location,
+      notice,
+      handleCloseNotifier,
+      children,
+    } = this.props
     return (
       <MuiThemeProvider theme={theme}>
-        <div styleName={classnames('root', { 'noScroll': this.props.modalStackSize > 0 })}>
-          <div styleName={classnames('mainMenu', { 'open': this.props.mainMenuIsOpen })}>
+        <TheCookies />
+        <div styleName={classnames('root', { 'noScroll': modalStackSize > 0 })}>
+          <div styleName={classnames('mainMenu', { 'open': mainMenuIsOpen || isSelectedBlockchain })}>
             <DrawerMainMenu onSelectLink={this.handleToggleMainMenuAndScroll} />
-            <div styleName='overlay' onClick={this.handleToggleMainMenu} />
           </div>
           <div styleName='middle'>
             <div styleName='middleTop'>
@@ -120,26 +141,27 @@ export default class Markup extends PureComponent {
               <div styleName='pageTitle'>
                 {this.renderPageTitle()}
               </div>
-              <HeaderPartial location={this.props.location} />
+              <HeaderPartial location={location} />
             </div>
             <div styleName='middleSnackbar'>
               <div styleName='middleSnackbarPanel'>
-                {this.props.notice
+                {notice
                   ? (
                     <Snackbar
-                      notice={this.props.notice}
+                      notice={notice}
                       autoHideDuration={4000}
-                      onRequestClose={this.props.handleCloseNotifier}
+                      onRequestClose={handleCloseNotifier}
                     />)
                   : null
                 }
               </div>
             </div>
             <div styleName='middleContent' id='contentWrapper' ref={this.setRef}>
-              {this.props.children}
+              {children}
             </div>
           </div>
           <div styleName='middleBottom' />
+          <div styleName={classnames('overlay', { 'open': mainMenuIsOpen || isSelectedBlockchain })} onClick={this.handleToggleMainMenu} />
           <SideStack />
           <ModalStack />
         </div>

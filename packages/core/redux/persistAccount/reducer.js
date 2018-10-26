@@ -19,6 +19,7 @@ const initialState = {
   decryptedWallet: null,
   rehydrated: false,
   customNetworksList: [],
+  addressCache: {},
 }
 
 const persistAccount = (state = initialState, action) => {
@@ -29,7 +30,7 @@ const persistAccount = (state = initialState, action) => {
         ...action.payload.persistAccount,
         rehydrated: true,
       }
-    case a.WALLETS_ADD :
+    case a.WALLETS_ADD:
       return {
         ...state,
         walletsList: [
@@ -38,25 +39,43 @@ const persistAccount = (state = initialState, action) => {
         ],
       }
 
-    case a.WALLETS_SELECT :
+    case a.WALLETS_SELECT:
       return {
         ...state,
         selectedWallet: action.wallet,
       }
 
-    case a.WALLETS_LOAD :
+    case a.WALLETS_LOAD:
       return {
         ...state,
         decryptedWallet: action.wallet,
       }
 
-    case a.WALLETS_UPDATE_LIST :
+    case a.WALLETS_UPDATE_LIST:
       return {
         ...state,
         walletsList: action.walletsList,
       }
 
-    case a.CUSTOM_NETWORKS_LIST_ADD :
+    case a.WALLETS_CACHE_ADDRESS: {
+      const selectedWalletKey = state.selectedWallet.key
+
+      return {
+        ...state,
+        addressCache: {
+          ...state.addressCache,
+          [selectedWalletKey]: {
+            ...state.addressCache[selectedWalletKey],
+            [action.blockchain]: {
+              address: action.address,
+              path: action.path,
+            },
+          },
+        },
+      }
+    }
+
+    case a.CUSTOM_NETWORKS_LIST_ADD:
       return {
         ...state,
         customNetworksList: [
@@ -65,13 +84,13 @@ const persistAccount = (state = initialState, action) => {
         ],
       }
 
-    case a.CUSTOM_NETWORKS_LIST_UPDATE :
+    case a.CUSTOM_NETWORKS_LIST_UPDATE:
       return {
         ...state,
         customNetworksList: action.list,
       }
 
-    case a.CUSTOM_NETWORKS_LIST_RESET :
+    case a.CUSTOM_NETWORKS_LIST_RESET:
       return {
         ...state,
         customNetworksList: [],
