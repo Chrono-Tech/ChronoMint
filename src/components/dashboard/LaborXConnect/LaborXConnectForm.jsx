@@ -20,6 +20,8 @@ import classnames from 'classnames'
 import classes from './LaborXConnect.scss'
 import validate from './validate'
 import { prefix } from './lang'
+import LaborXConnectSlider from './LaborXConnectSlider/LaborXConnectSlider'
+import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/wallets/constants'
 
 const LABOR_X_CONNECT_FIRST = 'laborXConnectFirst'
 const LABOR_X_CONNECT_SECOND = 'laborXConnectSecond'
@@ -40,61 +42,29 @@ export default class LaborXConnectForm extends PureComponent {
 
   constructor (props) {
     super(props)
-    let step = LABOR_X_CONNECT_FIRST
+    const step = LABOR_X_CONNECT_FIRST
     this.state = { step }
   }
 
   handleProceed = (values) => {
-    this.props.onSubmit(values
-      .set('action', TX_LOCK)
-      .set('token', this.props.token),
-    )
+    this.props.onSubmit(values.set('action', TX_LOCK).set('token', this.props.token))
   }
 
   handleUnlock = (values) => {
-    this.props.onSubmit(values
-      .set('action', TX_UNLOCK)
-      .set('token', this.props.token),
-    )
+    this.props.onSubmit(values.set('action', TX_UNLOCK).set('token', this.props.token))
   }
 
   renderHead () {
-    const { deposit, token } = this.props
     const { step } = this.state
+    const title = LABOR_X_CONNECT_FIRST ? 'titleStepOne' : 'titleStepTwov'
+    const message = LABOR_X_CONNECT_FIRST ? 'messageStepOne' : 'messageStepTwo'
     return (
       <div styleName='head'>
-        <div styleName={classnames('mainTitle', { 'bordered': step === LABOR_X_CONNECT_FIRST })}><Translate value={`${prefix}.title`} /></div>
+        <div styleName={classnames('mainTitle', { bordered: step === LABOR_X_CONNECT_FIRST })}>
+          <Translate value={`${prefix}.${title}`} />
+        </div>
         <div styleName='headContent'>
-          {step === LABOR_X_CONNECT_FIRST
-            ? (
-              <div styleName='headItemWrapper'>
-                <div styleName='headItem'>
-                  <div styleName='headItemTitle'><Translate value={`${prefix}.depositAmount`} /></div>
-                  <div styleName='balance'>
-                    {token.isFetched()
-                      ? (
-                        <TokenValue
-                          isInvert
-                          noRenderPrice
-                          value={deposit}
-                        />
-                      )
-                      : <div styleName='preloader'><Preloader /></div>}
-                  </div>
-                  <div styleName='balanceFiat'><TokenValue isInvert renderOnlyPrice value={deposit} /></div>
-                </div>
-              </div>
-            )
-            : null
-          }
-          <div styleName='flowPoints'>
-            <div styleName={classnames('point', { 'active': step === LABOR_X_CONNECT_FIRST })} />
-            <div styleName={classnames('point', { 'active': step === LABOR_X_CONNECT_SECOND })} />
-          </div>
-          <div styleName='note'>
-            <div styleName='noteTitle'><b><Translate value={`${prefix}.${step}.note`} /></b></div>
-            <div styleName='noteText'><Translate value={`${prefix}.${step}.noteText`} /></div>
-          </div>
+          <Translate value={`${prefix}.${message}`} />
         </div>
       </div>
     )
@@ -110,27 +80,14 @@ export default class LaborXConnectForm extends PureComponent {
     return (
       <div>
         <div styleName={classnames('fieldWrapper')}>
-          <Field
-            component={TextField}
-            fullWidth
-            InputLabelProps={{ className: classes.amountLabel }}
-            placeholder='0.00'
-            label={<Translate value={`${prefix}.amount`} symbol='TIME' />}
-            name='amount'
-          />
-          <div styleName='amountInFiat'>
-            {token.isFetched()
-              ? (
-                <TokenValue
-                  renderOnlyPrice
-                  value={new Amount(token.addDecimals(amount), token.symbol())}
-                />
-              ) : null}
-          </div>
+          <Field component={LaborXConnectSlider} name='amount' {...FEE_RATE_MULTIPLIER} toFixed={1} />
+          <div styleName='amountInFiat'>{token.isFetched() ? <TokenValue renderOnlyPrice value={new Amount(token.addDecimals(amount), token.symbol())} /> : null}</div>
         </div>
         <div styleName='transactionsInfo'>
           <div>
-            <b><Translate value={`${prefix}.transactionFee`} />: </b>
+            <b>
+              <Translate value={`${prefix}.transactionFee`} />:{' '}
+            </b>
             <span styleName='infoText'>
               {feeLoading && <Preloader />}
               {gasFee && <TokenValue value={gasFee} />}
@@ -147,34 +104,23 @@ export default class LaborXConnectForm extends PureComponent {
 
     return (
       <div styleName='actions'>
-        {balanceEth && balanceEth.gt(0) && this.state.step === LABOR_X_CONNECT_FIRST && (
+        {balanceEth &&
+        balanceEth.gt(0) &&
+        this.state.step === LABOR_X_CONNECT_FIRST && (
           <div styleName='action'>
-            <Button
-              styleName='actionButton'
-              label={<Translate value={`${prefix}.proceed`} />}
-              onClick={handleSubmit(this.handleProceed)}
-              disabled={isInvalid}
-            />
+            <Button styleName='actionButton' label={<Translate value={`${prefix}.proceed`} />} onClick={handleSubmit(this.handleProceed)} disabled={isInvalid} />
           </div>
         )}
-        {balanceEth && balanceEth.gt(0) && this.state.step === LABOR_X_CONNECT_FIRST && (
+        {balanceEth &&
+        balanceEth.gt(0) &&
+        this.state.step === LABOR_X_CONNECT_FIRST && (
           <div styleName='action'>
-            <Button
-              styleName='actionButton'
-              label={<Translate value={`${prefix}.unlock`} />}
-              onClick={handleSubmit(this.handleUnlock)}
-              disabled={isInvalid}
-            />
+            <Button styleName='actionButton' label={<Translate value={`${prefix}.unlock`} />} onClick={handleSubmit(this.handleUnlock)} disabled={isInvalid} />
           </div>
         )}
         {this.state.step === LABOR_X_CONNECT_SECOND && (
           <div styleName='action'>
-            <Button
-              styleName='actionButton'
-              label={<Translate value={`${prefix}.confirm`} />}
-              onClick={handleSubmit(this.handleProceed)}
-              disabled={isInvalid}
-            />
+            <Button styleName='actionButton' label={<Translate value={`${prefix}.confirm`} />} onClick={handleSubmit(this.handleProceed)} disabled={isInvalid} />
           </div>
         )}
       </div>

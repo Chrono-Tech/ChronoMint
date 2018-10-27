@@ -2,8 +2,8 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-@import "~styles/partials/variables";
-@import "~styles/partials/mixins";
+@import '~styles/partials/variables';
+@import '~styles/partials/mixins';
 
 .root {
   overflow: hidden;
@@ -32,64 +32,9 @@
 }
 
 .headContent {
-  .title {
-    font-weight: 400;
-    line-height: 19px;
-    font-size: 16px;
-    color: $color-white;
-    .address {
-      color: $additionalData-color;
-    }
-  }
-
-  .balance {
-    line-height: 25px;
-    color: $color-white;
-    font-size: 30px;
-    white-space: nowrap;
-    :global {
-      .TokenValue__root {
-        span {
-          line-height: 36px;
-          color: $color-white;
-          font-size: 30px;
-          opacity: 1;
-        }
-      }
-    }
-  }
-  .balanceFiat {
-    white-space: nowrap;
-    span {
-      color: $color-white;
-      font-size: 16px;
-      line-height: 19px;
-      margin: 0;
-    }
-  }
-  .preloader {
-    display: flex;
-    justify-content: left;
-    :global {
-      .Preloader__root {
-        flex-grow: 0;
-      }
-    }
-  }
-  .stepsWrapper {
-    border-top: 1px solid $color-blue-3;
-    padding: 20px 30px;
-    display: flex;
-    line-height: 19px;
-    .step {
-      color: $additionalData-color;
-      margin-right: 32px;
-    }
-    .active {
-      color: $color-white;
-      font-weight: 500;
-    }
-  }
+  background: $color-white;
+  padding: 30px;
+  border-bottom: 1px solid $color-grey-3;
 }
 
 .body {
@@ -168,7 +113,7 @@
 
 .ellipsis {
   @include ellipsis;
-  color: $color-white
+  color: $color-white;
 }
 
 .feeRate {
@@ -228,42 +173,6 @@
       color: $color-red-3;
       padding: 0 25px 0 0;
     }
-  }
-}
-
-.flowPoints {
-  margin-top: 10px;
-  border-top: 1px solid $border-color;
-  display: flex;
-  padding: 0 30px;
-  height: 30px;
-  .point {
-    justify-content: left;
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
-    background: $border-color;
-    margin-right: 10px;
-    margin-top: -6px;
-    &.active {
-      background: $color-white;
-    }
-  }
-}
-
-.note {
-  padding: 25px 30px 20px;
-  background: $color-white;
-  border-bottom: 1px solid $color-grey-3;
-  .noteTitle {
-    line-height: 28px;
-    font-size: 20px;
-    font-weight: 700;
-  }
-  .noteText {
-    font-size: 14px;
-    line-height: 20px;
-    font-weight: 400;
   }
 }
 

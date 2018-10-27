@@ -7,15 +7,19 @@ export const prefix = 'LaborXConnect'
 
 export default {
   en: {
-    title: 'LaborX Connect',
-    depositAmount: 'Amount on deposit',
+    titleStepOne: 'Mining Deposit Amount',
+    titleStepTwo: 'Download Node',
+    messageStepOne: 'The amount will be distributed form your TIME Deposit. Transaction fee in amount of ETH 0.02 will be withdrawn from your wallet.',
+    messageStepTwo: 'Install and launch desktop application and click "Start Mining".',
+
     transactionFee: 'Transaction fee',
     proceed: 'proceed',
     confirm: 'confirm',
     amount: 'Amount TIME',
     laborXConnectFirst: {
       note: 'Enter LaborX deposit amount',
-      noteText: 'The specified amount will be locked on the ' +
+      noteText:
+        'The specified amount will be locked on the ' +
         'Mainnet and will not be available for withdraw until you ' +
         'decide to unlock it. This transaction has a fixed fee and includes ' +
         'request fee and Labor-Hour token purchase to activate your deposit ' +
@@ -23,8 +27,7 @@ export default {
     },
     laborXConnectSecond: {
       note: 'Activate LaborX deposit',
-      noteText: 'Your transfer has been completed. ' +
-        'Please confirm the operation to activate your funds on LaborX network.',
+      noteText: 'Your transfer has been completed. ' + 'Please confirm the operation to activate your funds on LaborX network.',
     },
   },
 }
