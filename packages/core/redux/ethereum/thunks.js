@@ -17,9 +17,9 @@ import {
   submitEthereumLikeBlockchainTransaction,
 } from '../ethereumLikeBlockchain/thunks'
 import { getEstimateGasRequestBasicFieldSet } from '../ethereumLikeBlockchain/utils'
-import { ethWeb3Update } from './actions'
 import { DUCK_ETHEREUM } from './constants'
 import { ethereumPendingSelector, pendingEntrySelector, web3Selector } from './selectors'
+import { ethNonceUpdate, ethTxCreate, ethTxUpdate, ethWeb3Update } from './actions'
 
 export const initEthereum = ({ web3 }) => (dispatch) => {
   dispatch(ethWeb3Update(new HolderModel({ value: web3 })))
@@ -31,7 +31,7 @@ export const estimateGas = (tx, feeMultiplier = 1) => (
 
 export const executeTransaction = ({ tx, options }) => (
   executeEthereumLikeBlockchainTransaction({ tx, options }, web3Selector(), DUCK_ETHEREUM,
-    getEstimateGasRequestFieldSet, submitTransaction)
+    getEstimateGasRequestFieldSet, submitTransaction, ethTxCreate)
 )
 
 const acceptTransaction = (entry) => (
@@ -40,7 +40,7 @@ const acceptTransaction = (entry) => (
 )
 
 const ethTxStatus = (key, address, props) => (
-  ethereumLikeBlockchainTxStatus(ethereumPendingSelector, key, address, props)
+  ethereumLikeBlockchainTxStatus(ethereumPendingSelector, key, address, props, ethTxUpdate)
 )
 
 const getEstimateGasRequestFieldSet = (tx, gasPrice, nonce, chainId) => {
@@ -50,7 +50,7 @@ const getEstimateGasRequestFieldSet = (tx, gasPrice, nonce, chainId) => {
 }
 
 const processTransaction = ({ web3, entry, signer }) => (
-  processEthereumLikeBlockchainTransaction({ web3, entry, signer }, ethTxStatus, pendingEntrySelector)
+  processEthereumLikeBlockchainTransaction({ web3, entry, signer }, ethTxStatus, pendingEntrySelector, ethNonceUpdate)
 )
 
 const submitTransaction = (entry) => (

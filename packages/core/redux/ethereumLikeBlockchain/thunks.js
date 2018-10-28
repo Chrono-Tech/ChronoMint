@@ -11,8 +11,7 @@ import { TxEntryModel } from '../../models'
 import { modalsOpen } from '../modals/actions'
 import { showSignerModal, closeSignerModal } from '../modals/thunks'
 import { getAccount } from '../session/selectors/models'
-import { nonceUpdate, txCreate, txUpdate } from './actions'
-import { DUCK_PERSIST_ACCOUNT } from './constants'
+import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
 import { createTxEntryModel, createTxExecModel, estimateTxGas } from './utils'
 
 export const acceptEthereumLikeBlockchainTransaction = (
@@ -63,7 +62,7 @@ export const estimateEthereumLikeBlockchainGas = (tx, feeMultiplier, getWeb3, du
   }
 )
 
-export const ethereumLikeBlockchainTxStatus = (pendingSelector, key, address, props) => (dispatch, getState) => {
+export const ethereumLikeBlockchainTxStatus = (pendingSelector, key, address, props, txUpdate) => (dispatch, getState) => {
   const pending = pendingSelector()(getState())
   const scope = pending[address]
 
@@ -92,7 +91,8 @@ export const executeEthereumLikeBlockchainTransaction = (
   getWeb3,
   duckId,
   getEstimateGasRequestFieldSet,
-  submitTransaction
+  submitTransaction,
+  txCreate
 ) => (
   async (dispatch, getState) => {
     const web3 = getWeb3(getState())
@@ -105,13 +105,13 @@ export const executeEthereumLikeBlockchainTransaction = (
   }
 )
 
-export const processEthereumLikeBlockchainTransaction = ({ web3, entry, signer }, txStatus, pendingEntrySelector) => (
+export const processEthereumLikeBlockchainTransaction = ({ web3, entry, signer }, txStatus, pendingEntrySelector, nonceUpdate) => (
   async (dispatch, getState) => {
     await dispatch(signEthereumLikeBlockchainTransaction({ entry, signer }, txStatus))
     return dispatch(sendSignedEthereumLikeBlockchainTransaction({
       web3,
       entry: pendingEntrySelector(entry.tx.from, entry.key)(getState()),
-    }, txStatus, pendingEntrySelector))
+    }, txStatus, pendingEntrySelector, nonceUpdate))
   }
 )
 
@@ -160,7 +160,7 @@ const prepareEthereumLikeBlockchainTransaction = ({ web3, tx, options }, duckId,
   }
 )
 
-const sendSignedEthereumLikeBlockchainTransaction = ({ web3, entry }, txStatus, pendingEntrySelector) => (
+const sendSignedEthereumLikeBlockchainTransaction = ({ web3, entry }, txStatus, pendingEntrySelector, nonceUpdate) => (
   async (dispatch, getState) => {
     dispatch(txStatus(entry.key, entry.tx.from, { isPending: true }))
     entry = pendingEntrySelector(entry.tx.from, entry.key)(getState())

@@ -15,9 +15,9 @@ import {
   submitEthereumLikeBlockchainTransaction,
 } from '../ethereumLikeBlockchain/thunks'
 import { getEstimateGasRequestBasicFieldSet } from '../ethereumLikeBlockchain/utils'
-import { laborHourWeb3Update } from './actions'
-import { DUCK_ETHEREUM_LIKE_BLOCKCHAIN as DUCK_LABOR_HOUR } from '../ethereumLikeBlockchain/constants'
+import { DUCK_LABOR_HOUR } from './constants'
 import { getLaborHourSigner, laborHourPendingSelector, laborHourPendingEntrySelector, web3Selector } from './selectors'
+import { nonceUpdate, txCreate, txUpdate, laborHourWeb3Update } from './actions'
 
 export const initLaborHour = ({ web3 }) => (dispatch) => dispatch(laborHourWeb3Update(new HolderModel({ value: web3 })))
 
@@ -27,7 +27,7 @@ export const estimateLaborHourGas = (tx, feeMultiplier = 1) => (
 
 export const executeLaborHourTransaction = ({ tx, options }) => (
   executeEthereumLikeBlockchainTransaction({ tx, options }, web3Selector(), DUCK_LABOR_HOUR,
-    getEstimateGasRequestBasicFieldSet, submitTransaction)
+    getEstimateGasRequestBasicFieldSet, submitTransaction, txCreate)
 )
 
 const acceptTransaction = (entry) => (
@@ -36,11 +36,11 @@ const acceptTransaction = (entry) => (
 )
 
 const laborHourTxStatus = (key, address, props) => (
-  ethereumLikeBlockchainTxStatus(laborHourPendingSelector, key, address, props)
+  ethereumLikeBlockchainTxStatus(laborHourPendingSelector, key, address, props, txUpdate)
 )
 
 const processTransaction = ({ web3, entry, signer }) => (
-  processEthereumLikeBlockchainTransaction({ web3, entry, signer }, laborHourTxStatus, laborHourPendingEntrySelector)
+  processEthereumLikeBlockchainTransaction({ web3, entry, signer }, laborHourTxStatus, laborHourPendingEntrySelector, nonceUpdate)
 )
 
 const submitTransaction = (entry) => (

@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export { DUCK_PERSIST_ACCOUNT } from '../ethereumLikeBlockchain/constants'
+export const DUCK_PERSIST_ACCOUNT = 'persistAccount'
 
 export const CUSTOM_NETWORKS_LIST_ADD = 'persistAccount/CUSTOM_NETWORKS_LIST_ADD'
 export const CUSTOM_NETWORKS_LIST_RESET = 'persistAccount/CUSTOM_NETWORKS_LIST_RESET'
