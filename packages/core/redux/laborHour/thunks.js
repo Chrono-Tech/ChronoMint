@@ -6,43 +6,27 @@
 import { HolderModel } from '../../models'
 import laborHourDAO from '../../dao/LaborHourDAO'
 import LaborHourMemoryDevice from '../../services/signers/LaborHourMemoryDevice'
-import {
-  acceptEthereumLikeBlockchainTransaction,
-  estimateEthereumLikeBlockchainGas,
-  ethereumLikeBlockchainTxStatus,
-  executeEthereumLikeBlockchainTransaction,
-  processEthereumLikeBlockchainTransaction,
-  submitEthereumLikeBlockchainTransaction,
-} from '../ethereumLikeBlockchain/thunks'
-import { getEstimateGasRequestBasicFieldSet } from '../ethereumLikeBlockchain/utils'
+import TransactionHandler from '../ethereumLikeBlockchain/utils/TransactionHandler'
+import { nonceUpdate, txCreate, txUpdate, laborHourWeb3Update } from './actions'
 import { DUCK_LABOR_HOUR } from './constants'
 import { getLaborHourSigner, laborHourPendingSelector, laborHourPendingEntrySelector, web3Selector } from './selectors'
-import { nonceUpdate, txCreate, txUpdate, laborHourWeb3Update } from './actions'
 
+class LaborHourTransactionHandler extends TransactionHandler {
+  constructor () {
+    super(DUCK_LABOR_HOUR, laborHourPendingSelector, laborHourPendingEntrySelector, getLaborHourSigner,
+      LaborHourMemoryDevice.getDerivedWallet, { nonceUpdate, txCreate, txUpdate })
+  }
+
+  getDAO () {
+    return laborHourDAO
+  }
+
+  getWeb3 (state) {
+    return web3Selector()(state)
+  }
+}
+
+const transactionHandler = new LaborHourTransactionHandler()
+export const estimateLaborHourGas = (tx, feeMultiplier = 1) => transactionHandler.estimateGas(tx, feeMultiplier)
+export const executeLaborHourTransaction = ({ tx, options }) => transactionHandler.executeTransaction({ tx, options })
 export const initLaborHour = ({ web3 }) => (dispatch) => dispatch(laborHourWeb3Update(new HolderModel({ value: web3 })))
-
-export const estimateLaborHourGas = (tx, feeMultiplier = 1) => (
-  estimateEthereumLikeBlockchainGas(tx, feeMultiplier, web3Selector(), DUCK_LABOR_HOUR, getEstimateGasRequestBasicFieldSet)
-)
-
-export const executeLaborHourTransaction = ({ tx, options }) => (
-  executeEthereumLikeBlockchainTransaction({ tx, options }, web3Selector(), DUCK_LABOR_HOUR,
-    getEstimateGasRequestBasicFieldSet, submitTransaction, txCreate)
-)
-
-const acceptTransaction = (entry) => (
-  acceptEthereumLikeBlockchainTransaction(entry, getLaborHourSigner, LaborHourMemoryDevice.getDerivedWallet,
-    web3Selector(), laborHourPendingEntrySelector, laborHourTxStatus, processTransaction)
-)
-
-const laborHourTxStatus = (key, address, props) => (
-  ethereumLikeBlockchainTxStatus(laborHourPendingSelector, key, address, props, txUpdate)
-)
-
-const processTransaction = ({ web3, entry, signer }) => (
-  processEthereumLikeBlockchainTransaction({ web3, entry, signer }, laborHourTxStatus, laborHourPendingEntrySelector, nonceUpdate)
-)
-
-const submitTransaction = (entry) => (
-  submitEthereumLikeBlockchainTransaction(entry, () => laborHourDAO, acceptTransaction, laborHourTxStatus)
-)

@@ -38,12 +38,3 @@ export const createTxExecModel = (tx, gasLimit, gasPrice, nonce, chainId) => {
 }
 
 export const estimateTxGas = (web3, query) => web3.eth.estimateGas(query)
-
-export const getEstimateGasRequestBasicFieldSet = (tx, gasPrice, nonce) => ({
-  from: tx.from,
-  to: tx.to,
-  value: tx.value,
-  data: tx.data,
-  gasPrice,
-  nonce,
-})

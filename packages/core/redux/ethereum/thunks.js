@@ -7,53 +7,42 @@ import ethereumDAO from '../../dao/EthereumDAO'
 import { HolderModel } from '../../models'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 import { daoByAddress } from '../daos/selectors'
+import TransactionHandler from '../ethereumLikeBlockchain/utils/TransactionHandler'
 import { getEthereumSigner } from '../persistAccount/selectors'
-import {
-  acceptEthereumLikeBlockchainTransaction,
-  estimateEthereumLikeBlockchainGas,
-  ethereumLikeBlockchainTxStatus,
-  executeEthereumLikeBlockchainTransaction,
-  processEthereumLikeBlockchainTransaction,
-  submitEthereumLikeBlockchainTransaction,
-} from '../ethereumLikeBlockchain/thunks'
-import { getEstimateGasRequestBasicFieldSet } from '../ethereumLikeBlockchain/utils'
+import { ethNonceUpdate, ethTxCreate, ethTxUpdate, ethWeb3Update } from './actions'
 import { DUCK_ETHEREUM } from './constants'
 import { ethereumPendingSelector, pendingEntrySelector, web3Selector } from './selectors'
-import { ethNonceUpdate, ethTxCreate, ethTxUpdate, ethWeb3Update } from './actions'
+
+class EthereumTransactionHandler extends TransactionHandler {
+  constructor () {
+    super(DUCK_ETHEREUM, ethereumPendingSelector, pendingEntrySelector, getEthereumSigner,
+      EthereumMemoryDevice.getDerivedWallet, {
+        nonceUpdate: ethNonceUpdate,
+        txCreate: ethTxCreate,
+        txUpdate: ethTxUpdate
+      }
+    )
+  }
+
+  getDAO (entry, state) {
+    return daoByAddress(entry.tx.to)(state) || ethereumDAO
+  }
+
+  getEstimateGasRequestFieldSet (tx, gasPrice, nonce, chainId) {
+    const fields = super.getEstimateGasRequestFieldSet(tx, gasPrice, nonce)
+    fields.chainId = chainId
+    return fields
+  }
+
+  getWeb3 (state) {
+    return web3Selector()(state)
+  }
+}
+
+const transactionHandler = new EthereumTransactionHandler()
+export const estimateGas = (tx, feeMultiplier = 1) => transactionHandler.estimateGas(tx, feeMultiplier)
+export const executeTransaction = ({ tx, options }) => transactionHandler.executeTransaction({ tx, options })
 
 export const initEthereum = ({ web3 }) => (dispatch) => {
   dispatch(ethWeb3Update(new HolderModel({ value: web3 })))
 }
-
-export const estimateGas = (tx, feeMultiplier = 1) => (
-  estimateEthereumLikeBlockchainGas(tx, feeMultiplier, web3Selector(), DUCK_ETHEREUM, getEstimateGasRequestFieldSet)
-)
-
-export const executeTransaction = ({ tx, options }) => (
-  executeEthereumLikeBlockchainTransaction({ tx, options }, web3Selector(), DUCK_ETHEREUM,
-    getEstimateGasRequestFieldSet, submitTransaction, ethTxCreate)
-)
-
-const acceptTransaction = (entry) => (
-  acceptEthereumLikeBlockchainTransaction(entry, getEthereumSigner, EthereumMemoryDevice.getDerivedWallet,
-    web3Selector(), pendingEntrySelector, ethTxStatus, processTransaction)
-)
-
-const ethTxStatus = (key, address, props) => (
-  ethereumLikeBlockchainTxStatus(ethereumPendingSelector, key, address, props, ethTxUpdate)
-)
-
-const getEstimateGasRequestFieldSet = (tx, gasPrice, nonce, chainId) => {
-  const fields = getEstimateGasRequestBasicFieldSet(tx, gasPrice, nonce)
-  fields.chainId = chainId
-  return fields
-}
-
-const processTransaction = ({ web3, entry, signer }) => (
-  processEthereumLikeBlockchainTransaction({ web3, entry, signer }, ethTxStatus, pendingEntrySelector, ethNonceUpdate)
-)
-
-const submitTransaction = (entry) => (
-  submitEthereumLikeBlockchainTransaction(entry, (entry, state) => daoByAddress(entry.tx.to)(state) || ethereumDAO,
-    acceptTransaction, ethTxStatus)
-)
