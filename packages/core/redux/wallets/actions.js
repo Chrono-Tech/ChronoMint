@@ -4,6 +4,7 @@
  */
 
 import { btcProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import { marketAddToken } from '@chronobank/market/redux/thunks'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
@@ -55,7 +56,6 @@ import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 import { DUCK_ETH_MULTISIG_WALLET, ETH_MULTISIG_BALANCE, ETH_MULTISIG_FETCHED } from '../multisigWallet/constants'
 import BalanceModel from '../../models/tokens/BalanceModel'
 import { getMultisigWallets } from '../wallet/selectors/models'
-import { addMarketToken } from '../market/actions'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -190,7 +190,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       }
     })
 
-  dispatch(addMarketToken(token.symbol()))
+  dispatch(marketAddToken(token.symbol()))
 
   if (token.symbol() === 'TIME') {
     dispatch(updateIsTIMERequired())
@@ -471,10 +471,11 @@ export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
   })
 }
 
-export const cleanWalletsList = () =>
-  ({
+export const cleanWalletsList = () => {
+  return {
     type: WALLETS_LOGOUT,
-  })
+  }
+}
 
 export const updateIsTIMERequired = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
