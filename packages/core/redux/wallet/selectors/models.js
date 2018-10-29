@@ -4,7 +4,6 @@
  */
 
 import { DUCK_ETH_MULTISIG_WALLET } from '../../multisigWallet/constants'
-import { DUCK_MARKET } from '../../market/constants'
 import { DUCK_TOKENS } from '../../tokens/constants'
 
 /**
@@ -18,7 +17,3 @@ export const getMultisigWallets = (state) => {
 
 export const selectTokensStore = (state) =>
   state.get(DUCK_TOKENS) // TokensCollection, array of TokenModel
-
-export const selectMarketPricesListStore = (state) => state.get(DUCK_MARKET).prices
-export const selectMarketPricesSelectedCurrencyStore = (state) => state.get(DUCK_MARKET).selectedCurrency
-

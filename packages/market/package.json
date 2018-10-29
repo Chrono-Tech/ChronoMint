@@ -1,0 +1,8 @@
+{
+  "name": "@chronobank/market",
+  "version": "1.0.0",
+  "dependencies": {
+    "axios": "^0.16.2",
+    "socket.io-client": "^2.0.3"
+  }
+}
