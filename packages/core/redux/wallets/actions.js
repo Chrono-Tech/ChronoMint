@@ -31,6 +31,7 @@ import { executeTransaction } from '../ethereum/thunks'
 import { executeWavesTransaction } from '../waves/thunks'
 import { executeBitcoinTransaction } from '../bitcoin/thunks'
 import {
+  WALLETS_LOGOUT,
   WALLETS_SET,
   WALLETS_SET_IS_TIME_REQUIRED,
   WALLETS_UNSET,
@@ -469,6 +470,11 @@ export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
     isLoaded: true,
   })
 }
+
+export const cleanWalletsList = () =>
+  ({
+    type: WALLETS_LOGOUT,
+  })
 
 export const updateIsTIMERequired = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)

@@ -6,7 +6,7 @@
 import { createSelector } from 'reselect'
 import { getWallets } from '../../wallets/selectors/models'
 import { getTokens } from '../../tokens/selectors'
-import { selectMarketPricesListStore, selectMarketPricesSelectedCurrencyStore } from './models'
+import { selectMarketPrices, selectCurrentCurrency } from '@chronobank/market/redux/selectors'
 import { getEthMultisigWallets } from '../../multisigWallet/selectors/models'
 
 export const getWalletTokens = (walletId: string, isAmountGt: boolean) => {
@@ -15,8 +15,8 @@ export const getWalletTokens = (walletId: string, isAmountGt: boolean) => {
       getWallets,
       getEthMultisigWallets,
       getTokens,
-      selectMarketPricesListStore,
-      selectMarketPricesSelectedCurrencyStore,
+      selectMarketPrices,
+      selectCurrentCurrency,
     ],
     (
       wallets,

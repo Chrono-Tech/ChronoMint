@@ -8,7 +8,7 @@ import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { walletInfoSelector } from '@chronobank/core/redux/wallet/selectors/selectors'
 import { convertSatoshiToBTC } from '@chronobank/core/redux/bitcoin/utils'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
-import { getMarket } from '@chronobank/core/redux/market/selectors'
+import { selectCurrentCoin } from '@chronobank/market/redux/selectors'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import Amount from '@chronobank/core/models/Amount'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
@@ -51,7 +51,7 @@ const DEBOUNCE_ESTIMATE_FEE_TIMEOUT = 1000
 
 export function mapStateToProps (state, ownProps) {
   const walletInfo = walletInfoSelector(ownProps.wallet, false, state)
-  const { selectedCurrency } = getMarket(state)
+  const selectedCurrency = selectCurrentCoin(state)
   const selector = formValueSelector(FORM_SEND_TOKENS)
   const formValues = getFormValues(FORM_SEND_TOKENS)
   const symbol = selector(state, 'symbol')

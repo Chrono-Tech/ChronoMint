@@ -11,14 +11,16 @@ import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { DUCK_MARKET } from '@chronobank/core/redux/market/constants'
+import { selectMarketPrices, selectCurrentCurrency, selectMarketInitState } from '@chronobank/market/redux/selectors'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import { getAllTokens } from '@chronobank/core/redux/tokens/selectors'
 
 import './TokenValue.scss'
 
 const mapStateToProps = (state) => {
-  const { isInited, prices, selectedCurrency } = state.get(DUCK_MARKET)
+  const isInited = selectMarketInitState(state)
+  const prices = selectMarketPrices(state)
+  const selectedCurrency = selectCurrentCurrency(state)
   return {
     isInited,
     prices,
