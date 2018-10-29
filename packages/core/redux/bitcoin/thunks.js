@@ -8,7 +8,9 @@ import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_DASH,
-  BLOCKCHAIN_LITECOIN, COIN_TYPE_BCC_MAINNET, COIN_TYPE_DASH_MAINNET,
+  BLOCKCHAIN_LITECOIN,
+  COIN_TYPE_BCC_MAINNET,
+  COIN_TYPE_DASH_MAINNET,
   COIN_TYPE_LTC_MAINNET,
 } from '@chronobank/login/network/constants'
 import type { Dispatch } from 'redux'
@@ -497,8 +499,7 @@ const initWalletFromKeys = (blockchainName) => async (dispatch, getState) => {
     walletDerivedPath: path,
   })
 
-  const provider = getProviderByBlockchain(blockchainName)
-  provider.subscribe(wallet.address)
+  getProviderByBlockchain(blockchainName).subscribe(wallet.address)
 
   dispatch({ type: WALLETS_SET, wallet })
   dispatch(updateWalletBalance(wallet))
@@ -508,9 +509,7 @@ export const disableBitcoin = (blockchainName) => async (dispatch, getState) => 
   const wallets = getWalletsByBlockchain(blockchainName)(getState())
 
   wallets.forEach((wallet) => {
-    const provider = getProviderByBlockchain(blockchainName)
-    provider.unsubscribe(wallet.address)
-
+    getProviderByBlockchain(blockchainName).unsubscribe(wallet.address)
     dispatch({ type: WALLETS_UNSET, wallet })
   })
 }

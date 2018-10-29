@@ -52,6 +52,7 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_BLOCKCHAIN_ACTIVATE })
 export default class TurnOffBlockchain extends React.Component {
+
   static propTypes = {
     modalsClear: PropTypes.func.isRequired,
     modalsClose: PropTypes.func.isRequired,

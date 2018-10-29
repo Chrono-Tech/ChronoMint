@@ -12,6 +12,7 @@ import {
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
+  BLOCKCHAIN_EOS,
 } from '@chronobank/login/network/constants'
 
 import * as ProfileThunks from '../profile/thunks'
@@ -43,6 +44,7 @@ import { enableBitcoin, disableBitcoin } from '../bitcoin/thunks'
 import { enableEthereum } from '../ethereum/thunks'
 import { enableNem, disableNem } from '../nem/thunks'
 import { enableWaves, disableWaves } from '../waves/thunks'
+import { enableEos, disableEos } from '../eos/thunks'
 
 const enableMap = {
   [BLOCKCHAIN_BITCOIN]: enableBitcoin(BLOCKCHAIN_BITCOIN),
@@ -51,6 +53,7 @@ const enableMap = {
   [BLOCKCHAIN_DASH]: enableBitcoin(BLOCKCHAIN_DASH),
   [BLOCKCHAIN_NEM]: enableNem(),
   [BLOCKCHAIN_WAVES]: enableWaves(),
+  [BLOCKCHAIN_EOS]: enableEos(),
 }
 const disableMap = {
   [BLOCKCHAIN_BITCOIN]: disableBitcoin(BLOCKCHAIN_BITCOIN),
@@ -59,6 +62,7 @@ const disableMap = {
   [BLOCKCHAIN_DASH]: disableBitcoin(BLOCKCHAIN_DASH),
   [BLOCKCHAIN_NEM]: disableNem(),
   [BLOCKCHAIN_WAVES]: disableWaves(),
+  [BLOCKCHAIN_EOS]: disableEos(),
 }
 
 export const enableDefaultBlockchains = () => (dispatch, getState) => {

@@ -10,6 +10,7 @@ import {
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
+  BLOCKCHAIN_EOS,
 } from '@chronobank/login/network/constants'
 
 export const DUCK_PERSIST_ACCOUNT = 'persistAccount'
@@ -32,6 +33,7 @@ export const DEFAULT_ACTIVE_BLOCKCHAINS = [
   BLOCKCHAIN_DASH,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
+  BLOCKCHAIN_EOS,
 ]
 
 export const FORM_BLOCKCHAIN_ACTIVATE = 'FormBlockchainActivate'

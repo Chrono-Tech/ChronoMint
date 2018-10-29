@@ -209,12 +209,12 @@ export const updateWalletBalance = (wallet) => (dispatch) => {
         })
       } catch (e) {
         // eslint-disable-next-line no-console
-        console.log(e.message)
+        console.error(e.message)
       }
     })
     .catch((e) => {
       // eslint-disable-next-line no-console
-      console.log('call balances from middleware is failed getWalletBalances', e)
+      console.error('call balances from middleware is failed getWalletBalances', e)
     })
 }
 

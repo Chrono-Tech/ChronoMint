@@ -10,6 +10,7 @@ import {
   EOS_UPDATE,
   EOS_UPDATE_WALLET,
   EOS_UPDATE_TOKEN,
+  EOS_UPDATE_WATCH_TIMEOUT_ID,
 } from './constants'
 
 export const updateEos = (eos) => ({
@@ -20,6 +21,11 @@ export const updateEos = (eos) => ({
 export const updateWallet = (wallet) => ({
   type: EOS_UPDATE_WALLET,
   wallet,
+})
+
+export const updateWatchTimeoutId = (timeoutId) => ({
+  type: EOS_UPDATE_WATCH_TIMEOUT_ID,
+  timeoutId,
 })
 
 export const eosTxCreate = (entry) => ({
