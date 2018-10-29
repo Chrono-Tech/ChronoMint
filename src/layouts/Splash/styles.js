@@ -7,6 +7,9 @@ import { createMuiTheme } from '@material-ui/core/styles'
 import variables from 'styles/themes/variables'
 
 export default createMuiTheme({
+  typography: {
+    useNextVariants: true,
+  },
   overrides: {
     MuiInput: {
       root: {
