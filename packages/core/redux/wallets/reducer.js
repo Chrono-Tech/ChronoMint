@@ -86,6 +86,16 @@ export default (state = initialState, action) => {
           }),
         },
       }
+    case a.WALLETS_LOGOUT:
+      return {
+        list: Object.entries(state.list)
+          .reduce((accumulator, [key, wallet]) => {
+            if (wallet.isDerived) {
+              accumulator[key] = wallet
+            }
+            return accumulator
+          }, {}),
+      }
     default:
       return state
   }
