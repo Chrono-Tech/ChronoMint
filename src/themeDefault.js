@@ -7,6 +7,9 @@ import { blue600 } from '@material-ui/core/colors/blue'
 import { createMuiTheme } from '@material-ui/core/styles'
 
 const themeDefault = createMuiTheme({
+  typography: {
+    useNextVariants: true,
+  },
   palette: {
     accent1Color: '#17579c',
     textColor: '#161240',

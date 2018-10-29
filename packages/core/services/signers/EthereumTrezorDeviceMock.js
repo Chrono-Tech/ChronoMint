@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import EventEmitter from 'events'
 import hdkey from 'ethereumjs-wallet/hdkey'
 import Accounts from 'web3-eth-accounts'
