@@ -15,24 +15,20 @@ export default class TransactionGuide {
   estimateGas (tx, feeMultiplier) {
     return (
       async (dispatch, getState) => {
-        // eslint-disable-next-line no-console
-        console.log(getState(), getState().toJS())
-        const web3 = this.getWeb3(getState())
-        // eslint-disable-next-line no-console
-        console.log(web3)
-        const nonce = await dispatch(this.nextNonce({ web3, address: tx.from }, this.duckId))
-        const gasPrice = new BigNumber(await web3.eth.getGasPrice()).mul(feeMultiplier)
-        const chainId = await web3.eth.net.getId()
-        const gasLimit = await web3.eth.estimateGas(this.getEstimateGasRequestFieldSet(tx, gasPrice, nonce, chainId))
+        const { gasLimit, gasPrice } = await this.getGasData(dispatch, this.getWeb3(getState()), tx, feeMultiplier)
         const gasFee = gasPrice.mul(gasLimit)
-
-        return {
-          gasLimit,
-          gasFee,
-          gasPrice,
-        }
+        return { gasLimit, gasFee, gasPrice }
       }
     )
+  }
+
+  @autobind
+  async getGasData (dispatch, web3, tx, feeMultiplier) {
+    const nonce = await dispatch(this.nextNonce({ web3, address: tx.from }, this.duckId))
+    const gasPrice = new BigNumber(await web3.eth.getGasPrice()).mul(feeMultiplier || 1)
+    const chainId = await web3.eth.net.getId()
+    const gasLimit = await web3.eth.estimateGas(this.getEstimateGasRequestFieldSet(tx, gasPrice, nonce, chainId))
+    return { chainId, gasLimit, gasPrice, nonce }
   }
 
   @autobind

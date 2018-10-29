@@ -136,10 +136,7 @@ export default class TransactionHandler extends TransactionGuide {
     return (
       async (dispatch) => {
         const { feeMultiplier } = options || {}
-        const nonce = await dispatch(this.nextNonce({ web3, address: tx.from }, this.duckId))
-        const gasPrice = new BigNumber(await web3.eth.getGasPrice()).mul(feeMultiplier || 1)
-        const chainId = await web3.eth.net.getId()
-        const gasLimit = await web3.eth.estimateGas(this.getEstimateGasRequestFieldSet(tx, gasPrice, nonce, chainId))
+        const { chainId, gasLimit, gasPrice, nonce } = await this.getGasData(dispatch, web3, tx, feeMultiplier)
         return createTxExecModel(tx, gasLimit, gasPrice, nonce, chainId)
       }
     )
