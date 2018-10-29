@@ -24,8 +24,8 @@ const EXCHANGE_PURPOSE_DATA = { purpose: 'middleware' }
 
 export default class ProfileService {
   static init = (networkID) => {
-    const baseURL = `${networkID === NETWORK_MAIN_ID ? URL_PROFILE_HOST : URL_PROFILE_HOST_TESTNET}${URL_PROFILE_BASE_PATH}`
-    ProfileService.service = axios.create({ baseURL })
+    const profileHost = networkID === NETWORK_MAIN_ID ? URL_PROFILE_HOST : URL_PROFILE_HOST_TESTNET
+    ProfileService.service = axios.create({ baseURL: profileHost + URL_PROFILE_BASE_PATH })
   }
 
   static requestProfileUserInfo (addresses: string[]) {
