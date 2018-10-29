@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import uuid from 'uuid/v1'
 import { findFunctionABI, TransactionDescriber } from '../TransactionDescriber'
 import { LogTxModel } from '../../../models'

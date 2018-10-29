@@ -7,6 +7,9 @@ import { createMuiTheme } from '@material-ui/core/styles'
 import variables from './variables'
 
 export default createMuiTheme({
+  typography: {
+    useNextVariants: true,
+  },
   raisedButton: {
     primaryColor: variables.colorAccent2,
     primaryTextColor: variables.colorWhite,
