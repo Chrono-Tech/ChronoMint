@@ -6,14 +6,14 @@
 import autobind from 'autobind-decorator'
 import BigNumber from 'bignumber.js'
 import { isNil, omitBy } from 'lodash'
+import uuid from 'uuid/v1'
 
 import { describePendingTx } from '../../../describers'
-import { TxEntryModel } from '../../../models'
+import { TxEntryModel, TxExecModel } from '../../../models'
 import { modalsOpen } from '../../modals/actions'
 import { showSignerModal, closeSignerModal } from '../../modals/thunks'
-import { getAccount } from '../../session/selectors/models'
 import { DUCK_PERSIST_ACCOUNT } from '../../persistAccount/constants'
-import { createTxEntryModel, createTxExecModel, estimateTxGas } from '../utils'
+import { getAccount } from '../../session/selectors/models'
 import TransactionGuide from './TransactionGuide'
 
 export default class TransactionHandler extends TransactionGuide {
@@ -139,7 +139,7 @@ export default class TransactionHandler extends TransactionGuide {
         const nonce = await dispatch(this.nextNonce({ web3, address: tx.from }, this.duckId))
         const gasPrice = new BigNumber(await web3.eth.getGasPrice()).mul(feeMultiplier || 1)
         const chainId = await web3.eth.net.getId()
-        const gasLimit = await estimateTxGas(web3, this.getEstimateGasRequestFieldSet(tx, gasPrice, nonce, chainId))
+        const gasLimit = await web3.eth.estimateGas(this.getEstimateGasRequestFieldSet(tx, gasPrice, nonce, chainId))
         return createTxExecModel(tx, gasLimit, gasPrice, nonce, chainId)
       }
     )
@@ -194,4 +194,33 @@ export default class TransactionHandler extends TransactionGuide {
       }
     )
   }
+}
+
+const createTxEntryModel = (tx, options) =>
+  new TxEntryModel({
+    key: uuid(),
+    tx,
+    receipt: null,
+    isSubmitted: true,
+    isAccepted: false,
+    walletDerivedPath: options && options.walletDerivedPath,
+  })
+
+const createTxExecModel = (tx, gasLimit, gasPrice, nonce, chainId) => {
+  const data = tx.data != null
+    ? tx.data
+    : null
+
+  return new TxExecModel({
+    ...tx,
+    hash: null,
+    data,
+    block: null,
+    from: tx.from.toLowerCase(),
+    to: tx.to.toLowerCase(),
+    gasLimit: new BigNumber(gasLimit),
+    gasPrice,
+    nonce,
+    chainId,
+  })
 }

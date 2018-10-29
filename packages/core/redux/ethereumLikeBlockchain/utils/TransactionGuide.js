@@ -6,8 +6,6 @@
 import autobind from 'autobind-decorator'
 import BigNumber from 'bignumber.js'
 
-import { estimateTxGas } from '../utils'
-
 export default class TransactionGuide {
   constructor (duckId) {
     this.duckId = duckId
@@ -25,7 +23,7 @@ export default class TransactionGuide {
         const nonce = await dispatch(this.nextNonce({ web3, address: tx.from }, this.duckId))
         const gasPrice = new BigNumber(await web3.eth.getGasPrice()).mul(feeMultiplier)
         const chainId = await web3.eth.net.getId()
-        const gasLimit = await estimateTxGas(web3, this.getEstimateGasRequestFieldSet(tx, gasPrice, nonce, chainId))
+        const gasLimit = await web3.eth.estimateGas(this.getEstimateGasRequestFieldSet(tx, gasPrice, nonce, chainId))
         const gasFee = gasPrice.mul(gasLimit)
 
         return {
