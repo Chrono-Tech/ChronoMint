@@ -15,8 +15,17 @@ import { getLaborHourSigner, laborHourPendingSelector, laborHourPendingEntrySele
 
 class LaborHourTransactionHandler extends TransactionHandler {
   constructor () {
-    super(DUCK_LABOR_HOUR, laborHourPendingSelector, laborHourPendingEntrySelector, getLaborHourSigner,
-      LaborHourMemoryDevice.getDerivedWallet, { nonceUpdate, txCreate, txUpdate })
+    super(DUCK_LABOR_HOUR, getLaborHourSigner, LaborHourMemoryDevice.getDerivedWallet,
+      {
+        pending: laborHourPendingSelector,
+        pendingEntry: laborHourPendingEntrySelector
+      },
+      {
+        nonceUpdate,
+        txCreate,
+        txUpdate
+      }
+    )
     this.web3 = null
   }
 

@@ -15,8 +15,11 @@ import { ethereumPendingSelector, pendingEntrySelector, web3Selector } from './s
 
 class EthereumTransactionHandler extends TransactionHandler {
   constructor () {
-    super(DUCK_ETHEREUM, ethereumPendingSelector, pendingEntrySelector, getEthereumSigner,
-      EthereumMemoryDevice.getDerivedWallet, {
+    super(DUCK_ETHEREUM, getEthereumSigner, EthereumMemoryDevice.getDerivedWallet,
+      { pending: ethereumPendingSelector,
+        pendingEntry: pendingEntrySelector
+      },
+      {
         nonceUpdate: ethNonceUpdate,
         txCreate: ethTxCreate,
         txUpdate: ethTxUpdate

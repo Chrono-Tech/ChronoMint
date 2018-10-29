@@ -17,12 +17,11 @@ import { getAccount } from '../../session/selectors/models'
 import TransactionGuide from './TransactionGuide'
 
 export default class TransactionHandler extends TransactionGuide {
-  constructor (duckId, pendingSelector, pendingEntrySelector, getSigner, getDerivedWallet, actions) {
+  constructor (duckId, getSigner, getDerivedWallet, selectors, actions) {
     super(duckId)
-    this.pendingSelector = pendingSelector
-    this.pendingEntrySelector = pendingEntrySelector
     this.getSigner = getSigner
     this.getDerivedWallet = getDerivedWallet
+    this.selectors = selectors
     this.actions = actions
   }
 
@@ -55,7 +54,7 @@ export default class TransactionHandler extends TransactionGuide {
 
         return dispatch(this.processTransaction({
           web3: this.getWeb3(state),
-          entry: this.pendingEntrySelector(entry.tx.from, entry.key)(state),
+          entry: this.selectors.pendingEntry(entry.tx.from, entry.key)(state),
           signer,
         }))
       }
@@ -66,7 +65,7 @@ export default class TransactionHandler extends TransactionGuide {
   txStatus (key, address, props) {
     return (
       (dispatch, getState) => {
-        const pending = this.pendingSelector()(getState())
+        const pending = this.selectors.pending()(getState())
         const scope = pending[address]
 
         if (!scope) {
@@ -98,7 +97,7 @@ export default class TransactionHandler extends TransactionGuide {
         await dispatch(this.signTransaction({ entry, signer }))
         return dispatch(this.sendSignedTransaction({
           web3,
-          entry: this.pendingEntrySelector(entry.tx.from, entry.key)(getState()),
+          entry: this.selectors.pendingEntry(entry.tx.from, entry.key)(getState()),
         }))
       }
     )
@@ -147,7 +146,7 @@ export default class TransactionHandler extends TransactionGuide {
     return (
       async (dispatch, getState) => {
         dispatch(this.txStatus(entry.key, entry.tx.from, { isPending: true }))
-        entry = this.pendingEntrySelector(entry.tx.from, entry.key)(getState())
+        entry = this.selectors.pendingEntry(entry.tx.from, entry.key)(getState())
         dispatch(this.actions.nonceUpdate(entry.tx.from, entry.tx.nonce))
 
         return new Promise((resolve, reject) => {
