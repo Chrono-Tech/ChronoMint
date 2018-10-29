@@ -3,6 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { getLaborHourWeb3 } from '@chronobank/login/network/LaborHourProvider'
+
 import { HolderModel } from '../../models'
 import laborHourDAO from '../../dao/LaborHourDAO'
 import LaborHourMemoryDevice from '../../services/signers/LaborHourMemoryDevice'
@@ -15,6 +17,7 @@ class LaborHourTransactionHandler extends TransactionHandler {
   constructor () {
     super(DUCK_LABOR_HOUR, laborHourPendingSelector, laborHourPendingEntrySelector, getLaborHourSigner,
       LaborHourMemoryDevice.getDerivedWallet, { nonceUpdate, txCreate, txUpdate })
+    this.web3 = null
   }
 
   getDAO () {
@@ -22,7 +25,11 @@ class LaborHourTransactionHandler extends TransactionHandler {
   }
 
   getWeb3 (state) {
-    return web3Selector()(state)
+    if(this.web3 === null) {
+      this.web3 = getLaborHourWeb3(web3Selector()(state))
+    }
+
+    return this.web3
   }
 }
 
