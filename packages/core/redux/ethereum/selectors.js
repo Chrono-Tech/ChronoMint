@@ -6,7 +6,7 @@
 import { createSelector } from 'reselect'
 
 import { DUCK_ETHEREUM } from './constants'
-import { pendingSubSelector, getPendingEntrySubSelector } from '../ethereumLikeBlockchain/selectors'
+import { pendingSubSelector, getPendingEntrySubSelector } from '../ethereumLikeBlockchain/utils/selectors'
 
 export const ethereumSelector = () => (state) =>
   state.get(DUCK_ETHEREUM)
