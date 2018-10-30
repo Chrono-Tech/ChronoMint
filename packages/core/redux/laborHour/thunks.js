@@ -8,24 +8,13 @@ import { getLaborHourWeb3 } from '@chronobank/login/network/LaborHourProvider'
 import { HolderModel } from '../../models'
 import laborHourDAO from '../../dao/LaborHourDAO'
 import LaborHourMemoryDevice from '../../services/signers/LaborHourMemoryDevice'
-import TransactionHandler from '../abstractEthereum/utils/TransactionHandler'
-import { nonceUpdate, txCreate, txUpdate, laborHourWeb3Update } from './actions'
-import { DUCK_LABOR_HOUR } from './constants'
-import { getLaborHourSigner, laborHourPendingSelector, laborHourPendingEntrySelector, web3Selector } from './selectors'
+import TransactionHandler from '../ethereumTransaction/utils/TransactionHandler'
+import { laborHourWeb3Update } from './actions'
+import { getLaborHourSigner, web3Selector } from './selectors'
 
 class LaborHourTransactionHandler extends TransactionHandler {
   constructor () {
-    super(DUCK_LABOR_HOUR, getLaborHourSigner, LaborHourMemoryDevice.getDerivedWallet,
-      {
-        pending: laborHourPendingSelector,
-        pendingEntry: laborHourPendingEntrySelector
-      },
-      {
-        nonceUpdate,
-        txCreate,
-        txUpdate
-      }
-    )
+    super(getLaborHourSigner, LaborHourMemoryDevice.getDerivedWallet)
     this.web3 = null
   }
 

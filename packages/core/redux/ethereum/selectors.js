@@ -6,10 +6,9 @@
 import { createSelector } from 'reselect'
 
 import { DUCK_ETHEREUM } from './constants'
-import { pendingSubSelector, getPendingEntrySubSelector } from '../abstractEthereum/utils/selectors'
+import { transactionSelector } from '../ethereumTransaction/selectors'
 
-export const ethereumSelector = () => (state) =>
-  state.get(DUCK_ETHEREUM)
+export const ethereumSelector = () => (state) => state.get(DUCK_ETHEREUM)
 
 export const web3Selector = () => createSelector(
   ethereumSelector(),
@@ -20,10 +19,8 @@ export const web3Selector = () => createSelector(
   },
 )
 
-export const ethereumPendingSelector = () => createSelector(ethereumSelector(), pendingSubSelector)
-
 export const ethereumPendingFormatSelector = () => createSelector(
-  ethereumSelector(),
+  transactionSelector(),
   (ethereum) => {
     if (ethereum == null || ethereum.pending == null) {
       return null
@@ -42,8 +39,4 @@ export const ethereumPendingCountSelector = () => createSelector(
   (pendingList) => {
     return pendingList ? pendingList.length : 0
   },
-)
-
-export const pendingEntrySelector = (address, key) => (
-  createSelector(ethereumPendingSelector(), getPendingEntrySubSelector(address, key))
 )

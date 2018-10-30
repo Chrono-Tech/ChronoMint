@@ -4,29 +4,8 @@
  */
 
 import {
-  NONCE_UPDATE,
-  TX_CREATE,
-  TX_UPDATE,
   WEB3_UPDATE,
 } from './constants'
-
-export const nonceUpdate = (address, nonce) => ({
-  type: NONCE_UPDATE,
-  address,
-  nonce,
-})
-
-export const txCreate = (entry) => ({
-  type: TX_CREATE,
-  entry,
-})
-
-export const txUpdate = (key, address, tx) => ({
-  type: TX_UPDATE,
-  address,
-  key,
-  tx,
-})
 
 export const laborHourWeb3Update = (web3) => ({
   type: WEB3_UPDATE,

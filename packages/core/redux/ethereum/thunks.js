@@ -7,24 +7,14 @@ import ethereumDAO from '../../dao/EthereumDAO'
 import { HolderModel } from '../../models'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 import { daoByAddress } from '../daos/selectors'
-import TransactionHandler from '../abstractEthereum/utils/TransactionHandler'
+import TransactionHandler from '../ethereumTransaction/utils/TransactionHandler'
 import { getEthereumSigner } from '../persistAccount/selectors'
-import { ethNonceUpdate, ethTxCreate, ethTxUpdate, ethWeb3Update } from './actions'
-import { DUCK_ETHEREUM } from './constants'
-import { ethereumPendingSelector, pendingEntrySelector, web3Selector } from './selectors'
+import { ethWeb3Update } from './actions'
+import { web3Selector } from './selectors'
 
 class EthereumTransactionHandler extends TransactionHandler {
   constructor () {
-    super(DUCK_ETHEREUM, getEthereumSigner, EthereumMemoryDevice.getDerivedWallet,
-      { pending: ethereumPendingSelector,
-        pendingEntry: pendingEntrySelector
-      },
-      {
-        nonceUpdate: ethNonceUpdate,
-        txCreate: ethTxCreate,
-        txUpdate: ethTxUpdate
-      }
-    )
+    super(getEthereumSigner, EthereumMemoryDevice.getDerivedWallet)
   }
 
   getDAO (entry, state) {

@@ -11,6 +11,7 @@ import bitcoin from './bitcoin/reducer'
 import dao from './daos/reducer'
 import device from './device/reducer'
 import ethereum from './ethereum/reducer'
+import ethereumTransaction from './ethereumTransaction/reducer'
 import ethMultisigWallet from './multisigWallet/reducer'
 import events from './events/reducer'
 import laborHour from './laborHour/reducer'
@@ -38,6 +39,7 @@ const coreReducers = {
   dao,
   device,
   ethereum,
+  ethereumTransaction,
   ethMultisigWallet,
   events,
   laborHour,

@@ -14,15 +14,16 @@ import { modalsOpen } from '../../modals/actions'
 import { showSignerModal, closeSignerModal } from '../../modals/thunks'
 import { DUCK_PERSIST_ACCOUNT } from '../../persistAccount/constants'
 import { getAccount } from '../../session/selectors/models'
+import { nonceUpdate, txCreate, txUpdate } from '../actions'
+import { DUCK_NAME } from '../constants'
+import { pendingSelector, pendingEntrySelector } from '../selectors'
 import TransactionGuide from './TransactionGuide'
 
 export default class TransactionHandler extends TransactionGuide {
-  constructor (duckId, getSigner, getDerivedWallet, selectors, actions) {
-    super(duckId)
+  constructor (getSigner, getDerivedWallet) {
+    super(DUCK_NAME)
     this.getSigner = getSigner
     this.getDerivedWallet = getDerivedWallet
-    this.selectors = selectors
-    this.actions = actions
   }
 
   @autobind
@@ -33,7 +34,7 @@ export default class TransactionHandler extends TransactionGuide {
         const prepared = await dispatch(this.prepareTransaction({ web3, tx, options }))
         const entry = createTxEntryModel(prepared, options)
 
-        await dispatch(this.actions.txCreate(entry))
+        await dispatch(txCreate(entry))
         dispatch(this.submitTransaction(entry))
       }
     )
@@ -54,7 +55,7 @@ export default class TransactionHandler extends TransactionGuide {
 
         return dispatch(this.processTransaction({
           web3: this.getWeb3(state),
-          entry: this.selectors.pendingEntry(entry.tx.from, entry.key)(state),
+          entry: pendingEntrySelector(entry.tx.from, entry.key)(state),
           signer,
         }))
       }
@@ -65,7 +66,7 @@ export default class TransactionHandler extends TransactionGuide {
   txStatus (key, address, props) {
     return (
       (dispatch, getState) => {
-        const pending = this.selectors.pending()(getState())
+        const pending = pendingSelector()(getState())
         const scope = pending[address]
 
         if (!scope) {
@@ -78,7 +79,7 @@ export default class TransactionHandler extends TransactionGuide {
           return null
         }
 
-        return dispatch(this.actions.txUpdate(
+        return dispatch(txUpdate(
           key,
           address,
           new TxEntryModel({
@@ -97,7 +98,7 @@ export default class TransactionHandler extends TransactionGuide {
         await dispatch(this.signTransaction({ entry, signer }))
         return dispatch(this.sendSignedTransaction({
           web3,
-          entry: this.selectors.pendingEntry(entry.tx.from, entry.key)(getState()),
+          entry: pendingEntrySelector(entry.tx.from, entry.key)(getState()),
         }))
       }
     )
@@ -146,8 +147,8 @@ export default class TransactionHandler extends TransactionGuide {
     return (
       async (dispatch, getState) => {
         dispatch(this.txStatus(entry.key, entry.tx.from, { isPending: true }))
-        entry = this.selectors.pendingEntry(entry.tx.from, entry.key)(getState())
-        dispatch(this.actions.nonceUpdate(entry.tx.from, entry.tx.nonce))
+        entry = pendingEntrySelector(entry.tx.from, entry.key)(getState())
+        dispatch(nonceUpdate(entry.tx.from, entry.tx.nonce))
 
         return new Promise((resolve, reject) => {
           web3.eth.sendSignedTransaction(entry.raw)
