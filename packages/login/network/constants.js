@@ -31,6 +31,7 @@ export const LTC = 'LTC'
 export const TIME = 'TIME'
 export const WAVES = 'WAVES'
 export const XEM = 'XEM'
+export const EOS = 'EOS'
 
 export const BLOCKCHAIN_BITCOIN = 'Bitcoin'
 export const BLOCKCHAIN_BITCOIN_CASH = 'Bitcoin Cash'
