@@ -33,7 +33,7 @@ export default (state = initialState, action) => {
       return state
         .assets({
           ...state.assets(),
-          [ action.asset.token ]: action.asset,
+          [action.asset.token]: action.asset,
         })
     case GET_PLATFORMS:
       return state

@@ -10,7 +10,7 @@ import { Translate } from 'react-redux-i18n'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { TOKEN_ICONS } from 'assets'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
-import { getMarket } from '@chronobank/core/redux/market/selectors'
+import { selectCurrentCurrency } from '@chronobank/market/redux/selectors'
 import TokenPrice from 'components/common/TokenPrice/TokenPrice'
 import { walletTokensAmountSelector } from '@chronobank/core/redux/wallets/selectors/balances'
 import { getAllTokens, getMainSymbolForBlockchain } from '@chronobank/core/redux/tokens/selectors'
@@ -24,7 +24,7 @@ function makeMapStateToProps (state, props) {
   const { wallet } = props
   let getAmount = walletTokensAmountSelector(wallet.id)
   const mapStateToProps = (ownState) => {
-    const { selectedCurrency } = getMarket(state)
+    const selectedCurrency = selectCurrentCurrency(state)
     return {
       mainSymbol: getMainSymbolForBlockchain(wallet.blockchain),
       selectedCurrency,

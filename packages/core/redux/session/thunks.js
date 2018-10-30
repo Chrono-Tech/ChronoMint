@@ -9,16 +9,18 @@ import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selec
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import metaMaskResolver from '@chronobank/login/network/metaMaskResolver'
+import { stopMarket } from '@chronobank/market/middleware/thunks'
 import * as SessionActions from './actions'
 import * as ProfileThunks from '../profile/thunks'
 import ProfileService from '../profile/service'
 import { daoByType } from '../../redux/daos/selectors'
 import web3Factory from '../../web3'
 import { watcher } from '../watcher/actions'
-import { watchStopMarket } from '../market/actions'
 import { initEthereum } from '../ethereum/thunks'
 import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
 import { DEFAULT_CBE_URL, DEFAULT_USER_URL, DUCK_SESSION } from './constants'
+import { getAccountAddresses } from './selectors/session'
+import { cleanWalletsList } from '../wallets/actions'
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
@@ -102,7 +104,8 @@ export const createNetworkSession = (account, provider, network) => (dispatch) =
 
 export const logout = () => async (dispatch) => {
   try {
-    dispatch(watchStopMarket())
+    dispatch(stopMarket(true)) // true means isGraceful disconnect, do not reconnect
+    dispatch(cleanWalletsList())
     dispatch(destroyNetworkSession())
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -133,10 +136,9 @@ export const login = (account) => async (dispatch, getState) => {
   await dispatch(watcher({ web3 }))
 
   const userManagerDAO = daoByType('UserManager')(getState())
-  const [isCBE, profile /*memberId*/] = await Promise.all([
+  const [isCBE, profile] = await Promise.all([
     userManagerDAO.isCBE(account),
     userManagerDAO.getMemberProfile(account, web3),
-    userManagerDAO.getMemberId(account),
   ])
 
   dispatch(SessionActions.sessionProfile(profile, isCBE))
@@ -148,15 +150,16 @@ export const bootstrap = () => async () => {
   return true //FIXME remove method
 }
 
-export const getProfileSignature = (signer, path) => async (dispatch) => {
+export const getProfileSignature = (signer, path) => async (dispatch, getState) => {
   if (!signer) {
     return
   }
 
   try {
-    const signDataString = ProfileService.getSignData()
+    const addresses = getAccountAddresses(getState())
+    const signDataString = ProfileService.getSignData(addresses)
     const signData = await signer.signData(signDataString, path)
-    const profileSignature = await dispatch(ProfileThunks.getUserProfile(signData.signature))
+    const profileSignature = await dispatch(ProfileThunks.getUserProfile(signData.signature, addresses))
     dispatch(SessionActions.setProfileSignature(profileSignature))
 
     return profileSignature

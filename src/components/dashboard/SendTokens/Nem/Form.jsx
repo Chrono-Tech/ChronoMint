@@ -6,7 +6,7 @@
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { walletInfoSelector } from '@chronobank/core/redux/wallet/selectors/selectors'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
-import { getMarket } from '@chronobank/core/redux/market/selectors'
+import { selectCurrentCurrency } from '@chronobank/market/redux/selectors'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import Amount from '@chronobank/core/models/Amount'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
@@ -52,7 +52,7 @@ function mapDispatchToProps (dispatch) {
 function mapStateToProps (state, ownProps) {
 
   const walletInfo = walletInfoSelector(ownProps.wallet, false, state)
-  const { selectedCurrency } = getMarket(state)
+  const selectedCurrency = selectCurrentCurrency(state)
   const selector = formValueSelector(FORM_SEND_TOKENS)
   const formValues = getFormValues(FORM_SEND_TOKENS)
   const symbol = selector(state, 'symbol')
