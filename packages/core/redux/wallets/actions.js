@@ -378,7 +378,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
   })
 
   dispatch(setWallet(wallet))
-  // dispatch(updateWalletBalance({ wallet })) // @todo
+  // dispatch(updateWalletBalance({ wallet })) // @todo Artem Kalashnikov.
 }
 
 export const getTransactionsForMainWallet = ({ blockchain, address, forcedOffset }) => async (dispatch, getState) => {

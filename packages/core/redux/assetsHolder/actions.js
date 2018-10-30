@@ -173,9 +173,7 @@ export const withdrawAsset = (amount: Amount, token: TokenModel, feeMultiplier: 
 
 export const requireTIME = () => async (dispatch, getState) => {
   try {
-    const state = getState()
-    const assetDonatorDAO = daoByType('AssetDonator')(state)
-
+    const assetDonatorDAO = daoByType('AssetDonator')(getState())
     const tx = await assetDonatorDAO.requireTIME()
 
     if (tx) {

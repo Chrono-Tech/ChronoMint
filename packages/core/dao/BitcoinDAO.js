@@ -204,7 +204,7 @@ export default class BitcoinDAO extends EventEmitter {
       symbol: this._symbol,
       isFetched: true,
       blockchain: this._name,
-      feeRate: feeRate,
+      feeRate,
     })
   }
 

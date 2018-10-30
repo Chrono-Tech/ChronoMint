@@ -37,7 +37,7 @@ export const subscribeWallet = ({ wallet }) => async (dispatch) => {
     if (checkedFrom || checkedTo) {
       if (wallet.isMain || wallet.isDerived) {
         // dispatch(updateWalletBalance({ wallet }))
-        // @todo
+        // @todo Artem Kalashnikov
       }
       if (wallet.isMultisig) {
         dispatch(updateEthMultisigWalletBalance({ wallet }))

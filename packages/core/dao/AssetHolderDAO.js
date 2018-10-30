@@ -33,10 +33,6 @@ export default class AssetHolderDAO extends AbstractContractDAO {
       .on('data', this.handleEventsData)
   }
 
-  async watchLock (/*callback*/) {
-    return this.on('Lock', (/*a, b, c, d*/) => {})
-  }
-
   async getSharesContract (): Promise {
     return this.contract.methods.getDefaultShares().call()
   }
