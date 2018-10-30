@@ -33,17 +33,14 @@ import {
   ACTION_TRANSFER,
   FORM_SEND_TOKENS,
 } from 'components/constants'
-import {
-  selectMarketPricesListStore,
-  selectMarketPricesSelectedCurrencyStore,
-} from '@chronobank/core/redux/wallet/selectors/models'
+import { selectMarketPrices, selectCurrentCurrency } from '@chronobank/market/redux/selectors'
 import { prefix } from '../lang'
 import '../form.scss'
 import validate from './validate'
 
 function mapStateToProps (state, ownProps) {
 
-  const { selectedCurrency } = selectMarketPricesSelectedCurrencyStore(state)
+  const { selectedCurrency } = selectCurrentCurrency(state)
   const selector = formValueSelector(FORM_SEND_TOKENS)
   const formValues = getFormValues(FORM_SEND_TOKENS)
   const symbol = selector(state, 'symbol')
@@ -57,7 +54,7 @@ function mapStateToProps (state, ownProps) {
   const initialValues = {
     symbol: symbol || EOS,
   }
-  const prices = selectMarketPricesListStore(state)
+  const prices = selectMarketPrices(state)
 
   return {
     selectedCurrency,

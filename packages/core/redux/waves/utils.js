@@ -3,16 +3,20 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import * as WavesApi from '@waves/waves-api'
 import uuid from 'uuid/v1'
 import BigNumber from 'bignumber.js'
+import { COIN_TYPE_ALLCOINS_TESTNET } from '@chronobank/login/network/constants'
 import { TxEntryModel, TxExecModel } from '../../models'
 import {
   TRANSACTION_TYPE_TRANSFER,
   TRANSACTION_TYPE_ISSUE,
   DEFAULT_TRANSACTION_FEE,
   DEFAULT_ISSUE_FEE,
+  WAVES_COIN_TYPE,
 } from './constants'
 import { WAVES } from '../../dao/constants'
+import { getDerivedPath } from '../wallets/utils'
 
 export const createWavesTxEntryModel = (entry, options = {}) => {
   return new TxEntryModel({
@@ -78,4 +82,11 @@ export const prepareWavesTransaction = (tx, token, network) => () => {
     fee: new BigNumber(prepared.fee),
     prepared: prepared,
   })
+}
+
+export const getWavesDerivedPath = (networkName) => {
+  const coinType = WavesApi[networkName] === WavesApi.MAINNET_CONFIG
+    ? WAVES_COIN_TYPE
+    : COIN_TYPE_ALLCOINS_TESTNET
+  return getDerivedPath(coinType)
 }

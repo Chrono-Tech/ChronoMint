@@ -17,8 +17,8 @@ const HTTP_TIMEOUT = 4000
 
 const BTC_MAINNET_NODE = axios.create({ baseURL: 'https://middleware-bitcoin-mainnet-rest.chronobank.io', timeout: HTTP_TIMEOUT })
 const BTC_TESTNET_NODE = axios.create({ baseURL: 'https://middleware-bitcoin-testnet-rest.chronobank.io', timeout: HTTP_TIMEOUT })
-const BCC_MAINNET_NODE = axios.create({ baseURL: 'https://explorer.bitcoingold.org/insight-api', timeout: 10000 })
-const BCC_TESTNET_NODE = axios.create({ baseURL: 'https://tbcc.blockdozer.com/insight-api', timeout: 10000, withCredentials: false })
+const BCC_MAINNET_NODE = axios.create({ baseURL: 'https://test-bcc.chronobank.io', timeout: 10000 })
+const BCC_TESTNET_NODE = axios.create({ baseURL: 'https://test-bcc.chronobank.io', timeout: 10000, withCredentials: false })
 const DASH_MAINNET_NODE = axios.create({ baseURL: 'https://insight.dashevo.org/insight-api-dash', timeout: 10000 })
 const DASH_TESTNET_NODE = axios.create({ baseURL: 'https://testnet-insight.dashevo.org/insight-api-dash', timeout: 10000 })
 const LTC_MAINNET_NODE = axios.create({ baseURL: 'https://middleware-litecoin-mainnet-rest.chronobank.io', timeout: HTTP_TIMEOUT })
@@ -29,21 +29,21 @@ const URL_GET_UTXOS = (address) => `addr/${address}/utxo`
 /** Class for HTTP requests to nodes in Testnet and Mainnet. */
 export default class BitcoinMiddlewareService {
   static service = {
-    [BLOCKCHAIN_BITCOIN_CASH]: {
-      bitcoin: BCC_MAINNET_NODE,
-      testnet: BCC_TESTNET_NODE,
-    },
     [BLOCKCHAIN_BITCOIN]: {
       bitcoin: BTC_MAINNET_NODE,
       testnet: BTC_TESTNET_NODE,
     },
-    [BLOCKCHAIN_DASH]: {
-      bitcoin: DASH_MAINNET_NODE,
-      testnet: DASH_TESTNET_NODE,
+    [BLOCKCHAIN_BITCOIN_CASH]: {
+      bitcoin: BCC_MAINNET_NODE,
+      testnet: BCC_TESTNET_NODE,
     },
     [BLOCKCHAIN_LITECOIN]: {
       litecoin: LTC_MAINNET_NODE,
       litecoin_testnet: LTC_TESTNET_NODE,
+    },
+    [BLOCKCHAIN_DASH]: {
+      bitcoin: DASH_MAINNET_NODE,
+      testnet: DASH_TESTNET_NODE,
     },
   }
 
