@@ -4,23 +4,29 @@
  */
 
 import axios from 'axios'
+import { NETWORK_MAIN_ID } from '@chronobank/login/network/settings'
 import * as Utils from './utils'
+import { deepSortByKey } from '../../utils/formatter'
 
-const URL_PROFILE_HOST = 'https://backend.profile.tp.ntr1x.com/'
-const URL_PROFILE_BASE_PATH = URL_PROFILE_HOST + 'api/v1/'
+const URL_PROFILE_HOST = 'https://profile-stage.laborx.io/'
+const URL_PROFILE_HOST_TESTNET = 'https://profile-stage-testnet.laborx.io/'
+const URL_PROFILE_BASE_PATH = 'api/v1/'
 
 const URL_PROFILE_USER_INFO = 'security/persons/query'
-const URL_PROFILE_SIGNATURE = 'security/signin/signature'
+const URL_PROFILE_SIGNATURE = 'security/signin/signature/chronomint'
 const URL_PROFILE_UPDATE_PROFILE = 'security/me/profile/combine/update'
 
 // URLs for avatar
 const URL_PROFILE_IMAGE_DOWNLOAD = `media/image/`
 const URL_PROFILE_IMAGE_UPLOAD = 'media/image/upload'
 
-const EXCHANGE_PURPOSE_DATA = { purpose: 'exchange' }
+const EXCHANGE_PURPOSE_DATA = { purpose: 'middleware' }
 
 export default class ProfileService {
-  static service = axios.create({ baseURL: URL_PROFILE_BASE_PATH })
+  static init = (networkID) => {
+    const profileHost = networkID === NETWORK_MAIN_ID ? URL_PROFILE_HOST : URL_PROFILE_HOST_TESTNET
+    ProfileService.service = axios.create({ baseURL: profileHost + URL_PROFILE_BASE_PATH })
+  }
 
   static requestProfileUserInfo (addresses: string[]) {
     return ProfileService.service.request({
@@ -41,12 +47,15 @@ export default class ProfileService {
     })
   }
 
-  static requestUserProfile (signature) {
+  static requestUserProfile (signature, addresses) {
     return ProfileService.service.request({
       method: 'POST',
       url: URL_PROFILE_SIGNATURE,
       // responseType: 'json',
-      data: EXCHANGE_PURPOSE_DATA,
+      data: {
+        ...EXCHANGE_PURPOSE_DATA,
+        addresses,
+      },
       headers: Utils.getPostConfigWithAuthorizationSignature(signature),
     })
   }
@@ -76,10 +85,15 @@ export default class ProfileService {
     })
   }
 
-  static getSignData () {
-    return JSON.stringify({
-      body: EXCHANGE_PURPOSE_DATA,
-      url: URL_PROFILE_SIGNATURE,
-    })
+  static getSignData (addresses) {
+    return JSON.stringify(
+      deepSortByKey({
+        url: URL_PROFILE_SIGNATURE,
+        body: {
+          ...EXCHANGE_PURPOSE_DATA,
+          addresses,
+        },
+      }),
+    )
   }
 }

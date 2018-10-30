@@ -105,8 +105,6 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         const wallet = await dispatch(PersistAccountActions.decryptAccount(accountWallet, password))
 
         await dispatch(PersistAccountActions.accountLoad(wallet))
-        const signer = getEthereumSigner(getState())
-        await dispatch(SessionThunks.getProfileSignature(signer, accountWallet.encrypted[0].path))
 
         dispatch(NetworkActions.selectAccount(accountWallet.address))
 
@@ -127,6 +125,8 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
 
         dispatch(replace(localStorage.getLastURL() || defaultURL))
+        const signer = getEthereumSigner(getState())
+        await dispatch(SessionThunks.getProfileSignature(signer, accountWallet.encrypted[0].path))
       } catch (e) {
         //eslint-disable-next-line
         console.warn('Memory type error: ', e)
