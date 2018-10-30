@@ -30,7 +30,7 @@ import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
 import { walletInfoSelector } from '@chronobank/core/redux/wallet/selectors/selectors'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import inversedTheme from 'styles/themes/inversed'
-import { getMarket } from '@chronobank/core/redux/market/selectors'
+import { selectCurrentCurrency } from '@chronobank/market/redux/selectors'
 import { MultisigEthWalletModel } from '@chronobank/core/models'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import { ACTION_APPROVE, ACTION_TRANSFER, FORM_SEND_TOKENS, MODE_ADVANCED, MODE_SIMPLE } from 'components/constants'
@@ -42,7 +42,7 @@ const DEBOUNCE_ESTIMATE_FEE_TIMEOUT = 1000
 
 export function mapStateToProps (state, ownProps) {
   const walletInfo = walletInfoSelector(ownProps.wallet, false, state)
-  const { selectedCurrency } = getMarket(state)
+  const selectedCurrency = selectCurrentCurrency(state)
   const selector = formValueSelector(FORM_SEND_TOKENS)
   const formValues = getFormValues(FORM_SEND_TOKENS)
   const symbol = selector(state, 'symbol')
