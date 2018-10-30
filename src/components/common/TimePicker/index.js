@@ -7,7 +7,7 @@ import React, { PureComponent } from 'react'
 import moment from 'moment/moment'
 import TimePicker from 'material-ui-pickers/TimePicker'
 import MomentUtils from 'material-ui-pickers/utils/moment-utils'
-import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider'
+import MuiPickersUtilsProvider from 'material-ui-pickers/MuiPickersUtilsProvider'
 
 import './style.scss'
 
