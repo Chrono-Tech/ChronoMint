@@ -6,9 +6,11 @@
 import autobind from 'autobind-decorator'
 import BigNumber from 'bignumber.js'
 
+import { blockchainScopeSelector } from '../selectors'
+
 export default class TransactionGuide {
-  constructor (duckId) {
-    this.duckId = duckId
+  constructor (blockchain) {
+    this.blockchainScopeSelector = blockchainScopeSelector(blockchain)
   }
 
   @autobind
@@ -24,7 +26,7 @@ export default class TransactionGuide {
 
   @autobind
   async getGasData (dispatch, web3, tx, feeMultiplier) {
-    const nonce = await dispatch(this.nextNonce({ web3, address: tx.from }, this.duckId))
+    const nonce = await dispatch(this.nextNonce({ web3, address: tx.from }))
     const gasPrice = new BigNumber(await web3.eth.getGasPrice()).mul(feeMultiplier || 1)
     const chainId = await web3.eth.net.getId()
     const gasLimit = await web3.eth.estimateGas(this.getEstimateGasRequestFieldSet(tx, gasPrice, nonce, chainId))
@@ -36,7 +38,7 @@ export default class TransactionGuide {
     return (
       async (dispatch, getState) => {
         const addr = address.toLowerCase()
-        const state = getState().get(this.duckId)
+        const state = this.blockchainScopeSelector(getState())
 
         return Math.max(
           (addr in state.nonces) ? state.nonces[addr] : 0,

@@ -6,6 +6,7 @@
 import { getLaborHourWeb3 } from '@chronobank/login/network/LaborHourProvider'
 
 import { HolderModel } from '../../models'
+import { BLOCKCHAIN_LABOR_HOUR } from '../../dao/constants'
 import laborHourDAO from '../../dao/LaborHourDAO'
 import LaborHourMemoryDevice from '../../services/signers/LaborHourMemoryDevice'
 import TransactionHandler from '../ethereumTransaction/utils/TransactionHandler'
@@ -14,7 +15,7 @@ import { getLaborHourSigner, web3Selector } from './selectors'
 
 class LaborHourTransactionHandler extends TransactionHandler {
   constructor () {
-    super(getLaborHourSigner, LaborHourMemoryDevice.getDerivedWallet)
+    super(BLOCKCHAIN_LABOR_HOUR, getLaborHourSigner, LaborHourMemoryDevice.getDerivedWallet)
     this.web3 = null
   }
 

@@ -6,7 +6,6 @@
 import { createSelector } from 'reselect'
 
 import { DUCK_ETHEREUM } from './constants'
-import { transactionSelector } from '../ethereumTransaction/selectors'
 
 export const ethereumSelector = () => (state) => state.get(DUCK_ETHEREUM)
 
@@ -16,27 +15,5 @@ export const web3Selector = () => createSelector(
     return ethereum == null // nil check
       ? null
       : ethereum.web3.value
-  },
-)
-
-export const ethereumPendingFormatSelector = () => createSelector(
-  transactionSelector(),
-  (ethereum) => {
-    if (ethereum == null || ethereum.pending == null) {
-      return null
-    }
-
-    return Object.values(ethereum.pending)
-      .reduce((accumulator, txList) => {
-        return accumulator.concat(Object.values(txList)
-          .filter((tx) => tx.isAccepted && !tx.isMined))
-      }, [])
-  },
-)
-
-export const ethereumPendingCountSelector = () => createSelector(
-  ethereumPendingFormatSelector(),
-  (pendingList) => {
-    return pendingList ? pendingList.length : 0
   },
 )

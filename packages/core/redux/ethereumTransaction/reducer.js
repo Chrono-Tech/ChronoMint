@@ -11,53 +11,93 @@ import {
   TX_UPDATE,
 } from './constants'
 
-const initialState = () => ({
+import {
+  BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_LABOR_HOUR,
+} from '../../dao/constants'
+
+const initialSubState = {
   nonces: {},
   pending: {},
+}
+
+const initialState = () => ({
+  [BLOCKCHAIN_ETHEREUM]: {
+    ...initialSubState,
+  },
+  [BLOCKCHAIN_LABOR_HOUR]: {
+    ...initialSubState,
+  },
 })
 
 const mutations = {
-  [NONCE_UPDATE]: (state, { address, nonce }) => ({
-    ...state,
-    nonces: {
-        ...state.nonces,
-      [address]: nonce,
-    },
-  }),
+  [NONCE_UPDATE]: (state, { address, blockchain, nonce }) => {
+    const blockchainScope = state[blockchain]
+    const nonces = blockchainScope.nonces
 
-  [TX_CREATE]: (state, { entry }) => {
+    return ({
+      ...state,
+      [blockchain]: {
+        ...blockchainScope,
+        nonces: {
+          ...nonces,
+          [address]: nonce,
+        },
+      },
+    })
+  },
+
+  [TX_CREATE]: (state, { blockchain, entry }) => {
     const address = entry.tx.from
-    const pending = state.pending
+    const blockchainScope = state[blockchain]
+    const pending = blockchainScope.pending
     const scope = pending[address]
+
     return {
       ...state,
-      pending: {
-        ...pending,
-        [address]: {
-          ...scope,
-          [entry.key]: entry,
+      [blockchain]: {
+        ...blockchainScope,
+        pending: {
+          ...pending,
+          [address]: {
+            ...scope,
+            [entry.key]: entry,
+          },
         },
       },
     }
   },
-  [TX_REMOVE]: (state, { key, address }) => {
-    const scope = state.pending[address]
+  [TX_REMOVE]: (state, { address, blockchain, key }) => {
+    const blockchainScope = state[blockchain]
+    const pending = blockchainScope.pending
+    const scope = pending[address]
+
     if (!scope) return state
     const entry = scope[key]
     if (!entry) return state
+
     return {
       ...state,
-      pending: omit(state.pending, [key]),
+      [blockchain]: {
+        ...blockchainScope,
+        pending: omit(pending, [key]),
+      },
     }
   },
-  [TX_UPDATE]: (state, { key, address, tx }) => {
-    const scope = state.pending[address]
+  [TX_UPDATE]: (state, { address, blockchain, key, tx }) => {
+    const blockchainScope = state[blockchain]
+    const pending = blockchainScope.pending
+    const scope = pending[address]
+
     return {
       ...state,
-      pending: {
-        [address]: {
-          ...scope,
-          [key]: tx,
+      [blockchain]: {
+        ...blockchainScope,
+        pending: {
+          [address]: {
+            ...scope,
+            [key]: tx,
+          },
         },
       },
     }

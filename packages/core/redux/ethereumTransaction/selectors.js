@@ -7,16 +7,20 @@ import { createSelector } from 'reselect'
 
 import { DUCK_NAME } from './constants'
 
-export const transactionSelector = () => (state) => state.get(DUCK_NAME)
-export const pendingSelector = () => createSelector(transactionSelector(), pendingSubSelector)
+const mainScopeSelector = () => (state) => state.get(DUCK_NAME)
 
-export const pendingEntrySelector = (address, key) => (
-  createSelector(pendingSelector(), getPendingEntrySubSelector(address, key))
+export const blockchainScopeSelector = (blockchain) => createSelector(
+  mainScopeSelector(),
+  (scope) => scope[blockchain],
 )
 
-const pendingSubSelector = (blockchain) => blockchain == null ? null : blockchain.pending
+export const pendingSelector = (blockchain) => createSelector(
+  blockchainScopeSelector(blockchain),
+  (blockchainScope) => blockchainScope.pending,
+)
 
-const getPendingEntrySubSelector = (address, key) => (
+export const pendingEntrySelector = (blockchain) => (address, key) => createSelector(
+  pendingSelector(blockchain),
   (pending) => {
     if (address in pending) {
       const res = pending[address][key] || null
@@ -30,5 +34,34 @@ const getPendingEntrySubSelector = (address, key) => (
     // eslint-disable-next-line
     console.log('res null', address, key, pending, new Error())
     return null
-  }
+  },
+)
+
+export const ethereumPendingFormatSelector = () => createSelector(
+  mainScopeSelector(),
+  (scope) => {
+    let pendingTransactions = []
+
+    Object.values(scope).map(blockchainScope => {
+      if (blockchainScope == null || blockchainScope.pending == null) {
+        return null
+      }
+
+      pendingTransactions = pendingTransactions.concat(Object.values(blockchainScope.pending)
+        .reduce((accumulator, txList) => {
+          return accumulator.concat(Object.values(txList)
+            .filter((tx) => tx.isAccepted && !tx.isMined))
+        }, [])
+      )
+    })
+
+    return pendingTransactions
+  },
+)
+
+export const ethereumPendingCountSelector = () => createSelector(
+  ethereumPendingFormatSelector(),
+  (pendingList) => {
+    return pendingList ? pendingList.length : 0
+  },
 )

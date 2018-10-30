@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { BLOCKCHAIN_ETHEREUM } from '../../dao/constants'
 import ethereumDAO from '../../dao/EthereumDAO'
 import { HolderModel } from '../../models'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
@@ -14,7 +15,7 @@ import { web3Selector } from './selectors'
 
 class EthereumTransactionHandler extends TransactionHandler {
   constructor () {
-    super(getEthereumSigner, EthereumMemoryDevice.getDerivedWallet)
+    super(BLOCKCHAIN_ETHEREUM, getEthereumSigner, EthereumMemoryDevice.getDerivedWallet)
   }
 
   getDAO (entry, state) {
