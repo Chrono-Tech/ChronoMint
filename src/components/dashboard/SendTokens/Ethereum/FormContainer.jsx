@@ -7,11 +7,11 @@ import { connect } from 'react-redux'
 import { ETH } from '@chronobank/core/dao/constants'
 import { estimateGasTransfer } from '@chronobank/core/redux/tokens/thunks'
 
-import Form, { mapStateToProps as mapFormStateToProps } from '../EthereumLikeBlockchain/Form'
+import Form, { mapStateToProps as mapFormStateToProps } from '../AbstractEthereum/Form'
 import FormContainer, {
   mapStateToProps as mapContainerStateToProps,
   mapDispatchToProps
-} from '../EthereumLikeBlockchain/FormContainer'
+} from '../AbstractEthereum/FormContainer'
 
 function mapFormDispatchToProps (dispatch) {
   return {

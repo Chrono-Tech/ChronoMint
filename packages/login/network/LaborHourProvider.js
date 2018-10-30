@@ -6,12 +6,12 @@
 import Web3 from 'web3'
 
 import { BLOCKCHAIN_LABOR_HOUR } from './constants'
-import EthereumLikeProvider from './EthereumLikeProvider'
+import AbstractEthereumProvider from './AbstractEthereumProvider'
 import selectLaborHourNode from './LaborHourNode'
 
 export const getLaborHourWeb3 = (wssWeb3) => new Web3(new Web3.providers.WebsocketProvider(wssWeb3))
 
-export class LaborHourProvider extends EthereumLikeProvider {
+export class LaborHourProvider extends AbstractEthereumProvider {
   constructor () {
     super(BLOCKCHAIN_LABOR_HOUR, ...arguments)
   }

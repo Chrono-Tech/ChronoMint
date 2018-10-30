@@ -5,10 +5,10 @@
 
 import { laborHourProvider } from '@chronobank/login/network/LaborHourProvider'
 
-import { EthereumLikeDAO } from './EthereumLikeDAO'
+import { AbstractEthereumDAO } from './AbstactEthereumDAO'
 import { BLOCKCHAIN_LABOR_HOUR, LHT } from './constants'
 
-export class LaborHourDAO extends EthereumLikeDAO {
+export class LaborHourDAO extends AbstractEthereumDAO {
   constructor () {
     super(LHT, BLOCKCHAIN_LABOR_HOUR, laborHourProvider, ...arguments)
   }

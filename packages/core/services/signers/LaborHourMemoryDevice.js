@@ -3,6 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import EthereumLikeBlockchainMemoryDevice from './EthereumLikeBlockchainMemoryDevice'
+import AbstractEthereumMemoryDevice from './AbstractEthereumMemoryDevice'
 
-export default class LaborHourMemoryDevice extends EthereumLikeBlockchainMemoryDevice {}
+export default class LaborHourMemoryDevice extends AbstractEthereumMemoryDevice {}

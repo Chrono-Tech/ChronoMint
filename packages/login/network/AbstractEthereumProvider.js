@@ -5,7 +5,7 @@
 
 import AbstractProvider from './AbstractProvider'
 
-export default class EthereumProvider extends AbstractProvider {
+export default class AbstractEthereumProvider extends AbstractProvider {
   constructor (id, ...rest) {
     super(...rest)
     this._id = id

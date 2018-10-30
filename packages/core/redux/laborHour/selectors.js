@@ -7,7 +7,7 @@ import { createSelector } from 'reselect'
 
 import { DUCK_LABOR_HOUR } from './constants'
 import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
-import { pendingSubSelector, getPendingEntrySubSelector } from '../ethereumLikeBlockchain/utils/selectors'
+import { pendingSubSelector, getPendingEntrySubSelector } from '../abstractEthereum/utils/selectors'
 import { WALLET_TYPE_MEMORY } from '../../models/constants/AccountEntryModel'
 import LaborHourMemoryDevice from '../../services/signers/LaborHourMemoryDevice'
 

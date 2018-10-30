@@ -12,7 +12,7 @@ import { WALLET_TYPE_MEMORY } from '../../models/constants/AccountEntryModel'
 
 export const DEFAULT_PATH = `m/44'/60'/0'/0/0`
 
-export default class EthereumMemoryDevice extends EventEmitter {
+export default class AbstractEthereumMemoryDevice extends EventEmitter {
 
   constructor (privateKey) {
     super()
@@ -33,7 +33,7 @@ export default class EthereumMemoryDevice extends EventEmitter {
       return this.wallet.privateKey
     }
 
-    return EthereumMemoryDevice.getDerivedWallet(this.wallet.privateKey, path).address
+    return AbstractEthereumMemoryDevice.getDerivedWallet(this.wallet.privateKey, path).address
   }
 
   getAddress (path) {
@@ -41,7 +41,7 @@ export default class EthereumMemoryDevice extends EventEmitter {
       return this.address
     }
 
-    return EthereumMemoryDevice.getDerivedWallet(this.wallet.privateKey, path).address
+    return AbstractEthereumMemoryDevice.getDerivedWallet(this.wallet.privateKey, path).address
   }
 
   async signTransaction (tx, path) {
@@ -49,7 +49,7 @@ export default class EthereumMemoryDevice extends EventEmitter {
       return this.wallet.signTransaction(tx)
     }
 
-    return EthereumMemoryDevice.getDerivedWallet(this.wallet.privateKey, path).signTransaction(tx)
+    return AbstractEthereumMemoryDevice.getDerivedWallet(this.wallet.privateKey, path).signTransaction(tx)
   }
 
   async signData (data, path) {
@@ -58,7 +58,7 @@ export default class EthereumMemoryDevice extends EventEmitter {
       return this.wallet.sign(data)
     }
 
-    return EthereumMemoryDevice.getDerivedWallet(this.wallet.privateKey, path).sign(data)
+    return AbstractEthereumMemoryDevice.getDerivedWallet(this.wallet.privateKey, path).sign(data)
   }
 
   static create ({ privateKey, mnemonic, password }) {

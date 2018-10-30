@@ -36,7 +36,7 @@ const signatureDefinition = {
   "type": "event",
 }
 
-export class EthereumLikeDAO extends AbstractTokenDAO {
+export class AbstractEthereumDAO extends AbstractTokenDAO {
   constructor (symbol, contractName, provider, ...rest) {
     super(...rest)
 

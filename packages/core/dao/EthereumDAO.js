@@ -5,10 +5,10 @@
 
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 
-import { EthereumLikeDAO } from './EthereumLikeDAO'
+import { AbstractEthereumDAO } from './AbstactEthereumDAO'
 import { BLOCKCHAIN_ETHEREUM, ETH } from './constants'
 
-export class EthereumDAO extends EthereumLikeDAO {
+export class EthereumDAO extends AbstractEthereumDAO {
   constructor () {
     super(ETH, BLOCKCHAIN_ETHEREUM, ethereumProvider, ...arguments)
   }

@@ -240,14 +240,14 @@ export const watchLatestBlock = () => async (dispatch) => {
 }
 
 export const estimateGasTransfer = (tokenId, params, gasPriceMultiplier = 1, address) => (
-  estimateEthereumLikeBlockchainGasTransfer(tokenId, params, gasPriceMultiplier, address, estimateEthereumGas)
+  estimateAbstractEthereumGasTransfer(tokenId, params, gasPriceMultiplier, address, estimateEthereumGas)
 )
 
 export const estimateLaborHourGasTransfer = (tokenId, params, gasPriceMultiplier = 1, address) => (
-  estimateEthereumLikeBlockchainGasTransfer(tokenId, params, gasPriceMultiplier, address, estimateLaborHourGas)
+  estimateAbstractEthereumGasTransfer(tokenId, params, gasPriceMultiplier, address, estimateLaborHourGas)
 )
 
-const estimateEthereumLikeBlockchainGasTransfer = (tokenId, params, gasPriceMultiplier = 1, address, estimateGas) => (
+const estimateAbstractEthereumGasTransfer = (tokenId, params, gasPriceMultiplier = 1, address, estimateGas) => (
   async (dispatch) => {
     const tokenDao = tokenService.getDAO(tokenId)
     const [to, amount] = params

@@ -4,10 +4,10 @@
  */
 
 import { BLOCKCHAIN_ETHEREUM } from './constants'
-import EthereumLikeProvider from './EthereumLikeProvider'
+import AbstractEthereumProvider from './AbstractEthereumProvider'
 import selectEthereumNode from './EthereumNode'
 
-export class EthereumProvider extends EthereumLikeProvider {
+export class EthereumProvider extends AbstractEthereumProvider {
   constructor () {
     super(BLOCKCHAIN_ETHEREUM, ...arguments)
   }
