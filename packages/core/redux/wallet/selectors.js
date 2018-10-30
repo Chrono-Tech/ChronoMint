@@ -4,10 +4,11 @@
  */
 
 import { createSelector } from 'reselect'
+import { selectMarketPrices, selectCurrentCurrency } from '@chronobank/market/redux/selectors'
 import { DUCK_ETH_MULTISIG_WALLET } from '../multisigWallet/constants'
 import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 import Amount from '../../models/Amount'
-import { getMultisigWallets, selectMarketPricesListStore, selectMarketPricesSelectedCurrencyStore, selectTokensStore } from './selectors/models'
+import { getMultisigWallets, selectTokensStore } from './selectors/models'
 import { getWallet } from '../wallets/selectors/models'
 import { getEthMultisigWallet } from '../multisigWallet/selectors/models'
 import { getEOSWallet } from '../eos/selectors/mainSelectors'
@@ -15,8 +16,8 @@ import { getEOSWallet } from '../eos/selectors/mainSelectors'
 export {
   getMultisigWallets,
   selectTokensStore,
-  selectMarketPricesListStore,
-  selectMarketPricesSelectedCurrencyStore,
+  selectMarketPrices,
+  selectCurrentCurrency,
 }
 
 export const getDeriveWalletsAddresses = (state, blockchain) => {
@@ -43,8 +44,8 @@ export const getIsHave2FAWallets = (state) => {
 
 const priceCalculator = (symbol: string) => createSelector(
   [
-    selectMarketPricesSelectedCurrencyStore,
-    selectMarketPricesListStore,
+    selectCurrentCurrency,
+    selectMarketPrices,
   ],
   (
     selectedCurrency,

@@ -4,8 +4,8 @@
  */
 
 import { createSelector } from 'reselect'
+import { selectMarketPrices, selectCurrentCurrency } from '@chronobank/market/redux/selectors'
 import { getTokens } from '../../tokens/selectors'
-import { selectMarketPricesListStore, selectMarketPricesSelectedCurrencyStore } from '../../wallet/selectors'
 import { getEthMultisigWallet } from './models'
 
 export const multisigTokensAndAmountsSelector = (address: string, symbol: string) => createSelector(
@@ -56,8 +56,8 @@ export const filteredBalancesAndTokens = (address, symbol: string) => createSele
 const balanceCalculator = (address: string, symbol: string) => createSelector(
   [
     multisigTokensAndAmountsSelector(address, symbol),
-    selectMarketPricesSelectedCurrencyStore,
-    selectMarketPricesListStore,
+    selectCurrentCurrency,
+    selectMarketPrices,
   ],
   (
     balances,
@@ -133,8 +133,8 @@ export const multisigWalletTokenBalanceSelector = (address: string) => createSel
 export const tokensCountBalanceAndPriceSelector = (blockchain: string, symbol: string, notFilterZero: boolean) => createSelector(
   [
     filteredBalancesAndTokens(blockchain, symbol),
-    selectMarketPricesSelectedCurrencyStore,
-    selectMarketPricesListStore,
+    selectCurrentCurrency,
+    selectMarketPrices,
   ],
   (
     balancesInfo,

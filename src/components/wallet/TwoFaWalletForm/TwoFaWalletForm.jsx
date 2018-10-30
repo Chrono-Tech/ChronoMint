@@ -20,14 +20,14 @@ import Preloader from 'components/common/Preloader/Preloader'
 import { estimateGasFor2FAForm } from '@chronobank/core/redux/multisigWallet/actions'
 import { DUCK_ETH_MULTISIG_WALLET, FORM_2FA_STEPS, FORM_2FA_WALLET } from '@chronobank/core/redux/multisigWallet/constants'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
-import { getMarket } from '@chronobank/core/redux/market/selectors'
+import { selectCurrentCurrency } from '@chronobank/market/redux/selectors'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { prefix } from './lang'
 import './TwoFaWalletForm.scss'
 
 function mapStateToProps (state) {
 
-  const { selectedCurrency } = getMarket(state)
+  const selectedCurrency = selectCurrentCurrency(state)
   const selector = formValueSelector(FORM_2FA_WALLET)
   const feeMultiplier = selector(state, 'feeMultiplier')
   const step = selector(state, 'step')
