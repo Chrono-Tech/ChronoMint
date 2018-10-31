@@ -12,7 +12,7 @@ import { Field, reduxForm } from 'redux-form/immutable'
 import { estimateFee } from '@chronobank/core/redux/dash/thunks'
 
 import { FORM_SEND_TOKENS } from 'components/constants'
-import BitcoinLikeBlockchainForm, { mapStateToProps } from '../BitcoinLikeBockchain/Form'
+import AbstractBitcoinForm, { mapStateToProps } from '../AbstractBitcoin/Form'
 import { prefix } from '../lang'
 import validate from '../validate'
 
@@ -22,7 +22,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-class DashForm extends BitcoinLikeBlockchainForm {
+class DashForm extends AbstractBitcoinForm {
   renderExtraFields () {
     return (
       <FormControlLabel
