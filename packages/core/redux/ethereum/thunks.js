@@ -7,7 +7,7 @@ import { BLOCKCHAIN_ETHEREUM } from '../../dao/constants'
 import ethereumDAO from '../../dao/EthereumDAO'
 import { HolderModel } from '../../models'
 import { daoByAddress } from '../daos/selectors'
-import TransactionHandler from '../ethereumTransaction/utils/TransactionHandler'
+import TransactionHandler from '../abstractEthereum/utils/TransactionHandler'
 import { ethWeb3Update } from './actions'
 import { web3Selector } from './selectors'
 

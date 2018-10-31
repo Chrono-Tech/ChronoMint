@@ -12,7 +12,7 @@ import TopButtons from 'components/common/TopButtons/TopButtons'
 import { sidesOpen } from 'redux/sides/actions'
 import { pendingTransactionsSelector } from '@chronobank/core/redux/wallets/selectors/tokens'
 import { DUCK_WATCHER } from '@chronobank/core/redux/watcher/constants'
-import { ethereumPendingCountSelector } from '@chronobank/core/redux/ethereumTransaction/selectors'
+import { pendingTransactionsNumberSelector } from '@chronobank/core/redux/transaction/selectors'
 import { NOTIFICATION_PANEL_KEY } from 'redux/sides/constants'
 import { eosPendingCountSelector } from '@chronobank/core/redux/eos/selectors/mainSelectors'
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
@@ -23,7 +23,7 @@ function mapStateToProps (state) {
 
   return {
     ethPendingTransactions: pendingTxs,
-    ethereumPendingTxCount: ethereumPendingCountSelector()(state),
+    ethereumPendingTxCount: pendingTransactionsNumberSelector()(state),
     eosPendingTxCount: eosPendingCountSelector()(state),
     btcPendingTransactions: pendingTransactionsSelector()(state),
   }

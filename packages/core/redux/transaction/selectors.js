@@ -9,7 +9,7 @@ import { DUCK_NAME } from './constants'
 
 const mainScopeSelector = () => (state) => state.get(DUCK_NAME)
 
-export const blockchainScopeSelector = (blockchain) => createSelector(
+const blockchainScopeSelector = (blockchain) => createSelector(
   mainScopeSelector(),
   (scope) => scope[blockchain],
 )
@@ -37,7 +37,7 @@ export const pendingEntrySelector = (blockchain) => (address, key) => createSele
   },
 )
 
-export const ethereumPendingFormatSelector = () => createSelector(
+export const pendingTransactionsSelector = () => createSelector(
   mainScopeSelector(),
   (scope) => {
     let pendingTransactions = []
@@ -59,8 +59,8 @@ export const ethereumPendingFormatSelector = () => createSelector(
   },
 )
 
-export const ethereumPendingCountSelector = () => createSelector(
-  ethereumPendingFormatSelector(),
+export const pendingTransactionsNumberSelector = () => createSelector(
+  pendingTransactionsSelector(),
   (pendingList) => {
     return pendingList ? pendingList.length : 0
   },

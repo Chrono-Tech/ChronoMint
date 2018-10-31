@@ -6,7 +6,7 @@
 import AbstractNoticeModel from '@chronobank/core/models/notices/AbstractNoticeModel'
 import classnames from 'classnames'
 import CurrentTransactionNotificationModel from '@chronobank/core/models/CurrentTransactionNotificationModel'
-import { pendingTransactionsSelector } from '@chronobank/core/redux/wallets/selectors/tokens'
+import { pendingTransactionsSelector as btcPendingTransactionsSelector } from '@chronobank/core/redux/wallets/selectors/tokens'
 import Immutable from 'immutable'
 import Moment from 'components/common/Moment'
 import PropTypes from 'prop-types'
@@ -20,7 +20,7 @@ import { connect } from 'react-redux'
 import { DUCK_NOTIFIER } from '@chronobank/core/redux/notifier/constants'
 import { DUCK_WATCHER } from '@chronobank/core/redux/watcher/constants'
 import { eosPendingFormatSelector } from '@chronobank/core/redux/eos/selectors/mainSelectors'
-import { ethereumPendingFormatSelector } from '@chronobank/core/redux/ethereumTransaction/selectors'
+import { pendingTransactionsSelector } from '@chronobank/core/redux/transaction/selectors'
 import { FULL_DATE } from '@chronobank/core/models/constants'
 import { IconButton } from '@material-ui/core'
 import { Icons } from 'components/icons'
@@ -33,8 +33,8 @@ import { prefix } from './lang'
 function mapStateToProps (state) {
   const { pendingTxs } = state.get(DUCK_WATCHER)
   const { list } = state.get(DUCK_NOTIFIER)
-  const btcTransactions = pendingTransactionsSelector()(state)
-  const ethereumTxList = ethereumPendingFormatSelector()(state)
+  const btcTransactions = btcPendingTransactionsSelector()(state)
+  const ethereumTxList = pendingTransactionsSelector()(state)
   const eosTxList = eosPendingFormatSelector()(state)
 
   return {

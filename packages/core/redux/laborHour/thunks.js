@@ -8,7 +8,7 @@ import { getLaborHourWeb3 } from '@chronobank/login/network/LaborHourProvider'
 import { HolderModel } from '../../models'
 import { BLOCKCHAIN_LABOR_HOUR } from '../../dao/constants'
 import laborHourDAO from '../../dao/LaborHourDAO'
-import TransactionHandler from '../ethereumTransaction/utils/TransactionHandler'
+import TransactionHandler from '../abstractEthereum/utils/TransactionHandler'
 import { laborHourWeb3Update } from './actions'
 import { web3Selector } from './selectors'
 

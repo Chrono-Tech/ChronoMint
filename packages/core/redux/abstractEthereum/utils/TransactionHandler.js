@@ -16,8 +16,9 @@ import { showSignerModal, closeSignerModal } from '../../modals/thunks'
 import { DUCK_PERSIST_ACCOUNT } from '../../persistAccount/constants'
 import { getEthereumSigner } from '../../persistAccount/selectors'
 import { getAccount } from '../../session/selectors/models'
-import { nonceUpdate, txCreate, txUpdate } from '../actions'
-import { pendingSelector, pendingEntrySelector } from '../selectors'
+import { pendingSelector, pendingEntrySelector } from '../../transaction/selectors'
+import { txCreate, txUpdate } from '../../transaction/actions'
+import { nonceUpdate } from '../actions'
 import TransactionGuide from './TransactionGuide'
 
 export default class TransactionHandler extends TransactionGuide {

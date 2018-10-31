@@ -5,13 +5,14 @@
 
 import { combineReducers } from 'redux-immutable'
 
+import abstractEthereum from './abstractEthereum/reducer'
 import assetsHolder from './assetsHolder/reducer'
 import assetsManager from './assetsManager/reducer'
 import bitcoin from './bitcoin/reducer'
 import dao from './daos/reducer'
 import device from './device/reducer'
 import ethereum from './ethereum/reducer'
-import ethereumTransaction from './ethereumTransaction/reducer'
+import transaction from './transaction/reducer'
 import ethMultisigWallet from './multisigWallet/reducer'
 import events from './events/reducer'
 import laborHour from './laborHour/reducer'
@@ -33,13 +34,14 @@ import watcher from './watcher/reducer'
 import waves from './waves/reducer'
 
 const coreReducers = {
+  abstractEthereum,
   assetsHolder,
   assetsManager,
   bitcoin,
   dao,
   device,
   ethereum,
-  ethereumTransaction,
+  transaction,
   ethMultisigWallet,
   events,
   laborHour,

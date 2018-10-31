@@ -5,7 +5,6 @@
 import { omit } from 'lodash'
 
 import {
-  NONCE_UPDATE,
   TX_CREATE,
   TX_REMOVE,
   TX_UPDATE,
@@ -17,7 +16,6 @@ import {
 } from '../../dao/constants'
 
 const initialSubState = {
-  nonces: {},
   pending: {},
 }
 
@@ -31,22 +29,6 @@ const initialState = () => ({
 })
 
 const mutations = {
-  [NONCE_UPDATE]: (state, { address, blockchain, nonce }) => {
-    const blockchainScope = state[blockchain]
-    const nonces = blockchainScope.nonces
-
-    return ({
-      ...state,
-      [blockchain]: {
-        ...blockchainScope,
-        nonces: {
-          ...nonces,
-          [address]: nonce,
-        },
-      },
-    })
-  },
-
   [TX_CREATE]: (state, { blockchain, entry }) => {
     const address = entry.tx.from
     const blockchainScope = state[blockchain]
