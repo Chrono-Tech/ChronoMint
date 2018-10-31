@@ -65,7 +65,7 @@ export const updateWalletBalance = (wallet) => (dispatch) => {
           ...wallet,
           balances: {
             ...wallet.balances,
-            ...formatBalances(BLOCKCHAIN_ETHEREUM, balancesResult),
+            ...formatBalances(wallet.blockchain, balancesResult),
           },
         }),
         })
