@@ -11,7 +11,7 @@ import LogEventModel from '../models/describers/LogEventModel'
 import { EVENT_DESCRIBERS_BY_TOPIC, decodeLog } from './events'
 import { TRANSACTION_DESCRIBERS_BY_TOPIC, decodeParameters, findFunctionABI } from './transactions'
 import { decodeTxData } from '../utils/DecodeUtils'
-import { ETH, XEM, WAVES } from '../dao/constants'
+import { XEM, WAVES } from '../dao/constants'
 import { getKey } from './events/lib/assetEventDescribers'
 
 export const describeEvent = (data, context = {}) => {
@@ -56,7 +56,7 @@ const formatPendingTxData = ({ abi, tx }) => {
   return {}
 }
 
-const defaultDescription = (entry, context) => {
+const defaultDescription = (entry, symbol, context) => {
   const { tx, receipt, block } = entry
   const address = context.address.toLowerCase()
 
@@ -72,10 +72,11 @@ const defaultDescription = (entry, context) => {
     value = v
   }
 
-  const amount = new Amount(value, ETH)
+  const amount = new Amount(value, symbol)
   const path = `tx`
   return new LogTxModel({
     key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
+    symbol,
     type: 'tx',
     name: 'custom',
     date: new Date(block ? (block.timestamp * 1000) : null),
@@ -100,12 +101,12 @@ const defaultDescription = (entry, context) => {
   })
 }
 
-export const describePendingTx = (entry, context = {}) => {
+export const describePendingTx = (entry, symbol, context = {}) => {
   const { tx } = entry
   const { abi } = context
 
   if (!abi) {
-    return defaultDescription(entry, context)
+    return defaultDescription(entry, symbol, context)
   }
 
   const info = formatPendingTxData({ abi, tx })
@@ -130,10 +131,10 @@ export const describePendingTx = (entry, context = {}) => {
     }
   }
 
-  return defaultDescription(entry, context)
+  return defaultDescription(entry, symbol, context)
 }
 
-export const describeTx = (entry, context = {}) => {
+export const describeTx = (entry, symbol, context = {}) => {
   const { tx } = entry
 
   const array = TRANSACTION_DESCRIBERS_BY_TOPIC[tx.input.substr(0, 10)]
@@ -157,7 +158,7 @@ export const describeTx = (entry, context = {}) => {
     }
   }
 
-  return defaultDescription(entry, context)
+  return defaultDescription(entry, symbol, context)
 }
 
 export const describePendingNemTx = (entry, context = {}) => {

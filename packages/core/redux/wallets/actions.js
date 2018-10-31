@@ -10,6 +10,7 @@ import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_LABOR_HOUR,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
@@ -28,12 +29,13 @@ import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 import tokenService from '../../services/TokenService'
 import Amount from '../../models/Amount'
 import { getAccount } from '../session/selectors'
-import { getMainEthWallet, getWallet, getWallets } from './selectors/models'
+import { getMainWalletForBlockchain, getMainEthWallet, getWallet, getWallets } from './selectors/models'
 import { notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
 import { AllowanceCollection } from '../../models'
 import { executeDashTransaction } from '../dash/thunks'
 import { executeTransaction } from '../ethereum/thunks'
+import { executeLaborHourTransaction } from '../laborHour/thunks'
 import { executeWavesTransaction } from '../waves/thunks'
 import * as BitcoinThunks from '../bitcoin/thunks'
 import {
@@ -55,6 +57,7 @@ import { BCC, BTC, DASH, ETH, LTC, WAVES, XEM } from '../../dao/constants'
 import TxDescModel from '../../models/TxDescModel'
 import { initEos } from '../eos/thunks'
 import { getTokens } from '../tokens/selectors'
+import laborHourDAO from '../../dao/LaborHourDAO'
 import { accountCacheAddress } from '../persistAccount/actions'
 import { getBitcoinDerivedPath } from '../bitcoin/utils'
 import { getNemDerivedPath } from '../nem/utils'
@@ -110,6 +113,10 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
     [BLOCKCHAIN_DASH]: {
       signerSelector: getDashSigner,
       path: getBitcoinDerivedPath(network[BLOCKCHAIN_DASH], COIN_TYPE_DASH_MAINNET),
+    },
+    [BLOCKCHAIN_LABOR_HOUR]: {
+      signerSelector: getEthereumSigner,
+      path: accountEthereumPath,
     },
     [BLOCKCHAIN_LITECOIN]: {
       signerSelector: getLitecoinSigner,
@@ -292,10 +299,11 @@ export const mainTransfer = (
     const tokenDAO = tokenService.getDAO(token.id())
     const tx = tokenDAO.transfer(wallet.address, recipient, amount)
     const executeMap = {
-      [BLOCKCHAIN_ETHEREUM]: executeTransaction,
-      [BLOCKCHAIN_NEM]: executeNemTransaction,
       [BLOCKCHAIN_BITCOIN]: BitcoinThunks.executeBitcoinTransaction,
       [BLOCKCHAIN_DASH]: executeDashTransaction,
+      [BLOCKCHAIN_ETHEREUM]: executeTransaction,
+      [BLOCKCHAIN_LABOR_HOUR]: executeLaborHourTransaction,
+      [BLOCKCHAIN_NEM]: executeNemTransaction,
       [BLOCKCHAIN_WAVES]: executeWavesTransaction,
     }
 
@@ -319,7 +327,7 @@ export const mainTransfer = (
 
 export const mainApprove = (token: TokenModel, amount: Amount, spender: string, feeMultiplier: number) => async (dispatch, getState) => {
   const state = getState()
-  const wallet = getMainEthWallet(state)
+  const wallet = getMainWalletForBlockchain(token.blockchain())(state)
   const allowance = wallet.allowances.list[`${spender}-${token.id()}`]
   const { account } = state.get(DUCK_SESSION)
 
@@ -338,7 +346,7 @@ export const mainApprove = (token: TokenModel, amount: Amount, spender: string, 
 
 export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: number = 1) => async (dispatch, getState) => {
   const state = getState()
-  const wallet = getMainEthWallet(state)
+  const wallet = getMainWalletForBlockchain(token.blockchain())(state)
   const allowance = wallet.allowances.list[`${spender}-${token.id()}`]
   dispatch(updateAllowance(allowance.isFetching(true)))
 
@@ -380,6 +388,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
 
   switch (blockchain) {
     case BLOCKCHAIN_ETHEREUM:
+    case BLOCKCHAIN_LABOR_HOUR:
       if (newDeriveNumber === undefined || newDeriveNumber === null) {
         newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
       }
@@ -479,6 +488,9 @@ export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
       break
     case BLOCKCHAIN_DASH:
       dao = tokenService.getDAO(DASH)
+      break
+    case BLOCKCHAIN_LABOR_HOUR:
+      dao = laborHourDAO
       break
     case BLOCKCHAIN_LITECOIN:
       dao = tokenService.getDAO(LTC)

@@ -6,6 +6,7 @@
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { bccProvider, btcProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { dashProvider } from '@chronobank/login/network/DashProvider'
+import { laborHourProvider } from '@chronobank/login/network/LaborHourProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
@@ -17,6 +18,7 @@ export const initProviders = () => async (dispatch, getState) => {
   bccProvider.setNetworkSettings(network)
   btcProvider.setNetworkSettings(network)
   dashProvider.setNetworkSettings(network)
+  laborHourProvider.setNetworkSettings(network)
   ltcProvider.setNetworkSettings(network)
   nemProvider.setNetworkSettings(network)
   wavesProvider.setNetworkSettings(network)
