@@ -49,7 +49,6 @@ import { executeNemTransaction } from '../nem/thunks'
 import { getEthereumSigner, getPersistAccount, getAddressCache } from '../persistAccount/selectors'
 import { getBitcoinCashSigner, getBitcoinSigner, getLitecoinSigner } from '../bitcoin/selectors'
 import { getDashSigner } from '../dash/selectors'
-import { getLaborHourSigner } from '../laborHour/selectors'
 import { getNemSigner } from '../nem/selectors'
 import { getWavesSigner } from '../waves/selectors'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
@@ -116,7 +115,7 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
       path: getBitcoinDerivedPath(network[BLOCKCHAIN_DASH], COIN_TYPE_DASH_MAINNET),
     },
     [BLOCKCHAIN_LABOR_HOUR]: {
-      signerSelector: getLaborHourSigner,
+      signerSelector: getEthereumSigner,
       path: accountEthereumPath,
     },
     [BLOCKCHAIN_LITECOIN]: {

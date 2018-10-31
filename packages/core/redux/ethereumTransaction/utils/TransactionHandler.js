@@ -10,19 +10,20 @@ import uuid from 'uuid/v1'
 
 import { describePendingTx } from '../../../describers'
 import { TxEntryModel, TxExecModel } from '../../../models'
+import EthereumMemoryDevice from '../../../services/signers/EthereumMemoryDevice'
 import { modalsOpen } from '../../modals/actions'
 import { showSignerModal, closeSignerModal } from '../../modals/thunks'
 import { DUCK_PERSIST_ACCOUNT } from '../../persistAccount/constants'
+import { getEthereumSigner } from '../../persistAccount/selectors'
 import { getAccount } from '../../session/selectors/models'
 import { nonceUpdate, txCreate, txUpdate } from '../actions'
 import { pendingSelector, pendingEntrySelector } from '../selectors'
 import TransactionGuide from './TransactionGuide'
 
 export default class TransactionHandler extends TransactionGuide {
-  constructor (blockchain, getSigner, getDerivedWallet) {
+  constructor (blockchain) {
     super(blockchain)
-    this.getSigner = getSigner
-    this.getDerivedWallet = getDerivedWallet
+    this.getDerivedWallet = EthereumMemoryDevice.getDerivedWallet
 
     this.actions = {
       nonceUpdate: nonceUpdate(blockchain),
@@ -57,7 +58,7 @@ export default class TransactionHandler extends TransactionGuide {
         dispatch(this.txStatus(entry.key, entry.tx.from, { isAccepted: true, isPending: true }))
 
         const state = getState()
-        let signer = this.getSigner(state)
+        let signer = getEthereumSigner(state)
 
         if (entry.walletDerivedPath) {
           signer = await this.getDerivedWallet(signer.privateKey, entry.walletDerivedPath)
