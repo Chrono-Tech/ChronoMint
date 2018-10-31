@@ -35,18 +35,9 @@ export default class TransactionHandler extends TransactionGuide {
       pending: pendingSelector(blockchain),
       pendingEntry: pendingEntrySelector(blockchain),
     }
-
-    this.executeTransaction = this.executeTransaction.bind(this)
-    this.acceptTransaction = this.acceptTransaction.bind(this)
-    this.txStatus = this.txStatus.bind(this)
-    this.processTransaction = this.processTransaction.bind(this)
-    this.submitTransaction = this.submitTransaction.bind(this)
-    this.prepareTransaction = this.prepareTransaction.bind(this)
-    this.sendSignedTransaction = this.sendSignedTransaction.bind(this)
-    this.signTransaction = this.signTransaction.bind(this)
   }
 
-  executeTransaction ({ tx, options }) {
+  executeTransaction = ({ tx, options }) => {
     return (
       async (dispatch, getState) => {
         const web3 = this.getWeb3(getState())
@@ -59,7 +50,7 @@ export default class TransactionHandler extends TransactionGuide {
     )
   }
 
-  acceptTransaction (entry) {
+  acceptTransaction = (entry) => {
     return (
       async (dispatch, getState) => {
         dispatch(this.txStatus(entry.key, entry.tx.from, { isAccepted: true, isPending: true }))
@@ -80,7 +71,7 @@ export default class TransactionHandler extends TransactionGuide {
     )
   }
 
-  txStatus (key, address, props) {
+  txStatus = (key, address, props) => {
     return (
       (dispatch, getState) => {
         const pending = this.selectors.pending(getState())
@@ -108,7 +99,7 @@ export default class TransactionHandler extends TransactionGuide {
     )
   }
 
-  processTransaction ({ web3, entry, signer }) {
+  processTransaction = ({ web3, entry, signer }) => {
     return (
       async (dispatch, getState) => {
         await dispatch(this.signTransaction({ entry, signer }))
@@ -120,7 +111,7 @@ export default class TransactionHandler extends TransactionGuide {
     )
   }
 
-  submitTransaction (entry) {
+  submitTransaction = (entry) => {
     return (
       async (dispatch, getState) => {
         const state = getState()
@@ -146,7 +137,7 @@ export default class TransactionHandler extends TransactionGuide {
     )
   }
 
-  prepareTransaction ({ web3, tx, options }) {
+  prepareTransaction = ({ web3, tx, options }) => {
     return (
       async (dispatch) => {
         const { feeMultiplier } = options || {}
@@ -156,7 +147,7 @@ export default class TransactionHandler extends TransactionGuide {
     )
   }
 
-  sendSignedTransaction ({ web3, entry }) {
+  sendSignedTransaction = ({ web3, entry }) => {
     return (
       async (dispatch, getState) => {
         dispatch(this.txStatus(entry.key, entry.tx.from, { isPending: true }))
@@ -181,7 +172,7 @@ export default class TransactionHandler extends TransactionGuide {
     )
   }
 
-  signTransaction ({ entry, signer }) {
+  signTransaction = ({ entry, signer }) => {
     return (
       async (dispatch, getState) => {
         try {

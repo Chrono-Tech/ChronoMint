@@ -10,12 +10,9 @@ import { blockchainScopeSelector } from '../selectors'
 export default class TransactionGuide {
   constructor (blockchain) {
     this.blockchainScopeSelector = blockchainScopeSelector(blockchain)
-    this.estimateGas = this.estimateGas.bind(this)
-    this.getGasData = this.getGasData.bind(this)
-    this.nextNonce = this.nextNonce.bind(this)
   }
 
-  estimateGas (tx, feeMultiplier) {
+  estimateGas = (tx, feeMultiplier) => {
     return (
       async (dispatch, getState) => {
         const { gasLimit, gasPrice } = await this.getGasData(dispatch, this.getWeb3(getState()), tx, feeMultiplier)
@@ -25,7 +22,7 @@ export default class TransactionGuide {
     )
   }
 
-  async getGasData (dispatch, web3, tx, feeMultiplier) {
+  getGasData = async (dispatch, web3, tx, feeMultiplier) => {
     const nonce = await dispatch(this.nextNonce({ web3, address: tx.from }))
     const gasPrice = new BigNumber(await web3.eth.getGasPrice()).mul(feeMultiplier || 1)
     const chainId = await web3.eth.net.getId()
@@ -33,7 +30,7 @@ export default class TransactionGuide {
     return { chainId, gasLimit, gasPrice, nonce }
   }
 
-  nextNonce ({ web3, address }) {
+  nextNonce = ({ web3, address }) => {
     return (
       async (dispatch, getState) => {
         const addr = address.toLowerCase()
