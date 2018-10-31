@@ -10,8 +10,13 @@ import { connect } from 'react-redux'
 import { TX_CONFIRMATIONS } from 'assets'
 import { DUCK_WALLET } from '@chronobank/core/redux/wallet/constants'
 import { makeGetLastBlockForBlockchain } from '@chronobank/core/redux/tokens/selectors'
-import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/constants'
-import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_LABOR_HOUR,
+  BLOCKCHAIN_LITECOIN
+} from '@chronobank/core/dao/constants'
 import TxDescModel from '@chronobank/core/models/TxDescModel'
 import { prefix } from './lang'
 import './TxConfirmations.scss'
@@ -42,6 +47,7 @@ export default class TxConfirmations extends PureComponent {
         return 600
 
       case BLOCKCHAIN_ETHEREUM:
+      case BLOCKCHAIN_LABOR_HOUR:
         return 30
 
       default:

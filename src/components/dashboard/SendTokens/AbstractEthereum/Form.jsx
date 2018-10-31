@@ -5,7 +5,6 @@
 
 import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import { ETH } from '@chronobank/core/dao/constants'
 import { TOKEN_ICONS } from 'assets'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
@@ -19,7 +18,6 @@ import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import Select from 'redux-form-material-ui/es/Select'
@@ -30,7 +28,6 @@ import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
 import { walletInfoSelector } from '@chronobank/core/redux/wallet/selectors/selectors'
-import { estimateGasTransfer } from '@chronobank/core/redux/tokens/thunks'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import inversedTheme from 'styles/themes/inversed'
 import { selectCurrentCurrency } from '@chronobank/market/redux/selectors'
@@ -43,14 +40,7 @@ import validate from '../validate'
 
 const DEBOUNCE_ESTIMATE_FEE_TIMEOUT = 1000
 
-function mapDispatchToProps (dispatch) {
-  return {
-    estimateGas: (tokenId, params, gasPriceMultiplier, address) => dispatch(estimateGasTransfer(tokenId, params, gasPriceMultiplier, address)),
-  }
-}
-
-function mapStateToProps (state, ownProps) {
-
+export function mapStateToProps (state, ownProps) {
   const walletInfo = walletInfoSelector(ownProps.wallet, false, state)
   const selectedCurrency = selectCurrentCurrency(state)
   const selector = formValueSelector(FORM_SEND_TOKENS)
@@ -89,7 +79,6 @@ function mapStateToProps (state, ownProps) {
   }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_SEND_TOKENS, validate })
 export default class Ethereum extends PureComponent {
 
@@ -204,7 +193,7 @@ export default class Ethereum extends PureComponent {
         if (!validators.positiveNumber(props.gweiPerGas)) {
           const customGasLimit = props.gasLimit || this.state.gasLimitEstimated
           return {
-            gasFee: new Amount(web3Converter.toWei(props.gweiPerGas || 0, 'gwei') * customGasLimit, ETH),
+            gasFee: new Amount(web3Converter.toWei(props.gweiPerGas || 0, 'gwei') * customGasLimit, this.props.symbol),
             gasPrice: web3Converter.toWei(props.gweiPerGas || 0, 'gwei'),
             gasFeeError: false,
             gasFeeLoading: false,
@@ -263,7 +252,7 @@ export default class Ethereum extends PureComponent {
     return (
       <span styleName='description'>
         {this.state.gasFee && (
-          <span>{`ETH ${web3Converter.fromWei(this.state.gasFee, 'wei').toString()} (≈${this.props.selectedCurrency} `}
+          <span>{`${this.props.symbol} ${web3Converter.fromWei(this.state.gasFee, 'wei').toString()} (≈${this.props.selectedCurrency} `}
             <TokenValue renderOnlyPrice onlyPriceValue value={this.state.gasFee} />{')'}
           </span>
         )}
