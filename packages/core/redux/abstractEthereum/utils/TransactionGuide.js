@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import autobind from 'autobind-decorator'
 import BigNumber from 'bignumber.js'
 
 import { blockchainScopeSelector } from '../selectors'
@@ -11,9 +10,11 @@ import { blockchainScopeSelector } from '../selectors'
 export default class TransactionGuide {
   constructor (blockchain) {
     this.blockchainScopeSelector = blockchainScopeSelector(blockchain)
+    this.estimateGas = this.estimateGas.bind(this)
+    this.getGasData = this.getGasData.bind(this)
+    this.nextNonce = this.nextNonce.bind(this)
   }
 
-  @autobind
   estimateGas (tx, feeMultiplier) {
     return (
       async (dispatch, getState) => {
@@ -24,7 +25,6 @@ export default class TransactionGuide {
     )
   }
 
-  @autobind
   async getGasData (dispatch, web3, tx, feeMultiplier) {
     const nonce = await dispatch(this.nextNonce({ web3, address: tx.from }))
     const gasPrice = new BigNumber(await web3.eth.getGasPrice()).mul(feeMultiplier || 1)
@@ -33,7 +33,6 @@ export default class TransactionGuide {
     return { chainId, gasLimit, gasPrice, nonce }
   }
 
-  @autobind
   nextNonce ({ web3, address }) {
     return (
       async (dispatch, getState) => {

@@ -8,9 +8,9 @@
   "devDependencies": {
     "@chronobank/chronomint-presentation": "github:chronobank/ChronoMintPresentation",
     "@chronobank/core": "*",
-    "@chronobank/market": "*",
     "@chronobank/login": "*",
     "@chronobank/login-ui": "*",
+    "@chronobank/market": "*",
     "archiver": "^2.0.0",
     "autoprefixer": "7.1.0",
     "babel-core": "^6.26.0",
@@ -94,7 +94,6 @@
     "@material-ui/core": "latest",
     "@material-ui/icons": "latest",
     "@material-ui/lab": "^1.0.0-alpha.6",
-    "autobind-decorator": "^2.1.0",
     "axios": "^0.16.2",
     "babel-plugin-react-css-modules": "^2.7.1",
     "bignumber.js": "^4.1.0",

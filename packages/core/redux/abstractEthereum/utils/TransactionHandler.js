@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import autobind from 'autobind-decorator'
 import BigNumber from 'bignumber.js'
 import { isNil, omitBy } from 'lodash'
 import uuid from 'uuid/v1'
@@ -36,9 +35,17 @@ export default class TransactionHandler extends TransactionGuide {
       pending: pendingSelector(blockchain),
       pendingEntry: pendingEntrySelector(blockchain),
     }
+
+    this.executeTransaction = this.executeTransaction.bind(this)
+    this.acceptTransaction = this.acceptTransaction.bind(this)
+    this.txStatus = this.txStatus.bind(this)
+    this.processTransaction = this.processTransaction.bind(this)
+    this.submitTransaction = this.submitTransaction.bind(this)
+    this.prepareTransaction = this.prepareTransaction.bind(this)
+    this.sendSignedTransaction = this.sendSignedTransaction.bind(this)
+    this.signTransaction = this.signTransaction.bind(this)
   }
 
-  @autobind
   executeTransaction ({ tx, options }) {
     return (
       async (dispatch, getState) => {
@@ -52,7 +59,6 @@ export default class TransactionHandler extends TransactionGuide {
     )
   }
 
-  @autobind
   acceptTransaction (entry) {
     return (
       async (dispatch, getState) => {
@@ -74,7 +80,6 @@ export default class TransactionHandler extends TransactionGuide {
     )
   }
 
-  @autobind
   txStatus (key, address, props) {
     return (
       (dispatch, getState) => {
@@ -103,7 +108,6 @@ export default class TransactionHandler extends TransactionGuide {
     )
   }
 
-  @autobind
   processTransaction ({ web3, entry, signer }) {
     return (
       async (dispatch, getState) => {
@@ -116,7 +120,6 @@ export default class TransactionHandler extends TransactionGuide {
     )
   }
 
-  @autobind
   submitTransaction (entry) {
     return (
       async (dispatch, getState) => {
@@ -143,7 +146,6 @@ export default class TransactionHandler extends TransactionGuide {
     )
   }
 
-  @autobind
   prepareTransaction ({ web3, tx, options }) {
     return (
       async (dispatch) => {
@@ -154,7 +156,6 @@ export default class TransactionHandler extends TransactionGuide {
     )
   }
 
-  @autobind
   sendSignedTransaction ({ web3, entry }) {
     return (
       async (dispatch, getState) => {
@@ -180,7 +181,6 @@ export default class TransactionHandler extends TransactionGuide {
     )
   }
 
-  @autobind
   signTransaction ({ entry, signer }) {
     return (
       async (dispatch, getState) => {
