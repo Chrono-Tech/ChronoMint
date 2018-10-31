@@ -23,9 +23,9 @@ import { pendingEntrySelector, getBitcoinSigner } from './selectors'
 import { notify, notifyError } from '../notifier/actions'
 import BitcoinMiddlewareService from './BitcoinMiddlewareService'
 
-import { getAddressUTXOS } from '../bitcoin-like-blockchain/thunks'
+import { getAddressUTXOS } from '../abstractBitcoin/thunks'
 
-export { getAddressUTXOS } from '../bitcoin-like-blockchain/thunks'
+export { getAddressUTXOS } from '../abstractBitcoin/thunks'
 
 /**
  * Start sending transaction. It will be signed and sent.
