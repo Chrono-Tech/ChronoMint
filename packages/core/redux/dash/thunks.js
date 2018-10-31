@@ -14,9 +14,9 @@ import { getSelectedNetwork } from '../persistAccount/selectors'
 import { modalsOpen } from '../modals/actions'
 import { notify } from '../notifier/actions'
 
-import * as BitcoinActions from '../bitcoin-like-blockchain/actions'
-import { getAddressUTXOS } from '../bitcoin-like-blockchain/thunks'
-import * as BitcoinUtils from '../bitcoin-like-blockchain/utils'
+import * as BitcoinActions from '../abstractBitcoin/actions'
+import { getAddressUTXOS } from '../abstractBitcoin/thunks'
+import * as BitcoinUtils from '../abstractBitcoin/utils'
 
 import { getDashSigner } from './selectors'
 import DashMiddlewareService from './DashMiddlewareService'

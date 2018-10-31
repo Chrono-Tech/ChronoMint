@@ -35,7 +35,7 @@ import { getToken } from '../tokens/selectors'
 import { notify, notifyError } from '../notifier/actions'
 import BitcoinMiddlewareService from './BitcoinMiddlewareService'
 
-import { getAddressUTXOS } from '../bitcoin-like-blockchain/thunks'
+import { getAddressUTXOS } from '../abstractBitcoin/thunks'
 import { formatBalances, getProviderByBlockchain } from '../tokens/utils'
 import { pendingEntrySelector, getBitcoinCashSigner, getBitcoinSigner, getLitecoinSigner } from './selectors'
 import WalletModel from '../../models/wallet/WalletModel'
@@ -55,7 +55,7 @@ const daoMap = {
   [BLOCKCHAIN_LITECOIN]: litecoinDAO,
 }
 
-export { getAddressUTXOS } from '../bitcoin-like-blockchain/thunks'
+export { getAddressUTXOS } from '../abstractBitcoin/thunks'
 
 /**
  * Start sending transaction. It will be signed and sent.
