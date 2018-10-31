@@ -287,12 +287,12 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
         path,
       }
 
-      dispatch(dispatch({
+      dispatch({
         type: WALLETS_CACHE_ADDRESS,
         blockchain: BLOCKCHAIN_NEM,
         address,
         path,
-      }))
+      })
     }
   }
 
