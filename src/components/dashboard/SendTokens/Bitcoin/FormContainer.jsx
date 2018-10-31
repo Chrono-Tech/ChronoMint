@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import Form from './Form'
-import FormContainer, { mapStateToProps, mapDispatchToProps } from '../BitcoinLikeBockchain/FormContainer'
+import FormContainer, { mapStateToProps, mapDispatchToProps } from '../AbstractBitcoin/FormContainer'
 
 const FormReduxContainer = connect(mapStateToProps, mapDispatchToProps)(FormContainer)
 

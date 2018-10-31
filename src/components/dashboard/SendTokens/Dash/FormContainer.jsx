@@ -6,7 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import FormContainer, { mapStateToProps, mapDispatchToProps } from '../BitcoinLikeBockchain/FormContainer'
+import FormContainer, { mapStateToProps, mapDispatchToProps } from '../AbstractBitcoin/FormContainer'
 import Form from './Form'
 
 class DashFormContainer extends FormContainer {

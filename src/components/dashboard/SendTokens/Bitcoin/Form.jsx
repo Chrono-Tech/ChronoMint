@@ -8,7 +8,7 @@ import { reduxForm } from 'redux-form/immutable'
 import { estimateBtcFee } from '@chronobank/core/redux/bitcoin/thunks'
 
 import { FORM_SEND_TOKENS } from 'components/constants'
-import BitcoinLikeBlockchainForm, { mapStateToProps } from '../BitcoinLikeBockchain/Form'
+import AbstractBitcoinForm, { mapStateToProps } from '../AbstractBitcoin/Form'
 import validate from '../validate'
 
 function mapDispatchToProps (dispatch) {
@@ -17,5 +17,5 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-const BitcoinReduxForm = reduxForm({ form: FORM_SEND_TOKENS, validate })(BitcoinLikeBlockchainForm)
+const BitcoinReduxForm = reduxForm({ form: FORM_SEND_TOKENS, validate })(AbstractBitcoinForm)
 export default connect(mapStateToProps, mapDispatchToProps)(BitcoinReduxForm)
