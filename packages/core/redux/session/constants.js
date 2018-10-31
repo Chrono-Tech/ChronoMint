@@ -38,6 +38,7 @@ export const PROFILE_PANEL_TOKENS = [
   { symbol: BCC, blockchain: BLOCKCHAIN_BITCOIN_CASH, title: 'BCC' },
   { symbol: DASH, blockchain: BLOCKCHAIN_DASH, title: 'DASH' },
   { symbol: LTC, blockchain: BLOCKCHAIN_LITECOIN, title: 'LTC' },
+  { symbol: LHT, blockchain: BLOCKCHAIN_LABOR_HOUR, title: 'LHT' },
   { symbol: ETH, blockchain: BLOCKCHAIN_ETHEREUM, title: 'ETH' },
   { symbol: XEM, blockchain: BLOCKCHAIN_NEM, title: 'NEM' },
   { symbol: WAVES, blockchain: BLOCKCHAIN_WAVES, title: 'WAVES' },

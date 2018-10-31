@@ -46,7 +46,7 @@ import { executeNemTransaction } from '../nem/thunks'
 import { getEthereumSigner } from '../persistAccount/selectors'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
-import { BCC, BTC, DASH, ETH, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, LTC, WAVES, XEM } from '../../dao/constants'
+import { BCC, BTC, DASH, ETH, LHT, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, LTC, WAVES, XEM } from '../../dao/constants'
 
 import TxDescModel from '../../models/TxDescModel'
 import { getTokens } from '../tokens/selectors'
@@ -58,7 +58,6 @@ import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 import { DUCK_ETH_MULTISIG_WALLET, ETH_MULTISIG_BALANCE, ETH_MULTISIG_FETCHED } from '../multisigWallet/constants'
 import BalanceModel from '../../models/tokens/BalanceModel'
 import { getMultisigWallets } from '../wallet/selectors/models'
-import laborHourDAO from '../../dao/LaborHourDAO'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -437,7 +436,7 @@ export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
       dao = tokenService.getDAO(DASH)
       break
     case BLOCKCHAIN_LABOR_HOUR:
-      dao = laborHourDAO
+      dao = tokenService.getDAO(LHT)
       break
     case BLOCKCHAIN_LITECOIN:
       dao = tokenService.getDAO(LTC)

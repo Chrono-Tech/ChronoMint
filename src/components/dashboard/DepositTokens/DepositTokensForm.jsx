@@ -28,7 +28,6 @@ import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redu
 import { DUCK_ASSETS_HOLDER } from '@chronobank/core/redux/assetsHolder/constants'
 import { getMainSymbolForBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import { estimateGasForDeposit, requireTIME } from '@chronobank/core/redux/mainWallet/actions'
-import { ETH } from '@chronobank/core/dao/constants'
 import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/wallets/constants'
 import { mainApprove, mainRevoke } from '@chronobank/core/redux/wallets/actions'
 import { ASSET_DEPOSIT_WITHDRAW, TX_DEPOSIT } from '@chronobank/core/dao/constants/AssetHolderDAO'
@@ -121,6 +120,7 @@ export default class DepositTokensForm extends PureComponent {
     isShowTIMERequired: PropTypes.bool,
     token: PropTypes.instanceOf(TokenModel),
     account: PropTypes.string,
+    symbol: PropTypes.string,
     wallet: PropTypes.instanceOf(WalletModel),
     tokens: PropTypes.instanceOf(TokensCollection),
     assets: PropTypes.instanceOf(AssetsCollection),
@@ -396,6 +396,7 @@ export default class DepositTokensForm extends PureComponent {
       balance,
       deposit,
       token,
+      symbol,
       allowance,
       pristine,
       invalid,
@@ -420,7 +421,7 @@ export default class DepositTokensForm extends PureComponent {
             <Button
               styleName='actionButton'
               label={<Translate value={prefix('receiveEth')} />}
-              onClick={this.handleReceiveToken(getMainSymbolForBlockchain(wallet.blockchain), wallet)}
+              onClick={this.handleReceiveToken(symbol, wallet)}
             />
           </div>
         )}
