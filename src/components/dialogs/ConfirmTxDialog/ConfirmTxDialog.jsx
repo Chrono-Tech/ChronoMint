@@ -12,7 +12,6 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { modalsClear, modalsClose } from '@chronobank/core/redux/modals/actions'
-import { ETH } from '@chronobank/core/dao/constants'
 import TxEntryModel from '@chronobank/core/models/TxEntryModel'
 import { LogTxModel } from '@chronobank/core/models'
 
@@ -88,7 +87,7 @@ export default class ConfirmTxDialog extends PureComponent {
                     <Translate value='tx.fee' />
                   </div>
                   <div styleName='value'>
-                    <TokenValue value={new Amount(gasFee, ETH)} />
+                    <TokenValue value={new Amount(gasFee, description.symbol)} />
                   </div>
                 </div>
               )}

@@ -15,32 +15,31 @@ import { resetWalletsForm } from 'redux/ui/thunks'
 import { navigateToWallets } from 'redux/ui/navigation'
 import { createNewChildAddress } from '@chronobank/core/redux/wallets/actions'
 import { getChronobankTokens } from '@chronobank/core/redux/settings/erc20/tokens/selectors'
-import { BLOCKCHAIN_ETHEREUM, ETH } from '@chronobank/core/dao/constants'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { FORM_CUSTOM_WALLET_ADD } from 'components/constants'
 import { prefix } from './lang'
 import './CusotmWalletForm.scss'
 import TokensList from './TokensList'
 
-function mapStateToProps (state) {
+function mapStateToProps (state, props) {
   const selector = formValueSelector(FORM_CUSTOM_WALLET_ADD)
   return {
     filter: selector(state, 'filter'),
     tokens: getChronobankTokens()(state),
     initialValues: {
       tokens: {
-        [ETH]: true,
+        [props.symbol]: true,
       },
     },
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps (dispatch, props) {
   return {
     onSubmit: (values: Map) => {
       const tokens = Object.keys(values.get('tokens').filter((token) => token).toObject())
       const name = values.get('name')
-      dispatch(createNewChildAddress({ blockchain: BLOCKCHAIN_ETHEREUM, tokens, name }))
+      dispatch(createNewChildAddress({ blockchain: props.blockchain, tokens, name }))
       dispatch(navigateToWallets())
       dispatch(resetWalletsForm())
     },

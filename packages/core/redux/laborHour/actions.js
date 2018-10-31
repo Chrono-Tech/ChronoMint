@@ -7,7 +7,7 @@ import {
   WEB3_UPDATE,
 } from './constants'
 
-export const ethWeb3Update = (web3) => ({
+export const laborHourWeb3Update = (web3) => ({
   type: WEB3_UPDATE,
   web3,
 })
