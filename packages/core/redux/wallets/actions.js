@@ -20,6 +20,7 @@ import {
 } from '@chronobank/login/network/constants'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
+import { marketAddToken } from '@chronobank/market/redux/actions'
 import WalletModel from '../../models/wallet/WalletModel'
 import { subscribeOnTokens } from '../tokens/thunks'
 import { formatBalances, getProviderByBlockchain, getWalletBalances } from '../tokens/utils'
@@ -61,7 +62,6 @@ import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 import { DUCK_ETH_MULTISIG_WALLET, ETH_MULTISIG_BALANCE, ETH_MULTISIG_FETCHED } from '../multisigWallet/constants'
 import BalanceModel from '../../models/tokens/BalanceModel'
 import { getMultisigWallets } from '../wallet/selectors/models'
-import { addMarketToken } from '../market/actions'
 import { initLXSidechain } from '../laborXSidechain/thunks'
 
 const isOwner = (wallet, account) => {
@@ -190,7 +190,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       }
     })
 
-  dispatch(addMarketToken(token.symbol()))
+  dispatch(marketAddToken(token.symbol()))
 
   if (token.symbol() === 'TIME') {
     dispatch(updateIsTIMERequired())
@@ -256,9 +256,9 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
     },
   }
 
-  Object.entries(signerSelectors).forEach(async ([ blockchain, { signerSelector, path } ]) => {
+  Object.entries(signerSelectors).forEach(async ([blockchain, { signerSelector, path }]) => {
     let address = addressCache[blockchain]
-    if(!address) {
+    if (!address) {
       const signer = signerSelector(state)
       if (signer) {
         address = await signer.getAddress(path)
@@ -272,21 +272,22 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
     }
   })
 
-  Object.entries(addressCache).forEach(async ([ blockchain, { address, path } ]) => {
-    wallets.push(new WalletModel({
-      address,
-      blockchain,
-      isMain: true,
-      walletDerivedPath: path,
-    }))
-  })
+  Object.entries(addressCache)
+    .forEach(([blockchain, { address, path }]) => {
+      wallets.push(new WalletModel({
+        address,
+        blockchain,
+        isMain: true,
+        walletDerivedPath: path,
+      }))
+    })
 
   wallets.forEach((wallet) => {
     dispatch(setWallet(wallet))
     dispatch(updateWalletBalance({ wallet }))
   })
 
-  dispatch(initEos())
+  // dispatch(initEos())
   dispatch(initLXSidechain())
 }
 

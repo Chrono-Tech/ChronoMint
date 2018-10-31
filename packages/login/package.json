@@ -17,7 +17,6 @@
     "immutable": ">=3",
     "js-sha3": "^0.8.0",
     "keythereum": "^1.0.4",
-    "ledger-wallet-provider": "^2.0.1-beta.3",
     "mnid": "^0.1.1",
     "nem-sdk": "^1.6.7",
     "promisify-node-callback": "^1.0.2",

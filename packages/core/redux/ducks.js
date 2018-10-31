@@ -13,7 +13,6 @@ import device from './device/reducer'
 import ethereum from './ethereum/reducer'
 import ethMultisigWallet from './multisigWallet/reducer'
 import events from './events/reducer'
-import market from './market/reducer'
 import modals from './modals/reducer'
 import nem from './nem/reducer'
 import eos from './eos/reducer'
@@ -40,7 +39,6 @@ const coreReducers = {
   ethereum,
   ethMultisigWallet,
   events,
-  market,
   modals,
   nem,
   eos,

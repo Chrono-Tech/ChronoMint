@@ -64,7 +64,7 @@ export default (state = initialState, action) => {
     case actions.NETWORK_RESET_NETWORK:
       return {
         ...state,
-        selectedNetworkId:  null,
+        selectedNetworkId: null,
       }
     case actions.NETWORK_SET_PROVIDER:
       return {

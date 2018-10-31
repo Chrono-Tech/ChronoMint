@@ -14,8 +14,6 @@ export ChronoBankAssetWithFeeProxyABI from 'chronobank-smart-contracts/build/con
 export PendingManagerABI from 'chronobank-smart-contracts/build/contracts/PendingManager.json'
 export PlatformsManagerABI from 'chronobank-smart-contracts/build/contracts/PlatformsManager.json'
 export PlatformTokenExtensionGatewayManagerEmitterABI from 'chronobank-smart-contracts/build/contracts/PlatformTokenExtensionGatewayManagerEmitter.json'
-// TODO @Abdulov check the abi
-// export RewardsABI from 'chronobank-smart-contracts/build/contracts/Rewards.json'
 export AssetHolderABI from 'chronobank-smart-contracts/build/contracts/TimeHolder.json'
 export TokenManagementInterfaceABI from 'chronobank-smart-contracts/build/contracts/TokenManagementInterface.json'
 export UserManagerABI from 'chronobank-smart-contracts/build/contracts/UserManager.json'

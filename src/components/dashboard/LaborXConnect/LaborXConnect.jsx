@@ -102,10 +102,6 @@ export default class LaborXConnect extends PureComponent {
   componentWillReceiveProps (newProps) {
     const firstAsset = newProps.assets.first()
     this.props.onChangeField('symbol', firstAsset.symbol())
-
-    if (newProps.amount > 0 && newProps.amount !== this.props.amount && newProps.token.isFetched) {
-      this.handleGetGasPrice(TX_LOCK, newProps.amount, newProps.token)
-    }
   }
 
   handleGetGasPrice = (action: string, amount: number, token: string, feeMultiplier: number) => {

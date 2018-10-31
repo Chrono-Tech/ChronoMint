@@ -3,9 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Button from 'components/common/ui/Button/Button'
-import { TextField } from 'redux-form-material-ui'
-import Preloader from 'components/common/Preloader/Preloader'
+import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/wallets/constants'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import Amount from '@chronobank/core/models/Amount'
 import AssetsCollection from '@chronobank/core/models/assetHolder/AssetsCollection'
@@ -17,11 +15,10 @@ import { Translate } from 'react-redux-i18n'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
 import { FORM_LABOR_X_CONNECT } from 'components/constants'
 import classnames from 'classnames'
-import classes from './LaborXConnect.scss'
 import validate from './validate'
 import { prefix } from './lang'
 import LaborXConnectSlider from './LaborXConnectSlider/LaborXConnectSlider'
-import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/wallets/constants'
+import './LaborXConnect.scss'
 
 const LABOR_X_CONNECT_FIRST = 'laborXConnectFirst'
 const LABOR_X_CONNECT_SECOND = 'laborXConnectSecond'
@@ -56,8 +53,8 @@ export default class LaborXConnectForm extends PureComponent {
 
   renderHead () {
     const { step } = this.state
-    const title = LABOR_X_CONNECT_FIRST ? 'titleStepOne' : 'titleStepTwov'
-    const message = LABOR_X_CONNECT_FIRST ? 'messageStepOne' : 'messageStepTwo'
+    const title = step === LABOR_X_CONNECT_FIRST ? 'titleStepOne' : 'titleStepTwo'
+    const message = step === LABOR_X_CONNECT_FIRST ? 'messageStepOne' : 'messageStepTwo'
     return (
       <div styleName='head'>
         <div styleName={classnames('mainTitle', { bordered: step === LABOR_X_CONNECT_FIRST })}>
@@ -70,59 +67,95 @@ export default class LaborXConnectForm extends PureComponent {
     )
   }
 
-  renderBody () {
-    const { amount, token, gasFee, feeLoading } = this.props
+  renderButton ([id, { onClick, topValue, bottom }]) {
+    return (
+      <div key={id} styleName='button'>
+        <div styleName='buttonInfo'>
+          <div>Reward per block</div>
+          <div><TokenValue value={topValue} /></div>
+        </div>
+        <buttom onClick={onClick} styleName={classnames('buttonInfoBottom', bottom.styleName)}>
+          <div styleName='title'>{bottom.title}</div>
+          <div styleName='subTitle'>{bottom.subTitle}</div>
+        </buttom>
+      </div>
+    )
+  }
 
-    if (this.state.step === LABOR_X_CONNECT_SECOND) {
-      return null
+  renderFirstStep () {
+    const bottoms = {
+      bottomLeft: {
+        onClick: () => {
+          this.setState({
+            step: LABOR_X_CONNECT_SECOND,
+          })
+        },
+        topValue: new Amount(2, 'LHT'),
+        bottom: {
+          styleName: 'blue',
+          title: 'Use Our Node',
+        },
+      },
+      bottomRight: {
+        onClick: () => {
+          this.setState({
+            step: LABOR_X_CONNECT_SECOND,
+          })
+        },
+        topValue: new Amount(3, 'LHT'),
+        bottom: {
+          styleName: 'red',
+          title: 'Use Custom Node',
+          subTitle: 'Min deposit: 1,000',
+        },
+      },
     }
 
     return (
       <div>
         <div styleName={classnames('fieldWrapper')}>
-          <Field component={LaborXConnectSlider} name='amount' {...FEE_RATE_MULTIPLIER} toFixed={1} />
-          <div styleName='amountInFiat'>{token.isFetched() ? <TokenValue renderOnlyPrice value={new Amount(token.addDecimals(amount), token.symbol())} /> : null}</div>
+          <Field
+            component={LaborXConnectSlider}
+            name='amount'
+            {...FEE_RATE_MULTIPLIER}
+            toFixed={1}
+          />
         </div>
-        <div styleName='transactionsInfo'>
-          <div>
-            <b>
-              <Translate value={`${prefix}.transactionFee`} />:{' '}
-            </b>
-            <span styleName='infoText'>
-              {feeLoading && <Preloader />}
-              {gasFee && <TokenValue value={gasFee} />}
-            </span>
-          </div>
+        <div styleName='actions'>
+          {Object.entries(bottoms).map((entry) => {
+            return this.renderButton(entry)
+          })}
         </div>
       </div>
     )
   }
 
-  renderFoot () {
-    const { balanceEth, handleSubmit, pristine, invalid } = this.props
-    const isInvalid = pristine || invalid
+  renderSecondStep () {
+    const buttons = [
+      {
+        title: 'Windows node',
+        onClick: () => {
 
+        },
+      },
+      {
+        title: 'MacOS node',
+        onClick: () => {
+
+        },
+      },
+      {
+        title: 'Linux node',
+        onClick: () => {
+
+        },
+      },
+    ]
     return (
-      <div styleName='actions'>
-        {balanceEth &&
-        balanceEth.gt(0) &&
-        this.state.step === LABOR_X_CONNECT_FIRST && (
-          <div styleName='action'>
-            <Button styleName='actionButton' label={<Translate value={`${prefix}.proceed`} />} onClick={handleSubmit(this.handleProceed)} disabled={isInvalid} />
-          </div>
-        )}
-        {balanceEth &&
-        balanceEth.gt(0) &&
-        this.state.step === LABOR_X_CONNECT_FIRST && (
-          <div styleName='action'>
-            <Button styleName='actionButton' label={<Translate value={`${prefix}.unlock`} />} onClick={handleSubmit(this.handleUnlock)} disabled={isInvalid} />
-          </div>
-        )}
-        {this.state.step === LABOR_X_CONNECT_SECOND && (
-          <div styleName='action'>
-            <Button styleName='actionButton' label={<Translate value={`${prefix}.confirm`} />} onClick={handleSubmit(this.handleProceed)} disabled={isInvalid} />
-          </div>
-        )}
+      <div styleName='downloadButtons'>
+        {buttons.map((button) => {
+          return <button>{button.title}</button>
+        })}
       </div>
     )
   }
@@ -133,8 +166,9 @@ export default class LaborXConnectForm extends PureComponent {
         <form onSubmit={this.props.handleSubmit}>
           {this.renderHead()}
           <div styleName='body'>
-            {this.renderBody()}
-            {this.renderFoot()}
+            {this.state.step === LABOR_X_CONNECT_FIRST
+              ? this.renderFirstStep()
+              : this.renderSecondStep()}
           </div>
         </form>
       </div>
