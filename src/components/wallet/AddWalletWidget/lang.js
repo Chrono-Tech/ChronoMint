@@ -12,6 +12,7 @@ export default {
     dash: 'Dash Wallet',
     ltc: 'Litecoin Wallet',
     eth: 'Ethereum Wallet',
+    lht: 'Labor Hour Token Wallet',
     nem: 'NEM Wallet',
     waves: 'Waves Wallet',
     createWallet: 'Add a new %{blockchain} Wallet',
