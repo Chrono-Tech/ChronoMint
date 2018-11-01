@@ -83,6 +83,13 @@ const configureStore = () => {
       'tokens/fetching',
       'tokens/updateLatestBlock',
       'wallet/updateBalance',
+      'MARKET_STOP',
+      'MARKET_RESET',
+      'MARKET_MARKET_SELECT_FAILURE',
+      'MARKET_MARKET_SELECT_COIN',
+      'MARKET_ADD_TOKEN',
+      'MIDDLEWARE_CRYPTOCOMPARE_UPDATE_MARKET_RATES',
+      'MIDDLEWARE_CRYPTOCOMPARE_UPDATE_MARKET_LAST',
     ]
     // All actions like network/* (starts with network)
     const DOMAINS = [

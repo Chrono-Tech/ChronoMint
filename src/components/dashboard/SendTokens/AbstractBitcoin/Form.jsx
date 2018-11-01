@@ -4,11 +4,7 @@
  */
 
 import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
-import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
-import { walletInfoSelector } from '@chronobank/core/redux/wallet/selectors/selectors'
 import { convertSatoshiToBTC } from '@chronobank/core/redux/bitcoin/utils'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
-import { selectCurrentCoin } from '@chronobank/market/redux/selectors'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import Amount from '@chronobank/core/models/Amount'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
@@ -24,7 +20,6 @@ import {
   MODE_ADVANCED,
   MODE_SIMPLE,
 } from 'components/constants'
-
 import { TOKEN_ICONS } from 'assets'
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
@@ -33,53 +28,12 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
-import {
-  change,
-  Field,
-  formPropTypes,
-  formValueSelector,
-  getFormSyncErrors,
-  getFormValues,
-} from 'redux-form/immutable'
+import { change, Field, formPropTypes } from 'redux-form/immutable'
 import { prefix } from '../lang'
 
 import '../form.scss'
 
 const DEBOUNCE_ESTIMATE_FEE_TIMEOUT = 1000
-
-export function mapStateToProps (state, ownProps) {
-  const walletInfo = walletInfoSelector(ownProps.wallet, false, state)
-  const selectedCurrency = selectCurrentCoin(state)
-  const selector = formValueSelector(FORM_SEND_TOKENS)
-  const formValues = getFormValues(FORM_SEND_TOKENS)
-  const symbol = selector(state, 'symbol')
-  const tokenId = walletInfo.tokens.some((token) => token.symbol === symbol) ? symbol : walletInfo.tokens[0].symbol
-  const tokenInfo = walletInfo.tokens.find((token) => token.symbol === tokenId)
-  const feeMultiplier = selector(state, 'feeMultiplier')
-  const recipient = selector(state, 'recipient')
-  const amount = selector(state, 'amount')
-  const satPerByte = selector(state, 'satPerByte')
-  const mode = selector(state, 'mode')
-  const formErrors = getFormSyncErrors(FORM_SEND_TOKENS)(state)
-  const token = state.get(DUCK_TOKENS).item(tokenId)
-
-  return {
-    selectedCurrency,
-    tokens: state.get(DUCK_TOKENS),
-    account: state.get(DUCK_SESSION).account,
-    amount,
-    token,
-    tokenInfo,
-    walletInfo,
-    recipient,
-    symbol,
-    mode,
-    formErrors,
-    formValues: (formValues(state) && JSON.stringify(formValues(state).toJSON())) || null,
-    feeMultiplier,
-    satPerByte,
-  }
-}
 
 export default class Bitcoin extends PureComponent {
   static propTypes = {
@@ -315,7 +269,7 @@ export default class Bitcoin extends PureComponent {
           />
         </div>
         <div styleName='row'>
-          { this.renderExtraFields() }
+          {this.renderExtraFields()}
         </div>
         {mode === MODE_SIMPLE && feeMultiplier && token.feeRate() && (
           <div styleName='row'>
