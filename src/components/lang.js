@@ -47,6 +47,7 @@ import TransactionsListWidget from 'components/wallet/TransactionsListWidget/lan
 import ReceiveTokenModal from 'components/dashboard/ReceiveTokenModal/lang'
 import TheCookies from 'components/common/TheCookies/lang'
 import LaborXConnect from 'components/dashboard/LaborXConnect/lang'
+import LaborXRewardsWidget from 'components/dashboard/LaborXRewardsWidget/lang'
 
 export default {
   en: {
@@ -97,5 +98,6 @@ export default {
     ReceiveTokenModal: ReceiveTokenModal.en,
     TheCookies: TheCookies.en,
     LaborXConnect: LaborXConnect.en,
+    LaborXRewardsWidget: LaborXRewardsWidget.en,
   },
 }

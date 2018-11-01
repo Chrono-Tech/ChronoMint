@@ -10,9 +10,9 @@ import { TIME } from '@chronobank/core/dao/constants'
 import { initAssetsHolder } from '@chronobank/core/redux/assetsHolder/actions'
 import { getDeposit } from '@chronobank/core/redux/assetsHolder/selectors'
 import Amount from '@chronobank/core/models/Amount'
-import Button from 'components/common/ui/Button/Button'
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import LaborXConnectWidget from 'components/Deposits/LaborXConnectWidget/LaborXConnectWidget'
+import LaborXRewardsWidget from 'components/dashboard/LaborXRewardsWidget/LaborXRewardsWidget'
 import './MiningContent.scss'
 
 function mapStateToProps (state) {
@@ -43,24 +43,14 @@ export default class MiningContent extends Component {
     this.props.initAssetsHolder()
   }
 
-  handleAddDeposit = () => {
-    this.props.addDeposit()
-  }
-
-  handleWithdrawDeposit = () => {
-    this.props.addDeposit({ isWithdraw: true })
-  }
-
   render () {
     return (
       <div styleName='root'>
         <div styleName='content'>
           <div styleName='inner'>
             <LaborXConnectWidget />
+            <LaborXRewardsWidget />
           </div>
-          <Button styleName='addDeposit' onClick={this.handleAddDeposit}>
-            <i className='chronobank-icon'>add</i>
-          </Button>
         </div>
       </div>
     )

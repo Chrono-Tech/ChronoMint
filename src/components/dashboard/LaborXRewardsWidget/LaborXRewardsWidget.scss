@@ -1,0 +1,68 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import '~styles/partials/variables';
+@import '~styles/partials/mixins';
+
+.root {
+  max-width: 587px;
+  position: relative;
+  min-height: 260px;
+  background-color: $color-white;
+  border-radius: 2px;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+  margin: 20px -30px 0;
+  .header {
+    padding: 30px;
+    .title {
+      font-size: 26px;
+      line-height: 31px;
+    }
+    .subTitle {
+      font-size: 14px;
+      line-height: 17px;
+      padding-top: 5px;
+    }
+  }
+  .table {
+    font-size: 14px;
+    line-height: 17px;
+    .tableHeader {
+      border-top: 1px solid $color-grey-3;
+      padding: 10px 30px;
+      display: flex;
+      &:hover {
+        background: $color-grey-3;
+      }
+      .column {
+        flex: 1;
+        &:nth-child(2) {
+          text-align: center;
+        }
+        &:last-child {
+          text-align: right;
+        }
+      }
+    }
+    .tableBody {
+      .row {
+        border-top: 1px solid $color-grey-3;
+        padding: 15px 30px;
+        display: flex;
+        &:hover {
+          background: $color-grey-3;
+        }
+        .column {
+          flex: 1;
+          &:nth-child(2) {
+            text-align: center;
+          }
+          &:last-child {
+            text-align: right;
+          }
+        }
+      }
+    }
+  }
+}
