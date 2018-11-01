@@ -17,10 +17,17 @@ import { WALLETS_UPDATE_WALLET } from '../wallets/constants'
 import WalletModel from '../../models/wallet/WalletModel'
 import AllowanceCollection from '../../models/AllowanceCollection'
 import { estimateGas, executeTransaction } from '../ethereum/thunks'
-
-import { ASSET_HOLDER_ADDRESS, ASSET_HOLDER_ASSET_UPDATE, ASSET_HOLDER_INIT, DUCK_ASSETS_HOLDER } from './constants'
-import { TX_APPROVE } from '../../dao/constants/ERC20DAO'
-import { ASSET_DEPOSIT_WITHDRAW, TX_DEPOSIT, TX_LOCK } from '../../dao/constants/AssetHolderDAO'
+import {
+  ASSET_HOLDER_ADDRESS,
+  ASSET_HOLDER_ASSET_UPDATE,
+  ASSET_HOLDER_INIT,
+  DUCK_ASSETS_HOLDER,
+} from './constants'
+import {
+  ASSET_DEPOSIT_WITHDRAW,
+  TX_DEPOSIT,
+  TX_LOCK,
+} from '../../dao/constants/AssetHolderDAO'
 import { notify } from '../notifier/actions'
 import SimpleNoticeModel from '../../models/notices/SimpleNoticeModel'
 import { getTokens } from '../tokens/selectors'
@@ -116,24 +123,17 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
   dispatch({ type: ASSET_HOLDER_INIT, inInited: true })
 
   const assetHolderDAO = daoByType('TimeHolder')(getState())
-  const [walletAddress] = await Promise.all([
-    assetHolderDAO.getWalletAddress(),
-  ])
+  const walletAddress = await assetHolderDAO.getWalletAddress()
 
   dispatch({ type: ASSET_HOLDER_ADDRESS, account: assetHolderDAO.address, wallet: walletAddress.toLowerCase() })
 
   // get assets list
-  const [timeAddress] = await Promise.all([
-    assetHolderDAO.getSharesContract(),
-  ])
-  const assets = [timeAddress]
-  assets.forEach((address) => {
-    dispatch({
-      type: ASSET_HOLDER_ASSET_UPDATE,
-      asset: new AssetModel({
-        address: address.toLowerCase(),
-      }),
-    })
+  const timeAddress = await assetHolderDAO.getSharesContract()
+  dispatch({
+    type: ASSET_HOLDER_ASSET_UPDATE,
+    asset: new AssetModel({
+      address: timeAddress.toLowerCase(),
+    }),
   })
 
   dispatch(subscribeOnTokens(handleToken))

@@ -75,6 +75,10 @@ export const enableDefaultBlockchains = () => (dispatch, getState) => {
 
 export const enableBlockchains = (blockchains) => (dispatch) => {
   blockchains.forEach((blockchain) => {
+    // TODO @Abdulov remove if
+    if (blockchain !== 'Ethereum') {
+      return
+    }
     if (!enableMap[blockchain]) {
       return
     }

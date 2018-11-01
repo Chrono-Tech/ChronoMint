@@ -26,7 +26,6 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_ASSETS_HOLDER } from '@chronobank/core/redux/assetsHolder/constants'
-import { getMainSymbolForBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/wallets/constants'
 import { estimateGasForAssetHolder, requireTIME } from '@chronobank/core/redux/assetsHolder/actions'
 import { mainApprove, mainRevoke } from '@chronobank/core/redux/wallets/actions'
@@ -37,8 +36,9 @@ import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import AllowanceModel from '@chronobank/core/models/wallet/AllowanceModel'
 import classnames from 'classnames'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
-import { getMainWalletForBlockchain } from '@chronobank/core/redux/wallets/selectors/models'
+import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
+import { ETH } from '@chronobank/core/dao/constants'
 import { ACTION_APPROVE, ACTION_DEPOSIT, ACTION_WITHDRAW, FORM_DEPOSIT_TOKENS } from 'components/constants'
 import './DepositTokensForm.scss'
 import validate from './validate'
@@ -58,24 +58,21 @@ function mapStateToProps (state) {
   const feeMultiplier = selector(state, 'feeMultiplier')
 
   // state
+  const wallet: WalletModel = getMainEthWallet(state)
   const assetHolder = state.get(DUCK_ASSETS_HOLDER)
   const tokens = state.get(DUCK_TOKENS)
   const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
 
   const token = tokens.item(tokenId)
-  const wallet: WalletModel = getMainWalletForBlockchain(token.blockchain())(state)
-
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
   const balance = wallet.balances[tokenId] || new Amount(0, tokenId)
-  const symbol = getMainSymbolForBlockchain(wallet.blockchain)
-  const balanceEth = wallet.balances[symbol] || new Amount(0, symbol)
+  const balanceEth = wallet.balances[ETH] || new Amount(0, ETH)
   const assets = assetHolder.assets()
   const spender = assetHolder.wallet()
 
   return {
     wallet,
     balance,
-    symbol,
     balanceEth,
     deposit: assets.item(token.address()).deposit(),
     allowance: wallet.allowances.list[`${spender}-${token.id()}`] || new AllowanceModel(),
@@ -120,7 +117,6 @@ export default class DepositTokensForm extends PureComponent {
     isShowTIMERequired: PropTypes.bool,
     token: PropTypes.instanceOf(TokenModel),
     account: PropTypes.string,
-    symbol: PropTypes.string,
     wallet: PropTypes.instanceOf(WalletModel),
     tokens: PropTypes.instanceOf(TokensCollection),
     assets: PropTypes.instanceOf(AssetsCollection),
@@ -396,7 +392,6 @@ export default class DepositTokensForm extends PureComponent {
       balance,
       deposit,
       token,
-      symbol,
       allowance,
       pristine,
       invalid,
@@ -421,7 +416,7 @@ export default class DepositTokensForm extends PureComponent {
             <Button
               styleName='actionButton'
               label={<Translate value={prefix('receiveEth')} />}
-              onClick={this.handleReceiveToken(symbol, wallet)}
+              onClick={this.handleReceiveToken(ETH, wallet)}
             />
           </div>
         )}

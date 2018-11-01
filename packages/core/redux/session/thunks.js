@@ -137,7 +137,7 @@ export const login = (account) => async (dispatch, getState) => {
 
   await dispatch(initEthereum({ web3 }))
   await dispatch(watcher({ web3 }))
-  dispatch(initLaborHour({ web3: network[BLOCKCHAIN_LABOR_HOUR].wss }))
+  // dispatch(initLaborHour({ web3: network[BLOCKCHAIN_LABOR_HOUR].wss }))
 
   const userManagerDAO = daoByType('UserManager')(getState())
   const [isCBE, profile] = await Promise.all([

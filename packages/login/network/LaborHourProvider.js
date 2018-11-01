@@ -20,10 +20,11 @@ export class LaborHourProvider extends AbstractEthereumProvider {
     const balanceData = { tokens: {} }
 
     try {
-      const web3 = getLaborHourWeb3(this.networkSettings[BLOCKCHAIN_LABOR_HOUR].wss)
+      const url = this.networkSettings[BLOCKCHAIN_LABOR_HOUR] ? this.networkSettings[BLOCKCHAIN_LABOR_HOUR].wss : 'wss://parity.tp.ntr1x.com:8546'
+      const web3 = getLaborHourWeb3(url)
       balanceData.balance = await web3.eth.getBalance(address)
       web3.currentProvider.connection.close()
-    } catch(error) {
+    } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error)
     }

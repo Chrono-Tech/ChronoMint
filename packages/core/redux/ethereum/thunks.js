@@ -9,7 +9,7 @@ import { BLOCKCHAIN_ETHEREUM } from '@chronobank/login/network/constants'
 import { HolderModel, ContractDAOModel, ContractModel } from '../../models'
 import { getEthereumSigner, getAddressCache } from '../persistAccount/selectors'
 import ethereumDAO from '../../dao/EthereumDAO'
-import {  WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
+import { WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
 import * as ethActions from './actions'
 import * as Utils from './utils'
 import WalletModel from '../../models/wallet/WalletModel'
@@ -28,6 +28,7 @@ import { web3Selector } from './selectors'
 import { daoByAddress, daoByType } from '../daos/selectors'
 import { BLOCKCHAIN_LABOR_HOUR, LHT, EVENT_NEW_BLOCK } from '../../dao/constants'
 import laborHourDAO from '../../dao/LaborHourDAO'
+import { getTokens } from '../tokens/selectors'
 
 class EthereumTransactionHandler extends TransactionHandler {
   constructor () {
@@ -61,13 +62,14 @@ export const updateWalletBalance = (wallet) => (dispatch) => {
   getWalletBalances({ wallet })
     .then((balancesResult) => {
       try {
-        dispatch({ type: WALLETS_SET, wallet: new WalletModel({
-          ...wallet,
-          balances: {
-            ...wallet.balances,
-            ...formatBalances(wallet.blockchain, balancesResult),
-          },
-        }),
+        dispatch({
+          type: WALLETS_SET, wallet: new WalletModel({
+            ...wallet,
+            balances: {
+              ...wallet.balances,
+              ...formatBalances(wallet.blockchain, balancesResult),
+            },
+          }),
         })
       } catch (e) {
         // eslint-disable-next-line no-console
@@ -98,11 +100,10 @@ export const initTokens = () => async (dispatch, getState) => {
   dispatch(TokensActions.setTokensFetchingCount(0))
   const erc20: ERC20ManagerDAO = daoByType('ERC20Manager')(state)
 
-  state = getState()
   erc20
     .on(EVENT_ERC20_TOKENS_COUNT, async (count) => {
-      const currentCount = state.get(DUCK_TOKENS).leftToFetch()
-      dispatch(TokensActions.setTokensFetchingCount(currentCount + count + 1 /*+eth+lht-lht(ERC20)*/))
+      const currentCount = getTokens(getState()).leftToFetch()
+      dispatch(TokensActions.setTokensFetchingCount(currentCount + count + 2 /*+eth+lht-lht(ERC20)*/))
       const ethLikeDAOs = [ethereumDAO, laborHourDAO]
 
       ethLikeDAOs.map(async (dao) => {
@@ -115,9 +116,9 @@ export const initTokens = () => async (dispatch, getState) => {
       })
     })
     .on(EVENT_NEW_ERC20_TOKEN, (token: TokenModel) => {
-      if(token.get('symbol') !== LHT) {
+      if (token.symbol() === LHT) {
         // eslint-disable-next-line no-console
-        return console.warn(`Unsupported ERC20 token ${token.get('symbol')} received`)
+        return console.warn(`Unsupported ERC20 token ${token.symbol()} received`)
       }
 
       dispatch(TokensActions.tokenFetched(token))
@@ -180,7 +181,7 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
       const path = Utils.getEthereumDerivedPath(network[blockchain])
       const signer = signerSelector(state)
       if (signer) {
-        const address = await signer.getAddress(path)
+        const address = await signer.getAddress(path).toLowerCase()
         addressCache[blockchain] = {
           address,
           path,
@@ -197,7 +198,7 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
 
     const { address, path } = addressCache[blockchain]
     const wallet = new WalletModel({
-      address,
+      address: address.toLowerCase(),
       blockchain: blockchain,
       isMain: true,
       walletDerivedPath: path,
