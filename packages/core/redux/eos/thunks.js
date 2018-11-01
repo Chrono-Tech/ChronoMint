@@ -19,12 +19,15 @@ import {
   getEOSTokens,
   getEOSWallet,
   getEosWallets,
+  getWatchTimeoutId,
 } from './selectors/mainSelectors'
 import { ErrorNoticeModel, TransferNoticeModel } from '../../models'
 import { notify } from '../notifier/actions'
 import { getSelectedNetwork } from '../persistAccount/selectors'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import TokenModel from '../../models/tokens/TokenModel'
+import { WALLETS_UNSET } from '../wallets/constants'
+import { getWalletsByBlockchain } from '../wallets/selectors/models'
 
 const PAGE_SIZE = 20
 
@@ -172,10 +175,23 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
 
 const rejectTransaction = (entry) => (dispatch) => dispatch(eosTxStatus(entry.key, entry.tx.from, { isRejected: true }))
 
-export const initEos = () => (dispatch) => {
+export const enableEos = () => (dispatch) => {
   dispatch(setEos())
   dispatch(createEosWallet())
   dispatch(watchEOS())
+}
+
+export const disableEos = () => (dispatch, getState) => {
+  const wallets = getWalletsByBlockchain(BLOCKCHAIN_EOS)(getState())
+  dispatch(unwatchEos())
+
+  wallets.forEach((wallet) => {
+    dispatch(deleteWallet(wallet))
+  })
+}
+
+export const deleteWallet = (wallet) => (dispatch) => {
+  dispatch({ type: WALLETS_UNSET, wallet })
 }
 
 export const createEosWallet = () => async (dispatch, getState) => {
@@ -191,6 +207,7 @@ export const createEosWallet = () => async (dispatch, getState) => {
         address: accountName,
         blockchain: BLOCKCHAIN_EOS,
         isMain: true,
+        walletDerivedPath: null,
       })))
       await dispatch(getAccountBalances(accountName))
       dispatch(getEOSWalletTransactions(`${BLOCKCHAIN_EOS }-${accountName}`))
@@ -348,15 +365,21 @@ const watchEOS = () => async (dispatch, getState) => {
               }),
             }),
           ))
-
         }
       }
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error(e)
     }
-    setTimeout(() => {
-      dispatch(watchEOS())
+
+    const timeoutId = setTimeout(async () => {
+      await dispatch(watchEOS())
     }, 5000)
+
+    dispatch(EosActions.updateWatchTimeoutId(timeoutId))
   })
+}
+
+export const unwatchEos = (dispatch, getState) => {
+  clearTimeout(getWatchTimeoutId(getState()))
 }

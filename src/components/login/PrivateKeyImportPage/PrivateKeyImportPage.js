@@ -8,6 +8,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import EthereumMemoryDevice from '@chronobank/core/services/signers/EthereumMemoryDevice'
 import { downloadWallet, accountDeselect } from '@chronobank/core/redux/persistAccount/actions'
+import { formatBlockchainListToArray } from '@chronobank/core/redux/persistAccount/utils'
 import { onSubmitCreateAccountImportPrivateKey } from '@chronobank/login-ui/redux/thunks'
 import {
   navigateToSelectWallet,
@@ -18,6 +19,7 @@ import {
   LoginWithPrivateKeyContainer,
   CreateAccountContainer,
   GenerateWalletContainer,
+  BlockchainChoiceContainer,
 } from '@chronobank/login-ui/components'
 import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
 import AccountProfileModel from '@chronobank/core/models/wallet/persistAccount/AccountProfileModel'
@@ -30,7 +32,7 @@ function mapDispatchToProps (dispatch) {
     navigateBack: () => dispatch(navigateBack()),
     navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
-    onSubmitCreateAccountImportPrivateKey: async (name, password, mnemonic) => await dispatch(onSubmitCreateAccountImportPrivateKey(name, password, mnemonic)),
+    onSubmitCreateAccountImportPrivateKey: (name, password, privateKey, blockchainList) => dispatch(onSubmitCreateAccountImportPrivateKey(name, password, privateKey, blockchainList)),
   }
 }
 
@@ -38,7 +40,8 @@ class PrivateKeyImportPage extends PureComponent {
   static PAGES = {
     PRIVATE_KEY_FORM: 1,
     CREATE_ACCOUNT_FORM: 2,
-    DOWNLOAD_WALLET_PAGE: 3,
+    BLOCKCHAIN_CHOICE_FORM: 3,
+    DOWNLOAD_WALLET_PAGE: 4,
   }
 
   static propTypes = {
@@ -57,6 +60,8 @@ class PrivateKeyImportPage extends PureComponent {
     this.state = {
       page: PrivateKeyImportPage.PAGES.PRIVATE_KEY_FORM,
       privateKey: null,
+      walletName: null,
+      password: null,
       accountProfile: null,
     }
   }
@@ -78,6 +83,14 @@ class PrivateKeyImportPage extends PureComponent {
             accountProfile={this.state.accountProfile}
             previousPage={this.previousPage.bind(this)}
             onSubmit={this.onSubmitCreateAccount.bind(this)}
+          />
+        )
+
+      case PrivateKeyImportPage.PAGES.BLOCKCHAIN_CHOICE_FORM:
+        return (
+          <BlockchainChoiceContainer
+            previousPage={this.previousPage.bind(this)}
+            onSubmitSuccess={this.onSubmitBlockchainChoiceFormSuccess.bind(this)}
           />
         )
 
@@ -109,8 +122,22 @@ class PrivateKeyImportPage extends PureComponent {
   }
 
   async onSubmitCreateAccount ({ walletName, password }) {
-    const { onSubmitCreateAccountImportPrivateKey } = this.props
-    await onSubmitCreateAccountImportPrivateKey(walletName, password, this.state.privateKey)
+
+    this.setState({
+      page: PrivateKeyImportPage.PAGES.BLOCKCHAIN_CHOICE_FORM,
+      walletName,
+      password,
+    })
+  }
+
+  async onSubmitBlockchainChoiceFormSuccess (blockchainListValues) {
+    const { walletName, password, privateKey } = this.state
+    await this.props.onSubmitCreateAccountImportPrivateKey(
+      walletName,
+      password,
+      privateKey,
+      formatBlockchainListToArray(blockchainListValues.toJS(), (name, isEnable) => isEnable)
+    )
 
     this.setState({
       page: PrivateKeyImportPage.PAGES.DOWNLOAD_WALLET_PAGE,
@@ -126,7 +153,6 @@ class PrivateKeyImportPage extends PureComponent {
   }
 
   render () {
-
     return this.getCurrentPage()
   }
 }

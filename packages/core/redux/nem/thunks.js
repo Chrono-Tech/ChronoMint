@@ -4,10 +4,15 @@
  */
 
 import { nemProvider } from '@chronobank/login/network/NemProvider'
+import { BLOCKCHAIN_NEM } from '@chronobank/login/network/constants'
+import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
+import TokenModel from '../../models/tokens/TokenModel'
+import Amount from '../../models/Amount'
+import { subscribeOnTokens } from '../tokens/thunks'
 import { modalsOpen } from '../../redux/modals/actions'
 import { ErrorNoticeModel, TransferNoticeModel } from '../../models'
 import { nemPendingSelector, pendingEntrySelector, getNemSigner } from './selectors'
-import { getSelectedNetwork } from '../persistAccount/selectors'
+import { getSelectedNetwork, getAddressCache } from '../persistAccount/selectors'
 import { describePendingNemTx } from '../../describers'
 import { getAccount } from '../session/selectors/models'
 import * as NemActions from './actions'
@@ -15,8 +20,23 @@ import * as NemUtils from './utils'
 import { getToken } from '../tokens/selectors'
 import { notify } from '../notifier/actions'
 import tokenService from '../../services/TokenService'
-import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
+import {
+  DUCK_PERSIST_ACCOUNT,
+  WALLETS_CACHE_ADDRESS,
+} from '../persistAccount/constants'
 import { showSignerModal, closeSignerModal } from '../modals/thunks'
+
+import * as TokensActions from '../tokens/actions'
+import WalletModel from '../../models/wallet/WalletModel'
+
+import { NEM_DECIMALS, NEM_XEM_NAME, NEM_XEM_SYMBOL } from '../../dao/constants/NemDAO'
+import NemDAO from '../../dao/NemDAO'
+import {
+  WALLETS_SET,
+  WALLETS_UNSET,
+  WALLETS_UPDATE_BALANCE,
+} from '../wallets/constants'
+import { getWalletsByBlockchain } from '../wallets/selectors/models'
 
 const notifyNemTransfer = (entry) => (dispatch, getState) => {
   const { tx } = entry
@@ -180,6 +200,19 @@ const submitTransaction = (entry) => async (dispatch, getState) => {
   }))
 }
 
+export const updateWalletBalance = (wallet) => (dispatch) => {
+  const updateBalance = (token: TokenModel) => async () => {
+    if (token.blockchain() === wallet.blockchain) {
+      const dao = tokenService.getDAO(token)
+      const balance = await dao.getAccountBalance(wallet.address)
+      if (balance) {
+        dispatch({ type: WALLETS_UPDATE_BALANCE, walletId: wallet.id, balance: new Amount(balance, token.symbol(), true) })
+      }
+    }
+  }
+  dispatch(subscribeOnTokens(updateBalance))
+}
+
 const acceptTransaction = (entry) => async (dispatch, getState) => {
   dispatch(NemActions.nemTxAccept(entry))
   dispatch(nemTxStatus(entry.key, entry.tx.from, { isAccepted: true, isPending: true }))
@@ -204,3 +237,84 @@ const rejectTransaction = (entry) => (dispatch) => {
   dispatch(NemActions.nemRejectTx({ entry }))
   dispatch(nemTxStatus(entry.key, entry.tx.from, { isRejected: true }))
 }
+
+export const enableNem = () => async (dispatch) => {
+  dispatch(initToken())
+  dispatch(initWalletFromKeys())
+}
+
+const initToken = () => async (dispatch) => {
+  const dao = new NemDAO(NEM_XEM_NAME, NEM_XEM_SYMBOL, nemProvider, NEM_DECIMALS)
+  dao.watch()
+
+  const nem = await dao.fetchToken()
+  await dispatch(initMosaicTokens(nem))
+  tokenService.registerDAO(nem, dao)
+  dispatch(TokensActions.tokenFetched(nem))
+}
+
+export const initMosaicTokens = (nem: TokenModel) => async (dispatch) => {
+  const mosaics = nemProvider.getMosaics()
+  // do not wait until initialized, it is ok to lazy load all the tokens
+  return Promise.all(
+    mosaics
+      .map((m) => new NemDAO(m.name, m.symbol, nemProvider, m.decimals, m.definition, nem))
+      .map(async (dao) => {
+        try {
+          const token = await dao.fetchToken()
+          tokenService.registerDAO(token, dao)
+          dispatch(TokensActions.tokenFetched(token))
+        } catch (e) {
+          dispatch(TokensActions.tokensLoadingFailed())
+        }
+      }),
+  )
+}
+
+const initWalletFromKeys = () => async (dispatch, getState) => {
+  const state = getState()
+  const { network } = getCurrentNetworkSelector(state)
+  const addressCache = { ...getAddressCache(state) }
+
+  if (!addressCache[BLOCKCHAIN_NEM]) {
+    const path = NemUtils.getNemDerivedPath(network[BLOCKCHAIN_NEM])
+    const signer = getNemSigner(state)
+
+    if (signer) {
+      const address = await signer.getAddress(path)
+      addressCache[BLOCKCHAIN_NEM] = {
+        address,
+        path,
+      }
+
+      dispatch({
+        type: WALLETS_CACHE_ADDRESS,
+        blockchain: BLOCKCHAIN_NEM,
+        address,
+        path,
+      })
+    }
+  }
+
+  const { address, path } = addressCache[BLOCKCHAIN_NEM]
+  const wallet = new WalletModel({
+    address,
+    blockchain: BLOCKCHAIN_NEM,
+    isMain: true,
+    walletDerivedPath: path,
+  })
+
+  nemProvider.subscribe(wallet.address)
+  dispatch({ type: WALLETS_SET, wallet })
+
+  dispatch(updateWalletBalance(wallet))
+}
+
+export const disableNem = () => async (dispatch, getState) => {
+  const wallets = getWalletsByBlockchain(BLOCKCHAIN_NEM)(getState())
+  wallets.forEach((wallet) => {
+    nemProvider.unsubscribe(wallet.address)
+    dispatch({ type: WALLETS_UNSET, wallet })
+  })
+}
+

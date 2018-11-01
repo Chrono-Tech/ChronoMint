@@ -4,28 +4,58 @@
  */
 
 import bitcoin from 'bitcoinjs-lib'
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_DASH,
+  BLOCKCHAIN_LITECOIN,
+  COIN_TYPE_BCC_MAINNET,
+  COIN_TYPE_DASH_MAINNET,
+  COIN_TYPE_LTC_MAINNET,
+} from '@chronobank/login/network/constants'
 import type { Dispatch } from 'redux'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
+
 import { modalsOpen } from '../modals/actions'
-import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
+import {
+  DUCK_PERSIST_ACCOUNT,
+  WALLETS_CACHE_ADDRESS,
+} from '../persistAccount/constants'
 import { getBalanceDataParser } from './converter'
 import {
   TransferNoticeModel,
 } from '../../models'
 import * as BitcoinActions from './actions'
 import * as BitcoinUtils from './utils'
-import { getSelectedNetwork } from '../persistAccount/selectors'
+import { getSelectedNetwork, getAddressCache } from '../persistAccount/selectors'
 import { showSignerModal, closeSignerModal } from '../modals/thunks'
 
 import { describePendingBitcoinTx } from '../../describers'
 import { getToken } from '../tokens/selectors'
-import { pendingEntrySelector, getBitcoinSigner } from './selectors'
 import { notify, notifyError } from '../notifier/actions'
 import BitcoinMiddlewareService from './BitcoinMiddlewareService'
 
-import { getAddressUTXOS } from '../bitcoin-like-blockchain/thunks'
+import { getAddressUTXOS } from '../abstractBitcoin/thunks'
+import { formatBalances, getProviderByBlockchain } from '../tokens/utils'
+import { pendingEntrySelector, getBitcoinCashSigner, getBitcoinSigner, getLitecoinSigner } from './selectors'
+import WalletModel from '../../models/wallet/WalletModel'
+import * as TokensActions from '../tokens/actions'
+import { bitcoinCashDAO, bitcoinDAO, dashDAO, litecoinDAO } from '../../dao/BitcoinDAO'
+import { WALLETS_SET, WALLETS_UNSET } from '../wallets/constants'
+import { DUCK_TOKENS } from '../tokens/constants'
+import tokenService from '../../services/TokenService'
+import { getDashSigner } from '../dash/selectors'
+import { EVENT_UPDATE_LAST_BLOCK } from '../../dao/constants'
+import { getWalletsByBlockchain } from '../wallets/selectors/models'
 
-export { getAddressUTXOS } from '../bitcoin-like-blockchain/thunks'
+const daoMap = {
+  [BLOCKCHAIN_BITCOIN]: bitcoinDAO,
+  [BLOCKCHAIN_BITCOIN_CASH]: bitcoinCashDAO,
+  [BLOCKCHAIN_DASH]: dashDAO,
+  [BLOCKCHAIN_LITECOIN]: litecoinDAO,
+}
+
+export { getAddressUTXOS } from '../abstractBitcoin/thunks'
 
 /**
  * Start sending transaction. It will be signed and sent.
@@ -209,6 +239,32 @@ const processTransaction = ({ entry, signer }) => async (dispatch) => {
   }
 }
 
+export const updateWalletBalance = (wallet) => async (dispatch) => {
+  const blockchain = wallet.blockchain
+  const address = wallet.address
+
+  return dispatch(getAddressInfo(address, blockchain))
+    .then((balancesResult) => {
+      const formattedBalances = formatBalances(blockchain, balancesResult)
+      const newWallet = new WalletModel({
+        ...wallet,
+        balances: {
+          ...wallet.balances,
+          ...formattedBalances,
+        },
+      })
+
+      const provider = getProviderByBlockchain(wallet.blockchain)
+      provider.subscribe(wallet.address)
+
+      dispatch({ type: WALLETS_SET, wallet: newWallet })
+    })
+    .catch((e) => {
+      // eslint-disable-next-line no-console
+      console.log('Balances call to middleware has failed [getAddressInfo]: ', blockchain, e)
+    })
+}
+
 const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   dispatch(BitcoinActions.bitcoinSignTx())
 
@@ -353,4 +409,107 @@ export const estimateBtcFee = (params) => async (dispatch) => {
   }
 
   return BitcoinUtils.getBtcFee(recipient, amount, formFee, utxos)
+}
+
+export const enableBitcoin = (blockchainName) => async (dispatch) => {
+  if (!blockchainName || !daoMap[blockchainName]) {
+    throw new Error(`Blockchain name is empty or not a BTC like: [${blockchainName}]`)
+  }
+
+  dispatch(initToken(blockchainName))
+  dispatch(initWalletFromKeys(blockchainName))
+}
+
+const initToken = (blockchainName) => async (dispatch, getState) => {
+  const state = getState()
+  const dao = daoMap[blockchainName]
+
+  dao.on(EVENT_UPDATE_LAST_BLOCK, (newBlock) => {
+    const blocks = state.get(DUCK_TOKENS).latestBlocks()
+    const currentBlock = blocks[dao.getBlockchain()]
+    if (currentBlock && newBlock.block.blockNumber > currentBlock.blockNumber) {
+      dispatch(TokensActions.setLatestBlock(newBlock.blockchain, newBlock.block))
+    }
+  })
+  await dao.watchLastBlock()
+  dao.watch()
+  const token = await dao.fetchToken()
+  tokenService.registerDAO(token, dao)
+  dispatch(TokensActions.tokenFetched(token))
+
+  try {
+    // DASH still uses BlockExplorerNode, it has no CurrentBlockHeight method. Wait for a new Middleware DASH node
+    const currentBlock = await dao.getCurrentBlockHeight()
+    dispatch(TokensActions.setLatestBlock(token.blockchain(), { blockNumber: currentBlock.currentBlock }))
+  } catch (e) {
+    // eslint-disable-next-line
+    console.warn('Update current block height error: ', e)
+  }
+}
+
+const initWalletFromKeys = (blockchainName) => async (dispatch, getState) => {
+  const state = getState()
+  const { network } = getCurrentNetworkSelector(state)
+
+  const addressCache = { ...getAddressCache(state) }
+
+  const signerSelectorsMap = {
+    [BLOCKCHAIN_BITCOIN]: {
+      selector: getBitcoinSigner,
+      path: BitcoinUtils.getBitcoinDerivedPath(network[BLOCKCHAIN_BITCOIN]),
+    },
+    [BLOCKCHAIN_BITCOIN_CASH]: {
+      selector: getBitcoinCashSigner,
+      path: BitcoinUtils.getBitcoinDerivedPath(network[BLOCKCHAIN_BITCOIN_CASH], COIN_TYPE_BCC_MAINNET),
+    },
+    [BLOCKCHAIN_DASH]: {
+      selector: getDashSigner,
+      path: BitcoinUtils.getBitcoinDerivedPath(network[BLOCKCHAIN_DASH], COIN_TYPE_DASH_MAINNET),
+    },
+    [BLOCKCHAIN_LITECOIN]: {
+      selector: getLitecoinSigner,
+      path: BitcoinUtils.getBitcoinDerivedPath(network[BLOCKCHAIN_LITECOIN], COIN_TYPE_LTC_MAINNET),
+    },
+  }
+
+  if (!addressCache[blockchainName]) {
+    const { selector, path } = signerSelectorsMap[blockchainName]
+    const signer = selector(state)
+    if (signer) {
+      const address = await signer.getAddress(path)
+      addressCache[blockchainName] = {
+        address,
+        path,
+      }
+
+      dispatch({
+        type: WALLETS_CACHE_ADDRESS,
+        blockchain: blockchainName,
+        address,
+        path,
+      })
+    }
+  }
+
+  const { address, path } = addressCache[blockchainName]
+  const wallet = new WalletModel({
+    address,
+    blockchain: blockchainName,
+    isMain: true,
+    walletDerivedPath: path,
+  })
+
+  getProviderByBlockchain(blockchainName).subscribe(wallet.address)
+
+  dispatch({ type: WALLETS_SET, wallet })
+  dispatch(updateWalletBalance(wallet))
+}
+
+export const disableBitcoin = (blockchainName) => async (dispatch, getState) => {
+  const wallets = getWalletsByBlockchain(blockchainName)(getState())
+
+  wallets.forEach((wallet) => {
+    getProviderByBlockchain(blockchainName).unsubscribe(wallet.address)
+    dispatch({ type: WALLETS_UNSET, wallet })
+  })
 }

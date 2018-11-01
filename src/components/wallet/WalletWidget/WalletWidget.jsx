@@ -99,6 +99,7 @@ export default class WalletWidget extends PureComponent {
     deposit: PropTypes.func,
     selectWallet: PropTypes.func,
     showGroupTitle: PropTypes.bool,
+    isBalanceFetched: PropTypes.bool,
   }
 
   handleSend = (wallet) => () => {

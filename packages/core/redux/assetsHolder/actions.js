@@ -25,6 +25,7 @@ import { notify } from '../notifier/actions'
 import SimpleNoticeModel from '../../models/notices/SimpleNoticeModel'
 import { getTokens } from '../tokens/selectors'
 import ErrorNoticeModel from '../../models/notices/ErrorNoticeModel'
+import { TX_APPROVE } from '../../dao/constants/ChronoBankPlatformDAO'
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const assetHolder = getState().get(DUCK_ASSETS_HOLDER)

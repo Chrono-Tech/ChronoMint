@@ -11,16 +11,24 @@ import {
   TX_CREATE,
   TX_REMOVE,
   TX_UPDATE,
+  EOS_UPDATE_WATCH_TIMEOUT_ID,
 } from './constants'
 import TokensCollection from '../../models/tokens/TokensCollection'
 
 const initialState = {
   wallets: {},
   pending: {}, // pending transactions
+  watchTimeoutId: null, // id for watchEOS setTimeout
   tokens: new TokensCollection(),
 }
 
 const mutations = {
+  [EOS_UPDATE_WATCH_TIMEOUT_ID]: (state, { timeoutId }) => {
+    return {
+      ...state,
+      watchTimeoutId: timeoutId,
+    }
+  },
   [EOS_UPDATE]: (state, { eos }) => {
     return {
       ...state,

@@ -18,10 +18,13 @@ import {
   GenerateWalletContainer,
   GenerateMnemonicContainer,
   ConfirmMnemonicContainer,
+  BlockchainChoiceContainer,
 } from '@chronobank/login-ui/components'
+import { updateBlockchainActivity } from '@chronobank/core/redux/persistAccount/actions'
 
 function mapDispatchToProps (dispatch) {
   return {
+    updateBlockchainsList: (blockchainList) => dispatch(updateBlockchainActivity(blockchainList)),
     navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
     onSubmitCreateAccountImportMnemonic: (name, password, mnemonic) => dispatch(onSubmitCreateAccountImportMnemonic(name, password, mnemonic)),
   }
@@ -32,10 +35,12 @@ class CreateAccountPage extends PureComponent {
     CREATE_ACCOUNT_FORM: 1,
     GENERATE_MNEMONIC_FORM: 2,
     CONFIRM_MNEMONIC_FORM: 3,
-    DOWNLOAD_WALLET_PAGE: 4,
+    BLOCKCHAIN_CHOICE_FORM: 4,
+    DOWNLOAD_WALLET_PAGE: 5,
   }
 
   static propTypes = {
+    updateBlockchainsList: PropTypes.func,
     navigateToSelectWallet: PropTypes.func,
     navigateToSelectImportMethod: PropTypes.func,
     onSubmitCreateAccountImportMnemonic: PropTypes.func,
@@ -78,6 +83,14 @@ class CreateAccountPage extends PureComponent {
           />
         )
 
+      case CreateAccountPage.PAGES.BLOCKCHAIN_CHOICE_FORM:
+        return (
+          <BlockchainChoiceContainer
+            previousPage={this.previousPage.bind(this)}
+            onSubmitSuccess={this.onSubmitBlockchainChoiceFormSuccess.bind(this)}
+          />
+        )
+
       case CreateAccountPage.PAGES.DOWNLOAD_WALLET_PAGE:
         return (
           <GenerateWalletContainer />
@@ -89,7 +102,6 @@ class CreateAccountPage extends PureComponent {
             onSubmit={this.onSubmitCreateAccount.bind(this)}
           />
         )
-
     }
   }
 
@@ -107,6 +119,14 @@ class CreateAccountPage extends PureComponent {
     })
   }
 
+  async onSubmitBlockchainChoiceFormSuccess (blockchainList) {
+    await this.props.updateBlockchainsList(blockchainList.toJS())
+
+    this.setState({
+      page: CreateAccountPage.PAGES.DOWNLOAD_WALLET_PAGE,
+    })
+  }
+
   onSubmitConfirmMnemonic () {
     const { onSubmitCreateAccountImportMnemonic } = this.props
     const { accountName, password, mnemonic } = this.state
@@ -114,7 +134,7 @@ class CreateAccountPage extends PureComponent {
     onSubmitCreateAccountImportMnemonic(accountName, password, mnemonic)
 
     this.setState({
-      page: CreateAccountPage.PAGES.DOWNLOAD_WALLET_PAGE,
+      page: CreateAccountPage.PAGES.BLOCKCHAIN_CHOICE_FORM,
     })
   }
 
@@ -127,7 +147,6 @@ class CreateAccountPage extends PureComponent {
   }
 
   render () {
-
     return this.getCurrentPage()
   }
 }

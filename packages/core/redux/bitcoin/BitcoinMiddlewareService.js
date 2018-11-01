@@ -5,7 +5,7 @@
 
 /** @module core/redux/bitcoin/BitcoinMiddlewareService */
 
-import BitcoinLikeBlockchainMiddlewareService from '../bitcoin-like-blockchain/MiddlewareService'
+import BitcoinLikeBlockchainMiddlewareService from '../abstractBitcoin/MiddlewareService'
 
 const URL_BLOCKS_HEIGHT = 'blocks/height'
 const URL_TX = 'tx'

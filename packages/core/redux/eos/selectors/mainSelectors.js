@@ -45,6 +45,10 @@ export const getEosWallets = createSelector(
   },
 )
 
+export const getWatchTimeoutId = (state) => {
+  return state.get(DUCK_EOS).watchTimeoutId
+}
+
 export const getEOSWallet = (id) => createSelector(
   EOSDuckSelector,
   (eosState) => {

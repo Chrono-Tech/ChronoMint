@@ -5,21 +5,22 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { estimateFee } from '@chronobank/core/redux/dash/thunks'
 
-import FormContainer from '../BitcoinLikeBockchain/FormContainer'
-import BitcoinLikeBlockchainForm, { mapStateToProps } from '../BitcoinLikeBockchain/Form'
+import FormContainer, { mapStateToProps, mapDispatchToProps } from '../AbstractBitcoin/FormContainer'
+import Form from './Form'
 
-function mapDispatchToProps (dispatch) {
-  return {
-    estimateFee: (params) => dispatch(estimateFee(params)),
+class DashFormContainer extends FormContainer {
+  getAdvancedParams (formFields) {
+    const params = super.getAdvancedParams(formFields)
+    params.instantSend = formFields.instantSend
+    return params
   }
 }
 
-const Form = connect(mapStateToProps, mapDispatchToProps)(BitcoinLikeBlockchainForm)
+const DashConnectedFormContainer = connect(mapStateToProps, mapDispatchToProps)(DashFormContainer)
 
-const bitcoinFormContainer = (props) => (
-  <FormContainer {...props} form={Form} />
+const DashFormWrapper = (props) => (
+  <DashConnectedFormContainer {...props} form={Form} />
 )
 
-export default bitcoinFormContainer
+export default DashFormWrapper

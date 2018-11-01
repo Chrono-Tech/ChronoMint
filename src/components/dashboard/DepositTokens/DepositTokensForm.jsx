@@ -75,6 +75,7 @@ function mapStateToProps (state) {
   return {
     wallet,
     balance,
+    symbol,
     balanceEth,
     deposit: assets.item(token.address()).deposit(),
     allowance: wallet.allowances.list[`${spender}-${token.id()}`] || new AllowanceModel(),
@@ -119,6 +120,7 @@ export default class DepositTokensForm extends PureComponent {
     isShowTIMERequired: PropTypes.bool,
     token: PropTypes.instanceOf(TokenModel),
     account: PropTypes.string,
+    symbol: PropTypes.string,
     wallet: PropTypes.instanceOf(WalletModel),
     tokens: PropTypes.instanceOf(TokensCollection),
     assets: PropTypes.instanceOf(AssetsCollection),
@@ -394,6 +396,7 @@ export default class DepositTokensForm extends PureComponent {
       balance,
       deposit,
       token,
+      symbol,
       allowance,
       pristine,
       invalid,
@@ -418,7 +421,7 @@ export default class DepositTokensForm extends PureComponent {
             <Button
               styleName='actionButton'
               label={<Translate value={prefix('receiveEth')} />}
-              onClick={this.handleReceiveToken(getMainSymbolForBlockchain(wallet.blockchain), wallet)}
+              onClick={this.handleReceiveToken(symbol, wallet)}
             />
           </div>
         )}

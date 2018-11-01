@@ -44,10 +44,10 @@ export default class EthereumMemoryDevice extends EventEmitter {
 
   getAddress (path) {
     if (!path || path === DEFAULT_PATH) {
-      return this.address
+      return this.address.toLowerCase()
     }
 
-    return EthereumMemoryDevice.getDerivedWallet(this.wallet.privateKey, path).address
+    return EthereumMemoryDevice.getDerivedWallet(this.wallet.privateKey, path).address.toLowerCase()
   }
 
   async signTransaction (tx, path) {

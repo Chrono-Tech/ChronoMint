@@ -4,11 +4,15 @@
  */
 
 import React from 'react'
-import Form from './Form'
-import FormContainer from '../BitcoinLikeBockchain/FormContainer'
+import { connect } from 'react-redux'
 
-const bitcoinFormContainer = (props) => (
-  <FormContainer {...props} form={Form} />
+import Form from './Form'
+import FormContainer, { mapStateToProps, mapDispatchToProps } from '../AbstractBitcoin/FormContainer'
+
+const FormReduxContainer = connect(mapStateToProps, mapDispatchToProps)(FormContainer)
+
+const BitcoinFormContainer = (props) => (
+  <FormReduxContainer {...props} form={Form} />
 )
 
-export default bitcoinFormContainer
+export default BitcoinFormContainer

@@ -11,7 +11,8 @@ import type ERC20DAO from './ERC20DAO'
 import Amount from '../models/Amount'
 import {
   TX_DEPOSIT,
-  TX_LOCK, TX_UNLOCK_SHARES,
+  TX_LOCK,
+  TX_UNLOCK_SHARES,
   TX_WITHDRAW_SHARES,
 } from './constants/AssetHolderDAO'
 

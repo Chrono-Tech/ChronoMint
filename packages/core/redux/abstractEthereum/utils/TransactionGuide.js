@@ -12,14 +12,10 @@ export default class TransactionGuide {
     this.blockchainScopeSelector = blockchainScopeSelector(blockchain)
   }
 
-  estimateGas = (tx, feeMultiplier) => {
-    return (
-      async (dispatch, getState) => {
-        const { gasLimit, gasPrice } = await this.getGasData(dispatch, this.getWeb3(getState()), tx, feeMultiplier)
-        const gasFee = gasPrice.mul(gasLimit)
-        return { gasLimit, gasFee, gasPrice }
-      }
-    )
+  estimateGas = (tx, feeMultiplier) => async (dispatch, getState) => {
+    const { gasLimit, gasPrice } = await this.getGasData(dispatch, this.getWeb3(getState()), tx, feeMultiplier)
+    const gasFee = gasPrice.mul(gasLimit)
+    return { gasLimit, gasFee, gasPrice }
   }
 
   getGasData = async (dispatch, web3, tx, feeMultiplier) => {
@@ -30,17 +26,13 @@ export default class TransactionGuide {
     return { chainId, gasLimit, gasPrice, nonce }
   }
 
-  nextNonce = ({ web3, address }) => {
-    return (
-      async (dispatch, getState) => {
-        const addr = address.toLowerCase()
-        const state = this.blockchainScopeSelector(getState())
+  nextNonce = ({ web3, address }) => async (dispatch, getState) => {
+    const addr = address.toLowerCase()
+    const state = this.blockchainScopeSelector(getState())
 
-        return Math.max(
-          (addr in state.nonces) ? state.nonces[addr] : 0,
-          await web3.eth.getTransactionCount(addr, 'pending'),
-        )
-      }
+    return Math.max(
+      (addr in state.nonces) ? state.nonces[addr] : 0,
+      await web3.eth.getTransactionCount(addr, 'pending'),
     )
   }
 

@@ -15,6 +15,13 @@ export const getWalletById = (walletId) => (state) => {
   return state.get(DUCK_WALLETS).list[walletId]
 }
 
+export const getWalletsByBlockchain = (blockchain) => (state) => {
+  const wallets = getWallets(state)
+  return Object.values(wallets).filter((wallet) => {
+    return wallet.blockchain === blockchain
+  })
+}
+
 export const getWallets = (state) => {
   return state.get(DUCK_WALLETS).list
 }

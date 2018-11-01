@@ -5,6 +5,16 @@
 
 import uuid from 'uuid/v1'
 import Accounts from 'web3-eth-accounts'
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_DASH,
+  BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_NEM,
+  BLOCKCHAIN_WAVES,
+  BLOCKCHAIN_EOS,
+} from '@chronobank/login/network/constants'
+
 import * as ProfileThunks from '../profile/thunks'
 import * as AccountUtils from './utils'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
@@ -26,8 +36,60 @@ import {
   WALLETS_SELECT,
   WALLETS_UPDATE_LIST,
   WALLETS_LOAD,
-  WALLETS_CACHE_ADDRESS,
+  BLOCKCHAIN_LIST_UPDATE,
 } from './constants'
+
+import { getBlockchainList, getPersistAccount } from './selectors'
+import { enableBitcoin, disableBitcoin } from '../bitcoin/thunks'
+import { enableEthereum } from '../ethereum/thunks'
+import { enableNem, disableNem } from '../nem/thunks'
+import { enableWaves, disableWaves } from '../waves/thunks'
+import { enableEos, disableEos } from '../eos/thunks'
+
+const enableMap = {
+  [BLOCKCHAIN_BITCOIN]: enableBitcoin(BLOCKCHAIN_BITCOIN),
+  [BLOCKCHAIN_BITCOIN_CASH]: enableBitcoin(BLOCKCHAIN_BITCOIN_CASH),
+  [BLOCKCHAIN_LITECOIN]: enableBitcoin(BLOCKCHAIN_LITECOIN),
+  [BLOCKCHAIN_DASH]: enableBitcoin(BLOCKCHAIN_DASH),
+  [BLOCKCHAIN_NEM]: enableNem(),
+  [BLOCKCHAIN_WAVES]: enableWaves(),
+  [BLOCKCHAIN_EOS]: enableEos(),
+}
+const disableMap = {
+  [BLOCKCHAIN_BITCOIN]: disableBitcoin(BLOCKCHAIN_BITCOIN),
+  [BLOCKCHAIN_BITCOIN_CASH]: disableBitcoin(BLOCKCHAIN_BITCOIN_CASH),
+  [BLOCKCHAIN_LITECOIN]: disableBitcoin(BLOCKCHAIN_LITECOIN),
+  [BLOCKCHAIN_DASH]: disableBitcoin(BLOCKCHAIN_DASH),
+  [BLOCKCHAIN_NEM]: disableNem(),
+  [BLOCKCHAIN_WAVES]: disableWaves(),
+  [BLOCKCHAIN_EOS]: disableEos(),
+}
+
+export const enableDefaultBlockchains = () => (dispatch, getState) => {
+  const state = getState()
+  const activeBlockchains = getBlockchainList(state)
+
+  dispatch(enableEthereum())
+  dispatch(enableBlockchains(activeBlockchains))
+}
+
+export const enableBlockchains = (blockchains) => (dispatch) => {
+  blockchains.forEach((blockchain) => {
+    if (!enableMap[blockchain]) {
+      return
+    }
+    dispatch(enableMap[blockchain])
+  })
+}
+
+export const disableBlockchains = (blockchains) => (dispatch) => {
+  blockchains.forEach((blockchain) => {
+    if (!disableMap[blockchain]) {
+      return
+    }
+    dispatch(disableMap[blockchain])
+  })
+}
 
 export const accountAdd = (wallet) => (dispatch) => {
   dispatch({ type: WALLETS_ADD, wallet })
@@ -49,13 +111,6 @@ export const accountUpdateList = (walletList) => (dispatch) => {
   dispatch({ type: WALLETS_UPDATE_LIST, walletList })
 }
 
-export const accountCacheAddress = ({ blockchain, address, path }) => ({
-  type: WALLETS_CACHE_ADDRESS,
-  blockchain,
-  address,
-  path,
-})
-
 export const accountUpdate = (wallet) => (dispatch, getState) => {
   const state = getState()
 
@@ -66,6 +121,37 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
   copyWalletList.splice(index, 1, wallet)
 
   dispatch({ type: WALLETS_UPDATE_LIST, walletsList: copyWalletList })
+}
+
+export const updateBlockchainActivity = (blockchainList, enableDisable = false) => (dispatch, getState) => {
+  const state = getState()
+  const currentBlockchains = getBlockchainList(state)
+
+  const blockchainToEnable = AccountUtils.formatBlockchainListToArray(blockchainList, (name, isEnabled) => isEnabled && !currentBlockchains.includes(name))
+
+  if (enableDisable && blockchainToEnable) {
+    dispatch(enableBlockchains(blockchainToEnable))
+  }
+
+  const blockchainToDisable = AccountUtils.formatBlockchainListToArray(blockchainList, (name, isEnabled) => !isEnabled)
+  if (enableDisable && blockchainToDisable) {
+    dispatch(disableBlockchains(blockchainToDisable))
+  }
+
+  const newBlockchainList = AccountUtils.formatBlockchainListToArray(blockchainList, (name, isEnabled) => isEnabled)
+  dispatch(updateBlockchainsList(newBlockchainList))
+}
+
+/* eslint-disable-next-line import/prefer-default-export */
+export const updateBlockchainsList = (blockchainList) => async (dispatch, getState) => {
+  const account = getPersistAccount(getState())
+  const walletKey = account.selectedWallet.key
+
+  dispatch({
+    type: BLOCKCHAIN_LIST_UPDATE,
+    blockchainList,
+    walletKey,
+  })
 }
 
 export const decryptAccount = (entry, password) => async () => {
