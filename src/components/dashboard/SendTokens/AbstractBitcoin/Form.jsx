@@ -40,12 +40,10 @@ import {
   formValueSelector,
   getFormSyncErrors,
   getFormValues,
-  reduxForm,
 } from 'redux-form/immutable'
 import { prefix } from '../lang'
 
 import '../form.scss'
-import validate from '../validate'
 
 const DEBOUNCE_ESTIMATE_FEE_TIMEOUT = 1000
 
@@ -83,7 +81,6 @@ export function mapStateToProps (state, ownProps) {
   }
 }
 
-@reduxForm({ form: FORM_SEND_TOKENS, validate })
 export default class Bitcoin extends PureComponent {
   static propTypes = {
     selectedCurrency: PropTypes.string,
@@ -317,6 +314,9 @@ export default class Bitcoin extends PureComponent {
             fullWidth
           />
         </div>
+        <div styleName='row'>
+          { this.renderExtraFields() }
+        </div>
         {mode === MODE_SIMPLE && feeMultiplier && token.feeRate() && (
           <div styleName='row'>
             <div styleName='feeRate'>
@@ -371,6 +371,10 @@ export default class Bitcoin extends PureComponent {
         </div>
       </div>
     )
+  }
+
+  renderExtraFields () {
+    return null
   }
 
   render () {

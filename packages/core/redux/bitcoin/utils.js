@@ -15,7 +15,7 @@ import { getDerivedPath } from '../wallets/utils'
 
 const SATOSHI_TO_BTC = 100000000
 
-export { createBitcoinTxEntryModel } from '../bitcoin-like-blockchain/utils'
+export { createBitcoinTxEntryModel } from '../abstractBitcoin/utils'
 
 /**
  * Get unused exits to create new transaction

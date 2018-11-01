@@ -8,6 +8,7 @@ export const prefix = 'SendTokens'
 export default {
   en: {
     fast: 'Fast',
+    instantSend: 'InstantSend',
     slowTransaction: 'Slow transaction',
     balance: 'Balance',
     recipientAddress: 'Recipient address',

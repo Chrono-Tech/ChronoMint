@@ -11,7 +11,7 @@ export {
   BITCOIN_HTTP_GET_UTXOS_SUCCESS,
   BITCOIN_HTTP_GET_UTXOS_FAILURE,
   BITCOIN_TX_REJECT,
-} from '../bitcoin-like-blockchain/constants'
+} from '../abstractBitcoin/constants'
 
 export const DUCK_BITCOIN = 'bitcoin'
 
