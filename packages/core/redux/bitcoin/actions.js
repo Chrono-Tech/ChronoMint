@@ -13,7 +13,7 @@ export {
   bitcoinHttpGetUtxosFailure,
   bitcoinHttpGetUtxosSuccess,
   bitcoinTxReject,
-} from '../bitcoin-like-blockchain/actions'
+} from '../abstractBitcoin/actions'
 
 export const bitcoinTxUpdate = (entry) => ({
   type: BtcConstants.BITCOIN_TX_UPDATE,
