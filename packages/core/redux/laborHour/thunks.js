@@ -14,13 +14,14 @@ import { laborHourWeb3Update } from './actions'
 import { web3Selector } from './selectors'
 import { getAddressCache, getEthereumSigner } from '../persistAccount/selectors'
 
-import { WALLETS_SET } from '../wallets/constants'
+import { WALLETS_SET, WALLETS_UNSET } from '../wallets/constants'
 import * as TokensActions from '../tokens/actions'
 import tokenService from '../../services/TokenService'
 import WalletModel from '../../models/wallet/WalletModel'
 import { formatBalances, getWalletBalances } from '../tokens/utils'
 import * as Utils from '../ethereum/utils'
 import { WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
+import { getWalletsByBlockchain } from '../wallets/selectors/models'
 
 class LaborHourTransactionHandler extends TransactionHandler {
   constructor () {
@@ -135,4 +136,16 @@ export const updateWalletBalance = (wallet) => (dispatch) => {
       // eslint-disable-next-line no-console
       console.error('call balances from middleware is failed getWalletBalances', e)
     })
+}
+
+export const disableLaborHour = () => async (dispatch, getState) => {
+  const wallets = getWalletsByBlockchain(BLOCKCHAIN_LABOR_HOUR)(getState())
+
+  wallets.forEach((wallet) => {
+    laborHourProvider.unsubscribe(wallet.address)
+    dispatch({ type: WALLETS_UNSET, wallet })
+  })
+
+  laborHourDAO.removeAllListeners()
+  laborHourDAO.disconnect()
 }
