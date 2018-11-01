@@ -92,13 +92,14 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   async _handleUnsubscribe (address) {
     if (this._socket) {
       try {
-        await this._api.delete('addr', { address })
         this.executeOrSchedule(() => {
-          const subscription = this._subscriptions[`balance:${address}`]
-          if (subscription) {
-            delete this._subscriptions[`balance:${address}`]
-            subscription.unsubscribe()
-          }
+          [`balance:${address}`, `lastBlock`, `transaction:${address}`].forEach((channelName) => {
+            const subscription = this._subscriptions[channelName]
+            if (subscription) {
+              delete this._subscriptions[channelName]
+              subscription.unsubscribe()
+            }
+          })
         })
       } catch (e) {
         this.trace('Address unsubscription error', e)

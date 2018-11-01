@@ -16,7 +16,6 @@ import transaction from './transaction/reducer'
 import ethMultisigWallet from './multisigWallet/reducer'
 import events from './events/reducer'
 import laborHour from './laborHour/reducer'
-import mainWallet from './mainWallet/reducer'
 import modals from './modals/reducer'
 import nem from './nem/reducer'
 import eos from './eos/reducer'
@@ -45,7 +44,6 @@ const coreReducers = {
   ethMultisigWallet,
   events,
   laborHour,
-  mainWallet,
   modals,
   nem,
   eos,

@@ -65,3 +65,10 @@ export const getDepositAmount = () => createSectionsSelector(
   ) => deposit,
 )
 
+export const getDeposit = (tokenId) => createSelector(
+  [getAssetsHolderAssets, getTokens],
+  (assets, tokens) => {
+    const token = tokens.item(tokenId)
+    return assets.item(token.address()).deposit()
+  },
+)

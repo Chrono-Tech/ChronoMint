@@ -5,6 +5,7 @@
 
 import moment from 'moment'
 import { setLocale } from 'react-redux-i18n'
+import { MODALS_OPEN } from '@chronobank/core/redux/modals/constants'
 import localStorage from 'utils/LocalStorage'
 import ipfs from '@chronobank/core/utils/IPFS'
 import {
@@ -32,6 +33,13 @@ export const download = (hash, name) => async () => {
 }
 
 export const changeWalletView = () => ({ type: CHANGE_WALLET_VIEW })
+
+export const showTurnOffPopup = () => {
+  return {
+    type: MODALS_OPEN,
+    componentName: 'TurnOffBlockchain',
+  }
+}
 
 export const setVisibleCookiesBar = (isCookiesBarVisible) => ({
   type: SET_VISIBLE_COOKIES_BAR,

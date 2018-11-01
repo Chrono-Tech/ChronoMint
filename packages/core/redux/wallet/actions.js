@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { getTransactionsForMainWallet, updateWalletBalance } from '../wallets/actions'
+import { getTransactionsForMainWallet } from '../wallets/actions'
 import { getTransactionsForEthMultisigWallet, updateEthMultisigWalletBalance } from '../multisigWallet/actions'
 import { WALLET_SELECT_WALLET } from './constants'
 import { BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LABOR_HOUR } from '../../dao/constants'
@@ -37,7 +37,8 @@ export const subscribeWallet = ({ wallet }) => async (dispatch) => {
     const checkedTo = data.to ? data.to.toLowerCase() === wallet.address.toLowerCase() : false
     if (checkedFrom || checkedTo) {
       if (wallet.isMain || wallet.isDerived) {
-        dispatch(updateWalletBalance({ wallet }))
+        // dispatch(updateWalletBalance({ wallet }))
+        // @todo Artem Kalashnikov
       }
       if (wallet.isMultisig) {
         dispatch(updateEthMultisigWalletBalance({ wallet }))

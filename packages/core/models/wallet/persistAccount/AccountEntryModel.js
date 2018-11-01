@@ -13,6 +13,7 @@ const schema = {
   type: PropTypes.string,
   encrypted: PropTypes.array,
   profile: PropTypes.object,
+  blockchainList: PropTypes.arrayOf(PropTypes.string),
 }
 
 class AccountEntryModel extends AbstractAccountModel {
@@ -24,8 +25,8 @@ class AccountEntryModel extends AbstractAccountModel {
       type: '',
       encrypted: [],
       profile: null,
+      blockchainList: [],
     }, props)
-    Object.freeze(this)
   }
 
   get address () {

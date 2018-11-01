@@ -403,7 +403,7 @@ export const setManagers = (tx) => async (dispatch, getState) => {
     }
   } catch (e) {
     // eslint-disable-next-line
-    console.log(e.message)
+    console.error(e.message)
   }
 }
 
@@ -575,7 +575,7 @@ const getPauseStatus = (address: string) => async (dispatch, getState) => {
     isPaused = await chronoBankAssetDAO.getPauseStatus()
   } catch (e) {
     // eslint-disable-next-line
-    console.log(e.message)
+    console.error(e.message)
   }
   return new PausedModel({ value: isPaused }).isFetched(true)
 }

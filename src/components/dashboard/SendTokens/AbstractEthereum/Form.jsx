@@ -23,8 +23,7 @@ import { TextField } from 'redux-form-material-ui'
 import Select from 'redux-form-material-ui/es/Select'
 import Slider from 'components/common/Slider'
 import { change, Field, formPropTypes, formValueSelector, getFormSyncErrors, getFormValues, reduxForm } from 'redux-form/immutable'
-import { getSpendersAllowance } from '@chronobank/core/redux/mainWallet/actions'
-import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
+import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/wallets/constants'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
 import { walletInfoSelector } from '@chronobank/core/redux/wallet/selectors/selectors'
@@ -131,10 +130,6 @@ export default class Ethereum extends PureComponent {
         // eslint-disable-next-line
         console.error(error)
       }
-    }
-
-    if ((this.props.token.address() !== prevProps.token.address() || this.props.recipient !== prevProps.recipient) && this.props.token.isERC20()) {
-      this.props.dispatch(getSpendersAllowance(this.props.token.id(), this.props.recipient))
     }
 
     if (this.props.mode === MODE_SIMPLE && this.props.feeMultiplier !== prevProps.feeMultiplier) {
@@ -301,7 +296,7 @@ export default class Ethereum extends PureComponent {
                         if (token.isLocked()) {
                           return null
                         }
-                        return (<MenuItem  key={token.id()} value={token.id()}>{token.symbol()}</MenuItem>)
+                        return (<MenuItem key={token.id()} value={token.id()}>{token.symbol()}</MenuItem>)
                       })}
                   </Field>
                 )
@@ -416,8 +411,8 @@ export default class Ethereum extends PureComponent {
             fullWidth
           />
         </div>
-        { mode === MODE_SIMPLE && feeMultiplier && token.feeRate() && simpleContainer() }
-        { mode === MODE_ADVANCED && advancedContainer() }
+        {mode === MODE_SIMPLE && feeMultiplier && token.feeRate() && simpleContainer()}
+        {mode === MODE_ADVANCED && advancedContainer()}
 
         <div styleName='transaction-fee'>
           <span styleName='title'>

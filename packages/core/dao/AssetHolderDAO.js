@@ -9,15 +9,11 @@ import tokenService from '../services/TokenService'
 import AbstractContractDAO from './AbstractContractDAO'
 import type ERC20DAO from './ERC20DAO'
 import Amount from '../models/Amount'
-
-//#region CONSTANTS
-
 import {
   TX_DEPOSIT,
+  TX_LOCK,
   TX_WITHDRAW_SHARES,
 } from './constants/AssetHolderDAO'
-
-//#endregion CONSTANTS
 
 export default class AssetHolderDAO extends AbstractContractDAO {
   constructor ({ address, history, abi }) {
@@ -32,6 +28,9 @@ export default class AssetHolderDAO extends AbstractContractDAO {
 
   connect (web3, options) {
     super.connect(web3, options)
+
+    this.allEventsEmitter = this.history.events.allEvents({})
+      .on('data', this.handleEventsData)
   }
 
   async getSharesContract (): Promise {
@@ -49,6 +48,10 @@ export default class AssetHolderDAO extends AbstractContractDAO {
 
   deposit (tokenAddress, amount: Amount) {
     return this._tx(TX_DEPOSIT, [tokenAddress, new BigNumber(amount)])
+  }
+
+  lock (tokenAddress, amount: Amount) {
+    return this._tx(TX_LOCK, [tokenAddress, new BigNumber(amount)])
   }
 
   shareholdersCount (): Promise {

@@ -96,6 +96,24 @@ const persistAccount = (state = initialState, action) => {
         customNetworksList: [],
       }
 
+    case a.BLOCKCHAIN_LIST_UPDATE:
+      const wallet = state.walletsList.find((w) => w.key === action.walletKey)
+      wallet.blockchainList = action.blockchainList
+
+      if (!wallet) {
+        return {
+          ...state,
+        }
+      }
+
+      return {
+        ...state,
+        walletsList: [
+          ...state.walletsList.filter((w) => w.key !== action.walletKey),
+          wallet,
+        ],
+      }
+
     default:
       return state
   }

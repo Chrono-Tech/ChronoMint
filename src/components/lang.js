@@ -38,6 +38,7 @@ import DepositWarningWidget from 'components/Deposits/DepositWarningWidget/lang'
 import PollEditForm from 'components/voting/PollEditForm/lang'
 import Poll from 'components/voting/Poll/lang'
 import PollStatus from 'components/voting/PollStatus/lang'
+import TurnOffBlockchain from 'components/wallet/TurnOffBlockchain/lang'
 import PublishPollDialog from 'components/dialogs/PublishPollDialog/lang'
 import VotingWarningWidgets from 'components/voting/VotingWarningWidgets/lang'
 import TransactionsTable from 'components/dashboard/TransactionsTable/lang'
@@ -89,6 +90,7 @@ export default {
     TransactionsListWidget: TransactionsListWidget.en,
     CustomWalletForm: CustomWalletForm.en,
     StandardWalletForm: StandardWalletForm.en,
+    TurnOffBlockchain: TurnOffBlockchain.en,
     ReceiveTokenModal: ReceiveTokenModal.en,
     TheCookies: TheCookies.en,
   },

@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
+import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/wallets/constants'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { walletInfoSelector } from '@chronobank/core/redux/wallet/selectors/selectors'
 import { convertSatoshiToBTC } from '@chronobank/core/redux/bitcoin/utils'

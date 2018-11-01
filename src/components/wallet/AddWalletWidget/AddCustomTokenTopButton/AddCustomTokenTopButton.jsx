@@ -6,7 +6,7 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { FORM_ADD_NEW_WALLET } from '@chronobank/core/redux/mainWallet/constants'
+import { FORM_ADD_NEW_WALLET } from '@chronobank/core/redux/wallets/constants'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import { formValueSelector } from 'redux-form/immutable'
 import { Translate } from 'react-redux-i18n'
