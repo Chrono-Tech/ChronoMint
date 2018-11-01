@@ -21,25 +21,23 @@ export const subscribeOnTokens = (callback) => (dispatch, getState) => {
   tokens.list().forEach(handleToken)
 }
 
-export const estimateGasTransfer = (tokenId, params, gasPriceMultiplier = 1, address) => (
-  estimateAbstractEthereumGasTransfer(tokenId, params, gasPriceMultiplier, address, estimateEthereumGas)
-)
+export const estimateGasTransfer = (tokenId, params, gasPriceMultiplier = 1, address) => {
+  return estimateAbstractEthereumGasTransfer(tokenId, params, gasPriceMultiplier, address, estimateEthereumGas)
+}
 
-export const estimateLaborHourGasTransfer = (tokenId, params, gasPriceMultiplier = 1, address) => (
-  estimateAbstractEthereumGasTransfer(tokenId, params, gasPriceMultiplier, address, estimateLaborHourGas)
-)
+export const estimateLaborHourGasTransfer = (tokenId, params, gasPriceMultiplier = 1, address) => {
+  return estimateAbstractEthereumGasTransfer(tokenId, params, gasPriceMultiplier, address, estimateLaborHourGas)
+}
 
-const estimateAbstractEthereumGasTransfer = (tokenId, params, gasPriceMultiplier = 1, address, estimateGas) => (
-  async (dispatch) => {
-    const tokenDao = tokenService.getDAO(tokenId)
-    const [to, amount] = params
-    const tx = tokenDao.transfer(address, to, amount)
-    const { gasLimit, gasFee, gasPrice } = await dispatch(estimateGas(tx))
+const estimateAbstractEthereumGasTransfer = (tokenId, params, gasPriceMultiplier = 1, address, estimateGas) => async (dispatch) => {
+  const tokenDao = tokenService.getDAO(tokenId)
+  const [to, amount] = params
+  const tx = tokenDao.transfer(address, to, amount)
+  const { gasLimit, gasFee, gasPrice } = await dispatch(estimateGas(tx))
 
-    return {
-      gasLimit,
-      gasFee: new Amount(gasFee.mul(gasPriceMultiplier).toString(), tokenDao.getSymbol()),
-      gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier).toString(), tokenDao.getSymbol()),
-    }
+  return {
+    gasLimit,
+    gasFee: new Amount(gasFee.mul(gasPriceMultiplier).toString(), tokenDao.getSymbol()),
+    gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier).toString(), tokenDao.getSymbol()),
   }
-)
+}

@@ -7,7 +7,6 @@ import axios from 'axios'
 import { NETWORK_MAIN_ID } from './settings'
 import EthereumMiddlewareNode from './EthereumMiddlewareNode'
 
-// TODO @dkchv: update to actual config
 const LHT_TESTNET_NODE = new EthereumMiddlewareNode({
   api: axios.create({
     baseURL: 'https://middleware-sidechain-laborx.chronobank.io',
@@ -16,15 +15,6 @@ const LHT_TESTNET_NODE = new EthereumMiddlewareNode({
   trace: true,
 })
 
-/**
- *
- * @param network object from SessionThunks.getProviderSettings()
- * @returns {EthereumMiddlewareNode}
- */
-export default function selectLaborHourNode (network) {
-  return (network.id === NETWORK_MAIN_ID) ? LHT_MAINNET_NODE : LHT_TESTNET_NODE
-}
-
 const LHT_MAINNET_NODE = new EthereumMiddlewareNode({
   api: axios.create({
     baseURL: 'https://middleware-sidechain-laborx.chronobank.io',
@@ -32,3 +22,11 @@ const LHT_MAINNET_NODE = new EthereumMiddlewareNode({
   }),
   trace: true,
 })
+
+/**
+ * @param network object from SessionThunks.getProviderSettings()
+ * @returns {EthereumMiddlewareNode}
+ */
+export default function selectLaborHourNode (network) {
+  return (network.id === NETWORK_MAIN_ID) ? LHT_MAINNET_NODE : LHT_TESTNET_NODE
+}

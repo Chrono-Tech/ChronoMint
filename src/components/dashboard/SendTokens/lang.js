@@ -17,6 +17,7 @@ export default {
     transactionFee: 'Transaction fee:',
     basedOnLimit: 'Based on estimated gas limit: ',
     averageFee: '%{multiplier}x of average fee',
+    errorEstimateFee: 'Unable to calculate transaction fee at the moment. Try again later',
     errorFillSatPerBiteField: 'Need to fill SAT/byte field',
     errorCalculationFee: 'Unable to calculate transaction fee at the moment. Try again later',
     errorFillAllFields: 'Need to fill all necessary fields',

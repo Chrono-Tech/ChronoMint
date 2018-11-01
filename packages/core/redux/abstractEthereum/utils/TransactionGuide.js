@@ -4,7 +4,6 @@
  */
 
 import BigNumber from 'bignumber.js'
-
 import { blockchainScopeSelector } from '../selectors'
 
 export default class TransactionGuide {

@@ -42,6 +42,7 @@ import {
 import { getBlockchainList, getPersistAccount } from './selectors'
 import { enableBitcoin, disableBitcoin } from '../bitcoin/thunks'
 import { enableEthereum } from '../ethereum/thunks'
+import { enableLaborHour } from '../laborHour/thunks'
 import { enableNem, disableNem } from '../nem/thunks'
 import { enableWaves, disableWaves } from '../waves/thunks'
 import { enableEos, disableEos } from '../eos/thunks'
@@ -70,6 +71,7 @@ export const enableDefaultBlockchains = () => (dispatch, getState) => {
   const activeBlockchains = getBlockchainList(state)
 
   dispatch(enableEthereum())
+  dispatch(enableLaborHour())
   dispatch(enableBlockchains(activeBlockchains))
 }
 

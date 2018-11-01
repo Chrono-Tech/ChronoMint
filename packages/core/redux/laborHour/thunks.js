@@ -3,14 +3,24 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { getLaborHourWeb3 } from '@chronobank/login/network/LaborHourProvider'
+import { laborHourProvider } from '@chronobank/login/network/LaborHourProvider'
+import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 
 import { HolderModel } from '../../models'
-import { BLOCKCHAIN_LABOR_HOUR } from '../../dao/constants'
+import { BLOCKCHAIN_LABOR_HOUR, EVENT_NEW_BLOCK } from '../../dao/constants'
 import laborHourDAO from '../../dao/LaborHourDAO'
 import TransactionHandler from '../abstractEthereum/utils/TransactionHandler'
 import { laborHourWeb3Update } from './actions'
 import { web3Selector } from './selectors'
+import { getAddressCache, getEthereumSigner } from '../persistAccount/selectors'
+
+import { WALLETS_SET } from '../wallets/constants'
+import * as TokensActions from '../tokens/actions'
+import tokenService from '../../services/TokenService'
+import WalletModel from '../../models/wallet/WalletModel'
+import { formatBalances, getWalletBalances } from '../tokens/utils'
+import * as Utils from '../ethereum/utils'
+import { WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
 
 class LaborHourTransactionHandler extends TransactionHandler {
   constructor () {
@@ -24,7 +34,7 @@ class LaborHourTransactionHandler extends TransactionHandler {
 
   getWeb3 (state) {
     if(this.web3 === null) {
-      this.web3 = getLaborHourWeb3(web3Selector()(state))
+      this.web3 = web3Selector()(state)
     }
 
     return this.web3
@@ -32,6 +42,97 @@ class LaborHourTransactionHandler extends TransactionHandler {
 }
 
 const transactionHandler = new LaborHourTransactionHandler()
-export const estimateLaborHourGas = (tx, feeMultiplier = 1) => transactionHandler.estimateGas(tx, feeMultiplier)
+export const estimateLaborHourGas = (tx, feeMultiplier = 1) => {
+  return transactionHandler.estimateGas(tx, feeMultiplier)
+}
 export const executeLaborHourTransaction = ({ tx, options }) => transactionHandler.executeTransaction({ tx, options })
 export const initLaborHour = ({ web3 }) => (dispatch) => dispatch(laborHourWeb3Update(new HolderModel({ value: web3 })))
+
+export const enableLaborHour = () => async (dispatch) => {
+  await dispatch(initTokens())
+  dispatch(initWalletFromKeys())
+}
+
+export const initTokens = () => async (dispatch, getState) => {
+  const state = getState()
+  const web3 = web3Selector()(state)
+
+  laborHourDAO.connect(web3)
+
+  const lhtToken = await laborHourDAO.getToken()
+  tokenService.registerDAO(lhtToken, laborHourDAO)
+  dispatch(TokensActions.tokenFetched(lhtToken))
+
+  dispatch(watchLatestBlock())
+}
+
+export const watchLatestBlock = () => async (dispatch) => {
+
+  laborHourDAO.on(EVENT_NEW_BLOCK, (block) => {
+    dispatch(TokensActions.setLatestBlock(BLOCKCHAIN_LABOR_HOUR, block))
+  })
+
+  const block = await laborHourDAO.getBlockNumber()
+  dispatch(TokensActions.setLatestBlock(BLOCKCHAIN_LABOR_HOUR, { blockNumber: block }))
+}
+
+const initWalletFromKeys = () => async (dispatch, getState) => {
+  const state = getState()
+  const { network } = getCurrentNetworkSelector(state)
+  const addressCache = { ...getAddressCache(state) }
+
+  if (!addressCache[BLOCKCHAIN_LABOR_HOUR]) {
+    const path = Utils.getEthereumDerivedPath(network[BLOCKCHAIN_LABOR_HOUR])
+    const signer = getEthereumSigner(state)
+    if (signer) {
+      const address = await signer.getAddress(path)
+      addressCache[BLOCKCHAIN_LABOR_HOUR] = {
+        address,
+        path,
+      }
+
+      dispatch({
+        type: WALLETS_CACHE_ADDRESS,
+        blockchain: BLOCKCHAIN_LABOR_HOUR,
+        address,
+        path,
+      })
+    }
+  }
+
+  const { address, path } = addressCache[BLOCKCHAIN_LABOR_HOUR]
+  const wallet = new WalletModel({
+    address,
+    blockchain: BLOCKCHAIN_LABOR_HOUR,
+    isMain: true,
+    walletDerivedPath: path,
+  })
+
+  laborHourProvider.subscribe(wallet.address)
+  dispatch({ type: WALLETS_SET, wallet })
+
+  dispatch(updateWalletBalance(wallet))
+}
+
+export const updateWalletBalance = (wallet) => (dispatch) => {
+  getWalletBalances({ wallet })
+    .then((balancesResult) => {
+      try {
+        dispatch({ type: WALLETS_SET, wallet: new WalletModel({
+          ...wallet,
+          balances: {
+            ...wallet.balances,
+            ...formatBalances(wallet.blockchain, balancesResult),
+          },
+        }),
+        })
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(e.message)
+      }
+    })
+    .catch((e) => {
+      // eslint-disable-next-line no-console
+      console.error('call balances from middleware is failed getWalletBalances', e)
+    })
+}
