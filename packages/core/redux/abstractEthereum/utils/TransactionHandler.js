@@ -38,6 +38,10 @@ export default class TransactionHandler extends TransactionGuide {
     }
   }
 
+  getWeb3 () {
+    throw new Error('getWeb3 method should be implemented. It\'s an abstract method.')
+  }
+
   executeTransaction = ({ tx, options }) => async (dispatch, getState) => {
     const web3 = this.getWeb3(getState())
     const prepared = await dispatch(this.prepareTransaction({ web3, tx, options }))

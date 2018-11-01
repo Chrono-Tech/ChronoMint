@@ -13,6 +13,7 @@ import {
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
   BLOCKCHAIN_EOS,
+  BLOCKCHAIN_LABOR_HOUR,
 } from '@chronobank/login/network/constants'
 
 import * as ProfileThunks from '../profile/thunks'
@@ -42,6 +43,7 @@ import {
 import { getBlockchainList, getPersistAccount } from './selectors'
 import { enableBitcoin, disableBitcoin } from '../bitcoin/thunks'
 import { enableEthereum } from '../ethereum/thunks'
+import { enableLaborHour, disableLaborHour } from '../laborHour/thunks'
 import { enableNem, disableNem } from '../nem/thunks'
 import { enableWaves, disableWaves } from '../waves/thunks'
 import { enableEos, disableEos } from '../eos/thunks'
@@ -54,6 +56,7 @@ const enableMap = {
   [BLOCKCHAIN_NEM]: enableNem(),
   [BLOCKCHAIN_WAVES]: enableWaves(),
   [BLOCKCHAIN_EOS]: enableEos(),
+  [BLOCKCHAIN_LABOR_HOUR]: enableLaborHour(),
 }
 const disableMap = {
   [BLOCKCHAIN_BITCOIN]: disableBitcoin(BLOCKCHAIN_BITCOIN),
@@ -63,6 +66,7 @@ const disableMap = {
   [BLOCKCHAIN_NEM]: disableNem(),
   [BLOCKCHAIN_WAVES]: disableWaves(),
   [BLOCKCHAIN_EOS]: disableEos(),
+  [BLOCKCHAIN_LABOR_HOUR]: disableLaborHour(),
 }
 
 export const enableDefaultBlockchains = () => (dispatch, getState) => {

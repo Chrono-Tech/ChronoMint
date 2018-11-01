@@ -11,5 +11,8 @@ const laborHourSelector = () => (state) => state.get(DUCK_LABOR_HOUR)
 
 export const web3Selector = () => createSelector(
   laborHourSelector(),
-  (laborHour) => laborHour == null ? null : laborHour.web3.value,
+  (laborHour) => {
+    // laborHour.web3 this is a Holder model
+    return laborHour == null ? null : laborHour.web3.value
+  }
 )
