@@ -17,6 +17,10 @@
   color: $color-primary-0;
 }
 
+.container-root {
+  padding-top: 20px;
+}
+
 .header {
   text-align: center;
 
@@ -45,11 +49,15 @@
 }
 
 .body {
-  margin-top: 20px;
   text-align: center;
 }
 
 .finish {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.row-save-button {
   margin-top: 20px;
   text-align: center;
 }

@@ -28,11 +28,11 @@ import PublishPollDialog from 'components/dialogs/PublishPollDialog/PublishPollD
 import ReceiveTokenModal from 'components/dashboard/ReceiveTokenModal/ReceiveTokenModal'
 import RevokeDialog from 'components/assetsManager/RevokeDialog/RevokeDialog'
 import SendTokens from 'components/dashboard/SendTokens/SendTokens'
-import TurnOffBlockchain from 'components/wallet/TurnOffBlockchain/TurnOffBlockchain'
 import TwoFaConfirmModal from 'components/wallet/TwoFaConfirmModal/TwoFaConfirmModal'
 import UpdateProfileDialog from 'components/dialogs/UpdateProvideDialog/UpdateProfileDialog'
 import UserActiveDialog from 'components/dialogs/UserActiveDialog/UserActiveDialog'
 import WalletSettingsForm from 'components/wallet/AddWalletWidget/WalletSettingsForm/WalletSettingsForm'
+import BlockchainChoiceModalContainer from 'components/wallet/BlockchainChoiceModal/BlockchainChoiceModalContainer'
 
 export default class ModalSelector extends PureComponent {
   // Keep Map alphabetically sorted
@@ -57,7 +57,7 @@ export default class ModalSelector extends PureComponent {
     'ReceiveTokenModal': ReceiveTokenModal,
     'RevokeDialog': RevokeDialog,
     'SendTokens': SendTokens,
-    'TurnOffBlockchain': TurnOffBlockchain,
+    'TurnOffBlockchain': BlockchainChoiceModalContainer,
     'TwoFaConfirmModal': TwoFaConfirmModal,
     'UpdateProfileDialog': UpdateProfileDialog,
     'UserActiveDialog': UserActiveDialog,
