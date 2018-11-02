@@ -5,6 +5,9 @@
 
 import { laborHourProvider } from '@chronobank/login/network/LaborHourProvider'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
+import { getNetworkById } from '@chronobank/login/network/settings'
+import web3Factory from '../../../core/web3'
 
 import { HolderModel } from '../../models'
 import { BLOCKCHAIN_LABOR_HOUR, EVENT_NEW_BLOCK } from '../../dao/constants'
@@ -20,7 +23,7 @@ import tokenService from '../../services/TokenService'
 import WalletModel from '../../models/wallet/WalletModel'
 import { formatBalances, getWalletBalances } from '../tokens/utils'
 import * as Utils from '../ethereum/utils'
-import { WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
+import { DUCK_PERSIST_ACCOUNT, WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
 import { getWalletsByBlockchain } from '../wallets/selectors/models'
 
 class LaborHourTransactionHandler extends TransactionHandler {
@@ -49,7 +52,18 @@ export const estimateLaborHourGas = (tx, feeMultiplier = 1) => {
 export const executeLaborHourTransaction = ({ tx, options }) => transactionHandler.executeTransaction({ tx, options })
 export const initLaborHour = ({ web3 }) => (dispatch) => dispatch(laborHourWeb3Update(new HolderModel({ value: web3 })))
 
-export const enableLaborHour = () => async (dispatch) => {
+export const enableLaborHour = () => async (dispatch, getState) => {
+  const state = getState()
+  const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
+  const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
+
+  let network = getNetworkById(selectedNetworkId, selectedProviderId)
+  if (!network.id) {
+    network = customNetworksList.find((network) => network.id === selectedNetworkId)
+  }
+
+  dispatch(initLaborHour({ web3: web3Factory(network[BLOCKCHAIN_LABOR_HOUR]) }))
+
   await dispatch(initTokens())
   dispatch(initWalletFromKeys())
 }

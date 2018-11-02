@@ -161,7 +161,7 @@ export const updateWalletBalance = (wallet) => (dispatch) => {
         dispatch({ type: WALLETS_SET, wallet: newWallet })
       } catch (e) {
         // eslint-disable-next-line no-console
-        console.error(e.message)
+        console.error(e.message, e)
       }
     })
     .catch((e) => {

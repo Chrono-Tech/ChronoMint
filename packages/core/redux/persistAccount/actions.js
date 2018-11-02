@@ -132,7 +132,6 @@ export const updateBlockchainActivity = (blockchainList, enableDisable = false) 
   const currentBlockchains = getBlockchainList(state)
 
   const blockchainToEnable = AccountUtils.formatBlockchainListToArray(blockchainList, (name, isEnabled) => isEnabled && !currentBlockchains.includes(name))
-
   if (enableDisable && blockchainToEnable) {
     dispatch(enableBlockchains(blockchainToEnable))
   }

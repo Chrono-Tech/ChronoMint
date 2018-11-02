@@ -380,6 +380,6 @@ const watchEOS = () => async (dispatch, getState) => {
   })
 }
 
-export const unwatchEos = (dispatch, getState) => {
+export const unwatchEos = () => (dispatch, getState) => {
   clearTimeout(getWatchTimeoutId(getState()))
 }
