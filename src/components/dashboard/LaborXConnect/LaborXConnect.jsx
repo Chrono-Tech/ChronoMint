@@ -21,9 +21,10 @@ import { sidechainWithdraw } from '@chronobank/core/redux/laborXSidechain/thunks
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { TX_LOCK, TX_UNLOCK } from '@chronobank/core/dao/constants/AssetHolderDAO'
 import AssetsCollection from '@chronobank/core/models/assetHolder/AssetsCollection'
-import { FORM_LABOR_X_CONNECT } from 'components/constants'
+import { FORM_LABOR_X_CONNECT, FORM_LABOR_X_CONNECT_SETTINGS } from 'components/constants'
 import LaborXConnectForm from './LaborXConnectForm'
 import './LaborXConnect.scss'
+import LaborXConnectSettingsForm from './LaborXConnectSettingsForm'
 
 function mapStateToProps (state) {
   // form
@@ -85,6 +86,7 @@ export default class LaborXConnect extends PureComponent {
     handleSubmitSuccess: PropTypes.func,
     onChangeField: PropTypes.func,
     amount: PropTypes.number,
+    formName :PropTypes.string,
   }
 
   constructor (props) {
@@ -150,11 +152,20 @@ export default class LaborXConnect extends PureComponent {
   }
 
   render () {
-    const { amount, assets, token, deposit, balanceEth, onChangeField } = this.props
+    const { amount, assets, token, deposit, balanceEth, onChangeField, formName } = this.props
     const { gasFee, feeLoading } = this.state
 
+    let Component
+    switch (formName) {
+      case FORM_LABOR_X_CONNECT_SETTINGS:
+        Component = LaborXConnectSettingsForm
+        break
+      default:
+        Component = LaborXConnectForm
+        break
+    }
     return (
-      <LaborXConnectForm
+      <Component
         feeLoading={feeLoading}
         gasFee={gasFee}
         amount={amount}

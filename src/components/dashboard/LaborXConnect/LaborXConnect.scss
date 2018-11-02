@@ -34,17 +34,17 @@
 .headContent {
   background: $color-white;
   padding: 30px;
-  border-bottom: 1px solid $color-grey-3;
 }
 
 .body {
   background: $color-white;
-  padding: 0 30px 30px;
-
+  padding: 0;
   .fieldWrapperHide {
     display: none;
   }
   .fieldWrapper {
+    border-top: 1px solid $color-grey-3;
+    padding: 0 30px 30px;
     position: relative;
     .amountInFiat {
       color: $color-grey-2;
@@ -53,6 +53,31 @@
       position: absolute;
       right: 0;
       top: 38px;
+    }
+    &.customNodeWrapper {
+      padding: 5px 30px;
+      font-size: 14px;
+      line-height: 45px;
+      display: flex;
+      justify-content: space-between;
+      .title {
+      }
+      .switcher {
+      }
+    }
+    &.reward,
+    &.nodes {
+      padding: 20px 30px;
+      font-size: 14px;
+      line-height: 20px;
+    }
+    &.nodes {
+      div {
+        span:last-child {
+          color: $color-blue-4;
+          cursor: pointer;
+        }
+      }
     }
   }
   .transactionsInfo {
@@ -164,7 +189,7 @@
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
-  margin-top: 60px;
+  padding: 30px;
   .button {
     width: 45%;
     .buttonInfo {
@@ -221,4 +246,13 @@
     background: $color-blue-4;
     font-size: 16px;
   }
+}
+
+.footer {
+  border-top: 1px solid $color-grey-3;
+  padding: 20px 30px;
+  text-align: right;
+}
+
+.customNodeSwitcher {
 }

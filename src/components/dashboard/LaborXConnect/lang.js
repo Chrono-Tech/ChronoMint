@@ -29,5 +29,19 @@ export default {
       note: 'Activate LaborX deposit',
       noteText: 'Your transfer has been completed. ' + 'Please confirm the operation to activate your funds on LaborX network.',
     },
+    nodes: {
+      winNode: 'Windows node',
+      macNode: 'MacOS node',
+      linuxNode: 'Linux node',
+    },
+    settingsForm: {
+      title: 'Mining Deposit Settings',
+      message: 'The amount will be distributed form your TIME Deposit. Transaction fee in amount of ETH 0.02 will be withdrawn from your wallet.',
+      customNode: 'Use custom node (Min deposit: %{amount})',
+      reward: 'Reward: %{symbol} %{amount} / block',
+      download: 'Download',
+    },
+    accept: 'Accept',
+    max: 'max',
   },
 }

@@ -133,19 +133,19 @@ export default class LaborXConnectForm extends PureComponent {
   renderSecondStep () {
     const buttons = [
       {
-        title: 'Windows node',
+        title: 'nodes.winNode',
         onClick: () => {
 
         },
       },
       {
-        title: 'MacOS node',
+        title: 'nodes.macNode',
         onClick: () => {
 
         },
       },
       {
-        title: 'Linux node',
+        title: 'nodes.linuxNode',
         onClick: () => {
 
         },

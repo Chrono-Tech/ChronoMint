@@ -4,42 +4,12 @@
  */
 import SliderMaterial from '@material-ui/lab/Slider'
 import PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles'
+import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
+import { prefix } from '../lang'
+import classes from './LaborXConnectSlider.scss'
 
-const styles = {
-  slider: {},
-  thumb: {
-    height: '0',
-    width: '0',
-    top: '16px',
-    border: '10px solid transparent',
-    borderBottom: '10px solid #3f51b5',
-    borderRadius: '0',
-    background: 'transparent',
-    '&$focused': {
-      borderBottomColor: '#FFB54E',
-    },
-  },
-  track: {
-    height: '30px',
-    borderRadius: '14px',
-  },
-  trackAfter: {
-    width: '100% !important',
-  },
-  amount: {
-    textAlign: 'center',
-    paddingTop: '30px',
-    paddingBottom: '10px',
-  },
-  amountSelected: {
-    color: '#5F4CBA',
-    fontWeight: '700',
-  },
-}
-
-class LaborXConnectSlider extends PureComponent {
+export default class LaborXConnectSlider extends PureComponent {
   static propTypes = {
     min: PropTypes.number,
     max: PropTypes.number,
@@ -54,17 +24,18 @@ class LaborXConnectSlider extends PureComponent {
   }
 
   render () {
-    const { classes, input, min, max, step } = this.props
+    const { input, min, max, step } = this.props
 
     return (
       <div>
-        <div className={classes.amount}>
-          <span className={classes.amountSelected}>TIME 100.00</span>
+        <div styleName='amount'>
+          <span styleName='amountSelected'>TIME 100.00</span>
           <span> / 10,000.00</span>
         </div>
         <SliderMaterial
           classes={{
             container: classes.slider,
+            trackBefore: classes.trackBefore,
             track: classes.track,
             trackAfter: classes.trackAfter,
             thumb: classes.thumb,
@@ -75,9 +46,10 @@ class LaborXConnectSlider extends PureComponent {
           max={max}
           step={step}
         />
+        <button styleName='max'>
+          <Translate value={`${prefix}.max`} />
+        </button>
       </div>
     )
   }
 }
-
-export default withStyles(styles)(LaborXConnectSlider)

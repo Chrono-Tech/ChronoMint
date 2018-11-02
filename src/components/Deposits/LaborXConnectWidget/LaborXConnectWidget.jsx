@@ -15,6 +15,7 @@ import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/model
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import Amount from '@chronobank/core/models/Amount'
+import { FORM_LABOR_X_CONNECT_SETTINGS } from 'components/constants'
 import PropTypes from 'prop-types'
 import LABOR_X_LOGO_SVG from 'assets/img/laborx-icon.svg'
 import './LaborXConnectWidget.scss'
@@ -38,22 +39,32 @@ function mapDispatchToProps (dispatch) {
             wallet,
             tokenId,
           },
-        }),
+        })
       ),
     onOpenDepositForm: () => dispatch(modalsOpen({ componentName: 'DepositTokensModal' })),
     onOpenLXConnectForm: () => dispatch(modalsOpen({ componentName: 'LaborXConnectModal' })),
+    onOpenSettings: () =>
+      dispatch(
+        modalsOpen({
+          componentName: 'LaborXConnectModal',
+          props: {
+            formName: FORM_LABOR_X_CONNECT_SETTINGS,
+          },
+        })
+      ),
   }
 }
 
 @connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )
 export default class LaborXConnectWidget extends PureComponent {
   static propTypes = {
     onOpenReceiveForm: PropTypes.func,
     onOpenDepositForm: PropTypes.func,
     onOpenLXConnectForm: PropTypes.func,
+    onOpenSettings: PropTypes.func,
     wallet: PropTypes.instanceOf(WalletModel),
     deposit: PropTypes.instanceOf(Amount),
   }
@@ -78,6 +89,7 @@ export default class LaborXConnectWidget extends PureComponent {
   }
 
   handleOpenSettings = () => {
+    this.props.onOpenSettings()
   }
 
   render () {
