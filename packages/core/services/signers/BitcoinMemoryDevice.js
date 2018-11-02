@@ -3,12 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import EventEmitter from 'events'
 import bitcoin from 'bitcoinjs-lib'
 
-export default class BitcoinMemoryDevice extends EventEmitter {
+export default class BitcoinMemoryDevice {
   constructor ({ privateKey, network }) {
-    super()
     this.privateKey = privateKey
     this.network = network
     Object.freeze(this)

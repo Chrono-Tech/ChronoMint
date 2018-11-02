@@ -13,6 +13,10 @@ export default class DashMemoryDevice {
     Object.freeze(this)
   }
 
+  getPrivateKey () {
+    return this.privateKey
+  }
+
   getAddress () {
     return new Address(PublicKey(new PrivateKey(this.privateKey)), dashProvider.getNetworkType()).toString()
   }

@@ -3,17 +3,20 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import EventEmitter from 'events'
 import Eos from 'eosjs'
 import ecc from 'eosjs-ecc'
 import ethUtils from 'ethereumjs-util'
 import { eddsa as EdDSA } from 'elliptic'
 
-export default class EosMemoryDevice extends EventEmitter {
+export default class EosMemoryDevice {
   constructor ({ privateKey }) {
-    super()
+    this.privateKey = privateKey
     this.keys = this.createEosKeys(privateKey)
     Object.freeze(this)
+  }
+
+  getPrivateKey () {
+    return this.privateKey
   }
 
   createEosKeys (ethereumPrivateKey) {
