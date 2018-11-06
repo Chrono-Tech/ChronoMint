@@ -3,12 +3,19 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { DUCK_LABOR_X_SIDECHAIN } from '../constants'
 import { createSelector } from 'reselect'
+import { DUCK_LABOR_HOUR } from '../constants'
 
 export const LXSDuckSelector = (state) => {
-  return state.get(DUCK_LABOR_X_SIDECHAIN)
+  return state.get(DUCK_LABOR_HOUR)
 }
+
+export const web3Selector = () => createSelector(
+  LXSDuckSelector,
+  (laborHour) => {
+    return laborHour == null ? null : laborHour.web3.value
+  },
+)
 
 export const daosSelector = (state) => {
   const { daos } = LXSDuckSelector(state)

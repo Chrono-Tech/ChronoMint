@@ -368,9 +368,19 @@ export const EOS_NETWORK_CONFIG = {
   },
 }
 
-export const LABOR_X_SIDECHAIN_NETWORK_CONFIG = {
+export const LABOR_HOUR_NETWORK_CONFIG = {
   id: '9999',
-  name: 'LaborX sidechain',
-  url: 'http://localhost:8546',
-  ws: 'ws://localhost:8546',
+  name: 'Labor Hour',
+  host: 'http://localhost:8546',
+  ws: 'wss://rinkeby.infura.io/ws',
+  protocol: 'https',
+  scanner: blockExplorersMap.Ethereum.testnet,
+  [BLOCKCHAIN_BITCOIN]: 'testnet',
+  [BLOCKCHAIN_BITCOIN_CASH]: 'testnet',
+  [BLOCKCHAIN_DASH]: 'testnet',
+  [BLOCKCHAIN_LABOR_HOUR]: { type: 'testnet', wss: 'ws://localhost:8546' },
+  [BLOCKCHAIN_LITECOIN]: 'litecoin_testnet',
+  [BLOCKCHAIN_NEM]: 'testnet',
+  [BLOCKCHAIN_WAVES]: 'TESTNET_CONFIG',
+  [BLOCKCHAIN_EOS]: 'testnet',
 }

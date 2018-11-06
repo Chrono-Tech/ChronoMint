@@ -8,6 +8,7 @@ import Web3 from 'web3'
 import { BLOCKCHAIN_LABOR_HOUR } from './constants'
 import AbstractEthereumProvider from './AbstractEthereumProvider'
 import selectLaborHourNode from './LaborHourNode'
+import { LABOR_HOUR_NETWORK_CONFIG } from './settings'
 
 export const getLaborHourWeb3 = (wssWeb3) => new Web3(new Web3.providers.WebsocketProvider(wssWeb3))
 
@@ -20,7 +21,9 @@ export class LaborHourProvider extends AbstractEthereumProvider {
     const balanceData = { tokens: {} }
 
     try {
-      const url = this.networkSettings[BLOCKCHAIN_LABOR_HOUR] ? this.networkSettings[BLOCKCHAIN_LABOR_HOUR].wss : 'wss://parity.tp.ntr1x.com:8546'
+      const url = this.networkSettings[BLOCKCHAIN_LABOR_HOUR]
+        ? this.networkSettings[BLOCKCHAIN_LABOR_HOUR].wss
+        : LABOR_HOUR_NETWORK_CONFIG[BLOCKCHAIN_LABOR_HOUR].wss
       const web3 = getLaborHourWeb3(url)
       balanceData.balance = await web3.eth.getBalance(address)
       web3.currentProvider.connection.close()

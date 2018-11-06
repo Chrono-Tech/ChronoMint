@@ -31,7 +31,6 @@ import wallet from './wallet/reducer'
 import wallets from './wallets/reducer'
 import watcher from './watcher/reducer'
 import waves from './waves/reducer'
-import laborXSidechain from './laborXSidechain/reducer'
 
 const coreReducers = {
   abstractEthereum,
@@ -60,7 +59,6 @@ const coreReducers = {
   wallets,
   watcher,
   waves,
-  laborXSidechain,
 }
 
 export default coreReducers

@@ -85,6 +85,7 @@ const configureStore = () => {
       'wallet/updateBalance',
       'MIDDLEWARE_CRYPTOCOMPARE_UPDATE_MARKET_RATES',
       'MIDDLEWARE_CRYPTOCOMPARE_UPDATE_MARKET_LAST',
+      'MIDDLEWARE_CRYPTOCOMPARE_UPDATE_MARKET_PRICES_FAILURE',
     ]
     // All actions like network/* (starts with network)
     const DOMAINS = [

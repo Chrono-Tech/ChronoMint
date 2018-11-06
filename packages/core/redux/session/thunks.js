@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { getNetworkById } from '@chronobank/login/network/settings'
+import { getNetworkById, LABOR_HOUR_NETWORK_CONFIG } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
@@ -137,7 +137,10 @@ export const login = (account) => async (dispatch, getState) => {
 
   await dispatch(initEthereum({ web3 }))
   await dispatch(watcher({ web3 }))
-  // dispatch(initLaborHour({ web3: network[BLOCKCHAIN_LABOR_HOUR].wss }))
+  const url = network[BLOCKCHAIN_LABOR_HOUR]
+    ? network[BLOCKCHAIN_LABOR_HOUR].wss
+    : LABOR_HOUR_NETWORK_CONFIG[BLOCKCHAIN_LABOR_HOUR].wss
+  dispatch(initLaborHour({ web3: url }))
 
   const userManagerDAO = daoByType('UserManager')(getState())
   const [isCBE, profile] = await Promise.all([
