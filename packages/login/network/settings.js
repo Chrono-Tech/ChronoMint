@@ -41,8 +41,8 @@ const blockExplorersMap = {
     testnet: 'https://tbcc.blockdozer.com/insight/tx',
   },
   [BLOCKCHAIN_DASH]: {
-    mainnet: 'https://insight.dashevo.org/insight-api-dash/tx',
-    testnet: 'https://testnet-insight.dashevo.org/insight-api-dash/tx',
+    mainnet: 'https://middleware-dash-mainnet-stage.chronobank.io/tx',
+    testnet: 'https://middleware-dash-dev.chronobank.io/tx',
   },
   [BLOCKCHAIN_LABOR_HOUR]: {
     mainnet: [
