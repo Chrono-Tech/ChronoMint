@@ -5,8 +5,7 @@
 @import '~styles/partials/variables';
 
 .header-container {
-  margin-bottom: 48px;
-  margin-top: 28px;
+  margin: 28px -30px 48px;
   display: flex;
   justify-content: center;
   .wallet-list-container {

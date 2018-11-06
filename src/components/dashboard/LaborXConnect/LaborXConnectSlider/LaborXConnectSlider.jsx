@@ -6,6 +6,9 @@ import SliderMaterial from '@material-ui/lab/Slider'
 import PropTypes from 'prop-types'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
+import Amount from '@chronobank/core/models/Amount'
+import TokenValueSimple from 'components/common/TokenValueSimple/TokenValueSimple'
 import { prefix } from '../lang'
 import classes from './LaborXConnectSlider.scss'
 
@@ -15,6 +18,7 @@ export default class LaborXConnectSlider extends PureComponent {
     max: PropTypes.number,
     step: PropTypes.number,
     toFixed: PropTypes.number,
+    token: PropTypes.instanceOf(TokenModel),
   }
   handleChange = (e, v) => {
     if (this.props.toFixed !== null && this.props.toFixed !== undefined) {
@@ -23,14 +27,19 @@ export default class LaborXConnectSlider extends PureComponent {
     return this.props.input.onChange(parseFloat(v))
   }
 
-  render () {
-    const { input, min, max, step } = this.props
+  handleMax = () => {
+    return this.handleChange(null, this.props.max)
+  }
 
+  render () {
+    const { input, min, max, step, token } = this.props
+
+    const value = new Amount(input.value || min, token.symbol())
     return (
       <div>
         <div styleName='amount'>
-          <span styleName='amountSelected'>TIME 100.00</span>
-          <span> / 10,000.00</span>
+          <span styleName='amountSelected'>TIME <TokenValueSimple value={new Amount(value, token.symbol())} withFraction /></span>
+          <span> / <TokenValueSimple value={new Amount(max, token.symbol())} withFraction /></span>
         </div>
         <SliderMaterial
           classes={{
@@ -46,7 +55,7 @@ export default class LaborXConnectSlider extends PureComponent {
           max={max}
           step={step}
         />
-        <button styleName='max'>
+        <button styleName='max' onClick={this.handleMax}>
           <Translate value={`${prefix}.max`} />
         </button>
       </div>

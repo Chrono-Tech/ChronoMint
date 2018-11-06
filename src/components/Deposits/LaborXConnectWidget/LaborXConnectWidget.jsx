@@ -21,6 +21,10 @@ import LABOR_X_LOGO_SVG from 'assets/img/laborx-icon.svg'
 import './LaborXConnectWidget.scss'
 import { prefix } from './lang'
 
+const WIDGET_FIRST_STEP = 'First'
+const WIDGET_SECOND_STEP = 'Second'
+const WIDGET_THIRD_STEP = 'Third'
+
 function mapStateToProps (state) {
   const wallet = getMainEthWallet(state)
   return {
@@ -39,7 +43,7 @@ function mapDispatchToProps (dispatch) {
             wallet,
             tokenId,
           },
-        })
+        }),
       ),
     onOpenDepositForm: () => dispatch(modalsOpen({ componentName: 'DepositTokensModal' })),
     onOpenLXConnectForm: () => dispatch(modalsOpen({ componentName: 'LaborXConnectModal' })),
@@ -50,15 +54,12 @@ function mapDispatchToProps (dispatch) {
           props: {
             formName: FORM_LABOR_X_CONNECT_SETTINGS,
           },
-        })
+        }),
       ),
   }
 }
 
-@connect(
-  mapStateToProps,
-  mapDispatchToProps
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class LaborXConnectWidget extends PureComponent {
   static propTypes = {
     onOpenReceiveForm: PropTypes.func,
@@ -67,6 +68,12 @@ export default class LaborXConnectWidget extends PureComponent {
     onOpenSettings: PropTypes.func,
     wallet: PropTypes.instanceOf(WalletModel),
     deposit: PropTypes.instanceOf(Amount),
+  }
+
+  constructor (props) {
+    super(props)
+    const step = WIDGET_FIRST_STEP
+    this.state = { step }
   }
 
   handleOpenReceiveForm = () => {
@@ -92,73 +99,112 @@ export default class LaborXConnectWidget extends PureComponent {
     this.props.onOpenSettings()
   }
 
+  renderFirstStep = () => {
+    return (
+      <div styleName='content-container'>
+        <div styleName='title'>
+          <Translate value={`${prefix}.title`} />
+        </div>
+        <div styleName='text'>
+          <Translate value={`${prefix}.message`} />
+        </div>
+        <div styleName='text'>
+          <Translate value={`${prefix}.messageSubTitle`} />
+        </div>
+
+        <div styleName='actions-container'>
+          <div styleName='action'>
+            <Button type='submit' label={<Translate value={`${prefix}.getStarted`} />} onClick={this.handleOpenReceiveForm} />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  renderSecondStep = () => {
+    return (
+      <div styleName='content-container'>
+        <div styleName='title'>
+          <Translate value={`${prefix}.title`} />
+        </div>
+        <div styleName='text'>
+          <Translate value={`${prefix}.message2`} />
+        </div>
+
+        <div styleName='actions-container'>
+          <div styleName='action'>
+            <Button disabled={false} type='submit' label={<Translate value={`${prefix}.continue`} />} onClick={this.props.handleOpenDepositForm} />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  renderThirdStep = () => {
+    return (
+      <div styleName='content-container'>
+        <div styleName='title addressTittle'>
+          <Translate value={`${prefix}.title`} />
+        </div>
+        <div styleName='address'>{this.props.wallet.address}</div>
+
+        <div styleName='balance'>
+          {TIME}
+          &nbsp;
+          {integerWithDelimiter('10.00', true)}
+        </div>
+
+        <div styleName='infoList'>
+          <div styleName='infoItem'>
+            <div styleName='icon'>
+              <div className='chronobank-icon' styleName='active'>
+                check-circle
+              </div>
+            </div>
+            <div styleName='title'>Mining is ON (ChronoBank)</div>
+          </div>
+          <div styleName='infoItem'>
+            <div styleName='title'>Reward: LHT 0.02 / block</div>
+          </div>
+          <div styleName='infoItem'>
+            <div styleName='title'>Total rewards: LHT 0.04</div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  renderStep () {
+    const steps = {
+      [WIDGET_FIRST_STEP]: this.renderFirstStep,
+      [WIDGET_SECOND_STEP]: this.renderSecondStep,
+      [WIDGET_THIRD_STEP]: this.renderThirdStep,
+    }
+    return steps[this.state.step]
+      ? steps[this.state.step]()
+      : null
+  }
+
   render () {
     return (
       <div styleName='header-container'>
         <div styleName='wallet-list-container'>
           <div styleName='wallet-container'>
-            <div styleName='settingsIcon'>
-              <button className='chronobank-icon' onClick={this.handleOpenSettings}>
-                settings
-              </button>
-            </div>
+            {this.state.step === WIDGET_THIRD_STEP
+              ? (
+                <div styleName='settingsIcon'>
+                  <button className='chronobank-icon' onClick={this.handleOpenSettings}>
+                    settings
+                  </button>
+                </div>
+              )
+              : null}
             <div styleName='token-container'>
               <div styleName='token-icon'>
                 <IPFSImage styleName='imageIcon' fallback={LABOR_X_LOGO_SVG} />
               </div>
             </div>
-            <div styleName='content-container'>
-              <div styleName='title'>
-                <Translate value={`${prefix}.title`} />
-              </div>
-              <div styleName='text'>
-                <Translate value={`${prefix}.message`} />
-              </div>
-              <div styleName='text'>
-                <Translate value={`${prefix}.messageSubTitle`} />
-              </div>
-
-              <div styleName='title'>
-                <Translate value={`${prefix}.title`} />
-              </div>
-              <div styleName='text'>
-                <Translate value={`${prefix}.message2`} />
-              </div>
-
-              <div styleName='title addressTittle'>
-                <Translate value={`${prefix}.title`} />
-              </div>
-              <div styleName='address'>{this.props.wallet.address}</div>
-
-              <div styleName='balance'>
-                {TIME}
-                &nbsp;
-                {integerWithDelimiter('10.00', true)}
-              </div>
-
-              <div styleName='infoList'>
-                <div styleName='infoItem'>
-                  <div styleName='icon'>
-                    <div className='chronobank-icon' styleName='active'>
-                      check-circle
-                    </div>
-                  </div>
-                  <div styleName='title'>Mining is ON (ChronoBank)</div>
-                </div>
-                <div styleName='infoItem'>
-                  <div styleName='title'>Reward: LHT 0.02 / block</div>
-                </div>
-                <div styleName='infoItem'>
-                  <div styleName='title'>Total rewards: LHT 0.04</div>
-                </div>
-              </div>
-              <div styleName='actions-container'>
-                <div styleName='action'>
-                  <Button type='submit' label={<Translate value={`${prefix}.getStarted`} />} onClick={this.handleOpenReceiveForm} />
-                  <Button disabled={false} type='submit' label={<Translate value={`${prefix}.continue`} />} onClick={this.props.handleOpenDepositForm} />
-                </div>
-              </div>
-            </div>
+            {this.renderStep()}
           </div>
         </div>
       </div>

@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/wallets/constants'
+import BigNumber from 'bignumber.js'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import Amount from '@chronobank/core/models/Amount'
 import AssetsCollection from '@chronobank/core/models/assetHolder/AssetsCollection'
@@ -19,6 +19,7 @@ import validate from './validate'
 import { prefix } from './lang'
 import LaborXConnectSlider from './LaborXConnectSlider/LaborXConnectSlider'
 import './LaborXConnect.scss'
+import Preloader from '../../common/Preloader/Preloader'
 
 const LABOR_X_CONNECT_FIRST = 'laborXConnectFirst'
 const LABOR_X_CONNECT_SECOND = 'laborXConnectSecond'
@@ -35,6 +36,12 @@ export default class LaborXConnectForm extends PureComponent {
     assets: PropTypes.instanceOf(AssetsCollection),
     amount: PropTypes.number,
     ...formPropTypes,
+  }
+
+  static defaultProps = {
+    initialValues: {
+      amount: 0,
+    },
   }
 
   constructor (props) {
@@ -74,15 +81,16 @@ export default class LaborXConnectForm extends PureComponent {
           <div>Reward per block</div>
           <div><TokenValue value={topValue} /></div>
         </div>
-        <buttom onClick={onClick} styleName={classnames('buttonInfoBottom', bottom.styleName)}>
+        <button onClick={onClick} styleName={classnames('buttonInfoBottom', bottom.styleName)}>
           <div styleName='title'>{bottom.title}</div>
           <div styleName='subTitle'>{bottom.subTitle}</div>
-        </buttom>
+        </button>
       </div>
     )
   }
 
   renderFirstStep () {
+    const { deposit, token } = this.props
     const bottoms = {
       bottomLeft: {
         onClick: () => {
@@ -114,12 +122,22 @@ export default class LaborXConnectForm extends PureComponent {
     return (
       <div>
         <div styleName={classnames('fieldWrapper')}>
-          <Field
-            component={LaborXConnectSlider}
-            name='amount'
-            {...FEE_RATE_MULTIPLIER}
-            toFixed={1}
-          />
+          {deposit.gt(0) && token.decimals() > 0
+            ? (
+              <Field
+                component={LaborXConnectSlider}
+                name='amount'
+                toFixed={1}
+                min={0}
+                step={token.addDecimals(new BigNumber(1)).toNumber()}
+                max={deposit.toNumber()}
+                token={token}
+              />
+            )
+            : (
+              <Preloader />
+            )
+          }
         </div>
         <div styleName='actions'>
           {Object.entries(bottoms).map((entry) => {
