@@ -13,7 +13,7 @@ import EthereumMemoryDevice from '../../../services/signers/EthereumMemoryDevice
 import { modalsOpen } from '../../modals/actions'
 import { showSignerModal, closeSignerModal } from '../../modals/thunks'
 import { DUCK_PERSIST_ACCOUNT } from '../../persistAccount/constants'
-import { getEthereumSigner } from '../../persistAccount/selectors'
+import { getEthereumSigner } from '../../ethereum/selectors'
 import { getAccount } from '../../session/selectors/models'
 import { pendingSelector, pendingEntrySelector } from '../../transaction/selectors'
 import { txCreate, txUpdate } from '../../transaction/actions'
