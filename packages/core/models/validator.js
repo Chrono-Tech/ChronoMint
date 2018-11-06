@@ -7,7 +7,7 @@ import Immutable from 'immutable'
 import { isArray, isObject, isMap, isSet, isEmpty, isString, isNil } from 'lodash'
 import wallet from 'ethereumjs-wallet'
 import Web3 from 'web3'
-import { BLOCKCHAIN_EOS } from '../redux/eos/constants'
+import { BLOCKCHAIN_EOS } from '../dao/constants'
 
 export const required = (value) => !value ? 'errors.required' : null
 

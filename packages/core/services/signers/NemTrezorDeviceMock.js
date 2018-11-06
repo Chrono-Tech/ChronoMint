@@ -3,14 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import EventEmitter from 'events'
 import nem from 'nem-sdk'
 import xor from 'buffer-xor'
 import { MOCK_PRIVATE_KEY } from './BitcoinLedgerDeviceMock'
 
-export default class NemTrezorMockDevice extends EventEmitter {
+export default class NemTrezorMockDevice {
   constructor ({ network }) {
-    super()
     this.privateKey = MOCK_PRIVATE_KEY
     this.network = network
     Object.freeze(this)

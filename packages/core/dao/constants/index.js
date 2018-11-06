@@ -27,6 +27,7 @@ export const BLOCKCHAIN_LABOR_HOUR = 'Labor Hour Token'
 export const BLOCKCHAIN_LITECOIN = 'Litecoin'
 export const BLOCKCHAIN_NEM = 'NEM'
 export const BLOCKCHAIN_WAVES = 'WAVES'
+export const BLOCKCHAIN_EOS = 'EOS'
 
 export const TX_FRONTEND_ERROR_CODES = {
   FRONTEND_UNKNOWN: 'f0',

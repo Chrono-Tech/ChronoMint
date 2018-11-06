@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import EventEmitter from 'events'
 import hdkey from 'ethereumjs-wallet/hdkey'
 import Accounts from 'web3-eth-accounts'
 
@@ -11,7 +10,7 @@ const DEFAULT_PATH = "m/44'/60'/0'/0"
 const DEFAULT_PATH_FACTORY = (index) => `${DEFAULT_PATH}/${index}`
 const MOCK_SEED = 'advice shed boat scan game expire reveal rapid concert settle before vital'
 
-export default class EthereumTrezorDeviceMock extends EventEmitter {
+export default class EthereumTrezorDeviceMock {
   get name () {
     return 'trezor_mock'
   }

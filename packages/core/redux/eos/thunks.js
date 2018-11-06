@@ -9,7 +9,7 @@ import * as EosActions from './actions'
 import * as EosUtils from './utils'
 import Amount from '../../models/Amount'
 import WalletModel from '../../models/wallet/WalletModel'
-import { BLOCKCHAIN_EOS } from './constants'
+import { BLOCKCHAIN_EOS } from '../../dao/constants'
 import { describePendingEosTx } from '../../describers'
 import {
   eosPendingEntrySelector,

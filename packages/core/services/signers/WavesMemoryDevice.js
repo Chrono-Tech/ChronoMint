@@ -3,14 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import EventEmitter from 'events'
 import * as WavesAPI from '@waves/waves-api'
 
-// const TEMP_MOCK_SEED = 'clip grief portion ignore display empower turkey noise derive surface wonder tragic pattern stone squeeze'
-
-export default class WavesMemoryDevice extends EventEmitter {
+export default class WavesMemoryDevice {
   constructor ({ seedPhrase, network }) {
-    super()
     this.waves = WavesAPI.create(network)
     this.seed = this.waves.Seed.fromExistingPhrase(seedPhrase)
     this.network = network
@@ -19,6 +15,10 @@ export default class WavesMemoryDevice extends EventEmitter {
 
   getPublicKey () {
     return this.getKeyPair().publicKey.toString()
+  }
+
+  getPrivateKey () {
+    return this.getKeyPair().privateKey
   }
 
   getAddress () {

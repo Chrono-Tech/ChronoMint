@@ -10,8 +10,8 @@ import { connect } from 'react-redux'
 import ArbitraryNoticeModel from '@chronobank/core/models/notices/ArbitraryNoticeModel'
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import { notify } from '@chronobank/core/redux/notifier/actions'
+import { getSignerByBlockchain } from '@chronobank/core/redux/wallets/selectors/transactions'
 import clipboard from 'utils/clipboard'
-import { getPrivateKeyFromBlockchain } from '@chronobank/login/redux/network/utils'
 
 import './MicroIcon.scss'
 
@@ -31,8 +31,9 @@ function mapDispatchToProps (dispatch) {
 }
 
 function mapStateToProps (state, props) {
+  const signer = getSignerByBlockchain(props.blockchain)
   return {
-    show: !!getPrivateKeyFromBlockchain(props.blockchain),
+    show: signer && typeof signer.getPrivateKey === 'function',
   }
 }
 
@@ -51,32 +52,34 @@ export default class PKIcon extends PureComponent {
     iconStyle: 'micro',
   }
 
-  handleCopy = (e) => {
+  handleCopy = (blockchain) => (e) => {
     e.preventDefault()
+    const privateKey = getSignerByBlockchain(blockchain).getPrivateKey()
     if (navigator.userAgent.match(/ipad|ipod|iphone/i)) {
       if (this.props.onModalOpen) {
         this.props.onModalOpen()
       }
       this.props.showCopyDialog({
-        copyValue: getPrivateKeyFromBlockchain(this.props.blockchain),
+        copyValue: privateKey,
         title: <Translate value='dialogs.copyPrivateKey.title' />,
         controlTitle: <Translate value='dialogs.copyPrivateKey.controlTitle' />,
         description: <Translate value='dialogs.copyPrivateKey.description' />,
       })
     } else {
-      clipboard.copy(getPrivateKeyFromBlockchain(this.props.blockchain))
+      clipboard.copy(privateKey)
       this.props.notify()
     }
   }
 
   render () {
-    if (!this.props.show) {
+    const { show, blockchain } = this.props
+    if (!show) {
       return null
     }
 
     return (
       <div styleName='root'>
-        <span styleName={this.props.iconStyle} onClick={this.handleCopy}>
+        <span styleName={this.props.iconStyle} onClick={this.handleCopy(blockchain)}>
           <i className='material-icons'>vpn_key</i>
         </span>
       </div>

@@ -3,14 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import EventEmitter from 'events'
 import bitcoin from 'bitcoinjs-lib'
 import { MOCK_PRIVATE_KEY } from './BitcoinLedgerDeviceMock'
 
-export default class BitcoinTrezorDeviceMock extends EventEmitter {
+export default class BitcoinTrezorDeviceMock {
 
   constructor ({ network }) {
-    super()
     this.privateKey = MOCK_PRIVATE_KEY
     this.network = network
     Object.freeze(this)
