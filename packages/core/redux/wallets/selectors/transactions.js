@@ -11,6 +11,7 @@ import { getEosSigner, getEOSWalletTransactions } from '../../eos/selectors/main
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_DASH,
   BLOCKCHAIN_EOS,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LABOR_HOUR,
@@ -19,6 +20,7 @@ import {
   BLOCKCHAIN_WAVES,
 } from '../../../dao/constants'
 import { getBitcoinCashSigner, getBitcoinSigner, getLitecoinSigner } from '../../bitcoin/selectors'
+import { getDashSigner } from '../../dash/selectors'
 import { getEthereumSigner } from '../../ethereum/selectors'
 import { getWavesSigner } from '../../waves/selectors'
 import { getNemSigner } from '../../nem/selectors'
@@ -46,6 +48,8 @@ export const getSignerByBlockchain = (blockchain) => {
       return getBitcoinCashSigner
     case BLOCKCHAIN_LITECOIN:
       return getLitecoinSigner
+    case BLOCKCHAIN_DASH:
+      return getDashSigner
     case BLOCKCHAIN_ETHEREUM:
       return getEthereumSigner
     case BLOCKCHAIN_LABOR_HOUR:
