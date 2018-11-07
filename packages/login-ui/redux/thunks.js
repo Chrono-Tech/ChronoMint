@@ -19,7 +19,7 @@ import {
   WALLET_TYPE_LEDGER_MOCK,
 } from '@chronobank/core/models/constants/AccountEntryModel'
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
-import { getEthereumSigner } from '@chronobank/core/redux/persistAccount/selectors'
+import { getEthereumSigner } from '@chronobank/core/redux/ethereum/selectors'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import localStorage from 'utils/LocalStorage'
 import {

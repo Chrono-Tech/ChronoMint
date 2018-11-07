@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { BLOCKCHAIN_EOS } from '@chronobank/core/redux/eos/constants'
+import { BLOCKCHAIN_EOS } from '@chronobank/core/dao/constants'
 import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN,
