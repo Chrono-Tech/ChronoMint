@@ -252,6 +252,8 @@ export const lockDeposit = (amount: Amount, token: TokenModel, feeMultiplier: nu
     const assetHolderDAO = daoByType('TimeHolder')(state)
     const tx = assetHolderDAO.lock(token.address(), amount)
     if (tx) {
+      // TODO @abdulov remove console.log
+      console.log('%c tx', 'background: #222; color: #fff', tx)
       await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
     }
   } catch (e) {

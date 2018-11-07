@@ -44,7 +44,7 @@
   }
   .fieldWrapper {
     border-top: 1px solid $color-grey-3;
-    padding: 0 30px 30px;
+    padding: 0 30px;
     position: relative;
     .amountInFiat {
       color: $color-grey-2;
@@ -201,7 +201,7 @@
       align-items: center;
       justify-content: center;
     }
-    .buttonInfoBottom {
+    .buttonInfoButton {
       width: 100%;
       height: 80px;
       color: $color-white;
@@ -209,6 +209,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
       &:hover {
         background: $color-orange-1;
       }
@@ -231,7 +232,7 @@
 }
 
 .downloadButtons {
-  margin-top: 30px;
+  padding: 30px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;

@@ -8,7 +8,10 @@ import TokenValue from 'components/common/TokenValue/TokenValue'
 import Amount from '@chronobank/core/models/Amount'
 import AssetsCollection from '@chronobank/core/models/assetHolder/AssetsCollection'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
-import { TX_LOCK, TX_UNLOCK } from '@chronobank/core/dao/constants/AssetHolderDAO'
+import {
+  TX_LOCK,
+  TX_UNLOCK,
+} from '@chronobank/core/dao/constants/AssetHolderDAO'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -38,12 +41,6 @@ export default class LaborXConnectForm extends PureComponent {
     ...formPropTypes,
   }
 
-  static defaultProps = {
-    initialValues: {
-      amount: 0,
-    },
-  }
-
   constructor (props) {
     super(props)
     const step = LABOR_X_CONNECT_FIRST
@@ -51,70 +48,89 @@ export default class LaborXConnectForm extends PureComponent {
   }
 
   handleProceed = (values) => {
-    this.props.onSubmit(values.set('action', TX_LOCK).set('token', this.props.token))
+    this.setState({ step: LABOR_X_CONNECT_SECOND })
+    this.props.onSubmit(
+      values.set('action', TX_LOCK).set('token', this.props.token)
+    )
   }
 
   handleUnlock = (values) => {
-    this.props.onSubmit(values.set('action', TX_UNLOCK).set('token', this.props.token))
+    this.props.onSubmit(
+      values.set('action', TX_UNLOCK).set('token', this.props.token)
+    )
   }
 
   renderHead () {
     const { step } = this.state
-    const title = step === LABOR_X_CONNECT_FIRST ? 'titleStepOne' : 'titleStepTwo'
-    const message = step === LABOR_X_CONNECT_FIRST ? 'messageStepOne' : 'messageStepTwo'
+    const title =
+      step === LABOR_X_CONNECT_FIRST ? 'titleStepOne' : 'titleStepTwo'
+    const message =
+      step === LABOR_X_CONNECT_FIRST ? 'messageStepOne' : 'messageStepTwo'
     return (
       <div styleName='head'>
-        <div styleName={classnames('mainTitle', { bordered: step === LABOR_X_CONNECT_FIRST })}>
-          <Translate value={`${prefix}.${title}`} />
+        <div
+          styleName={classnames('mainTitle', {
+            bordered: step === LABOR_X_CONNECT_FIRST,
+          })}
+        >
+          <Translate value={`${prefix}.connectForm.${title}`} />
         </div>
         <div styleName='headContent'>
-          <Translate value={`${prefix}.${message}`} />
+          <Translate value={`${prefix}.connectForm.${message}`} />
         </div>
       </div>
     )
   }
 
-  renderButton ([id, { onClick, topValue, bottom }]) {
+  renderButton ([id, { onClick, topValue, button }]) {
     return (
       <div key={id} styleName='button'>
         <div styleName='buttonInfo'>
-          <div>Reward per block</div>
-          <div><TokenValue value={topValue} /></div>
+          <div>
+            <Translate value={`${prefix}.connectForm.rewardPerBlock`} />
+          </div>
+          <div>
+            <TokenValue value={topValue} />
+          </div>
         </div>
-        <button onClick={onClick} styleName={classnames('buttonInfoBottom', bottom.styleName)}>
-          <div styleName='title'>{bottom.title}</div>
-          <div styleName='subTitle'>{bottom.subTitle}</div>
+        <button
+          onClick={onClick}
+          styleName={classnames('buttonInfoButton', button.styleName)}
+        >
+          <div styleName='title'>
+            <Translate value={button.title} />
+          </div>
+          {button.subTitle ? (
+            <div styleName='subTitle'>
+              <Translate {...button.subTitle} />
+            </div>
+          ) : null}
         </button>
       </div>
     )
   }
 
   renderFirstStep () {
-    const { deposit, token } = this.props
-    const bottoms = {
-      bottomLeft: {
-        onClick: () => {
-          this.setState({
-            step: LABOR_X_CONNECT_SECOND,
-          })
-        },
-        topValue: new Amount(2, 'LHT'),
-        bottom: {
+    const { deposit, token, handleSubmit } = this.props
+    const buttons = {
+      buttonLeft: {
+        onClick: handleSubmit(this.handleProceed),
+        topValue: new Amount(2 * Math.pow(10, 18), 'LHT'),
+        button: {
           styleName: 'blue',
-          title: 'Use Our Node',
+          title: `${prefix}.connectForm.useOurNode`,
         },
       },
-      bottomRight: {
-        onClick: () => {
-          this.setState({
-            step: LABOR_X_CONNECT_SECOND,
-          })
-        },
-        topValue: new Amount(3, 'LHT'),
-        bottom: {
+      buttonRight: {
+        onClick: handleSubmit(this.handleProceed),
+        topValue: new Amount(3 * Math.pow(10, 18), 'LHT'),
+        button: {
           styleName: 'red',
-          title: 'Use Custom Node',
-          subTitle: 'Min deposit: 1,000',
+          title: `${prefix}.connectForm.useCustomNode`,
+          subTitle: {
+            value: `${prefix}.connectForm.minDeposit`,
+            amount: '10 TIME',
+          },
         },
       },
     }
@@ -122,25 +138,22 @@ export default class LaborXConnectForm extends PureComponent {
     return (
       <div>
         <div styleName={classnames('fieldWrapper')}>
-          {deposit.gt(0) && token.decimals() > 0
-            ? (
-              <Field
-                component={LaborXConnectSlider}
-                name='amount'
-                toFixed={1}
-                min={0}
-                step={token.addDecimals(new BigNumber(1)).toNumber()}
-                max={deposit.toNumber()}
-                token={token}
-              />
-            )
-            : (
-              <Preloader />
-            )
-          }
+          {deposit.gt(0) && token.decimals() > 0 ? (
+            <Field
+              component={LaborXConnectSlider}
+              name='amount'
+              toFixed={1}
+              min={0}
+              step={token.addDecimals(new BigNumber(1)).toNumber()}
+              max={deposit.toNumber()}
+              token={token}
+            />
+          ) : (
+            <Preloader />
+          )}
         </div>
         <div styleName='actions'>
-          {Object.entries(bottoms).map((entry) => {
+          {Object.entries(buttons).map((entry) => {
             return this.renderButton(entry)
           })}
         </div>
@@ -151,28 +164,26 @@ export default class LaborXConnectForm extends PureComponent {
   renderSecondStep () {
     const buttons = [
       {
-        title: 'nodes.winNode',
-        onClick: () => {
-
-        },
+        title: 'winNode',
+        onClick: () => {},
       },
       {
-        title: 'nodes.macNode',
-        onClick: () => {
-
-        },
+        title: 'macNode',
+        onClick: () => {},
       },
       {
-        title: 'nodes.linuxNode',
-        onClick: () => {
-
-        },
+        title: 'linuxNode',
+        onClick: () => {},
       },
     ]
     return (
       <div styleName='downloadButtons'>
         {buttons.map((button) => {
-          return <button>{button.title}</button>
+          return (
+            <button key={button.title}>
+              <Translate value={`${prefix}.nodes.${button.title}`} />
+            </button>
+          )
         })}
       </div>
     )
@@ -181,7 +192,7 @@ export default class LaborXConnectForm extends PureComponent {
   render () {
     return (
       <div styleName='root'>
-        <form onSubmit={this.props.handleSubmit}>
+        <form name={FORM_LABOR_X_CONNECT} onSubmit={this.props.handleSubmit}>
           {this.renderHead()}
           <div styleName='body'>
             {this.state.step === LABOR_X_CONNECT_FIRST

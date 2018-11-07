@@ -6,7 +6,7 @@
 import BigNumber from 'bignumber.js'
 import { isNil, omitBy } from 'lodash'
 import uuid from 'uuid/v1'
-
+import { ETH } from '@chronobank/core/dao/constants'
 import { describePendingTx } from '../../../describers'
 import { TxEntryModel, TxExecModel } from '../../../models'
 import EthereumMemoryDevice from '../../../services/signers/EthereumMemoryDevice'
@@ -15,7 +15,10 @@ import { showSignerModal, closeSignerModal } from '../../modals/thunks'
 import { DUCK_PERSIST_ACCOUNT } from '../../persistAccount/constants'
 import { getEthereumSigner } from '../../persistAccount/selectors'
 import { getAccount } from '../../session/selectors/models'
-import { pendingSelector, pendingEntrySelector } from '../../transaction/selectors'
+import {
+  pendingSelector,
+  pendingEntrySelector,
+} from '../../transaction/selectors'
 import { txCreate, txUpdate } from '../../transaction/actions'
 import { nonceUpdate } from '../actions'
 import TransactionGuide from './TransactionGuide'
@@ -40,7 +43,9 @@ export default class TransactionHandler extends TransactionGuide {
 
   executeTransaction = ({ tx, options }) => async (dispatch, getState) => {
     const web3 = this.getWeb3(getState())
-    const prepared = await dispatch(this.prepareTransaction({ web3, tx, options }))
+    const prepared = await dispatch(
+      this.prepareTransaction({ web3, tx, options })
+    )
     const entry = createTxEntryModel(prepared, options)
 
     await dispatch(this.actions.txCreate(entry))
@@ -48,20 +53,30 @@ export default class TransactionHandler extends TransactionGuide {
   }
 
   acceptTransaction = (entry) => async (dispatch, getState) => {
-    dispatch(this.txStatus(entry.key, entry.tx.from, { isAccepted: true, isPending: true }))
+    dispatch(
+      this.txStatus(entry.key, entry.tx.from, {
+        isAccepted: true,
+        isPending: true,
+      })
+    )
 
     const state = getState()
     let signer = getEthereumSigner(state)
 
     if (entry.walletDerivedPath) {
-      signer = await this.getDerivedWallet(signer.privateKey, entry.walletDerivedPath)
+      signer = await this.getDerivedWallet(
+        signer.privateKey,
+        entry.walletDerivedPath
+      )
     }
 
-    return dispatch(this.processTransaction({
-      web3: this.getWeb3(state),
-      entry: this.selectors.pendingEntry(entry.tx.from, entry.key)(state),
-      signer,
-    }))
+    return dispatch(
+      this.processTransaction({
+        web3: this.getWeb3(state),
+        entry: this.selectors.pendingEntry(entry.tx.from, entry.key)(state),
+        signer,
+      })
+    )
   }
 
   txStatus = (key, address, props) => (dispatch, getState) => {
@@ -77,26 +92,30 @@ export default class TransactionHandler extends TransactionGuide {
       return null
     }
 
-    return dispatch(this.actions.txUpdate(
-      key,
-      address,
-      new TxEntryModel({
-        ...entry,
-        ...props,
-      }),
-    ))
+    return dispatch(
+      this.actions.txUpdate(
+        key,
+        address,
+        new TxEntryModel({
+          ...entry,
+          ...props,
+        })
+      )
+    )
   }
 
   processTransaction = ({ web3, entry, signer }) => {
-    return (
-      async (dispatch, getState) => {
-        await dispatch(this.signTransaction({ entry, signer }))
-        return dispatch(this.sendSignedTransaction({
+    return async (dispatch, getState) => {
+      await dispatch(this.signTransaction({ entry, signer }))
+      return dispatch(
+        this.sendSignedTransaction({
           web3,
-          entry: this.selectors.pendingEntry(entry.tx.from, entry.key)(getState()),
-        }))
-      }
-    )
+          entry: this.selectors.pendingEntry(entry.tx.from, entry.key)(
+            getState()
+          ),
+        })
+      )
+    }
   }
 
   submitTransaction = (entry) => async (dispatch, getState) => {
@@ -104,26 +123,40 @@ export default class TransactionHandler extends TransactionGuide {
     const account = getAccount(state)
     const dao = this.getDAO(entry, state)
 
-    const description = describePendingTx(entry, dao.getSymbol(), {
-      address: account,
-      abi: dao.abi,
-      token: dao.token,
-    })
+    const description = describePendingTx(
+      entry,
+      dao.getSymbol ? dao.getSymbol() : ETH,
+      {
+        address: account,
+        abi: dao.abi,
+        token: dao.token,
+      }
+    )
 
-    dispatch(modalsOpen({
-      componentName: 'ConfirmTxDialog',
-      props: {
-        entry,
-        description,
-        accept: this.acceptTransaction,
-        reject: () => dispatch(this.txStatus(entry.key, entry.tx.from, { isRejected: true })),
-      },
-    }))
+    dispatch(
+      modalsOpen({
+        componentName: 'ConfirmTxDialog',
+        props: {
+          entry,
+          description,
+          accept: this.acceptTransaction,
+          reject: () =>
+            dispatch(
+              this.txStatus(entry.key, entry.tx.from, { isRejected: true })
+            ),
+        },
+      })
+    )
   }
 
   prepareTransaction = ({ web3, tx, options }) => async (dispatch) => {
     const { feeMultiplier } = options || {}
-    const { chainId, gasLimit, gasPrice, nonce } = await this.getGasData(dispatch, web3, tx, feeMultiplier)
+    const { chainId, gasLimit, gasPrice, nonce } = await this.getGasData(
+      dispatch,
+      web3,
+      tx,
+      feeMultiplier
+    )
     return createTxExecModel(tx, gasLimit, gasPrice, nonce, chainId)
   }
 
@@ -133,16 +166,29 @@ export default class TransactionHandler extends TransactionGuide {
     dispatch(this.actions.nonceUpdate(entry.tx.from, entry.tx.nonce))
 
     return new Promise((resolve, reject) => {
-      web3.eth.sendSignedTransaction(entry.raw)
+      web3.eth
+        .sendSignedTransaction(entry.raw)
         .on('transactionHash', (hash) => {
-          dispatch(this.txStatus(entry.key, entry.tx.from, { isSent: true, hash }))
+          // TODO @abdulov remove console.log
+          console.log('%c hash', 'background: #222; color: #fff', hash)
+          dispatch(
+            this.txStatus(entry.key, entry.tx.from, { isSent: true, hash })
+          )
         })
         .on('receipt', (receipt) => {
-          dispatch(this.txStatus(entry.key, entry.tx.from, { isMined: true, receipt }))
+          // TODO @abdulov remove console.log
+          console.log('%c receipt', 'background: #222; color: #fff', receipt)
+          dispatch(
+            this.txStatus(entry.key, entry.tx.from, { isMined: true, receipt })
+          )
           resolve(receipt)
         })
         .on('error', (error) => {
-          dispatch(this.txStatus(entry.key, entry.tx.from, { isErrored: true, error }))
+          // TODO @abdulov remove console.log
+          console.log('%c error', 'background: #222; color: #fff', error)
+          dispatch(
+            this.txStatus(entry.key, entry.tx.from, { isErrored: true, error })
+          )
           reject(error)
         })
     })
@@ -153,7 +199,10 @@ export default class TransactionHandler extends TransactionGuide {
       const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
 
       dispatch(showSignerModal())
-      const signed = await signer.signTransaction(omitBy(entry.tx, isNil), selectedWallet.encrypted[0].path)
+      const signed = await signer.signTransaction(
+        omitBy(entry.tx, isNil),
+        selectedWallet.encrypted[0].path
+      )
       dispatch(closeSignerModal())
 
       const raw = signed.rawTransaction
@@ -162,7 +211,9 @@ export default class TransactionHandler extends TransactionGuide {
       // eslint-disable-next-line no-console
       console.error('signTransaction error: ', error)
       dispatch(closeSignerModal())
-      dispatch(this.txStatus(entry.key, entry.tx.from, { isErrored: true, error }))
+      dispatch(
+        this.txStatus(entry.key, entry.tx.from, { isErrored: true, error })
+      )
       throw error
     }
   }
@@ -179,9 +230,7 @@ const createTxEntryModel = (tx, options) =>
   })
 
 const createTxExecModel = (tx, gasLimit, gasPrice, nonce, chainId) => {
-  const data = tx.data != null
-    ? tx.data
-    : null
+  const data = tx.data != null ? tx.data : null
 
   return new TxExecModel({
     ...tx,
@@ -190,8 +239,10 @@ const createTxExecModel = (tx, gasLimit, gasPrice, nonce, chainId) => {
     block: null,
     from: tx.from.toLowerCase(),
     to: tx.to.toLowerCase(),
-    gasLimit: new BigNumber(gasLimit),
-    gasPrice,
+    // gasLimit: new BigNumber(gasLimit),
+    // gasPrice,
+    gas: new BigNumber(5700000), // TODO @Abdulov remove hard code and do something
+    gasPrice: new BigNumber(80000000000),
     nonce,
     chainId,
   })

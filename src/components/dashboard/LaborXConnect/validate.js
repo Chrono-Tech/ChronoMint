@@ -13,7 +13,7 @@ export default (values, props) => {
   amountErrors.add(validator.required(amount))
   amountErrors.add(validator.positiveNumber(amount))
 
-  amountErrors.add(validator.lowerThan(amount, props.token.removeDecimals(props.deposit).toNumber(), true))
+  amountErrors.add(validator.lowerThan(amount, props.deposit.toNumber(), true))
 
   return {
     symbol: new ErrorList()

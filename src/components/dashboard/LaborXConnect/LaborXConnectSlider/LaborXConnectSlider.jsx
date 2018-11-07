@@ -32,14 +32,30 @@ export default class LaborXConnectSlider extends PureComponent {
   }
 
   render () {
-    const { input, min, max, step, token } = this.props
-
+    const { input, min, max, step, token, meta } = this.props
+    if (input.value === '') {
+      input.value = 0
+    }
     const value = new Amount(input.value || min, token.symbol())
+
     return (
       <div>
         <div styleName='amount'>
-          <span styleName='amountSelected'>TIME <TokenValueSimple value={new Amount(value, token.symbol())} withFraction /></span>
-          <span> / <TokenValueSimple value={new Amount(max, token.symbol())} withFraction /></span>
+          <span styleName='amountSelected'>
+            TIME{' '}
+            <TokenValueSimple
+              value={new Amount(value, token.symbol())}
+              withFraction
+            />
+          </span>
+          <span>
+            {' '}
+            /{' '}
+            <TokenValueSimple
+              value={new Amount(max, token.symbol())}
+              withFraction
+            />
+          </span>
         </div>
         <SliderMaterial
           classes={{
@@ -58,6 +74,8 @@ export default class LaborXConnectSlider extends PureComponent {
         <button styleName='max' onClick={this.handleMax}>
           <Translate value={`${prefix}.max`} />
         </button>
+        {meta.dirty &&
+          meta.error && <div styleName='error'>{meta.error}</div>}
       </div>
     )
   }

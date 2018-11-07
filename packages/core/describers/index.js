@@ -61,7 +61,7 @@ const defaultDescription = (entry, symbol, context) => {
   const address = context.address.toLowerCase()
 
   const v = new BigNumber(tx.value)
-  const fee = new BigNumber(tx.gasPrice).mul(receipt ? receipt.cumulativeGasUsed : tx.gasLimit)
+  const fee = tx.gas || new BigNumber(tx.gasPrice).mul(receipt ? receipt.cumulativeGasUsed : tx.gasLimit)
 
   let value = null
   if (tx.from.toLowerCase() === address && tx.to.toLowerCase() === address) {

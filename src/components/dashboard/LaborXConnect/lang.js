@@ -7,10 +7,16 @@ export const prefix = 'LaborXConnect'
 
 export default {
   en: {
-    titleStepOne: 'Mining Deposit Amount',
-    titleStepTwo: 'Download Node',
-    messageStepOne: 'The amount will be distributed form your TIME Deposit. Transaction fee in amount of ETH 0.02 will be withdrawn from your wallet.',
-    messageStepTwo: 'Install and launch desktop application and click "Start Mining".',
+    connectForm: {
+      titleStepOne: 'Mining Deposit Amount',
+      titleStepTwo: 'Download Node',
+      messageStepOne: 'The amount will be distributed form your TIME Deposit. Transaction fee in amount of ETH 0.02 will be withdrawn from your wallet.',
+      messageStepTwo: 'Install and launch desktop application and click "Start Mining".',
+      useOurNode: 'Use Our Node',
+      useCustomNode: 'Use Custom Node',
+      minDeposit : 'Min deposit: %{amount}',
+      rewardPerBlock: 'Reward per block',
+    },
 
     transactionFee: 'Transaction fee',
     proceed: 'proceed',

@@ -63,9 +63,11 @@ class LaborHourTransactionHandler extends TransactionHandler {
 const transactionHandler = new LaborHourTransactionHandler()
 export const estimateLaborHourGas = (tx, feeMultiplier = 1) => transactionHandler.estimateGas(tx, feeMultiplier)
 export const executeLaborHourTransaction = ({ tx, options }) => transactionHandler.executeTransaction({ tx, options })
-export const initLaborHour = ({ web3 }) => (dispatch) => dispatch(LXSidechainActions.updateWeb3(new HolderModel({ value: web3 })))
+export const initLaborHour = ({ web3 }) => (dispatch) =>
+  dispatch(LXSidechainActions.updateWeb3(new HolderModel({ value: web3 })))
 //#endregion
 
+//#region init
 const initWeb3 = () => async (dispatch) => {
   const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
   await dispatch(LXSidechainActions.updateWeb3(web3))
@@ -74,10 +76,7 @@ const initWeb3 = () => async (dispatch) => {
 const initContracts = () => async (dispatch, getState) => {
   const web3 = getLXWeb3(getState())
   const networkId = await web3.eth.net.getId()
-  const contracts = [
-    CHRONOBANK_PLATFORM_SIDECHAIN,
-    ATOMIC_SWAP_ERC20,
-  ]
+  const contracts = [CHRONOBANK_PLATFORM_SIDECHAIN, ATOMIC_SWAP_ERC20]
   const historyAddress = MULTI_EVENTS_HISTORY.abi.networks[networkId].address
 
   const getDaoModel = async (contract) => {
@@ -85,19 +84,21 @@ const initContracts = () => async (dispatch, getState) => {
     const contractDAO = contract.create(contractAddress, historyAddress)
     await contractDAO.connect(web3)
 
-    dispatch(LXSidechainActions.daosRegister(
-      new ContractDAOModel({
-        contract,
-        address: contractDAO.address,
-        dao: contractDAO,
-      }),
-    ))
+    dispatch(
+      LXSidechainActions.daosRegister(
+        new ContractDAOModel({
+          contract,
+          address: contractDAO.address,
+          dao: contractDAO,
+        })
+      )
+    )
   }
 
   await Promise.all(
     contracts.map((contract) => {
       return getDaoModel(contract)
-    }),
+    })
   )
 }
 
@@ -108,14 +109,18 @@ const watch = () => (dispatch, getState) => {
     const { symbol, value } = event.returnValues
     const token = getLXToken(web3Converter.bytesToString(symbol))(getState())
 
-    dispatch(notify(new SimpleNoticeModel({
-      title: 'chronoBankPlatformSidechain.revoke.title',
-      message: 'chronoBankPlatformSidechain.revoke.message',
-      params: {
-        amount: token.removeDecimals(new BigNumber(value)),
-        symbol: token.symbol(),
-      },
-    })))
+    dispatch(
+      notify(
+        new SimpleNoticeModel({
+          title: 'chronoBankPlatformSidechain.revoke.title',
+          message: 'chronoBankPlatformSidechain.revoke.message',
+          params: {
+            amount: token.removeDecimals(new BigNumber(value)),
+            symbol: token.symbol(),
+          },
+        })
+      )
+    )
 
     const mainEthWallet = getMainEthWallet(getState())
     const { data } = await SidechainMiddlewareService.getSwapListFromSidechainToMainnetByAddress(mainEthWallet.address)
@@ -130,15 +135,21 @@ const watch = () => (dispatch, getState) => {
 
   const atomicSwapERC20DAO = daoByType('AtomicSwapERC20')(getState())
   atomicSwapERC20DAO.watchEvent(EVENT_OPEN, async (event) => {
+    // TODO @abdulov remove console.log
+    console.log('%c event', 'background: #222; color: #fff', event)
     const swapId = web3Converter.bytesToString(event.returnValues._swapID)
-    dispatch(notify(new SimpleNoticeModel({
-      icon: 'lock',
-      title: 'atomicSwapERC20.lock.title',
-      message: 'atomicSwapERC20.lock.message',
-      params: {
-        id: swapId,
-      },
-    })))
+    dispatch(
+      notify(
+        new SimpleNoticeModel({
+          icon: 'lock',
+          title: 'atomicSwapERC20.lock.title',
+          message: 'atomicSwapERC20.lock.message',
+          params: {
+            id: swapId,
+          },
+        })
+      )
+    )
     const swapDetail = await atomicSwapERC20DAO.check(event.returnValues._swapID) // in bytes
     const token = getLXTokenByAddress(swapDetail.erc20ContractAddress)(getState())
     const swap = new SwapModel({
@@ -158,25 +169,33 @@ const watch = () => (dispatch, getState) => {
 
   atomicSwapERC20DAO.watchEvent(EVENT_CLOSE, (event) => {
     const { _swapID: swapId } = event.returnValues
-    dispatch(notify(new SimpleNoticeModel({
-      title: 'atomicSwapERC20.close.title',
-      message: 'atomicSwapERC20.close.message',
-      params: {
-        id: web3Converter.bytesToString(swapId),
-      },
-    })))
+    dispatch(
+      notify(
+        new SimpleNoticeModel({
+          title: 'atomicSwapERC20.close.title',
+          message: 'atomicSwapERC20.close.message',
+          params: {
+            id: web3Converter.bytesToString(swapId),
+          },
+        })
+      )
+    )
     // TODO @Abdulov update balance
   })
 
   atomicSwapERC20DAO.watchEvent(EVENT_EXPIRE, (event) => {
     const { _swapID: swapId } = event.returnValues
-    dispatch(notify(new SimpleNoticeModel({
-      title: 'atomicSwapERC20.expire.title',
-      message: 'atomicSwapERC20.expire.message',
-      params: {
-        id: web3Converter.bytesToString(swapId),
-      },
-    })))
+    dispatch(
+      notify(
+        new SimpleNoticeModel({
+          title: 'atomicSwapERC20.expire.title',
+          message: 'atomicSwapERC20.expire.message',
+          params: {
+            id: web3Converter.bytesToString(swapId),
+          },
+        })
+      )
+    )
   })
 }
 
@@ -212,22 +231,34 @@ const loadTokenByIndex = (symbolIndex) => async (dispatch, getState) => {
     const mainEthWallet = getMainEthWallet(getState())
     const balance = await tokenDao.getAccountBalance(mainEthWallet.address)
     // TODO @abdulov remove console.log
-    console.log('%c balance', 'background: #222; color: #fff', mainEthWallet.address, token.set('decimals', decimals).removeDecimals(balance).toString(), token.symbol())
-    dispatch(LXSidechainActions.daosRegister(
-      new ContractDAOModel({
-        contract: new ContractModel({
-          abi: tokenDao.abi,
-          type: token.symbol(),
-        }),
-        address: token.address(),
-        dao: tokenDao,
-      }),
-    ))
+    console.log(
+      '%c balance',
+      'background: #222; color: #fff',
+      mainEthWallet.address,
+      token
+        .set('decimals', decimals)
+        .removeDecimals(balance)
+        .toString(),
+      token.symbol()
+    )
+    dispatch(
+      LXSidechainActions.daosRegister(
+        new ContractDAOModel({
+          contract: new ContractModel({
+            abi: tokenDao.abi,
+            type: token.symbol(),
+          }),
+          address: token.address(),
+          dao: tokenDao,
+        })
+      )
+    )
     return Promise.resolve({ e: null, res: true })
   } catch (e) {
     return Promise.resolve({ e })
   }
 }
+//#endregion
 
 const obtainSwapByMiddlewareFromMainnetToSidechain = (swapId) => async (dispatch, getState) => {
   try {
@@ -270,13 +301,14 @@ const closeSwap = (encodedKey, swapId, index) => async (dispatch, getState) => {
   const [chainId, nonce, key] = await Promise.all(promises)
 
   const tx = {
-    ... dao.close(web3Converter.stringToBytes(swapId), web3Converter.stringToBytes(key)),
+    ...dao.close(web3Converter.stringToBytes(swapId), web3Converter.stringToBytes(key)),
     gas: 5700000, // TODO @Abdulov remove hard code and do something
     gasPrice: 80000000000,
     nonce: nonce + (index || 0), // increase nonce because transactions send at the same time
     chainId: chainId,
   }
   const signedTx = await signer.signTransaction({ ...tx }, selectedWallet.encrypted[0].path)
+
   try {
     await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
   } catch (e) {
@@ -312,10 +344,7 @@ export const sidechainWithdraw = (amount: Amount, token: TokenModel) => async (d
     const signer = getEthereumSigner(getState())
     const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
 
-    const promises = [
-      web3.eth.net.getId(),
-      web3.eth.getTransactionCount(mainEthWallet.address, 'pending'),
-    ]
+    const promises = [web3.eth.net.getId(), web3.eth.getTransactionCount(mainEthWallet.address, 'pending')]
     const [chainId, nonce] = await Promise.all(promises)
 
     const tx = {
@@ -327,7 +356,8 @@ export const sidechainWithdraw = (amount: Amount, token: TokenModel) => async (d
     }
 
     const signedTx = await signer.signTransaction({ ...tx }, selectedWallet.encrypted[0].path)
-    web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+    web3.eth
+      .sendSignedTransaction(signedTx.rawTransaction)
       .on('transactionHash', (hash) => {
         // TODO @abdulov remove console.log
         console.log('%c hash', 'background: #222; color: #fff', hash)
@@ -361,8 +391,10 @@ const unlockShares = (swapId, encodedKey) => async (dispatch, getState) => {
 }
 
 export const notifyUnknownError = () => {
-  notify(new ErrorNoticeModel({
-    title: 'errors.labotHour.unknown.title',
-    message: 'errors.labotHour.unknown.message',
-  }))
+  notify(
+    new ErrorNoticeModel({
+      title: 'errors.labotHour.unknown.title',
+      message: 'errors.labotHour.unknown.message',
+    })
+  )
 }
