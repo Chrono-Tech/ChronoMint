@@ -1,0 +1,106 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.root {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+}
+
+.container {
+  display: block;
+}
+
+.header {
+  display: flex;
+  flex: 1;
+  padding: 10px 15px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3px;
+
+  .header-icon-container {
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .blockchain-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .header-text-container {
+    display: flex;
+    flex: 4;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .header-text {
+    color: $color-white;
+    font-family: $font-proxima;
+    font-weight: 500;
+    line-height: 19px;
+    font-size: 16px;
+  }
+}
+
+.body {
+  display: flex;
+  border-radius: 3px;
+  background-color: $color-white;
+  min-height: 100px;
+
+  .main-info-container {
+    display: flex;
+    flex: 1;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 15px;
+  }
+
+  .asset-info {
+    display: flex;
+    flex-direction: column;
+    flex: 3;
+  }
+
+  .assets-table {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .directory {
+    display: flex;
+    width: 180px;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .directory-name {
+    color: $color-primary-0;
+    font-weight: 700;
+    font-family: $font-proxima;
+    line-height: 28px;
+    font-size: 20px;
+  }
+
+  .directory-icon {
+    width: 100px;
+    height: 100px;
+  }
+
+  .directory-name-text {
+
+  }
+}

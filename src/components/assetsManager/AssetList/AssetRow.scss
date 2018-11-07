@@ -1,0 +1,39 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.container {
+  display: table-row;
+  border-top: 1px solid #E5E5E5;
+  padding: 7px;
+}
+
+.asset-cell {
+  display: table-cell;
+}
+
+.icon-container {
+
+}
+
+.name-amount {
+  text-align: left;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.managers {
+
+}
+
+.active {
+
+}
+
+.blocked {
+
+}
