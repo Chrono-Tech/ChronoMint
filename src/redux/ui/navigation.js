@@ -31,6 +31,9 @@ export const navigateToVoting = () => (dispatch) =>
 export const navigateToAddWallet = () => (dispatch) =>
   dispatch(push('/add-wallet'))
 
+export const navigateToAddAsset = () => (dispatch) =>
+  dispatch(push('/add-asset'))
+
 export const navigateToNewPoll = () => (dispatch) =>
   dispatch(push('/new-poll'))
 

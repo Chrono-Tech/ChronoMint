@@ -22,3 +22,5 @@ export const MIDDLEWARE_EVENT_RESTRICTED = 'restricted'
 export const MIDDLEWARE_EVENT_REVOKE = 'revoke'
 export const MIDDLEWARE_EVENT_UNPAUSED = 'unpaused'
 export const MIDDLEWARE_EVENT_UNRESTRICTED = 'unrestricted'
+
+export const FORM_ADD_NEW_ASSET = 'FormAddNewAsset'

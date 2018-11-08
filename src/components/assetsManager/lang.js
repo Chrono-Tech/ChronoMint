@@ -4,6 +4,7 @@
  */
 
 import AddPlatformForm from './AddPlatformDialog/lang'
+import AddAssetForm from './AddAssetWidget/lang'
 import AddTokenForm from './AddTokenDialog/lang'
 import AssetManager from './AssetManager/lang'
 import AssetManagerForm from './AssetManagerDialog/lang'
@@ -18,6 +19,7 @@ import BlacklistForm from './BlacklistForm/lang'
 export default {
   en: {
     AssetManager: AssetManager.en,
+    AddAssetForm: AddAssetForm.en,
     PlatformsList: PlatformsList.en,
     PlatformInfo: PlatformInfo.en,
     AddPlatformForm: AddPlatformForm.en,

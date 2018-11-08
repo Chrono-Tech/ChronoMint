@@ -14,6 +14,7 @@ import {
 } from '@chronobank/login-ui/components'
 import Splash from 'layouts/Splash/Splash'
 import {
+  AddAssetPage,
   AssetsPage,
   RewardsPage,
   VotingPage,
@@ -71,6 +72,7 @@ const router = (
         <Route path='wallets' component={WalletsPage} />
         <Route path='wallet' component={WalletPage} />
         <Route path='add-wallet' component={AddWalletPage} />
+        <Route path='add-asset' component={AddAssetPage} />
         <Route path='deposits' component={DepositsPage} />
         <Route path='deposit' component={DepositPage} />
         <Route path='rewards' component={RewardsPage} />
