@@ -18,6 +18,7 @@ import {
 } from 'redux/ui/navigation'
 import { removeWatchersUserMonitor } from '@chronobank/login-ui/redux/thunks'
 import { FORM_ADD_NEW_WALLET } from '@chronobank/core/redux/wallets/constants'
+import { FORM_ADD_NEW_ASSET } from '@chronobank/core/redux/assetsManager/constants'
 import { PTPoll } from '@chronobank/core/redux/voting/types'
 import * as VotingThunks from '@chronobank/core/redux/voting/thunks'
 import { removeWallet } from '@chronobank/core/redux/multisigWallet/actions'
@@ -88,6 +89,10 @@ export const goBackForAddWalletsForm = () => (dispatch, getState) => {
 export const resetWalletsForm = () => (dispatch) => {
   dispatch(change(FORM_ADD_NEW_WALLET, 'blockchain', null))
   dispatch(change(FORM_ADD_NEW_WALLET, 'ethWalletType', null))
+}
+
+export const resetAssetsForm = () => (dispatch) => {
+  dispatch(change(FORM_ADD_NEW_ASSET, 'blockchain', null))
 }
 
 export const selectPoll = (id) => (dispatch) => {

@@ -21,7 +21,6 @@ export default class AssetRow extends PureComponent {
 
   render () {
     const { name, iconSVG, amount, status, managers } = this.props
-    console.log('AssetRow: ', name, iconSVG, amount, status, managers)
 
     return (
       <div styleName='container'>

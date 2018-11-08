@@ -16,7 +16,6 @@ export default class AssetTable extends PureComponent {
 
   render () {
     const { assetsData } = this.props
-    console.log('assetsData: ', assetsData)
 
     return (
       <div styleName='table-container'>

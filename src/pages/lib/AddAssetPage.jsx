@@ -11,8 +11,6 @@ import './WalletPage.scss'
 
 export default class AssetPage extends Component {
   render () {
-    console.log('AssetPage: ', this.props)
-
     return (
       <div styleName='root'>
         <CSSTransitionGroup

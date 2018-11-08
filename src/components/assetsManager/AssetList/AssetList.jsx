@@ -33,7 +33,6 @@ export default class AssetList extends PureComponent {
 
   render () {
     const { blockchain, blockchainSVG, assetList } = this.props
-    console.log('assetList: ', assetList)
 
     return (
       <div styleName='root'>

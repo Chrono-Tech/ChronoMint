@@ -28,6 +28,7 @@ import TokensListWidget from 'components/wallet/TokensListWidget/lang'
 import PendingTxWidget from 'components/wallet/PendingTxWidget/lang'
 import OwnersListWidget from 'components/wallet/OwnersListWidget/lang'
 import AddWalletWidget from 'components/wallet/AddWalletWidget/lang'
+import AddAssetWidget from 'components/assetsManager/AddAssetWidget/lang'
 import TwoFAWarningWidget from 'components/wallet/TwoFAWarningWidget/lang'
 import TwoFaWalletForm from 'components/wallet/TwoFaWalletForm/lang'
 import TwoFaEnableForm from 'components/wallet/TwoFaEnableForm/lang'
@@ -70,6 +71,7 @@ export default {
     PendingTxWidget: PendingTxWidget.en,
     OwnersListWidget: OwnersListWidget.en,
     AddWalletWidget: AddWalletWidget.en,
+    AddAssetWidget: AddAssetWidget.en,
     MultisigWalletForm: MultisigWalletForm.en,
     TimeLockedWalletForm: TimeLockedWalletForm.en,
     WalletSettingsForm: WalletSettingsForm.en,

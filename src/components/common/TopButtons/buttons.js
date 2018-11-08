@@ -43,7 +43,7 @@ export default {
     ],
   },
   '/assets': {
-    title: 'nav.assets',
+    title: 'nav.addAsset',
     buttons: [
       {
         title: 'addAsset',
@@ -52,7 +52,7 @@ export default {
     ],
   },
   '/add-asset': {
-    title: 'nav.assets',
+    title: 'nav.addAsset',
     backButton: true,
   },
   '/wallet': {

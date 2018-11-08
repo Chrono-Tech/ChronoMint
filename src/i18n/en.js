@@ -51,6 +51,7 @@ export default {
     settings: 'Settings',
     wallet: 'Wallet',
     addWallet: 'Add wallet',
+    addAsset: 'Add asset',
     voting: 'Voting',
     newPoll: 'Create new poll',
     rewards: 'Bonuses',
@@ -782,6 +783,7 @@ export default {
   topButtons: {
     addDeposit: 'Add deposit',
     addWallet: 'Add a wallet',
+    addAsset: 'Add an asset',
     addPoll: 'Add a Poll',
     publish: 'Publish',
     endPoll: 'End poll',
