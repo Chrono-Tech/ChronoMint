@@ -28,7 +28,7 @@ export default class EthereumAssetListContainer extends PureComponent {
   static defaultProps = {
     assetList: [
       {
-        directoryName: 'get started directory',
+        directoryName: 'Get Started Directory',
         directorySVG: BLOCKCHAIN_ICONS[BLOCKCHAIN_ETHEREUM],
         assetList: [
           {

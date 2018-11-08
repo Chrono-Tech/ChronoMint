@@ -21,11 +21,12 @@ export default class AssetRow extends PureComponent {
 
   render () {
     const { name, iconSVG, amount, status, managers } = this.props
+    console.log('AssetRow: ', name, iconSVG, amount, status, managers)
 
     return (
       <div styleName='container'>
         <div styleName='asset-cell icon-container'>
-          <img src={iconSVG} styleName='' />
+          <img src={iconSVG} styleName='asset-icon' />
         </div>
         <div styleName='asset-cell name-amount'>
           {name + ' ' + amount}
@@ -33,8 +34,10 @@ export default class AssetRow extends PureComponent {
         <div styleName='asset-cell managers'>
           {`${managers.length} managers`/* @todo as Translate */}
         </div>
-        <div styleName={'asset-cell ' + status}>
-          {status}
+        <div styleName='asset-cell'>
+          <div styleName={'status-button ' + status}>
+            {status}
+          </div>
         </div>
       </div>
     )

@@ -9,31 +9,55 @@
 .container {
   display: table-row;
   border-top: 1px solid #E5E5E5;
-  padding: 7px;
 }
 
 .asset-cell {
   display: table-cell;
+  padding: 3px 0;
+  vertical-align: middle;
 }
 
 .icon-container {
+  text-align: left;
+}
 
+.asset-icon {
+  width: 24px;
+  height: 24px;
 }
 
 .name-amount {
   text-align: left;
   font-size: 14px;
   line-height: 17px;
+  padding-left: 10px;
 }
 
 .managers {
+  color: $color-grey-2;
+  font-family: $font-proxima;
+  font-weight: 300;
+  text-align: left;
+  font-size: 14px;
+  line-height: 17px;
+}
 
+.status-button {
+  padding: 3px 8px;
+  line-height: 14px;
+  font-size: 12px;
+  text-transform: uppercase;
+  text-align: center;
+  font-family: $font-proxima;
+  font-weight: 500;
+  color: $color-white;
+  border-radius: 11px;
 }
 
 .active {
-
+  background-color: #68CC8E;
 }
 
 .blocked {
-
+  background-color: #C25451;
 }
