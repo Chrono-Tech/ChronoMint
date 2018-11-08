@@ -13,6 +13,7 @@ import { REQUIRED_TIME_AMOUNT } from '../../constants'
 export const FUNCTION_TRANSFER = new TransactionDescriber(
   findFunctionABI(ERC20DAODefaultABI, 'transfer'),
   ({ tx, block }, { address }, { params, token }) => {
+    if(!token) return
     const symbol = token.symbol()
     address = address.toLowerCase()
 

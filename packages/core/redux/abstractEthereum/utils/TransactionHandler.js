@@ -47,6 +47,8 @@ export default class TransactionHandler extends TransactionGuide {
       this.prepareTransaction({ web3, tx, options })
     )
     const entry = createTxEntryModel(prepared, options)
+    // TODO @abdulov remove console.log
+    console.log('%c entry', 'background: #222; color: #fff', entry)
 
     await dispatch(this.actions.txCreate(entry))
     dispatch(this.submitTransaction(entry))

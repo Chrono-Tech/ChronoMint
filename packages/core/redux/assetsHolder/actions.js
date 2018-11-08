@@ -140,6 +140,8 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
 
   const handleLock = async (event) => {
     try {
+      // TODO @abdulov remove console.log
+      console.log('%c handleLock', 'background: #222; color: #fff', event)
       const params = event.returnValues
       const tokens = getTokens(getState())
       const token = tokens.getByAddress(params.token)
@@ -252,8 +254,6 @@ export const lockDeposit = (amount: Amount, token: TokenModel, feeMultiplier: nu
     const assetHolderDAO = daoByType('TimeHolder')(state)
     const tx = assetHolderDAO.lock(token.address(), amount)
     if (tx) {
-      // TODO @abdulov remove console.log
-      console.log('%c tx', 'background: #222; color: #fff', tx)
       await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
     }
   } catch (e) {

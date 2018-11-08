@@ -30,7 +30,7 @@ import {
 
 export const FUNCTION_CREATE_ASSET_WITH_FEE = new TransactionDescriber(
   findFunctionABI(TokenManagementInterfaceABI, TX_CREATE_ASSET_WITH_FEE),
-  ({ tx, block }, { address }) => {
+  ({ tx, block }, { address } ) => {
     address = address.toLowerCase()
 
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {

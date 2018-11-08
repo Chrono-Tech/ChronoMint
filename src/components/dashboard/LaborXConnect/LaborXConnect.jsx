@@ -132,7 +132,7 @@ export default class LaborXConnect extends PureComponent {
 
   handleSubmit = (values) => {
     const token = values.get('token')
-    const amount = new Amount(token.addDecimals(values.get('amount')), token.id())
+    const amount = new Amount(values.get('amount'), token.id())
     const feeMultiplier = values.get('feeMultiplier') || 1
 
     switch (values.get('action')) {

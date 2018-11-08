@@ -101,7 +101,7 @@ export const EVENT_ISSUE = new EventDescriber(
   ({ log, block, tx }, context, { params }) => {
 
     const symbol = web3Converter.bytesToString(params.symbol).toUpperCase()
-    const token = context.store.tokens.getBySymbol(symbol)
+    const token = context.store.tokens.item(symbol)
 
     let value, mark = ''
     if (token) {

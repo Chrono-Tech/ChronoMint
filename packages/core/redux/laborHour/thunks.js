@@ -7,7 +7,7 @@ import BigNumber from 'bignumber.js'
 import { LABOR_HOUR_NETWORK_CONFIG } from '@chronobank/login/network/settings'
 import { getLaborHourWeb3 } from '@chronobank/login/network/LaborHourProvider'
 import web3Factory from '../../web3'
-import { daoByType, getLXToken, getLXTokenByAddress, getLXWeb3, web3Selector } from './selectors/mainSelectors'
+import { daoByType, getLXToken, getLXTokenByAddress, web3Selector } from './selectors/mainSelectors'
 import { daoByType as daoByTypeMainnet } from '../daos/selectors'
 import { ATOMIC_SWAP_ERC20, CHRONOBANK_PLATFORM_SIDECHAIN, MULTI_EVENTS_HISTORY } from './dao/ContractList'
 import ContractDAOModel from '../../models/contracts/ContractDAOModel'
@@ -25,7 +25,6 @@ import { getEthereumSigner } from '../persistAccount/selectors'
 import ErrorNoticeModel from '../../models/notices/ErrorNoticeModel'
 import { getMainEthWallet } from '../wallets/selectors/models'
 import * as LXSidechainActions from './actions'
-import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
 import { executeTransaction } from '../ethereum/thunks'
 import HolderModel from '../../models/HolderModel'
 import laborHourDAO from '../../dao/LaborHourDAO'
@@ -33,11 +32,10 @@ import TransactionHandler from '../abstractEthereum/utils/TransactionHandler'
 import { BLOCKCHAIN_LABOR_HOUR } from '../../dao/constants'
 
 export const initLXSidechain = () => async (dispatch) => {
-  await dispatch(initWeb3())
   await dispatch(initContracts())
   await dispatch(initTokens())
   await dispatch(watch())
-  // await dispatch(obtainAllOpenSwaps())
+  await dispatch(obtainAllOpenSwaps())
 }
 
 //#region transaction send
@@ -63,18 +61,18 @@ class LaborHourTransactionHandler extends TransactionHandler {
 const transactionHandler = new LaborHourTransactionHandler()
 export const estimateLaborHourGas = (tx, feeMultiplier = 1) => transactionHandler.estimateGas(tx, feeMultiplier)
 export const executeLaborHourTransaction = ({ tx, options }) => transactionHandler.executeTransaction({ tx, options })
-export const initLaborHour = ({ web3 }) => (dispatch) =>
-  dispatch(LXSidechainActions.updateWeb3(new HolderModel({ value: web3 })))
+export const initLaborHour = ({ web3 }) => async (dispatch) => {
+  await dispatch(LXSidechainActions.updateWeb3(new HolderModel({ value: web3 })))
+  await dispatch(initContracts())
+  await dispatch(initTokens())
+  await dispatch(watch())
+  await dispatch(obtainAllOpenSwaps())
+}
 //#endregion
 
 //#region init
-const initWeb3 = () => async (dispatch) => {
-  const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
-  await dispatch(LXSidechainActions.updateWeb3(web3))
-}
-
 const initContracts = () => async (dispatch, getState) => {
-  const web3 = getLXWeb3(getState())
+  const web3 = getLaborHourWeb3(web3Selector()(getState()))
   const networkId = await web3.eth.net.getId()
   const contracts = [CHRONOBANK_PLATFORM_SIDECHAIN, ATOMIC_SWAP_ERC20]
   const historyAddress = MULTI_EVENTS_HISTORY.abi.networks[networkId].address
@@ -126,17 +124,15 @@ const watch = () => (dispatch, getState) => {
     const { data } = await SidechainMiddlewareService.getSwapListFromSidechainToMainnetByAddress(mainEthWallet.address)
     const swap = data[data.length - 1] // last swap.
     if (swap) {
-      const { data } = await dispatch(obtainSwapByMiddlewareFromSidechainToMainnet(swap.swap_id))
+      const { data } = await dispatch(obtainSwapByMiddlewareFromSidechainToMainnet(swap.swapId))
       if (data) {
-        dispatch(unlockShares(swap.swap_id, data))
+        dispatch(unlockShares(swap.swapId, data))
       }
     }
   })
 
   const atomicSwapERC20DAO = daoByType('AtomicSwapERC20')(getState())
   atomicSwapERC20DAO.watchEvent(EVENT_OPEN, async (event) => {
-    // TODO @abdulov remove console.log
-    console.log('%c event', 'background: #222; color: #fff', event)
     const swapId = web3Converter.bytesToString(event.returnValues._swapID)
     dispatch(
       notify(
@@ -213,7 +209,7 @@ const initTokens = () => async (dispatch, getState) => {
 const loadTokenByIndex = (symbolIndex) => async (dispatch, getState) => {
   try {
     const state = getState()
-    const web3 = getLXWeb3(state)
+    const web3 = getLaborHourWeb3(web3Selector()(getState()))
     const platformDao = daoByType('ChronoBankPlatformSidechain')(state)
     const symbol = await platformDao.symbols(symbolIndex) // bytes32
     const address = await platformDao.proxies(symbol)
@@ -291,7 +287,6 @@ const closeSwap = (encodedKey, swapId, index) => async (dispatch, getState) => {
   const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
   const mainEthWallet = getMainEthWallet(getState())
   const signer = getEthereumSigner(getState())
-  const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
 
   const promises = [
     web3.eth.net.getId(),
@@ -307,26 +302,20 @@ const closeSwap = (encodedKey, swapId, index) => async (dispatch, getState) => {
     nonce: nonce + (index || 0), // increase nonce because transactions send at the same time
     chainId: chainId,
   }
-  const signedTx = await signer.signTransaction({ ...tx }, selectedWallet.encrypted[0].path)
 
-  try {
-    await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
-  } catch (e) {
-    // TODO @abdulov remove console.log
-    console.log('%c e', 'background: #222; color: #fff', e)
-  }
+  dispatch(executeLaborHourTransaction({ tx }))
 }
 
 const obtainAllOpenSwaps = () => async (dispatch, getState) => {
   const mainEthWallet = getMainEthWallet(getState())
   const { data } = await SidechainMiddlewareService.getSwapListFromMainnetToSidechainByAddress(mainEthWallet.address)
   const promises = []
-  // promises.push(dispatch(obtainSwapByMiddlewareFromMainnetToSidechain(data[0].swap_id)))
-  data.forEach((swap) => {
-    if (swap.isActive) {
-      promises.push(dispatch(obtainSwapByMiddlewareFromMainnetToSidechain(swap.swap_id)))
-    }
-  })
+  promises.push(dispatch(obtainSwapByMiddlewareFromMainnetToSidechain(data[0].swapId)))
+  // data.forEach((swap) => {
+  //   if (swap.isActive) {
+  //     promises.push(dispatch(obtainSwapByMiddlewareFromMainnetToSidechain(swap.swapId)))
+  //   }
+  // })
   const results = await Promise.all(promises)
 
   results.forEach(async ({ data, swapId }, i) => {
@@ -341,8 +330,6 @@ export const sidechainWithdraw = (amount: Amount, token: TokenModel) => async (d
     const platformDao = daoByType('ChronoBankPlatformSidechain')(getState())
     const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
     const mainEthWallet = getMainEthWallet(getState())
-    const signer = getEthereumSigner(getState())
-    const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
 
     const promises = [web3.eth.net.getId(), web3.eth.getTransactionCount(mainEthWallet.address, 'pending')]
     const [chainId, nonce] = await Promise.all(promises)
@@ -354,22 +341,7 @@ export const sidechainWithdraw = (amount: Amount, token: TokenModel) => async (d
       nonce: nonce,
       chainId: chainId,
     }
-
-    const signedTx = await signer.signTransaction({ ...tx }, selectedWallet.encrypted[0].path)
-    web3.eth
-      .sendSignedTransaction(signedTx.rawTransaction)
-      .on('transactionHash', (hash) => {
-        // TODO @abdulov remove console.log
-        console.log('%c hash', 'background: #222; color: #fff', hash)
-      })
-      .on('receipt', (receipt) => {
-        // TODO @abdulov remove console.log
-        console.log('%c receipt', 'background: #222; color: #fff', receipt)
-      })
-      .on('error', (error) => {
-        // TODO @abdulov remove console.log
-        console.log('%c error', 'background: #222; color: #fff', error)
-      })
+    dispatch(executeLaborHourTransaction({ tx }))
   } catch (e) {
     // eslint-disable-next-line
     console.error('deposit error', e)
