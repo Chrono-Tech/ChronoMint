@@ -15,7 +15,6 @@ import * as Utils from './utils'
 import WalletModel from '../../models/wallet/WalletModel'
 import { WALLETS_SET } from '../wallets/constants'
 import { formatBalances, getWalletBalances } from '../tokens/utils'
-
 import { DUCK_TOKENS } from '../tokens/constants'
 import * as TokensActions from '../tokens/actions'
 import tokenService from '../../services/TokenService'
@@ -63,7 +62,8 @@ export const updateWalletBalance = (wallet) => (dispatch) => {
     .then((balancesResult) => {
       try {
         dispatch({
-          type: WALLETS_SET, wallet: new WalletModel({
+          type: WALLETS_SET,
+          wallet: new WalletModel({
             ...wallet,
             balances: {
               ...wallet.balances,
@@ -88,7 +88,7 @@ export const enableEthereum = () => async (dispatch) => {
 }
 
 export const initTokens = () => async (dispatch, getState) => {
-  let state = getState()
+  const state = getState()
   if (state.get(DUCK_TOKENS).isInited()) {
     return
   }
@@ -169,9 +169,6 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
 
   const signerSelectorsMap = {
     [BLOCKCHAIN_ETHEREUM]: {
-      signerSelector: getEthereumSigner,
-    },
-    [BLOCKCHAIN_LABOR_HOUR]: {
       signerSelector: getEthereumSigner,
     },
   }

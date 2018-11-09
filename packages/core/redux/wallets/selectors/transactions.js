@@ -8,18 +8,21 @@ import { createSelector } from 'reselect'
 import { getWalletTransactions } from './models'
 import { getEthMultisigWalletTransactions } from '../../multisigWallet/selectors/models'
 import { getEOSWalletTransactions } from '../../eos/selectors/mainSelectors'
+import { getWalletTransactions as getLHTWalletTransactions } from '../../laborHour/selectors/mainSelectors'
 
 export const getTxListForWallet = (walletId: string) => createSelector(
   [
     getWalletTransactions(walletId),
     getEthMultisigWalletTransactions(walletId),
     getEOSWalletTransactions(walletId),
+    getLHTWalletTransactions(walletId)
   ],
   (
     walletTransactions,
     ethMultisigWalletTransactions,
     eosWalletTransactions,
+    getLHTWalletTransactions,
   ) => {
-    return walletTransactions || ethMultisigWalletTransactions || eosWalletTransactions || {}
+    return walletTransactions || ethMultisigWalletTransactions || eosWalletTransactions || getLHTWalletTransactions || {}
   },
 )

@@ -5,9 +5,16 @@
 
 import BigNumber from 'bignumber.js'
 import { LABOR_HOUR_NETWORK_CONFIG } from '@chronobank/login/network/settings'
-import { getLaborHourWeb3 } from '@chronobank/login/network/LaborHourProvider'
+import { getLaborHourWeb3, laborHourProvider } from '@chronobank/login/network/LaborHourProvider'
+import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 import web3Factory from '../../web3'
-import { daoByType, getLXToken, getLXTokenByAddress, web3Selector } from './selectors/mainSelectors'
+import {
+  daoByType,
+  getLXToken,
+  getLXTokenByAddress,
+  web3Selector,
+  getMainLaboborHourWallet,
+} from './selectors/mainSelectors'
 import { daoByType as daoByTypeMainnet } from '../daos/selectors'
 import { ATOMIC_SWAP_ERC20, CHRONOBANK_PLATFORM_SIDECHAIN, MULTI_EVENTS_HISTORY } from './dao/ContractList'
 import ContractDAOModel from '../../models/contracts/ContractDAOModel'
@@ -21,7 +28,8 @@ import web3Converter from '../../utils/Web3Converter'
 import TokenModel from '../../models/tokens/TokenModel'
 import ContractModel from '../../models/contracts/ContractModel'
 import SidechainMiddlewareService from './SidechainMiddlewareService'
-import { getEthereumSigner } from '../persistAccount/selectors'
+import { getEthereumSigner, getAddressCache } from '../persistAccount/selectors'
+import { WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
 import ErrorNoticeModel from '../../models/notices/ErrorNoticeModel'
 import { getMainEthWallet } from '../wallets/selectors/models'
 import * as LXSidechainActions from './actions'
@@ -30,13 +38,8 @@ import HolderModel from '../../models/HolderModel'
 import laborHourDAO from '../../dao/LaborHourDAO'
 import TransactionHandler from '../abstractEthereum/utils/TransactionHandler'
 import { BLOCKCHAIN_LABOR_HOUR } from '../../dao/constants'
-
-export const initLXSidechain = () => async (dispatch) => {
-  await dispatch(initContracts())
-  await dispatch(initTokens())
-  await dispatch(watch())
-  await dispatch(obtainAllOpenSwaps())
-}
+import { getEthereumDerivedPath } from '../ethereum/utils'
+import { WalletModel } from '../../models/index'
 
 //#region transaction send
 class LaborHourTransactionHandler extends TransactionHandler {
@@ -64,6 +67,7 @@ export const executeLaborHourTransaction = ({ tx, options }) => transactionHandl
 export const initLaborHour = ({ web3 }) => async (dispatch) => {
   await dispatch(LXSidechainActions.updateWeb3(new HolderModel({ value: web3 })))
   await dispatch(initContracts())
+  await dispatch(initWalletFromKeys())
   await dispatch(initTokens())
   await dispatch(watch())
   await dispatch(obtainAllOpenSwaps())
@@ -196,6 +200,7 @@ const watch = () => (dispatch, getState) => {
 }
 
 const initTokens = () => async (dispatch, getState) => {
+  dispatch(loadLHTToken())
   const platformDao = daoByType('ChronoBankPlatformSidechain')(getState())
   const symbolsCount = await platformDao.symbolsCount()
   dispatch(LXSidechainActions.setTokensFetchingCount(symbolsCount))
@@ -213,7 +218,7 @@ const loadTokenByIndex = (symbolIndex) => async (dispatch, getState) => {
     const platformDao = daoByType('ChronoBankPlatformSidechain')(state)
     const symbol = await platformDao.symbols(symbolIndex) // bytes32
     const address = await platformDao.proxies(symbol)
-    const token = new TokenModel({
+    let token = new TokenModel({
       address: address.toLowerCase(),
       symbol: web3Converter.bytesToString(symbol),
       isFetched: true,
@@ -222,21 +227,10 @@ const loadTokenByIndex = (symbolIndex) => async (dispatch, getState) => {
     const tokenDao = new ERC20TokenDAO(token)
     tokenDao.connect(web3)
     const decimals = await tokenDao.getDecimals()
+    token = token.set('decimals', decimals)
+    tokenDao.token = token
 
-    dispatch(LXSidechainActions.tokenFetched(token.set('decimals', decimals)))
-    const mainEthWallet = getMainEthWallet(getState())
-    const balance = await tokenDao.getAccountBalance(mainEthWallet.address)
-    // TODO @abdulov remove console.log
-    console.log(
-      '%c balance',
-      'background: #222; color: #fff',
-      mainEthWallet.address,
-      token
-        .set('decimals', decimals)
-        .removeDecimals(balance)
-        .toString(),
-      token.symbol()
-    )
+    dispatch(LXSidechainActions.tokenFetched(token))
     dispatch(
       LXSidechainActions.daosRegister(
         new ContractDAOModel({
@@ -249,9 +243,33 @@ const loadTokenByIndex = (symbolIndex) => async (dispatch, getState) => {
         })
       )
     )
+    dispatch(getTokenBalance(tokenDao))
     return Promise.resolve({ e: null, res: true })
   } catch (e) {
     return Promise.resolve({ e })
+  }
+}
+
+const loadLHTToken = () => async (dispatch, getState) => {
+  const web3 = getLaborHourWeb3(web3Selector()(getState()))
+  laborHourDAO.connect(web3)
+  const token = await laborHourDAO.getToken()
+
+  if (token) {
+    dispatch(LXSidechainActions.tokenFetched(token))
+    dispatch(
+      LXSidechainActions.daosRegister(
+        new ContractDAOModel({
+          contract: new ContractModel({
+            abi: laborHourDAO.abi,
+            type: token.symbol(),
+          }),
+          address: token.address(),
+          dao: laborHourDAO,
+        })
+      )
+    )
+    dispatch(getTokenBalance(laborHourDAO))
   }
 }
 //#endregion
@@ -310,12 +328,12 @@ const obtainAllOpenSwaps = () => async (dispatch, getState) => {
   const mainEthWallet = getMainEthWallet(getState())
   const { data } = await SidechainMiddlewareService.getSwapListFromMainnetToSidechainByAddress(mainEthWallet.address)
   const promises = []
-  promises.push(dispatch(obtainSwapByMiddlewareFromMainnetToSidechain(data[0].swapId)))
-  // data.forEach((swap) => {
-  //   if (swap.isActive) {
-  //     promises.push(dispatch(obtainSwapByMiddlewareFromMainnetToSidechain(swap.swapId)))
-  //   }
-  // })
+  // promises.push(dispatch(obtainSwapByMiddlewareFromMainnetToSidechain(data[0].swapId)))
+  data.forEach((swap) => {
+    if (swap.isActive) {
+      promises.push(dispatch(obtainSwapByMiddlewareFromMainnetToSidechain(swap.swapId)))
+    }
+  })
   const results = await Promise.all(promises)
 
   results.forEach(async ({ data, swapId }, i) => {
@@ -368,5 +386,71 @@ export const notifyUnknownError = () => {
       title: 'errors.labotHour.unknown.title',
       message: 'errors.labotHour.unknown.message',
     })
+  )
+}
+
+const initWalletFromKeys = () => async (dispatch, getState) => {
+  const state = getState()
+  const { network } = getCurrentNetworkSelector(state)
+  const addressCache = { ...getAddressCache(state) }
+
+  const blockchain = BLOCKCHAIN_LABOR_HOUR
+  const signer = getEthereumSigner(state)
+
+  if (!addressCache[blockchain]) {
+    const path = getEthereumDerivedPath(network[blockchain])
+    if (signer) {
+      const address = await signer.getAddress(path).toLowerCase()
+      addressCache[blockchain] = {
+        address,
+        path,
+      }
+
+      dispatch({
+        type: WALLETS_CACHE_ADDRESS,
+        blockchain: blockchain,
+        address,
+        path,
+      })
+    }
+  }
+
+  const { address, path } = addressCache[blockchain]
+  const wallet = new WalletModel({
+    address: address.toLowerCase(),
+    blockchain: blockchain,
+    isMain: true,
+    walletDerivedPath: path,
+  })
+
+  laborHourProvider.subscribe(wallet.address)
+  // TODO @abdulov remove console.log
+  console.log('%c wallet', 'background: #222; color: #fff', wallet)
+  dispatch(LXSidechainActions.updateWallet(wallet))
+}
+
+const getTokenBalance = (tokenDao) => async (dispatch, getState) => {
+  const wallet = getMainLaboborHourWallet(getState())
+  const balance = await tokenDao.getAccountBalance(wallet.address)
+  const token = tokenDao.token
+
+  // TODO @abdulov remove console.log
+  console.log(
+    '%c balance',
+    'background: #222; color: #fff',
+    wallet.address,
+    token.removeDecimals(balance).toString(),
+    token.symbol()
+  )
+  dispatch(
+    LXSidechainActions.updateWallet(
+      new WalletModel({
+        ...wallet,
+        balances: {
+          ...wallet.balances,
+          [token.symbol()]: new Amount(balance, token.symbol()),
+        },
+      })
+    )
   )
 }

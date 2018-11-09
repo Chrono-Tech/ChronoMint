@@ -113,7 +113,7 @@ export class AbstractEthereumDAO extends AbstractTokenDAO {
   }
 
   async getToken () {
-    return new TokenModel({
+    this.token = new TokenModel({
       name: this._contractName, // ???
       symbol: this._symbol,
       isFetched: true,
@@ -121,6 +121,7 @@ export class AbstractEthereumDAO extends AbstractTokenDAO {
       decimals: this._decimals,
       isERC20: false,
     })
+    return this.token
   }
 
   /** @private */

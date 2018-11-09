@@ -80,4 +80,3 @@ export const getIsHave2FAWalletsFromState = (state) => {
     })
   return isHave2FAWallet
 }
-
