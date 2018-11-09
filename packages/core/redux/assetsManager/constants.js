@@ -24,3 +24,4 @@ export const MIDDLEWARE_EVENT_UNPAUSED = 'unpaused'
 export const MIDDLEWARE_EVENT_UNRESTRICTED = 'unrestricted'
 
 export const FORM_ADD_NEW_ASSET = 'FormAddNewAsset'
+export const FORM_ADD_NEW_ASSET_ETHEREUM = 'FormAddNewAssetEthereum'

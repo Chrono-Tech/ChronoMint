@@ -8,7 +8,7 @@ export const prefix = 'AddAssetWidget'
 export default {
   en: {
     addAsset: 'Add asset',
-    createEthereumAsset: 'Create an asset',
+    createEthereumAsset: 'Add an Etherium Asset',
     eth: 'Ethereum',
     waves: 'Waves',
     nem: 'NEM',

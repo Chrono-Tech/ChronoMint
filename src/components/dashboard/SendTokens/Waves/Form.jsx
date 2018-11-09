@@ -68,7 +68,7 @@ function mapStateToProps (state, ownProps) {
 
 @connect(mapStateToProps)
 @reduxForm({ form: FORM_SEND_TOKENS, validate })
-export default class Ethereum extends PureComponent {
+export default class Waves extends PureComponent {
   static propTypes = {
     selectedCurrency: PropTypes.string,
     account: PropTypes.string,
