@@ -8,10 +8,6 @@
 
 }
 
-.header {
-
-}
-
 .form-container {
   padding: 20px 30px;
 }
@@ -20,18 +16,31 @@
 
 }
 
-.symbolSelector {
-
-}
 
 .transaction-fee-container {
-
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: flex-start;
+  flex-flow: row wrap;
 }
 
 .transaction-fee-checkbox {
-
+  display: flex;
+  width: 20px;
+  height: 20px;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .transaction-fee-text {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
 
+.select-field {
+  width: 100%;
 }

@@ -48,6 +48,9 @@ export default class AddEthereumAssetForm extends PureComponent {
     directoryList: PropTypes.arrayOf(PropTypes.shape({
       name: PropTypes.string,
     })),
+    assetTypeList: PropTypes.arrayOf(PropTypes.shape({
+      name: PropTypes.string,
+    })),
     selectAssetBlockchain: PropTypes.func,
     reset: PropTypes.func,
   }
@@ -57,24 +60,22 @@ export default class AddEthereumAssetForm extends PureComponent {
 
     return directoryList.concat({
       name: I18n.t(`${prefix}.createNewDirectory`),
+      value: 'createNewDirectory',
     })
   }
 
   render () {
-    const { directoryList } = this.props
+    const { directoryList, assetTypeList } = this.props
 
     return (
       <div styleName='root'>
         <form onSubmit={this.handleFormSubmit}>
           <div styleName='form-container'>
-            <div styleName='header'>
-              <Translate value={`${prefix}.addAssetHeader`} />
-            </div>
             <div styleName='form-row'>
               <Field
                 component={Select}
-                name='directory-name'
-                styleName='symbolSelector'
+                name='directory-name-select'
+                styleName='select-field'
                 menu-symbol='symbolSelectorMenu'
                 floatingLabelStyle={{ color: 'white' }}
               >
@@ -87,8 +88,7 @@ export default class AddEthereumAssetForm extends PureComponent {
               <Field
                 component={TextField}
                 name='directory-name'
-                placeholder='Directory name'
-                label={<Translate value={`${prefix}.directoryName`} />}
+                placeholder={I18n.t(`${prefix}.directoryName`)}
                 fullWidth
               />
             </div>
@@ -96,12 +96,12 @@ export default class AddEthereumAssetForm extends PureComponent {
               <Field
                 component={Select}
                 name='asset-type'
-                styleName='symbolSelector'
+                styleName='select-field'
                 menu-symbol='symbolSelectorMenu'
                 floatingLabelStyle={{ color: 'white' }}
               >
-                {directoryList.map((directory) => {
-                  return (<MenuItem key={directory.name} value={directory.name}>{directory.name}</MenuItem>)
+                {assetTypeList.map((assetType) => {
+                  return (<MenuItem key={assetType.name} value={assetType.name}>{assetType.name}</MenuItem>)
                 })}
               </Field>
             </div>
@@ -109,7 +109,7 @@ export default class AddEthereumAssetForm extends PureComponent {
               <Field
                 component={TextField}
                 name='asset-name'
-                placeholder='Asset name'
+                placeholder={I18n.t(`${prefix}.assetName`)}
                 fullWidth
               />
             </div>
@@ -118,7 +118,7 @@ export default class AddEthereumAssetForm extends PureComponent {
                 component={TextField}
                 name='symbol'
                 placeholder='Symbol, ex. BTC'
-                label={<Translate value={`${prefix}.symbol`} />}
+                label={I18n.t(`${prefix}.symbol`)}
                 fullWidth
               />
             </div>
@@ -127,7 +127,7 @@ export default class AddEthereumAssetForm extends PureComponent {
                 component={TextField}
                 name='smallest-unit'
                 placeholder='Smallest unit, ex. 0,00001'
-                label={<Translate value={`${prefix}.smallestUnit`} />}
+                label={I18n.t(`${prefix}.smallestUnit`)}
                 fullWidth
               />
             </div>
@@ -136,7 +136,7 @@ export default class AddEthereumAssetForm extends PureComponent {
                 component={TextField}
                 name='issue-amount'
                 placeholder='Issue Amount'
-                label={<Translate value={`${prefix}.smallestUnit`} />}
+                label={I18n.t(`${prefix}.issueAmount`)}
                 fullWidth
               />Add an Etherium Asset
             </div>
@@ -152,6 +152,7 @@ export default class AddEthereumAssetForm extends PureComponent {
                   <Field
                     component={TextField}
                     name='transaction-fee'
+                    placeholder={I18n.t(`${prefix}.transactionFee`)}
                     fullWidth
                   />
                 </div>
