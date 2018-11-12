@@ -38,6 +38,7 @@ import {
   WALLETS_UPDATE_LIST,
   WALLETS_LOAD,
   BLOCKCHAIN_LIST_UPDATE,
+  ASSET_ADD_DIRECTORY_NAMES_LIST,
 } from './constants'
 
 import { getBlockchainList, getPersistAccount } from './selectors'
@@ -93,6 +94,10 @@ export const disableBlockchains = (blockchains) => (dispatch) => {
     }
     dispatch(disableMap[blockchain])
   })
+}
+
+export const assetAddDirectoryNamesList = ({ name, address }) => (dispatch) => {
+  dispatch({ type: ASSET_ADD_DIRECTORY_NAMES_LIST, name, address })
 }
 
 export const accountAdd = (wallet) => (dispatch) => {

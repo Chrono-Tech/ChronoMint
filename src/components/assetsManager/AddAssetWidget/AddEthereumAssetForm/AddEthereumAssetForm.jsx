@@ -10,9 +10,11 @@ import { TextField, Checkbox } from 'redux-form-material-ui'
 import { I18n, Translate } from 'react-redux-i18n'
 import { FormControlLabel, MenuItem } from '@material-ui/core'
 import Select from 'redux-form-material-ui/es/Select'
+import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/wallets/constants'
 import { FORM_ADD_NEW_ASSET_ETHEREUM } from '@chronobank/core/redux/assetsManager/constants'
-
+import Slider from 'components/common/Slider'
 import { Field, reduxForm } from 'redux-form/immutable'
+import Button from 'components/common/ui/Button/Button'
 
 import './AddEthereumAssetForm.scss'
 import { prefix } from './lang'
@@ -65,7 +67,7 @@ export default class AddEthereumAssetForm extends PureComponent {
   }
 
   render () {
-    const { directoryList, assetTypeList } = this.props
+    const { directoryList, assetTypeList, submitting } = this.props
 
     return (
       <div styleName='root'>
@@ -117,8 +119,7 @@ export default class AddEthereumAssetForm extends PureComponent {
               <Field
                 component={TextField}
                 name='symbol'
-                placeholder='Symbol, ex. BTC'
-                label={I18n.t(`${prefix}.symbol`)}
+                placeholder={I18n.t(`${prefix}.symbol`)}
                 fullWidth
               />
             </div>
@@ -126,8 +127,7 @@ export default class AddEthereumAssetForm extends PureComponent {
               <Field
                 component={TextField}
                 name='smallest-unit'
-                placeholder='Smallest unit, ex. 0,00001'
-                label={I18n.t(`${prefix}.smallestUnit`)}
+                placeholder={I18n.t(`${prefix}.smallestUnit`)}
                 fullWidth
               />
             </div>
@@ -135,10 +135,9 @@ export default class AddEthereumAssetForm extends PureComponent {
               <Field
                 component={TextField}
                 name='issue-amount'
-                placeholder='Issue Amount'
-                label={I18n.t(`${prefix}.issueAmount`)}
+                placeholder={I18n.t(`${prefix}.issueAmount`)}
                 fullWidth
-              />Add an Etherium Asset
+              />
             </div>
             <div styleName='form-row'>
               <div styleName='transaction-fee-container'>
@@ -168,6 +167,31 @@ export default class AddEthereumAssetForm extends PureComponent {
                 }
                 label='Re-issuable on issue amount reached'
               />
+            </div>
+            <div styleName='form-row top-border'>
+              <div styleName='feeRate'>
+                <div styleName='tagsWrap'>
+                  <div><Translate value={`${prefix}.slowTransaction`} /></div>
+                  <div><Translate value={`${prefix}.fast`} /></div>
+                </div>
+
+                <Field
+                  component={Slider}
+                  name='feeMultiplier'
+                  {...FEE_RATE_MULTIPLIER}
+                  toFixed={1}
+                />
+              </div>
+            </div>
+            <div styleName='form-row top-border'>
+              <div styleName='add-container'>
+                <Button
+                  styleName='button'
+                  type='submit'
+                  label={<Translate value={`${prefix}.addButton`} />}
+                  isLoading={submitting}
+                />
+              </div>
             </div>
           </div>
         </form>

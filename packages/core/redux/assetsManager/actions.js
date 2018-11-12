@@ -146,6 +146,17 @@ export const createPlatform = (values) => async (dispatch, getState) => {
   }
 }
 
+export const createPlatformAwait = (values) => async (dispatch, getState) => {
+  try {
+    const platformResult = await createPlatform(values)
+    console.log('platformResult: ', platformResult)
+
+  } catch (e) {
+    // eslint-disable-next-line
+    console.error(e.message)
+  }
+}
+
 /**
  *
  * @param platform
@@ -158,6 +169,13 @@ export const detachPlatform = (platform) => async (dispatch, getState) => {
   if (result) {
     dispatch(getPlatforms())
   }
+}
+
+export const createPlatformAndAsset = (formValues) => async (dispatch, getState) => {
+
+  const platformResult = await dispatch(createPlatformAwait(formValues))
+
+
 }
 
 /**
