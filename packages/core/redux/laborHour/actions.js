@@ -13,6 +13,7 @@ import {
   LABOR_HOUR_TOKENS_FAILED,
   LABOR_HOUR_UPDATE_WALLET,
   LABOR_HOUR_WEB3_UPDATE,
+  LABOR_HOUR_DEPOSIT_PARAMS_UPDATE,
 } from './constants'
 
 export const updateWeb3 = (web3) =>
@@ -76,3 +77,10 @@ export const tokensLoadingFailed = () =>
   ({
     type: LABOR_HOUR_TOKENS_FAILED,
   })
+
+export const updateDepositParams = (minDepositLimit, rewardsCoefficient)=>
+({
+  type: LABOR_HOUR_DEPOSIT_PARAMS_UPDATE,
+  minDepositLimit, 
+  rewardsCoefficient
+})

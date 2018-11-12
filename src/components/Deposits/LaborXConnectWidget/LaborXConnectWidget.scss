@@ -59,9 +59,8 @@
     .content-container {
       display: flex;
       flex-direction: column;
-      padding-top: 40px;
+      padding: 40px 30px 30px 0;
       width: auto;
-      padding-right: 30px;
       .title {
         color: $color-primary-3;
         line-height: 22px;
@@ -132,4 +131,3 @@
     }
   }
 }
-

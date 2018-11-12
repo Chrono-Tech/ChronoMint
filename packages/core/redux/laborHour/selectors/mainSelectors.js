@@ -43,7 +43,10 @@ export const getLXWeb3 = (state) => {
 }
 
 export const daoByAddress = (address) =>
-  createSelector(daosSelector, (daos) => (address in daos.byAddress ? daos.byAddress[address].dao : null))
+  createSelector(
+    daosSelector,
+    (daos) => (address in daos.byAddress ? daos.byAddress[address].dao : null)
+  )
 
 export const daoByType = (type) =>
   createSelector(daosSelector, (daos) => {
@@ -65,9 +68,25 @@ export const getLXTokenByAddress = (address) =>
     return tokens.getByAddress(address)
   })
 
+export const getLXSwaps = (state) => {
+  const { swaps } = LXSDuckSelector(state)
+  return swaps
+}
+
+export const getLXActiveSwapsCount = createSelector(getLXSwaps, (swaps) => {
+  return Object.values(swaps).filter((swap) => swap.isActive).length
+})
+
+export const getDepositParams = (state) => {
+  const { depositParams } = LXSDuckSelector(state)
+  return depositParams
+}
+
 export const getMainLaboborHourWallet = (state) => {
   const wallets = getWallets(state)
-  return Object.values(wallets).find((wallet) => wallet.isMain && wallet.blockchain === BLOCKCHAIN_LABOR_HOUR)
+  return Object.values(wallets).find(
+    (wallet) => wallet.isMain && wallet.blockchain === BLOCKCHAIN_LABOR_HOUR
+  )
 }
 
 export const getWalletTransactions = (walletId) => (state) => {

@@ -6,3 +6,5 @@
 export AtomicSwapERC20ABI from 'LXsidechain-sc/build/contracts/AtomicSwapERC20.json'
 export ChronoBankPlatformABI from 'LXsidechain-sc/build/contracts/ChronoBankPlatform.json'
 export MultiEventsHistoryABI from 'LXsidechain-sc/build/contracts/MultiEventsHistory.json'
+export TimeHolderABI from 'LXsidechain-sc/build/contracts/TimeHolder.json'
+export LXValidatorManagerABI from 'LXsidechain-sc/build/contracts/LXValidatorManager.json'

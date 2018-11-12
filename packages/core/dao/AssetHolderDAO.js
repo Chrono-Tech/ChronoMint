@@ -9,29 +9,22 @@ import tokenService from '../services/TokenService'
 import AbstractContractDAO from './AbstractContractDAO'
 import type ERC20DAO from './ERC20DAO'
 import Amount from '../models/Amount'
-import {
-  TX_DEPOSIT,
-  TX_LOCK,
-  TX_UNLOCK_SHARES,
-  TX_WITHDRAW_SHARES,
-} from './constants/AssetHolderDAO'
+import { TX_DEPOSIT, TX_LOCK, TX_UNLOCK_SHARES, TX_WITHDRAW_SHARES } from './constants/AssetHolderDAO'
 
 export default class AssetHolderDAO extends AbstractContractDAO {
   constructor ({ address, history, abi }) {
     super({ address, history, abi })
 
-    this._okCodes = [
-      resultCodes.OK,
-      resultCodes.TIMEHOLDER_DEPOSIT_FAILED,
-      resultCodes.TIMEHOLDER_WITHDRAWN_FAILED,
-    ]
+    this._okCodes = [resultCodes.OK, resultCodes.TIMEHOLDER_DEPOSIT_FAILED, resultCodes.TIMEHOLDER_WITHDRAWN_FAILED]
   }
 
   connect (web3, options) {
-    super.connect(web3, options)
+    super.connect(
+      web3,
+      options
+    )
 
-    this.allEventsEmitter = this.history.events.allEvents({})
-      .on('data', this.handleEventsData)
+    this.allEventsEmitter = this.history.events.allEvents({}).on('data', this.handleEventsData)
   }
 
   async watchLock (callback) {

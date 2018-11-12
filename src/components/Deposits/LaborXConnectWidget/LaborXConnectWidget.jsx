@@ -8,14 +8,22 @@ import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { ETH, TIME } from '@chronobank/core/dao/constants'
+import { ETH, TIME, LHT } from '@chronobank/core/dao/constants'
 import { getDeposit } from '@chronobank/core/redux/assetsHolder/selectors'
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
-import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
+import {
+  getLXActiveSwapsCount,
+  getMainLaboborHourWallet,
+  getDepositParams,
+  getLXToken,
+} from '@chronobank/core/redux/laborHour/selectors/mainSelectors'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import Amount from '@chronobank/core/models/Amount'
+import { obtainAllOpenSwaps } from '@chronobank/core/redux/laborHour/thunks'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { FORM_LABOR_X_CONNECT_SETTINGS } from 'components/constants'
+import TokenValueSimple from 'components/common/TokenValueSimple/TokenValueSimple'
 import PropTypes from 'prop-types'
 import LABOR_X_LOGO_SVG from 'assets/img/laborx-icon.svg'
 import './LaborXConnectWidget.scss'
@@ -26,15 +34,22 @@ const WIDGET_SECOND_STEP = 'Second'
 const WIDGET_THIRD_STEP = 'Third'
 
 function mapStateToProps (state) {
-  const wallet = getMainEthWallet(state)
+  const wallet = getMainLaboborHourWallet(state)
+  const swapsCount = getLXActiveSwapsCount(state)
+  const depositParams = getDepositParams(state)
+  const lht = getLXToken(LHT)(state)
   return {
     deposit: getDeposit(TIME)(state),
     wallet,
+    swapsCount,
+    depositParams,
+    lht,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
+    handleObtainAllOpenSwaps: () => dispatch(obtainAllOpenSwaps()),
     onOpenReceiveForm: (wallet, tokenId) =>
       dispatch(
         modalsOpen({
@@ -43,10 +58,12 @@ function mapDispatchToProps (dispatch) {
             wallet,
             tokenId,
           },
-        }),
+        })
       ),
-    onOpenDepositForm: () => dispatch(modalsOpen({ componentName: 'DepositTokensModal' })),
-    onOpenLXConnectForm: () => dispatch(modalsOpen({ componentName: 'LaborXConnectModal' })),
+    onOpenDepositForm: () =>
+      dispatch(modalsOpen({ componentName: 'DepositTokensModal' })),
+    onOpenLXConnectForm: () =>
+      dispatch(modalsOpen({ componentName: 'LaborXConnectModal' })),
     onOpenSettings: () =>
       dispatch(
         modalsOpen({
@@ -54,12 +71,15 @@ function mapDispatchToProps (dispatch) {
           props: {
             formName: FORM_LABOR_X_CONNECT_SETTINGS,
           },
-        }),
+        })
       ),
   }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+  mapStateToProps,
+  mapDispatchToProps
+)
 export default class LaborXConnectWidget extends PureComponent {
   static propTypes = {
     onOpenReceiveForm: PropTypes.func,
@@ -68,16 +88,41 @@ export default class LaborXConnectWidget extends PureComponent {
     onOpenSettings: PropTypes.func,
     wallet: PropTypes.instanceOf(WalletModel),
     deposit: PropTypes.instanceOf(Amount),
+    swapsCount: PropTypes.number,
+    handleObtainAllOpenSwaps: PropTypes.func,
+    depositParams: PropTypes.objectOf(PropTypes.string),
+    lht: PropTypes.instanceOf(TokenModel),
   }
 
   constructor (props) {
     super(props)
-    const step = WIDGET_FIRST_STEP
+    let step = WIDGET_FIRST_STEP
+    if (props.swapsCount > 0) {
+      step = WIDGET_SECOND_STEP
+    }
     this.state = { step }
   }
 
+  componentWillReceiveProps (newProps) {
+    if (newProps.swapsCount > 0) {
+      return this.setState({ step: WIDGET_SECOND_STEP })
+    }
+    if (
+      newProps.wallet.balances[TIME] &&
+      newProps.wallet.balances[TIME].gt(0)
+    ) {
+      return this.setState({ step: WIDGET_THIRD_STEP })
+    }
+  }
+
   handleOpenReceiveForm = () => {
-    const { wallet, deposit, onOpenDepositForm, onOpenReceiveForm, onOpenLXConnectForm } = this.props
+    const {
+      wallet,
+      deposit,
+      onOpenDepositForm,
+      onOpenReceiveForm,
+      onOpenLXConnectForm,
+    } = this.props
     const isHaveNotEth = !wallet.balances[ETH] || wallet.balances[ETH].lte(0)
     const isHaveNotTime = !wallet.balances[TIME] || wallet.balances[TIME].lte(0)
 
@@ -91,8 +136,12 @@ export default class LaborXConnectWidget extends PureComponent {
       return onOpenDepositForm()
     }
 
-    // if user have tokens and deposit
+    // for first step
     return onOpenLXConnectForm()
+  }
+
+  handleContinue = () => {
+    return this.props.handleObtainAllOpenSwaps()
   }
 
   handleOpenSettings = () => {
@@ -114,7 +163,11 @@ export default class LaborXConnectWidget extends PureComponent {
 
         <div styleName='actions-container'>
           <div styleName='action'>
-            <Button type='submit' label={<Translate value={`${prefix}.getStarted`} />} onClick={this.handleOpenReceiveForm} />
+            <Button
+              type='submit'
+              label={<Translate value={`${prefix}.getStarted`} />}
+              onClick={this.handleOpenReceiveForm}
+            />
           </div>
         </div>
       </div>
@@ -133,7 +186,12 @@ export default class LaborXConnectWidget extends PureComponent {
 
         <div styleName='actions-container'>
           <div styleName='action'>
-            <Button disabled={false} type='submit' label={<Translate value={`${prefix}.continue`} />} onClick={this.props.handleOpenDepositForm} />
+            <Button
+              disabled={false}
+              type='submit'
+              label={<Translate value={`${prefix}.continue`} />}
+              onClick={this.handleContinue}
+            />
           </div>
         </div>
       </div>
@@ -141,6 +199,8 @@ export default class LaborXConnectWidget extends PureComponent {
   }
 
   renderThirdStep = () => {
+    const { rewardsCoefficient } = this.props.depositParams
+    const balance = this.props.wallet.balances[TIME]
     return (
       <div styleName='content-container'>
         <div styleName='title addressTittle'>
@@ -151,7 +211,11 @@ export default class LaborXConnectWidget extends PureComponent {
         <div styleName='balance'>
           {TIME}
           &nbsp;
-          {integerWithDelimiter('10.00', true)}
+          <TokenValueSimple
+            value={balance}
+            fractionPrecision={8}
+            withFraction
+          />
         </div>
 
         <div styleName='infoList'>
@@ -164,7 +228,14 @@ export default class LaborXConnectWidget extends PureComponent {
             <div styleName='title'>Mining is ON (ChronoBank)</div>
           </div>
           <div styleName='infoItem'>
-            <div styleName='title'>Reward: LHT 0.02 / block</div>
+            <div styleName='title'>
+              Reward: LHT{' '}
+              {integerWithDelimiter(
+                this.props.lht.removeDecimals(balance.mul(rewardsCoefficient)),
+                true
+              )}{' '}
+              / block
+            </div>
           </div>
           <div styleName='infoItem'>
             <div styleName='title'>Total rewards: LHT 0.04</div>
@@ -180,9 +251,7 @@ export default class LaborXConnectWidget extends PureComponent {
       [WIDGET_SECOND_STEP]: this.renderSecondStep,
       [WIDGET_THIRD_STEP]: this.renderThirdStep,
     }
-    return steps[this.state.step]
-      ? steps[this.state.step]()
-      : null
+    return steps[this.state.step] ? steps[this.state.step]() : null
   }
 
   render () {
@@ -190,15 +259,16 @@ export default class LaborXConnectWidget extends PureComponent {
       <div styleName='header-container'>
         <div styleName='wallet-list-container'>
           <div styleName='wallet-container'>
-            {this.state.step === WIDGET_THIRD_STEP
-              ? (
-                <div styleName='settingsIcon'>
-                  <button className='chronobank-icon' onClick={this.handleOpenSettings}>
-                    settings
-                  </button>
-                </div>
-              )
-              : null}
+            {this.state.step === WIDGET_THIRD_STEP ? (
+              <div styleName='settingsIcon'>
+                <button
+                  className='chronobank-icon'
+                  onClick={this.handleOpenSettings}
+                >
+                  settings
+                </button>
+              </div>
+            ) : null}
             <div styleName='token-container'>
               <div styleName='token-icon'>
                 <IPFSImage styleName='imageIcon' fallback={LABOR_X_LOGO_SVG} />

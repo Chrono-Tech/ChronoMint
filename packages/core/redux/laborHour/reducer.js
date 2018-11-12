@@ -15,6 +15,7 @@ import {
   LABOR_HOUR_TOKENS_FETCHING,
   LABOR_HOUR_TOKENS_FETCHED,
   LABOR_HOUR_TOKENS_FAILED,
+  LABOR_HOUR_DEPOSIT_PARAMS_UPDATE,
 } from './constants'
 import TokensCollection from '../../models/tokens/TokensCollection'
 
@@ -27,6 +28,7 @@ const initialState = {
     byAddress: {},
   },
   swaps: {},
+  depositParams: {},
 }
 
 const mutations = {
@@ -56,7 +58,7 @@ const mutations = {
       ...state,
       swaps: {
         ...state.swaps,
-        [swap.id]: swap,
+        [swap.swapId]: swap,
       },
     }
   },
@@ -122,10 +124,17 @@ const mutations = {
       pending: omit(state.pending, [key]),
     }
   },
+  [LABOR_HOUR_DEPOSIT_PARAMS_UPDATE]: (state, { minDepositLimit, rewardsCoefficient }) => {
+    return {
+      ...state,
+      depositParams: {
+        minDepositLimit,
+        rewardsCoefficient,
+      },
+    }
+  },
 }
 
 export default (state = initialState, { type, ...payload }) => {
-  return (type in mutations)
-    ? mutations[type](state, payload)
-    : state
+  return type in mutations ? mutations[type](state, payload) : state
 }
