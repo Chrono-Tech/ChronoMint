@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export const prefix = 'AddEthereunAssetForm'
+export const prefix = 'AddEthereumAssetForm'
 
 export default {
   en: {
@@ -15,8 +15,10 @@ export default {
     symbol: 'Symbol, ex. BTC',
     issueAmount: 'Issue amount',
     transactionFee: 'Transaction Fee, %',
-    fast: 'Fast transaction',
+    transactionFeeTitle: 'Transaction fee:',
+    fastTransaction: 'Fast transaction',
     slowTransaction: 'Slow transaction',
     addButton: 'Add',
+    reIssuable: 'Re-issuable on issue amount reached',
   },
 }

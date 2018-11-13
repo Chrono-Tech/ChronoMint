@@ -12,7 +12,7 @@ import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import { FORM_ADD_NEW_ASSET } from '@chronobank/core/redux/assetsManager/constants'
 import WidgetContainer from 'components/WidgetContainer/WidgetContainer'
 import SelectAssetType from './SelectAssetType/SelectAssetType'
-import AddEthereumAssetForm from './AddEthereumAssetForm/AddEthereumAssetForm'
+import AddEthereumAssetForm from '../AddEthereumAssetForm/AddEthereumAssetForm'
 
 import { prefix } from './lang'
 import './AddAssetWidget.scss'
@@ -27,7 +27,6 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     selectAssetBlockchain: (blockchain: string) => {
-      console.log('selectAssetBlockchain: ', blockchain)
       dispatch(change(FORM_ADD_NEW_ASSET, 'blockchain', blockchain))
     },
     reset: () => dispatch(resetAssetsForm()),
@@ -52,7 +51,7 @@ export default class AddAssetWidget extends PureComponent {
 
   renderStep () {
     const { blockchain } = this.props
-    console.log('blockchainblockchainblockchain: ', blockchain)
+
     if (blockchain) {
       switch (blockchain) {
         case BLOCKCHAIN_ETHEREUM:

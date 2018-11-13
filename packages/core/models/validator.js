@@ -205,12 +205,6 @@ export const isEthereumAddress = (value) => {
   return null
 }
 
-// export const required = (value) => {
-//   return value
-//     ? null
-//     : 'validator.required'
-// }
-
 // eslint-disable-next-line complexity
 export const notEmpty = (value) => {
   if (isArray(value) || isObject(value) || isMap(value) || isSet(value)) {

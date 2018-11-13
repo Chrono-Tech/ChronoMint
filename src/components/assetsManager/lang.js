@@ -5,6 +5,7 @@
 
 import AddPlatformForm from './AddPlatformDialog/lang'
 import AddAssetWidget from './AddAssetWidget/lang'
+import AddEthereumAssetForm from './AddEthereumAssetForm/lang'
 import AddTokenForm from './AddTokenDialog/lang'
 import AssetManager from './AssetManager/lang'
 import AssetManagerForm from './AssetManagerDialog/lang'
@@ -20,6 +21,7 @@ export default {
   en: {
     AssetManager: AssetManager.en,
     AddAssetWidget: AddAssetWidget.en,
+    AddEthereumAssetForm: AddEthereumAssetForm.en,
     PlatformsList: PlatformsList.en,
     PlatformInfo: PlatformInfo.en,
     AddPlatformForm: AddPlatformForm.en,

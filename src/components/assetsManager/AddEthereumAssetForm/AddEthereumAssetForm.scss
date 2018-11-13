@@ -1,0 +1,149 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import '~styles/partials/variables';
+
+.root {
+
+}
+
+.form-container {
+  padding: 20px 0;
+}
+
+.form-row {
+  padding: 0 30px;
+}
+
+.button {
+  font: 700 16px $font-proxima;
+  line-height: 45px;
+  padding: 0 50px;
+  border-radius: 50px;
+  white-space: nowrap;
+}
+
+.top-border {
+  border-top: 1px solid $color-grey-1;
+}
+
+.feeRate {
+  padding-top: 40px;
+}
+
+.add-container {
+  padding: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.asset-params-container {
+  display: table;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.asset-params-row {
+  display: table-row;
+}
+
+.asset-params-cell {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.asset-params-text {
+
+}
+
+
+.transaction-fee {
+  display: flex;
+  min-height: 35px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  .title {
+    white-space: pre;
+    font-family: 'proxima nova', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 17px;
+    color: $color-primary-3;
+  }
+
+  .description {
+    line-height: 17px;
+    color: $color-primary-0;
+    font-weight: 400;
+    font-size: 14px;
+    text-align: left;
+    font-family: 'proxima nova', sans-serif;
+  }
+
+  .gwei-multiplier {
+    display: block;
+  }
+}
+
+.advanced-simple {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
+}
+
+.advanced-text {
+  color: $border-color;
+  font-weight: 700;
+  text-align: left;
+  font-size: 16px;
+  font-family: 'Proxima Nova', sans-serif;
+  line-height: 19px;
+
+  &:hover {
+
+  }
+}
+
+.tagsWrap {
+  display: flex;
+  justify-content: space-between;
+  color: $button-color-1;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  margin-bottom: 15px;
+}
+
+.transaction-fee-container {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: flex-start;
+  flex-flow: row wrap;
+}
+
+.transaction-fee-checkbox {
+  display: flex;
+  flex: 1;
+  width: 20px;
+  height: 20px;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.transaction-fee-text {
+  display: flex;
+  flex: 6;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.select-field {
+  width: 100%;
+}

@@ -4,20 +4,20 @@
  */
 
 import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { TextField, Checkbox } from 'redux-form-material-ui'
 import { I18n, Translate } from 'react-redux-i18n'
-import { FormControlLabel, MenuItem } from '@material-ui/core'
+import { MenuItem } from '@material-ui/core'
 import Select from 'redux-form-material-ui/es/Select'
-import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/wallets/constants'
 import { FORM_ADD_NEW_ASSET_ETHEREUM } from '@chronobank/core/redux/assetsManager/constants'
-import Slider from 'components/common/Slider'
 import { Field, reduxForm } from 'redux-form/immutable'
 import Button from 'components/common/ui/Button/Button'
+import estimateFeeAbstract from 'components/dashboard/SendTokens/AbstractEthereum/estimateFeeAbstract'
 
 import './AddEthereumAssetForm.scss'
 import { prefix } from './lang'
+import validate from './validate'
 
 function mapStateToProps (state) {
   return {
@@ -35,6 +35,7 @@ function mapStateToProps (state) {
     }, {
       name: 'ERC777',
     }],
+    gasPriceMultiplier: 1,
   }
 }
 
@@ -43,9 +44,9 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-@reduxForm({ form: FORM_ADD_NEW_ASSET_ETHEREUM })
+@reduxForm({ form: FORM_ADD_NEW_ASSET_ETHEREUM, validate })
 @connect(mapStateToProps, mapDispatchToProps)
-export default class AddEthereumAssetForm extends PureComponent {
+export default class AddEthereumAssetForm extends estimateFeeAbstract {
   static propTypes = {
     directoryList: PropTypes.arrayOf(PropTypes.shape({
       name: PropTypes.string,
@@ -55,6 +56,23 @@ export default class AddEthereumAssetForm extends PureComponent {
     })),
     selectAssetBlockchain: PropTypes.func,
     reset: PropTypes.func,
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    super.componentDidUpdate (prevProps, prevState)
+
+    if (this.props.formValues !== prevProps.formValues) {
+      try {
+        console.log('handleEstimate gas: ', this.props)
+        // const { token, recipient, amount, feeMultiplier, wallet } = this.props
+        // const value = new Amount(token.addDecimals(amount), this.props.symbol)
+
+        // this.handleEstimateGas(token.symbol(), [recipient, value, TX_TRANSFER], feeMultiplier, wallet.address)
+      } catch (error) {
+        // eslint-disable-next-line
+        console.error(error)
+      }
+    }
   }
 
   getDirectoryList = () => {
@@ -67,7 +85,7 @@ export default class AddEthereumAssetForm extends PureComponent {
   }
 
   render () {
-    const { directoryList, assetTypeList, submitting } = this.props
+    const { assetTypeList, submitting } = this.props
 
     return (
       <div styleName='root'>
@@ -81,7 +99,7 @@ export default class AddEthereumAssetForm extends PureComponent {
                 menu-symbol='symbolSelectorMenu'
                 floatingLabelStyle={{ color: 'white' }}
               >
-                {directoryList.map((directory) => {
+                {this.getDirectoryList().map((directory) => {
                   return (<MenuItem key={directory.name} value={directory.name}>{directory.name}</MenuItem>)
                 })}
               </Field>
@@ -89,7 +107,7 @@ export default class AddEthereumAssetForm extends PureComponent {
             <div styleName='form-row'>
               <Field
                 component={TextField}
-                name='directory-name'
+                name='directoryName'
                 placeholder={I18n.t(`${prefix}.directoryName`)}
                 fullWidth
               />
@@ -97,7 +115,7 @@ export default class AddEthereumAssetForm extends PureComponent {
             <div styleName='form-row'>
               <Field
                 component={Select}
-                name='asset-type'
+                name='assetType'
                 styleName='select-field'
                 menu-symbol='symbolSelectorMenu'
                 floatingLabelStyle={{ color: 'white' }}
@@ -110,7 +128,7 @@ export default class AddEthereumAssetForm extends PureComponent {
             <div styleName='form-row'>
               <Field
                 component={TextField}
-                name='asset-name'
+                name='assetName'
                 placeholder={I18n.t(`${prefix}.assetName`)}
                 fullWidth
               />
@@ -126,7 +144,7 @@ export default class AddEthereumAssetForm extends PureComponent {
             <div styleName='form-row'>
               <Field
                 component={TextField}
-                name='smallest-unit'
+                name='smallestUnit'
                 placeholder={I18n.t(`${prefix}.smallestUnit`)}
                 fullWidth
               />
@@ -134,53 +152,51 @@ export default class AddEthereumAssetForm extends PureComponent {
             <div styleName='form-row'>
               <Field
                 component={TextField}
-                name='issue-amount'
+                name='issueAmount'
                 placeholder={I18n.t(`${prefix}.issueAmount`)}
                 fullWidth
               />
             </div>
             <div styleName='form-row'>
-              <div styleName='transaction-fee-container'>
-                <div styleName='transaction-fee-checkbox'>
-                  <Field
-                    component={Checkbox}
-                    name='transaction-fee-enable'
-                  />
+              <div styleName='asset-params-container'>
+                <div styleName='asset-params-row'>
+                  <div styleName='asset-params-cell'>
+                    <Field
+                      component={Checkbox}
+                      name='withFee'
+                    />
+                  </div>
+                  <div styleName='asset-params-cell'>
+                    <Field
+                      component={TextField}
+                      name='transactionFee'
+                      placeholder={I18n.t(`${prefix}.transactionFee`)}
+                      fullWidth
+                    />
+                  </div>
                 </div>
-                <div styleName='transaction-fee-text'>
-                  <Field
-                    component={TextField}
-                    name='transaction-fee'
-                    placeholder={I18n.t(`${prefix}.transactionFee`)}
-                    fullWidth
-                  />
+                <div styleName='asset-params-row'>
+                  <div styleName='asset-params-cell'>
+                    <Field
+                      component={Checkbox}
+                      name='reIssue'
+                    />
+                  </div>
+                  <div styleName='asset-params-cell'>
+                    <span styleName='asset-params-text'>{I18n.t(`${prefix}.reIssuable`)}</span>
+                  </div>
                 </div>
               </div>
             </div>
-            <div styleName='form-row'>
-              <FormControlLabel
-                control={
-                  <Field
-                    component={Checkbox}
-                    name='re-issue'
-                  />
-                }
-                label='Re-issuable on issue amount reached'
-              />
-            </div>
             <div styleName='form-row top-border'>
-              <div styleName='feeRate'>
-                <div styleName='tagsWrap'>
-                  <div><Translate value={`${prefix}.slowTransaction`} /></div>
-                  <div><Translate value={`${prefix}.fast`} /></div>
-                </div>
-
-                <Field
-                  component={Slider}
-                  name='feeMultiplier'
-                  {...FEE_RATE_MULTIPLIER}
-                  toFixed={1}
-                />
+              {this.simpleFeeContainer()}
+            </div>
+            <div styleName='form-row'>
+              <div styleName='transaction-fee'>
+                <span styleName='title'>
+                  <Translate value={`${prefix}.transactionFeeTitle`} />
+                </span> &nbsp;
+                {this.getTransactionFeeDescription()}
               </div>
             </div>
             <div styleName='form-row top-border'>
