@@ -10,31 +10,43 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { change, formValueSelector } from 'redux-form/immutable'
 import { DUCK_ASSETS_HOLDER } from '@chronobank/core/redux/assetsHolder/constants'
-import { ETH } from '@chronobank/core/dao/constants'
+import { ETH, TIME } from '@chronobank/core/dao/constants'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import AllowanceModel from '@chronobank/core/models/wallet/AllowanceModel'
 import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
-import { estimateGasForAssetHolder, initAssetsHolder, lockDeposit } from '@chronobank/core/redux/assetsHolder/actions'
+import {
+  getMainLaboborHourWallet,
+  getDepositParams,
+} from '@chronobank/core/redux/laborHour/selectors/mainSelectors'
+import {
+  estimateGasForAssetHolder,
+  initAssetsHolder,
+  lockDeposit,
+} from '@chronobank/core/redux/assetsHolder/actions'
 import { sidechainWithdraw } from '@chronobank/core/redux/laborHour/thunks'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
-import { TX_LOCK, TX_UNLOCK } from '@chronobank/core/dao/constants/AssetHolderDAO'
+import {
+  TX_LOCK,
+  TX_UNLOCK,
+} from '@chronobank/core/dao/constants/AssetHolderDAO'
 import AssetsCollection from '@chronobank/core/models/assetHolder/AssetsCollection'
-import { FORM_LABOR_X_CONNECT, FORM_LABOR_X_CONNECT_SETTINGS } from 'components/constants'
+import { FORM_LABOR_X_CONNECT_SETTINGS } from 'components/constants'
 import LaborXConnectForm from './LaborXConnectForm'
 import './LaborXConnect.scss'
 import LaborXConnectSettingsForm from './LaborXConnectSettingsForm'
 
-function mapStateToProps (state) {
+function mapStateToProps (state, ownProps) {
   // form
-  const selector = formValueSelector(FORM_LABOR_X_CONNECT)
+  const selector = formValueSelector(ownProps.formName)
   const tokenId = selector(state, 'symbol')
   const amount = Number.parseFloat(selector(state, 'amount') || 0)
   const feeMultiplier = selector(state, 'feeMultiplier')
 
   // state
   const wallet: WalletModel = getMainEthWallet(state)
+  const lhtWallet: WalletModel = getMainLaboborHourWallet(state)
   const assetHolder = state.get(DUCK_ASSETS_HOLDER)
   const tokens = state.get(DUCK_TOKENS)
   const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
@@ -45,35 +57,51 @@ function mapStateToProps (state) {
   const balanceEth = wallet.balances[ETH] || new Amount(0, ETH)
   const assets = assetHolder.assets()
   const spender = assetHolder.wallet()
+  const depositParams = getDepositParams(state)
 
   return {
     wallet,
+    lhtWallet,
     balance,
     balanceEth,
     deposit: assets.item(token.address()).deposit(),
-    allowance: wallet.allowances.list[`${spender}-${token.id()}`] || new AllowanceModel(),
+    allowance:
+      wallet.allowances.list[`${spender}-${token.id()}`] ||
+      new AllowanceModel(),
     spender,
     amount,
     token,
     feeMultiplier,
     tokens,
     assets,
-    isShowTIMERequired: isTesting && !wallet.isTIMERequired && balance.isZero() && token.symbol() === 'TIME',
+    isShowTIMERequired:
+      isTesting &&
+      !wallet.isTIMERequired &&
+      balance.isZero() &&
+      token.symbol() === 'TIME',
     account: state.get(DUCK_SESSION).account,
+    depositParams,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps (dispatch, ownProps) {
   return {
     initAssetsHolder: () => dispatch(initAssetsHolder()),
     lockDeposit: (amount, token) => dispatch(lockDeposit(amount, token)),
-    sidechainWithdraw: (amount, token) => dispatch(sidechainWithdraw(amount, token)),
-    onChangeField: (field, value) => dispatch(change(FORM_LABOR_X_CONNECT, field, value)),
-    handleEstimateGas: (mode, params, callback, gasPriceMultiplier) => dispatch(estimateGasForAssetHolder(mode, params, callback, gasPriceMultiplier)),
+    sidechainWithdraw: (amount, token) =>
+      dispatch(sidechainWithdraw(amount, token)),
+    onChangeField: (field, value) =>
+      dispatch(change(ownProps.formName, field, value)),
+    handleEstimateGas: (mode, params, callback, gasPriceMultiplier) =>
+      dispatch(
+        estimateGasForAssetHolder(mode, params, callback, gasPriceMultiplier)
+      ),
   }
 }
-
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+  mapStateToProps,
+  mapDispatchToProps
+)
 export default class LaborXConnect extends PureComponent {
   static propTypes = {
     deposit: PropTypes.instanceOf(Amount),
@@ -86,7 +114,9 @@ export default class LaborXConnect extends PureComponent {
     handleSubmitSuccess: PropTypes.func,
     onChangeField: PropTypes.func,
     amount: PropTypes.number,
-    formName :PropTypes.string,
+    formName: PropTypes.string,
+    lhtWallet: PropTypes.instanceOf(WalletModel),
+    depositParams: PropTypes.objectOf(PropTypes.string),
   }
 
   constructor (props) {
@@ -106,7 +136,12 @@ export default class LaborXConnect extends PureComponent {
     this.props.onChangeField('symbol', firstAsset.symbol())
   }
 
-  handleGetGasPrice = (action: string, amount: number, token: string, feeMultiplier: number) => {
+  handleGetGasPrice = (
+    action: string,
+    amount: number,
+    token: string,
+    feeMultiplier: number
+  ) => {
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
       this.setState({ feeLoading: true })
@@ -125,7 +160,7 @@ export default class LaborXConnect extends PureComponent {
             console.error(error)
           }
         },
-        feeMultiplier,
+        feeMultiplier
       )
     }, 1000)
   }
@@ -152,7 +187,17 @@ export default class LaborXConnect extends PureComponent {
   }
 
   render () {
-    const { amount, assets, token, deposit, balanceEth, onChangeField, formName } = this.props
+    const {
+      amount,
+      assets,
+      token,
+      deposit,
+      balanceEth,
+      onChangeField,
+      formName,
+      lhtWallet,
+      depositParams,
+    } = this.props
     const { gasFee, feeLoading } = this.state
 
     let Component
@@ -166,6 +211,7 @@ export default class LaborXConnect extends PureComponent {
     }
     return (
       <Component
+        depositParams={depositParams}
         feeLoading={feeLoading}
         gasFee={gasFee}
         amount={amount}
@@ -173,7 +219,11 @@ export default class LaborXConnect extends PureComponent {
         deposit={deposit}
         balanceEth={balanceEth}
         token={token}
+        lhtWallet={lhtWallet}
         assets={assets}
+        initialValues={{
+          amount: lhtWallet.balances[TIME].toNumber(),
+        }}
         onSubmit={this.handleSubmit}
         onSubmitSuccess={this.handleSubmitSuccess}
       />

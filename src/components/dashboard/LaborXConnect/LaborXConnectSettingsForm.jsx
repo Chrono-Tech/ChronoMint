@@ -3,13 +3,18 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/wallets/constants'
+import BigNumber from 'bignumber.js'
 import { Switch } from 'redux-form-material-ui'
 import Button from 'components/common/ui/Button/Button'
 import Amount from '@chronobank/core/models/Amount'
 import AssetsCollection from '@chronobank/core/models/assetHolder/AssetsCollection'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
-import { TX_LOCK, TX_UNLOCK } from '@chronobank/core/dao/constants/AssetHolderDAO'
+import { TIME } from '@chronobank/core/dao/constants'
+import {
+  TX_LOCK,
+  TX_UNLOCK,
+} from '@chronobank/core/dao/constants/AssetHolderDAO'
+import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -19,7 +24,9 @@ import classnames from 'classnames'
 import validate from './validate'
 import { prefix } from './lang'
 import LaborXConnectSlider from './LaborXConnectSlider/LaborXConnectSlider'
+import Preloader from '../../common/Preloader/Preloader'
 import './LaborXConnect.scss'
+import TokenValueSimple from '../../common/TokenValueSimple/TokenValueSimple'
 
 @reduxForm({ form: FORM_LABOR_X_CONNECT_SETTINGS, validate })
 export default class LaborXConnectSettingsForm extends PureComponent {
@@ -32,15 +39,21 @@ export default class LaborXConnectSettingsForm extends PureComponent {
     token: PropTypes.instanceOf(TokenModel),
     assets: PropTypes.instanceOf(AssetsCollection),
     amount: PropTypes.number,
+    lhtWallet: PropTypes.instanceOf(WalletModel),
+    depositParams: PropTypes.objectOf(PropTypes.string),
     ...formPropTypes,
   }
 
   handleProceed = (values) => {
-    this.props.onSubmit(values.set('action', TX_LOCK).set('token', this.props.token))
+    this.props.onSubmit(
+      values.set('action', TX_LOCK).set('token', this.props.token)
+    )
   }
 
   handleUnlock = (values) => {
-    this.props.onSubmit(values.set('action', TX_UNLOCK).set('token', this.props.token))
+    this.props.onSubmit(
+      values.set('action', TX_UNLOCK).set('token', this.props.token)
+    )
   }
 
   renderHead () {
@@ -57,14 +70,38 @@ export default class LaborXConnectSettingsForm extends PureComponent {
   }
 
   renderBody () {
+    const { deposit, token, lhtWallet, depositParams, amount } = this.props
+    const { rewardsCoefficient, minDepositLimit } = depositParams
+    // TODO @abdulov remove console.log
+    console.log('%c this.props', 'background: #222; color: #fff', this.props)
+    // TODO @abdulov remove console.log
+    console.log('%c amount', 'background: #222; color: #fff', amount)
+    const amountBN = new BigNumber(amount)
+    const max = lhtWallet.balances[TIME]
+      ? lhtWallet.balances[TIME].plus(deposit)
+      : deposit
     return (
       <div styleName='body'>
         <div styleName='fieldWrapper'>
-          <Field component={LaborXConnectSlider} name='amount' {...FEE_RATE_MULTIPLIER} toFixed={1} />
+          {deposit.gt(0) && token.decimals() > 0 ? (
+            <Field
+              component={LaborXConnectSlider}
+              name='amount'
+              toFixed={1}
+              min={0}
+              step={token.addDecimals(new BigNumber(1)).toNumber()}
+              max={max.toNumber()}
+              token={token}
+            />
+          ) : (
+            <Preloader />
+          )}
         </div>
         <div styleName={classnames('fieldWrapper', 'customNodeWrapper')}>
           <div styleName='title'>
-            <Translate value={`${prefix}.settingsForm.customNode`} amount={10} />
+            <Translate value={`${prefix}.settingsForm.customNode`} />(
+            <Translate value={`${prefix}.settingsForm.minDeposit`} />{' '}
+            <TokenValueSimple value={new Amount(minDepositLimit, TIME)} />)
           </div>
           <div styleName='switcher'>
             <Field
@@ -76,7 +113,10 @@ export default class LaborXConnectSettingsForm extends PureComponent {
           </div>
         </div>
         <div styleName={classnames('fieldWrapper', 'reward')}>
-          <Translate value={`${prefix}.settingsForm.reward`} symbol='LHT' amount='10' />
+          <Translate value={`${prefix}.settingsForm.reward`} />
+          <TokenValueSimple value={new Amount(amountBN.mul(rewardsCoefficient), 'LHT')} />
+          {' / '}
+          <Translate value={`${prefix}.settingsForm.block`} />
         </div>
         <div styleName={classnames('fieldWrapper', 'nodes')}>
           <div>

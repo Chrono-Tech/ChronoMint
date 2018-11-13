@@ -10,11 +10,11 @@ export default {
     connectForm: {
       titleStepOne: 'Mining Deposit Amount',
       titleStepTwo: 'Download Node',
-      messageStepOne: 'The amount will be distributed form your TIME Deposit. Transaction fee in amount of ETH 0.02 will be withdrawn from your wallet.',
+      messageStepOne: 'The amount will be distributed form your TIME Deposit.',
       messageStepTwo: 'Install and launch desktop application and click "Start Mining".',
       useOurNode: 'Use Our Node',
       useCustomNode: 'Use Custom Node',
-      minDeposit : 'Min deposit: %{amount}',
+      minDeposit : 'Min deposit: ',
       rewardPerBlock: 'Reward per block',
     },
 
@@ -42,9 +42,11 @@ export default {
     },
     settingsForm: {
       title: 'Mining Deposit Settings',
-      message: 'The amount will be distributed form your TIME Deposit. Transaction fee in amount of ETH 0.02 will be withdrawn from your wallet.',
-      customNode: 'Use custom node (Min deposit: %{amount})',
-      reward: 'Reward: %{symbol} %{amount} / block',
+      message: 'The amount will be distributed form your TIME Deposit.',
+      customNode: 'Use custom node ',
+      minDeposit: 'Min deposit: ',
+      reward: 'Reward: ',
+      block: 'block',
       download: 'Download',
     },
     accept: 'Accept',

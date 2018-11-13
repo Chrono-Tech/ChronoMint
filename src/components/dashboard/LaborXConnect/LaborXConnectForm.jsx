@@ -18,11 +18,13 @@ import { Translate } from 'react-redux-i18n'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
 import { FORM_LABOR_X_CONNECT } from 'components/constants'
 import classnames from 'classnames'
+import { TIME } from '@chronobank/core/dao/constants'
 import validate from './validate'
 import { prefix } from './lang'
 import LaborXConnectSlider from './LaborXConnectSlider/LaborXConnectSlider'
 import './LaborXConnect.scss'
 import Preloader from '../../common/Preloader/Preloader'
+import TokenValueSimple from '../../common/TokenValueSimple/TokenValueSimple'
 
 const LABOR_X_CONNECT_FIRST = 'laborXConnectFirst'
 const LABOR_X_CONNECT_SECOND = 'laborXConnectSecond'
@@ -38,6 +40,7 @@ export default class LaborXConnectForm extends PureComponent {
     token: PropTypes.instanceOf(TokenModel),
     assets: PropTypes.instanceOf(AssetsCollection),
     amount: PropTypes.number,
+    depositParams: PropTypes.objectOf(PropTypes.string),
     ...formPropTypes,
   }
 
@@ -103,6 +106,7 @@ export default class LaborXConnectForm extends PureComponent {
           {button.subTitle ? (
             <div styleName='subTitle'>
               <Translate {...button.subTitle} />
+              <TokenValueSimple value={button.subTitle.amount} /> 
             </div>
           ) : null}
         </button>
@@ -111,11 +115,14 @@ export default class LaborXConnectForm extends PureComponent {
   }
 
   renderFirstStep () {
-    const { deposit, token, handleSubmit } = this.props
+    const { deposit, token, handleSubmit, depositParams, amount } = this.props
+    
+    const { rewardsCoefficient, minDepositLimit } = depositParams
+    const amountBN = new BigNumber(amount)
     const buttons = {
       buttonLeft: {
         onClick: handleSubmit(this.handleProceed),
-        topValue: new Amount(2 * Math.pow(10, 18), 'LHT'),
+        topValue: new Amount(amountBN.mul(rewardsCoefficient).mul(0.9), 'LHT'), // 10% chronobank fee
         button: {
           styleName: 'blue',
           title: `${prefix}.connectForm.useOurNode`,
@@ -123,13 +130,13 @@ export default class LaborXConnectForm extends PureComponent {
       },
       buttonRight: {
         onClick: handleSubmit(this.handleProceed),
-        topValue: new Amount(3 * Math.pow(10, 18), 'LHT'),
+        topValue: new Amount(amountBN.mul(rewardsCoefficient), 'LHT'),
         button: {
           styleName: 'red',
           title: `${prefix}.connectForm.useCustomNode`,
           subTitle: {
             value: `${prefix}.connectForm.minDeposit`,
-            amount: '10 TIME',
+            amount: new Amount(minDepositLimit, TIME),
           },
         },
       },
