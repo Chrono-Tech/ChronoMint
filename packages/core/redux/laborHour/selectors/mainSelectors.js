@@ -77,9 +77,9 @@ export const getLXActiveSwapsCount = createSelector(getLXSwaps, (swaps) => {
   return Object.values(swaps).filter((swap) => swap.isActive).length
 })
 
-export const getDepositParams = (state) => {
-  const { depositParams } = LXSDuckSelector(state)
-  return depositParams
+export const getMiningParams = (state) => {
+  const { miningParams } = LXSDuckSelector(state)
+  return miningParams
 }
 
 export const getMainLaboborHourWallet = (state) => {

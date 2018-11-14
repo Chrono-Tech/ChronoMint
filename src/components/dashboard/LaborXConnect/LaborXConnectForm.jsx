@@ -8,10 +8,7 @@ import TokenValue from 'components/common/TokenValue/TokenValue'
 import Amount from '@chronobank/core/models/Amount'
 import AssetsCollection from '@chronobank/core/models/assetHolder/AssetsCollection'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
-import {
-  TX_LOCK,
-  TX_UNLOCK,
-} from '@chronobank/core/dao/constants/AssetHolderDAO'
+import { TX_LOCK } from '@chronobank/core/dao/constants/AssetHolderDAO'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -19,6 +16,7 @@ import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
 import { FORM_LABOR_X_CONNECT } from 'components/constants'
 import classnames from 'classnames'
 import { TIME } from '@chronobank/core/dao/constants'
+import { CHRONOBANK_NODE_FEE_COEFFICIENT } from '@chronobank/core/redux/laborHour/constants'
 import validate from './validate'
 import { prefix } from './lang'
 import LaborXConnectSlider from './LaborXConnectSlider/LaborXConnectSlider'
@@ -40,7 +38,7 @@ export default class LaborXConnectForm extends PureComponent {
     token: PropTypes.instanceOf(TokenModel),
     assets: PropTypes.instanceOf(AssetsCollection),
     amount: PropTypes.number,
-    depositParams: PropTypes.objectOf(PropTypes.string),
+    miningParams: PropTypes.objectOf(PropTypes.string),
     ...formPropTypes,
   }
 
@@ -57,10 +55,8 @@ export default class LaborXConnectForm extends PureComponent {
     )
   }
 
-  handleUnlock = (values) => {
-    this.props.onSubmit(
-      values.set('action', TX_UNLOCK).set('token', this.props.token)
-    )
+  handleProceedCustomNode = (values) => {
+    return this.handleProceed(values.set('isCustomNode', true))
   }
 
   renderHead () {
@@ -106,7 +102,7 @@ export default class LaborXConnectForm extends PureComponent {
           {button.subTitle ? (
             <div styleName='subTitle'>
               <Translate {...button.subTitle} />
-              <TokenValueSimple value={button.subTitle.amount} /> 
+              <TokenValueSimple value={button.subTitle.amount} />
             </div>
           ) : null}
         </button>
@@ -115,21 +111,24 @@ export default class LaborXConnectForm extends PureComponent {
   }
 
   renderFirstStep () {
-    const { deposit, token, handleSubmit, depositParams, amount } = this.props
-    
-    const { rewardsCoefficient, minDepositLimit } = depositParams
+    const { deposit, token, handleSubmit, miningParams, amount } = this.props
+
+    const { rewardsCoefficient, minDepositLimit } = miningParams
     const amountBN = new BigNumber(amount)
     const buttons = {
       buttonLeft: {
         onClick: handleSubmit(this.handleProceed),
-        topValue: new Amount(amountBN.mul(rewardsCoefficient).mul(0.9), 'LHT'), // 10% chronobank fee
+        topValue: new Amount(
+          amountBN.mul(rewardsCoefficient).mul(CHRONOBANK_NODE_FEE_COEFFICIENT),
+          'LHT'
+        ), // 10% chronobank fee
         button: {
           styleName: 'blue',
           title: `${prefix}.connectForm.useOurNode`,
         },
       },
       buttonRight: {
-        onClick: handleSubmit(this.handleProceed),
+        onClick: handleSubmit(this.handleProceedCustomNode),
         topValue: new Amount(amountBN.mul(rewardsCoefficient), 'LHT'),
         button: {
           styleName: 'red',

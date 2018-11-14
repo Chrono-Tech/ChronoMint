@@ -18,7 +18,7 @@ import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/model
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import {
   getMainLaboborHourWallet,
-  getDepositParams,
+  getMiningParams,
 } from '@chronobank/core/redux/laborHour/selectors/mainSelectors'
 import {
   estimateGasForAssetHolder,
@@ -43,6 +43,7 @@ function mapStateToProps (state, ownProps) {
   const tokenId = selector(state, 'symbol')
   const amount = Number.parseFloat(selector(state, 'amount') || 0)
   const feeMultiplier = selector(state, 'feeMultiplier')
+  const isCustomNode = selector(state, 'isCustomNode')
 
   // state
   const wallet: WalletModel = getMainEthWallet(state)
@@ -57,7 +58,7 @@ function mapStateToProps (state, ownProps) {
   const balanceEth = wallet.balances[ETH] || new Amount(0, ETH)
   const assets = assetHolder.assets()
   const spender = assetHolder.wallet()
-  const depositParams = getDepositParams(state)
+  const miningParams = getMiningParams(state)
 
   return {
     wallet,
@@ -80,7 +81,8 @@ function mapStateToProps (state, ownProps) {
       balance.isZero() &&
       token.symbol() === 'TIME',
     account: state.get(DUCK_SESSION).account,
-    depositParams,
+    miningParams,
+    isCustomNode,
   }
 }
 
@@ -116,7 +118,8 @@ export default class LaborXConnect extends PureComponent {
     amount: PropTypes.number,
     formName: PropTypes.string,
     lhtWallet: PropTypes.instanceOf(WalletModel),
-    depositParams: PropTypes.objectOf(PropTypes.string),
+    miningParams: PropTypes.objectOf(PropTypes.string),
+    isCustomNode: PropTypes.bool,
   }
 
   constructor (props) {
@@ -169,14 +172,23 @@ export default class LaborXConnect extends PureComponent {
     const token = values.get('token')
     const amount = new Amount(values.get('amount'), token.id())
     const feeMultiplier = values.get('feeMultiplier') || 1
+    const isCustomNode = values.get('isCustomNode')
 
     switch (values.get('action')) {
       case TX_LOCK:
-        this.props.lockDeposit(amount, token, feeMultiplier)
-        break
+        return this.props.lockDeposit(
+          amount,
+          token,
+          !!isCustomNode,
+          feeMultiplier
+        )
       case TX_UNLOCK:
-        this.props.sidechainWithdraw(amount, token, feeMultiplier)
-        break
+        return this.props.sidechainWithdraw(
+          amount,
+          token,
+          !!isCustomNode,
+          feeMultiplier
+        )
     }
   }
 
@@ -196,7 +208,8 @@ export default class LaborXConnect extends PureComponent {
       onChangeField,
       formName,
       lhtWallet,
-      depositParams,
+      miningParams,
+      isCustomNode,
     } = this.props
     const { gasFee, feeLoading } = this.state
 
@@ -211,7 +224,7 @@ export default class LaborXConnect extends PureComponent {
     }
     return (
       <Component
-        depositParams={depositParams}
+        miningParams={miningParams}
         feeLoading={feeLoading}
         gasFee={gasFee}
         amount={amount}
@@ -223,9 +236,11 @@ export default class LaborXConnect extends PureComponent {
         assets={assets}
         initialValues={{
           amount: lhtWallet.balances[TIME].toNumber(),
+          isCustomNode: false,
         }}
         onSubmit={this.handleSubmit}
         onSubmitSuccess={this.handleSubmitSuccess}
+        isCustomNode={isCustomNode}
       />
     )
   }

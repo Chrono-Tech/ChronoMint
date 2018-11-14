@@ -4,7 +4,7 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { daoByType, getLXToken } from '../selectors/mainSelectors'
+import { daoByType, getLXToken, getLXTokens } from '../selectors/mainSelectors'
 import { EVENT_CLOSE, EVENT_EXPIRE, EVENT_OPEN, EVENT_REVOKE } from '../constants'
 import { notify } from '../../notifier/actions'
 import SimpleNoticeModel from '../../../models/notices/SimpleNoticeModel'
@@ -13,6 +13,7 @@ import SidechainMiddlewareService from '../SidechainMiddlewareService'
 import { getMainEthWallet } from '../../wallets/selectors/models'
 import { obtainSwapByMiddlewareFromSidechainToMainnet, unlockShares } from './sidechainToMainnet'
 import { obtainSwapByMiddlewareFromMainnetToSidechain, closeSwap } from './mainnetToSidechain'
+import { getTokenBalance } from './transactions'
 
 // eslint-disable-next-line
 export const watch = () => (dispatch, getState) => {
@@ -38,8 +39,8 @@ const revokeCallback = (event) => async (dispatch, getState) => {
           amount: token.removeDecimals(new BigNumber(value)),
           symbol: token.symbol(),
         },
-      })
-    )
+      }),
+    ),
   )
 
   const mainEthWallet = getMainEthWallet(getState())
@@ -54,7 +55,6 @@ const revokeCallback = (event) => async (dispatch, getState) => {
 }
 
 const openCallback = (event) => async (dispatch, getState) => {
-  const atomicSwapERC20DAO = daoByType('AtomicSwapERC20')(getState())
   const swapId = web3Converter.bytesToString(event.returnValues._swapID)
   dispatch(
     notify(
@@ -65,10 +65,9 @@ const openCallback = (event) => async (dispatch, getState) => {
         params: {
           id: swapId,
         },
-      })
-    )
+      }),
+    ),
   )
-  const swapDetail = await atomicSwapERC20DAO.check(event.returnValues._swapID) // in bytes
   // obtain swap
   const { data } = await dispatch(obtainSwapByMiddlewareFromMainnetToSidechain(swapId))
   if (data) {
@@ -86,13 +85,17 @@ const closeCallback = (event) => (dispatch, getState) => {
         params: {
           id: web3Converter.bytesToString(swapId),
         },
-      })
-    )
+      }),
+    ),
   )
-  // TODO @Abdulov update balance
+  const tokens = getLXTokens(getState())
+  tokens.items().forEach((token) => {
+    const tokenDao = daoByType(token.symbol())(getState())
+    dispatch(getTokenBalance(tokenDao))
+  })
 }
 
-const expireCallback = (event) => (dispatch, getState) => {
+const expireCallback = (event) => (dispatch) => {
   const { _swapID: swapId } = event.returnValues
   dispatch(
     notify(
@@ -102,7 +105,7 @@ const expireCallback = (event) => (dispatch, getState) => {
         params: {
           id: web3Converter.bytesToString(swapId),
         },
-      })
-    )
+      }),
+    ),
   )
 }

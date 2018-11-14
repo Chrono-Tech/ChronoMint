@@ -5,7 +5,7 @@
 
 import { LABOR_HOUR_NETWORK_CONFIG } from '@chronobank/login/network/settings'
 import web3Factory from '../../../web3'
-import { daoByType, getMainLaboborHourWallet } from '../selectors/mainSelectors'
+import { daoByType, getMainLaboborHourWallet, getLXSwaps } from '../selectors/mainSelectors'
 import web3Converter from '../../../utils/Web3Converter'
 import SidechainMiddlewareService from '../SidechainMiddlewareService'
 import { getEthereumSigner } from '../../persistAccount/selectors'
@@ -13,7 +13,6 @@ import { getMainEthWallet } from '../../wallets/selectors/models'
 import { notifyUnknownError } from './utilsThunks'
 import { executeLaborHourTransaction } from './transactions'
 import * as LXSidechainActions from '../actions'
-import { getLXSwaps } from '../selectors/mainSelectors'
 
 export const obtainSwapByMiddlewareFromMainnetToSidechain = (swapId) => async (
   dispatch,

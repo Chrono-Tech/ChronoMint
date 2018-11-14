@@ -4,39 +4,35 @@
  */
 
 //#region imports
-import { LABOR_HOUR_NETWORK_CONFIG } from '@chronobank/login/network/settings'
 import {
   getLaborHourWeb3,
   laborHourProvider,
 } from '@chronobank/login/network/LaborHourProvider'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
-import web3Factory from '../../../web3'
 import {
   daoByType,
-  web3Selector,
   getMainLaboborHourWallet,
+  web3Selector,
 } from '../selectors/mainSelectors'
 import {
   ATOMIC_SWAP_ERC20,
   CHRONOBANK_PLATFORM_SIDECHAIN,
+  LX_VALIDATOR_MANAGER,
   MULTI_EVENTS_HISTORY,
   TIME_HOLDER,
-  LX_VALIDATOR_MANAGER,
 } from '../dao/ContractList'
 import ContractDAOModel from '../../../models/contracts/ContractDAOModel'
 import { notify } from '../../notifier/actions'
-import Amount from '../../../models/Amount'
 import ERC20TokenDAO from '../../../dao/ERC20TokenDAO'
 import web3Converter from '../../../utils/Web3Converter'
 import TokenModel from '../../../models/tokens/TokenModel'
 import ContractModel from '../../../models/contracts/ContractModel'
 import {
-  getEthereumSigner,
   getAddressCache,
+  getEthereumSigner,
 } from '../../persistAccount/selectors'
 import { WALLETS_CACHE_ADDRESS } from '../../persistAccount/constants'
 import ErrorNoticeModel from '../../../models/notices/ErrorNoticeModel'
-import { getMainEthWallet } from '../../wallets/selectors/models'
 import * as LXSidechainActions from '../actions'
 import HolderModel from '../../../models/HolderModel'
 import laborHourDAO from '../../../dao/LaborHourDAO'
@@ -44,10 +40,11 @@ import { BLOCKCHAIN_LABOR_HOUR } from '../../../dao/constants'
 import { getEthereumDerivedPath } from '../../ethereum/utils'
 import { WalletModel } from '../../../models/index'
 import { watch } from './watchers'
-import { obtainAllOpenSwaps, getSwapList } from './mainnetToSidechain'
+import { getSwapList, obtainAllOpenSwaps } from './mainnetToSidechain'
 import {
-  executeLaborHourTransaction,
   estimateLaborHourGas,
+  executeLaborHourTransaction,
+  getTokenBalance,
 } from './transactions'
 //#endregion
 export { executeLaborHourTransaction }
@@ -77,7 +74,7 @@ const getParams = () => async (dispatch, getState) => {
   )
   const rewardsCoefficient = await lxValidatorManager.getDefaultRewardCoefficient()
   dispatch(
-    LXSidechainActions.updateDepositParams(minDepositLimit, rewardsCoefficient)
+    LXSidechainActions.updateMiningParams(minDepositLimit, rewardsCoefficient)
   )
 }
 
@@ -191,38 +188,6 @@ const loadLHTToken = () => async (dispatch, getState) => {
 }
 //#endregion
 
-export const sidechainWithdraw = (amount: Amount, token: TokenModel) => async (
-  dispatch,
-  getState
-) => {
-  try {
-    const platformDao = daoByType('ChronoBankPlatformSidechain')(getState())
-    const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
-    const mainEthWallet = getMainEthWallet(getState())
-
-    const promises = [
-      web3.eth.net.getId(),
-      web3.eth.getTransactionCount(mainEthWallet.address, 'pending'),
-    ]
-    const [chainId, nonce] = await Promise.all(promises)
-
-    const tx = {
-      ...platformDao.revokeAsset(
-        web3Converter.stringToBytes(token.symbol()),
-        amount
-      ),
-      gas: 5700000, // TODO @Abdulov remove hard code and do something
-      gasPrice: 80000000000,
-      nonce: nonce,
-      chainId: chainId,
-    }
-    dispatch(executeLaborHourTransaction({ tx }))
-  } catch (e) {
-    // eslint-disable-next-line
-    console.error('deposit error', e)
-  }
-}
-
 export const notifyUnknownError = () => {
   notify(
     new ErrorNoticeModel({
@@ -270,30 +235,4 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
   // TODO @abdulov remove console.log
   console.log('%c wallet', 'background: #222; color: #fff', wallet)
   dispatch(LXSidechainActions.updateWallet(wallet))
-}
-
-const getTokenBalance = (tokenDao) => async (dispatch, getState) => {
-  const wallet = getMainLaboborHourWallet(getState())
-  const balance = await tokenDao.getAccountBalance(wallet.address)
-  const token = tokenDao.token
-
-  // TODO @abdulov remove console.log
-  console.log(
-    '%c balance',
-    'background: #222; color: #fff',
-    wallet.address,
-    token.removeDecimals(balance).toString(),
-    token.symbol()
-  )
-  dispatch(
-    LXSidechainActions.updateWallet(
-      new WalletModel({
-        ...wallet,
-        balances: {
-          ...wallet.balances,
-          [token.symbol()]: new Amount(balance, token.symbol()),
-        },
-      })
-    )
-  )
 }

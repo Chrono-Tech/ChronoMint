@@ -33,6 +33,7 @@ import SimpleNoticeModel from '../../models/notices/SimpleNoticeModel'
 import { getTokens } from '../tokens/selectors'
 import ErrorNoticeModel from '../../models/notices/ErrorNoticeModel'
 import { TX_APPROVE } from '../../dao/constants/ChronoBankPlatformDAO'
+import { updateMinigNodeType } from '../laborHour/actions'
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const assetHolder = getState().get(DUCK_ASSETS_HOLDER)
@@ -73,25 +74,34 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   dispatch(fetchAssetAllowance(token))
 }
 
-export const fetchAssetDeposit = (token: TokenModel) => async (dispatch, getState) => {
+export const fetchAssetDeposit = (token: TokenModel) => async (
+  dispatch,
+  getState,
+) => {
   const { account } = getState().get(DUCK_SESSION)
   const assetHolderDAO = daoByType('TimeHolder')(getState())
   const deposit = await assetHolderDAO.getDeposit(token.address(), account)
-  const asset = getState().get(DUCK_ASSETS_HOLDER).assets().item(token.address()).deposit(new Amount(
-    deposit,
-    token.symbol(),
-    true,
-  ))
+  const asset = getState()
+    .get(DUCK_ASSETS_HOLDER)
+    .assets()
+    .item(token.address())
+    .deposit(new Amount(deposit, token.symbol(), true))
   dispatch({ type: ASSET_HOLDER_ASSET_UPDATE, asset })
 }
 
-export const fetchAssetAllowance = (token: TokenModel) => async (dispatch, getState) => {
+export const fetchAssetAllowance = (token: TokenModel) => async (
+  dispatch,
+  getState,
+) => {
   const assetHolder = getState().get(DUCK_ASSETS_HOLDER)
   const { account } = getState().get(DUCK_SESSION)
 
   const holderWallet = assetHolder.wallet()
   const tokenDAO = tokenService.getDAO(token.id())
-  const assetHolderWalletAllowance = await tokenDAO.getAccountAllowance(account, holderWallet)
+  const assetHolderWalletAllowance = await tokenDAO.getAccountAllowance(
+    account,
+    holderWallet,
+  )
 
   const wallet = getWallet(BLOCKCHAIN_ETHEREUM, account)(getState())
   const allowance = new AllowanceModel({
@@ -117,7 +127,11 @@ export const fetchAssetAllowance = (token: TokenModel) => async (dispatch, getSt
 }
 
 export const initAssetsHolder = () => async (dispatch, getState) => {
-  if (getState().get(DUCK_ASSETS_HOLDER).isInited()) {
+  if (
+    getState()
+      .get(DUCK_ASSETS_HOLDER)
+      .isInited()
+  ) {
     return
   }
   dispatch({ type: ASSET_HOLDER_INIT, inInited: true })
@@ -125,7 +139,11 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
   const assetHolderDAO = daoByType('TimeHolder')(getState())
   const walletAddress = await assetHolderDAO.getWalletAddress()
 
-  dispatch({ type: ASSET_HOLDER_ADDRESS, account: assetHolderDAO.address, wallet: walletAddress.toLowerCase() })
+  dispatch({
+    type: ASSET_HOLDER_ADDRESS,
+    account: assetHolderDAO.address,
+    wallet: walletAddress.toLowerCase(),
+  })
 
   // get assets list
   const timeAddress = await assetHolderDAO.getSharesContract()
@@ -145,20 +163,28 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
       const params = event.returnValues
       const tokens = getTokens(getState())
       const token = tokens.getByAddress(params.token)
-      dispatch(notify(new SimpleNoticeModel({
-        icon: 'lock',
-        title: 'assetsHolder.locked',
-        message: 'assetsHolder.lockedMessage',
-        params: {
-          amount: token.removeDecimals(params.amount).toString(),
-          symbol: token.symbol(),
-        },
-      })))
+      dispatch(
+        notify(
+          new SimpleNoticeModel({
+            icon: 'lock',
+            title: 'assetsHolder.locked',
+            message: 'assetsHolder.lockedMessage',
+            params: {
+              amount: token.removeDecimals(params.amount).toString(),
+              symbol: token.symbol(),
+            },
+          }),
+        ),
+      )
       dispatch(fetchAssetDeposit(token))
     } catch (e) {
-      dispatch(notify(ErrorNoticeModel({
-        message: e.message,
-      })))
+      dispatch(
+        notify(
+          ErrorNoticeModel({
+            message: e.message,
+          }),
+        ),
+      )
     }
   }
 
@@ -173,7 +199,11 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
   })
 }
 
-export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: number = 1) => async (dispatch, getState) => {
+export const depositAsset = (
+  amount: Amount,
+  token: TokenModel,
+  feeMultiplier: number = 1,
+) => async (dispatch, getState) => {
   try {
     const state = getState()
     const assetHolderDAO = daoByType('TimeHolder')(state)
@@ -182,15 +212,17 @@ export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: n
     if (tx) {
       await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
     }
-
   } catch (e) {
-
     // eslint-disable-next-line
     console.error('deposit error', e)
   }
 }
 
-export const withdrawAsset = (amount: Amount, token: TokenModel, feeMultiplier: number = 1) => async (dispatch, getState) => {
+export const withdrawAsset = (
+  amount: Amount,
+  token: TokenModel,
+  feeMultiplier: number = 1,
+) => async (dispatch, getState) => {
   try {
     const state = getState()
     const assetHolderDAO = daoByType('TimeHolder')(state)
@@ -221,7 +253,12 @@ export const requireTIME = () => async (dispatch, getState) => {
   }
 }
 
-export const estimateGasForAssetHolder = (mode: string, params, callback, gasPriceMultiplier = 1) => async (dispatch, getState) => {
+export const estimateGasForAssetHolder = (
+  mode: string,
+  params,
+  callback,
+  gasPriceMultiplier = 1,
+) => async (dispatch, getState) => {
   let dao
   let tx
   switch (mode) {
@@ -248,16 +285,21 @@ export const estimateGasForAssetHolder = (mode: string, params, callback, gasPri
   }
 }
 
-export const lockDeposit = (amount: Amount, token: TokenModel, feeMultiplier: number = 1) => async (dispatch, getState) => {
+export const lockDeposit = (
+  amount: Amount,
+  token: TokenModel,
+  isCustomNode: boolean,
+  feeMultiplier: number = 1,
+) => async (dispatch, getState) => {
   try {
     const state = getState()
     const assetHolderDAO = daoByType('TimeHolder')(state)
+    dispatch(updateMinigNodeType(isCustomNode))
     const tx = assetHolderDAO.lock(token.address(), amount)
     if (tx) {
       await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
     }
   } catch (e) {
-
     // eslint-disable-next-line
     console.error('deposit error', e)
   }

@@ -45,7 +45,7 @@ export default {
       message: 'The amount will be distributed form your TIME Deposit.',
       customNode: 'Use custom node ',
       minDeposit: 'Min deposit: ',
-      reward: 'Reward: ',
+      reward: 'Reward: LHT ',
       block: 'block',
       download: 'Download',
     },

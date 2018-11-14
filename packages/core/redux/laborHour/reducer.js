@@ -16,6 +16,7 @@ import {
   LABOR_HOUR_TOKENS_FETCHED,
   LABOR_HOUR_TOKENS_FAILED,
   LABOR_HOUR_DEPOSIT_PARAMS_UPDATE,
+  LABOR_HOUR_UPDATE_MINING_NODE_TYPE,
 } from './constants'
 import TokensCollection from '../../models/tokens/TokensCollection'
 
@@ -28,7 +29,7 @@ const initialState = {
     byAddress: {},
   },
   swaps: {},
-  depositParams: {},
+  miningParams: {},
 }
 
 const mutations = {
@@ -127,9 +128,18 @@ const mutations = {
   [LABOR_HOUR_DEPOSIT_PARAMS_UPDATE]: (state, { minDepositLimit, rewardsCoefficient }) => {
     return {
       ...state,
-      depositParams: {
+      miningParams: {
         minDepositLimit,
         rewardsCoefficient,
+      },
+    }
+  },
+  [LABOR_HOUR_UPDATE_MINING_NODE_TYPE]: (state, { isCustomNode }) => {
+    return {
+      ...state,
+      miningParams: {
+        ...state.miningParams,
+        isCustomNode,
       },
     }
   },

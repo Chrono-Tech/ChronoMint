@@ -14,7 +14,7 @@ import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import {
   getLXActiveSwapsCount,
   getMainLaboborHourWallet,
-  getDepositParams,
+  getMiningParams,
   getLXToken,
 } from '@chronobank/core/redux/laborHour/selectors/mainSelectors'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
@@ -37,14 +37,14 @@ function mapStateToProps (state) {
   const ethWallet = getMainEthWallet(state)
   const lhtWallet = getMainLaboborHourWallet(state)
   const swapsCount = getLXActiveSwapsCount(state)
-  const depositParams = getDepositParams(state)
+  const miningParams = getMiningParams(state)
   const lht = getLXToken(LHT)(state)
   return {
     deposit: getDeposit(TIME)(state),
     lhtWallet,
     ethWallet,
     swapsCount,
-    depositParams,
+    miningParams,
     lht,
   }
 }
@@ -93,7 +93,7 @@ export default class LaborXConnectWidget extends PureComponent {
     deposit: PropTypes.instanceOf(Amount),
     swapsCount: PropTypes.number,
     handleObtainAllOpenSwaps: PropTypes.func,
-    depositParams: PropTypes.objectOf(PropTypes.string),
+    miningParams: PropTypes.objectOf(PropTypes.string),
     lht: PropTypes.instanceOf(TokenModel),
   }
 
@@ -175,7 +175,7 @@ export default class LaborXConnectWidget extends PureComponent {
   }
 
   renderSecondStep = () => {
-    const { rewardsCoefficient } = this.props.depositParams
+    const { rewardsCoefficient } = this.props.miningParams
     const balance = this.props.lhtWallet.balances[TIME]
     return (
       <div styleName='content-container'>

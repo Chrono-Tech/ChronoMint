@@ -16,19 +16,34 @@ import { getEthereumSigner } from '../../persistAccount/selectors'
 import { getMainEthWallet } from '../../wallets/selectors/models'
 import { executeTransaction } from '../../ethereum/thunks'
 import { executeLaborHourTransaction } from './transactions'
+import { updateMinigNodeType } from '../actions'
+import { notifyUnknownError } from './utilsThunks'
 //#endregion
 
-export const sidechainWithdraw = (amount: Amount, token: TokenModel) => async (dispatch, getState) => {
+export const sidechainWithdraw = (
+  amount: Amount,
+  token: TokenModel,
+  isCustomNode,
+  // feeMultiplier
+) => async (dispatch, getState) => {
   try {
     const platformDao = daoByType('ChronoBankPlatformSidechain')(getState())
     const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
     const mainEthWallet = getMainEthWallet(getState())
 
-    const promises = [web3.eth.net.getId(), web3.eth.getTransactionCount(mainEthWallet.address, 'pending')]
+    dispatch(updateMinigNodeType(isCustomNode))
+
+    const promises = [
+      web3.eth.net.getId(),
+      web3.eth.getTransactionCount(mainEthWallet.address, 'pending'),
+    ]
     const [chainId, nonce] = await Promise.all(promises)
 
     const tx = {
-      ...platformDao.revokeAsset(web3Converter.stringToBytes(token.symbol()), amount),
+      ...platformDao.revokeAsset(
+        web3Converter.stringToBytes(token.symbol()),
+        amount
+      ),
       gas: 5700000, // TODO @Abdulov remove hard code and do something
       gasPrice: 80000000000,
       nonce: nonce,
@@ -41,10 +56,18 @@ export const sidechainWithdraw = (amount: Amount, token: TokenModel) => async (d
   }
 }
 
-export const obtainSwapByMiddlewareFromSidechainToMainnet = (swapId) => async (dispatch, getState) => {
+export const obtainSwapByMiddlewareFromSidechainToMainnet = (swapId) => async (
+  dispatch,
+  getState
+) => {
   try {
     const signer = getEthereumSigner(getState())
-    const { data } = await SidechainMiddlewareService.obtainSwapFromSidechainToMainnet(swapId, signer.getPublicKey())
+    const {
+      data,
+    } = await SidechainMiddlewareService.obtainSwapFromSidechainToMainnet(
+      swapId,
+      signer.getPublicKey()
+    )
     return Promise.resolve({ e: null, data, swapId })
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -54,12 +77,18 @@ export const obtainSwapByMiddlewareFromSidechainToMainnet = (swapId) => async (d
   }
 }
 
-export const unlockShares = (swapId, encodedKey) => async (dispatch, getState) => {
+export const unlockShares = (swapId, encodedKey) => async (
+  dispatch,
+  getState
+) => {
   try {
     const timeHolderDAO = daoByTypeMainnet('TimeHolder')(getState())
     const signer = getEthereumSigner(getState())
     const key = await signer.decryptWithPrivateKey(encodedKey)
-    const tx = timeHolderDAO.unlockShares(web3Converter.stringToBytes(swapId), web3Converter.stringToBytes(key))
+    const tx = timeHolderDAO.unlockShares(
+      web3Converter.stringToBytes(swapId),
+      web3Converter.stringToBytes(key)
+    )
     dispatch(executeTransaction({ tx }))
   } catch (e) {
     // eslint-disable-next-line no-console
