@@ -150,7 +150,6 @@ export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: n
     }
 
   } catch (e) {
-
     // eslint-disable-next-line
     console.error('deposit error', e)
   }

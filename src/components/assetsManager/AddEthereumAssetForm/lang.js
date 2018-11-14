@@ -7,7 +7,7 @@ export const prefix = 'AddEthereumAssetForm'
 
 export default {
   en: {
-    createNewDirectory: 'Create new derictory',
+    createNewDirectory: 'Create new directory',
     addAssetHeader: 'Add an Etherium Asset',
     directoryName: 'Directory name',
     assetName: 'Asset name',

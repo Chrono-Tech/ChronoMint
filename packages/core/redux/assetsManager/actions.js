@@ -55,6 +55,8 @@ import ContractDAOModel from '../../models/contracts/ContractDAOModel'
 import { TOKEN_MANAGEMENT_EXTENSION_LIBRARY } from '../../dao/ContractList'
 import { getAccount } from '../session/selectors/models'
 import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from '../../dao/constants/ChronoBankPlatformDAO'
+import {BLOCKCHAIN_ETHEREUM} from '../../dao/constants';
+import FeeModel from '../../models/tokens/FeeModel';
 
 // eslint-disable-next-line
 export const setTxFromMiddlewareForBlackList = (address, symbol) => async (dispatch, getState) => {
@@ -136,6 +138,8 @@ export const createPlatform = (values) => async (dispatch, getState) => {
       tx = await dao.createPlatform()
     }
 
+    console.log('Tx create paltform: ', tx)
+
     const web3 = web3Selector()(getState())
     if (tx) {
       await dispatch(executeTransaction({ tx, web3, options: { feeMultiplier: 1 } }))
@@ -146,15 +150,20 @@ export const createPlatform = (values) => async (dispatch, getState) => {
   }
 }
 
-export const createPlatformAwait = (values) => async (dispatch, getState) => {
-  try {
-    const platformResult = await createPlatform(values)
-    console.log('platformResult: ', platformResult)
+export const createPlatformAwaitEvent = (values) => async (dispatch, getState) => {
+  return new Promise((resolve, reject) => {
+    try {
+      console.log('createPlatformAwaitEvent: ', values.toJS())
 
-  } catch (e) {
-    // eslint-disable-next-line
-    console.error(e.message)
-  }
+      const platformsManagerDAO = daoByType('PlatformsManager')(getState())
+      platformsManagerDAO.on(EVENT_PLATFORM_REQUESTED, (data) => {
+        console.log('platformsManagerDAO.on(EVENT_PLATFORM_REQUESTED: ', data.event, data)
+        resolve(data)
+      })
+    } catch (error) {
+      return reject(error)
+    }
+  })
 }
 
 /**
@@ -172,9 +181,19 @@ export const detachPlatform = (platform) => async (dispatch, getState) => {
 }
 
 export const createPlatformAndAsset = (formValues) => async (dispatch, getState) => {
+  console.log('createPlatformAndAsset: ', formValues.toJS())
 
-  const platformResult = await dispatch(createPlatformAwait(formValues))
+  await dispatch(createPlatform(formValues))
+  console.log('Platform created!')
 
+  const platformEvent = await dispatch(createPlatformAwaitEvent(formValues))
+
+  const token = createTokenModel(formValues, platformEvent)
+  await dispatch(createAsset(token, {
+    txOptions: {
+      feeMultiplier: formValues.get('feeMultiplier'),
+    },
+  }))
 
 }
 
@@ -215,7 +234,7 @@ export const watchPlatformManager = () => async (dispatch, getState) => {
  * @param token
  * @returns {Function}
  */
-export const createAsset = (token: TokenModel) => async (dispatch, getState) => {
+export const createAsset = (token: TokenModel, { txOptions }) => async (dispatch, getState) => {
   try {
 
     let tx
@@ -242,7 +261,7 @@ export const createAsset = (token: TokenModel) => async (dispatch, getState) => 
     }
 
     if (tx) {
-      await dispatch(executeTransaction({ tx, options: { feeMultiplier: 1 } }))
+      await dispatch(executeTransaction({ tx, options: txOptions }))
     }
 
     const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
@@ -722,4 +741,27 @@ const subscribeToBlockAssetEvents = () => async (dispatch, getState) => {
 
   assetsManagerDAO.subscribeOnMiddleware(MIDDLEWARE_EVENT_PAUSED, (data) => callback(data, true))
   assetsManagerDAO.subscribeOnMiddleware(MIDDLEWARE_EVENT_UNPAUSED, (data) => callback(data, false))
+}
+
+/**
+ * Create token model from values
+ * @param values
+ * @returns {TokenModel}
+ */
+const createTokenModel = (values) => {
+  return new TokenModel({
+    decimals: values.get('smallestUnit'),
+    symbol: values.get('tokenSymbol').toUpperCase(),
+    balance: values.get('amount'),
+    icon: values.get('tokenImg'),
+    fee: new FeeModel({
+      fee: values.get('feePercent'),
+      feeAddress: values.get('feeAddress'),
+      withFee: !!values.get('withFee'),
+    }),
+    platform: values.get('platformAddress'),
+    totalSupply: values.get('amount'),
+    isReissuable: new ReissuableModel({ value: !!values.get('reIssable') }),
+    blockchain: BLOCKCHAIN_ETHEREUM,
+  })
 }

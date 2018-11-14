@@ -10,7 +10,12 @@ import { TextField, Checkbox } from 'redux-form-material-ui'
 import { I18n, Translate } from 'react-redux-i18n'
 import { MenuItem } from '@material-ui/core'
 import Select from 'redux-form-material-ui/es/Select'
-import { FORM_ADD_NEW_ASSET_ETHEREUM } from '@chronobank/core/redux/assetsManager/constants'
+import { createAsset, createPlatformAndAsset } from '@chronobank/core/redux/assetsManager/actions'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
+import ReissuableModel from '@chronobank/core/models/tokens/ReissuableModel'
+import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
+import FeeModel from '@chronobank/core/models/tokens/FeeModel'
+import { FORM_ADD_NEW_ASSET_ETHEREUM, DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/constants'
 import { Field, reduxForm } from 'redux-form/immutable'
 import Button from 'components/common/ui/Button/Button'
 import estimateFeeAbstract from 'components/dashboard/SendTokens/AbstractEthereum/estimateFeeAbstract'
@@ -19,13 +24,18 @@ import './AddEthereumAssetForm.scss'
 import { prefix } from './lang'
 import validate from './validate'
 
+const onSubmit = async (values, dispatch) => {
+  await dispatch(createPlatformAndAsset(values))
+}
+
 function mapStateToProps (state) {
+  const assetsManager = state.get(DUCK_ASSETS_MANAGER)
+  const form = state.get('form').get(FORM_ADD_NEW_ASSET_ETHEREUM)
+
   return {
-    directoryList: [{
-      name: 'Getting Started',
-    }, {
-      name: 'Another directory',
-    }],
+    formValues: form && form.get('values'),
+    formErrors: (form && form.get('syncErrors')) || {},
+    directoryList: assetsManager.usersPlatforms() || [],
     assetTypeList: [{
       name: 'ERC20',
     }, {
@@ -36,11 +46,22 @@ function mapStateToProps (state) {
       name: 'ERC777',
     }],
     gasPriceMultiplier: 1,
+    initialValues: {
+      directoryNameSelect: 'createNewDirectory',
+      directoryName: 'Simple directory name',
+      assetType: 'ERC20',
+      assetName: 'Asset simple name',
+      symbol: 'SBL23',
+      smallestUnit: 0.0000001,
+      issueAmount: 1111111,
+      withFee: false,
+    },
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps () {
   return {
+    // onSubmit: onSubmit,
   }
 }
 
@@ -77,7 +98,6 @@ export default class AddEthereumAssetForm extends estimateFeeAbstract {
 
   getDirectoryList = () => {
     const directoryList = this.props.directoryList
-
     return directoryList.concat({
       name: I18n.t(`${prefix}.createNewDirectory`),
       value: 'createNewDirectory',
@@ -85,22 +105,22 @@ export default class AddEthereumAssetForm extends estimateFeeAbstract {
   }
 
   render () {
-    const { assetTypeList, submitting } = this.props
+    const { assetTypeList, submitting, handleSubmit } = this.props
 
     return (
       <div styleName='root'>
-        <form onSubmit={this.handleFormSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div styleName='form-container'>
             <div styleName='form-row'>
               <Field
                 component={Select}
-                name='directory-name-select'
+                name='directoryNameSelect'
                 styleName='select-field'
                 menu-symbol='symbolSelectorMenu'
                 floatingLabelStyle={{ color: 'white' }}
               >
                 {this.getDirectoryList().map((directory) => {
-                  return (<MenuItem key={directory.name} value={directory.name}>{directory.name}</MenuItem>)
+                  return (<MenuItem key={directory.name} value={directory.address}>{directory.name || directory.address}</MenuItem>)
                 })}
               </Field>
             </div>
@@ -179,7 +199,7 @@ export default class AddEthereumAssetForm extends estimateFeeAbstract {
                   <div styleName='asset-params-cell'>
                     <Field
                       component={Checkbox}
-                      name='reIssue'
+                      name='reIssable'
                     />
                   </div>
                   <div styleName='asset-params-cell'>
@@ -190,14 +210,6 @@ export default class AddEthereumAssetForm extends estimateFeeAbstract {
             </div>
             <div styleName='form-row top-border'>
               {this.simpleFeeContainer()}
-            </div>
-            <div styleName='form-row'>
-              <div styleName='transaction-fee'>
-                <span styleName='title'>
-                  <Translate value={`${prefix}.transactionFeeTitle`} />
-                </span> &nbsp;
-                {this.getTransactionFeeDescription()}
-              </div>
             </div>
             <div styleName='form-row top-border'>
               <div styleName='add-container'>

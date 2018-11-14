@@ -57,36 +57,6 @@
 
 }
 
-
-.transaction-fee {
-  display: flex;
-  min-height: 35px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-
-  .title {
-    white-space: pre;
-    font-family: 'proxima nova', sans-serif;
-    font-weight: 700;
-    font-size: 14px;
-    line-height: 17px;
-    color: $color-primary-3;
-  }
-
-  .description {
-    line-height: 17px;
-    color: $color-primary-0;
-    font-weight: 400;
-    font-size: 14px;
-    text-align: left;
-    font-family: 'proxima nova', sans-serif;
-  }
-
-  .gwei-multiplier {
-    display: block;
-  }
-}
-
 .advanced-simple {
   flex: 1;
   display: flex;

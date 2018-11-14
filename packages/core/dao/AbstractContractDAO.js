@@ -154,6 +154,8 @@ export default class AbstractContractDAO extends EventEmitter {
   }
 
   handleEventsData = (data) => {
+    console.log('handleEventsData: ', data.event, data)
+
     if (!data || !data.event) {
       return
     }

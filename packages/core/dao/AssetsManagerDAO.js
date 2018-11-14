@@ -38,6 +38,14 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   }
 
   /**
+   * remove me
+   * @returns {string}
+   */
+  getSymbol () {
+    return 'ETH'
+  }
+
+  /**
    *
    * @param state
    * @param web3

@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import AddPlatformForm from './AddPlatformDialog/lang'
 import AddAssetWidget from './AddAssetWidget/lang'
 import AddEthereumAssetForm from './AddEthereumAssetForm/lang'
 import AddTokenForm from './AddTokenDialog/lang'
@@ -24,7 +23,6 @@ export default {
     AddEthereumAssetForm: AddEthereumAssetForm.en,
     PlatformsList: PlatformsList.en,
     PlatformInfo: PlatformInfo.en,
-    AddPlatformForm: AddPlatformForm.en,
     AddTokenForm: AddTokenForm.en,
     HistoryTable: HistoryTable.en,
     AssetManagerForm: AssetManagerForm.en,
