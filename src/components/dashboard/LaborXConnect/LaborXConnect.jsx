@@ -17,7 +17,7 @@ import AllowanceModel from '@chronobank/core/models/wallet/AllowanceModel'
 import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import {
-  getMainLaboborHourWallet,
+  getMainLaborHourWallet,
   getMiningParams,
 } from '@chronobank/core/redux/laborHour/selectors/mainSelectors'
 import {
@@ -25,14 +25,19 @@ import {
   initAssetsHolder,
   lockDeposit,
 } from '@chronobank/core/redux/assetsHolder/actions'
-import { sidechainWithdraw } from '@chronobank/core/redux/laborHour/thunks'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import {
   TX_LOCK,
   TX_UNLOCK,
 } from '@chronobank/core/dao/constants/AssetHolderDAO'
+import {
+  TX_DEPOSIT,
+  TX_START_MINING_IN_CUSTOM_NODE,
+} from '@chronobank/core/redux/laborHour/dao/TimeHolderDAO'
 import AssetsCollection from '@chronobank/core/models/assetHolder/AssetsCollection'
 import { FORM_LABOR_X_CONNECT_SETTINGS } from 'components/constants'
+import { startMiningInCustomNode, startMiningInPoll } from '@chronobank/core/redux/laborHour/thunks/mining'
+import { sidechainWithdraw } from '@chronobank/core/redux/laborHour/thunks/sidechainToMainnet'
 import LaborXConnectForm from './LaborXConnectForm'
 import './LaborXConnect.scss'
 import LaborXConnectSettingsForm from './LaborXConnectSettingsForm'
@@ -47,7 +52,7 @@ function mapStateToProps (state, ownProps) {
 
   // state
   const wallet: WalletModel = getMainEthWallet(state)
-  const lhtWallet: WalletModel = getMainLaboborHourWallet(state)
+  const lhtWallet: WalletModel = getMainLaborHourWallet(state)
   const assetHolder = state.get(DUCK_ASSETS_HOLDER)
   const tokens = state.get(DUCK_TOKENS)
   const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
@@ -96,13 +101,16 @@ function mapDispatchToProps (dispatch, ownProps) {
       dispatch(change(ownProps.formName, field, value)),
     handleEstimateGas: (mode, params, callback, gasPriceMultiplier) =>
       dispatch(
-        estimateGasForAssetHolder(mode, params, callback, gasPriceMultiplier)
+        estimateGasForAssetHolder(mode, params, callback, gasPriceMultiplier),
       ),
+    handleStartMiningInPool: () => dispatch(startMiningInPoll()),
+    handleStartMiningInCustomNode: ()=> dispatch(startMiningInCustomNode()),
   }
 }
+
 @connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )
 export default class LaborXConnect extends PureComponent {
   static propTypes = {
@@ -120,6 +128,8 @@ export default class LaborXConnect extends PureComponent {
     lhtWallet: PropTypes.instanceOf(WalletModel),
     miningParams: PropTypes.objectOf(PropTypes.string),
     isCustomNode: PropTypes.bool,
+    handleStartMiningInPool: PropTypes.func,
+    handleStartMiningInCustomNode: PropTypes.func,
   }
 
   constructor (props) {
@@ -143,7 +153,7 @@ export default class LaborXConnect extends PureComponent {
     action: string,
     amount: number,
     token: string,
-    feeMultiplier: number
+    feeMultiplier: number,
   ) => {
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
@@ -163,7 +173,7 @@ export default class LaborXConnect extends PureComponent {
             console.error(error)
           }
         },
-        feeMultiplier
+        feeMultiplier,
       )
     }, 1000)
   }
@@ -180,15 +190,19 @@ export default class LaborXConnect extends PureComponent {
           amount,
           token,
           !!isCustomNode,
-          feeMultiplier
+          feeMultiplier,
         )
       case TX_UNLOCK:
         return this.props.sidechainWithdraw(
           amount,
           token,
           !!isCustomNode,
-          feeMultiplier
+          feeMultiplier,
         )
+      case TX_DEPOSIT:
+        return this.props.handleStartMiningInPool()
+      case TX_START_MINING_IN_CUSTOM_NODE:
+        return this.props.handleStartMiningInCustomNode( )
     }
   }
 

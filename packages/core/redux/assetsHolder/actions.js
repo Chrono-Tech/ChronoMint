@@ -33,7 +33,7 @@ import SimpleNoticeModel from '../../models/notices/SimpleNoticeModel'
 import { getTokens } from '../tokens/selectors'
 import ErrorNoticeModel from '../../models/notices/ErrorNoticeModel'
 import { TX_APPROVE } from '../../dao/constants/ChronoBankPlatformDAO'
-import { updateMinigNodeType } from '../laborHour/actions'
+import { updateMiningNodeType } from '../laborHour/actions'
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const assetHolder = getState().get(DUCK_ASSETS_HOLDER)
@@ -294,7 +294,7 @@ export const lockDeposit = (
   try {
     const state = getState()
     const assetHolderDAO = daoByType('TimeHolder')(state)
-    dispatch(updateMinigNodeType(isCustomNode))
+    dispatch(updateMiningNodeType(isCustomNode))
     const tx = assetHolderDAO.lock(token.address(), amount)
     if (tx) {
       await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))

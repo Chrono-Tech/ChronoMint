@@ -13,7 +13,7 @@ import { getDeposit } from '@chronobank/core/redux/assetsHolder/selectors'
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import {
   getLXActiveSwapsCount,
-  getMainLaboborHourWallet,
+  getMainLaborHourWallet,
   getMiningParams,
   getLXToken,
 } from '@chronobank/core/redux/laborHour/selectors/mainSelectors'
@@ -35,7 +35,7 @@ const WIDGET_SECOND_STEP = 'Second'
 
 function mapStateToProps (state) {
   const ethWallet = getMainEthWallet(state)
-  const lhtWallet = getMainLaboborHourWallet(state)
+  const lhtWallet = getMainLaborHourWallet(state)
   const swapsCount = getLXActiveSwapsCount(state)
   const miningParams = getMiningParams(state)
   const lht = getLXToken(LHT)(state)

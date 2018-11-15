@@ -16,7 +16,7 @@ import { getEthereumSigner } from '../../persistAccount/selectors'
 import { getMainEthWallet } from '../../wallets/selectors/models'
 import { executeTransaction } from '../../ethereum/thunks'
 import { executeLaborHourTransaction } from './transactions'
-import { updateMinigNodeType } from '../actions'
+import { updateMiningNodeType } from '../actions'
 import { notifyUnknownError } from './utilsThunks'
 //#endregion
 
@@ -31,7 +31,7 @@ export const sidechainWithdraw = (
     const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
     const mainEthWallet = getMainEthWallet(getState())
 
-    dispatch(updateMinigNodeType(isCustomNode))
+    dispatch(updateMiningNodeType(isCustomNode))
 
     const promises = [
       web3.eth.net.getId(),

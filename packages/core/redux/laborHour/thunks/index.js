@@ -9,9 +9,10 @@ import {
   laborHourProvider,
 } from '@chronobank/login/network/LaborHourProvider'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
+import { TIME } from '@chronobank/login/network/constants'
 import {
-  daoByType,
-  getMainLaboborHourWallet,
+  daoByType, getLXToken,
+  getMainLaborHourWallet,
   web3Selector,
 } from '../selectors/mainSelectors'
 import {
@@ -51,9 +52,9 @@ export { executeLaborHourTransaction }
 export { estimateLaborHourGas }
 export { obtainAllOpenSwaps }
 
-export const initLaborHour = ({ web3 }) => async (dispatch) => {
+export const initLaborHour = ({ web3 }) => async (dispatch, getState) => {
   await dispatch(
-    LXSidechainActions.updateWeb3(new HolderModel({ value: web3 }))
+    LXSidechainActions.updateWeb3(new HolderModel({ value: web3 })),
   )
   await dispatch(initContracts())
   await dispatch(initWalletFromKeys())
@@ -61,20 +62,33 @@ export const initLaborHour = ({ web3 }) => async (dispatch) => {
   await dispatch(watch())
   await dispatch(getSwapList())
   await dispatch(getParams())
+
+  const timeHolderDao = daoByType('TimeHolderSidechain')(getState())
+  const wallet = getMainLaborHourWallet(getState())
+  const timeToken = getLXToken(TIME)(getState())
+
+  // TODO @abdulov remove console.log
+  console.log('%c timeToken.address(), wallet.address', 'background: #222; color: #fff', timeToken.address(), wallet.address)
+  const depositBalance = await timeHolderDao.getDepositBalance(timeToken.address(), wallet.address)
+  // TODO @abdulov remove console.log
+  console.log('%c depositBalance', 'background: #222; color: #fff', '' + depositBalance)
+  const lockedDepositBalance = await timeHolderDao.getLockedDepositBalance(timeToken.address(), wallet.address)
+  // TODO @abdulov remove console.log
+  console.log('%c lockedDepositBalance', 'background: #222; color: #fff', '' + lockedDepositBalance)
 }
 
 const getParams = () => async (dispatch, getState) => {
   const state = getState()
-  const wallet = getMainLaboborHourWallet(state)
+  const wallet = getMainLaborHourWallet(state)
   const timeHolder = daoByType('TimeHolderSidechain')(state)
   const lxValidatorManager = daoByType('LXValidatorManagerSidechain')(state)
 
   const minDepositLimit = await timeHolder.getMiningDepositLimits(
-    wallet.address
+    wallet.address,
   )
   const rewardsCoefficient = await lxValidatorManager.getDefaultRewardCoefficient()
   dispatch(
-    LXSidechainActions.updateMiningParams(minDepositLimit, rewardsCoefficient)
+    LXSidechainActions.updateMiningParams(minDepositLimit, rewardsCoefficient),
   )
 }
 
@@ -101,15 +115,15 @@ const initContracts = () => async (dispatch, getState) => {
           contract,
           address: contractDAO.address,
           dao: contractDAO,
-        })
-      )
+        }),
+      ),
     )
   }
 
   await Promise.all(
     contracts.map((contract) => {
       return getDaoModel(contract)
-    })
+    }),
   )
 }
 
@@ -154,8 +168,8 @@ const loadTokenByIndex = (symbolIndex) => async (dispatch, getState) => {
           }),
           address: token.address(),
           dao: tokenDao,
-        })
-      )
+        }),
+      ),
     )
     dispatch(getTokenBalance(tokenDao))
     return Promise.resolve({ e: null, res: true })
@@ -180,8 +194,8 @@ const loadLHTToken = () => async (dispatch, getState) => {
           }),
           address: token.address(),
           dao: laborHourDAO,
-        })
-      )
+        }),
+      ),
     )
     dispatch(getTokenBalance(laborHourDAO))
   }
@@ -193,7 +207,7 @@ export const notifyUnknownError = () => {
     new ErrorNoticeModel({
       title: 'errors.labotHour.unknown.title',
       message: 'errors.labotHour.unknown.message',
-    })
+    }),
   )
 }
 
@@ -232,7 +246,5 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
   })
 
   laborHourProvider.subscribe(wallet.address)
-  // TODO @abdulov remove console.log
-  console.log('%c wallet', 'background: #222; color: #fff', wallet)
   dispatch(LXSidechainActions.updateWallet(wallet))
 }

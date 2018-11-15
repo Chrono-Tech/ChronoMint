@@ -14,6 +14,10 @@ import {
   TX_LOCK,
   TX_UNLOCK,
 } from '@chronobank/core/dao/constants/AssetHolderDAO'
+import {
+  TX_DEPOSIT,
+  TX_START_MINING_IN_CUSTOM_NODE,
+} from '@chronobank/core/redux/laborHour/dao/TimeHolderDAO'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -56,14 +60,14 @@ export default class LaborXConnectSettingsForm extends PureComponent {
     let resultValues
 
     if (realValue.eq(0)) {
+      // change node
       if (isCustomNode) {
         // use custom node
+        resultValues = values.set('action', TX_START_MINING_IN_CUSTOM_NODE)
       } else {
-        // use our pull
+        // use chronobank pull
+        resultValues = values.set('action', TX_DEPOSIT)
       }
-      // change node
-      // TODO @abdulov remove console.log
-      console.log('%c 0', 'background: #222; color: #fff')
     }
 
     if (realValue.gt(0)) {

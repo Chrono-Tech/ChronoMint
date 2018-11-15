@@ -82,7 +82,7 @@ export const getMiningParams = (state) => {
   return miningParams
 }
 
-export const getMainLaboborHourWallet = (state) => {
+export const getMainLaborHourWallet = (state) => {
   const wallets = getWallets(state)
   return Object.values(wallets).find(
     (wallet) => wallet.isMain && wallet.blockchain === BLOCKCHAIN_LABOR_HOUR

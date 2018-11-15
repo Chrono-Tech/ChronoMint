@@ -5,6 +5,12 @@
 
 import BigNumber from 'bignumber.js'
 import AbstractContractDAO from '../../../dao/AbstractContractDAO'
+import Amount from '../../../models/Amount'
+
+export const TX_DEPOSIT = 'deposit'
+export const TX_START_MINING_IN_CUSTOM_NODE = 'lockDepositAndBecomeMiner'
+export const EVENT_DEPOSIT = 'Deposit'
+export const EVENT_BECOME_MINER = 'BecomeMiner'
 
 export default class TimeHolderDAO extends AbstractContractDAO {
   constructor ({ address, history, abi }) {
@@ -14,10 +20,21 @@ export default class TimeHolderDAO extends AbstractContractDAO {
   connect (web3, options) {
     super.connect(
       web3,
-      options
+      options,
     )
 
-    this.allEventsEmitter = this.history.events.allEvents({}).on('data', this.handleEventsData)
+    this.contract.events.allEvents({})
+      .on('data', this.handleEventsData)
+    this.allEventsEmitter = this.history.events.allEvents({})
+      .on('data', this.handleEventsData)
+    // TODO @abdulov remove console.log
+    console.log('%c connect', 'background: #222; color: #fff', this.contract)
+    // TODO @abdulov remove console.log
+    console.log('%c connect this.history', 'background: #222; color: #fff', this.history)
+  }
+
+  watchEvent (eventName, callback) {
+    return this.on(eventName, callback)
   }
 
   disconnect () {
@@ -31,5 +48,21 @@ export default class TimeHolderDAO extends AbstractContractDAO {
 
   getMiningDepositLimits (address) {
     return this.contract.methods.getMiningDepositLimits(address).call()
+  }
+
+  deposit (tokenAddress, amount: Amount) {
+    return this._tx(TX_DEPOSIT, [tokenAddress, new BigNumber(amount)])
+  }
+
+  lockDepositAndBecomeMiner (tokenAddress, amount, delegateAddress) {
+    return this._tx(TX_START_MINING_IN_CUSTOM_NODE, [tokenAddress, new BigNumber(amount), delegateAddress])
+  }
+
+  getDepositBalance (tokenAddress, account) {
+    return this.contract.methods.getDepositBalance(tokenAddress, account).call()
+  }
+
+  getLockedDepositBalance (tokenAddress, account) {
+    return this.contract.methods.getLockedDepositBalance(tokenAddress, account).call()
   }
 }

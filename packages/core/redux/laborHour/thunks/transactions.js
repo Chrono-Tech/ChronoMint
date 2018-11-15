@@ -4,7 +4,7 @@
  */
 
 import { getLaborHourWeb3 } from '@chronobank/login/network/LaborHourProvider'
-import { web3Selector, getMainLaboborHourWallet } from '../selectors/mainSelectors'
+import { web3Selector, getMainLaborHourWallet } from '../selectors/mainSelectors'
 import laborHourDAO from '../../../dao/LaborHourDAO'
 import TransactionHandler from '../../abstractEthereum/utils/TransactionHandler'
 import { BLOCKCHAIN_LABOR_HOUR } from '../../../dao/constants'
@@ -35,7 +35,7 @@ export const estimateLaborHourGas = (tx, feeMultiplier = 1) => transactionHandle
 export const executeLaborHourTransaction = ({ tx, options }) => transactionHandler.executeTransaction({ tx, options })
 
 export const getTokenBalance = (tokenDao) => async (dispatch, getState) => {
-  const wallet = getMainLaboborHourWallet(getState())
+  const wallet = getMainLaborHourWallet(getState())
   const balance = await tokenDao.getAccountBalance(wallet.address)
   const token = tokenDao.token
 
