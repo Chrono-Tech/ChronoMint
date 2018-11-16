@@ -5,7 +5,6 @@
 
 import AddAssetWidget from './AddAssetWidget/lang'
 import AddEthereumAssetForm from './AddEthereumAssetForm/lang'
-import AddTokenForm from './AddTokenDialog/lang'
 import AssetManager from './AssetManager/lang'
 import AssetManagerForm from './AssetManagerDialog/lang'
 import HistoryTable from './HistoryTable/lang'
@@ -23,7 +22,6 @@ export default {
     AddEthereumAssetForm: AddEthereumAssetForm.en,
     PlatformsList: PlatformsList.en,
     PlatformInfo: PlatformInfo.en,
-    AddTokenForm: AddTokenForm.en,
     HistoryTable: HistoryTable.en,
     AssetManagerForm: AssetManagerForm.en,
     RevokeForm: RevokeForm.en,
