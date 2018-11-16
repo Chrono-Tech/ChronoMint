@@ -55,8 +55,8 @@ import ContractDAOModel from '../../models/contracts/ContractDAOModel'
 import { TOKEN_MANAGEMENT_EXTENSION_LIBRARY } from '../../dao/ContractList'
 import { getAccount } from '../session/selectors/models'
 import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from '../../dao/constants/ChronoBankPlatformDAO'
-import {BLOCKCHAIN_ETHEREUM} from '../../dao/constants';
-import FeeModel from '../../models/tokens/FeeModel';
+import { BLOCKCHAIN_ETHEREUM } from '../../dao/constants'
+import FeeModel from '../../models/tokens/FeeModel'
 
 // eslint-disable-next-line
 export const setTxFromMiddlewareForBlackList = (address, symbol) => async (dispatch, getState) => {
@@ -181,20 +181,30 @@ export const detachPlatform = (platform) => async (dispatch, getState) => {
 }
 
 export const createPlatformAndAsset = (formValues) => async (dispatch, getState) => {
-  console.log('createPlatformAndAsset: ', formValues.toJS())
+  try {
+    console.log('createPlatformAndAsset: ', formValues.toJS())
 
-  await dispatch(createPlatform(formValues))
-  console.log('Platform created!')
+    await dispatch(createPlatform(formValues))
+    console.log('Platform created!')
 
-  const platformEvent = await dispatch(createPlatformAwaitEvent(formValues))
+    const platformEvent = await dispatch(createPlatformAwaitEvent(formValues))
 
-  const token = createTokenModel(formValues, platformEvent)
-  await dispatch(createAsset(token, {
-    txOptions: {
-      feeMultiplier: formValues.get('feeMultiplier'),
-    },
-  }))
+    // const platformAddress = '0xa74cCAD48792d219806Bb23Df9c1ED2953fee3C8'
 
+    const token = createTokenModel(formValues, platformAddress.toLowerCase())
+
+    console.log('token: ', token.toJS())
+
+    await dispatch(createAsset(token, {
+      txOptions: {
+        feeMultiplier: formValues.get('feeMultiplier'),
+      },
+    }))
+
+  } catch (e) {
+    //eslint-disable-next-line
+    console.error(e)
+  }
 }
 
 /**
@@ -282,6 +292,8 @@ export const createAsset = (token: TokenModel, { txOptions }) => async (dispatch
     })
     await dispatch({ type: SET_ASSETS, payload: { assets } })
   } catch (e) {
+    console.log('createAsset: ', e)
+
     // eslint-disable-next-line
     console.error(e.message)
   }
@@ -748,10 +760,11 @@ const subscribeToBlockAssetEvents = () => async (dispatch, getState) => {
  * @param values
  * @returns {TokenModel}
  */
-const createTokenModel = (values) => {
+const createTokenModel = (values, platformAddress) => {
   return new TokenModel({
-    decimals: values.get('smallestUnit'),
-    symbol: values.get('tokenSymbol').toUpperCase(),
+    // decimals: values.get('smallestUnit'),
+    decimals: 7,
+    symbol: values.get('symbol').toUpperCase(),
     balance: values.get('amount'),
     icon: values.get('tokenImg'),
     fee: new FeeModel({
@@ -759,7 +772,7 @@ const createTokenModel = (values) => {
       feeAddress: values.get('feeAddress'),
       withFee: !!values.get('withFee'),
     }),
-    platform: values.get('platformAddress'),
+    platform: platformAddress,
     totalSupply: values.get('amount'),
     isReissuable: new ReissuableModel({ value: !!values.get('reIssable') }),
     blockchain: BLOCKCHAIN_ETHEREUM,
