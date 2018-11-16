@@ -9,9 +9,8 @@ import {
   laborHourProvider,
 } from '@chronobank/login/network/LaborHourProvider'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
-import { TIME } from '@chronobank/login/network/constants'
 import {
-  daoByType, getLXToken,
+  daoByType,
   getMainLaborHourWallet,
   web3Selector,
 } from '../selectors/mainSelectors'
@@ -52,7 +51,7 @@ export { executeLaborHourTransaction }
 export { estimateLaborHourGas }
 export { obtainAllOpenSwaps }
 
-export const initLaborHour = ({ web3 }) => async (dispatch, getState) => {
+export const initLaborHour = ({ web3 }) => async (dispatch) => {
   await dispatch(
     LXSidechainActions.updateWeb3(new HolderModel({ value: web3 })),
   )
@@ -62,19 +61,6 @@ export const initLaborHour = ({ web3 }) => async (dispatch, getState) => {
   await dispatch(watch())
   await dispatch(getSwapList())
   await dispatch(getParams())
-
-  const timeHolderDao = daoByType('TimeHolderSidechain')(getState())
-  const wallet = getMainLaborHourWallet(getState())
-  const timeToken = getLXToken(TIME)(getState())
-
-  // TODO @abdulov remove console.log
-  console.log('%c timeToken.address(), wallet.address', 'background: #222; color: #fff', timeToken.address(), wallet.address)
-  const depositBalance = await timeHolderDao.getDepositBalance(timeToken.address(), wallet.address)
-  // TODO @abdulov remove console.log
-  console.log('%c depositBalance', 'background: #222; color: #fff', '' + depositBalance)
-  const lockedDepositBalance = await timeHolderDao.getLockedDepositBalance(timeToken.address(), wallet.address)
-  // TODO @abdulov remove console.log
-  console.log('%c lockedDepositBalance', 'background: #222; color: #fff', '' + lockedDepositBalance)
 }
 
 const getParams = () => async (dispatch, getState) => {

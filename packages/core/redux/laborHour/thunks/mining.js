@@ -25,6 +25,8 @@ export const startMiningInPoll = () => async (dispatch, getState) => {
     web3.eth.getTransactionCount(wallet.address, 'pending'),
   ])
 
+  // TODO @abdulov remove console.log
+  console.log('%c wallet.address, timeHolderDao.address, timeBalance', 'background: #222; color: #fff', wallet.address, timeHolderDao.address, timeBalance)
   // timeHolder#deposit
   const tx = {
     ...timeDao.transfer(wallet.address, timeHolderDao.address, timeBalance),
@@ -34,6 +36,8 @@ export const startMiningInPoll = () => async (dispatch, getState) => {
     nonce: nonce,
     chainId: chainId,
   }
+  // TODO @abdulov remove console.log
+  console.log('%c tx', 'background: #222; color: #fff', tx)
   dispatch(executeLaborHourTransaction({ tx }))
 }
 

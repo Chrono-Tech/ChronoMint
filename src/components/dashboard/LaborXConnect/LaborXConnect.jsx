@@ -104,7 +104,7 @@ function mapDispatchToProps (dispatch, ownProps) {
         estimateGasForAssetHolder(mode, params, callback, gasPriceMultiplier),
       ),
     handleStartMiningInPool: () => dispatch(startMiningInPoll()),
-    handleStartMiningInCustomNode: ()=> dispatch(startMiningInCustomNode()),
+    handleStartMiningInCustomNode: () => dispatch(startMiningInCustomNode()),
   }
 }
 
@@ -130,6 +130,7 @@ export default class LaborXConnect extends PureComponent {
     isCustomNode: PropTypes.bool,
     handleStartMiningInPool: PropTypes.func,
     handleStartMiningInCustomNode: PropTypes.func,
+    onCloseModal: PropTypes.func,
   }
 
   constructor (props) {
@@ -186,6 +187,7 @@ export default class LaborXConnect extends PureComponent {
 
     switch (values.get('action')) {
       case TX_LOCK:
+        this.props.onCloseModal()
         return this.props.lockDeposit(
           amount,
           token,
@@ -202,7 +204,7 @@ export default class LaborXConnect extends PureComponent {
       case TX_DEPOSIT:
         return this.props.handleStartMiningInPool()
       case TX_START_MINING_IN_CUSTOM_NODE:
-        return this.props.handleStartMiningInCustomNode( )
+        return this.props.handleStartMiningInCustomNode()
     }
   }
 

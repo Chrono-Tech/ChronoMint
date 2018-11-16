@@ -60,7 +60,7 @@ function mapDispatchToProps (dispatch) {
             wallet,
             tokenId,
           },
-        })
+        }),
       ),
     onOpenDepositForm: () =>
       dispatch(modalsOpen({ componentName: 'DepositTokensModal' })),
@@ -73,14 +73,14 @@ function mapDispatchToProps (dispatch) {
           props: {
             formName: FORM_LABOR_X_CONNECT_SETTINGS,
           },
-        })
+        }),
       ),
   }
 }
 
 @connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )
 export default class LaborXConnectWidget extends PureComponent {
   static propTypes = {
@@ -208,16 +208,10 @@ export default class LaborXConnectWidget extends PureComponent {
               Reward: LHT{' '}
               {integerWithDelimiter(
                 this.props.lht.removeDecimals(balance.mul(rewardsCoefficient)),
-                true
+                true,
               )}{' '}
               / block
             </div>
-            <Button
-              type='submit'
-              label={<Translate value={`${prefix}.getStarted`} />}
-              onClick={this.handleOpenReceiveForm}
-            />
- 
           </div>
         </div>
       </div>

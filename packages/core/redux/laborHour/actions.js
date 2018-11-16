@@ -15,6 +15,8 @@ import {
   LABOR_HOUR_WEB3_UPDATE,
   LABOR_HOUR_DEPOSIT_PARAMS_UPDATE,
   LABOR_HOUR_UPDATE_MINING_NODE_TYPE,
+  LABOR_HOUR_UPDATE_DEPOSIT,
+  LABOR_HOUR_UPDATE_LOCKED_DEPOSIT,
 } from './constants'
 
 export const updateWeb3 = (web3) =>
@@ -82,12 +84,26 @@ export const tokensLoadingFailed = () =>
 export const updateMiningParams = (minDepositLimit, rewardsCoefficient) =>
   ({
     type: LABOR_HOUR_DEPOSIT_PARAMS_UPDATE,
-    minDepositLimit, 
+    minDepositLimit,
     rewardsCoefficient,
   })
 
 export const updateMiningNodeType = (isCustomNode) =>
   ({
     type: LABOR_HOUR_UPDATE_MINING_NODE_TYPE,
-    isCustomNode, 
+    isCustomNode,
+  })
+
+export const updateDeposit = (address, amount) =>
+  ({
+    type: LABOR_HOUR_UPDATE_DEPOSIT,
+    address,
+    amount,
+  })
+
+export const updateLockedDeposit = (address, amount) =>
+  ({
+    type: LABOR_HOUR_UPDATE_LOCKED_DEPOSIT,
+    address,
+    amount,
   })

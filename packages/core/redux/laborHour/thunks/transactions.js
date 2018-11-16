@@ -4,7 +4,13 @@
  */
 
 import { getLaborHourWeb3 } from '@chronobank/login/network/LaborHourProvider'
-import { web3Selector, getMainLaborHourWallet } from '../selectors/mainSelectors'
+import { TIME } from '@chronobank/login/network/constants'
+import {
+  web3Selector,
+  getMainLaborHourWallet,
+  daoByType,
+  getLXToken, getLXTokens,
+} from '../selectors/mainSelectors'
 import laborHourDAO from '../../../dao/LaborHourDAO'
 import TransactionHandler from '../../abstractEthereum/utils/TransactionHandler'
 import { BLOCKCHAIN_LABOR_HOUR } from '../../../dao/constants'
@@ -39,14 +45,6 @@ export const getTokenBalance = (tokenDao) => async (dispatch, getState) => {
   const balance = await tokenDao.getAccountBalance(wallet.address)
   const token = tokenDao.token
 
-  // TODO @abdulov remove console.log
-  console.log(
-    '%c balance',
-    'background: #222; color: #fff',
-    wallet.address,
-    token.removeDecimals(balance).toString(),
-    token.symbol(),
-  )
   dispatch(
     LXSidechainActions.updateWallet(
       new WalletModel({
@@ -58,4 +56,30 @@ export const getTokenBalance = (tokenDao) => async (dispatch, getState) => {
       }),
     ),
   )
+}
+
+export const updateLaborHourBalances = () => (dispatch, getState) => {
+  const tokens = getLXTokens(getState())
+  return Promise.all(tokens
+    .items()
+    .map((token) => {
+      const tokenDao = daoByType(token.symbol())(getState())
+      return dispatch(getTokenBalance(tokenDao))
+    }))
+}
+
+export const updateTimeHolderBalances = () => async (dispatch, getState) => {
+  const timeHolderDao = daoByType('TimeHolderSidechain')(getState())
+  const wallet = getMainLaborHourWallet(getState())
+  const timeToken = getLXToken(TIME)(getState())
+
+  const depositBalance = await timeHolderDao.getDepositBalance(timeToken.address(), wallet.address)
+  // TODO @abdulov remove console.log
+  console.log('%c depositBalance', 'background: #222; color: #fff', depositBalance)
+  dispatch(LXSidechainActions.updateDeposit(wallet.address, new Amount(depositBalance, timeToken.symbol())))
+
+  const lockedDepositBalance = await timeHolderDao.getLockedDepositBalance(timeToken.address(), wallet.address)
+  // TODO @abdulov remove console.log
+  console.log('%c lockedDepositBalance', 'background: #222; color: #fff', lockedDepositBalance)
+  dispatch(LXSidechainActions.updateLockedDeposit(wallet.address, new Amount(lockedDepositBalance, timeToken.symbol())))
 }

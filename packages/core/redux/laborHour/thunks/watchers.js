@@ -4,7 +4,7 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { daoByType, getLXToken, getLXTokens, getMiningParams } from '../selectors/mainSelectors'
+import { daoByType, getLXToken, getMiningParams } from '../selectors/mainSelectors'
 import { EVENT_CLOSE, EVENT_EXPIRE, EVENT_OPEN, EVENT_REVOKE } from '../constants'
 import { notify } from '../../notifier/actions'
 import SimpleNoticeModel from '../../../models/notices/SimpleNoticeModel'
@@ -13,7 +13,7 @@ import SidechainMiddlewareService from '../SidechainMiddlewareService'
 import { getMainEthWallet } from '../../wallets/selectors/models'
 import { obtainSwapByMiddlewareFromSidechainToMainnet, unlockShares } from './sidechainToMainnet'
 import { obtainSwapByMiddlewareFromMainnetToSidechain, closeSwap } from './mainnetToSidechain'
-import { getTokenBalance } from './transactions'
+import { updateLaborHourBalances } from './transactions'
 import { EVENT_DEPOSIT, EVENT_BECOME_MINER } from '../dao/TimeHolderDAO'
 import { startMiningInCustomNode, startMiningInPoll } from './mining'
 
@@ -28,15 +28,17 @@ export const watch = () => (dispatch, getState) => {
   atomicSwapERC20DAO.watchEvent(EVENT_EXPIRE, (event) => dispatch(expireCallback(event)))
 
   const timeHolderDAO = daoByType('TimeHolderSidechain')(getState())
-  timeHolderDAO.watchEvent(EVENT_DEPOSIT, (event) => {
-    // TODO @abdulov remove console.log
-    console.log('%c event EVENT_DEPOSIT', 'background: #222; color: #fff', event)
+  timeHolderDAO.watchEvent(EVENT_DEPOSIT, (/*event*/) => {
+    const { isCustomNode } = getMiningParams(getState())
+    dispatch(updateLaborHourBalances())
+    if (isCustomNode) {
+      dispatch(startMiningInCustomNode())
+    }
   })
   timeHolderDAO.watchEvent(EVENT_BECOME_MINER, (event) => {
     // TODO @abdulov remove console.log
     console.log('%c event EVENT_BECOME_MINER', 'background: #222; color: #fff', event)
   })
-
 }
 
 const revokeCallback = (event) => async (dispatch, getState) => {
@@ -101,17 +103,11 @@ const closeCallback = (event) => async (dispatch, getState) => {
       }),
     ),
   )
-  const tokens = getLXTokens(getState())
-  await Promise.all(tokens
-    .items()
-    .map((token) => {
-      const tokenDao = daoByType(token.symbol())(getState())
-      return dispatch(getTokenBalance(tokenDao))
-    }))
+  await dispatch(updateLaborHourBalances())
   const { isCustomNode } = getMiningParams(getState())
-  if(isCustomNode){
+  if (isCustomNode) {
     dispatch(startMiningInCustomNode())
-  }else{
+  } else {
     dispatch(startMiningInPoll())
   }
 }

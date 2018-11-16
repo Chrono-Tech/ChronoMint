@@ -17,6 +17,8 @@ import {
   LABOR_HOUR_TOKENS_FAILED,
   LABOR_HOUR_DEPOSIT_PARAMS_UPDATE,
   LABOR_HOUR_UPDATE_MINING_NODE_TYPE,
+  LABOR_HOUR_UPDATE_DEPOSIT,
+  LABOR_HOUR_UPDATE_LOCKED_DEPOSIT,
 } from './constants'
 import TokensCollection from '../../models/tokens/TokensCollection'
 
@@ -30,6 +32,10 @@ const initialState = {
   },
   swaps: {},
   miningParams: {},
+  timeHolder: {
+    deposit: {},
+    lockedDeposit: {},
+  },
 }
 
 const mutations = {
@@ -140,6 +146,30 @@ const mutations = {
       miningParams: {
         ...state.miningParams,
         isCustomNode,
+      },
+    }
+  },
+  [LABOR_HOUR_UPDATE_DEPOSIT]: (state, { address, amount }) => {
+    return {
+      ...state,
+      timeHolder: {
+        ...state.timeHolder,
+        deposit: {
+          ...state.timeHolder.deposit,
+          [address]: amount,
+        },
+      },
+    }
+  },
+  [LABOR_HOUR_UPDATE_LOCKED_DEPOSIT]: (state, { address, amount }) => {
+    return {
+      ...state,
+      timeHolder: {
+        ...state.timeHolder,
+        lockedDeposit: {
+          ...state.timeHolder.lockedDeposit,
+          [address]: amount,
+        },
       },
     }
   },
