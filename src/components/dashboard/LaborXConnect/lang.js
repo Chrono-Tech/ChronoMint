@@ -48,6 +48,7 @@ export default {
       reward: 'Reward: LHT ',
       block: 'block',
       download: 'Download',
+      enterDelegateAddress: 'Enter delegate address',
     },
     accept: 'Accept',
     max: 'max',

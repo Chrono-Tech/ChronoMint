@@ -15,7 +15,7 @@ import {
   getLXActiveSwapsCount,
   getMainLaborHourWallet,
   getMiningParams,
-  getLXToken,
+  getLXToken, getLXDeposit, getLXLockedDeposit,
 } from '@chronobank/core/redux/laborHour/selectors/mainSelectors'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
@@ -39,6 +39,8 @@ function mapStateToProps (state) {
   const swapsCount = getLXActiveSwapsCount(state)
   const miningParams = getMiningParams(state)
   const lht = getLXToken(LHT)(state)
+  const lxDeposit = getLXDeposit(lhtWallet.address)(state)
+  const lxLockedDeposit = getLXLockedDeposit(lhtWallet.address)(state)
   return {
     deposit: getDeposit(TIME)(state),
     lhtWallet,
@@ -46,6 +48,8 @@ function mapStateToProps (state) {
     swapsCount,
     miningParams,
     lht,
+    lxDeposit,
+    lxLockedDeposit,
   }
 }
 
@@ -78,10 +82,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class LaborXConnectWidget extends PureComponent {
   static propTypes = {
     onOpenReceiveForm: PropTypes.func,
@@ -93,8 +94,14 @@ export default class LaborXConnectWidget extends PureComponent {
     deposit: PropTypes.instanceOf(Amount),
     swapsCount: PropTypes.number,
     handleObtainAllOpenSwaps: PropTypes.func,
-    miningParams: PropTypes.objectOf(PropTypes.string),
+    miningParams: PropTypes.shape({
+      minDepositLimit: PropTypes.string,
+      rewardsCoefficient: PropTypes.string,
+      isCustomNode: PropTypes.bool,
+    }),
     lht: PropTypes.instanceOf(TokenModel),
+    lxDeposit: PropTypes.instanceOf(Amount),
+    lxLockedDeposit: PropTypes.instanceOf(Amount),
   }
 
   constructor (props) {
@@ -107,10 +114,10 @@ export default class LaborXConnectWidget extends PureComponent {
   }
 
   componentWillReceiveProps (newProps) {
-    if (
-      newProps.lhtWallet.balances[TIME] &&
-      newProps.lhtWallet.balances[TIME].gt(0)
-    ) {
+    const isLXDeposit = newProps.lxDeposit && newProps.lxDeposit.gt(0)
+    const isLXLockedDeposit = newProps.lxLockedDeposit && newProps.lxLockedDeposit.gt(0)
+    const isLXBalance = newProps.lhtWallet.balances[TIME] && newProps.lhtWallet.balances[TIME].gt(0)
+    if (isLXBalance || isLXDeposit || isLXLockedDeposit) {
       return this.setState({ step: WIDGET_SECOND_STEP })
     }
   }
@@ -175,8 +182,18 @@ export default class LaborXConnectWidget extends PureComponent {
   }
 
   renderSecondStep = () => {
-    const { rewardsCoefficient } = this.props.miningParams
-    const balance = this.props.lhtWallet.balances[TIME]
+    const { miningParams, lxDeposit, lxLockedDeposit, lhtWallet } = this.props
+    const { rewardsCoefficient } = miningParams
+    const isLXDeposit = lxDeposit && lxDeposit.gt(0)
+    const isLXLockedDeposit = lxLockedDeposit && lxLockedDeposit.gt(0)
+    let renderBalance = lhtWallet.balances[TIME]
+    if (isLXLockedDeposit) {
+      renderBalance = lxLockedDeposit
+    } else if (isLXDeposit) {
+      renderBalance = lxDeposit
+    }
+    const isMiningOn = isLXLockedDeposit || isLXDeposit
+
     return (
       <div styleName='content-container'>
         <div styleName='title addressTittle'>
@@ -188,7 +205,7 @@ export default class LaborXConnectWidget extends PureComponent {
           {TIME}
           &nbsp;
           <TokenValueSimple
-            value={balance}
+            value={renderBalance}
             fractionPrecision={8}
             withFraction
           />
@@ -197,17 +214,22 @@ export default class LaborXConnectWidget extends PureComponent {
         <div styleName='infoList'>
           <div styleName='infoItem'>
             <div styleName='icon'>
-              <div className='chronobank-icon' styleName='active'>
-                check-circle
+              <div className='chronobank-icon' styleName={isMiningOn ? 'active' : ''}>
+                {isMiningOn ? 'check-circle' : 'warning'}
               </div>
             </div>
-            <div styleName='title'>Mining is ON (ChronoBank)</div>
+            <div styleName='title'>
+              {isMiningOn
+                ? <Translate value={`${prefix}.miningON`} />
+                : <Translate value={`${prefix}.miningOFF`} />
+              }
+            </div>
           </div>
           <div styleName='infoItem'>
             <div styleName='title'>
               Reward: LHT{' '}
               {integerWithDelimiter(
-                this.props.lht.removeDecimals(balance.mul(rewardsCoefficient)),
+                this.props.lht.removeDecimals(renderBalance.mul(rewardsCoefficient)),
                 true,
               )}{' '}
               / block

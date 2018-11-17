@@ -72,8 +72,6 @@ export const getSwapList = () => async (dispatch, getState) => {
   } = await SidechainMiddlewareService.getSwapListFromMainnetToSidechainByAddress(
     wallet.address
   )
-  // TODO @abdulov remove console.log
-  console.log('%c data', 'background: #222; color: #fff', data)
   data.forEach((swap) => {
     if (swap.isActive) {
       dispatch(LXSidechainActions.swapUpdate(swap))

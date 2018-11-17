@@ -17,6 +17,7 @@ import AllowanceModel from '@chronobank/core/models/wallet/AllowanceModel'
 import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import {
+  getLXDeposit, getLXLockedDeposit,
   getMainLaborHourWallet,
   getMiningParams,
 } from '@chronobank/core/redux/laborHour/selectors/mainSelectors'
@@ -64,6 +65,8 @@ function mapStateToProps (state, ownProps) {
   const assets = assetHolder.assets()
   const spender = assetHolder.wallet()
   const miningParams = getMiningParams(state)
+  const lxDeposit = getLXDeposit(lhtWallet.address)(state)
+  const lxLockedDeposit = getLXLockedDeposit(lhtWallet.address)(state)
 
   return {
     wallet,
@@ -88,6 +91,8 @@ function mapStateToProps (state, ownProps) {
     account: state.get(DUCK_SESSION).account,
     miningParams,
     isCustomNode,
+    lxDeposit,
+    lxLockedDeposit,
   }
 }
 
@@ -95,23 +100,18 @@ function mapDispatchToProps (dispatch, ownProps) {
   return {
     initAssetsHolder: () => dispatch(initAssetsHolder()),
     lockDeposit: (amount, token) => dispatch(lockDeposit(amount, token)),
-    sidechainWithdraw: (amount, token) =>
-      dispatch(sidechainWithdraw(amount, token)),
-    onChangeField: (field, value) =>
-      dispatch(change(ownProps.formName, field, value)),
+    sidechainWithdraw: (amount, token) => dispatch(sidechainWithdraw(amount, token)),
+    onChangeField: (field, value) => dispatch(change(ownProps.formName, field, value)),
     handleEstimateGas: (mode, params, callback, gasPriceMultiplier) =>
       dispatch(
         estimateGasForAssetHolder(mode, params, callback, gasPriceMultiplier),
       ),
     handleStartMiningInPool: () => dispatch(startMiningInPoll()),
-    handleStartMiningInCustomNode: () => dispatch(startMiningInCustomNode()),
+    handleStartMiningInCustomNode: (delegateAddress) => dispatch(startMiningInCustomNode(delegateAddress)),
   }
 }
 
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class LaborXConnect extends PureComponent {
   static propTypes = {
     deposit: PropTypes.instanceOf(Amount),
@@ -126,11 +126,17 @@ export default class LaborXConnect extends PureComponent {
     amount: PropTypes.number,
     formName: PropTypes.string,
     lhtWallet: PropTypes.instanceOf(WalletModel),
-    miningParams: PropTypes.objectOf(PropTypes.string),
+    miningParams: PropTypes.shape({
+      minDepositLimit: PropTypes.string,
+      rewardsCoefficient: PropTypes.string,
+      isCustomNode: PropTypes.bool,
+    }),
     isCustomNode: PropTypes.bool,
     handleStartMiningInPool: PropTypes.func,
     handleStartMiningInCustomNode: PropTypes.func,
     onCloseModal: PropTypes.func,
+    lxDeposit: PropTypes.instanceOf(Amount),
+    lxLockedDeposit: PropTypes.instanceOf(Amount),
   }
 
   constructor (props) {
@@ -184,6 +190,7 @@ export default class LaborXConnect extends PureComponent {
     const amount = new Amount(values.get('amount'), token.id())
     const feeMultiplier = values.get('feeMultiplier') || 1
     const isCustomNode = values.get('isCustomNode')
+    const delegateAddress = values.get('delegateAddress')
 
     switch (values.get('action')) {
       case TX_LOCK:
@@ -199,12 +206,13 @@ export default class LaborXConnect extends PureComponent {
           amount,
           token,
           !!isCustomNode,
+          delegateAddress,
           feeMultiplier,
         )
       case TX_DEPOSIT:
         return this.props.handleStartMiningInPool()
       case TX_START_MINING_IN_CUSTOM_NODE:
-        return this.props.handleStartMiningInCustomNode()
+        return this.props.handleStartMiningInCustomNode(delegateAddress)
     }
   }
 
@@ -226,6 +234,8 @@ export default class LaborXConnect extends PureComponent {
       lhtWallet,
       miningParams,
       isCustomNode,
+      lxDeposit,
+      lxLockedDeposit,
     } = this.props
     const { gasFee, feeLoading } = this.state
 
@@ -238,6 +248,8 @@ export default class LaborXConnect extends PureComponent {
         Component = LaborXConnectForm
         break
     }
+
+    const miningBalance = lhtWallet.balances[TIME].plus(lxDeposit || 0).plus(lxLockedDeposit || 0)
     return (
       <Component
         miningParams={miningParams}
@@ -248,10 +260,10 @@ export default class LaborXConnect extends PureComponent {
         deposit={deposit}
         balanceEth={balanceEth}
         token={token}
-        lhtWallet={lhtWallet}
+        miningBalance={miningBalance}
         assets={assets}
         initialValues={{
-          amount: lhtWallet.balances[TIME].toNumber(),
+          amount: miningBalance.toNumber(),
           isCustomNode: false,
         }}
         onSubmit={this.handleSubmit}

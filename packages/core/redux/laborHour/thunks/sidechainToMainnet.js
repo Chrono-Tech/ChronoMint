@@ -24,6 +24,7 @@ export const sidechainWithdraw = (
   amount: Amount,
   token: TokenModel,
   isCustomNode,
+  delegateAddress,
   // feeMultiplier
 ) => async (dispatch, getState) => {
   try {
@@ -31,7 +32,7 @@ export const sidechainWithdraw = (
     const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
     const mainEthWallet = getMainEthWallet(getState())
 
-    dispatch(updateMiningNodeType(isCustomNode))
+    dispatch(updateMiningNodeType(isCustomNode, delegateAddress))
 
     const promises = [
       web3.eth.net.getId(),
@@ -42,7 +43,7 @@ export const sidechainWithdraw = (
     const tx = {
       ...platformDao.revokeAsset(
         web3Converter.stringToBytes(token.symbol()),
-        amount
+        amount,
       ),
       gas: 5700000, // TODO @Abdulov remove hard code and do something
       gasPrice: 80000000000,
@@ -58,7 +59,7 @@ export const sidechainWithdraw = (
 
 export const obtainSwapByMiddlewareFromSidechainToMainnet = (swapId) => async (
   dispatch,
-  getState
+  getState,
 ) => {
   try {
     const signer = getEthereumSigner(getState())
@@ -66,7 +67,7 @@ export const obtainSwapByMiddlewareFromSidechainToMainnet = (swapId) => async (
       data,
     } = await SidechainMiddlewareService.obtainSwapFromSidechainToMainnet(
       swapId,
-      signer.getPublicKey()
+      signer.getPublicKey(),
     )
     return Promise.resolve({ e: null, data, swapId })
   } catch (e) {
@@ -79,7 +80,7 @@ export const obtainSwapByMiddlewareFromSidechainToMainnet = (swapId) => async (
 
 export const unlockShares = (swapId, encodedKey) => async (
   dispatch,
-  getState
+  getState,
 ) => {
   try {
     const timeHolderDAO = daoByTypeMainnet('TimeHolder')(getState())
@@ -87,7 +88,7 @@ export const unlockShares = (swapId, encodedKey) => async (
     const key = await signer.decryptWithPrivateKey(encodedKey)
     const tx = timeHolderDAO.unlockShares(
       web3Converter.stringToBytes(swapId),
-      web3Converter.stringToBytes(key)
+      web3Converter.stringToBytes(key),
     )
     dispatch(executeTransaction({ tx }))
   } catch (e) {

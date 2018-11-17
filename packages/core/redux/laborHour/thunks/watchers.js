@@ -13,7 +13,7 @@ import SidechainMiddlewareService from '../SidechainMiddlewareService'
 import { getMainEthWallet } from '../../wallets/selectors/models'
 import { obtainSwapByMiddlewareFromSidechainToMainnet, unlockShares } from './sidechainToMainnet'
 import { obtainSwapByMiddlewareFromMainnetToSidechain, closeSwap } from './mainnetToSidechain'
-import { updateLaborHourBalances } from './transactions'
+import { updateLaborHourBalances, updateTimeHolderBalances } from './transactions'
 import { EVENT_DEPOSIT, EVENT_BECOME_MINER } from '../dao/TimeHolderDAO'
 import { startMiningInCustomNode, startMiningInPoll } from './mining'
 
@@ -35,9 +35,9 @@ export const watch = () => (dispatch, getState) => {
       dispatch(startMiningInCustomNode())
     }
   })
-  timeHolderDAO.watchEvent(EVENT_BECOME_MINER, (event) => {
-    // TODO @abdulov remove console.log
-    console.log('%c event EVENT_BECOME_MINER', 'background: #222; color: #fff', event)
+  timeHolderDAO.watchEvent(EVENT_BECOME_MINER, (/*event*/) => {
+    dispatch(updateLaborHourBalances())
+    dispatch(updateTimeHolderBalances())
   })
 }
 
@@ -69,7 +69,7 @@ const revokeCallback = (event) => async (dispatch, getState) => {
   }
 }
 
-const openCallback = (event) => async (dispatch, getState) => {
+const openCallback = (event) => async (dispatch) => {
   const swapId = web3Converter.bytesToString(event.returnValues._swapID)
   dispatch(
     notify(

@@ -47,8 +47,6 @@ export default class TransactionHandler extends TransactionGuide {
       this.prepareTransaction({ web3, tx, options })
     )
     const entry = createTxEntryModel(prepared, options)
-    // TODO @abdulov remove console.log
-    console.log('%c entry', 'background: #222; color: #fff', entry)
 
     await dispatch(this.actions.txCreate(entry))
     dispatch(this.submitTransaction(entry))
@@ -171,23 +169,17 @@ export default class TransactionHandler extends TransactionGuide {
       web3.eth
         .sendSignedTransaction(entry.raw)
         .on('transactionHash', (hash) => {
-          // TODO @abdulov remove console.log
-          console.log('%c hash', 'background: #222; color: #fff', hash)
           dispatch(
             this.txStatus(entry.key, entry.tx.from, { isSent: true, hash })
           )
         })
         .on('receipt', (receipt) => {
-          // TODO @abdulov remove console.log
-          console.log('%c receipt', 'background: #222; color: #fff', receipt)
           dispatch(
             this.txStatus(entry.key, entry.tx.from, { isMined: true, receipt })
           )
           resolve(receipt)
         })
         .on('error', (error) => {
-          // TODO @abdulov remove console.log
-          console.log('%c error', 'background: #222; color: #fff', error)
           dispatch(
             this.txStatus(entry.key, entry.tx.from, { isErrored: true, error })
           )

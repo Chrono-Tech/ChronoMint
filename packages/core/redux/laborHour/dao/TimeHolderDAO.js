@@ -27,10 +27,6 @@ export default class TimeHolderDAO extends AbstractContractDAO {
       .on('data', this.handleEventsData)
     this.allEventsEmitter = this.history.events.allEvents({})
       .on('data', this.handleEventsData)
-    // TODO @abdulov remove console.log
-    console.log('%c connect', 'background: #222; color: #fff', this.contract)
-    // TODO @abdulov remove console.log
-    console.log('%c connect this.history', 'background: #222; color: #fff', this.history)
   }
 
   watchEvent (eventName, callback) {

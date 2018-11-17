@@ -4,7 +4,7 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { Switch } from 'redux-form-material-ui'
+import { Switch, TextField } from 'redux-form-material-ui'
 import Button from 'components/common/ui/Button/Button'
 import Amount from '@chronobank/core/models/Amount'
 import AssetsCollection from '@chronobank/core/models/assetHolder/AssetsCollection'
@@ -45,17 +45,20 @@ export default class LaborXConnectSettingsForm extends PureComponent {
     assets: PropTypes.instanceOf(AssetsCollection),
     amount: PropTypes.number,
     lhtWallet: PropTypes.instanceOf(WalletModel),
-    miningParams: PropTypes.objectOf(PropTypes.string),
+    miningParams: PropTypes.shape({
+      minDepositLimit: PropTypes.string,
+      rewardsCoefficient: PropTypes.string,
+      isCustomNode: PropTypes.bool,
+    }),
     isCustomNode: PropTypes.bool,
+    miningBalance: PropTypes.instanceOf(Amount),
     ...formPropTypes,
   }
 
   handleProceed = (values) => {
-    const { lhtWallet } = this.props
+    const { miningBalance } = this.props
 
-    const realValue = new BigNumber(values.get('amount')).minus(
-      lhtWallet.balances[TIME]
-    )
+    const realValue = new BigNumber(values.get('amount')).minus(miningBalance)
     const isCustomNode = values.get('isCustomNode')
     let resultValues
 
@@ -101,20 +104,18 @@ export default class LaborXConnectSettingsForm extends PureComponent {
     const {
       deposit,
       token,
-      lhtWallet,
       miningParams,
       amount,
       isCustomNode,
+      miningBalance,
     } = this.props
     const { rewardsCoefficient, minDepositLimit } = miningParams
     const amountBN = new BigNumber(amount)
-    const max = lhtWallet.balances[TIME]
-      ? lhtWallet.balances[TIME].plus(deposit)
-      : deposit
+    const max = miningBalance.plus(deposit)
 
     const rewardPerBlock = new Amount(
       amountBN.mul(rewardsCoefficient),
-      'LHT'
+      'LHT',
     ).mul(isCustomNode ? 1 : CHRONOBANK_NODE_FEE_COEFFICIENT) // chronobank fee
     return (
       <div styleName='body'>
@@ -148,6 +149,17 @@ export default class LaborXConnectSettingsForm extends PureComponent {
             />
           </div>
         </div>
+        {isCustomNode && (
+          <div styleName='delegateAddressWrapper'>
+            <Field
+              component={TextField}
+              name='delegateAddress'
+              type='text'
+              label={<Translate value={`${prefix}.settingsForm.enterDelegateAddress`} />}
+              fullWidth
+            />
+          </div>
+        )}
         <div styleName={classnames('fieldWrapper', 'reward')}>
           <Translate value={`${prefix}.settingsForm.reward`} />
           <TokenValueSimple value={rewardPerBlock} withFraction />

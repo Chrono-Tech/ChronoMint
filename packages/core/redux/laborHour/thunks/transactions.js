@@ -74,12 +74,8 @@ export const updateTimeHolderBalances = () => async (dispatch, getState) => {
   const timeToken = getLXToken(TIME)(getState())
 
   const depositBalance = await timeHolderDao.getDepositBalance(timeToken.address(), wallet.address)
-  // TODO @abdulov remove console.log
-  console.log('%c depositBalance', 'background: #222; color: #fff', depositBalance)
   dispatch(LXSidechainActions.updateDeposit(wallet.address, new Amount(depositBalance, timeToken.symbol())))
 
   const lockedDepositBalance = await timeHolderDao.getLockedDepositBalance(timeToken.address(), wallet.address)
-  // TODO @abdulov remove console.log
-  console.log('%c lockedDepositBalance', 'background: #222; color: #fff', lockedDepositBalance)
   dispatch(LXSidechainActions.updateLockedDeposit(wallet.address, new Amount(lockedDepositBalance, timeToken.symbol())))
 }

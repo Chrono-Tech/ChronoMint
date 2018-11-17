@@ -18,5 +18,7 @@ export default {
     step1: 'Get ETH on you account',
     step2: 'Make a TIME Deposit',
     step3: 'Activate your Deposit on LaborX',
+    miningON: 'Mining is ON (ChronoBank)',
+    miningOFF: 'Mining is OFF (ChronoBank)',
   },
 }

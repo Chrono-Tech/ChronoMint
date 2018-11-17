@@ -158,8 +158,6 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
 
   const handleLock = async (event) => {
     try {
-      // TODO @abdulov remove console.log
-      console.log('%c handleLock', 'background: #222; color: #fff', event)
       const params = event.returnValues
       const tokens = getTokens(getState())
       const token = tokens.getByAddress(params.token)

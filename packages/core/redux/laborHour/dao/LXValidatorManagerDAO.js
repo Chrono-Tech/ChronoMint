@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import BigNumber from 'bignumber.js'
 import AbstractContractDAO from '../../../dao/AbstractContractDAO'
 
 export default class LXValidatorManagerDAO extends AbstractContractDAO {

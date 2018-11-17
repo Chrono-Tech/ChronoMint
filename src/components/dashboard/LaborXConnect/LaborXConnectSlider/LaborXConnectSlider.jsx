@@ -27,7 +27,8 @@ export default class LaborXConnectSlider extends PureComponent {
     return this.props.input.onChange(parseFloat(v))
   }
 
-  handleMax = () => {
+  handleMax = (e) => {
+    e.stopPropagation()
     return this.handleChange(null, this.props.max)
   }
 
@@ -71,11 +72,10 @@ export default class LaborXConnectSlider extends PureComponent {
           max={max}
           step={step}
         />
-        <button styleName='max' onClick={this.handleMax}>
+        <button styleName='max' type='button' onClick={this.handleMax}>
           <Translate value={`${prefix}.max`} />
         </button>
-        {meta.dirty &&
-          meta.error && <div styleName='error'>{meta.error}</div>}
+        {meta.dirty && meta.error && <div styleName='error'>{meta.error}</div>}
       </div>
     )
   }

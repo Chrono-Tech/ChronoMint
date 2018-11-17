@@ -13,6 +13,7 @@ import Amount from '@chronobank/core/models/Amount'
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
 import LaborXConnectWidget from 'components/Deposits/LaborXConnectWidget/LaborXConnectWidget'
 import LaborXRewardsWidget from 'components/dashboard/LaborXRewardsWidget/LaborXRewardsWidget'
+import { updateTimeHolderBalances } from '@chronobank/core/redux/laborHour/thunks/transactions'
 import './MiningContent.scss'
 
 function mapStateToProps (state) {
@@ -24,6 +25,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     initAssetsHolder: () => dispatch(initAssetsHolder()),
+    initLXTimeHolder: ()=> dispatch(updateTimeHolderBalances()),
     addDeposit: (props) => dispatch(modalsOpen({
       componentName: 'DepositTokensModal',
       props,
@@ -36,11 +38,13 @@ export default class MiningContent extends Component {
   static propTypes = {
     deposit: PropTypes.instanceOf(Amount),
     initAssetsHolder: PropTypes.func,
+    initLXTimeHolder:  PropTypes.func,
     addDeposit: PropTypes.func,
   }
 
   componentDidMount () {
     this.props.initAssetsHolder()
+    this.props.initLXTimeHolder()
   }
 
   render () {
