@@ -5,14 +5,17 @@
 
 import * as validator from '@chronobank/core/models/validator'
 import ErrorList from 'utils/ErrorList'
+import { FORM_LABOR_X_CONNECT } from '../../constants'
 
 export default (values, props) => {
   const max = props.miningBalance.plus(props.deposit)
   const amount = values.get('amount')
 
   const amountErrors = new ErrorList()
-  amountErrors.add(validator.required(amount))
-  amountErrors.add(validator.positiveNumber(amount))
+  if (props.form === FORM_LABOR_X_CONNECT) {
+    amountErrors.add(validator.required(amount))
+    amountErrors.add(validator.positiveNumber(amount))
+  }
 
   amountErrors.add(validator.lowerThan(amount, max.toNumber(), true))
 

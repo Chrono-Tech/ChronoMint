@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import BigNumber from 'bignumber.js'
 import Amount from '../../models/Amount'
 import AssetModel from '../../models/assetHolder/AssetModel'
 import TokenModel from '../../models/tokens/TokenModel'
@@ -34,6 +35,10 @@ import { getTokens } from '../tokens/selectors'
 import ErrorNoticeModel from '../../models/notices/ErrorNoticeModel'
 import { TX_APPROVE } from '../../dao/constants/ChronoBankPlatformDAO'
 import { updateMiningNodeType } from '../laborHour/actions'
+import { updateLaborHourBalances, updateTimeHolderBalances } from '../laborHour/thunks/transactions'
+import { getMainLaborHourWallet } from '../laborHour/selectors/mainSelectors'
+import SidechainMiddlewareService from '../laborHour/SidechainMiddlewareService'
+import { obtainSwapByMiddlewareFromSidechainToMainnet, unlockShares } from '../laborHour/thunks/sidechainToMainnet'
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const assetHolder = getState().get(DUCK_ASSETS_HOLDER)
@@ -188,12 +193,36 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
 
   assetHolderDAO.watchLock(handleLock)
   assetHolderDAO.watchUnlockShares((event) => {
-    // TODO @abdulov remove console.log
-    console.log('%c event', 'background: #222; color: #fff', event)
+    const { amount, token: tokenAddress } = event.returnValues
+    const token = getTokens(getState()).getByAddress(tokenAddress.toLowerCase())
+
+    dispatch(
+      notify(
+        new SimpleNoticeModel({
+          title: 'assetsHolder.withdraw.title',
+          message: 'assetsHolder.withdraw.message',
+          params: {
+            amount: token.removeDecimals(new BigNumber(amount)),
+            symbol: token.symbol(),
+          },
+        }),
+      ),
+    )
+
+    dispatch(updateLaborHourBalances())
+    dispatch(updateTimeHolderBalances())
+    dispatch(fetchAssetDeposit(token))
   })
-  assetHolderDAO.watchRegisterUnlockShares((event) => {
-    // TODO @abdulov remove console.log
-    console.log('%c event', 'background: #222; color: #fff', event)
+  assetHolderDAO.watchRegisterUnlockShares(async () => {
+    const lhtWallet = getMainLaborHourWallet(getState())
+    const { data } = await SidechainMiddlewareService.getSwapListFromSidechainToMainnetByAddress(lhtWallet.address)
+    const swap = data[data.length - 1] // last swap.
+    if (swap) {
+      const { data } = await dispatch(obtainSwapByMiddlewareFromSidechainToMainnet(swap.swapId))
+      if (data) {
+        dispatch(unlockShares(swap.swapId, data))
+      }
+    }
   })
 }
 

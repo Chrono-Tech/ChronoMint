@@ -17,7 +17,7 @@ import AllowanceModel from '@chronobank/core/models/wallet/AllowanceModel'
 import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import {
-  getLXDeposit, getLXLockedDeposit,
+  getLXDeposit, getLXLockedDeposit, getLXToken,
   getMainLaborHourWallet,
   getMiningParams,
 } from '@chronobank/core/redux/laborHour/selectors/mainSelectors'
@@ -59,6 +59,7 @@ function mapStateToProps (state, ownProps) {
   const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
 
   const token = tokens.item(tokenId)
+  const timeTokenLX = getLXToken(TIME)(state)
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
   const balance = wallet.balances[tokenId] || new Amount(0, tokenId)
   const balanceEth = wallet.balances[ETH] || new Amount(0, ETH)
@@ -80,6 +81,7 @@ function mapStateToProps (state, ownProps) {
     spender,
     amount,
     token,
+    timeTokenLX,
     feeMultiplier,
     tokens,
     assets,
@@ -119,6 +121,7 @@ export default class LaborXConnect extends PureComponent {
     sidechainWithdraw: PropTypes.func,
     balanceEth: PropTypes.instanceOf(Amount),
     token: PropTypes.instanceOf(TokenModel),
+    timeTokenLX: PropTypes.instanceOf(TokenModel),
     assets: PropTypes.instanceOf(AssetsCollection),
     initAssetsHolder: PropTypes.func,
     handleSubmitSuccess: PropTypes.func,
@@ -227,6 +230,7 @@ export default class LaborXConnect extends PureComponent {
       amount,
       assets,
       token,
+      timeTokenLX,
       deposit,
       balanceEth,
       onChangeField,
@@ -260,6 +264,7 @@ export default class LaborXConnect extends PureComponent {
         deposit={deposit}
         balanceEth={balanceEth}
         token={token}
+        timeTokenLX={timeTokenLX}
         miningBalance={miningBalance}
         assets={assets}
         initialValues={{

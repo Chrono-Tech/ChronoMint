@@ -45,6 +45,7 @@ export default class LaborXConnectSettingsForm extends PureComponent {
     assets: PropTypes.instanceOf(AssetsCollection),
     amount: PropTypes.number,
     lhtWallet: PropTypes.instanceOf(WalletModel),
+    timeTokenLX: PropTypes.instanceOf(TokenModel),
     miningParams: PropTypes.shape({
       minDepositLimit: PropTypes.string,
       rewardsCoefficient: PropTypes.string,
@@ -84,7 +85,7 @@ export default class LaborXConnectSettingsForm extends PureComponent {
         .set('action', TX_UNLOCK)
     }
 
-    this.props.onSubmit(resultValues.set('token', this.props.token))
+    this.props.onSubmit(resultValues.set('token', this.props.timeTokenLX))
   }
 
   renderHead () {

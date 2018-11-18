@@ -39,6 +39,7 @@ export default class LaborXConnectForm extends PureComponent {
     assets: PropTypes.instanceOf(AssetsCollection),
     amount: PropTypes.number,
     miningParams: PropTypes.objectOf(PropTypes.string),
+    timeTokenLX: PropTypes.instanceOf(TokenModel),
     ...formPropTypes,
   }
 

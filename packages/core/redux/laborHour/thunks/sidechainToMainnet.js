@@ -28,7 +28,7 @@ export const sidechainWithdraw = (
   // feeMultiplier
 ) => async (dispatch, getState) => {
   try {
-    const platformDao = daoByType('ChronoBankPlatformSidechain')(getState())
+    const timeHolderDAO = daoByType('TimeHolderSidechain')(getState())
     const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
     const mainEthWallet = getMainEthWallet(getState())
 
@@ -41,10 +41,7 @@ export const sidechainWithdraw = (
     const [chainId, nonce] = await Promise.all(promises)
 
     const tx = {
-      ...platformDao.revokeAsset(
-        web3Converter.stringToBytes(token.symbol()),
-        amount,
-      ),
+      ...timeHolderDAO.withdrawShares(token.address(), amount),
       gas: 5700000, // TODO @Abdulov remove hard code and do something
       gasPrice: 80000000000,
       nonce: nonce,

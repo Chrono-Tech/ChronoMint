@@ -797,6 +797,10 @@ export default {
   assetsHolder: {
     locked: 'Locked',
     lockedMessage: 'Locked %{amount} %{symbol}',
+    withdraw: {
+      title: 'Mining',
+      message: '%{amount} %{symbol} was moved to mainnet deposit',
+    },
   },
   atomicSwapERC20: {
     lock: {
