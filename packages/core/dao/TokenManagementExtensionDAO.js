@@ -26,6 +26,10 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
       .on('error', this.handleEventsError)
   }
 
+  getSymbol () {
+    return 'ETH'
+  }
+
   async createAssetWithFee (token: TokenModel) {
     const fee = token.fee()
     const tx = this._tx(
@@ -47,12 +51,22 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
   }
 
   async createAssetWithoutFee (token: TokenModel) {
+    console.log('createAssetWithoutFee: ',   [
+      this.web3.utils.fromAscii(token.symbol()),
+      token.symbol(),
+      token.name(),
+      token.addDecimals(token.totalSupply()),
+      +token.decimals(),
+      token.isReissuable().value(),
+      token.icon() ? web3Converter.ipfsHashToBytes32(token.icon()) : this.web3.utils.fromAscii(''),
+    ])
+
     const tx = this._tx(
       TX_CREATE_ASSET_WITHOUT_FEE,
       [
         this.web3.utils.fromAscii(token.symbol()),
         token.symbol(),
-        token.name(),
+        token.symbol(),
         token.addDecimals(token.totalSupply()),
         +token.decimals(),
         token.isReissuable().value(),

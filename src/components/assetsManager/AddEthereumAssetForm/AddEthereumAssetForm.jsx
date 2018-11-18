@@ -12,7 +12,7 @@ import { MenuItem } from '@material-ui/core'
 import Select from 'redux-form-material-ui/es/Select'
 import { createPlatformAndAsset } from '@chronobank/core/redux/assetsManager/actions'
 import { FORM_ADD_NEW_ASSET_ETHEREUM, DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsManager/constants'
-import { Field, reduxForm } from 'redux-form/immutable'
+import { Field, formValueSelector, reduxForm } from 'redux-form/immutable'
 import Button from 'components/common/ui/Button/Button'
 import Slider from 'components/common/Slider'
 import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/wallets/constants'
@@ -21,6 +21,8 @@ import './AddEthereumAssetForm.scss'
 import { prefix } from './lang'
 import validate from './validate'
 
+const CREATE_NEW_DIRECTORY = 'createNewDirectory'
+
 const onSubmit = async (values, dispatch) => {
   await dispatch(createPlatformAndAsset(values))
 }
@@ -28,8 +30,10 @@ const onSubmit = async (values, dispatch) => {
 function mapStateToProps (state) {
   const assetsManager = state.get(DUCK_ASSETS_MANAGER)
   const form = state.get('form').get(FORM_ADD_NEW_ASSET_ETHEREUM)
+  const selector = formValueSelector(FORM_ADD_NEW_ASSET_ETHEREUM)
 
   return {
+    directoryNameSelectValue: selector(state, 'directoryNameSelect'),
     formValues: form && form.get('values'),
     formErrors: (form && form.get('syncErrors')) || {},
     directoryList: assetsManager.usersPlatforms() || [],
@@ -43,8 +47,8 @@ function mapStateToProps (state) {
       assetType: 'ERC20',
       assetName: 'Asset simple name',
       symbol: 'SBL23',
-      smallestUnit: 0.0000001,
-      issueAmount: 1111111,
+      smallestUnit: '0.0000001',
+      amount: '1111111',
       withFee: false,
       feeMultiplier: 1,
     },
@@ -53,12 +57,11 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps () {
   return {
-    // onSubmit: onSubmit,
   }
 }
 
-@reduxForm({ form: FORM_ADD_NEW_ASSET_ETHEREUM, validate })
 @connect(mapStateToProps, mapDispatchToProps)
+@reduxForm({ form: FORM_ADD_NEW_ASSET_ETHEREUM, validate })
 export default class AddEthereumAssetForm extends PureComponent {
   static propTypes = {
     directoryList: PropTypes.arrayOf(PropTypes.shape({
@@ -75,12 +78,14 @@ export default class AddEthereumAssetForm extends PureComponent {
     const directoryList = this.props.directoryList
     return directoryList.concat({
       name: I18n.t(`${prefix}.createNewDirectory`),
-      value: 'createNewDirectory',
+      address: CREATE_NEW_DIRECTORY, // select value
     })
   }
 
   render () {
-    const { assetTypeList, submitting, handleSubmit } = this.props
+    const { assetTypeList, submitting, handleSubmit, directoryNameSelectValue } = this.props
+    const isDisplayDirectory = directoryNameSelectValue === CREATE_NEW_DIRECTORY
+    console.log('Render form: ', this.props)
 
     return (
       <div styleName='root'>
@@ -90,15 +95,17 @@ export default class AddEthereumAssetForm extends PureComponent {
               <Field
                 component={Select}
                 name='directoryNameSelect'
+                placeholder={'Select directory name'}
                 styleName='select-field'
                 menu-symbol='symbolSelectorMenu'
                 floatinglabelstyle={{ color: 'white' }}
               >
                 {this.getDirectoryList().map((directory) => {
-                  return (<MenuItem key={directory.name} value={directory.address}>{directory.name || directory.address}</MenuItem>)
+                  return (<MenuItem key={directory.address} value={directory.address}>{directory.name || directory.address}</MenuItem>)
                 })}
               </Field>
             </div>
+            { isDisplayDirectory &&
             <div styleName='form-row'>
               <Field
                 component={TextField}
@@ -106,7 +113,7 @@ export default class AddEthereumAssetForm extends PureComponent {
                 placeholder={I18n.t(`${prefix}.directoryName`)}
                 fullWidth
               />
-            </div>
+            </div> }
             <div styleName='form-row'>
               <Field
                 component={Select}

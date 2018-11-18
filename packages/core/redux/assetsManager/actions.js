@@ -189,9 +189,11 @@ export const createPlatformAndAsset = (formValues) => async (dispatch, getState)
 
     const platformEvent = await dispatch(createPlatformAwaitEvent(formValues))
 
-    // const platformAddress = '0xa74cCAD48792d219806Bb23Df9c1ED2953fee3C8'
+    console.log('platformEvent: ', platformEvent)
+    // const platformAddress = '0x595ba513b197Ff0CE67226992e275AeDB78188b8'
+    // const token = createTokenModel(formValues, platformAddress.toLowerCase())
 
-    const token = createTokenModel(formValues, platformAddress.toLowerCase())
+    const token = createTokenModel(formValues, platformEvent.returnValues.toLowerCase())
 
     console.log('token: ', token.toJS())
 

@@ -91,6 +91,7 @@ export const FUNCTION_CREATE_ASSET_WITHOUT_FEE = new TransactionDescriber(
 export const FUNCTION_CREATE_PLATFORM = new TransactionDescriber(
   findFunctionABI(PlatformsManagerABI, TX_CREATE_PLATFORM),
   ({ tx, block }, { address }) => {
+    console.log('FUNCTION_CREATE_PLATFORM: ', address)
     address = address.toLowerCase()
 
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {

@@ -75,6 +75,9 @@ export function mapStateToProps (state, ownProps) {
     gasLimit,
     gweiPerGas,
     gasPriceMultiplier: getGasPriceMultiplier(token.blockchain())(state),
+    initialValues: {
+      recipient: '0x237192391',
+    },
   }
 }
 
