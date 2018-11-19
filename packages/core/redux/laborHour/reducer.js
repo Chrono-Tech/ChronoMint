@@ -140,12 +140,13 @@ const mutations = {
       },
     }
   },
-  [LABOR_HOUR_UPDATE_MINING_NODE_TYPE]: (state, { isCustomNode }) => {
+  [LABOR_HOUR_UPDATE_MINING_NODE_TYPE]: (state, { isCustomNode, delegateAddress }) => {
     return {
       ...state,
       miningParams: {
         ...state.miningParams,
         isCustomNode,
+        delegateAddress,
       },
     }
   },

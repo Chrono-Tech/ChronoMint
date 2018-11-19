@@ -190,7 +190,7 @@ export default class LaborXConnect extends PureComponent {
 
   handleSubmit = (values) => {
     const token = values.get('token')
-    const amount = new Amount(values.get('amount'), token.id())
+    const amount = values.get('amount')
     const feeMultiplier = values.get('feeMultiplier') || 1
     const isCustomNode = values.get('isCustomNode')
     const delegateAddress = values.get('delegateAddress')
@@ -199,14 +199,14 @@ export default class LaborXConnect extends PureComponent {
       case TX_LOCK:
         this.props.onCloseModal()
         return this.props.lockDeposit(
-          amount,
+          new Amount(amount, token.id()),
           token,
           !!isCustomNode,
           feeMultiplier,
         )
       case TX_UNLOCK:
         return this.props.sidechainWithdraw(
-          amount,
+          new Amount(amount, token.id()),
           token,
           !!isCustomNode,
           delegateAddress,

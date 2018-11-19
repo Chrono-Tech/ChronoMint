@@ -26,7 +26,6 @@ export const startMiningInPoll = () => async (dispatch, getState) => {
   // timeHolder#deposit
   const tx = {
     ...timeDao.transfer(wallet.address, timeHolderDao.address, timeBalance),
-    // ...timeHolderDao.deposit(timeToken.address(), timeBalance),
     gas: 5700000, // TODO @Abdulov remove hard code and do something
     gasPrice: 80000000000,
     nonce: nonce,

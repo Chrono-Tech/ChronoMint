@@ -9,9 +9,10 @@ import {
   laborHourProvider,
 } from '@chronobank/login/network/LaborHourProvider'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
+import { TIME } from '@chronobank/login/network/constants'
 import {
   daoByType,
-  getMainLaborHourWallet,
+  getLXToken,
   web3Selector,
 } from '../selectors/mainSelectors'
 import {
@@ -65,13 +66,11 @@ export const initLaborHour = ({ web3 }) => async (dispatch) => {
 
 const getParams = () => async (dispatch, getState) => {
   const state = getState()
-  const wallet = getMainLaborHourWallet(state)
+  const lxTimeToken = getLXToken(TIME)(state)
   const timeHolder = daoByType('TimeHolderSidechain')(state)
   const lxValidatorManager = daoByType('LXValidatorManagerSidechain')(state)
 
-  const minDepositLimit = await timeHolder.getMiningDepositLimits(
-    wallet.address,
-  )
+  const minDepositLimit = await timeHolder.getMiningDepositLimits(lxTimeToken.address())
   const rewardsCoefficient = await lxValidatorManager.getDefaultRewardCoefficient()
   dispatch(
     LXSidechainActions.updateMiningParams(minDepositLimit, rewardsCoefficient),

@@ -28,12 +28,12 @@ export const watch = () => (dispatch, getState) => {
   atomicSwapERC20DAO.watchEvent(EVENT_EXPIRE, (event) => dispatch(expireCallback(event)))
 
   const timeHolderDAO = daoByType('TimeHolderSidechain')(getState())
-  timeHolderDAO.watchEvent(EVENT_DEPOSIT, (/*event*/) => {
-    const { isCustomNode } = getMiningParams(getState())
+  timeHolderDAO.watchEvent(EVENT_DEPOSIT, (event) => {
+    const { isCustomNode, delegateAddress } = getMiningParams(getState())
     dispatch(updateLaborHourBalances())
     dispatch(updateTimeHolderBalances())
     if (isCustomNode) {
-      dispatch(startMiningInCustomNode())
+      dispatch(startMiningInCustomNode(delegateAddress))
     }
   })
   timeHolderDAO.watchEvent(EVENT_BECOME_MINER, (/*event*/) => {
