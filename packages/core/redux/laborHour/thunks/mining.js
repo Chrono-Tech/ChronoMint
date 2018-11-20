@@ -10,7 +10,7 @@ import { executeLaborHourTransaction } from './transactions'
 import { daoByType, getMainLaborHourWallet, getLXToken, getLXDeposit } from '../selectors/mainSelectors'
 import { updateMiningNodeType } from '../actions'
 
-export const startMiningInPoll = () => async (dispatch, getState) => {
+export const depositInSidechain = () => async (dispatch, getState) => {
   const state = getState()
   const timeHolderDao = daoByType('TimeHolderSidechain')(state)
   const timeDao = daoByType(TIME)(state)

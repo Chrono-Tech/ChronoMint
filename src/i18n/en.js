@@ -802,6 +802,24 @@ export default {
       message: '%{amount} %{symbol} was moved to mainnet deposit',
     },
   },
+  timeHolder: {
+    resignMiner: {
+      title: 'SIDECHAIN',
+      message: '',
+    },
+    withdrawShares: {
+      title: 'SIDECHAIN',
+      message: '',
+    },
+    becomeMiner: {
+      title: 'SIDECHAIN',
+      message: 'Locked funds on deposit: %{amount} %{symbol}. Mining has been started (delegate’s address %{miner}).',
+    },
+    deposit: {
+      title: 'SIDECHAIN',
+      message: 'Mining deposit was increased on %{amount} %{symbol}',
+    },
+  },
   atomicSwapERC20: {
     lock: {
       title: 'SIDECHAIN',

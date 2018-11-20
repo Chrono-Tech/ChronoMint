@@ -316,12 +316,13 @@ export const lockDeposit = (
   amount: Amount,
   token: TokenModel,
   isCustomNode: boolean,
+  delegateAddress,
   feeMultiplier: number = 1,
 ) => async (dispatch, getState) => {
   try {
     const state = getState()
     const assetHolderDAO = daoByType('TimeHolder')(state)
-    dispatch(updateMiningNodeType(isCustomNode))
+    dispatch(updateMiningNodeType(isCustomNode, delegateAddress))
     const tx = assetHolderDAO.lock(token.address(), amount)
     if (tx) {
       await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))

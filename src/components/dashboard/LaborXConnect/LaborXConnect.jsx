@@ -2,6 +2,7 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
+
 import { isTestingNetwork } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import Amount from '@chronobank/core/models/Amount'
@@ -37,7 +38,7 @@ import {
 } from '@chronobank/core/redux/laborHour/dao/TimeHolderDAO'
 import AssetsCollection from '@chronobank/core/models/assetHolder/AssetsCollection'
 import { FORM_LABOR_X_CONNECT_SETTINGS } from 'components/constants'
-import { startMiningInCustomNode, startMiningInPoll } from '@chronobank/core/redux/laborHour/thunks/mining'
+import { startMiningInCustomNode, depositInSidechain } from '@chronobank/core/redux/laborHour/thunks/mining'
 import { sidechainWithdraw } from '@chronobank/core/redux/laborHour/thunks/sidechainToMainnet'
 import LaborXConnectForm from './LaborXConnectForm'
 import './LaborXConnect.scss'
@@ -101,14 +102,15 @@ function mapStateToProps (state, ownProps) {
 function mapDispatchToProps (dispatch, ownProps) {
   return {
     initAssetsHolder: () => dispatch(initAssetsHolder()),
-    lockDeposit: (amount, token) => dispatch(lockDeposit(amount, token)),
+    lockDeposit: (amount, token, isCustomNode, delegateAddress, feeMultiplier) =>
+      dispatch(lockDeposit(amount, token, isCustomNode, delegateAddress, feeMultiplier)),
     sidechainWithdraw: (amount, token) => dispatch(sidechainWithdraw(amount, token)),
     onChangeField: (field, value) => dispatch(change(ownProps.formName, field, value)),
     handleEstimateGas: (mode, params, callback, gasPriceMultiplier) =>
       dispatch(
         estimateGasForAssetHolder(mode, params, callback, gasPriceMultiplier),
       ),
-    handleStartMiningInPool: () => dispatch(startMiningInPoll()),
+    handleStartMiningInPool: () => dispatch(depositInSidechain()),
     handleStartMiningInCustomNode: (delegateAddress) => dispatch(startMiningInCustomNode(delegateAddress)),
   }
 }
@@ -197,9 +199,11 @@ export default class LaborXConnect extends PureComponent {
           new Amount(amount, token.id()),
           token,
           !!isCustomNode,
+          delegateAddress,
           feeMultiplier,
         )
       case TX_UNLOCK:
+        this.props.onCloseModal()
         return this.props.sidechainWithdraw(
           new Amount(amount, token.id()),
           token,
@@ -208,8 +212,10 @@ export default class LaborXConnect extends PureComponent {
           feeMultiplier,
         )
       case TX_DEPOSIT:
+        this.props.onCloseModal()
         return this.props.handleStartMiningInPool()
       case TX_START_MINING_IN_CUSTOM_NODE:
+        this.props.onCloseModal()
         return this.props.handleStartMiningInCustomNode(delegateAddress)
     }
   }
@@ -248,7 +254,10 @@ export default class LaborXConnect extends PureComponent {
         break
     }
 
-    const miningBalance = lhtWallet.balances[TIME].plus(lxDeposit || 0).plus(lxLockedDeposit || 0)
+    const miningBalance = new Amount(lhtWallet.balances[TIME] || 0, TIME)
+      .plus(lxDeposit || 0)
+      .plus(lxLockedDeposit || 0)
+
     const firstAsset = assets.first()
     return (
       <Component

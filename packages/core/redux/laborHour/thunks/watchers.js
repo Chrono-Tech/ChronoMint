@@ -14,7 +14,7 @@ import web3Converter from '../../../utils/Web3Converter'
 import { closeSwap, obtainSwapByMiddlewareFromMainnetToSidechain } from './mainnetToSidechain'
 import { executeLaborHourTransaction, updateLaborHourBalances, updateTimeHolderBalances } from './transactions'
 import { EVENT_BECOME_MINER, EVENT_DEPOSIT, EVENT_RESIGN_MINER, EVENT_WITHDRAW_SHARES } from '../dao/TimeHolderDAO'
-import { startMiningInCustomNode, startMiningInPoll } from './mining'
+import { startMiningInCustomNode, depositInSidechain } from './mining'
 
 // eslint-disable-next-line
 export const watch = () => (dispatch, getState) => {
@@ -87,7 +87,7 @@ const closeCallback = (event) => async (dispatch) => {
     ),
   )
   await dispatch(updateLaborHourBalances())
-  dispatch(startMiningInPoll())
+  dispatch(depositInSidechain())
 }
 
 const expireCallback = (event) => (dispatch) => {
@@ -105,16 +105,51 @@ const expireCallback = (event) => (dispatch) => {
   )
 }
 
-const depositCallback = (/*event*/) => (dispatch, getState) => {
+const depositCallback = (event) => async (dispatch, getState) => {
+  const { token: tokenAddress, amount } = event.returnValues
+  const timeToken = getLXTokenByAddress(tokenAddress.toLowerCase())(getState())
+  dispatch(
+    notify(
+      new SimpleNoticeModel({
+        icon: 'lock',
+        title: 'timeHolder.deposit.title',
+        message: 'timeHolder.deposit.message',
+        params: {
+          symbol: timeToken.symbol(),
+          amount: timeToken.removeDecimals(amount).toNumber(),
+        },
+      }),
+    ),
+  )
   const { isCustomNode, delegateAddress } = getMiningParams(getState())
-  dispatch(updateLaborHourBalances())
-  dispatch(updateTimeHolderBalances())
+  await Promise.all([
+    dispatch(updateLaborHourBalances()),
+    dispatch(updateTimeHolderBalances()),
+  ])
+  // TODO @abdulov remove console.log
+  console.log('%c isCustomNode, delegateAddress', 'background: #222; color: #fff', isCustomNode, delegateAddress)
   if (isCustomNode) {
     dispatch(startMiningInCustomNode(delegateAddress))
   }
 }
 
-const becomeMinerCallback = (/*event*/) => (dispatch) => {
+const becomeMinerCallback = (event) => (dispatch, getState) => {
+  const { token: tokenAddress, miner, totalDepositLocked } = event.returnValues
+  const timeToken = getLXTokenByAddress(tokenAddress.toLowerCase())(getState())
+  dispatch(
+    notify(
+      new SimpleNoticeModel({
+        icon: 'lock',
+        title: 'timeHolder.becomeMiner.title',
+        message: 'timeHolder.becomeMiner.message',
+        params: {
+          miner,
+          amount: timeToken.removeDecimals(totalDepositLocked).toNumber(),
+          symbol: timeToken.symbol(),
+        },
+      }),
+    ),
+  )
   dispatch(updateLaborHourBalances())
   dispatch(updateTimeHolderBalances())
 }
