@@ -126,8 +126,6 @@ const depositCallback = (event) => async (dispatch, getState) => {
     dispatch(updateLaborHourBalances()),
     dispatch(updateTimeHolderBalances()),
   ])
-  // TODO @abdulov remove console.log
-  console.log('%c isCustomNode, delegateAddress', 'background: #222; color: #fff', isCustomNode, delegateAddress)
   if (isCustomNode) {
     dispatch(startMiningInCustomNode(delegateAddress))
   }
@@ -156,9 +154,24 @@ const becomeMinerCallback = (event) => (dispatch, getState) => {
 
 const withdrawSharesCallback = (event) => async (dispatch, getState) => {
   try {
+    const { token: tokenAddress, amount } = event.returnValues
+    const timeToken = getLXTokenByAddress(tokenAddress.toLowerCase())(getState())
+    dispatch(
+      notify(
+        new SimpleNoticeModel({
+          icon: 'lock',
+          title: 'timeHolder.withdrawShares.title',
+          message: 'timeHolder.withdrawShares.message',
+          params: {
+            amount: timeToken.removeDecimals(amount).toNumber(),
+            symbol: timeToken.symbol(),
+          },
+        }),
+      ),
+    )
+
     await dispatch(updateLaborHourBalances())
     const lhtWallet = getMainLaborHourWallet(getState())
-    const { token: tokenAddress } = event.returnValues
     const token = getLXTokenByAddress(tokenAddress.toLowerCase())(getState())
     const platformDao = daoByType('ChronoBankPlatformSidechain')(getState())
     const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
@@ -179,7 +192,7 @@ const withdrawSharesCallback = (event) => async (dispatch, getState) => {
       nonce: nonce,
       chainId: chainId,
     }
-    dispatch(executeLaborHourTransaction({ tx }))
+    await dispatch(executeLaborHourTransaction({ tx }))
   } catch (e) {
     // eslint-disable-next-line
     console.error('deposit error', e)

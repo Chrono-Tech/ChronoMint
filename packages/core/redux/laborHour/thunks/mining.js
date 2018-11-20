@@ -7,7 +7,7 @@ import { TIME } from '@chronobank/core/dao/constants'
 import { LABOR_HOUR_NETWORK_CONFIG } from '@chronobank/login/network/settings'
 import web3Factory from '../../../web3'
 import { executeLaborHourTransaction } from './transactions'
-import { daoByType, getMainLaborHourWallet, getLXToken, getLXDeposit } from '../selectors/mainSelectors'
+import { daoByType, getMainLaborHourWallet, getLXToken, getLXDeposit, getMiningParams } from '../selectors/mainSelectors'
 import { updateMiningNodeType } from '../actions'
 
 export const depositInSidechain = () => async (dispatch, getState) => {
@@ -59,4 +59,14 @@ export const startMiningInCustomNode = (delegateAddress) => async (dispatch, get
     chainId: chainId,
   }
   dispatch(executeLaborHourTransaction({ tx }))
+}
+
+export const checkDepositBalanceAndStartMiningInCustomNode = () => (dispatch, getState) => {
+  const state = getState()
+  const wallet = getMainLaborHourWallet(state)
+  const deposit = getLXDeposit(wallet.address)(state)
+  const { isCustomNode, delegateAddress } = getMiningParams(getState())
+  if (isCustomNode && delegateAddress && deposit.gt(0)) {
+    dispatch(startMiningInCustomNode(delegateAddress))
+  }
 }

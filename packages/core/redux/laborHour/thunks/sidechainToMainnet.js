@@ -6,14 +6,17 @@
 //#region imports
 import { LABOR_HOUR_NETWORK_CONFIG } from '@chronobank/login/network/settings'
 import web3Factory from '../../../web3'
-import { daoByType, getLXDeposit, getLXLockedDeposit, getMainLaborHourWallet } from '../selectors/mainSelectors'
+import {
+  daoByType,
+  getLXLockedDeposit,
+  getMainLaborHourWallet,
+} from '../selectors/mainSelectors'
 import { daoByType as daoByTypeMainnet } from '../../daos/selectors'
 import Amount from '../../../models/Amount'
 import web3Converter from '../../../utils/Web3Converter'
 import TokenModel from '../../../models/tokens/TokenModel'
 import SidechainMiddlewareService from '../SidechainMiddlewareService'
 import { getEthereumSigner } from '../../persistAccount/selectors'
-import { getMainEthWallet } from '../../wallets/selectors/models'
 import { executeTransaction } from '../../ethereum/thunks'
 import { executeLaborHourTransaction } from './transactions'
 import { updateMiningNodeType } from '../actions'
@@ -25,7 +28,7 @@ export const sidechainWithdraw = (
   token: TokenModel,
   isCustomNode,
   delegateAddress,
-  // feeMultiplier
+  // feeMultiplier,
 ) => async (dispatch, getState) => {
   try {
     dispatch(updateMiningNodeType(isCustomNode, delegateAddress))

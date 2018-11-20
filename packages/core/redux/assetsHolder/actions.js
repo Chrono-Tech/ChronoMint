@@ -39,6 +39,7 @@ import { updateLaborHourBalances, updateTimeHolderBalances } from '../laborHour/
 import { getMainLaborHourWallet } from '../laborHour/selectors/mainSelectors'
 import SidechainMiddlewareService from '../laborHour/SidechainMiddlewareService'
 import { obtainSwapByMiddlewareFromSidechainToMainnet, unlockShares } from '../laborHour/thunks/sidechainToMainnet'
+import { checkDepositBalanceAndStartMiningInCustomNode } from '../laborHour/thunks/mining'
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const assetHolder = getState().get(DUCK_ASSETS_HOLDER)
@@ -192,7 +193,7 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
   }
 
   assetHolderDAO.watchLock(handleLock)
-  assetHolderDAO.watchUnlockShares((event) => {
+  assetHolderDAO.watchUnlockShares(async (event) => {
     const { amount, token: tokenAddress } = event.returnValues
     const token = getTokens(getState()).getByAddress(tokenAddress.toLowerCase())
 
@@ -209,9 +210,13 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
       ),
     )
 
-    dispatch(updateLaborHourBalances())
-    dispatch(updateTimeHolderBalances())
-    dispatch(fetchAssetDeposit(token))
+    await Promise.all([
+      dispatch(updateLaborHourBalances()),
+      dispatch(updateTimeHolderBalances()),
+      dispatch(fetchAssetDeposit(token)),
+    ])
+    // need for start mining if user select mining in custom node
+    dispatch(checkDepositBalanceAndStartMiningInCustomNode())
   })
   assetHolderDAO.watchRegisterUnlockShares(async () => {
     const lhtWallet = getMainLaborHourWallet(getState())

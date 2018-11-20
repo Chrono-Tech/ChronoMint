@@ -809,7 +809,7 @@ export default {
     },
     withdrawShares: {
       title: 'SIDECHAIN',
-      message: '',
+      message: 'Withdrawn %{amount} %{symbol}',
     },
     becomeMiner: {
       title: 'SIDECHAIN',

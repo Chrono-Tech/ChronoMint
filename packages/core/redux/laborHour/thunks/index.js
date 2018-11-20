@@ -62,6 +62,7 @@ export const initLaborHour = ({ web3 }) => async (dispatch) => {
   await dispatch(watch())
   await dispatch(getSwapList())
   await dispatch(getParams())
+  await dispatch(obtainAllOpenSwaps())
 }
 
 const getParams = () => async (dispatch, getState) => {

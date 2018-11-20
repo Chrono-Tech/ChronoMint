@@ -69,6 +69,7 @@ export default class LaborXConnectSettingsForm extends PureComponent {
         // use custom node
         resultValues = values.set('action', TX_START_MINING_IN_CUSTOM_NODE)
       } else {
+        // TODO @Abdulov IMPLEMENT CORRECT METHOD
         // use chronobank pull
         resultValues = values.set('action', TX_DEPOSIT)
       }

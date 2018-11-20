@@ -104,7 +104,8 @@ function mapDispatchToProps (dispatch, ownProps) {
     initAssetsHolder: () => dispatch(initAssetsHolder()),
     lockDeposit: (amount, token, isCustomNode, delegateAddress, feeMultiplier) =>
       dispatch(lockDeposit(amount, token, isCustomNode, delegateAddress, feeMultiplier)),
-    sidechainWithdraw: (amount, token) => dispatch(sidechainWithdraw(amount, token)),
+    sidechainWithdraw: (amount, token, isCustomNode, delegateAddress, feeMultiplier) =>
+      dispatch(sidechainWithdraw(amount, token, isCustomNode, delegateAddress, feeMultiplier)),
     onChangeField: (field, value) => dispatch(change(ownProps.formName, field, value)),
     handleEstimateGas: (mode, params, callback, gasPriceMultiplier) =>
       dispatch(

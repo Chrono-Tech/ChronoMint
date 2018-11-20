@@ -38,7 +38,11 @@ export default class LaborXConnectForm extends PureComponent {
     token: PropTypes.instanceOf(TokenModel),
     assets: PropTypes.instanceOf(AssetsCollection),
     amount: PropTypes.number,
-    miningParams: PropTypes.objectOf(PropTypes.string),
+    miningParams: PropTypes.shape({
+      minDepositLimit: PropTypes.string,
+      rewardsCoefficient: PropTypes.string,
+      isCustomNode: PropTypes.bool,
+    }),
     timeTokenLX: PropTypes.instanceOf(TokenModel),
     ...formPropTypes,
   }
@@ -52,7 +56,7 @@ export default class LaborXConnectForm extends PureComponent {
   handleProceed = (values) => {
     this.setState({ step: LABOR_X_CONNECT_SECOND })
     this.props.onSubmit(
-      values.set('action', TX_LOCK).set('token', this.props.token)
+      values.set('action', TX_LOCK).set('token', this.props.token),
     )
   }
 
@@ -121,7 +125,7 @@ export default class LaborXConnectForm extends PureComponent {
         onClick: handleSubmit(this.handleProceed),
         topValue: new Amount(
           amountBN.mul(rewardsCoefficient).mul(CHRONOBANK_NODE_FEE_COEFFICIENT),
-          'LHT'
+          'LHT',
         ), // 10% chronobank fee
         button: {
           styleName: 'blue',
@@ -172,15 +176,18 @@ export default class LaborXConnectForm extends PureComponent {
     const buttons = [
       {
         title: 'winNode',
-        onClick: () => {},
+        onClick: () => {
+        },
       },
       {
         title: 'macNode',
-        onClick: () => {},
+        onClick: () => {
+        },
       },
       {
         title: 'linuxNode',
-        onClick: () => {},
+        onClick: () => {
+        },
       },
     ]
     return (
