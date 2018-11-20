@@ -199,9 +199,13 @@ export default class LaborXConnectSettingsForm extends PureComponent {
   }
 
   renderFooter () {
+    const { pristine, invalid } = this.props
     return (
       <div styleName='footer'>
-        <Button onClick={this.props.handleSubmit(this.handleProceed)}>
+        <Button
+          onClick={this.props.handleSubmit(this.handleProceed)}
+          disabled={pristine || invalid}
+        >
           <Translate value={`${prefix}.accept`} />
         </Button>
       </div>

@@ -154,11 +154,6 @@ export default class LaborXConnect extends PureComponent {
     this.props.initAssetsHolder()
   }
 
-  componentWillReceiveProps (newProps) {
-    const firstAsset = newProps.assets.first()
-    this.props.onChangeField('symbol', firstAsset.symbol())
-  }
-
   handleGetGasPrice = (
     action: string,
     amount: number,
@@ -254,6 +249,7 @@ export default class LaborXConnect extends PureComponent {
     }
 
     const miningBalance = lhtWallet.balances[TIME].plus(lxDeposit || 0).plus(lxLockedDeposit || 0)
+    const firstAsset = assets.first()
     return (
       <Component
         miningParams={miningParams}
@@ -270,6 +266,7 @@ export default class LaborXConnect extends PureComponent {
         initialValues={{
           amount: miningBalance.toNumber(),
           isCustomNode: false,
+          symbol: firstAsset.symbol(),
         }}
         onSubmit={this.handleSubmit}
         onSubmitSuccess={this.handleSubmitSuccess}
