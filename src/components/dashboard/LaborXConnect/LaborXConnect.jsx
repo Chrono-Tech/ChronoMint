@@ -275,7 +275,7 @@ export default class LaborXConnect extends PureComponent {
         assets={assets}
         initialValues={{
           amount: miningBalance.toNumber(),
-          isCustomNode: false,
+          isCustomNode: lxLockedDeposit.gt(0),
           symbol: firstAsset.symbol(),
         }}
         onSubmit={this.handleSubmit}

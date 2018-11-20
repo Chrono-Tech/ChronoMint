@@ -72,11 +72,12 @@ export const getSwapList = () => async (dispatch, getState) => {
   } = await SidechainMiddlewareService.getSwapListFromMainnetToSidechainByAddress(
     wallet.address
   )
-  data.forEach((swap) => {
-    if (swap.isActive) {
-      dispatch(LXSidechainActions.swapUpdate(swap))
-    }
-  })
+  // useless
+  // data.forEach((swap) => {
+  //   if (swap.isActive) {
+  //     dispatch(LXSidechainActions.swapUpdate(swap))
+  //   }
+  // })
   return data
 }
 
@@ -87,7 +88,7 @@ export const obtainAllOpenSwaps = () => async (dispatch, getState) => {
   Object.values(swaps).forEach((swap) => {
     if (swap.isActive) {
       swap.isActive = false
-      dispatch(LXSidechainActions.swapUpdate(swap))
+      // dispatch(LXSidechainActions.swapUpdate(swap))
       promises.push(dispatch(obtainSwapByMiddlewareFromMainnetToSidechain(swap.swapId)))
     }
   })

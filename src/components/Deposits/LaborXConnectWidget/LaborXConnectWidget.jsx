@@ -209,6 +209,31 @@ export default class LaborXConnectWidget extends PureComponent {
             fractionPrecision={8}
             withFraction
           />
+          <br />
+          balance
+          <br />
+          <TokenValueSimple
+            value={lhtWallet.balances[TIME]}
+            fractionPrecision={8}
+            withFraction
+          />
+          <br />
+          deposit
+          <br />
+          <TokenValueSimple
+            value={lxDeposit}
+            fractionPrecision={8}
+            withFraction
+          />
+          <br />
+          locked deposit
+          <br />
+          <TokenValueSimple
+            value={lxLockedDeposit}
+            fractionPrecision={8}
+            withFraction
+          />
+
         </div>
 
         <div styleName='infoList'>
