@@ -11,37 +11,27 @@ import { EVENT_CLOSE, EVENT_EXPIRE, EVENT_OPEN, EVENT_REVOKE } from '../constant
 import { notify } from '../../notifier/actions'
 import SimpleNoticeModel from '../../../models/notices/SimpleNoticeModel'
 import web3Converter from '../../../utils/Web3Converter'
-import { getMainEthWallet } from '../../wallets/selectors/models'
 import { closeSwap, obtainSwapByMiddlewareFromMainnetToSidechain } from './mainnetToSidechain'
 import { executeLaborHourTransaction, updateLaborHourBalances, updateTimeHolderBalances } from './transactions'
-import { EVENT_BECOME_MINER, EVENT_DEPOSIT, EVENT_WITHDRAW_SHARES } from '../dao/TimeHolderDAO'
+import { EVENT_BECOME_MINER, EVENT_DEPOSIT, EVENT_RESIGN_MINER, EVENT_WITHDRAW_SHARES } from '../dao/TimeHolderDAO'
 import { startMiningInCustomNode, startMiningInPoll } from './mining'
 
 // eslint-disable-next-line
 export const watch = () => (dispatch, getState) => {
   const chronoBankPlatformSidechainDAO = daoByType('ChronoBankPlatformSidechain')(getState())
+  const atomicSwapERC20DAO = daoByType('AtomicSwapERC20')(getState())
+  const timeHolderDAO = daoByType('TimeHolderSidechain')(getState())
+
   chronoBankPlatformSidechainDAO.watchEvent(EVENT_REVOKE, (event) => dispatch(revokeCallback(event)))
 
-  const atomicSwapERC20DAO = daoByType('AtomicSwapERC20')(getState())
   atomicSwapERC20DAO.watchEvent(EVENT_OPEN, (event) => dispatch(openCallback(event)))
   atomicSwapERC20DAO.watchEvent(EVENT_CLOSE, (event) => dispatch(closeCallback(event)))
   atomicSwapERC20DAO.watchEvent(EVENT_EXPIRE, (event) => dispatch(expireCallback(event)))
 
-  const timeHolderDAO = daoByType('TimeHolderSidechain')(getState())
-  timeHolderDAO.watchEvent(EVENT_DEPOSIT, (event) => {
-    const { isCustomNode, delegateAddress } = getMiningParams(getState())
-    dispatch(updateLaborHourBalances())
-    dispatch(updateTimeHolderBalances())
-    if (isCustomNode) {
-      dispatch(startMiningInCustomNode(delegateAddress))
-    }
-  })
-  timeHolderDAO.watchEvent(EVENT_BECOME_MINER, (/*event*/) => {
-    dispatch(updateLaborHourBalances())
-    dispatch(updateTimeHolderBalances())
-  })
-
+  timeHolderDAO.watchEvent(EVENT_DEPOSIT, (event) => (dispatch(depositCallback(event))))
+  timeHolderDAO.watchEvent(EVENT_BECOME_MINER, (event) => dispatch(becomeMinerCallback(event)))
   timeHolderDAO.watchEvent(EVENT_WITHDRAW_SHARES, (event) => dispatch(withdrawSharesCallback(event)))
+  timeHolderDAO.watchEvent(EVENT_RESIGN_MINER, (event) => dispatch(resignMinerCallback(event)))
 }
 
 const revokeCallback = (event) => async (dispatch, getState) => {
@@ -83,7 +73,7 @@ const openCallback = (event) => async (dispatch) => {
   }
 }
 
-const closeCallback = (event) => async (dispatch, getState) => {
+const closeCallback = (event) => async (dispatch) => {
   const { _swapID: swapId } = event.returnValues
   dispatch(
     notify(
@@ -97,12 +87,7 @@ const closeCallback = (event) => async (dispatch, getState) => {
     ),
   )
   await dispatch(updateLaborHourBalances())
-  const { isCustomNode } = getMiningParams(getState())
-  if (isCustomNode) {
-    dispatch(startMiningInCustomNode())
-  } else {
-    dispatch(startMiningInPoll())
-  }
+  dispatch(startMiningInPoll())
 }
 
 const expireCallback = (event) => (dispatch) => {
@@ -120,6 +105,20 @@ const expireCallback = (event) => (dispatch) => {
   )
 }
 
+const depositCallback = (/*event*/) => (dispatch, getState) => {
+  const { isCustomNode, delegateAddress } = getMiningParams(getState())
+  dispatch(updateLaborHourBalances())
+  dispatch(updateTimeHolderBalances())
+  if (isCustomNode) {
+    dispatch(startMiningInCustomNode(delegateAddress))
+  }
+}
+
+const becomeMinerCallback = (/*event*/) => (dispatch) => {
+  dispatch(updateLaborHourBalances())
+  dispatch(updateTimeHolderBalances())
+}
+
 const withdrawSharesCallback = (event) => async (dispatch, getState) => {
   try {
     await dispatch(updateLaborHourBalances())
@@ -128,11 +127,10 @@ const withdrawSharesCallback = (event) => async (dispatch, getState) => {
     const token = getLXTokenByAddress(tokenAddress.toLowerCase())(getState())
     const platformDao = daoByType('ChronoBankPlatformSidechain')(getState())
     const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
-    const mainEthWallet = getMainEthWallet(getState())
 
     const promises = [
       web3.eth.net.getId(),
-      web3.eth.getTransactionCount(mainEthWallet.address, 'pending'),
+      web3.eth.getTransactionCount(lhtWallet.address, 'pending'),
     ]
     const [chainId, nonce] = await Promise.all(promises)
 
@@ -147,6 +145,16 @@ const withdrawSharesCallback = (event) => async (dispatch, getState) => {
       chainId: chainId,
     }
     dispatch(executeLaborHourTransaction({ tx }))
+  } catch (e) {
+    // eslint-disable-next-line
+    console.error('deposit error', e)
+  }
+}
+
+const resignMinerCallback = (/*event*/) => (dispatch) => {
+  try {
+    dispatch(updateLaborHourBalances())
+    dispatch(updateTimeHolderBalances())
   } catch (e) {
     // eslint-disable-next-line
     console.error('deposit error', e)

@@ -10,9 +10,11 @@ import Amount from '../../../models/Amount'
 export const TX_DEPOSIT = 'deposit'
 export const TX_START_MINING_IN_CUSTOM_NODE = 'lockDepositAndBecomeMiner'
 export const TX_WITHDRAW_SHARES = 'withdrawShares'
+export const TX_UNLOCK_DEPOSIT_AND_RESIGN_MINER = 'unlockDepositAndResignMiner'
 export const EVENT_DEPOSIT = 'Deposit'
 export const EVENT_BECOME_MINER = 'BecomeMiner'
 export const EVENT_WITHDRAW_SHARES = 'WithdrawShares'
+export const EVENT_RESIGN_MINER = 'ResignMiner'
 
 export default class TimeHolderDAO extends AbstractContractDAO {
   constructor ({ address, history, abi }) {
@@ -66,5 +68,9 @@ export default class TimeHolderDAO extends AbstractContractDAO {
 
   withdrawShares (tokenAddress, amount) {
     return this._tx(TX_WITHDRAW_SHARES, [tokenAddress, new BigNumber(amount)])
+  }
+
+  unlockDepositAndResignMiner (tokenAddress) {
+    return this._tx(TX_UNLOCK_DEPOSIT_AND_RESIGN_MINER, [tokenAddress])
   }
 }

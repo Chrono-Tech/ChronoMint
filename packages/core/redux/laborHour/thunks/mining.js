@@ -16,7 +16,6 @@ export const startMiningInPoll = () => async (dispatch, getState) => {
   const timeDao = daoByType(TIME)(state)
   const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
   const wallet = getMainLaborHourWallet(state)
-  const timeBalance = wallet.balances[TIME]
 
   const [chainId, nonce] = await Promise.all([
     web3.eth.net.getId(),
@@ -25,7 +24,11 @@ export const startMiningInPoll = () => async (dispatch, getState) => {
 
   // timeHolder#deposit
   const tx = {
-    ...timeDao.transfer(wallet.address, timeHolderDao.address, timeBalance),
+    ...timeDao.transfer(
+      wallet.address,
+      timeHolderDao.address,
+      wallet.balances[TIME],
+    ),
     gas: 5700000, // TODO @Abdulov remove hard code and do something
     gasPrice: 80000000000,
     nonce: nonce,

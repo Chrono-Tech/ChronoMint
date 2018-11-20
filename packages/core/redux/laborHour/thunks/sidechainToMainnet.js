@@ -6,7 +6,7 @@
 //#region imports
 import { LABOR_HOUR_NETWORK_CONFIG } from '@chronobank/login/network/settings'
 import web3Factory from '../../../web3'
-import { daoByType } from '../selectors/mainSelectors'
+import { daoByType, getLXDeposit, getLXLockedDeposit, getMainLaborHourWallet } from '../selectors/mainSelectors'
 import { daoByType as daoByTypeMainnet } from '../../daos/selectors'
 import Amount from '../../../models/Amount'
 import web3Converter from '../../../utils/Web3Converter'
@@ -28,25 +28,38 @@ export const sidechainWithdraw = (
   // feeMultiplier
 ) => async (dispatch, getState) => {
   try {
+    dispatch(updateMiningNodeType(isCustomNode, delegateAddress))
     const timeHolderDAO = daoByType('TimeHolderSidechain')(getState())
     const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
-    const mainEthWallet = getMainEthWallet(getState())
-
-    dispatch(updateMiningNodeType(isCustomNode, delegateAddress))
+    const lhthWallet = getMainLaborHourWallet(getState())
+    const lockedDeposit = getLXLockedDeposit(lhthWallet.address)(getState())
 
     const promises = [
       web3.eth.net.getId(),
-      web3.eth.getTransactionCount(mainEthWallet.address, 'pending'),
+      web3.eth.getTransactionCount(lhthWallet.address, 'pending'),
     ]
     const [chainId, nonce] = await Promise.all(promises)
 
-    const tx = {
-      ...timeHolderDAO.withdrawShares(token.address(), amount),
-      gas: 5700000, // TODO @Abdulov remove hard code and do something
-      gasPrice: 80000000000,
-      nonce: nonce,
-      chainId: chainId,
+    let tx
+    if (lockedDeposit.gt(0)) {
+      // TODO @Abdulov CHECK AND FIX THIS CASE
+      tx = {
+        ...timeHolderDAO.unlockDepositAndResignMiner(token.address()),
+        gas: 5700000, // TODO @Abdulov remove hard code and do something
+        gasPrice: 80000000000,
+        nonce: nonce,
+        chainId: chainId,
+      }
+    } else {
+      tx = {
+        ...timeHolderDAO.withdrawShares(token.address(), amount),
+        gas: 5700000, // TODO @Abdulov remove hard code and do something
+        gasPrice: 80000000000,
+        nonce: nonce,
+        chainId: chainId,
+      }
     }
+
     dispatch(executeLaborHourTransaction({ tx }))
   } catch (e) {
     // eslint-disable-next-line
