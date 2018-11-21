@@ -805,7 +805,7 @@ export default {
   timeHolder: {
     resignMiner: {
       title: 'SIDECHAIN',
-      message: '',
+      message: '%{amount} %{symbol} was unlocked',
     },
     withdrawShares: {
       title: 'SIDECHAIN',

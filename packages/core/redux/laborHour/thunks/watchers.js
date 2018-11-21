@@ -199,10 +199,32 @@ const withdrawSharesCallback = (event) => async (dispatch, getState) => {
   }
 }
 
-const resignMinerCallback = (/*event*/) => (dispatch) => {
+const resignMinerCallback = (event) => async (dispatch, getState) => {
   try {
-    dispatch(updateLaborHourBalances())
-    dispatch(updateTimeHolderBalances())
+    const { token: tokenAddress, depositUnlocked } = event.returnValues
+    const timeToken = getLXTokenByAddress(tokenAddress.toLowerCase())(getState())
+    dispatch(
+      notify(
+        new SimpleNoticeModel({
+          icon: 'lock',
+          title: 'timeHolder.resignMiner.title',
+          message: 'timeHolder.resignMiner.message',
+          params: {
+            amount: timeToken.removeDecimals(depositUnlocked).toNumber(),
+            symbol: timeToken.symbol(),
+          },
+        }),
+      ),
+    )
+
+    const { isCustomNode, delegateAddress } = getMiningParams(getState())
+    await Promise.all([
+      dispatch(updateLaborHourBalances()),
+      dispatch(updateTimeHolderBalances()),
+    ])
+    if (isCustomNode && delegateAddress) {
+      dispatch(startMiningInCustomNode(delegateAddress))
+    }
   } catch (e) {
     // eslint-disable-next-line
     console.error('deposit error', e)
