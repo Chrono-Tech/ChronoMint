@@ -16,10 +16,9 @@ class LoginWithTrezor extends Component {
     navigateToDerivationPathForm: PropTypes.func,
   }
 
-  componentWillUnmount () {
-  }
+  renderDeviceItem = (item, i) => {
+    console.log('renderDeviceItem: ', item, i)
 
-  _buildItem = (item, i) => {
     return (
       <div
         key={i}
@@ -42,7 +41,7 @@ class LoginWithTrezor extends Component {
     )
   }
 
-  renderStates () {
+  renderError () {
     return (
       <div styleName='state' key='1'>
         <div styleName='titleContent'>
@@ -53,8 +52,20 @@ class LoginWithTrezor extends Component {
     )
   }
 
+  renderLoading () {
+    return (
+      <div styleName='state' key='1'>
+        <div styleName='titleContent'>
+          <div styleName='title'>Loading</div>
+        </div>
+      </div>
+    )
+  }
+
   render () {
     const { previousPage, deviceList, navigateToDerivationPathForm } = this.props
+
+    console.log('LoginWithTrezor deviceList: ', deviceList)
 
     return (
       <div styleName='form'>
@@ -64,7 +75,7 @@ class LoginWithTrezor extends Component {
         {
           !deviceList.length && (
             <div styleName='states'>
-              {this.renderStates()}
+              {this.renderLoading()}
             </div>
           )
         }
@@ -72,7 +83,7 @@ class LoginWithTrezor extends Component {
         {
           deviceList.length > 0 && (
             <div styleName='account'>
-              {deviceList.map(this._buildItem)}
+              {deviceList.map(this.renderDeviceItem)}
             </div>
           )
         }

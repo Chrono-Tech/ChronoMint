@@ -33,9 +33,12 @@ export default class EthereumTrezorDevice {
   async getAddressInfoList (from: number = 0, limit: number = 5): String {
     if (!this.xpubkey) {
       const result = await TrezorConnect.getPublicKey({ path: DEFAULT_PATH })
+      console.log('getAddressInfoList: result: ', result)
       const { xpub } = result.payload
       this.xpubkey = xpub
     }
+    console.log('getAddressInfoList: ', this.xpubkey)
+
     const hdKey = hdkey.fromExtendedKey(this.xpubkey)
     return Array.from({ length: limit }).map((element, index) => {
       const wallet = hdKey.deriveChild(from + index).getWallet()

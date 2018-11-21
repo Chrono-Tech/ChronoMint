@@ -18,17 +18,25 @@ export default (state = initialState, action) => {
         ...state,
         selectedWallet: action.wallet,
       }
-
     case a.DEVICE_UPDATE_LIST:
       return {
         ...state,
         deviceList: action.deviceList,
       }
-
-    case a.DEVICE_SET_STATUS:
+    case a.STATE_LOADING:
       return {
         ...state,
-        isLoading: action.deviceStatus,
+        status: a.STATE_LOADING,
+      }
+    case a.STATE_LOADED:
+      return {
+        ...state,
+        status: a.STATE_LOADED,
+      }
+    case a.STATE_ERROR:
+      return {
+        ...state,
+        status: a.STATE_ERROR,
       }
 
     default:
