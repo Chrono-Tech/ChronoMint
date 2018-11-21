@@ -38,14 +38,13 @@ export const depositInSidechain = () => async (dispatch, getState) => {
 }
 
 export const startMiningInCustomNode = (delegateAddress) => async (dispatch, getState) => {
-  dispatch(updateMiningNodeType(true, delegateAddress))
+  dispatch(updateMiningNodeType({ delegateAddress }))
   const state = getState()
   const dao = daoByType('TimeHolderSidechain')(state)
   const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
   const wallet = getMainLaborHourWallet(state)
   const timeToken = getLXToken(TIME)(state)
   const deposit = getLXDeposit(wallet.address)(state)
-  const lockedDeposit = getLXLockedDeposit(wallet.address)(state)
   const [chainId, nonce] = await Promise.all([
     web3.eth.net.getId(),
     web3.eth.getTransactionCount(wallet.address, 'pending'),
@@ -53,9 +52,7 @@ export const startMiningInCustomNode = (delegateAddress) => async (dispatch, get
 
   // timeHolder#lockDepositAndBecomeMiner
   const tx = {
-    ...(lockedDeposit.gt(0)
-      ? dao.unlockDepositAndResignMiner(timeToken.address())
-      : dao.lockDepositAndBecomeMiner(timeToken.address(), deposit, delegateAddress)),
+    ...dao.lockDepositAndBecomeMiner(timeToken.address(), deposit, delegateAddress),
     gas: 5700000, // TODO @Abdulov remove hard code and do something
     gasPrice: 80000000000,
     nonce: nonce,

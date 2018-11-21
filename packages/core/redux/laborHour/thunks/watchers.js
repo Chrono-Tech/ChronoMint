@@ -217,14 +217,10 @@ const resignMinerCallback = (event) => async (dispatch, getState) => {
       ),
     )
 
-    const { isCustomNode, delegateAddress } = getMiningParams(getState())
     await Promise.all([
       dispatch(updateLaborHourBalances()),
       dispatch(updateTimeHolderBalances()),
     ])
-    if (isCustomNode && delegateAddress) {
-      dispatch(startMiningInCustomNode(delegateAddress))
-    }
   } catch (e) {
     // eslint-disable-next-line
     console.error('deposit error', e)

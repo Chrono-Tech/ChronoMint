@@ -33,6 +33,10 @@ export default class TimeHolderDAO extends AbstractContractDAO {
       .on('data', this.handleEventsData)
   }
 
+  once (event, callback) {
+    this.history.events[event]({}).once('data', callback)
+  }
+
   watchEvent (eventName, callback) {
     return this.on(eventName, callback)
   }

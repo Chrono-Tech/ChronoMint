@@ -21,6 +21,7 @@ import { executeTransaction } from '../../ethereum/thunks'
 import { executeLaborHourTransaction } from './transactions'
 import { updateMiningNodeType } from '../actions'
 import { notifyUnknownError } from './utilsThunks'
+import { EVENT_RESIGN_MINER } from '../dao/TimeHolderDAO'
 //#endregion
 
 export const sidechainWithdraw = (
@@ -30,8 +31,9 @@ export const sidechainWithdraw = (
   delegateAddress,
   // feeMultiplier,
 ) => async (dispatch, getState) => {
+
   try {
-    dispatch(updateMiningNodeType(isCustomNode, delegateAddress))
+    dispatch(updateMiningNodeType({ isCustomNode, delegateAddress }))
     const timeHolderDAO = daoByType('TimeHolderSidechain')(getState())
     const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
     const lhthWallet = getMainLaborHourWallet(getState())
@@ -43,27 +45,33 @@ export const sidechainWithdraw = (
     ]
     const [chainId, nonce] = await Promise.all(promises)
 
-    let tx
-    if (lockedDeposit.gt(0)) {
-      // TODO @Abdulov CHECK AND FIX THIS CASE
-      tx = {
-        ...timeHolderDAO.unlockDepositAndResignMiner(token.address()),
-        gas: 5700000, // TODO @Abdulov remove hard code and do something
-        gasPrice: 80000000000,
-        nonce: nonce,
-        chainId: chainId,
-      }
-    } else {
-      tx = {
+    const withdraw = () => {
+      const tx = {
         ...timeHolderDAO.withdrawShares(token.address(), amount),
         gas: 5700000, // TODO @Abdulov remove hard code and do something
         gasPrice: 80000000000,
         nonce: nonce,
         chainId: chainId,
       }
+
+      dispatch(executeLaborHourTransaction({ tx }))
     }
 
-    dispatch(executeLaborHourTransaction({ tx }))
+    if (lockedDeposit.gt(0)) {
+      const tx = {
+        ...timeHolderDAO.unlockDepositAndResignMiner(token.address()),
+        gas: 5700000, // TODO @Abdulov remove hard code and do something
+        gasPrice: 80000000000,
+        nonce: nonce,
+        chainId: chainId,
+      }
+      dispatch(executeLaborHourTransaction({ tx }))
+      timeHolderDAO.once(EVENT_RESIGN_MINER, () => {
+        withdraw()
+      })
+    } else {
+      withdraw()
+    }
   } catch (e) {
     // eslint-disable-next-line
     console.error('deposit error', e)

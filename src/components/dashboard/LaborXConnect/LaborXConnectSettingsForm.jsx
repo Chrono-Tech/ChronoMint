@@ -81,6 +81,7 @@ export default class LaborXConnectSettingsForm extends PureComponent {
         .set('amount', realValue)
         .set('action', TX_LOCK)
         .set('token', this.props.token)
+
     }
     if (realValue.lt(0)) {
       // withdraw tokens to mainnet
@@ -88,6 +89,7 @@ export default class LaborXConnectSettingsForm extends PureComponent {
         .set('amount', realValue.abs())
         .set('action', TX_UNLOCK)
         .set('token', this.props.timeTokenLX)
+
     }
 
     this.props.onSubmit(resultValues)

@@ -88,11 +88,15 @@ export const updateMiningParams = (minDepositLimit, rewardsCoefficient) =>
     rewardsCoefficient,
   })
 
-export const updateMiningNodeType = (isCustomNode, delegateAddress) =>
+/**
+ *
+ * @param miningParams { isCustomNode, delegateAddress }
+ * @returns {{type: string, isCustomNode: *, delegateAddress: *}}
+ */
+export const updateMiningNodeType = (miningParams) =>
   ({
     type: LABOR_HOUR_UPDATE_MINING_NODE_TYPE,
-    isCustomNode,
-    delegateAddress,
+    miningParams,
   })
 
 export const updateDeposit = (address, amount) =>
