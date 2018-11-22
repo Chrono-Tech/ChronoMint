@@ -69,9 +69,10 @@ export default class LaborXConnectSettingsForm extends PureComponent {
         // use custom node
         resultValues = values.set('action', TX_START_MINING_IN_CUSTOM_NODE)
       } else {
-        // TODO @Abdulov IMPLEMENT CORRECT METHOD
         // use chronobank pull
-        resultValues = values.set('action', TX_DEPOSIT)
+        resultValues = values
+          .set('action', TX_DEPOSIT)
+          .set('token', this.props.timeTokenLX)
       }
     }
 
@@ -83,6 +84,7 @@ export default class LaborXConnectSettingsForm extends PureComponent {
         .set('token', this.props.token)
 
     }
+
     if (realValue.lt(0)) {
       // withdraw tokens to mainnet
       resultValues = values

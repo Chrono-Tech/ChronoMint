@@ -38,7 +38,7 @@ import {
 } from '@chronobank/core/redux/laborHour/dao/TimeHolderDAO'
 import AssetsCollection from '@chronobank/core/models/assetHolder/AssetsCollection'
 import { FORM_LABOR_X_CONNECT_SETTINGS } from 'components/constants'
-import { startMiningInCustomNode, depositInSidechain } from '@chronobank/core/redux/laborHour/thunks/mining'
+import { startMiningInCustomNode, unlockLockedDeposit } from '@chronobank/core/redux/laborHour/thunks/mining'
 import { sidechainWithdraw } from '@chronobank/core/redux/laborHour/thunks/sidechainToMainnet'
 import LaborXConnectForm from './LaborXConnectForm'
 import './LaborXConnect.scss'
@@ -111,7 +111,7 @@ function mapDispatchToProps (dispatch, ownProps) {
       dispatch(
         estimateGasForAssetHolder(mode, params, callback, gasPriceMultiplier),
       ),
-    handleStartMiningInPool: () => dispatch(depositInSidechain()),
+    handleUnlockDeposit: (token) => dispatch(unlockLockedDeposit(token)),
     handleStartMiningInCustomNode: (delegateAddress) => dispatch(startMiningInCustomNode(delegateAddress)),
   }
 }
@@ -138,7 +138,7 @@ export default class LaborXConnect extends PureComponent {
       isCustomNode: PropTypes.bool,
     }),
     isCustomNode: PropTypes.bool,
-    handleStartMiningInPool: PropTypes.func,
+    handleUnlockDeposit: PropTypes.func,
     handleStartMiningInCustomNode: PropTypes.func,
     onCloseModal: PropTypes.func,
     lxDeposit: PropTypes.instanceOf(Amount),
@@ -214,7 +214,7 @@ export default class LaborXConnect extends PureComponent {
         )
       case TX_DEPOSIT:
         this.props.onCloseModal()
-        return this.props.handleStartMiningInPool()
+        return this.props.handleUnlockDeposit(token)
       case TX_START_MINING_IN_CUSTOM_NODE:
         this.props.onCloseModal()
         return this.props.handleStartMiningInCustomNode(delegateAddress)

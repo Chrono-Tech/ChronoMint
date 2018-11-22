@@ -7,8 +7,9 @@ import { TIME } from '@chronobank/core/dao/constants'
 import { LABOR_HOUR_NETWORK_CONFIG } from '@chronobank/login/network/settings'
 import web3Factory from '../../../web3'
 import { executeLaborHourTransaction } from './transactions'
-import { daoByType, getMainLaborHourWallet, getLXToken, getLXDeposit, getMiningParams, getLXLockedDeposit } from '../selectors/mainSelectors'
+import { daoByType, getMainLaborHourWallet, getLXToken, getLXDeposit, getMiningParams } from '../selectors/mainSelectors'
 import { updateMiningNodeType } from '../actions'
+import TokenModel from '../../../models/tokens/TokenModel'
 
 export const depositInSidechain = () => async (dispatch, getState) => {
   const state = getState()
@@ -69,4 +70,28 @@ export const checkDepositBalanceAndStartMiningInCustomNode = () => (dispatch, ge
   if (isCustomNode && delegateAddress && deposit.gt(0)) {
     dispatch(startMiningInCustomNode(delegateAddress))
   }
+}
+
+export const unlockLockedDeposit = (token: TokenModel) => async (dispatch, getState) => {
+
+  dispatch(updateMiningNodeType({ delegateAddress: null, isCustomNode: null }))
+
+  const lhthWallet = getMainLaborHourWallet(getState())
+  const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
+  const timeHolderDAO = daoByType('TimeHolderSidechain')(getState())
+  const promises = [
+    web3.eth.net.getId(),
+    web3.eth.getTransactionCount(lhthWallet.address, 'pending'),
+  ]
+  const [chainId, nonce] = await Promise.all(promises)
+
+  const tx = {
+    ...timeHolderDAO.unlockDepositAndResignMiner(token.address()),
+    gas: 5700000, // TODO @Abdulov remove hard code and do something
+    gasPrice: 80000000000,
+    nonce: nonce,
+    chainId: chainId,
+  }
+
+  dispatch(executeLaborHourTransaction({ tx }))
 }
