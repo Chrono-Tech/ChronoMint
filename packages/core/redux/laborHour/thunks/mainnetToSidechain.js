@@ -16,7 +16,7 @@ import * as LXSidechainActions from '../actions'
 
 export const obtainSwapByMiddlewareFromMainnetToSidechain = (swapId) => async (
   dispatch,
-  getState
+  getState,
 ) => {
   try {
     const signer = getEthereumSigner(getState())
@@ -24,7 +24,7 @@ export const obtainSwapByMiddlewareFromMainnetToSidechain = (swapId) => async (
       data,
     } = await SidechainMiddlewareService.obtainSwapFromMainnetToSidechain(
       swapId,
-      signer.getPublicKey()
+      signer.getPublicKey(),
     )
     return Promise.resolve({ e: null, data, swapId })
   } catch (e) {
@@ -37,8 +37,10 @@ export const obtainSwapByMiddlewareFromMainnetToSidechain = (swapId) => async (
 
 export const closeSwap = (encodedKey, swapId, index) => async (
   dispatch,
-  getState
+  getState,
 ) => {
+  // TODO @abdulov remove console.log
+  console.log('%c encodedKey, swapId, index', 'background: #222; color: #fff', encodedKey, swapId, index)
   const dao = daoByType('AtomicSwapERC20')(getState())
   const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
   const mainEthWallet = getMainEthWallet(getState())
@@ -54,7 +56,7 @@ export const closeSwap = (encodedKey, swapId, index) => async (
   const tx = {
     ...dao.close(
       web3Converter.stringToBytes(swapId),
-      web3Converter.stringToBytes(key)
+      web3Converter.stringToBytes(key),
     ),
     gas: 5700000, // TODO @Abdulov remove hard code and do something
     gasPrice: 80000000000,
@@ -70,14 +72,13 @@ export const getSwapList = () => async (dispatch, getState) => {
   const {
     data,
   } = await SidechainMiddlewareService.getSwapListFromMainnetToSidechainByAddress(
-    wallet.address
+    wallet.address,
   )
-  // useless
-  // data.forEach((swap) => {
-  //   if (swap.isActive) {
-  //     dispatch(LXSidechainActions.swapUpdate(swap))
-  //   }
-  // })
+  data.forEach((swap) => {
+    if (swap.isActive) {
+      dispatch(LXSidechainActions.swapUpdate(swap))
+    }
+  })
   return data
 }
 
@@ -88,7 +89,7 @@ export const obtainAllOpenSwaps = () => async (dispatch, getState) => {
   Object.values(swaps).forEach((swap) => {
     if (swap.isActive) {
       swap.isActive = false
-      // dispatch(LXSidechainActions.swapUpdate(swap))
+      dispatch(LXSidechainActions.swapUpdate(swap))
       promises.push(dispatch(obtainSwapByMiddlewareFromMainnetToSidechain(swap.swapId)))
     }
   })

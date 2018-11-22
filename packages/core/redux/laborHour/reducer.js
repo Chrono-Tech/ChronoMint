@@ -141,6 +141,8 @@ const mutations = {
     }
   },
   [LABOR_HOUR_UPDATE_MINING_NODE_TYPE]: (state, { miningParams }) => {
+    // TODO @abdulov remove console.log
+    console.log('%c miningParams', 'background: #222; color: #fff', miningParams)
     return {
       ...state,
       miningParams: {

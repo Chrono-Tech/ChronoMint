@@ -37,6 +37,7 @@ import {
   TX_START_MINING_IN_CUSTOM_NODE,
 } from '@chronobank/core/redux/laborHour/dao/TimeHolderDAO'
 import AssetsCollection from '@chronobank/core/models/assetHolder/AssetsCollection'
+import { updateMiningNodeType } from '@chronobank/core/redux/laborHour/actions'
 import { FORM_LABOR_X_CONNECT_SETTINGS } from 'components/constants'
 import { startMiningInCustomNode, unlockLockedDeposit } from '@chronobank/core/redux/laborHour/thunks/mining'
 import { sidechainWithdraw } from '@chronobank/core/redux/laborHour/thunks/sidechainToMainnet'
@@ -111,7 +112,10 @@ function mapDispatchToProps (dispatch, ownProps) {
       dispatch(
         estimateGasForAssetHolder(mode, params, callback, gasPriceMultiplier),
       ),
-    handleUnlockDeposit: (token) => dispatch(unlockLockedDeposit(token)),
+    handleUnlockDeposit: (token) => {
+      dispatch(updateMiningNodeType({ isCustomNode: false, delegateAddress: null }))
+      dispatch(unlockLockedDeposit(token))
+    },
     handleStartMiningInCustomNode: (delegateAddress) => dispatch(startMiningInCustomNode(delegateAddress)),
   }
 }

@@ -88,6 +88,7 @@ const closeCallback = (event) => async (dispatch) => {
     ),
   )
   await dispatch(updateLaborHourBalances())
+  dispatch(updateTimeHolderBalances())
   dispatch(depositInSidechain())
 }
 
@@ -172,6 +173,7 @@ const withdrawSharesCallback = (event) => async (dispatch, getState) => {
     )
 
     await dispatch(updateLaborHourBalances())
+    dispatch(updateTimeHolderBalances())
     const lhtWallet = getMainLaborHourWallet(getState())
     const token = getLXTokenByAddress(tokenAddress.toLowerCase())(getState())
     const platformDao = daoByType('ChronoBankPlatformSidechain')(getState())

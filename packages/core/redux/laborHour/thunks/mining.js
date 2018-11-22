@@ -8,9 +8,9 @@ import { LABOR_HOUR_NETWORK_CONFIG } from '@chronobank/login/network/settings'
 import web3Factory from '../../../web3'
 import { executeLaborHourTransaction, updateLaborHourBalances, updateTimeHolderBalances } from './transactions'
 import { daoByType, getMainLaborHourWallet, getLXToken, getLXDeposit, getMiningParams, getLXLockedDeposit } from '../selectors/mainSelectors'
-import { updateMiningNodeType } from '../actions'
 import TokenModel from '../../../models/tokens/TokenModel'
 import { EVENT_RESIGN_MINER } from '../dao/TimeHolderDAO'
+import { updateMiningNodeType } from '../actions'
 
 export const depositInSidechain = () => async (dispatch, getState) => {
   const state = getState()
@@ -41,7 +41,7 @@ export const depositInSidechain = () => async (dispatch, getState) => {
 
 export const startMiningInCustomNode = (delegateAddress) => async (dispatch, getState) => {
 
-  dispatch(updateMiningNodeType({ delegateAddress }))
+  dispatch(updateMiningNodeType({ isCustomNode: true, delegateAddress }))
 
   const state = getState()
   const timeHolderSidechainDAO = daoByType('TimeHolderSidechain')(state)
@@ -96,8 +96,6 @@ export const unlockLockedDeposit = (token: TokenModel) => async (dispatch, getSt
   if (!token || (token && !token.address())) {
     token = getLXToken(TIME)(getState())
   }
-
-  dispatch(updateMiningNodeType({ delegateAddress: null, isCustomNode: null }))
 
   const lhthWallet = getMainLaborHourWallet(getState())
   const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)

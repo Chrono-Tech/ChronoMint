@@ -60,7 +60,7 @@ export const initLaborHour = ({ web3 }) => async (dispatch) => {
   await dispatch(initWalletFromKeys())
   await dispatch(initTokens())
   await dispatch(watch())
-  await dispatch(getSwapList())
+  // await dispatch(getSwapList())
   await dispatch(getParams())
   await dispatch(obtainAllOpenSwaps())
 }
