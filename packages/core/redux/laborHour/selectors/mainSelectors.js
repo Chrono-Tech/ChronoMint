@@ -16,6 +16,11 @@ export const web3Selector = () =>
     return laborHour == null ? null : laborHour.web3.value
   })
 
+export const laborHourInitSelector =
+  createSelector(LXSDuckSelector, (laborHour) => {
+    return laborHour.isInitiated
+  })
+
 export const getWallets = (state) => {
   const { wallets } = LXSDuckSelector(state)
   return wallets

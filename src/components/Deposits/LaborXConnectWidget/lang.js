@@ -20,5 +20,6 @@ export default {
     step3: 'Activate your Deposit on LaborX',
     miningON: 'Mining is ON (ChronoBank)',
     miningOFF: 'Mining is OFF (ChronoBank)',
+    undistributed: 'Undistributed',
   },
 }

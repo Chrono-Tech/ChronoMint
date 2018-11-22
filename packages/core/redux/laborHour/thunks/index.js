@@ -41,7 +41,7 @@ import { BLOCKCHAIN_LABOR_HOUR } from '../../../dao/constants'
 import { getEthereumDerivedPath } from '../../ethereum/utils'
 import { WalletModel } from '../../../models/index'
 import { watch } from './watchers'
-import { getSwapList, obtainAllOpenSwaps } from './mainnetToSidechain'
+import { obtainAllOpenSwaps } from './mainnetToSidechain'
 import {
   estimateLaborHourGas,
   executeLaborHourTransaction,
@@ -63,6 +63,7 @@ export const initLaborHour = ({ web3 }) => async (dispatch) => {
   // await dispatch(getSwapList())
   await dispatch(getParams())
   await dispatch(obtainAllOpenSwaps())
+  dispatch(LXSidechainActions.laborHourInitiated())
 }
 
 const getParams = () => async (dispatch, getState) => {

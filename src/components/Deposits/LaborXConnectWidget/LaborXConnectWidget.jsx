@@ -11,11 +11,12 @@ import { Translate } from 'react-redux-i18n'
 import { ETH, TIME, LHT } from '@chronobank/core/dao/constants'
 import { getDeposit } from '@chronobank/core/redux/assetsHolder/selectors'
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
+import BigNumber from 'bignumber.js'
 import {
   getLXActiveSwapsCount,
   getMainLaborHourWallet,
   getMiningParams,
-  getLXToken, getLXDeposit, getLXLockedDeposit,
+  getLXToken, getLXDeposit, getLXLockedDeposit, laborHourInitSelector,
 } from '@chronobank/core/redux/laborHour/selectors/mainSelectors'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
@@ -26,9 +27,10 @@ import { FORM_LABOR_X_CONNECT_SETTINGS } from 'components/constants'
 import TokenValueSimple from 'components/common/TokenValueSimple/TokenValueSimple'
 import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
 import PropTypes from 'prop-types'
-import LABOR_X_LOGO_SVG from 'assets/img/laborx-icon.svg'
+import LHT_LOGO_SVG from 'assets/img/lht.svg'
 import './LaborXConnectWidget.scss'
 import { prefix } from './lang'
+import Preloader from '../../common/Preloader/Preloader'
 
 const WIDGET_FIRST_STEP = 'First'
 const WIDGET_SECOND_STEP = 'Second'
@@ -41,6 +43,7 @@ function mapStateToProps (state) {
   const lht = getLXToken(LHT)(state)
   const lxDeposit = getLXDeposit(lhtWallet.address)(state)
   const lxLockedDeposit = getLXLockedDeposit(lhtWallet.address)(state)
+  const isLHTInitiated = laborHourInitSelector(state)
   return {
     deposit: getDeposit(TIME)(state),
     lhtWallet,
@@ -50,6 +53,7 @@ function mapStateToProps (state) {
     lht,
     lxDeposit,
     lxLockedDeposit,
+    isLHTInitiated,
   }
 }
 
@@ -102,6 +106,7 @@ export default class LaborXConnectWidget extends PureComponent {
     lht: PropTypes.instanceOf(TokenModel),
     lxDeposit: PropTypes.instanceOf(Amount),
     lxLockedDeposit: PropTypes.instanceOf(Amount),
+    isLHTInitiated: PropTypes.bool,
   }
 
   constructor (props) {
@@ -187,10 +192,13 @@ export default class LaborXConnectWidget extends PureComponent {
     const isLXDeposit = lxDeposit && lxDeposit.gt(0)
     const isLXLockedDeposit = lxLockedDeposit && lxLockedDeposit.gt(0)
     let renderBalance = lhtWallet.balances[TIME]
+    let undistributedValue = new BigNumber(0)
     if (isLXLockedDeposit) {
       renderBalance = lxLockedDeposit
+      undistributedValue = lxDeposit
     } else if (isLXDeposit) {
       renderBalance = lxDeposit
+      undistributedValue = lhtWallet.balances[TIME]
     }
     const isMiningOn = isLXLockedDeposit || isLXDeposit
 
@@ -209,31 +217,6 @@ export default class LaborXConnectWidget extends PureComponent {
             fractionPrecision={8}
             withFraction
           />
-          <br />
-          balance
-          <br />
-          <TokenValueSimple
-            value={lhtWallet.balances[TIME]}
-            fractionPrecision={8}
-            withFraction
-          />
-          <br />
-          deposit
-          <br />
-          <TokenValueSimple
-            value={lxDeposit}
-            fractionPrecision={8}
-            withFraction
-          />
-          <br />
-          locked deposit
-          <br />
-          <TokenValueSimple
-            value={lxLockedDeposit}
-            fractionPrecision={8}
-            withFraction
-          />
-
         </div>
 
         <div styleName='infoList'>
@@ -250,6 +233,17 @@ export default class LaborXConnectWidget extends PureComponent {
               }
             </div>
           </div>
+          {!undistributedValue.eq(0) && (
+            <div styleName='infoItem'>
+              <div styleName='icon'>
+                <div className='chronobank-icon'>warning</div>
+              </div>
+              <div styleName='title'><Translate value={`${prefix}.undistributed`} />: TIME {undistributedValue.toNumber()}</div>
+              <div styleName='buttonWrapper'>
+                <Button>fix</Button>
+              </div>
+            </div>
+          )}
           <div styleName='infoItem'>
             <div styleName='title'>
               Reward: LHT{' '}
@@ -278,22 +272,33 @@ export default class LaborXConnectWidget extends PureComponent {
       <div styleName='header-container'>
         <div styleName='wallet-list-container'>
           <div styleName='wallet-container'>
-            {this.state.step === WIDGET_SECOND_STEP ? (
-              <div styleName='settingsIcon'>
-                <button
-                  className='chronobank-icon'
-                  onClick={this.handleOpenSettings}
-                >
-                  settings
+            <div styleName='icons'>
+              <div styleName='icon'>
+                <button className='chronobank-icon'>
+                  help-outline
                 </button>
               </div>
-            ) : null}
+              {this.state.step === WIDGET_SECOND_STEP
+              && (
+                <div styleName='icon'>
+                  <button
+                    className='chronobank-icon'
+                    onClick={this.handleOpenSettings}
+                  >
+                    settings
+                  </button>
+                </div>
+              )}
+            </div>
             <div styleName='token-container'>
               <div styleName='token-icon'>
-                <IPFSImage styleName='imageIcon' fallback={LABOR_X_LOGO_SVG} />
+                <IPFSImage styleName='imageIcon' fallback={LHT_LOGO_SVG} />
               </div>
             </div>
-            {this.renderStep()}
+            {this.props.isLHTInitiated
+              ? this.renderStep()
+              : <Preloader />
+            }
           </div>
         </div>
       </div>

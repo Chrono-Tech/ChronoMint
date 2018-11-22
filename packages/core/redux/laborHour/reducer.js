@@ -19,10 +19,12 @@ import {
   LABOR_HOUR_UPDATE_MINING_NODE_TYPE,
   LABOR_HOUR_UPDATE_DEPOSIT,
   LABOR_HOUR_UPDATE_LOCKED_DEPOSIT,
+  LABOR_HOUR_INIT_UPDATE,
 } from './constants'
 import TokensCollection from '../../models/tokens/TokensCollection'
 
 const initialState = {
+  isInitiated: false,
   wallets: {},
   pending: {}, // pending transactions
   tokens: new TokensCollection(),
@@ -43,6 +45,12 @@ const mutations = {
     return {
       ...state,
       web3,
+    }
+  },
+  [LABOR_HOUR_INIT_UPDATE]: (state) => {
+    return {
+      ...state,
+      isInitiated: true,
     }
   },
   [LABOR_HOUR_DAOS_REGISTER] (state, { model }) {
@@ -141,8 +149,6 @@ const mutations = {
     }
   },
   [LABOR_HOUR_UPDATE_MINING_NODE_TYPE]: (state, { miningParams }) => {
-    // TODO @abdulov remove console.log
-    console.log('%c miningParams', 'background: #222; color: #fff', miningParams)
     return {
       ...state,
       miningParams: {
