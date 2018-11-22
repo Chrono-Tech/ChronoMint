@@ -72,6 +72,13 @@ export default class LaborXConnectSlider extends PureComponent {
           max={max}
           step={step}
         />
+        {/*<div styleName='wrapper'>*/}
+        {/*<div styleName='slider'>*/}
+        {/*<div styleName='trackDefault' />*/}
+        {/*<div styleName='trackBefore' />*/}
+        {/*</div>*/}
+        {/*<div styleName='track' />*/}
+        {/*</div>*/}
         <button styleName='max' type='button' onClick={this.handleMax}>
           <Translate value={`${prefix}.max`} />
         </button>
