@@ -73,6 +73,9 @@ export const checkDepositBalanceAndStartMiningInCustomNode = () => (dispatch, ge
 }
 
 export const unlockLockedDeposit = (token: TokenModel) => async (dispatch, getState) => {
+  if (!token || (token && !token.address())) {
+    token = getLXToken(TIME)(getState())
+  }
 
   dispatch(updateMiningNodeType({ delegateAddress: null, isCustomNode: null }))
 

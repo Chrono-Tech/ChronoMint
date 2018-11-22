@@ -22,6 +22,7 @@ import { executeLaborHourTransaction } from './transactions'
 import { updateMiningNodeType } from '../actions'
 import { notifyUnknownError } from './utilsThunks'
 import { EVENT_RESIGN_MINER } from '../dao/TimeHolderDAO'
+import { unlockLockedDeposit } from './mining'
 //#endregion
 
 export const sidechainWithdraw = (
@@ -58,14 +59,7 @@ export const sidechainWithdraw = (
     }
 
     if (lockedDeposit.gt(0)) {
-      const tx = {
-        ...timeHolderDAO.unlockDepositAndResignMiner(token.address()),
-        gas: 5700000, // TODO @Abdulov remove hard code and do something
-        gasPrice: 80000000000,
-        nonce: nonce,
-        chainId: chainId,
-      }
-      dispatch(executeLaborHourTransaction({ tx }))
+      dispatch(unlockLockedDeposit(token))
       timeHolderDAO.once(EVENT_RESIGN_MINER, () => {
         withdraw()
       })

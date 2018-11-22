@@ -12,6 +12,11 @@ import { DUCK_SESSION } from '../session/constants'
 import { subscribeOnTokens } from '../tokens/thunks'
 import tokenService from '../../services/TokenService'
 import { daoByType } from '../daos/selectors'
+import {
+  daoByType as daoByTypeSidechain,
+  getLXLockedDeposit,
+  getMainLaborHourWallet,
+} from '../laborHour/selectors/mainSelectors'
 import { BLOCKCHAIN_ETHEREUM, ETH, TIME } from '../../dao/constants'
 import { getWallet } from '../wallets/selectors/models'
 import { WALLETS_UPDATE_WALLET } from '../wallets/constants'
@@ -35,11 +40,20 @@ import { getTokens } from '../tokens/selectors'
 import ErrorNoticeModel from '../../models/notices/ErrorNoticeModel'
 import { TX_APPROVE } from '../../dao/constants/ChronoBankPlatformDAO'
 import { updateMiningNodeType } from '../laborHour/actions'
-import { updateLaborHourBalances, updateTimeHolderBalances } from '../laborHour/thunks/transactions'
-import { getMainLaborHourWallet } from '../laborHour/selectors/mainSelectors'
+import {
+  updateLaborHourBalances,
+  updateTimeHolderBalances,
+} from '../laborHour/thunks/transactions'
 import SidechainMiddlewareService from '../laborHour/SidechainMiddlewareService'
-import { obtainSwapByMiddlewareFromSidechainToMainnet, unlockShares } from '../laborHour/thunks/sidechainToMainnet'
-import { checkDepositBalanceAndStartMiningInCustomNode } from '../laborHour/thunks/mining'
+import {
+  obtainSwapByMiddlewareFromSidechainToMainnet,
+  unlockShares,
+} from '../laborHour/thunks/sidechainToMainnet'
+import {
+  checkDepositBalanceAndStartMiningInCustomNode,
+  unlockLockedDeposit,
+} from '../laborHour/thunks/mining'
+import { EVENT_RESIGN_MINER } from '../laborHour/dao/TimeHolderDAO'
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const assetHolder = getState().get(DUCK_ASSETS_HOLDER)
@@ -327,10 +341,24 @@ export const lockDeposit = (
   try {
     const state = getState()
     const assetHolderDAO = daoByType('TimeHolder')(state)
+    const timeHolderSidechainDAO = daoByTypeSidechain('TimeHolderSidechain')(state)
     dispatch(updateMiningNodeType({ isCustomNode, delegateAddress }))
-    const tx = assetHolderDAO.lock(token.address(), amount)
-    if (tx) {
-      await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
+    const lhtWallet = getMainLaborHourWallet(state)
+    const lxLockedDeposit = getLXLockedDeposit(lhtWallet.address)(state)
+    const lockDeposit = () => {
+      const tx = assetHolderDAO.lock(token.address(), amount)
+      if (tx) {
+        dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
+      }
+    }
+
+    if (lxLockedDeposit.gt(0)) {
+      dispatch(unlockLockedDeposit())
+      timeHolderSidechainDAO.once(EVENT_RESIGN_MINER, () => {
+        lockDeposit()
+      })
+    } else {
+      lockDeposit()
     }
   } catch (e) {
     // eslint-disable-next-line
