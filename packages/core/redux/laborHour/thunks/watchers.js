@@ -37,7 +37,8 @@ export const watch = () => (dispatch, getState) => {
 const revokeCallback = (event) => async (dispatch, getState) => {
   const { symbol, value } = event.returnValues
   const token = getLXToken(web3Converter.bytesToString(symbol))(getState())
-
+  dispatch(updateLaborHourBalances())
+  dispatch(updateTimeHolderBalances())
   dispatch(
     notify(
       new SimpleNoticeModel({
@@ -217,10 +218,8 @@ const resignMinerCallback = (event) => async (dispatch, getState) => {
       ),
     )
 
-    await Promise.all([
-      dispatch(updateLaborHourBalances()),
-      dispatch(updateTimeHolderBalances()),
-    ])
+    dispatch(updateLaborHourBalances())
+    dispatch(updateTimeHolderBalances())
   } catch (e) {
     // eslint-disable-next-line
     console.error('deposit error', e)
