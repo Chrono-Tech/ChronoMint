@@ -38,7 +38,9 @@ export const formatDataAndGetTransactionsForWallet = ({ wallet, address, blockch
  * @returns {Function}
  */
 export const subscribeWallet = ({ wallet }) => async (dispatch) => {
+  console.log('subscribeWallet: ', wallet)
   const listener = function (data) {
+    console.log('subscribeWallet on Tx: ', data)
     const checkedFrom = data.from ? data.from.toLowerCase() === wallet.address.toLowerCase() : false
     const checkedTo = data.to ? data.to.toLowerCase() === wallet.address.toLowerCase() : false
     if (checkedFrom || checkedTo) {
@@ -50,6 +52,7 @@ export const subscribeWallet = ({ wallet }) => async (dispatch) => {
       }
     }
   }
+
   switch (wallet.blockchain) {
     case BLOCKCHAIN_ETHEREUM:
       ethereumDAO.on('tx', listener)

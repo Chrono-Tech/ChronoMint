@@ -13,9 +13,10 @@ export default class AbstractEthereumProvider extends AbstractProvider {
 
   subscribe (ethAddress) {
     const node = this._selectNode(this.networkSettings)
+    console.log('ethAddress: ', ethAddress)
 
     node.emit('subscribe', {
-      ethAddress,
+      address: ethAddress,
     })
     return node
   }
@@ -29,6 +30,7 @@ export default class AbstractEthereumProvider extends AbstractProvider {
   }
 
   subscribeNewWallet (address) {
+    console.log('subscribeNewWallet: ', address)
     const node = this._selectNode(this.networkSettings)
     node.subscribeNewWallet(address)
   }

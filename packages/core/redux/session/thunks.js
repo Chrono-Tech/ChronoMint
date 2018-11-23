@@ -158,6 +158,11 @@ export const getProfileSignature = (signer, path) => async (dispatch, getState) 
 
   try {
     const addresses = getAccountAddresses(getState())
+    console.log('addresses: ', addresses)
+
+    if (!Object.keys(addresses).length) {
+      throw new Error('Addresses list is empty')
+    }
     const signDataString = ProfileService.getSignData(addresses)
     const signData = await signer.signData(signDataString, path)
     const profileSignature = await dispatch(ProfileThunks.getUserProfile(signData.signature, addresses))

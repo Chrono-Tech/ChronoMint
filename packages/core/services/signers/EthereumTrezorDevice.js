@@ -45,7 +45,7 @@ export default class EthereumTrezorDevice {
     const hdKey = hdkey.fromExtendedKey(xPubKey)
     console.log('hdKey: ', hdKey, path)
 
-    console.log('Result: ', hdKey.derivePath(DEFAULT_PATH))
+    console.log('Result: ', hdKey.deriveChild(0).getWallet())
 
     const wallet = hdKey.deriveChild(0).getWallet()
     console.log('wallet: ', wallet)

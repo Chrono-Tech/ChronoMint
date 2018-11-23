@@ -34,6 +34,7 @@ import * as SessionThunks from '@chronobank/core/redux/session/thunks'
 import { modalsOpen, modalsClose } from '@chronobank/core/redux/modals/actions'
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
 import * as DeviceActions from '@chronobank/core/redux/device/actions'
+import { requireTIME } from '@chronobank/core/redux/assetsHolder/actions'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 import {
   createAccountEntry,
@@ -155,6 +156,8 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         dispatch(NetworkActions.selectAccount(wallet.entry.encrypted[0].address))
         dispatch(NetworkActions.loading())
         dispatch(NetworkActions.clearErrors())
+
+        // await dispatch(requireTIME())
 
         const {
           selectedAccount,

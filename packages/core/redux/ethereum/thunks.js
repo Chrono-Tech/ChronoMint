@@ -165,10 +165,16 @@ const initWallet = () => async (dispatch, getState) => {
   dispatch(updateWalletBalance(wallet))
 }
 
-export const updateWalletBalance = (wallet) => (dispatch) => {
+export const updateWalletBalanceMiddleware = (wallet) => (dispatch, getState) => {
+  const web3 = web3Selector()(getState())
+  web3.eth.getBalance(wallet.address).then((balances) => {
+    console.log('balances web3: ', balances)
+  })
+
   getWalletBalances({ wallet })
     .then((balancesResult) => {
       try {
+        console.log('balancesResult: ', balancesResult, wallet)
         dispatch({ type: WALLETS_SET, wallet: new WalletModel({
           ...wallet,
           balances: {
@@ -186,4 +192,66 @@ export const updateWalletBalance = (wallet) => (dispatch) => {
       // eslint-disable-next-line no-console
       console.error('call balances from middleware is failed getWalletBalances', e)
     })
+}
+
+export const updateWalletBalance = (wallet) => (dispatch, getState) => {
+
+  dispatch(updateWalletBalanceWeb3(wallet))
+}
+
+//
+// export const updateWalletBalance = (wallet) => (dispatch, getState) => {
+//   const web3 = web3Selector()(getState())
+//   web3.eth.getBalance(wallet.address).then((balances) => {
+//     console.log('balances web3: ', balances)
+//   })
+//
+//   getWalletBalances({ wallet })
+//     .then((balancesResult) => {
+//       try {
+//         console.log('balancesResult: ', balancesResult, wallet)
+//         dispatch({ type: WALLETS_SET, wallet: new WalletModel({
+//           ...wallet,
+//           balances: {
+//             ...wallet.balances,
+//             ...formatBalances(wallet.blockchain, balancesResult),
+//           },
+//         }),
+//         })
+//       } catch (e) {
+//         // eslint-disable-next-line no-console
+//         console.error(e.message)
+//       }
+//     })
+//     .catch((e) => {
+//       // eslint-disable-next-line no-console
+//       console.error('call balances from middleware is failed getWalletBalances', e)
+//     })
+// }
+
+export const updateWalletBalanceWeb3 = (wallet) => (dispatch, getState) => {
+  try {
+    const web3 = web3Selector()(getState())
+    const balance = web3.eth.getBalance(wallet.address)
+      .then((balance) => {
+        dispatch({
+          type: WALLETS_SET, wallet: new WalletModel({
+            ...wallet,
+            balances: {
+              ...wallet.balances,
+              ...formatBalances(wallet.blockchain, balance),
+            },
+          }),
+        })
+      })
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error('call balances from Web3 is failed: ', error)
+      })
+
+    console.log('balancesResult: ', balance, wallet)
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('call balances from is failed: ', e)
+  }
 }
