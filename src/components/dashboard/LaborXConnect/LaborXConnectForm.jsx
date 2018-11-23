@@ -8,7 +8,7 @@ import TokenValue from 'components/common/TokenValue/TokenValue'
 import Amount from '@chronobank/core/models/Amount'
 import AssetsCollection from '@chronobank/core/models/assetHolder/AssetsCollection'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
-import { TX_LOCK } from '@chronobank/core/dao/constants/AssetHolderDAO'
+import { TextField } from 'redux-form-material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -17,6 +17,8 @@ import { FORM_LABOR_X_CONNECT } from 'components/constants'
 import classnames from 'classnames'
 import { TIME } from '@chronobank/core/dao/constants'
 import { CHRONOBANK_NODE_FEE_COEFFICIENT } from '@chronobank/core/redux/laborHour/constants'
+import Button from 'components/common/ui/Button/Button'
+import { TX_LOCK } from '@chronobank/core/dao/constants/AssetHolderDAO'
 import validate from './validate'
 import { prefix } from './lang'
 import LaborXConnectSlider from './LaborXConnectSlider/LaborXConnectSlider'
@@ -50,27 +52,33 @@ export default class LaborXConnectForm extends PureComponent {
 
   constructor (props) {
     super(props)
-    const step = LABOR_X_CONNECT_FIRST
-    this.state = { step }
+    this.state = { step: LABOR_X_CONNECT_FIRST }
   }
 
   handleProceed = (values) => {
-    this.setState({ step: LABOR_X_CONNECT_SECOND })
     this.props.onSubmit(
       values.set('action', TX_LOCK).set('token', this.props.token),
     )
   }
 
   handleProceedCustomNode = (values) => {
-    return this.handleProceed(values.set('isCustomNode', true))
+    this.props.onSubmit(
+      values
+        .set('action', TX_LOCK)
+        .set('token', this.props.token)
+        .set('isCustomNode', true),
+    )
+  }
+
+  handleSetNextStep = () => {
+    this.setState({ step: LABOR_X_CONNECT_SECOND })
   }
 
   renderHead () {
     const { step } = this.state
     const title =
       step === LABOR_X_CONNECT_FIRST ? 'titleStepOne' : 'titleStepTwo'
-    const message =
-      step === LABOR_X_CONNECT_FIRST ? 'messageStepOne' : 'messageStepTwo'
+    const message = 'messageStepOne'
     return (
       <div styleName='head'>
         <div
@@ -80,9 +88,11 @@ export default class LaborXConnectForm extends PureComponent {
         >
           <Translate value={`${prefix}.connectForm.${title}`} />
         </div>
-        <div styleName='headContent'>
-          <Translate value={`${prefix}.connectForm.${message}`} />
-        </div>
+        {step === LABOR_X_CONNECT_FIRST && (
+          <div styleName='headContent'>
+            <Translate value={`${prefix}.connectForm.${message}`} />
+          </div>
+        )}
       </div>
     )
   }
@@ -134,7 +144,7 @@ export default class LaborXConnectForm extends PureComponent {
         },
       },
       buttonRight: {
-        onClick: handleSubmit(this.handleProceedCustomNode),
+        onClick: this.handleSetNextStep,
         topValue: new Amount(amountBN.mul(rewardsCoefficient), 'LHT'),
         button: {
           styleName: 'red',
@@ -180,29 +190,70 @@ export default class LaborXConnectForm extends PureComponent {
     const buttons = [
       {
         title: 'winNode',
-        onClick: () => {
-        },
+        link: 'https://releases.parity.io/v2.0.8/x86_64-pc-windows-msvc/parity.exe',
       },
       {
         title: 'macNode',
-        onClick: () => {
-        },
+        link: 'https://releases.parity.io/v2.0.8/x86_64-apple-darwin/parity',
       },
       {
         title: 'linuxNode',
-        onClick: () => {
-        },
+        link: 'https://releases.parity.io/v2.0.8/x86_64-unknown-linux-gnu/parity',
       },
     ]
     return (
-      <div styleName='downloadButtons'>
-        {buttons.map((button) => {
-          return (
-            <button key={button.title}>
-              <Translate value={`${prefix}.nodes.${button.title}`} />
-            </button>
-          )
-        })}
+      <div>
+        <div styleName='miningSteps'>
+          <div styleName='item'>
+            <div styleName='itemIcon'>1</div>
+            <div styleName='itemTitle'>
+              <Translate value={`${prefix}.connectForm.downloadCustomNode`} />
+            </div>
+            <div styleName='itemText'>
+              <Translate value={`${prefix}.connectForm.parityTitle`} />
+              {buttons.map((button) => {
+                return (
+                  <div key={button.title}>
+                    <a href={button.link}>
+                      <Translate value={`${prefix}.nodes.${button.title}`} />
+                    </a>
+                  </div>
+                )
+              })}
+
+            </div>
+          </div>
+          <div styleName='item'>
+            <div styleName='itemIcon'>2</div>
+            <div styleName='itemTitle'>
+              <Translate value={`${prefix}.connectForm.enterDelegateAddress`} />
+            </div>
+            <div styleName='itemText'>
+              <Translate value={`${prefix}.connectForm.delegateAddressTitle`} />
+              <Field
+                component={TextField}
+                name='delegateAddress'
+                type='text'
+                label={<Translate value={`${prefix}.settingsForm.enterDelegateAddress`} />}
+                fullWidth
+              />
+            </div>
+          </div>
+          <div styleName='item'>
+            <div styleName='itemIcon'>3</div>
+            <div styleName='itemTitle'>
+              <Translate value={`${prefix}.connectForm.startMining`} />
+            </div>
+            <div styleName='itemText'>
+              <Translate value={`${prefix}.connectForm.startMiningTitle`} />
+            </div>
+          </div>
+        </div>
+        <div styleName='buttonWrapper'>
+          <Button onClick={this.props.handleSubmit(this.handleProceedCustomNode)}>
+            <Translate value={`${prefix}.settingsForm.done`} />
+          </Button>
+        </div>
       </div>
     )
   }

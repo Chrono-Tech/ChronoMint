@@ -39,8 +39,6 @@ export const closeSwap = (encodedKey, swapId, index) => async (
   dispatch,
   getState,
 ) => {
-  // TODO @abdulov remove console.log
-  console.log('%c encodedKey, swapId, index', 'background: #222; color: #fff', encodedKey, swapId, index)
   const dao = daoByType('AtomicSwapERC20')(getState())
   const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
   const mainEthWallet = getMainEthWallet(getState())

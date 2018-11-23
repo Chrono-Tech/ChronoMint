@@ -6,21 +6,40 @@
 @import "~styles/partials/variables";
 
 .root {
+  border-top: 1px solid $color-grey-3;
+  border-bottom: 1px solid $color-grey-3;
+
   .title {
     width: 100%;
     display: flex;
     cursor: pointer;
+    padding: 10px 10px 10px 30px;
+
+    &:hover {
+      background: $color-grey-3;
+    }
 
     .text {
       font-size: 14px;
-      line-height: 14px;
+      line-height: 23px;
       font-weight: 500;
       color: $color-primary-3;
       flex-grow: 1;
       text-align: left;
     }
 
+    &.isOpen {
+      &:hover {
+        background: transparent;
+      }
+
+      .arrow {
+        transform: rotate(180deg);
+      }
+    }
+
     .arrow {
+      transition: transform 250ms $cubic-animation;
       font-weight: 400;
       top: 5px;
       width: 25px;
@@ -35,12 +54,14 @@
     height: 0;
     overflow: hidden;
     transition: height 250ms $cubic-animation;
+    padding: 0 30px;
 
     &.isOpen {
-      height: 100px;
+      height: 140px;
     }
 
     .tagsWrap {
+      margin-top: 30px;
       justify-content: space-between;
       display: flex;
       opacity: 1;

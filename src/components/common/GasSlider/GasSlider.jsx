@@ -74,7 +74,7 @@ export default class GasSlider extends PureComponent {
   render () {
     return (
       <div styleName='root' className='GasSlider__root'>
-        <button styleName='title' onClick={this.handelOpenToggle}>
+        <button styleName={classnames('title', { 'isOpen': this.state.isOpen })} onClick={this.handelOpenToggle}>
           <div styleName='text'>
             <Translate
               value={`${prefix}.fee`}

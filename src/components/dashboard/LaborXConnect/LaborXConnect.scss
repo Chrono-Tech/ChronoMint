@@ -47,7 +47,7 @@
 
   .fieldWrapper {
     border-top: 1px solid $color-grey-3;
-    padding: 0 30px 30px;
+    padding: 0 30px 0;
     position: relative;
 
     .amountInFiat {
@@ -257,25 +257,6 @@
   }
 }
 
-.downloadButtons {
-  padding: 30px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-
-  button {
-    color: $color-white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: calc(50% - 5px);
-    margin-bottom: 10px;
-    height: 75px;
-    background: $color-blue-4;
-    font-size: 16px;
-  }
-}
-
 .footer {
   border-top: 1px solid $color-grey-3;
   padding: 20px 30px;
@@ -290,7 +271,62 @@
 }
 
 .gasSliderWrapper {
-  border-top: 1px solid $color-grey-3;
-  border-bottom: 1px solid $color-grey-3;
-  margin-top: 30px;
+  margin: 60px -30px 0;
+}
+
+.miningSteps {
+  padding-top: 30px;
+
+  .item {
+    border-left: 2px solid $color-blue-4;
+    margin: 0 30px;
+    position: relative;
+    padding: 0 0 30px 30px;
+
+    &:last-child {
+      border-left-color: transparent;
+    }
+
+    .itemIcon {
+      height: 32px;
+      width: 32px;
+      background: $color-blue-4;
+      border-radius: 50%;
+      color: $color-white;
+      font-size: 16px;
+      line-height: 32px;
+      font-weight: 700;
+      position: absolute;
+      left: -17px;
+      text-align: center;
+    }
+
+    .itemTitle {
+      font-weight: 700;
+      color: $color-blue-4;
+      font-size: 20px;
+      line-height: 28px;
+    }
+
+    .itemText {
+      margin: 10px 0 0;
+
+      a {
+        text-decoration: none;
+        font-size: 14px;
+        color: $color-blue-4;
+        font-weight: 400;
+        line-height: 20px;
+      }
+    }
+  }
+}
+
+.buttonWrapper {
+  padding: 0 30px 30px 30px;
+  text-align: right;
+
+  button {
+    padding: 12px 30px;
+  }
 }
