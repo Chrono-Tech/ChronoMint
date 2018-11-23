@@ -17,7 +17,6 @@ import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
 import QRIcon from 'components/dashboard/MicroIcon/QRIcon'
 import PKIcon from 'components/dashboard/MicroIcon/PKIcon'
-import GasSlider from 'components/common/GasSlider/GasSlider'
 
 import './ProfileContent.scss'
 import { prefix } from './lang'
@@ -168,10 +167,6 @@ class ProfileContent extends PureComponent {
         }
 
         <div styleName='address-split-hr' />
-
-        <div styleName='profile-fee-slider'>
-          <GasSlider />
-        </div>
       </div>
     )
   }

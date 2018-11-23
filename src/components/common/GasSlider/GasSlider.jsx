@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import classnames from 'classnames'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import Slider from '@material-ui/lab/Slider'
@@ -55,7 +56,10 @@ export default class GasSlider extends PureComponent {
   constructor (args) {
     super(args)
 
-    this.state = { localValue: this.props.initialValue || this.props.value }
+    this.state = {
+      localValue: this.props.initialValue || this.props.value,
+      isOpen: false,
+    }
   }
 
   handleSliderMove = (e, value) => {
@@ -63,32 +67,43 @@ export default class GasSlider extends PureComponent {
     this.props.handleChange(value, this.props.token)
   }
 
+  handelOpenToggle = () => {
+    this.setState({ isOpen: !this.state.isOpen })
+  }
+
   render () {
     return (
       <div styleName='root' className='GasSlider__root'>
-        {!this.props.hideTitle &&
-        <div>
-          <div styleName='title'><Translate value={`${prefix}.title`} /></div>
-          <div styleName='description'><Translate value={`${prefix}.description`} /></div>
-        </div>
-        }
-        <div styleName='tagsWrap' className='GasSlider__tagsWrap'>
-          <div><Translate value={`${prefix}.slow`} /></div>
-          <div styleName='separator' />
-          <div><Translate value={`${prefix}.fast`} /></div>
-        </div>
-        <Slider
-          disabled={this.props.disabled}
-          value={this.props.initialValue || this.props.value}
-          {...FEE_RATE_MULTIPLIER}
-          onChange={this.handleSliderMove}
-        />
-        <div styleName='gasPriceDescription'>
-          <Translate
-            value={`${prefix}.gasPrice`}
-            multiplier={this.state.localValue.toFixed(1)}
-            total={Number((this.state.localValue * this.props.token.feeRate()).toFixed(1))}
+        <button styleName='title' onClick={this.handelOpenToggle}>
+          <div styleName='text'>
+            <Translate
+              value={`${prefix}.fee`}
+              symbol={ETH}
+              amount={10}
+              amountUSD={10}
+            />
+          </div>
+          <div styleName='arrow' className='chronobank-icon'>drop-2</div>
+        </button>
+        <div styleName={classnames('sliderWrapper', { 'isOpen': this.state.isOpen })}>
+          <div styleName='tagsWrap' className='GasSlider__tagsWrap'>
+            <div><Translate value={`${prefix}.slow`} /></div>
+            <div styleName='separator' />
+            <div><Translate value={`${prefix}.fast`} /></div>
+          </div>
+          <Slider
+            disabled={this.props.disabled}
+            value={this.props.initialValue || this.props.value}
+            {...FEE_RATE_MULTIPLIER}
+            onChange={this.handleSliderMove}
           />
+          <div styleName='gasPriceDescription'>
+            <Translate
+              value={`${prefix}.gasPrice`}
+              multiplier={this.state.localValue.toFixed(1)}
+              total={Number((this.state.localValue * this.props.token.feeRate()).toFixed(1))}
+            />
+          </div>
         </div>
       </div>
     )

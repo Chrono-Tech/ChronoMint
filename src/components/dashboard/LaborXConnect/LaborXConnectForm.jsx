@@ -23,6 +23,7 @@ import LaborXConnectSlider from './LaborXConnectSlider/LaborXConnectSlider'
 import './LaborXConnect.scss'
 import Preloader from '../../common/Preloader/Preloader'
 import TokenValueSimple from '../../common/TokenValueSimple/TokenValueSimple'
+import GasSlider from '../../common/GasSlider/GasSlider'
 
 const LABOR_X_CONNECT_FIRST = 'laborXConnectFirst'
 const LABOR_X_CONNECT_SECOND = 'laborXConnectSecond'
@@ -162,6 +163,9 @@ export default class LaborXConnectForm extends PureComponent {
           ) : (
             <Preloader />
           )}
+          <div styleName='gasSliderWrapper'>
+            <GasSlider />
+          </div>
         </div>
         <div styleName='actions'>
           {Object.entries(buttons).map((entry) => {

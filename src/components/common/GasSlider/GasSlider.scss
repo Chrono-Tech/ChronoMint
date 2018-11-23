@@ -2,40 +2,62 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import "~styles/partials/mixins";
 @import "~styles/partials/variables";
 
 .root {
-  padding: 0 20px;
-}
+  .title {
+    width: 100%;
+    display: flex;
+    cursor: pointer;
 
-.tagsWrap {
-  justify-content: space-between;
-  display: flex;
-  opacity: 1;
-  text-transform: capitalize;
-  color: $color-panel-bg-1;
-  position: relative;
-  margin-bottom: 15px;
-}
+    .text {
+      font-size: 14px;
+      line-height: 14px;
+      font-weight: 500;
+      color: $color-primary-3;
+      flex-grow: 1;
+      text-align: left;
+    }
 
-.title {
-  font-weight: 700;
-  color: $color-primary-3;
-  padding: 0 0 5px;
-}
+    .arrow {
+      font-weight: 400;
+      top: 5px;
+      width: 25px;
+      color: $color-grey-7;
+      font-size: 30px;
+      text-align: center;
+    }
+  }
 
-.description {
-  color: $color-primary-3;
-  font-weight: 400;
-  padding-bottom: 40px;
-}
 
-.gasPriceDescription {
-  margin-top: 15px;
-}
+  .sliderWrapper {
+    height: 0;
+    overflow: hidden;
+    transition: height 250ms $cubic-animation;
 
-.separator {
-  width: 40px;
+    &.isOpen {
+      height: 100px;
+    }
+
+    .tagsWrap {
+      justify-content: space-between;
+      display: flex;
+      opacity: 1;
+      text-transform: capitalize;
+      color: $color-panel-bg-1;
+      position: relative;
+      margin-bottom: 5px;
+      font-size: 14px;
+
+      .separator {
+        width: 40px;
+      }
+    }
+
+    .gasPriceDescription {
+      padding: 10px 0 30px;
+      font-size: 14px;
+    }
+  }
 }

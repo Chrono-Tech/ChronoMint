@@ -58,10 +58,7 @@ export default {
     UpdateProvideDialog: UpdateProvideDialog.en,
     OwnersList: OwnersList.en,
     SignaturesList: SignaturesList.en,
-    // TODO @Abdulov refactor this
-    components: {
-      GasSlider: GasSlider.en,
-    },
+    GasSlider: GasSlider.en,
     TwoFA: TwoFA.en,
     EditSignaturesDialog: EditSignaturesDialog.en,
     SendTokens: SendTokens.en,

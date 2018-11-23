@@ -26,6 +26,7 @@
   line-height: 36px;
   font-weight: 400;
   padding: 15px 30px;
+
   &.bordered {
     border-bottom: 1px solid $border-color;
   }
@@ -39,13 +40,16 @@
 .body {
   background: $color-white;
   padding: 0;
+
   .fieldWrapperHide {
     display: none;
   }
+
   .fieldWrapper {
     border-top: 1px solid $color-grey-3;
     padding: 0 30px 30px;
     position: relative;
+
     .amountInFiat {
       color: $color-grey-2;
       font-size: 14px;
@@ -54,23 +58,28 @@
       right: 0;
       top: 38px;
     }
+
     &.customNodeWrapper {
       padding: 5px 30px;
       font-size: 14px;
       line-height: 45px;
       display: flex;
       justify-content: space-between;
+
       .title {
       }
+
       .switcher {
       }
     }
+
     &.reward,
     &.nodes {
       padding: 20px 30px;
       font-size: 14px;
       line-height: 20px;
     }
+
     &.nodes {
       div {
         span:last-child {
@@ -80,23 +89,28 @@
       }
     }
   }
+
   .transactionsInfo {
     padding-top: 20px;
     height: 60px;
     font-size: 14px;
+
     > div {
       padding-top: 10px;
       display: flex;
       align-items: center;
       line-height: 26px;
     }
+
     .infoText {
       :global {
         .Preloader__root {
           width: 60px;
         }
+
         .TokenValue__root {
           padding-left: 10px;
+
           span {
             font-size: 14px;
             color: $color-primary-3;
@@ -152,8 +166,10 @@
   display: flex;
   flex-wrap: wrap;
   padding: 20px 30px 0;
+
   .headItem {
     padding-bottom: 20px;
+
     .headItemTitle {
       color: $additionalData-color;
       line-height: 17px;
@@ -164,11 +180,13 @@
 
 .notesWrapper {
   margin: 0 -30px;
+
   .note {
     border-top: 1px solid $color-grey-3;
     padding: 30px;
     margin: 0;
     display: flex;
+
     .icon {
       border: none;
       width: 60px;
@@ -190,8 +208,10 @@
   justify-content: space-around;
   flex-wrap: wrap;
   padding: 30px;
+
   .button {
     width: 45%;
+
     .buttonInfo {
       height: 85px;
       border: 1px solid $color-grey-7;
@@ -201,6 +221,7 @@
       align-items: center;
       justify-content: center;
     }
+
     .buttonInfoButton {
       width: 100%;
       height: 80px;
@@ -210,19 +231,24 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
+
       &:hover {
         background: $color-orange-1;
       }
+
       &.blue {
         background: $color-blue-4;
       }
+
       &.red {
         background: $color-red-2;
       }
+
       .title {
         font-size: 16px;
         line-height: 22px;
       }
+
       .subTitle {
         font-size: 14px;
         line-height: 17px;
@@ -236,6 +262,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+
   button {
     color: $color-white;
     display: flex;
@@ -260,4 +287,10 @@
 
 .delegateAddressWrapper {
   padding: 0 30px 30px;
+}
+
+.gasSliderWrapper {
+  border-top: 1px solid $color-grey-3;
+  border-bottom: 1px solid $color-grey-3;
+  margin-top: 30px;
 }
