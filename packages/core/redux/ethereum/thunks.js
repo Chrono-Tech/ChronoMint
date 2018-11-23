@@ -58,7 +58,7 @@ export const initEthereum = ({ web3 }) => (dispatch) => {
 
 export const enableEthereum = () => async (dispatch) => {
   dispatch(initTokens())
-  dispatch(initWalletFromKeys())
+  await dispatch(initWallet())
 }
 
 export const initTokens = () => async (dispatch, getState) => {
@@ -119,16 +119,23 @@ export const watchLatestBlock = () => async (dispatch) => {
   dispatch(TokensActions.setLatestBlock(BLOCKCHAIN_ETHEREUM, { blockNumber: block }))
 }
 
-const initWalletFromKeys = () => async (dispatch, getState) => {
+const initWallet = () => async (dispatch, getState) => {
   const state = getState()
   const { network } = getCurrentNetworkSelector(state)
   const addressCache = { ...getAddressCache(state) }
 
-  if (!addressCache[BLOCKCHAIN_ETHEREUM]) {
+  console.log('initWallet addressCache: ', addressCache)
+
+  if (!addressCache[BLOCKCHAIN_ETHEREUM] || true) {
     const path = Utils.getEthereumDerivedPath(network[BLOCKCHAIN_ETHEREUM])
     const signer = getEthereumSigner(state)
+    console.log('initWallet path signer: ', path, signer)
+
     if (signer) {
+      console.log('before getAddress: ')
+
       const address = await signer.getAddress(path)
+      console.log('getAddress: ', address)
       addressCache[BLOCKCHAIN_ETHEREUM] = {
         address,
         path,
@@ -150,6 +157,7 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
     isMain: true,
     walletDerivedPath: path,
   })
+  console.log('initWallet wallet: ', wallet)
 
   ethereumProvider.subscribe(wallet.address)
   dispatch({ type: WALLETS_SET, wallet })

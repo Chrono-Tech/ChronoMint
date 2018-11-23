@@ -45,7 +45,7 @@ export const deviceUpdateList = (deviceList) => (dispatch) => {
 export const initLedgerDevice = (wallet) => async (dispatch) => {
   // @todo replace on EthereumLedgerDevice before any release
   const ledger = new EthereumLedgerDeviceMock()
-  const result = await ledger.getAddressInfoList(0,5)
+  const result = await ledger.getAddressInfoList(0, 5)
   dispatch(deviceUpdateList(result))
 }
 
@@ -54,7 +54,7 @@ export const initTrezorDevice = (wallet) => async (dispatch) => {
   try {
     dispatch({ type: DEVICE_STATE_LOADING })
     const trezor = new EthereumTrezorDevice()
-    const result = await trezor.getAddressInfoList(0, 5)
+    const result = await trezor.getAccountInfoList(0, 5)
     console.log('initTrezorDevice: ', result)
     dispatch(deviceUpdateList(result))
     dispatch({ type: DEVICE_STATE_LOADED })

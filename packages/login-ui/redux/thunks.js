@@ -141,10 +141,12 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
     case WALLET_TYPE_LEDGER:
     case WALLET_TYPE_LEDGER_MOCK: {
       try {
+
         console.log('accountWallet: ', accountWallet)
 
         const wallet = await dispatch(DeviceActions.loadDeviceAccount(accountWallet))
         const signer = getEthereumSigner(getState())
+        console.log('wallet: ', wallet)
         console.log('wallet.entry.encrypted[0].address: ', wallet.entry.encrypted[0].address)
         console.log('wallet signer: ', signer)
 

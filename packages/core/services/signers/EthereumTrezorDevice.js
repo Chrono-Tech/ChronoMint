@@ -13,6 +13,11 @@ const DEFAULT_PATH = "m/44'/60'/0'/0"
 const DEFAULT_PATH_FACTORY = (index) => `${DEFAULT_PATH}/${index}`
 
 export default class EthereumTrezorDevice {
+
+  constructor () {
+    this.xPubKey = null
+  }
+
   get name () {
     return 'trezor'
   }
@@ -21,31 +26,44 @@ export default class EthereumTrezorDevice {
     return 'Trezor Device'
   }
 
-  async getAddress (path) {
-    if (this.isConnected) {
-      const hdKey = hdkey.fromExtendedKey(this.xpubkey)
-      const wallet = hdKey.derivePath(path).getWallet()
-      return `0x${wallet.getAddress().toString('hex')}`
+  async getXpubkey () {
+    // @todo add negative case
+    if (!this.xPubKey) {
+      const result = await TrezorConnect.getPublicKey({ path: DEFAULT_PATH })
+      console.log('this.xPubKey result: ', result)
+      const { xpub } = result.payload
+      this.xPubKey = xpub
     }
-    return
+    console.log('getXpubkey: ', this.xPubKey)
+
+    return this.xPubKey
   }
 
-  async getAddressInfoList (from: number = 0, limit: number = 5): String {
-    if (!this.xpubkey) {
-      const result = await TrezorConnect.getPublicKey({ path: DEFAULT_PATH })
-      console.log('getAddressInfoList: result: ', result)
-      const { xpub } = result.payload
-      this.xpubkey = xpub
-    }
-    console.log('getAddressInfoList: ', this.xpubkey)
+  async getAddress (path) {
+    console.log('getAddress TrezorDevice: ')
+    const xPubKey = await this.getXpubkey()
+    const hdKey = hdkey.fromExtendedKey(xPubKey)
+    console.log('hdKey: ', hdKey, path)
 
-    const hdKey = hdkey.fromExtendedKey(this.xpubkey)
+    console.log('Result: ', hdKey.derivePath(DEFAULT_PATH))
+
+    const wallet = hdKey.deriveChild(0).getWallet()
+    console.log('wallet: ', wallet)
+    return `0x${wallet.getAddress().toString('hex')}`
+  }
+
+  async getAccountInfoList (from: number = 0, limit: number = 5): String {
+
+    const xpubKey = this.getXpubkey()
+    console.log('getAddressInfoList: ', xpubKey)
+
+    const hdKey = hdkey.fromExtendedKey(xpubKey)
     return Array.from({ length: limit }).map((element, index) => {
       const wallet = hdKey.deriveChild(from + index).getWallet()
       return {
         path: DEFAULT_PATH_FACTORY(index),
         address: `0x${wallet.getAddress().toString('hex')}`,
-        xpubkey: this.xpubkey,
+        xpubkey: xpubKey,
         type: this.name,
       }
     })

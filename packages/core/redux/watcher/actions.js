@@ -22,16 +22,20 @@ export const globalWatcher = () => async (dispatch) => {
 
 // for all logged in users
 export const watcher = ({ web3 }) => async (dispatch) => {
-  await dispatch(initDAOs({ web3 }))
-  dispatch(initProviders())
-  dispatch(initMultisigWalletManager())
-  dispatch(initTokenSubscription())
-  dispatch(enableDefaultBlockchains())
-  dispatch(watchPlatformManager())
-  dispatch(watchInitTokens())
-  dispatch(watchInitMonitor())
-  dispatch(startMarket())
-  dispatch(watchInitPolls())
-  dispatch(watchEventsToHistory())
-  dispatch({ type: WATCHER })
+  try {
+    await dispatch(initDAOs({ web3 }))
+    dispatch(initProviders())
+    dispatch(initMultisigWalletManager())
+    dispatch(initTokenSubscription())
+    dispatch(enableDefaultBlockchains())
+    dispatch(watchPlatformManager())
+    dispatch(watchInitTokens())
+    dispatch(watchInitMonitor())
+    dispatch(startMarket())
+    dispatch(watchInitPolls())
+    dispatch(watchEventsToHistory())
+    dispatch({ type: WATCHER })
+  } catch (e) {
+    console.log('Watcher error: ', e)
+  }
 }
