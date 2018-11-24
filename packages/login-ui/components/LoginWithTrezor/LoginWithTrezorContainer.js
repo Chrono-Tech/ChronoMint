@@ -27,8 +27,6 @@ function mapDispatchToProps (dispatch) {
 }
 
 function mapStateToProps (state) {
-  console.log('state.get(DUCK_DEVICE_ACCOUNT).deviceList: ', state.get(DUCK_DEVICE_ACCOUNT).deviceList)
-
   return {
     deviceList: state.get(DUCK_DEVICE_ACCOUNT).deviceList.map(
       (wallet) => new DeviceEntryModel({ ...wallet }),

@@ -77,8 +77,42 @@ export const getProviderSettings = () => (dispatch, getState) => {
 }
 
 export const selectProvider = (selectedProviderId) => (dispatch) => {
+  console.log('selectProvider: ', selectedProviderId)
   dispatch(NetworkActions.networkResetNetwork())
   dispatch(NetworkActions.networkSetProvider(selectedProviderId))
+}
+
+export const updateWeb3 = (selectedNetworkId, selectedProviderId) => (dispatch, getState) => {
+
+  const state = getState()
+  if (!selectedNetworkId || !selectedProviderId) {
+    const network = state.get(DUCK_NETWORK)
+    selectedNetworkId = network.selectedNetworkId
+    selectedProviderId = network.selectedProviderId
+  }
+
+  const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
+  console.log('updateWeb3 customNetworksList: ', customNetworksList, selectedNetworkId, selectedProviderId)
+
+  console.log('updateWeb3: ', selectedNetworkId, selectedProviderId)
+
+  let network = getNetworkById(selectedNetworkId, selectedProviderId)
+  console.log('updateWeb3 network: ', network)
+  if (!network.id) {
+    network = customNetworksList.find((network) => network.id === selectedNetworkId)
+  }
+
+  return new Promise((resolve, fail) => {
+    const web3 = web3Factory(network)
+    web3.eth.net.isListening().then(() => {
+      console.log('updateWeb3 network: isListening: ', network)
+      dispatch(SessionActions.updateWeb3(web3))
+      resolve()
+    }).catch((e) => {
+      fail(e)
+    })
+  })
+
 }
 
 export const changeGasSlideValue = (value, blockchain) => (dispatch) =>

@@ -54,7 +54,7 @@ export default class EthereumTrezorDevice {
 
   async getAccountInfoList (from: number = 0, limit: number = 5): String {
 
-    const xpubKey = this.getXpubkey()
+    const xpubKey = await this.getXpubkey()
     console.log('getAddressInfoList: ', xpubKey)
 
     const hdKey = hdkey.fromExtendedKey(xpubKey)

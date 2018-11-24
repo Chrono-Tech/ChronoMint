@@ -13,8 +13,8 @@ import {
   BLOCKCHAIN_LABOR_HOUR,
   BLOCKCHAIN_WAVES,
   BLOCKCHAIN_NEM,
+  BLOCKCHAIN_EOS,
 } from '@chronobank/core/dao/constants'
-import { BLOCKCHAIN_EOS } from '@chronobank/core/redux/eos/constants'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'

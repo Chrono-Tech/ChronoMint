@@ -7,6 +7,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
 import './LoginWithTrezor.scss'
+import TrezorAddress from './TrezorAddress'
 
 class LoginWithTrezor extends Component {
   static propTypes = {
@@ -14,31 +15,6 @@ class LoginWithTrezor extends Component {
     deviceList: PropTypes.instanceOf(Array),
     onDeviceSelect: PropTypes.func,
     navigateToDerivationPathForm: PropTypes.func,
-  }
-
-  renderDeviceItem = (item, i) => {
-    console.log('renderDeviceItem: ', item, i)
-
-    return (
-      <div
-        key={i}
-        onClick={() => this.props.onDeviceSelect(item)}
-        styleName='account-item'
-      >
-        <div styleName='account-item-content'>
-          <div styleName='account-item-address'>
-            { item.address }
-          </div>
-          <div styleName='account-item-additional'>
-            {/* Wallet balance field*/}
-            ETH 1.00
-          </div>
-        </div>
-        <div styleName='account-item-icon'>
-          <div className='chronobank-icon'>next</div>
-        </div>
-      </div>
-    )
   }
 
   renderError () {
@@ -54,7 +30,7 @@ class LoginWithTrezor extends Component {
 
   renderLoading () {
     return (
-      <div styleName='state' key='1'>
+      <div styleName='stateLoading' key='1'>
         <div styleName='titleContent'>
           <div styleName='title'>Loading</div>
         </div>
@@ -63,9 +39,7 @@ class LoginWithTrezor extends Component {
   }
 
   render () {
-    const { previousPage, deviceList, navigateToDerivationPathForm } = this.props
-
-    console.log('LoginWithTrezor deviceList: ', deviceList)
+    const { previousPage, deviceList, navigateToDerivationPathForm, onDeviceSelect } = this.props
 
     return (
       <div styleName='form'>
@@ -83,7 +57,14 @@ class LoginWithTrezor extends Component {
         {
           deviceList.length > 0 && (
             <div styleName='account'>
-              {deviceList.map(this.renderDeviceItem)}
+              {deviceList.map((item, i) => {
+                return (<TrezorAddress
+                  key={item.address}
+                  entryModel={item}
+                  childKey={i}
+                  onDeviceSelect={onDeviceSelect}
+                />)
+              })}
             </div>
           )
         }

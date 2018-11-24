@@ -12,7 +12,7 @@ import TokensListWidget from 'components/wallet/TokensListWidget/TokensListWidge
 import TransactionsListWidget from 'components/wallet/TransactionsListWidget/TransactionsListWidget'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import WalletWidgetDetail from 'components/wallet/WalletWidgetDetail/WalletWidgetDetail'
-import { BLOCKCHAIN_EOS } from '@chronobank/core/redux/eos/constants'
+import { BLOCKCHAIN_EOS } from '@chronobank/core/dao/constants'
 import { connect } from 'react-redux'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { DUCK_WALLET } from '@chronobank/core/redux/wallet/constants'

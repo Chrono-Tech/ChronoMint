@@ -6,12 +6,8 @@
  */
 
 import * as PersistAccountActions from '@chronobank/core/redux/persistAccount/actions'
-import {
-  selectProvider,
-} from '@chronobank/core/redux/session/thunks'
-import {
-  DUCK_PERSIST_ACCOUNT,
-} from '@chronobank/core/redux/persistAccount/constants'
+import { updateWeb3, selectProvider } from '@chronobank/core/redux/session/thunks'
+import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/constants'
 import web3Converter from '@chronobank/core/utils/Web3Converter'
 import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE } from '@chronobank/login/network/MonitorService'
 import {
@@ -56,7 +52,7 @@ export const updateSelectedAccount = () => (dispatch, getState) => {
     .find((account) => {
       return selectedWallet && account.key === selectedWallet.key
     }
-  )
+    )
 
   if (foundAccount) {
     dispatch(PersistAccountActions.accountSelect(foundAccount))
@@ -104,7 +100,8 @@ export const initRecoverAccountPage = () => (dispatch) => {
  * TODO: to add description
  * TODO: this is not an action, to refactor it
  */
-export const selectProviderWithNetwork = (networkId, providerId) => (dispatch) => {
+export const selectProviderWithNetwork = (networkId, providerId) => async (dispatch) => {
+  await dispatch(updateWeb3(networkId, providerId))
   dispatch(NetworkActions.networkSetProvider(providerId))
   dispatch(NetworkActions.networkSetNetwork(networkId))
 }
@@ -159,6 +156,7 @@ export const autoSelect = () => (dispatch, getState) => {
   const selectAndResolve = (networkId, providerId) => {
     dispatch(selectProvider(providerId))
     dispatch(NetworkActions.networkSetNetwork(networkId))
+    dispatch(updateWeb3())
   }
 
   const handleNetwork = (status) => {

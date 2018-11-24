@@ -29,6 +29,8 @@ export const BLOCKCHAIN_NEM = 'NEM'
 export const BLOCKCHAIN_WAVES = 'WAVES'
 export const BLOCKCHAIN_EOS = 'EOS'
 
+export const DECIMALS_ETHEREUM = 18
+
 export const TX_FRONTEND_ERROR_CODES = {
   FRONTEND_UNKNOWN: 'f0',
   FRONTEND_OUT_OF_GAS: 'f1',

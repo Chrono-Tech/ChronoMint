@@ -6,6 +6,12 @@
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
+.stateLoading {
+  background: $color-green-3;
+  color: white;
+  padding: 30px;
+}
+
 .state {
   background: $color-red-2;
   color: white;
@@ -106,6 +112,10 @@
 
 .flagError {
   color: $color-error;
+}
+
+.titleContent {
+  flex-grow: 1;
 }
 
 .titleContent {
