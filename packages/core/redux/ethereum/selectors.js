@@ -15,7 +15,6 @@ import {
 import { getPersistAccount } from '../persistAccount/selectors'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 import EthereumLedgerDeviceMock from '../../services/signers/EthereumLedgerDeviceMock'
-// import EthereumLedgerDeviceMock from '../../services/signers/EthereumLedgerDevice'
 import EthereumTrezorDeviceMock from '../../services/signers/EthereumTrezorDeviceMock'
 import EthereumTrezorDevice from '../../services/signers/EthereumTrezorDevice'
 

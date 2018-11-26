@@ -18,6 +18,10 @@ export default class AssetDonatorDAO extends AbstractContractDAO {
     return this._tx(TX_REQUIRE_TIME, [])
   }
 
+  getSymbol () {
+    return 'ETH'
+  }
+
   isTIMERequired (account): Promise {
     return this.contract.methods.timeDonations(account).call()
   }

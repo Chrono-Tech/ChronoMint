@@ -9,7 +9,6 @@
     "bignumber.js": "^4.1.0",
     "bip39": "^2.3.0",
     "bitcoinjs-lib": "4.0.1",
-    "bitcore-lib": "^0.15.0",
     "coinselect": "^3.1.11",
     "dashcore-lib": "^8.2.3",
     "eth-crypto": "^1.2.0",

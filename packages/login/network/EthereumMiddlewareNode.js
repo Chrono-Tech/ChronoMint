@@ -36,12 +36,8 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     }
     try {
       this._api.post('addr', address)
-      console.log('eventsList ', eventsList)
-
       this.executeOrSchedule(() => {
         eventsList.forEach((event) => {
-          console.log('this._socket.channels.events: ', this._socket.channels.events)
-
           this._openSubscription(`${this._socket.channels.events}.${event}`, (data) => {
             this.trace(event, data)
             this.emit(event, data)

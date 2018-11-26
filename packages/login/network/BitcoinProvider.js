@@ -13,6 +13,7 @@ import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_LITECOIN,
 } from './constants'
+import bitcoin from 'bitcoinjs-lib'
 
 export class BitcoinProvider extends AbstractProvider {
   constructor (selectNode, id) {
@@ -125,6 +126,17 @@ export class BitcoinProvider extends AbstractProvider {
 
   getNode () {
     return this._selectNode(this.networkSettings)
+  }
+
+  isAddressValid (address) {
+    try {
+      console.log('isAddressValid: ', this.networkSettings[BLOCKCHAIN_BITCOIN], this.networkSettingss)
+      bitcoin.address.toOutputScript(address, bitcoin.networks[this.networkSettings[BLOCKCHAIN_BITCOIN]])
+      return true
+    } catch (e) {
+      console.log('bitcoin.address.toOutputScript: ', e)
+      return false
+    }
   }
 }
 

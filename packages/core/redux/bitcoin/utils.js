@@ -45,10 +45,11 @@ export const selectCoins = (to, amount: BigNumber, feeRate, utxos) => {
 }
 
 export const getBitcoinDerivedPath = (networkName, mainnetCoinType = COIN_TYPE_BTC_MAINNET) => {
-  const coinType = networkName === bitcoin.networks.testnet
+  console.log('getBitcoinDerivedPath: ', networkName, bitcoin.networks.testnet, mainnetCoinType)
+  const coinType = networkName === 'testnet'
     ? COIN_TYPE_ALLCOINS_TESTNET
     : mainnetCoinType
-  return getDerivedPath(coinType)
+  return getDerivedPath(COIN_TYPE_ALLCOINS_TESTNET)
 }
 
 export const getBtcFee = (
@@ -79,6 +80,8 @@ const describeBitcoinTransaction = (tx, options, utxos) => {
   for (const input of inputs) {
     txb.addInput(input.txId, input.vout)
   }
+
+  console.log('describeBitcoinTransaction: ', bitcoinNetwork, inputs, outputs, txb)
 
   for (const output of outputs) {
     if (!output.address) {

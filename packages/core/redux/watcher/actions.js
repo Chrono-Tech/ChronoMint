@@ -27,7 +27,7 @@ export const watcher = ({ web3 }) => async (dispatch) => {
     dispatch(initProviders())
     dispatch(initMultisigWalletManager())
     dispatch(initTokenSubscription())
-    dispatch(enableDefaultBlockchains())
+    await dispatch(enableDefaultBlockchains())
     dispatch(watchPlatformManager())
     dispatch(watchInitTokens())
     dispatch(watchInitMonitor())

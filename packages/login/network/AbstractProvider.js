@@ -39,13 +39,4 @@ export default class AbstractProvider extends EventEmitter {
     node.emit('unsubscribe', address)
     return node
   }
-
-  isAddressValid (address) {
-    try {
-      bitcoin.address.toOutputScript(address, bitcoin.networks[this.networkSettings[BLOCKCHAIN_BITCOIN]])
-      return true
-    } catch (e) {
-      return false
-    }
-  }
 }

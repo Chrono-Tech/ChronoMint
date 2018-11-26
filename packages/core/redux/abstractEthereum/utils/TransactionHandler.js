@@ -107,6 +107,7 @@ export default class TransactionHandler extends TransactionGuide {
     const state = getState()
     const account = getAccount(state)
     const dao = this.getDAO(entry, state)
+    console.log('submitTransaction: ', dao)
 
     const description = describePendingTx(entry, dao.getSymbol(), {
       address: account,

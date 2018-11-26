@@ -24,6 +24,7 @@ import MetamaskPlugin from '../../services/signers/MetamaskPlugin'
 import BitcoinMemoryDevice from '../../services/signers/BitcoinMemoryDevice'
 import BitcoinLedgerDeviceMock from '../../services/signers/BitcoinLedgerDeviceMock'
 import BitcoinTrezorDeviceMock from '../../services/signers/BitcoinTrezorDeviceMock'
+import BitcoinTrezorDevice from '../../services/signers/BitcoinTrezorDevice'
 
 import BitcoinCashMemoryDevice from '../../services/signers/BitcoinCashMemoryDevice'
 import BitcoinCashLedgerDeviceMock from '../../services/signers/BitcoinCashLedgerDeviceMock'
@@ -51,6 +52,8 @@ export const getBitcoinSigner = (state) => {
   const account = getPersistAccount(state)
   const networkData = getSelectedNetwork()(state)
   const network = bitcoin.networks[networkData[BLOCKCHAIN_BITCOIN]]
+  const isTestnet = networkData[BLOCKCHAIN_BITCOIN] === 'testnet'
+  console.log('getBitcoinSigner isTestnet: ', isTestnet, networkData)
 
   switch (account.decryptedWallet.entry.encrypted[0].type) {
     case WALLET_TYPE_MEMORY: {
@@ -61,9 +64,11 @@ export const getBitcoinSigner = (state) => {
     case WALLET_TYPE_LEDGER: {
       return new BitcoinLedgerDeviceMock({ network })
     }
-    case WALLET_TYPE_TREZOR_MOCK:
-    case WALLET_TYPE_TREZOR: {
+    case WALLET_TYPE_TREZOR_MOCK: {
       return new BitcoinTrezorDeviceMock({ network })
+    }
+    case WALLET_TYPE_TREZOR: {
+      return new BitcoinTrezorDevice({ network, isTestnet })
     }
     case WALLET_TYPE_METAMASK: {
       return new MetamaskPlugin()

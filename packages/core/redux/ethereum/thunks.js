@@ -162,14 +162,12 @@ const initWallet = () => async (dispatch, getState) => {
   ethereumProvider.subscribe(wallet.address)
   dispatch({ type: WALLETS_SET, wallet })
 
+  dispatch(updateWalletBalanceMiddleware(wallet))
   dispatch(updateWalletBalance(wallet))
 }
 
-export const updateWalletBalanceMiddleware = (wallet) => (dispatch, getState) => {
-  const web3 = web3Selector()(getState())
-  web3.eth.getBalance(wallet.address).then((balances) => {
-    console.log('balances web3: ', balances)
-  })
+export const updateWalletBalanceMiddleware = (wallet) => (dispatch) => {
+  console.log('updateWalletBalanceMiddleware: ', wallet)
 
   getWalletBalances({ wallet })
     .then((balancesResult) => {
@@ -195,8 +193,7 @@ export const updateWalletBalanceMiddleware = (wallet) => (dispatch, getState) =>
 }
 
 export const updateWalletBalance = (wallet) => (dispatch, getState) => {
-
-  dispatch(updateWalletBalanceWeb3(wallet))
+  dispatch(updateWalletBalanceMiddleware(wallet))
 }
 
 //
@@ -230,10 +227,13 @@ export const updateWalletBalance = (wallet) => (dispatch, getState) => {
 // }
 
 export const updateWalletBalanceWeb3 = (wallet) => (dispatch, getState) => {
+  console.log('updateWalletBalanceWeb3: ', wallet)
+
   try {
     const web3 = web3Selector()(getState())
-    const balance = web3.eth.getBalance(wallet.address)
+    web3.eth.getBalance(wallet.address)
       .then((balance) => {
+        console.log('balancesResult: ', wallet, balance)
         dispatch({
           type: WALLETS_SET, wallet: new WalletModel({
             ...wallet,
@@ -249,7 +249,6 @@ export const updateWalletBalanceWeb3 = (wallet) => (dispatch, getState) => {
         console.error('call balances from Web3 is failed: ', error)
       })
 
-    console.log('balancesResult: ', balance, wallet)
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error('call balances from is failed: ', e)

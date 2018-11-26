@@ -69,20 +69,20 @@ const disableMap = {
   [BLOCKCHAIN_LABOR_HOUR]: disableLaborHour(),
 }
 
-export const enableDefaultBlockchains = () => (dispatch, getState) => {
+export const enableDefaultBlockchains = () => async (dispatch, getState) => {
   const state = getState()
   const activeBlockchains = getBlockchainList(state)
 
-  dispatch(enableEthereum())
-  dispatch(enableBlockchains(activeBlockchains))
+  await dispatch(enableEthereum())
+  await dispatch(enableBlockchains(activeBlockchains))
 }
 
-export const enableBlockchains = (blockchains) => (dispatch) => {
-  blockchains.forEach((blockchain) => {
+export const enableBlockchains = (blockchains) => async (dispatch) => {
+  await blockchains.forEach(async (blockchain) => {
     if (!enableMap[blockchain]) {
       return
     }
-    dispatch(enableMap[blockchain])
+    await dispatch(enableMap[blockchain])
   })
 }
 

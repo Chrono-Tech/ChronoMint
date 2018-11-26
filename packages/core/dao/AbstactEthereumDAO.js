@@ -71,6 +71,7 @@ export class AbstractEthereumDAO extends AbstractTokenDAO {
   handleBlockData = async (event) => {
     const block = await this.web3.eth.getBlock(event.hash, true)
     setImmediate(() => {
+      console.log('handleBlockData: ', block)
       if (block && block.transactions) {
         this.emit(EVENT_NEW_BLOCK, { blockNumber: block.number })
         for (const tx of block.transactions) {

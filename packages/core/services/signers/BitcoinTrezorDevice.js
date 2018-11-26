@@ -5,26 +5,41 @@
 
 import bitcoin from 'bitcoinjs-lib'
 import TrezorConnect from 'trezor-connect'
+import { BLOCKCHAIN_BITCOIN, TESTNET } from '../../dao/constants'
 
 export default class BitcoinTrezorDevice {
-  constructor ({ xpub, network }) {
-    this.xpub = xpub
+  constructor ({ address, network, isTestnet }) {
     this.network = network
-    Object.freeze(this)
+    this.address = address
+    this.coin = isTestnet ? TESTNET : BLOCKCHAIN_BITCOIN
   }
 
   // this method is a part of base interface
-  getAddress (path) {
-    return  bitcoin.HDNode
-      .fromBase58(this.xpub, this.network)
-      .derivePath(path).getAddress()
+  async getAddress (path) {
+
+    if (!this.address) {
+      console.log('result.payload.address: getAddress: ', path)
+
+      const result = await TrezorConnect.getAddress({
+        path: path,
+        coin: this.coin,
+      })
+
+      console.log('result.payload.address: ', result)
+
+      this.address = result.payload.address
+    }
+
+    return this.address
   }
 
   async signTransaction (unsignedTxHex, path) {
-    // tx object
+
+    console.log('signTransaction: ', path)
+
     const txb = new bitcoin.TransactionBuilder
       .fromTransaction(bitcoin.Transaction.fromHex(unsignedTxHex), this.network)
-    const localAddress = this.getAddress(path)
+    const localAddress = await this.getAddress(path)
 
     if (!localAddress) {
       return
@@ -67,10 +82,11 @@ export default class BitcoinTrezorDevice {
     const result = await TrezorConnect.signTransaction({
       inputs: inputs,
       outputs: outputs,
-      coin: 'Testnet', // @todo Need to do mainnet support?
+      coin: this.coin, // @todo Need to do mainnet support?
     })
 
-    return result
+    console.log('BitcoinTrezorDevice: signTransaction: ', result, result.payload.serializedTx)
 
+    return result.payload.serializedTx
   }
 }

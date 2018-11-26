@@ -81,6 +81,7 @@ export const executeBitcoinTransaction = ({ tx, options = {} }) => async (dispat
     dispatch(BitcoinActions.bitcoinTxUpdate(entry))
     dispatch(submitTransaction(entry))
   } catch (error) {
+    console.log('bitcoinExecuteTxFailure error: ', error)
     dispatch(BitcoinActions.bitcoinExecuteTxFailure(error))
   }
 }
@@ -266,15 +267,16 @@ export const updateWalletBalance = (wallet) => async (dispatch) => {
 }
 
 const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
-  dispatch(BitcoinActions.bitcoinSignTx())
-
   try {
+    dispatch(BitcoinActions.bitcoinSignTx())
+
     const network = getSelectedNetwork()(getState())
-    const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
     const unsignedTxHex = entry.tx.prepared.buildIncomplete().toHex()
 
     dispatch(showSignerModal())
-    const signedHex = await signer.signTransaction(unsignedTxHex, selectedWallet.encrypted[0].path)
+    console.log('dispatch(showSignerModal()) BEFORE: ')
+    const signedHex = await signer.signTransaction(unsignedTxHex, BitcoinUtils.getBitcoinDerivedPath(network[BLOCKCHAIN_BITCOIN]))
+    console.log('dispatch(showSignerModal()) AFTER: ', signedHex)
     dispatch(closeSignerModal())
 
     const bitcoinTransaction = bitcoin.Transaction.fromHex(signedHex)
@@ -366,7 +368,7 @@ const sendSignedTransaction = (entry) => async (dispatch, getState) => {
           dispatch(notifyBitcoinTransfer(txEntry))
         }
 
-        dispatch(BitcoinActions.bitcoinExecuteTxSuccess(response.data)) // TODO: mve it to appropriate place
+        dispatch(BitcoinActions.bitcoinExecuteTxSuccess(response.data)) // TODO: move it to appropriate place
         // TODO: need to check that res.status is equal 200 etc. Or it is better to check right in fetchPersonInfo.
         return response.data // TODO: to verify, that 'data' is JSON, not HTML like 502.html or 404.html
       })
@@ -417,7 +419,7 @@ export const enableBitcoin = (blockchainName) => async (dispatch) => {
   }
 
   dispatch(initToken(blockchainName))
-  dispatch(initWalletFromKeys(blockchainName))
+  dispatch(initWallet(blockchainName))
 }
 
 const initToken = (blockchainName) => async (dispatch, getState) => {
@@ -447,9 +449,11 @@ const initToken = (blockchainName) => async (dispatch, getState) => {
   }
 }
 
-const initWalletFromKeys = (blockchainName) => async (dispatch, getState) => {
+const initWallet = (blockchainName) => async (dispatch, getState) => {
   const state = getState()
   const { network } = getCurrentNetworkSelector(state)
+
+  console.log('initWallet Bitocin network: ', network)
 
   const addressCache = { ...getAddressCache(state) }
 
@@ -472,11 +476,16 @@ const initWalletFromKeys = (blockchainName) => async (dispatch, getState) => {
     },
   }
 
-  if (!addressCache[blockchainName]) {
+  console.log('Bitcoin initWallet: ', addressCache, addressCache[blockchainName])
+
+  if (!addressCache[blockchainName] || true) {
     const { selector, path } = signerSelectorsMap[blockchainName]
     const signer = selector(state)
+    console.log('Bitcoin signer: ', signer, path)
+
     if (signer) {
       const address = await signer.getAddress(path)
+      console.log('Got Bitcoin address: ', address)
       addressCache[blockchainName] = {
         address,
         path,
