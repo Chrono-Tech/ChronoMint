@@ -15,7 +15,7 @@ import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
 import { ETH } from '@chronobank/core/dao/constants'
 import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/wallets/constants'
 import { changeGasSlideValue } from '@chronobank/core/redux/session/thunks'
-import './GasSlider.scss'
+import classes from './GasSlider.scss'
 import { prefix } from './lang'
 
 let timoutId = null
@@ -92,6 +92,9 @@ export default class GasSlider extends PureComponent {
             <div><Translate value={`${prefix}.fast`} /></div>
           </div>
           <Slider
+            classes={{
+              root: classes.slider,
+            }}
             disabled={this.props.disabled}
             value={this.props.initialValue || this.props.value}
             {...FEE_RATE_MULTIPLIER}

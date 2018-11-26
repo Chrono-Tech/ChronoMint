@@ -26,6 +26,7 @@ import './LaborXConnect.scss'
 import Preloader from '../../common/Preloader/Preloader'
 import TokenValueSimple from '../../common/TokenValueSimple/TokenValueSimple'
 import GasSlider from '../../common/GasSlider/GasSlider'
+import { nodes } from './constants'
 
 const LABOR_X_CONNECT_FIRST = 'laborXConnectFirst'
 const LABOR_X_CONNECT_SECOND = 'laborXConnectSecond'
@@ -173,9 +174,9 @@ export default class LaborXConnectForm extends PureComponent {
           ) : (
             <Preloader />
           )}
-          <div styleName='gasSliderWrapper'>
-            <GasSlider />
-          </div>
+        </div>
+        <div styleName='gasSliderWrapper'>
+          <GasSlider />
         </div>
         <div styleName='actions'>
           {Object.entries(buttons).map((entry) => {
@@ -187,20 +188,6 @@ export default class LaborXConnectForm extends PureComponent {
   }
 
   renderSecondStep () {
-    const buttons = [
-      {
-        title: 'winNode',
-        link: 'https://releases.parity.io/v2.0.8/x86_64-pc-windows-msvc/parity.exe',
-      },
-      {
-        title: 'macNode',
-        link: 'https://releases.parity.io/v2.0.8/x86_64-apple-darwin/parity',
-      },
-      {
-        title: 'linuxNode',
-        link: 'https://releases.parity.io/v2.0.8/x86_64-unknown-linux-gnu/parity',
-      },
-    ]
     return (
       <div>
         <div styleName='miningSteps'>
@@ -211,7 +198,7 @@ export default class LaborXConnectForm extends PureComponent {
             </div>
             <div styleName='itemText'>
               <Translate value={`${prefix}.connectForm.parityTitle`} />
-              {buttons.map((button) => {
+              {nodes.map((button) => {
                 return (
                   <div key={button.title}>
                     <a href={button.link}>

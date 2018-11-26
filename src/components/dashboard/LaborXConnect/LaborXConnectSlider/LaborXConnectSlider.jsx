@@ -40,26 +40,35 @@ export default class LaborXConnectSlider extends PureComponent {
     const value = new Amount(input.value || min, token.symbol())
 
     return (
-      <div>
+      <div styleName='root' className='LaborXConnectSlider__root'>
         <div styleName='amount'>
-          <span styleName='amountSelected'>
-            TIME{' '}
-            <TokenValueSimple
-              value={new Amount(value, token.symbol())}
-              withFraction
-            />
-          </span>
-          <span>
-            {' '}
-            /{' '}
-            <TokenValueSimple
-              value={new Amount(max, token.symbol())}
-              withFraction
-            />
-          </span>
+          <div>
+            <div styleName='amountTitle'>
+              <Translate value={`${prefix}.miningDeposit`} />
+            </div>
+            <div styleName='amountValue'>
+              TIME{' '}
+              <TokenValueSimple
+                value={new Amount(value, token.symbol())}
+                withFraction
+              />
+            </div>
+          </div>
+          <div>
+            <div styleName='amountTitle'>
+              <Translate value={`${prefix}.timeDeposit`} />
+            </div>
+            <div styleName='amountValue'>
+              <TokenValueSimple
+                value={new Amount(max, token.symbol())}
+                withFraction
+              />
+            </div>
+          </div>
         </div>
         <SliderMaterial
           classes={{
+            root: classes.sliderRoot,
             container: classes.slider,
             trackBefore: classes.trackBefore,
             track: classes.track,
@@ -72,13 +81,6 @@ export default class LaborXConnectSlider extends PureComponent {
           max={max}
           step={step}
         />
-        {/*<div styleName='wrapper'>*/}
-        {/*<div styleName='slider'>*/}
-        {/*<div styleName='trackDefault' />*/}
-        {/*<div styleName='trackBefore' />*/}
-        {/*</div>*/}
-        {/*<div styleName='track' />*/}
-        {/*</div>*/}
         <button styleName='max' type='button' onClick={this.handleMax}>
           <Translate value={`${prefix}.max`} />
         </button>

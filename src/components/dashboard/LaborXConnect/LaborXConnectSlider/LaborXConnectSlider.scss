@@ -5,6 +5,15 @@
 @import '~styles/partials/variables';
 @import '~styles/partials/mixins';
 
+.root {
+  padding-bottom: 60px;
+}
+
+.sliderRoot {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
 .slider {
 }
 
@@ -58,20 +67,37 @@
   text-align: center;
   padding-top: 30px;
   padding-bottom: 10px;
-}
+  display: flex;
+  justify-content: space-between;
 
-.amountSelected {
-  color: $color-blue-4;
-  font-weight: 700;
+  > div {
+    text-align: right;
+
+    &:first-child {
+      text-align: left;
+      color: $color-blue-4;
+      font-weight: 700;
+    }
+  }
+
+  .amountTitle {
+    font-size: 14px;
+    line-height: 17px;
+  }
+
+  .amountValue {
+    font-size: 20px;
+    line-height: 24px;
+  }
 }
 
 .max {
   position: absolute;
-  top: 64px;
+  top: 82px;
   height: 30px;
   width: 60px;
   background: transparent;
-  right: 38px;
+  right: 30px;
   text-transform: uppercase;
   font-size: 14px;
   line-height: 30px;

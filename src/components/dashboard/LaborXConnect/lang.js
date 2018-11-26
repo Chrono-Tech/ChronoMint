@@ -58,5 +58,7 @@ export default {
     },
     accept: 'Accept',
     max: 'max',
+    miningDeposit: 'Mining Deposit',
+    timeDeposit: 'TIME Deposit',
   },
 }

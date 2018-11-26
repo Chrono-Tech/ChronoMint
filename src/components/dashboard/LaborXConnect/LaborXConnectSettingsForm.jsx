@@ -21,7 +21,7 @@ import {
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
 import { FORM_LABOR_X_CONNECT_SETTINGS } from 'components/constants'
 import TokenValueSimple from 'components/common/TokenValueSimple/TokenValueSimple'
@@ -31,7 +31,9 @@ import classnames from 'classnames'
 import validate from './validate'
 import { prefix } from './lang'
 import LaborXConnectSlider from './LaborXConnectSlider/LaborXConnectSlider'
-import './LaborXConnect.scss'
+import classes from './LaborXConnect.scss'
+import { nodes } from './constants'
+import GasSlider from '../../common/GasSlider/GasSlider'
 
 @reduxForm({ form: FORM_LABOR_X_CONNECT_SETTINGS, validate })
 export default class LaborXConnectSettingsForm extends PureComponent {
@@ -162,12 +164,18 @@ export default class LaborXConnectSettingsForm extends PureComponent {
         {isCustomNode && (
           <div styleName='delegateAddressWrapper'>
             <Field
+              placeholder={I18n.t(`${prefix}.settingsForm.enterDelegateAddress`)}
               component={TextField}
               name='delegateAddress'
               type='text'
-              label={<Translate value={`${prefix}.settingsForm.enterDelegateAddress`} />}
+              className={classes.delegateAddressInput}
               fullWidth
             />
+            <div styleName='icon'>
+              <button className='chronobank-icon'>
+                help-outline
+              </button>
+            </div>
           </div>
         )}
         <div styleName={classnames('fieldWrapper', 'reward')}>
@@ -177,27 +185,19 @@ export default class LaborXConnectSettingsForm extends PureComponent {
           <Translate value={`${prefix}.settingsForm.block`} />
         </div>
         <div styleName={classnames('fieldWrapper', 'nodes')}>
-          <div>
-            <Translate value={`${prefix}.nodes.winNode`} />
-            :&nbsp;
-            <span>
-              <Translate value={`${prefix}.settingsForm.download`} />
-            </span>
-          </div>
-          <div>
-            <Translate value={`${prefix}.nodes.macNode`} />
-            :&nbsp;
-            <span>
-              <Translate value={`${prefix}.settingsForm.download`} />
-            </span>
-          </div>
-          <div>
-            <Translate value={`${prefix}.nodes.linuxNode`} />
-            :&nbsp;
-            <span>
-              <Translate value={`${prefix}.settingsForm.download`} />
-            </span>
-          </div>
+          <Translate value={`${prefix}.connectForm.parityTitle`} />
+          {nodes.map((button) => {
+            return (
+              <div key={button.title}>
+                <a href={button.link}>
+                  <Translate value={`${prefix}.nodes.${button.title}`} />
+                </a>
+              </div>
+            )
+          })}
+        </div>
+        <div styleName='gasSliderWrapper'>
+          <GasSlider />
         </div>
       </div>
     )
