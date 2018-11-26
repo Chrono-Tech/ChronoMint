@@ -109,9 +109,7 @@ function mapDispatchToProps (dispatch, ownProps) {
       dispatch(sidechainWithdraw(amount, token, isCustomNode, delegateAddress, feeMultiplier)),
     onChangeField: (field, value) => dispatch(change(ownProps.formName, field, value)),
     handleEstimateGas: (mode, params, callback, gasPriceMultiplier) =>
-      dispatch(
-        estimateGasForAssetHolder(mode, params, callback, gasPriceMultiplier),
-      ),
+      dispatch(estimateGasForAssetHolder(mode, params, callback, gasPriceMultiplier)),
     handleUnlockDeposit: (token) => {
       dispatch(updateMiningNodeType({ isCustomNode: false, delegateAddress: null }))
       dispatch(unlockLockedDeposit(token))
@@ -169,6 +167,8 @@ export default class LaborXConnect extends PureComponent {
   ) => {
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
+      // TODO @abdulov remove console.log
+      console.log('%c estimate', 'background: red; color: #fff')
       this.setState({ feeLoading: true })
       this.props.handleEstimateGas(
         action,
@@ -246,6 +246,7 @@ export default class LaborXConnect extends PureComponent {
       isCustomNode,
       lxDeposit,
       lxLockedDeposit,
+      feeMultiplier,
     } = this.props
     const { gasFee, feeLoading } = this.state
 
@@ -266,6 +267,7 @@ export default class LaborXConnect extends PureComponent {
     const firstAsset = assets.first()
     return (
       <Component
+        feeMultiplier={feeMultiplier}
         miningParams={miningParams}
         feeLoading={feeLoading}
         gasFee={gasFee}
@@ -281,10 +283,12 @@ export default class LaborXConnect extends PureComponent {
           amount: miningBalance.toNumber(),
           isCustomNode: lxLockedDeposit.gt(0),
           symbol: firstAsset.symbol(),
+          feeMultiplier: 1,
         }}
         onSubmit={this.handleSubmit}
         onSubmitSuccess={this.handleSubmitSuccess}
         isCustomNode={isCustomNode}
+        onEstimateFee={this.handleGetGasPrice}
       />
     )
   }

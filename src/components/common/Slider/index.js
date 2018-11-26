@@ -24,10 +24,18 @@ export default class Slider extends PureComponent {
   }
 
   render () {
-    const { meta, input, min, max, step } = this.props
+    const { meta, input, min, max, step, classes } = this.props
     return (
       <div styleName='root'>
-        <SliderMaterial {...input} onChange={this.handleChange} min={min} max={max} step={step} />
+        <SliderMaterial
+          {...input}
+          value={input.value || 1}
+          onChange={this.handleChange}
+          min={min}
+          max={max}
+          step={step}
+          classes={classes}
+        />
         {meta.touched && meta.error &&
         <span styleName='error'>{meta.error}</span>}
       </div>

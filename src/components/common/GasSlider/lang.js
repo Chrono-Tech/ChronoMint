@@ -10,5 +10,6 @@ export const en = {
   title: 'Transactions Gas price',
   description: 'Set gas price for transactions.',
   gasPrice: '%{multiplier}x of average (%{total} Gwei)',
-  fee: 'Fee: %{symbol} amount (≈USD amountUSD)',
+  fee: 'Fee: %{symbol} %{amount}',
+  invalidForm: 'Form is not valid',
 }

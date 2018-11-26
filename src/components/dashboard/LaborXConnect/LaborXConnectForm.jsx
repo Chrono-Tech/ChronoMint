@@ -27,6 +27,7 @@ import Preloader from '../../common/Preloader/Preloader'
 import TokenValueSimple from '../../common/TokenValueSimple/TokenValueSimple'
 import GasSlider from '../../common/GasSlider/GasSlider'
 import { nodes } from './constants'
+import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/wallets/constants'
 
 const LABOR_X_CONNECT_FIRST = 'laborXConnectFirst'
 const LABOR_X_CONNECT_SECOND = 'laborXConnectSecond'
@@ -34,6 +35,7 @@ const LABOR_X_CONNECT_SECOND = 'laborXConnectSecond'
 @reduxForm({ form: FORM_LABOR_X_CONNECT, validate })
 export default class LaborXConnectForm extends PureComponent {
   static propTypes = {
+    feeMultiplier: PropTypes.number,
     feeLoading: PropTypes.bool,
     gasFee: PropTypes.instanceOf(Amount),
     onChangeField: PropTypes.func,
@@ -42,6 +44,7 @@ export default class LaborXConnectForm extends PureComponent {
     token: PropTypes.instanceOf(TokenModel),
     assets: PropTypes.instanceOf(AssetsCollection),
     amount: PropTypes.number,
+    onEstimateFee: PropTypes.func,
     miningParams: PropTypes.shape({
       minDepositLimit: PropTypes.string,
       rewardsCoefficient: PropTypes.string,
@@ -54,6 +57,15 @@ export default class LaborXConnectForm extends PureComponent {
   constructor (props) {
     super(props)
     this.state = { step: LABOR_X_CONNECT_FIRST }
+  }
+
+  componentWillReceiveProps (newProps) {
+    const isAmountChanged = newProps.amount !== this.props.amount
+    const isMultiplierChanged = newProps.feeMultiplier !== this.props.feeMultiplier
+    if (newProps.amount > 0 && (isAmountChanged || isMultiplierChanged)) {
+      newProps.onEstimateFee(TX_LOCK, newProps.amount, newProps.token, newProps.feeMultiplier)
+    }
+    return null
   }
 
   handleProceed = (values) => {
@@ -176,7 +188,12 @@ export default class LaborXConnectForm extends PureComponent {
           )}
         </div>
         <div styleName='gasSliderWrapper'>
-          <GasSlider />
+          <Field
+            gasFee={this.props.gasFee}
+            component={GasSlider}
+            name='feeMultiplier'
+            {...FEE_RATE_MULTIPLIER}
+          />
         </div>
         <div styleName='actions'>
           {Object.entries(buttons).map((entry) => {
