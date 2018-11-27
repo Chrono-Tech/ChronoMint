@@ -73,6 +73,16 @@ export const getLXSwaps = (state) => {
   return swaps
 }
 
+export const getLXSwapsMtS = createSelector(getLXSwaps, (swaps) => {
+  return Object.values(swaps)
+    .filter((swap) => swap.type === 1) // 1 for swaps from mainnet to sidecain
+})
+
+export const getLXSwapsStM = createSelector(getLXSwaps, (swaps) => {
+  return Object.values(swaps)
+    .filter((swap) => swap.type === 2) // 2 for swaps from sidechain to mainnet
+})
+
 export const getLXDeposits = (state) => {
   const { timeHolder } = LXSDuckSelector(state)
   return timeHolder.deposit
@@ -84,6 +94,8 @@ export const getLXLockedDeposits = (state) => {
 }
 
 export const getLXActiveSwapsCount = createSelector(getLXSwaps, (swaps) => {
+  // TODO @abdulov remove console.log
+  console.log('%c swaps', 'background: #222; color: #fff', swaps, Object.values(swaps).filter((swap) => swap.isActive).length)
   return Object.values(swaps).filter((swap) => swap.isActive).length
 })
 

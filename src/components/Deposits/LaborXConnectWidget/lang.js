@@ -23,5 +23,7 @@ export default {
     customNode: 'Custom Node',
     chronoBank: 'ChronoBank',
     undistributed: 'Undistributed',
+    unclosedSwapsMainnet: 'You have %{count} unclosed swaps from main network',
+    unclosedSwapsLX: 'You have %{count} unclosed swaps from Labor Hour network',
   },
 }

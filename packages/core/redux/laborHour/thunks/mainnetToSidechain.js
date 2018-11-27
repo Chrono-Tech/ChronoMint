@@ -56,29 +56,34 @@ export const closeSwap = (encodedKey, swapId) => async (dispatch, getState) => {
 
 export const getSwapList = () => async (dispatch, getState) => {
   const wallet = getMainLaborHourWallet(getState())
-  const {
-    data,
-  } = await SidechainMiddlewareService.getSwapListFromMainnetToSidechainByAddress(
-    wallet.address,
-  )
-  const swapList = data.reduce((accumulator, swap) => {
+  const [{ data: MtS }, { data: StM }] = await Promise.all([
+    SidechainMiddlewareService.getSwapListFromMainnetToSidechainByAddress(wallet.address),
+    SidechainMiddlewareService.getSwapListFromSidechainToMainnetByAddress(wallet.address),
+  ])
+  const filter = (type) => (accumulator, swap) => {
     return swap.isActive
       ? {
         ...accumulator,
-        [swap.swapId]: swap,
+        [swap.swapId]: {
+          type,
+          ...swap,
+        },
       }
       : accumulator
-  }, {})
+  }
 
-  LXSidechainActions.swapListUpdate(swapList)
+  const swapList = {
+    ...MtS.reduce(filter(1), {}), // 1 for swaps from mainnet to sidecain
+    ...StM.reduce(filter(2), {}), // 2 for swaps from sidechain to mainnet
+  }
 
+  dispatch(LXSidechainActions.swapListUpdate(swapList))
   return swapList
 }
 
 export const obtainAllOpenSwaps = () => async (dispatch, getState) => {
   const swaps = getLXSwaps(getState())
   const promises = []
-  // promises.push(dispatch(obtainSwapByMiddlewareFromMainnetToSidechain(data[0].swapId)))
   Object.values(swaps).forEach((swap) => {
     if (swap.isActive) {
       swap.isActive = false

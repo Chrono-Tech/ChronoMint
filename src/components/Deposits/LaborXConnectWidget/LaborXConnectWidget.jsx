@@ -33,6 +33,7 @@ import LHT_LOGO_SVG from 'assets/img/lht.svg'
 import './LaborXConnectWidget.scss'
 import { prefix } from './lang'
 import Preloader from '../../common/Preloader/Preloader'
+import ProblemField from './ProblemField'
 
 const WIDGET_FIRST_STEP = 'First'
 const WIDGET_SECOND_STEP = 'Second'
@@ -122,7 +123,9 @@ export default class LaborXConnectWidget extends PureComponent {
     const isLXLockedDeposit = newProps.lxLockedDeposit && newProps.lxLockedDeposit.gt(0)
     const isLXBalance = newProps.lhtWallet.balances[TIME] && newProps.lhtWallet.balances[TIME].gt(0)
 
-    if (isLXBalance || isLXDeposit || isLXLockedDeposit) {
+    // TODO @abdulov remove console.log
+    console.log('%c getDerivedStateFromProps', 'background: #222; color: #fff', newProps.swapsCount)
+    if (isLXBalance || isLXDeposit || isLXLockedDeposit || newProps.swapsCount > 0) {
       return { step: WIDGET_SECOND_STEP }
     }
     return null
@@ -244,17 +247,7 @@ export default class LaborXConnectWidget extends PureComponent {
               }
             </div>
           </div>
-          {!undistributedValue.eq(0) && (
-            <div styleName='infoItem'>
-              <div styleName='icon'>
-                <div className='chronobank-icon'>warning</div>
-              </div>
-              <div styleName='title'><Translate value={`${prefix}.undistributed`} />: TIME {undistributedValue.toNumber()}</div>
-              <div styleName='buttonWrapper'>
-                <Button>fix</Button>
-              </div>
-            </div>
-          )}
+          <ProblemField />
           <div styleName='infoItem'>
             <div styleName='title'>
               Reward: LHT{' '}
