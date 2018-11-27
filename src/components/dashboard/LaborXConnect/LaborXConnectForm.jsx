@@ -78,12 +78,12 @@ export default class LaborXConnectForm extends PureComponent {
     this.props.onSubmit(
       values
         .set('action', TX_LOCK)
-        .set('token', this.props.token)
-        .set('isCustomNode', true),
+        .set('token', this.props.token),
     )
   }
 
   handleSetNextStep = () => {
+    this.props.onChangeField('isCustomNode', true)
     this.setState({ step: LABOR_X_CONNECT_SECOND })
   }
 
@@ -110,7 +110,7 @@ export default class LaborXConnectForm extends PureComponent {
     )
   }
 
-  renderButton ([id, { onClick, topValue, button }]) {
+  renderButton = ([id, { onClick, topValue, button }]) => {
     return (
       <div key={id} styleName='button'>
         <div styleName='buttonInfo'>
@@ -124,6 +124,7 @@ export default class LaborXConnectForm extends PureComponent {
         <button
           onClick={onClick}
           styleName={classnames('buttonInfoButton', button.styleName)}
+          disabled={this.props.feeLoading}
         >
           <div styleName='title'>
             <Translate value={button.title} />
@@ -256,7 +257,10 @@ export default class LaborXConnectForm extends PureComponent {
           </div>
         </div>
         <div styleName='buttonWrapper'>
-          <Button onClick={this.props.handleSubmit(this.handleProceedCustomNode)}>
+          <Button
+            onClick={this.props.handleSubmit(this.handleProceedCustomNode)}
+            disabled={this.props.invalid}
+          >
             <Translate value={`${prefix}.settingsForm.done`} />
           </Button>
         </div>

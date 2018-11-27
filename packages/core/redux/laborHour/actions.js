@@ -18,19 +18,14 @@ import {
   LABOR_HOUR_UPDATE_MINING_NODE_TYPE,
   LABOR_HOUR_UPDATE_DEPOSIT,
   LABOR_HOUR_UPDATE_LOCKED_DEPOSIT,
-  LABOR_HOUR_INIT_UPDATE,
   LABOR_HOUR_UPDATE_FEE_MULTIPLIER,
+  LABOR_HOUR_SWAP_LIST_UPDATE,
 } from './constants'
 
 export const updateWeb3 = (web3) =>
   ({
     type: LABOR_HOUR_WEB3_UPDATE,
     web3,
-  })
-
-export const laborHourInitiated = () =>
-  ({
-    type: LABOR_HOUR_INIT_UPDATE,
   })
 
 export const updateWallet = (wallet) =>
@@ -70,6 +65,12 @@ export const swapUpdate = (swap) =>
   ({
     type: LABOR_HOUR_SWAP_UPDATE,
     swap,
+  })
+
+export const swapListUpdate = (swaps) =>
+  ({
+    type: LABOR_HOUR_SWAP_LIST_UPDATE,
+    swaps,
   })
 
 export const setTokensFetchingCount = (count) =>

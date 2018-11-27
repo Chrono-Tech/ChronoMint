@@ -145,6 +145,7 @@ export default class LaborXConnect extends PureComponent {
     onCloseModal: PropTypes.func,
     lxDeposit: PropTypes.instanceOf(Amount),
     lxLockedDeposit: PropTypes.instanceOf(Amount),
+    feeMultiplier: PropTypes.number,
   }
 
   constructor (props) {

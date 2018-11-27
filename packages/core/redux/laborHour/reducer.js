@@ -19,13 +19,12 @@ import {
   LABOR_HOUR_UPDATE_MINING_NODE_TYPE,
   LABOR_HOUR_UPDATE_DEPOSIT,
   LABOR_HOUR_UPDATE_LOCKED_DEPOSIT,
-  LABOR_HOUR_INIT_UPDATE,
   LABOR_HOUR_UPDATE_FEE_MULTIPLIER,
+  LABOR_HOUR_SWAP_LIST_UPDATE,
 } from './constants'
 import TokensCollection from '../../models/tokens/TokensCollection'
 
 const initialState = {
-  isInitiated: false,
   wallets: {},
   pending: {}, // pending transactions
   tokens: new TokensCollection(),
@@ -50,12 +49,6 @@ const mutations = {
       web3,
     }
   },
-  [LABOR_HOUR_INIT_UPDATE]: (state) => {
-    return {
-      ...state,
-      isInitiated: true,
-    }
-  },
   [LABOR_HOUR_DAOS_REGISTER] (state, { model }) {
     return {
       ...state,
@@ -77,6 +70,15 @@ const mutations = {
       swaps: {
         ...state.swaps,
         [swap.swapId]: swap,
+      },
+    }
+  },
+  [LABOR_HOUR_SWAP_LIST_UPDATE]: (state, { swaps }) => {
+    return {
+      ...state,
+      swaps: {
+        ...state.swaps,
+        ...swaps,
       },
     }
   },

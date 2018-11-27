@@ -3,13 +3,15 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { LABOR_HOUR_NETWORK_CONFIG } from '@chronobank/login/network/settings'
-import web3Factory from '../../../web3'
-import { daoByType, getMainLaborHourWallet, getLXSwaps, getMiningFeeMultiplier } from '../selectors/mainSelectors'
+import {
+  daoByType,
+  getMainLaborHourWallet,
+  getLXSwaps,
+  getMiningFeeMultiplier,
+} from '../selectors/mainSelectors'
 import web3Converter from '../../../utils/Web3Converter'
 import SidechainMiddlewareService from '../SidechainMiddlewareService'
 import { getEthereumSigner } from '../../persistAccount/selectors'
-import { getMainEthWallet } from '../../wallets/selectors/models'
 import { notifyUnknownError } from './utilsThunks'
 import { executeLaborHourTransaction } from './transactions'
 import * as LXSidechainActions from '../actions'
@@ -35,29 +37,18 @@ export const obtainSwapByMiddlewareFromMainnetToSidechain = (swapId) => async (
   }
 }
 
-export const closeSwap = (encodedKey, swapId, index) => async (dispatch, getState) => {
+export const closeSwap = (encodedKey, swapId) => async (dispatch, getState) => {
   const dao = daoByType('AtomicSwapERC20')(getState())
-  const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
-  const mainEthWallet = getMainEthWallet(getState())
   const signer = getEthereumSigner(getState())
   const feeMultiplier = getMiningFeeMultiplier(getState())
 
-  const promises = [
-    web3.eth.net.getId(),
-    web3.eth.getTransactionCount(mainEthWallet.address, 'pending'),
-    signer.decryptWithPrivateKey(encodedKey),
-  ]
-  const [chainId, nonce, key] = await Promise.all(promises)
+  const key = await signer.decryptWithPrivateKey(encodedKey)
 
   const tx = {
     ...dao.close(
       web3Converter.stringToBytes(swapId),
       web3Converter.stringToBytes(key),
     ),
-    gas: 5700000, // TODO @Abdulov remove hard code and do something
-    gasPrice: 80000000000,
-    nonce: nonce + (index || 0), // increase nonce because transactions send at the same time
-    chainId: chainId,
   }
 
   dispatch(executeLaborHourTransaction({ tx, options: { feeMultiplier } }))
@@ -70,12 +61,18 @@ export const getSwapList = () => async (dispatch, getState) => {
   } = await SidechainMiddlewareService.getSwapListFromMainnetToSidechainByAddress(
     wallet.address,
   )
-  data.forEach((swap) => {
-    if (swap.isActive) {
-      dispatch(LXSidechainActions.swapUpdate(swap))
-    }
-  })
-  return data
+  const swapList = data.reduce((accumulator, swap) => {
+    return swap.isActive
+      ? {
+        ...accumulator,
+        [swap.swapId]: swap,
+      }
+      : accumulator
+  }, {})
+
+  LXSidechainActions.swapListUpdate(swapList)
+
+  return swapList
 }
 
 export const obtainAllOpenSwaps = () => async (dispatch, getState) => {

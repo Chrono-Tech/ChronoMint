@@ -37,23 +37,12 @@ export const sidechainWithdraw = (
     dispatch(updateMiningNodeType({ isCustomNode, delegateAddress }))
     dispatch(updateMiningFeeMultiplier(feeMultiplier))
     const timeHolderDAO = daoByType('TimeHolderSidechain')(getState())
-    const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
     const lhthWallet = getMainLaborHourWallet(getState())
     const lockedDeposit = getLXLockedDeposit(lhthWallet.address)(getState())
-
-    const promises = [
-      web3.eth.net.getId(),
-      web3.eth.getTransactionCount(lhthWallet.address, 'pending'),
-    ]
-    const [chainId, nonce] = await Promise.all(promises)
 
     const withdraw = () => {
       const tx = {
         ...timeHolderDAO.withdrawShares(token.address(), amount),
-        gas: 5700000, // TODO @Abdulov remove hard code and do something
-        gasPrice: 80000000000,
-        nonce: nonce,
-        chainId: chainId,
       }
 
       dispatch(executeLaborHourTransaction({ tx, options: { feeMultiplier } }))

@@ -42,8 +42,6 @@ export default class TransactionHandler extends TransactionGuide {
   }
 
   executeTransaction = ({ tx, options }) => async (dispatch, getState) => {
-    // TODO @abdulov remove console.log
-    console.log('%c options', 'background: #222; color: #fff', options)
     const web3 = this.getWeb3(getState())
     const prepared = await dispatch(
       this.prepareTransaction({ web3, tx, options }),

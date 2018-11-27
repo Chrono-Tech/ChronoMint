@@ -4,9 +4,7 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { LABOR_HOUR_NETWORK_CONFIG } from '@chronobank/login/network/settings'
 import { daoByType, getLXToken, getLXTokenByAddress, getMainLaborHourWallet, getMiningFeeMultiplier, getMiningParams } from '../selectors/mainSelectors'
-import web3Factory from '../../../web3'
 import { EVENT_CLOSE, EVENT_EXPIRE, EVENT_OPEN, EVENT_REVOKE } from '../constants'
 import { notify } from '../../notifier/actions'
 import SimpleNoticeModel from '../../../models/notices/SimpleNoticeModel'
@@ -178,24 +176,13 @@ const withdrawSharesCallback = (event) => async (dispatch, getState) => {
     const lhtWallet = getMainLaborHourWallet(getState())
     const token = getLXTokenByAddress(tokenAddress.toLowerCase())(getState())
     const platformDao = daoByType('ChronoBankPlatformSidechain')(getState())
-    const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
     const feeMultiplier = getMiningFeeMultiplier(getState())
-
-    const promises = [
-      web3.eth.net.getId(),
-      web3.eth.getTransactionCount(lhtWallet.address, 'pending'),
-    ]
-    const [chainId, nonce] = await Promise.all(promises)
 
     const tx = {
       ...platformDao.revokeAsset(
         web3Converter.stringToBytes(token.symbol()),
         lhtWallet.balances[token.symbol()],
       ),
-      gas: 5700000, // TODO @Abdulov remove hard code and do something
-      gasPrice: 80000000000,
-      nonce: nonce,
-      chainId: chainId,
     }
     await dispatch(executeLaborHourTransaction({ tx, options: { feeMultiplier } }))
   } catch (e) {

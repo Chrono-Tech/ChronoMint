@@ -16,7 +16,9 @@ import {
   getLXActiveSwapsCount,
   getMainLaborHourWallet,
   getMiningParams,
-  getLXToken, getLXDeposit, getLXLockedDeposit, laborHourInitSelector,
+  getLXToken,
+  getLXDeposit,
+  getLXLockedDeposit,
 } from '@chronobank/core/redux/laborHour/selectors/mainSelectors'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
@@ -43,7 +45,6 @@ function mapStateToProps (state) {
   const lht = getLXToken(LHT)(state)
   const lxDeposit = getLXDeposit(lhtWallet.address)(state)
   const lxLockedDeposit = getLXLockedDeposit(lhtWallet.address)(state)
-  const isLHTInitiated = laborHourInitSelector(state)
   return {
     deposit: getDeposit(TIME)(state),
     lhtWallet,
@@ -53,7 +54,6 @@ function mapStateToProps (state) {
     lht,
     lxDeposit,
     lxLockedDeposit,
-    isLHTInitiated,
   }
 }
 
@@ -106,7 +106,6 @@ export default class LaborXConnectWidget extends PureComponent {
     lht: PropTypes.instanceOf(TokenModel),
     lxDeposit: PropTypes.instanceOf(Amount),
     lxLockedDeposit: PropTypes.instanceOf(Amount),
-    isLHTInitiated: PropTypes.bool,
   }
 
   constructor (props) {
@@ -118,13 +117,15 @@ export default class LaborXConnectWidget extends PureComponent {
     this.state = { step }
   }
 
-  componentWillReceiveProps (newProps) {
+  static getDerivedStateFromProps (newProps) {
     const isLXDeposit = newProps.lxDeposit && newProps.lxDeposit.gt(0)
     const isLXLockedDeposit = newProps.lxLockedDeposit && newProps.lxLockedDeposit.gt(0)
     const isLXBalance = newProps.lhtWallet.balances[TIME] && newProps.lhtWallet.balances[TIME].gt(0)
+
     if (isLXBalance || isLXDeposit || isLXLockedDeposit) {
-      return this.setState({ step: WIDGET_SECOND_STEP })
+      return { step: WIDGET_SECOND_STEP }
     }
+    return null
   }
 
   handleOpenReceiveForm = () => {
@@ -231,12 +232,14 @@ export default class LaborXConnectWidget extends PureComponent {
             </div>
             <div styleName='title'>
               {isMiningOn
-                ? <span><Translate value={`${prefix}.miningON`} />&nbsp;(
-                  {isChronobankPoll
-                    ? <Translate value={`${prefix}.chronoBank`} />
-                    : <Translate value={`${prefix}.customNode`} />
-                  }
-                  )</span>
+                ? (
+                  <span><Translate value={`${prefix}.miningON`} />&nbsp;(
+                    {isChronobankPoll
+                      ? <Translate value={`${prefix}.chronoBank`} />
+                      : <Translate value={`${prefix}.customNode`} />
+                    })
+                  </span>
+                )
                 : <Translate value={`${prefix}.miningOFF`} />
               }
             </div>
@@ -276,6 +279,7 @@ export default class LaborXConnectWidget extends PureComponent {
   }
 
   render () {
+    const { lxLockedDeposit, lxDeposit, lhtWallet } = this.props
     return (
       <div styleName='header-container'>
         <div styleName='wallet-list-container'>
@@ -303,7 +307,7 @@ export default class LaborXConnectWidget extends PureComponent {
                 <IPFSImage styleName='imageIcon' fallback={LHT_LOGO_SVG} />
               </div>
             </div>
-            {this.props.isLHTInitiated
+            {lxLockedDeposit && lxDeposit && lhtWallet.balances[TIME]
               ? this.renderStep()
               : <Preloader />
             }
