@@ -97,6 +97,11 @@ export const getMiningParams = (state) => {
   return miningParams
 }
 
+export const getMiningFeeMultiplier =
+  createSelector(getMiningParams, (miningParams) => {
+    return miningParams.feeMultiplier
+  })
+
 export const getMainLaborHourWallet = (state) => {
   const wallets = getWallets(state)
   return Object.values(wallets).find(

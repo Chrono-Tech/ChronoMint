@@ -8,14 +8,16 @@ import classnames from 'classnames'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
-import { Field } from 'redux-form/immutable'
+import BigNumber from 'bignumber.js'
 import Amount from '@chronobank/core/models/Amount'
+import web3Converter from '@chronobank/core/utils/Web3Converter'
 import PropTypes from 'prop-types'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { ETH } from '@chronobank/core/dao/constants'
 import classes from './GasSlider.scss'
 import { prefix } from './lang'
+import Preloader from '../Preloader/Preloader'
 
 function mapStateToProps (state, ownProps) {
   const token = ownProps.token || state.get(DUCK_TOKENS).item(ETH)
@@ -34,34 +36,50 @@ export default class GasSlider extends PureComponent {
     disabled: PropTypes.bool,
     initialValue: PropTypes.number,
     gasFee: PropTypes.instanceOf(Amount),
+    gasPrice: PropTypes.instanceOf(Amount),
+    feeLoading: PropTypes.bool,
     min: PropTypes.number,
     max: PropTypes.number,
     step: PropTypes.number,
-    toFixed: PropTypes.number,
   }
 
   constructor (args) {
     super(args)
 
     this.state = {
-      localValue: this.props.value || this.props.initialValue || 1,
       isOpen: false,
     }
   }
 
   handleChange = (e, v) => {
-    if (this.props.toFixed !== null && this.props.toFixed !== undefined) {
-      v = v.toFixed(this.props.toFixed)
-    }
-    return this.props.input.onChange(parseFloat(v))
+    return this.props.input.onChange(parseFloat((v).toFixed(1)))
   }
 
   handelOpenToggle = () => {
     this.setState({ isOpen: !this.state.isOpen })
   }
 
+  renderAmount () {
+    if (this.props.feeLoading) {
+      return <Preloader />
+    }
+    if (this.props.gasFee) {
+      return (
+        <Translate
+          value={`${prefix}.fee`}
+          symbol={this.props.gasFee ? this.props.gasFee.symbol() : ETH}
+          amount={this.props.gasFee ? this.props.token.removeDecimals(this.props.gasFee).toNumber() : 0}
+        />
+      )
+    } else {
+      return (
+        <Translate value={`${prefix}.invalidForm`} />
+      )
+    }
+  }
+
   render () {
-    const { input, min, max, step } = this.props
+    const { input, min, max, step, gasPrice } = this.props
     return (
       <div styleName='root' className='GasSlider__root'>
         <button
@@ -69,17 +87,7 @@ export default class GasSlider extends PureComponent {
           onClick={this.handelOpenToggle}
         >
           <div styleName='text'>
-            {this.props.gasFee
-              ? (
-                <Translate
-                  value={`${prefix}.fee`}
-                  symbol={this.props.gasFee ? this.props.gasFee.symbol() : ETH}
-                  amount={this.props.gasFee ? this.props.gasFee.toNumber() : 0}
-                />
-              ) : (
-                <Translate value={`${prefix}.invalidForm`} />
-              )}
-
+            {this.renderAmount()}
           </div>
           <div styleName='arrow' className='chronobank-icon'>drop-2</div>
         </button>
@@ -104,8 +112,10 @@ export default class GasSlider extends PureComponent {
           <div styleName='gasPriceDescription'>
             <Translate
               value={`${prefix}.gasPrice`}
-              multiplier={this.state.localValue}
-              total={Number((this.state.localValue * this.props.token.feeRate()).toFixed(1))}
+              multiplier={input.value}
+              total={new BigNumber(input.value)
+                .mul(gasPrice ? web3Converter.fromWei(gasPrice, 'gwei') : 0)
+                .toFixed(2)}
             />
           </div>
         </div>

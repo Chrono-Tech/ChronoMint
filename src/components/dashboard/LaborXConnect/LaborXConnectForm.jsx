@@ -17,6 +17,7 @@ import { FORM_LABOR_X_CONNECT } from 'components/constants'
 import classnames from 'classnames'
 import { TIME } from '@chronobank/core/dao/constants'
 import { CHRONOBANK_NODE_FEE_COEFFICIENT } from '@chronobank/core/redux/laborHour/constants'
+import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/wallets/constants'
 import Button from 'components/common/ui/Button/Button'
 import { TX_LOCK } from '@chronobank/core/dao/constants/AssetHolderDAO'
 import validate from './validate'
@@ -27,7 +28,6 @@ import Preloader from '../../common/Preloader/Preloader'
 import TokenValueSimple from '../../common/TokenValueSimple/TokenValueSimple'
 import GasSlider from '../../common/GasSlider/GasSlider'
 import { nodes } from './constants'
-import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/wallets/constants'
 
 const LABOR_X_CONNECT_FIRST = 'laborXConnectFirst'
 const LABOR_X_CONNECT_SECOND = 'laborXConnectSecond'
@@ -38,6 +38,7 @@ export default class LaborXConnectForm extends PureComponent {
     feeMultiplier: PropTypes.number,
     feeLoading: PropTypes.bool,
     gasFee: PropTypes.instanceOf(Amount),
+    gasPrice: PropTypes.instanceOf(Amount),
     onChangeField: PropTypes.func,
     deposit: PropTypes.instanceOf(Amount),
     balanceEth: PropTypes.instanceOf(Amount),
@@ -65,7 +66,6 @@ export default class LaborXConnectForm extends PureComponent {
     if (newProps.amount > 0 && (isAmountChanged || isMultiplierChanged)) {
       newProps.onEstimateFee(TX_LOCK, newProps.amount, newProps.token, newProps.feeMultiplier)
     }
-    return null
   }
 
   handleProceed = (values) => {
@@ -190,8 +190,10 @@ export default class LaborXConnectForm extends PureComponent {
         <div styleName='gasSliderWrapper'>
           <Field
             gasFee={this.props.gasFee}
+            gasPrice={this.props.gasPrice}
             component={GasSlider}
             name='feeMultiplier'
+            feeLoading={this.props.feeLoading}
             {...FEE_RATE_MULTIPLIER}
           />
         </div>

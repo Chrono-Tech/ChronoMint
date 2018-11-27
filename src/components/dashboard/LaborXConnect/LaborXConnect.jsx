@@ -110,11 +110,11 @@ function mapDispatchToProps (dispatch, ownProps) {
     onChangeField: (field, value) => dispatch(change(ownProps.formName, field, value)),
     handleEstimateGas: (mode, params, callback, gasPriceMultiplier) =>
       dispatch(estimateGasForAssetHolder(mode, params, callback, gasPriceMultiplier)),
-    handleUnlockDeposit: (token) => {
+    handleUnlockDeposit: (token, feeMultiplier) => {
       dispatch(updateMiningNodeType({ isCustomNode: false, delegateAddress: null }))
-      dispatch(unlockLockedDeposit(token))
+      dispatch(unlockLockedDeposit(token, feeMultiplier))
     },
-    handleStartMiningInCustomNode: (delegateAddress) => dispatch(startMiningInCustomNode(delegateAddress)),
+    handleStartMiningInCustomNode: (delegateAddress, feeMultiplier) => dispatch(startMiningInCustomNode(delegateAddress, feeMultiplier)),
   }
 }
 
@@ -167,17 +167,16 @@ export default class LaborXConnect extends PureComponent {
   ) => {
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
-      // TODO @abdulov remove console.log
-      console.log('%c estimate', 'background: red; color: #fff')
       this.setState({ feeLoading: true })
       this.props.handleEstimateGas(
         action,
         [token.address(), amount],
         (error, result) => {
-          const { gasFee } = result
+          const { gasFee, gasPrice } = result
           if (!error) {
             this.setState({
               gasFee,
+              gasPrice,
               feeLoading: false,
             })
           } else {
@@ -218,10 +217,10 @@ export default class LaborXConnect extends PureComponent {
         )
       case TX_DEPOSIT:
         this.props.onCloseModal()
-        return this.props.handleUnlockDeposit(token)
+        return this.props.handleUnlockDeposit(token, feeMultiplier)
       case TX_START_MINING_IN_CUSTOM_NODE:
         this.props.onCloseModal()
-        return this.props.handleStartMiningInCustomNode(delegateAddress)
+        return this.props.handleStartMiningInCustomNode(delegateAddress, feeMultiplier)
     }
   }
 
@@ -248,7 +247,7 @@ export default class LaborXConnect extends PureComponent {
       lxLockedDeposit,
       feeMultiplier,
     } = this.props
-    const { gasFee, feeLoading } = this.state
+    const { gasFee, gasPrice, feeLoading } = this.state
 
     let Component
     switch (formName) {
@@ -271,6 +270,7 @@ export default class LaborXConnect extends PureComponent {
         miningParams={miningParams}
         feeLoading={feeLoading}
         gasFee={gasFee}
+        gasPrice={gasPrice}
         amount={amount}
         onChangeField={onChangeField}
         deposit={deposit}

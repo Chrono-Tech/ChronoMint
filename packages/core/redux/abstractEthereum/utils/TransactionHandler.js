@@ -42,9 +42,11 @@ export default class TransactionHandler extends TransactionGuide {
   }
 
   executeTransaction = ({ tx, options }) => async (dispatch, getState) => {
+    // TODO @abdulov remove console.log
+    console.log('%c options', 'background: #222; color: #fff', options)
     const web3 = this.getWeb3(getState())
     const prepared = await dispatch(
-      this.prepareTransaction({ web3, tx, options })
+      this.prepareTransaction({ web3, tx, options }),
     )
     const entry = createTxEntryModel(prepared, options)
 
@@ -57,7 +59,7 @@ export default class TransactionHandler extends TransactionGuide {
       this.txStatus(entry.key, entry.tx.from, {
         isAccepted: true,
         isPending: true,
-      })
+      }),
     )
 
     const state = getState()
@@ -66,7 +68,7 @@ export default class TransactionHandler extends TransactionGuide {
     if (entry.walletDerivedPath) {
       signer = await this.getDerivedWallet(
         signer.privateKey,
-        entry.walletDerivedPath
+        entry.walletDerivedPath,
       )
     }
 
@@ -75,7 +77,7 @@ export default class TransactionHandler extends TransactionGuide {
         web3: this.getWeb3(state),
         entry: this.selectors.pendingEntry(entry.tx.from, entry.key)(state),
         signer,
-      })
+      }),
     )
   }
 
@@ -99,8 +101,8 @@ export default class TransactionHandler extends TransactionGuide {
         new TxEntryModel({
           ...entry,
           ...props,
-        })
-      )
+        }),
+      ),
     )
   }
 
@@ -111,9 +113,9 @@ export default class TransactionHandler extends TransactionGuide {
         this.sendSignedTransaction({
           web3,
           entry: this.selectors.pendingEntry(entry.tx.from, entry.key)(
-            getState()
+            getState(),
           ),
-        })
+        }),
       )
     }
   }
@@ -130,7 +132,7 @@ export default class TransactionHandler extends TransactionGuide {
         address: account,
         abi: dao.abi,
         token: dao.token,
-      }
+      },
     )
 
     dispatch(
@@ -142,10 +144,10 @@ export default class TransactionHandler extends TransactionGuide {
           accept: this.acceptTransaction,
           reject: () =>
             dispatch(
-              this.txStatus(entry.key, entry.tx.from, { isRejected: true })
+              this.txStatus(entry.key, entry.tx.from, { isRejected: true }),
             ),
         },
-      })
+      }),
     )
   }
 
@@ -155,7 +157,7 @@ export default class TransactionHandler extends TransactionGuide {
       dispatch,
       web3,
       tx,
-      feeMultiplier
+      feeMultiplier,
     )
     return createTxExecModel(tx, gasLimit, gasPrice, nonce, chainId)
   }
@@ -170,18 +172,18 @@ export default class TransactionHandler extends TransactionGuide {
         .sendSignedTransaction(entry.raw)
         .on('transactionHash', (hash) => {
           dispatch(
-            this.txStatus(entry.key, entry.tx.from, { isSent: true, hash })
+            this.txStatus(entry.key, entry.tx.from, { isSent: true, hash }),
           )
         })
         .on('receipt', (receipt) => {
           dispatch(
-            this.txStatus(entry.key, entry.tx.from, { isMined: true, receipt })
+            this.txStatus(entry.key, entry.tx.from, { isMined: true, receipt }),
           )
           resolve(receipt)
         })
         .on('error', (error) => {
           dispatch(
-            this.txStatus(entry.key, entry.tx.from, { isErrored: true, error })
+            this.txStatus(entry.key, entry.tx.from, { isErrored: true, error }),
           )
           reject(error)
         })
@@ -195,7 +197,7 @@ export default class TransactionHandler extends TransactionGuide {
       dispatch(showSignerModal())
       const signed = await signer.signTransaction(
         omitBy(entry.tx, isNil),
-        selectedWallet.encrypted[0].path
+        selectedWallet.encrypted[0].path,
       )
       dispatch(closeSignerModal())
 
@@ -206,7 +208,7 @@ export default class TransactionHandler extends TransactionGuide {
       console.error('signTransaction error: ', error)
       dispatch(closeSignerModal())
       dispatch(
-        this.txStatus(entry.key, entry.tx.from, { isErrored: true, error })
+        this.txStatus(entry.key, entry.tx.from, { isErrored: true, error }),
       )
       throw error
     }

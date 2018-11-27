@@ -18,7 +18,7 @@ import {
   TX_DEPOSIT,
   TX_START_MINING_IN_CUSTOM_NODE,
 } from '@chronobank/core/redux/laborHour/dao/TimeHolderDAO'
-import WalletModel from '@chronobank/core/models/wallet/WalletModel'
+import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/wallets/constants'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
@@ -38,24 +38,32 @@ import GasSlider from '../../common/GasSlider/GasSlider'
 @reduxForm({ form: FORM_LABOR_X_CONNECT_SETTINGS, validate })
 export default class LaborXConnectSettingsForm extends PureComponent {
   static propTypes = {
+    feeMultiplier: PropTypes.number,
     feeLoading: PropTypes.bool,
     gasFee: PropTypes.instanceOf(Amount),
+    gasPrice: PropTypes.instanceOf(Amount),
     onChangeField: PropTypes.func,
     deposit: PropTypes.instanceOf(Amount),
     balanceEth: PropTypes.instanceOf(Amount),
     token: PropTypes.instanceOf(TokenModel),
     assets: PropTypes.instanceOf(AssetsCollection),
     amount: PropTypes.number,
-    lhtWallet: PropTypes.instanceOf(WalletModel),
-    timeTokenLX: PropTypes.instanceOf(TokenModel),
+    onEstimateFee: PropTypes.func,
     miningParams: PropTypes.shape({
       minDepositLimit: PropTypes.string,
       rewardsCoefficient: PropTypes.string,
       isCustomNode: PropTypes.bool,
     }),
-    isCustomNode: PropTypes.bool,
-    miningBalance: PropTypes.instanceOf(Amount),
+    timeTokenLX: PropTypes.instanceOf(TokenModel),
     ...formPropTypes,
+  }
+
+  componentWillReceiveProps (newProps) {
+    const isAmountChanged = newProps.amount !== this.props.amount
+    const isMultiplierChanged = newProps.feeMultiplier !== this.props.feeMultiplier
+    if (newProps.amount > 0 && (isAmountChanged || isMultiplierChanged)) {
+      newProps.onEstimateFee(TX_LOCK, newProps.amount, newProps.token, newProps.feeMultiplier)
+    }
   }
 
   handleProceed = (values) => {
@@ -197,7 +205,14 @@ export default class LaborXConnectSettingsForm extends PureComponent {
           })}
         </div>
         <div styleName='gasSliderWrapper'>
-          <GasSlider />
+          <Field
+            gasFee={this.props.gasFee}
+            gasPrice={this.props.gasPrice}
+            component={GasSlider}
+            name='feeMultiplier'
+            feeLoading={this.props.feeLoading}
+            {...FEE_RATE_MULTIPLIER}
+          />
         </div>
       </div>
     )

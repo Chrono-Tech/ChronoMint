@@ -4,7 +4,8 @@
  */
 
 import {
-  LABOR_HOUR_DAOS_REGISTER, LABOR_HOUR_SWAP_UPDATE,
+  LABOR_HOUR_DAOS_REGISTER,
+  LABOR_HOUR_SWAP_UPDATE,
   LABOR_HOUR_TX_CREATE,
   LABOR_HOUR_TX_REMOVE,
   LABOR_HOUR_TX_UPDATE,
@@ -18,6 +19,7 @@ import {
   LABOR_HOUR_UPDATE_DEPOSIT,
   LABOR_HOUR_UPDATE_LOCKED_DEPOSIT,
   LABOR_HOUR_INIT_UPDATE,
+  LABOR_HOUR_UPDATE_FEE_MULTIPLIER,
 } from './constants'
 
 export const updateWeb3 = (web3) =>
@@ -117,4 +119,10 @@ export const updateLockedDeposit = (address, amount) =>
     type: LABOR_HOUR_UPDATE_LOCKED_DEPOSIT,
     address,
     amount,
+  })
+
+export const updateMiningFeeMultiplier = (feeMultiplier) =>
+  ({
+    type: LABOR_HOUR_UPDATE_FEE_MULTIPLIER,
+    feeMultiplier,
   })

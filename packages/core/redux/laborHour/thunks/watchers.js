@@ -5,7 +5,7 @@
 
 import BigNumber from 'bignumber.js'
 import { LABOR_HOUR_NETWORK_CONFIG } from '@chronobank/login/network/settings'
-import { daoByType, getLXToken, getLXTokenByAddress, getMainLaborHourWallet, getMiningParams } from '../selectors/mainSelectors'
+import { daoByType, getLXToken, getLXTokenByAddress, getMainLaborHourWallet, getMiningFeeMultiplier, getMiningParams } from '../selectors/mainSelectors'
 import web3Factory from '../../../web3'
 import { EVENT_CLOSE, EVENT_EXPIRE, EVENT_OPEN, EVENT_REVOKE } from '../constants'
 import { notify } from '../../notifier/actions'
@@ -129,7 +129,8 @@ const depositCallback = (event) => async (dispatch, getState) => {
     dispatch(updateTimeHolderBalances()),
   ])
   if (isCustomNode) {
-    dispatch(startMiningInCustomNode(delegateAddress))
+    const feeMultiplier = getMiningFeeMultiplier(getState())
+    dispatch(startMiningInCustomNode(delegateAddress, feeMultiplier))
   }
 }
 
@@ -178,6 +179,7 @@ const withdrawSharesCallback = (event) => async (dispatch, getState) => {
     const token = getLXTokenByAddress(tokenAddress.toLowerCase())(getState())
     const platformDao = daoByType('ChronoBankPlatformSidechain')(getState())
     const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
+    const feeMultiplier = getMiningFeeMultiplier(getState())
 
     const promises = [
       web3.eth.net.getId(),
@@ -195,7 +197,7 @@ const withdrawSharesCallback = (event) => async (dispatch, getState) => {
       nonce: nonce,
       chainId: chainId,
     }
-    await dispatch(executeLaborHourTransaction({ tx }))
+    await dispatch(executeLaborHourTransaction({ tx, options: { feeMultiplier } }))
   } catch (e) {
     // eslint-disable-next-line
     console.error('deposit error', e)

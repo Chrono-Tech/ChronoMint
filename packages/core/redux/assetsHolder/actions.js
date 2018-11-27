@@ -14,7 +14,7 @@ import tokenService from '../../services/TokenService'
 import { daoByType } from '../daos/selectors'
 import {
   daoByType as daoByTypeSidechain,
-  getLXLockedDeposit,
+  getLXLockedDeposit, getLXToken,
   getMainLaborHourWallet,
 } from '../laborHour/selectors/mainSelectors'
 import { BLOCKCHAIN_ETHEREUM, ETH, TIME } from '../../dao/constants'
@@ -39,7 +39,7 @@ import SimpleNoticeModel from '../../models/notices/SimpleNoticeModel'
 import { getTokens } from '../tokens/selectors'
 import ErrorNoticeModel from '../../models/notices/ErrorNoticeModel'
 import { TX_APPROVE } from '../../dao/constants/ChronoBankPlatformDAO'
-import { updateMiningNodeType } from '../laborHour/actions'
+import { updateMiningFeeMultiplier, updateMiningNodeType } from '../laborHour/actions'
 import {
   updateLaborHourBalances,
   updateTimeHolderBalances,
@@ -343,8 +343,10 @@ export const lockDeposit = (
     const assetHolderDAO = daoByType('TimeHolder')(state)
     const timeHolderSidechainDAO = daoByTypeSidechain('TimeHolderSidechain')(state)
     dispatch(updateMiningNodeType({ isCustomNode, delegateAddress }))
+    dispatch(updateMiningFeeMultiplier(feeMultiplier))
     const lhtWallet = getMainLaborHourWallet(state)
     const lxLockedDeposit = getLXLockedDeposit(lhtWallet.address)(state)
+    const timeLXToken = getLXToken(TIME)(getState())
     const lockDeposit = () => {
       const tx = assetHolderDAO.lock(token.address(), amount)
       if (tx) {
@@ -353,7 +355,7 @@ export const lockDeposit = (
     }
 
     if (lxLockedDeposit.gt(0)) {
-      dispatch(unlockLockedDeposit())
+      dispatch(unlockLockedDeposit(timeLXToken, feeMultiplier))
       timeHolderSidechainDAO.once(EVENT_RESIGN_MINER, () => {
         lockDeposit()
       })

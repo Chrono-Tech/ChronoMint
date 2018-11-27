@@ -9,7 +9,7 @@ import web3Factory from '../../../web3'
 import {
   daoByType,
   getLXLockedDeposit,
-  getMainLaborHourWallet,
+  getMainLaborHourWallet, getMiningFeeMultiplier,
 } from '../selectors/mainSelectors'
 import { daoByType as daoByTypeMainnet } from '../../daos/selectors'
 import Amount from '../../../models/Amount'
@@ -19,7 +19,7 @@ import SidechainMiddlewareService from '../SidechainMiddlewareService'
 import { getEthereumSigner } from '../../persistAccount/selectors'
 import { executeTransaction } from '../../ethereum/thunks'
 import { executeLaborHourTransaction } from './transactions'
-import { updateMiningNodeType } from '../actions'
+import { updateMiningFeeMultiplier, updateMiningNodeType } from '../actions'
 import { notifyUnknownError } from './utilsThunks'
 import { EVENT_RESIGN_MINER } from '../dao/TimeHolderDAO'
 import { unlockLockedDeposit } from './mining'
@@ -30,11 +30,12 @@ export const sidechainWithdraw = (
   token: TokenModel,
   isCustomNode,
   delegateAddress,
-  // feeMultiplier,
+  feeMultiplier,
 ) => async (dispatch, getState) => {
 
   try {
     dispatch(updateMiningNodeType({ isCustomNode, delegateAddress }))
+    dispatch(updateMiningFeeMultiplier(feeMultiplier))
     const timeHolderDAO = daoByType('TimeHolderSidechain')(getState())
     const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
     const lhthWallet = getMainLaborHourWallet(getState())
@@ -55,11 +56,11 @@ export const sidechainWithdraw = (
         chainId: chainId,
       }
 
-      dispatch(executeLaborHourTransaction({ tx }))
+      dispatch(executeLaborHourTransaction({ tx, options: { feeMultiplier } }))
     }
 
     if (lockedDeposit.gt(0)) {
-      dispatch(unlockLockedDeposit(token))
+      dispatch(unlockLockedDeposit(token, feeMultiplier))
       timeHolderDAO.once(EVENT_RESIGN_MINER, () => {
         withdraw()
       })
@@ -101,11 +102,12 @@ export const unlockShares = (swapId, encodedKey) => async (
     const timeHolderDAO = daoByTypeMainnet('TimeHolder')(getState())
     const signer = getEthereumSigner(getState())
     const key = await signer.decryptWithPrivateKey(encodedKey)
+    const feeMultiplier = getMiningFeeMultiplier(getState())
     const tx = timeHolderDAO.unlockShares(
       web3Converter.stringToBytes(swapId),
       web3Converter.stringToBytes(key),
     )
-    dispatch(executeTransaction({ tx }))
+    dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(e)

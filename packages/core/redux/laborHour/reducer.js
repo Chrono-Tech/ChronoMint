@@ -20,6 +20,7 @@ import {
   LABOR_HOUR_UPDATE_DEPOSIT,
   LABOR_HOUR_UPDATE_LOCKED_DEPOSIT,
   LABOR_HOUR_INIT_UPDATE,
+  LABOR_HOUR_UPDATE_FEE_MULTIPLIER,
 } from './constants'
 import TokensCollection from '../../models/tokens/TokensCollection'
 
@@ -33,7 +34,9 @@ const initialState = {
     byAddress: {},
   },
   swaps: {},
-  miningParams: {},
+  miningParams: {
+    feeMultiplier: 1,
+  },
   timeHolder: {
     deposit: {},
     lockedDeposit: {},
@@ -157,6 +160,16 @@ const mutations = {
       },
     }
   },
+  [LABOR_HOUR_UPDATE_FEE_MULTIPLIER]: (state, { feeMultiplier }) => {
+    return {
+      ...state,
+      miningParams: {
+        ...state.miningParams,
+        feeMultiplier,
+      },
+    }
+  },
+
   [LABOR_HOUR_UPDATE_DEPOSIT]: (state, { address, amount }) => {
     return {
       ...state,

@@ -7,10 +7,10 @@ import { TIME } from '@chronobank/core/dao/constants'
 import { LABOR_HOUR_NETWORK_CONFIG } from '@chronobank/login/network/settings'
 import web3Factory from '../../../web3'
 import { executeLaborHourTransaction, updateLaborHourBalances, updateTimeHolderBalances } from './transactions'
-import { daoByType, getMainLaborHourWallet, getLXToken, getLXDeposit, getMiningParams, getLXLockedDeposit } from '../selectors/mainSelectors'
+import { daoByType, getMainLaborHourWallet, getLXToken, getLXDeposit, getMiningParams, getLXLockedDeposit, getMiningFeeMultiplier } from '../selectors/mainSelectors'
 import TokenModel from '../../../models/tokens/TokenModel'
 import { EVENT_RESIGN_MINER } from '../dao/TimeHolderDAO'
-import { updateMiningNodeType } from '../actions'
+import { updateMiningFeeMultiplier, updateMiningNodeType } from '../actions'
 
 export const depositInSidechain = () => async (dispatch, getState) => {
   const state = getState()
@@ -18,6 +18,7 @@ export const depositInSidechain = () => async (dispatch, getState) => {
   const timeDao = daoByType(TIME)(state)
   const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
   const wallet = getMainLaborHourWallet(state)
+  const feeMultiplier = getMiningFeeMultiplier(state)
 
   const [chainId, nonce] = await Promise.all([
     web3.eth.net.getId(),
@@ -36,12 +37,13 @@ export const depositInSidechain = () => async (dispatch, getState) => {
     nonce: nonce,
     chainId: chainId,
   }
-  dispatch(executeLaborHourTransaction({ tx }))
+  dispatch(executeLaborHourTransaction({ tx, options: { feeMultiplier } }))
 }
 
-export const startMiningInCustomNode = (delegateAddress) => async (dispatch, getState) => {
+export const startMiningInCustomNode = (delegateAddress, feeMultiplier) => async (dispatch, getState) => {
 
   dispatch(updateMiningNodeType({ isCustomNode: true, delegateAddress }))
+  dispatch(updateMiningFeeMultiplier(feeMultiplier))
 
   const state = getState()
   const timeHolderSidechainDAO = daoByType('TimeHolderSidechain')(state)
@@ -64,11 +66,11 @@ export const startMiningInCustomNode = (delegateAddress) => async (dispatch, get
       nonce: nonce,
       chainId: chainId,
     }
-    dispatch(executeLaborHourTransaction({ tx }))
+    dispatch(executeLaborHourTransaction({ tx, options: { feeMultiplier } }))
   }
 
   if (lxLockedDeposit.gt(0)) {
-    dispatch(unlockLockedDeposit())
+    dispatch(unlockLockedDeposit(timeToken, feeMultiplier))
     timeHolderSidechainDAO.once(EVENT_RESIGN_MINER, async () => {
       await Promise.all([
         dispatch(updateLaborHourBalances()),
@@ -86,17 +88,20 @@ export const checkDepositBalanceAndStartMiningInCustomNode = () => (dispatch, ge
   const state = getState()
   const wallet = getMainLaborHourWallet(state)
   const deposit = getLXDeposit(wallet.address)(state)
+  const feeMultiplier = getMiningFeeMultiplier(getState())
+
   const { isCustomNode, delegateAddress } = getMiningParams(getState())
   if (isCustomNode && delegateAddress && deposit.gt(0)) {
-    dispatch(startMiningInCustomNode(delegateAddress))
+    dispatch(startMiningInCustomNode(delegateAddress, feeMultiplier))
   }
 }
 
-export const unlockLockedDeposit = (token: TokenModel) => async (dispatch, getState) => {
+export const unlockLockedDeposit = (token: TokenModel, feeMultiplier) => async (dispatch, getState) => {
   if (!token || (token && !token.address())) {
     token = getLXToken(TIME)(getState())
   }
 
+  dispatch(updateMiningFeeMultiplier(feeMultiplier))
   const lhthWallet = getMainLaborHourWallet(getState())
   const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
   const timeHolderDAO = daoByType('TimeHolderSidechain')(getState())
@@ -114,5 +119,5 @@ export const unlockLockedDeposit = (token: TokenModel) => async (dispatch, getSt
     chainId: chainId,
   }
 
-  dispatch(executeLaborHourTransaction({ tx }))
+  dispatch(executeLaborHourTransaction({ tx, options: { feeMultiplier } }))
 }

@@ -193,12 +193,15 @@ export default class LaborXConnectWidget extends PureComponent {
     const isLXLockedDeposit = lxLockedDeposit && lxLockedDeposit.gt(0)
     let renderBalance = lhtWallet.balances[TIME]
     let undistributedValue = new BigNumber(0)
+    let isChronobankPoll
     if (isLXLockedDeposit) {
       renderBalance = lxLockedDeposit
       undistributedValue = lxDeposit
+      isChronobankPoll = false
     } else if (isLXDeposit) {
       renderBalance = lxDeposit
       undistributedValue = lhtWallet.balances[TIME]
+      isChronobankPoll = true
     }
     const isMiningOn = isLXLockedDeposit || isLXDeposit
 
@@ -228,7 +231,12 @@ export default class LaborXConnectWidget extends PureComponent {
             </div>
             <div styleName='title'>
               {isMiningOn
-                ? <Translate value={`${prefix}.miningON`} />
+                ? <span><Translate value={`${prefix}.miningON`} />&nbsp;(
+                  {isChronobankPoll
+                    ? <Translate value={`${prefix}.chronoBank`} />
+                    : <Translate value={`${prefix}.customNode`} />
+                  }
+                  )</span>
                 : <Translate value={`${prefix}.miningOFF`} />
               }
             </div>

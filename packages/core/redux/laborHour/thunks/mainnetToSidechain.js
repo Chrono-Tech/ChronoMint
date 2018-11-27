@@ -5,7 +5,7 @@
 
 import { LABOR_HOUR_NETWORK_CONFIG } from '@chronobank/login/network/settings'
 import web3Factory from '../../../web3'
-import { daoByType, getMainLaborHourWallet, getLXSwaps } from '../selectors/mainSelectors'
+import { daoByType, getMainLaborHourWallet, getLXSwaps, getMiningFeeMultiplier } from '../selectors/mainSelectors'
 import web3Converter from '../../../utils/Web3Converter'
 import SidechainMiddlewareService from '../SidechainMiddlewareService'
 import { getEthereumSigner } from '../../persistAccount/selectors'
@@ -35,14 +35,12 @@ export const obtainSwapByMiddlewareFromMainnetToSidechain = (swapId) => async (
   }
 }
 
-export const closeSwap = (encodedKey, swapId, index) => async (
-  dispatch,
-  getState,
-) => {
+export const closeSwap = (encodedKey, swapId, index) => async (dispatch, getState) => {
   const dao = daoByType('AtomicSwapERC20')(getState())
   const web3 = web3Factory(LABOR_HOUR_NETWORK_CONFIG)
   const mainEthWallet = getMainEthWallet(getState())
   const signer = getEthereumSigner(getState())
+  const feeMultiplier = getMiningFeeMultiplier(getState())
 
   const promises = [
     web3.eth.net.getId(),
@@ -62,7 +60,7 @@ export const closeSwap = (encodedKey, swapId, index) => async (
     chainId: chainId,
   }
 
-  dispatch(executeLaborHourTransaction({ tx }))
+  dispatch(executeLaborHourTransaction({ tx, options: { feeMultiplier } }))
 }
 
 export const getSwapList = () => async (dispatch, getState) => {
