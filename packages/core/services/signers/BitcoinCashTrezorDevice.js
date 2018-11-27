@@ -5,26 +5,41 @@
 
 import bitcoin from 'bitcoinjs-lib'
 import TrezorConnect from 'trezor-connect'
+import { BLOCKCHAIN_BITCOIN_CASH, TESTNET } from '../../dao/constants'
+import TrezorError from '../errors/TrezorError'
 
-export default class BitcoinTrezorDevice {
-  constructor ({ xpub, network }) {
-    this.xpub = xpub
+export default class BitcoinCashTrezorDevice {
+  constructor ({ address, network, isTestnet }) {
     this.network = network
-    Object.freeze(this)
+    this.address = address
+    this.coin = isTestnet ? TESTNET : BLOCKCHAIN_BITCOIN_CASH
   }
 
-  // this method is a part of base interface
-  getAddress (path) {
-    return  bitcoin.HDNode
-      .fromBase58(this.xpub, this.network)
-      .derivePath(path).getAddress()
+  async getAddress (path) {
+    console.log('BitcoinCashTrezorDevice: getting address: ', path)
+
+    if (!this.address) {
+      const result = await TrezorConnect.getAddress({
+        path: path,
+        coin: this.coin,
+      })
+      console.log('BitcoinCashTrezorDevice: getting address result: ', result)
+      if (!result.success) {
+        throw new TrezorError(result.code, result.payload.error)
+      }
+
+      this.address = result.payload.address
+    }
+    console.log('BitcoinCashTrezorDevice: address: ', this.address)
+
+    return this.address
   }
 
   async signTransaction (unsignedTxHex, path) {
-    // tx object
+
     const txb = new bitcoin.TransactionBuilder
       .fromTransaction(bitcoin.Transaction.fromHex(unsignedTxHex), this.network)
-    const localAddress = this.getAddress(path)
+    const localAddress = await this.getAddress(path)
 
     if (!localAddress) {
       return
@@ -67,9 +82,18 @@ export default class BitcoinTrezorDevice {
     const result = await TrezorConnect.signTransaction({
       inputs: inputs,
       outputs: outputs,
-      coin: 'Testnet', // @todo Need to do mainnet support?
+      coin: this.coin,
     })
+    console.log('BitcoinCashTrezorDevice: signTransaction: ', result)
 
-    return result
+    if (!result.success) {
+      console.log('BitcoinCashTrezorDevice: signTransaction: Error: ', result)
+      const { code, error } = result.payload
+      throw new TrezorError(code, error)
+    }
+
+    console.log('BitcoinCashTrezorDevice: signTransaction: Success: ', result.payload)
+
+    return result.payload.serializedTx
   }
 }

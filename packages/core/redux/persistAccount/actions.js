@@ -77,12 +77,28 @@ export const enableDefaultBlockchains = () => async (dispatch, getState) => {
   await dispatch(enableBlockchains(activeBlockchains))
 }
 
-export const enableBlockchains = (blockchains) => async (dispatch) => {
-  await blockchains.forEach(async (blockchain) => {
-    if (!enableMap[blockchain]) {
-      return
+async function asyncForEach (array, callback) {
+  console.log('asyncForEach: ', array, array)
+
+  for (let index = 0; index < array.length; index++) {
+    console.log('asyncForEach index: ', index, array[index])
+    await callback(array[index])
+  }
+}
+
+const enableBlockchains = (blockchains) => async (dispatch) => {
+  console.log('enableBlockchains list: ', blockchains)
+  await asyncForEach(blockchains, async (blockchain) => {
+    try {
+      console.log('enableBlockchains: ', blockchain)
+      if (!enableMap[blockchain]) {
+        return
+      }
+      await dispatch(enableMap[blockchain])
+    } catch (error) {
+      //eslint-disable-next-line
+      console.error(`${blockchain} Initialization error: `, error)
     }
-    await dispatch(enableMap[blockchain])
   })
 }
 

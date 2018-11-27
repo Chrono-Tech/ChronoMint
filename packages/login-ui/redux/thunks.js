@@ -156,6 +156,8 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         dispatch(NetworkActions.loading())
         dispatch(NetworkActions.clearErrors())
 
+        console.log('wallet: after clearErrors')
+
         const {
           selectedAccount,
           selectedProviderId,
@@ -163,13 +165,21 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         } = getState().get(DUCK_NETWORK)
         dispatch(NetworkActions.clearErrors())
 
+        console.log('wallet: after clearErrors 2')
+
         dispatch(SessionThunks.createNetworkSession(
           selectedAccount,
           selectedProviderId,
           selectedNetworkId,
         ))
+        console.log('wallet: after createNetworkSession')
+
         localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
+        console.log('wallet: after localStorage.createSession: ', selectedAccount)
+
         const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
+
+        console.log('wallet: after createSession')
 
         dispatch(replace(localStorage.getLastURL() || defaultURL))
       } catch (e) {

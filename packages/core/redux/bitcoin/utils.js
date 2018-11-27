@@ -49,7 +49,7 @@ export const getBitcoinDerivedPath = (networkName, mainnetCoinType = COIN_TYPE_B
   const coinType = networkName === 'testnet'
     ? COIN_TYPE_ALLCOINS_TESTNET
     : mainnetCoinType
-  return getDerivedPath(COIN_TYPE_ALLCOINS_TESTNET)
+  return getDerivedPath(coinType)
 }
 
 export const getBtcFee = (

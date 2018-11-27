@@ -422,8 +422,8 @@ export const enableBitcoin = (blockchainName) => async (dispatch) => {
     throw new Error(`Blockchain name is empty or not a BTC like: [${blockchainName}]`)
   }
 
-  dispatch(initToken(blockchainName))
-  dispatch(initWallet(blockchainName))
+  await dispatch(initToken(blockchainName))
+  await dispatch(initWallet(blockchainName))
 }
 
 const initToken = (blockchainName) => async (dispatch, getState) => {

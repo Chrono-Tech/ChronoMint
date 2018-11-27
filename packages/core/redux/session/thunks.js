@@ -157,26 +157,36 @@ export const login = (account) => async (dispatch, getState) => {
     throw new Error('Session has not been created')
   }
 
+  console.log('Login check 1: ', account)
+
   let network = getNetworkById(selectedNetworkId, selectedProviderId)
   if (!network.id) {
     network = customNetworksList.find((network) => network.id === selectedNetworkId)
   }
+  console.log('Login check 2: ', account)
 
   const web3 = typeof window !== 'undefined'
     ? web3Factory(network)
     : null
+  console.log('Login check 3: ', account)
 
   await dispatch(initEthereum({ web3 }))
+  console.log('Login check 4: ', account)
+
   await dispatch(watcher({ web3 }))
+  console.log('Login check 5: ', account)
 
   const userManagerDAO = daoByType('UserManager')(getState())
   const [isCBE, profile] = await Promise.all([
     userManagerDAO.isCBE(account),
     userManagerDAO.getMemberProfile(account, web3),
   ])
+  console.log('Login check 6: ', account)
 
   dispatch(SessionActions.sessionProfile(profile, isCBE))
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
+  console.log('Login check 7: ', account)
+
   return defaultURL
 }
 

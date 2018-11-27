@@ -41,6 +41,8 @@ export const getNemSigner = (state) => {
   const account = getPersistAccount(state)
   const networkData = getSelectedNetwork()(state)
   const network = nemSdk.model.network.data[networkData[BLOCKCHAIN_NEM]]
+  console.log('networkData[BLOCKCHAIN_NEM]: ', networkData[BLOCKCHAIN_NEM], nemSdk.model.network.data[networkData[BLOCKCHAIN_NEM]])
+  const isTestnet = true
 
   switch (account.decryptedWallet.entry.encrypted[0].type) {
     case WALLET_TYPE_MEMORY: {
@@ -51,7 +53,7 @@ export const getNemSigner = (state) => {
       return new NemTrezorDeviceMock({ network })
     }
     case WALLET_TYPE_TREZOR: {
-      return new NemTrezorDevice({ network })
+      return new NemTrezorDevice({ network, isTestnet })
     }
     case WALLET_TYPE_METAMASK: {
       return new MetamaskPlugin()

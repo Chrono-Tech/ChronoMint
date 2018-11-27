@@ -8,9 +8,10 @@ import nemSdk from 'nem-sdk'
 import {
   BLOCKCHAIN_NEM,
   COIN_TYPE_ALLCOINS_TESTNET,
+  COIN_TYPE_NEM_MAINNET,
 } from '@chronobank/login/network/constants'
 import { TxEntryModel, TxExecModel } from '../../models'
-import { DECIMALS, NEM_COIN_TYPE } from './constants'
+import { DECIMALS } from './constants'
 import { getDerivedPath } from '../wallets/utils'
 
 export const createNemTxEntryModel = (entry, options = {}) =>
@@ -96,7 +97,7 @@ export const createXemTransaction = async (prepared, signer, signerPath) => {
 
 export const getNemDerivedPath = (networkName) => {
   const coinType = nemSdk.model.network.data[networkName] === nemSdk.model.network.data.mainnet
-    ? NEM_COIN_TYPE
+    ? COIN_TYPE_NEM_MAINNET
     : COIN_TYPE_ALLCOINS_TESTNET
   return getDerivedPath(coinType)
 }

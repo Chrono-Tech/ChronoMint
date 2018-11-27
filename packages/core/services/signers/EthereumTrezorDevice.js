@@ -27,10 +27,10 @@ export default class EthereumTrezorDevice {
     return 'Trezor Device'
   }
 
-  async getXpubkey () {
-    // @todo add negative case
+  async getXpubkey (path) {
     if (!this.xPubKey) {
-      const result = await TrezorConnect.getPublicKey({ path: DEFAULT_PATH })
+      console.log('getXpubkey: TrezorConnect.getPublicKey: before: ', path, this)
+      const result = await TrezorConnect.getPublicKey({ path: path })
       if (!result.success) {
         throw new TrezorError(result.code, result.payload.error)
       }
@@ -43,7 +43,7 @@ export default class EthereumTrezorDevice {
   }
 
   async getAddress (path) {
-    const xPubKey = await this.getXpubkey()
+    const xPubKey = await this.getXpubkey(path)
     const hdKey = hdkey.fromExtendedKey(xPubKey)
     const wallet = hdKey.deriveChild(0).getWallet()
 

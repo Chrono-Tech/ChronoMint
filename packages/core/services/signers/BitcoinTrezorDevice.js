@@ -22,6 +22,9 @@ export default class BitcoinTrezorDevice {
         path: path,
         coin: this.coin,
       })
+      if (!result.success) {
+        throw new TrezorError(result.code, result.payload.error)
+      }
 
       this.address = result.payload.address
     }
