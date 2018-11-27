@@ -112,7 +112,6 @@ export const updateWeb3 = (selectedNetworkId, selectedProviderId) => (dispatch, 
       fail(e)
     })
   })
-
 }
 
 export const changeGasSlideValue = (value, blockchain) => (dispatch) =>

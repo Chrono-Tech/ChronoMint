@@ -6,6 +6,7 @@
 import bitcoin from 'bitcoinjs-lib'
 import TrezorConnect from 'trezor-connect'
 import { BLOCKCHAIN_BITCOIN, TESTNET } from '../../dao/constants'
+import TrezorError from '../errors/TrezorError'
 
 export default class BitcoinTrezorDevice {
   constructor ({ address, network, isTestnet }) {
@@ -14,18 +15,13 @@ export default class BitcoinTrezorDevice {
     this.coin = isTestnet ? TESTNET : BLOCKCHAIN_BITCOIN
   }
 
-  // this method is a part of base interface
   async getAddress (path) {
 
     if (!this.address) {
-      console.log('result.payload.address: getAddress: ', path)
-
       const result = await TrezorConnect.getAddress({
         path: path,
         coin: this.coin,
       })
-
-      console.log('result.payload.address: ', result)
 
       this.address = result.payload.address
     }
@@ -34,8 +30,6 @@ export default class BitcoinTrezorDevice {
   }
 
   async signTransaction (unsignedTxHex, path) {
-
-    console.log('signTransaction: ', path)
 
     const txb = new bitcoin.TransactionBuilder
       .fromTransaction(bitcoin.Transaction.fromHex(unsignedTxHex), this.network)
@@ -82,10 +76,17 @@ export default class BitcoinTrezorDevice {
     const result = await TrezorConnect.signTransaction({
       inputs: inputs,
       outputs: outputs,
-      coin: this.coin, // @todo Need to do mainnet support?
+      coin: this.coin,
     })
+    console.log('BitcoinTrezorDevice: signTransaction: ', result)
 
-    console.log('BitcoinTrezorDevice: signTransaction: ', result, result.payload.serializedTx)
+    if (!result.success) {
+      console.log('BitcoinTrezorDevice: signTransaction: Error: ', result)
+      const { code, error } = result.payload
+      throw new TrezorError(code, error)
+    }
+
+    console.log('BitcoinTrezorDevice: signTransaction: Success: ', result.payload)
 
     return result.payload.serializedTx
   }

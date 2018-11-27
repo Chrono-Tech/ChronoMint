@@ -6,13 +6,19 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
-import './LoginWithTrezor.scss'
+import {
+  STATE_LOADING,
+  STATE_ERROR,
+} from '@chronobank/core/redux/device/constants'
 import TrezorAddress from './TrezorAddress'
+
+import './LoginWithTrezor.scss'
 
 class LoginWithTrezor extends Component {
   static propTypes = {
     previousPage: PropTypes.func,
     deviceList: PropTypes.instanceOf(Array),
+    deviceState: PropTypes.string,
     onDeviceSelect: PropTypes.func,
     navigateToDerivationPathForm: PropTypes.func,
   }
@@ -38,6 +44,16 @@ class LoginWithTrezor extends Component {
     )
   }
 
+  renderState () {
+    switch (this.props.deviceState) {
+      case STATE_LOADING:
+        return this.renderLoading()
+
+      case STATE_ERROR:
+        return this.renderError()
+    }
+  }
+
   render () {
     const { previousPage, deviceList, navigateToDerivationPathForm, onDeviceSelect } = this.props
 
@@ -46,13 +62,9 @@ class LoginWithTrezor extends Component {
         <div styleName='page-title'>
           <Translate value='LoginWithTrezor.title' />
         </div>
-        {
-          !deviceList.length && (
-            <div styleName='states'>
-              {this.renderLoading()}
-            </div>
-          )
-        }
+        <div styleName='states'>
+          {this.renderState()}
+        </div>
 
         {
           deviceList.length > 0 && (

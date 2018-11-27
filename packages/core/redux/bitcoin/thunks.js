@@ -47,6 +47,7 @@ import tokenService from '../../services/TokenService'
 import { getDashSigner } from '../dash/selectors'
 import { EVENT_UPDATE_LAST_BLOCK } from '../../dao/constants'
 import { getWalletsByBlockchain } from '../wallets/selectors/models'
+import TrezorError from '../../services/errors/TrezorError'
 
 const daoMap = {
   [BLOCKCHAIN_BITCOIN]: bitcoinDAO,
@@ -294,7 +295,10 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     dispatch(BitcoinActions.bitcoinSignTxSuccess(bitcoinTxEntry))
     return bitcoinTxEntry
   } catch (error) {
+    console.log('Sign transaction error: ', error.message)
+
     dispatch(closeSignerModal())
+    dispatch(notifyError(error, 'Trezor'))
 
     const bitcoinErrorTxEntry = BitcoinUtils.createBitcoinTxEntryModel({
       ...entry,
@@ -501,6 +505,8 @@ const initWallet = (blockchainName) => async (dispatch, getState) => {
   }
 
   const { address, path } = addressCache[blockchainName]
+  console.log('Create Bitcoin wallet: ', address, path)
+
   const wallet = new WalletModel({
     address,
     blockchain: blockchainName,

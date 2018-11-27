@@ -6,17 +6,11 @@
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
-import {
-  DUCK_DEVICE_ACCOUNT,
-} from '@chronobank/core/redux/device/constants'
-import {
-  initTrezorDevice,
-} from '@chronobank/core/redux/device/actions'
+import { DUCK_DEVICE_ACCOUNT } from '@chronobank/core/redux/device/constants'
+import { initTrezorDevice } from '@chronobank/core/redux/device/actions'
 import { DeviceEntryModel } from '@chronobank/core/models'
 import './LoginWithTrezor.scss'
-import {
-  navigateToCreateAccount,
-} from '../../redux/navigation'
+import { navigateToCreateAccount } from '../../redux/navigation'
 import LoginWithTrezor from './LoginWithTrezor'
 
 function mapDispatchToProps (dispatch) {
@@ -27,10 +21,13 @@ function mapDispatchToProps (dispatch) {
 }
 
 function mapStateToProps (state) {
+  const deviceAccount = state.get(DUCK_DEVICE_ACCOUNT)
+
   return {
     deviceList: state.get(DUCK_DEVICE_ACCOUNT).deviceList.map(
       (wallet) => new DeviceEntryModel({ ...wallet }),
     ),
+    deviceState: deviceAccount.status,
   }
 }
 
@@ -38,6 +35,7 @@ class LoginWithTrezorContainer extends PureComponent {
   static propTypes = {
     onDeviceSelect: PropTypes.func,
     deviceList: PropTypes.array,
+    deviceState: PropTypes.string,
     previousPage: PropTypes.func,
     navigateToCreateAccount: PropTypes.func,
     initTrezorDevice: PropTypes.func,
@@ -50,8 +48,8 @@ class LoginWithTrezorContainer extends PureComponent {
     deviceList: [],
   }
 
-  componentDidMount () {
-    this.props.initTrezorDevice()
+  async componentDidMount () {
+    await this.props.initTrezorDevice()
   }
 
   render () {
@@ -61,6 +59,7 @@ class LoginWithTrezorContainer extends PureComponent {
       onDeviceSelect,
       navigateToDerivationPathForm,
       previousPage,
+      deviceState,
     } = this.props
 
     return (
@@ -68,6 +67,7 @@ class LoginWithTrezorContainer extends PureComponent {
         navigateToCreateAccount={navigateToCreateAccount}
         previousPage={previousPage}
         deviceList={deviceList}
+        deviceState={deviceState}
         onDeviceSelect={onDeviceSelect}
         navigateToDerivationPathForm={navigateToDerivationPathForm}
       />

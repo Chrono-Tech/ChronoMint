@@ -8,7 +8,7 @@ import * as a from './constants'
 const initialState = {
   deviceList: [],
   selectedDevice: null,
-  isLoading: false,
+  status: a.STATE_LOADING,
 }
 
 export default (state = initialState, action) => {
@@ -23,17 +23,17 @@ export default (state = initialState, action) => {
         ...state,
         deviceList: action.deviceList,
       }
-    case a.STATE_LOADING:
+    case a.DEVICE_STATE_LOADING:
       return {
         ...state,
         status: a.STATE_LOADING,
       }
-    case a.STATE_LOADED:
+    case a.DEVICE_STATE_LOADED:
       return {
         ...state,
         status: a.STATE_LOADED,
       }
-    case a.STATE_ERROR:
+    case a.DEVICE_STATE_ERROR:
       return {
         ...state,
         status: a.STATE_ERROR,
