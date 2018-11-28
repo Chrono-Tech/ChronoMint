@@ -21,11 +21,6 @@ export default class LoginWithPrivateKeyContainer extends PureComponent {
     let privateKey = values.get('pk')
     privateKey = (privateKey || '').trim()
 
-    // ?????
-    // if (!privateKeyProvider.validatePrivateKey(privateKey)) {
-    //   throw new SubmissionError({ pk: 'Wrong private key' })
-    // }
-
     if (privateKey.slice(0, 2) === '0x') {
       privateKey = privateKey.slice(2)
     }
