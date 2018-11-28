@@ -39,7 +39,7 @@ import SimpleNoticeModel from '../../models/notices/SimpleNoticeModel'
 import { getTokens } from '../tokens/selectors'
 import ErrorNoticeModel from '../../models/notices/ErrorNoticeModel'
 import { TX_APPROVE } from '../../dao/constants/ChronoBankPlatformDAO'
-import { updateMiningFeeMultiplier, updateMiningNodeType } from '../laborHour/actions'
+import { updateMiningFeeMultiplier, updateMiningNodeType, updateProcessingStatus } from '../laborHour/actions'
 import {
   updateLaborHourBalances,
   updateTimeHolderBalances,
@@ -54,6 +54,7 @@ import {
   unlockLockedDeposit,
 } from '../laborHour/thunks/mining'
 import { EVENT_RESIGN_MINER } from '../laborHour/dao/TimeHolderDAO'
+import { watchProcessingStatus } from '../laborHour/thunks/utilsThunks'
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const assetHolder = getState().get(DUCK_ASSETS_HOLDER)
@@ -94,10 +95,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   dispatch(fetchAssetAllowance(token))
 }
 
-export const fetchAssetDeposit = (token: TokenModel) => async (
-  dispatch,
-  getState,
-) => {
+export const fetchAssetDeposit = (token: TokenModel) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   const assetHolderDAO = daoByType('TimeHolder')(getState())
   const deposit = await assetHolderDAO.getDeposit(token.address(), account)
@@ -109,10 +107,7 @@ export const fetchAssetDeposit = (token: TokenModel) => async (
   dispatch({ type: ASSET_HOLDER_ASSET_UPDATE, asset })
 }
 
-export const fetchAssetAllowance = (token: TokenModel) => async (
-  dispatch,
-  getState,
-) => {
+export const fetchAssetAllowance = (token: TokenModel) => async (dispatch, getState) => {
   const assetHolder = getState().get(DUCK_ASSETS_HOLDER)
   const { account } = getState().get(DUCK_SESSION)
 
@@ -347,14 +342,20 @@ export const lockDeposit = (
     const lhtWallet = getMainLaborHourWallet(state)
     const lxLockedDeposit = getLXLockedDeposit(lhtWallet.address)(state)
     const timeLXToken = getLXToken(TIME)(getState())
-    const lockDeposit = () => {
+    const lockDeposit = async () => {
       const tx = assetHolderDAO.lock(token.address(), amount)
       if (tx) {
-        dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
+        const entry = await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
+        dispatch(watchProcessingStatus({
+          status: 'assetsHolder.locking',
+          blockchain: BLOCKCHAIN_ETHEREUM,
+          entry,
+        }))
       }
     }
 
     if (lxLockedDeposit.gt(0)) {
+      dispatch(updateProcessingStatus('timeHolder.resignMiner.unlocking'))
       dispatch(unlockLockedDeposit(timeLXToken, feeMultiplier))
       timeHolderSidechainDAO.once(EVENT_RESIGN_MINER, () => {
         lockDeposit()

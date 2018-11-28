@@ -50,6 +50,7 @@ export default class TransactionHandler extends TransactionGuide {
 
     await dispatch(this.actions.txCreate(entry))
     dispatch(this.submitTransaction(entry))
+    return entry
   }
 
   acceptTransaction = (entry) => async (dispatch, getState) => {
@@ -151,10 +152,7 @@ export default class TransactionHandler extends TransactionGuide {
           entry,
           description,
           accept: this.acceptTransaction,
-          reject: () =>
-            dispatch(
-              this.txStatus(entry.key, entry.tx.from, { isRejected: true }),
-            ),
+          reject: () => dispatch(this.txStatus(entry.key, entry.tx.from, { isRejected: true })),
         },
       }),
     )

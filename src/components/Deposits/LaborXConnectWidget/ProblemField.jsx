@@ -11,8 +11,8 @@ import { Translate } from 'react-redux-i18n'
 import { TIME } from '@chronobank/core/dao/constants'
 import BigNumber from 'bignumber.js'
 import {
-  getLXDeposit,
-  getLXLockedDeposit, getLXSwapsMtS, getLXSwapsStM,
+  getLXDeposit, getLXLMiningProcessingStatus,
+  getLXLockedDeposit, getLXSwapsMtS, getLXSwapsStM, getLXToken,
   getMainLaborHourWallet,
   getMiningParams,
 } from '@chronobank/core/redux/laborHour/selectors/mainSelectors'
@@ -24,6 +24,8 @@ import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import Amount from '@chronobank/core/models/Amount'
 import './LaborXConnectWidget.scss'
 import { prefix } from './lang'
+import Preloader from '../../common/Preloader/Preloader'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 
 function mapStateToProps (state) {
   const lhtWallet = getMainLaborHourWallet(state)
@@ -32,6 +34,9 @@ function mapStateToProps (state) {
   const miningParams = getMiningParams(state)
   const lxDeposit = getLXDeposit(lhtWallet.address)(state)
   const lxLockedDeposit = getLXLockedDeposit(lhtWallet.address)(state)
+  const processingStatus = getLXLMiningProcessingStatus(state)
+  const timeToken = getLXToken(TIME)(state)
+
   return {
     lhtWallet,
     mainnetSwaps,
@@ -39,6 +44,8 @@ function mapStateToProps (state) {
     miningParams,
     lxDeposit,
     lxLockedDeposit,
+    processingStatus,
+    timeToken,
   }
 }
 
@@ -75,6 +82,7 @@ export default class ProblemField extends PureComponent {
     lxLockedDeposit: PropTypes.instanceOf(Amount),
     handleObtainAllMainnetOpenSwaps: PropTypes.func,
     handleObtainAllLXOpenSwaps: PropTypes.func,
+    timeToken: PropTypes.instanceOf(TokenModel),
   }
 
   render () {
@@ -86,10 +94,12 @@ export default class ProblemField extends PureComponent {
       lxSwaps,
       handleObtainAllLXOpenSwaps,
       handleObtainAllMainnetOpenSwaps,
+      processingStatus,
+      timeToken,
     } = this.props
     const isLXDeposit = lxDeposit && lxDeposit.gt(0)
     const isLXLockedDeposit = lxLockedDeposit && lxLockedDeposit.gt(0)
-    let undistributedValue = new BigNumber(0)
+    let undistributedValue = lhtWallet.balances[TIME]
     if (isLXLockedDeposit) {
       undistributedValue = lxDeposit
     } else if (isLXDeposit) {
@@ -97,6 +107,15 @@ export default class ProblemField extends PureComponent {
     }
     return (
       <div>
+        {
+          processingStatus &&
+          <div styleName='infoItem'>
+            <div styleName='icon'>
+              <div className='chronobank-icon'><Preloader /></div>
+            </div>
+            <div styleName='title'><Translate value={`${processingStatus}`} /></div>
+          </div>
+        }
         {
           mainnetSwaps.length > 0 &&
           <div styleName='infoItem'>
@@ -121,15 +140,18 @@ export default class ProblemField extends PureComponent {
             </div>
           </div>
         }
-        <div styleName='infoItem'>
-          <div styleName='icon'>
-            <div className='chronobank-icon'>warning</div>
+        {
+          undistributedValue.gt(0) && !processingStatus &&
+          <div styleName='infoItem'>
+            <div styleName='icon'>
+              <div className='chronobank-icon'>warning</div>
+            </div>
+            <div styleName='title'><Translate value={`${prefix}.undistributed`} />: TIME {timeToken.removeDecimals(undistributedValue).toNumber()}</div>
+            <div styleName='buttonWrapper'>
+              <Button>fix</Button>
+            </div>
           </div>
-          <div styleName='title'><Translate value={`${prefix}.undistributed`} />: TIME {undistributedValue.toNumber()}</div>
-          <div styleName='buttonWrapper'>
-            <Button>fix</Button>
-          </div>
-        </div>
+        }
       </div>
     )
   }

@@ -21,6 +21,8 @@ import { swapUpdate, updateMiningFeeMultiplier, updateMiningNodeType } from '../
 import { notifyUnknownError } from './utilsThunks'
 import { EVENT_RESIGN_MINER } from '../dao/TimeHolderDAO'
 import { unlockLockedDeposit } from './mining'
+import { watchProcessingStatus } from './utilsThunks'
+import { BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LABOR_HOUR } from '../../../dao/constants'
 //#endregion
 
 export const sidechainWithdraw = (
@@ -38,12 +40,16 @@ export const sidechainWithdraw = (
     const lhthWallet = getMainLaborHourWallet(getState())
     const lockedDeposit = getLXLockedDeposit(lhthWallet.address)(getState())
 
-    const withdraw = () => {
-      const tx = {
-        ...timeHolderDAO.withdrawShares(token.address(), amount),
+    const withdraw = async () => {
+      const tx = timeHolderDAO.withdrawShares(token.address(), amount)
+      if (tx) {
+        const entry = await dispatch(executeLaborHourTransaction({ tx, options: { feeMultiplier } }))
+        dispatch(watchProcessingStatus({
+          status: 'timeHolder.withdrawShares.withdrawing',
+          blockchain: BLOCKCHAIN_LABOR_HOUR,
+          entry,
+        }))
       }
-
-      dispatch(executeLaborHourTransaction({ tx, options: { feeMultiplier } }))
     }
 
     if (lockedDeposit.gt(0)) {
@@ -94,7 +100,15 @@ export const unlockShares = (swapId, encodedKey) => async (
       web3Converter.stringToBytes(swapId),
       web3Converter.stringToBytes(key),
     )
-    dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
+
+    if (tx) {
+      const entry = await dispatch(executeTransaction({ tx, options: { feeMultiplier } }))
+      dispatch(watchProcessingStatus({
+        status: 'assetsHolder.unlocking',
+        blockchain: BLOCKCHAIN_ETHEREUM,
+        entry,
+      }))
+    }
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(e)

@@ -12,9 +12,10 @@ import {
 import web3Converter from '../../../utils/Web3Converter'
 import SidechainMiddlewareService from '../SidechainMiddlewareService'
 import { getEthereumSigner } from '../../persistAccount/selectors'
-import { notifyUnknownError } from './utilsThunks'
+import { notifyUnknownError, watchProcessingStatus } from './utilsThunks'
 import { executeLaborHourTransaction } from './transactions'
 import * as LXSidechainActions from '../actions'
+import { BLOCKCHAIN_LABOR_HOUR } from '../../../dao/constants'
 
 export const obtainSwapByMiddlewareFromMainnetToSidechain = (swapId) => async (
   dispatch,
@@ -51,7 +52,14 @@ export const closeSwap = (encodedKey, swapId) => async (dispatch, getState) => {
     ),
   }
 
-  dispatch(executeLaborHourTransaction({ tx, options: { feeMultiplier } }))
+  if (tx) {
+    const entry = await dispatch(executeLaborHourTransaction({ tx, options: { feeMultiplier } }))
+    dispatch(watchProcessingStatus({
+      status: 'atomicSwapERC20.close.closing',
+      blockchain: BLOCKCHAIN_LABOR_HOUR,
+      entry,
+    }))
+  }
 }
 
 export const getSwapList = () => async (dispatch, getState) => {

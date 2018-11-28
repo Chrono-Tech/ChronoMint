@@ -21,6 +21,7 @@ import {
   LABOR_HOUR_UPDATE_LOCKED_DEPOSIT,
   LABOR_HOUR_UPDATE_FEE_MULTIPLIER,
   LABOR_HOUR_SWAP_LIST_UPDATE,
+  LABOR_HOUR_UPDATE_PROCESSING_STATUS,
 } from './constants'
 import TokensCollection from '../../models/tokens/TokensCollection'
 
@@ -193,6 +194,15 @@ const mutations = {
           ...state.timeHolder.lockedDeposit,
           [address]: amount,
         },
+      },
+    }
+  },
+  [LABOR_HOUR_UPDATE_PROCESSING_STATUS]: (state, { status }) => {
+    return {
+      ...state,
+      miningParams: {
+        ...state.miningParams,
+        processingStatus: status,
       },
     }
   },

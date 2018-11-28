@@ -19,7 +19,7 @@ import {
   LABOR_HOUR_UPDATE_DEPOSIT,
   LABOR_HOUR_UPDATE_LOCKED_DEPOSIT,
   LABOR_HOUR_UPDATE_FEE_MULTIPLIER,
-  LABOR_HOUR_SWAP_LIST_UPDATE,
+  LABOR_HOUR_SWAP_LIST_UPDATE, LABOR_HOUR_UPDATE_PROCESSING_STATUS,
 } from './constants'
 
 export const updateWeb3 = (web3) =>
@@ -126,4 +126,10 @@ export const updateMiningFeeMultiplier = (feeMultiplier) =>
   ({
     type: LABOR_HOUR_UPDATE_FEE_MULTIPLIER,
     feeMultiplier,
+  })
+
+export const updateProcessingStatus = (status) =>
+  ({
+    type: LABOR_HOUR_UPDATE_PROCESSING_STATUS,
+    status,
   })

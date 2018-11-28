@@ -122,7 +122,6 @@ class NotificationContent extends PureComponent {
         return transaction
 
       case transaction instanceof TxEntryModel:
-        //TODO change to describer
         return new CurrentTransactionNotificationModel({
           id: transaction.key,
           hash: transaction.hash || <Translate value={`${prefix}.pending`} />,

@@ -130,3 +130,9 @@ export const getLXLockedDeposit = (address) => createSelector(
   (deposits) => {
     return deposits[address]
   })
+
+export const getLXLMiningProcessingStatus = createSelector(
+  getMiningParams,
+  ({ processingStatus }) => {
+    return processingStatus
+  })

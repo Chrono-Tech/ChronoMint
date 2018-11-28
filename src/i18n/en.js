@@ -801,24 +801,31 @@ export default {
       title: 'Mining',
       message: '%{amount} %{symbol} was moved to mainnet deposit',
     },
+    locking: 'Locking deposit in main network',
+    unlocking: 'Unlocking deposit in main network',
   },
   timeHolder: {
     resignMiner: {
       title: 'SIDECHAIN',
       message: '%{amount} %{symbol} was unlocked',
+      unlocking: 'Unlocking deposit in LX network',
     },
     withdrawShares: {
       title: 'SIDECHAIN',
       message: 'Withdrawn %{amount} %{symbol}',
+      withdrawing: 'Withdrawing tokens from LX deposit',
     },
     becomeMiner: {
       title: 'SIDECHAIN',
       message: 'Locked funds on deposit: %{amount} %{symbol}. Mining has been started (delegate’s address %{miner}).',
+      locking: 'Locking deposit',
     },
     deposit: {
       title: 'SIDECHAIN',
       message: 'Mining deposit was increased on %{amount} %{symbol}',
+      depositing: 'Depositing tokens',
     },
+    unlockShares: {},
   },
   atomicSwapERC20: {
     lock: {
@@ -828,6 +835,7 @@ export default {
     close: {
       title: 'SIDECHAIN',
       message: 'Swap %{id} was closed',
+      closing: 'Closing swap in LX network',
     },
     expire: {
       title: 'SIDECHAIN',
@@ -838,6 +846,7 @@ export default {
     revoke: {
       title: 'SIDECHAIN',
       message: '%{amount} %{symbol} was revoked',
+      revoking: 'Burning tokens in LX network',
     },
   },
 }

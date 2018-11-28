@@ -13,6 +13,9 @@ import { closeSwap, obtainSwapByMiddlewareFromMainnetToSidechain } from './mainn
 import { executeLaborHourTransaction, updateLaborHourBalances, updateTimeHolderBalances } from './transactions'
 import { EVENT_BECOME_MINER, EVENT_DEPOSIT, EVENT_RESIGN_MINER, EVENT_WITHDRAW_SHARES } from '../dao/TimeHolderDAO'
 import { startMiningInCustomNode, depositInSidechain } from './mining'
+import { updateProcessingStatus } from '../actions'
+import { BLOCKCHAIN_LABOR_HOUR } from '../../../dao/constants'
+import { watchProcessingStatus } from './utilsThunks'
 
 // eslint-disable-next-line
 export const watch = () => (dispatch, getState) => {
@@ -129,6 +132,8 @@ const depositCallback = (event) => async (dispatch, getState) => {
   if (isCustomNode) {
     const feeMultiplier = getMiningFeeMultiplier(getState())
     dispatch(startMiningInCustomNode(delegateAddress, feeMultiplier))
+  } else {
+    dispatch(updateProcessingStatus(null))
   }
 }
 
@@ -151,6 +156,7 @@ const becomeMinerCallback = (event) => (dispatch, getState) => {
   )
   dispatch(updateLaborHourBalances())
   dispatch(updateTimeHolderBalances())
+  dispatch(updateProcessingStatus(null))
 }
 
 const withdrawSharesCallback = (event) => async (dispatch, getState) => {
@@ -178,13 +184,19 @@ const withdrawSharesCallback = (event) => async (dispatch, getState) => {
     const platformDao = daoByType('ChronoBankPlatformSidechain')(getState())
     const feeMultiplier = getMiningFeeMultiplier(getState())
 
-    const tx = {
-      ...platformDao.revokeAsset(
-        web3Converter.stringToBytes(token.symbol()),
-        lhtWallet.balances[token.symbol()],
-      ),
+    const tx = platformDao.revokeAsset(
+      web3Converter.stringToBytes(token.symbol()),
+      lhtWallet.balances[token.symbol()],
+    )
+
+    if (tx) {
+      const entry = await dispatch(executeLaborHourTransaction({ tx, options: { feeMultiplier } }))
+      dispatch(watchProcessingStatus({
+        status: 'chronoBankPlatformSidechain.revoke.revoking',
+        blockchain: BLOCKCHAIN_LABOR_HOUR,
+        entry,
+      }))
     }
-    await dispatch(executeLaborHourTransaction({ tx, options: { feeMultiplier } }))
   } catch (e) {
     // eslint-disable-next-line
     console.error('deposit error', e)
