@@ -21,7 +21,7 @@ export default (state = initialState, action) => {
             key: state.counter,
             componentName: action.componentName,
             props: action.props,
-          }
+          },
         ],
       }
     case types.MODALS_CLOSE:
@@ -38,7 +38,7 @@ export default (state = initialState, action) => {
             key: state.counter,
             componentName: action.componentName,
             props: action.props,
-          }
+          },
         ],
       }
     case types.MODALS_CLEAR:

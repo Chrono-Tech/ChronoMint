@@ -4,11 +4,9 @@
  */
 
 //#region imports
-import { LABOR_HOUR_NETWORK_CONFIG } from '@chronobank/login/network/settings'
-import web3Factory from '../../../web3'
 import {
   daoByType,
-  getLXLockedDeposit,
+  getLXLockedDeposit, getLXSwapsStM,
   getMainLaborHourWallet, getMiningFeeMultiplier,
 } from '../selectors/mainSelectors'
 import { daoByType as daoByTypeMainnet } from '../../daos/selectors'
@@ -19,7 +17,7 @@ import SidechainMiddlewareService from '../SidechainMiddlewareService'
 import { getEthereumSigner } from '../../persistAccount/selectors'
 import { executeTransaction } from '../../ethereum/thunks'
 import { executeLaborHourTransaction } from './transactions'
-import { updateMiningFeeMultiplier, updateMiningNodeType } from '../actions'
+import { swapUpdate, updateMiningFeeMultiplier, updateMiningNodeType } from '../actions'
 import { notifyUnknownError } from './utilsThunks'
 import { EVENT_RESIGN_MINER } from '../dao/TimeHolderDAO'
 import { unlockLockedDeposit } from './mining'
@@ -102,4 +100,23 @@ export const unlockShares = (swapId, encodedKey) => async (
     console.error(e)
     dispatch(notifyUnknownError())
   }
+}
+
+export const obtainAllLXOpenSwaps = () => async (dispatch, getState) => {
+  const swaps = getLXSwapsStM(getState())
+  const promises = []
+  Object.values(swaps).slice(0, -10).forEach((swap) => {
+    if (swap.isActive) {
+      swap.isActive = false
+      dispatch(swapUpdate(swap))
+      promises.push(dispatch(obtainSwapByMiddlewareFromSidechainToMainnet(swap.swapId)))
+    }
+  })
+  const results = await Promise.all(promises)
+
+  results.forEach(async ({ data, swapId }) => {
+    if (data) {
+      dispatch(unlockShares(swapId, data))
+    }
+  })
 }

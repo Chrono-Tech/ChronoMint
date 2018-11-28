@@ -11,12 +11,15 @@ import { Translate } from 'react-redux-i18n'
 import { TIME } from '@chronobank/core/dao/constants'
 import BigNumber from 'bignumber.js'
 import {
-  getLXActiveSwapsCount,
   getLXDeposit,
   getLXLockedDeposit, getLXSwapsMtS, getLXSwapsStM,
   getMainLaborHourWallet,
   getMiningParams,
 } from '@chronobank/core/redux/laborHour/selectors/mainSelectors'
+import {
+  obtainAllMainnetOpenSwaps,
+  obtainAllLXOpenSwaps,
+} from '@chronobank/core/redux/laborHour/thunks'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import Amount from '@chronobank/core/models/Amount'
 import './LaborXConnectWidget.scss'
@@ -40,7 +43,10 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return {}
+  return {
+    handleObtainAllMainnetOpenSwaps: () => dispatch(obtainAllMainnetOpenSwaps()),
+    handleObtainAllLXOpenSwaps: () => dispatch(obtainAllLXOpenSwaps()),
+  }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -67,6 +73,8 @@ export default class ProblemField extends PureComponent {
     }),
     lxDeposit: PropTypes.instanceOf(Amount),
     lxLockedDeposit: PropTypes.instanceOf(Amount),
+    handleObtainAllMainnetOpenSwaps: PropTypes.func,
+    handleObtainAllLXOpenSwaps: PropTypes.func,
   }
 
   render () {
@@ -76,6 +84,8 @@ export default class ProblemField extends PureComponent {
       lhtWallet,
       mainnetSwaps,
       lxSwaps,
+      handleObtainAllLXOpenSwaps,
+      handleObtainAllMainnetOpenSwaps,
     } = this.props
     const isLXDeposit = lxDeposit && lxDeposit.gt(0)
     const isLXLockedDeposit = lxLockedDeposit && lxLockedDeposit.gt(0)
@@ -95,7 +105,7 @@ export default class ProblemField extends PureComponent {
             </div>
             <div styleName='title'><Translate value={`${prefix}.unclosedSwapsMainnet`} count={mainnetSwaps.length} /></div>
             <div styleName='buttonWrapper'>
-              <Button>fix</Button>
+              <Button onClick={handleObtainAllMainnetOpenSwaps}><Translate value={`${prefix}.fix`} /></Button>
             </div>
           </div>
         }
@@ -107,7 +117,7 @@ export default class ProblemField extends PureComponent {
             </div>
             <div styleName='title'><Translate value={`${prefix}.unclosedSwapsLX`} count={lxSwaps.length} /></div>
             <div styleName='buttonWrapper'>
-              <Button>fix</Button>
+              <Button onClick={handleObtainAllLXOpenSwaps}><Translate value={`${prefix}.fix`} /></Button>
             </div>
           </div>
         }

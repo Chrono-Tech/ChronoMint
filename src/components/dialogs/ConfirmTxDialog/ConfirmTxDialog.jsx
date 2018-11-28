@@ -43,12 +43,12 @@ export default class ConfirmTxDialog extends PureComponent {
   }
 
   handleConfirm = () => {
-    this.props.modalsClear()
+    this.props.modalsClose()
     this.props.handleAccept(this.props.entry)
   }
 
   handleClose = () => {
-    this.props.modalsClear()
+    this.props.modalsClose()
     this.props.handleReject(this.props.entry)
   }
 

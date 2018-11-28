@@ -94,8 +94,6 @@ export const getLXLockedDeposits = (state) => {
 }
 
 export const getLXActiveSwapsCount = createSelector(getLXSwaps, (swaps) => {
-  // TODO @abdulov remove console.log
-  console.log('%c swaps', 'background: #222; color: #fff', swaps, Object.values(swaps).filter((swap) => swap.isActive).length)
   return Object.values(swaps).filter((swap) => swap.isActive).length
 })
 

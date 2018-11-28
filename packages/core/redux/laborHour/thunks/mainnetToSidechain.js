@@ -6,8 +6,8 @@
 import {
   daoByType,
   getMainLaborHourWallet,
-  getLXSwaps,
   getMiningFeeMultiplier,
+  getLXSwapsMtS,
 } from '../selectors/mainSelectors'
 import web3Converter from '../../../utils/Web3Converter'
 import SidechainMiddlewareService from '../SidechainMiddlewareService'
@@ -81,8 +81,8 @@ export const getSwapList = () => async (dispatch, getState) => {
   return swapList
 }
 
-export const obtainAllOpenSwaps = () => async (dispatch, getState) => {
-  const swaps = getLXSwaps(getState())
+export const obtainAllMainnetOpenSwaps = () => async (dispatch, getState) => {
+  const swaps = getLXSwapsMtS(getState())
   const promises = []
   Object.values(swaps).forEach((swap) => {
     if (swap.isActive) {
@@ -93,9 +93,9 @@ export const obtainAllOpenSwaps = () => async (dispatch, getState) => {
   })
   const results = await Promise.all(promises)
 
-  results.forEach(async ({ data, swapId }, i) => {
+  results.forEach(async ({ data, swapId }) => {
     if (data) {
-      dispatch(closeSwap(data, swapId, i))
+      dispatch(closeSwap(data, swapId))
     }
   })
 }

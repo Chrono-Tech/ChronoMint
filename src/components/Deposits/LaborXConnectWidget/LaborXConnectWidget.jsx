@@ -11,7 +11,6 @@ import { Translate } from 'react-redux-i18n'
 import { ETH, TIME, LHT } from '@chronobank/core/dao/constants'
 import { getDeposit } from '@chronobank/core/redux/assetsHolder/selectors'
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
-import BigNumber from 'bignumber.js'
 import {
   getLXActiveSwapsCount,
   getMainLaborHourWallet,
@@ -23,7 +22,6 @@ import {
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import Amount from '@chronobank/core/models/Amount'
-import { obtainAllOpenSwaps } from '@chronobank/core/redux/laborHour/thunks'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { FORM_LABOR_X_CONNECT_SETTINGS } from 'components/constants'
 import TokenValueSimple from 'components/common/TokenValueSimple/TokenValueSimple'
@@ -60,7 +58,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleObtainAllOpenSwaps: () => dispatch(obtainAllOpenSwaps()),
     onOpenReceiveForm: (wallet, tokenId) =>
       dispatch(
         modalsOpen({
@@ -98,7 +95,6 @@ export default class LaborXConnectWidget extends PureComponent {
     lhtWallet: PropTypes.instanceOf(WalletModel),
     deposit: PropTypes.instanceOf(Amount),
     swapsCount: PropTypes.number,
-    handleObtainAllOpenSwaps: PropTypes.func,
     miningParams: PropTypes.shape({
       minDepositLimit: PropTypes.string,
       rewardsCoefficient: PropTypes.string,
@@ -123,8 +119,6 @@ export default class LaborXConnectWidget extends PureComponent {
     const isLXLockedDeposit = newProps.lxLockedDeposit && newProps.lxLockedDeposit.gt(0)
     const isLXBalance = newProps.lhtWallet.balances[TIME] && newProps.lhtWallet.balances[TIME].gt(0)
 
-    // TODO @abdulov remove console.log
-    console.log('%c getDerivedStateFromProps', 'background: #222; color: #fff', newProps.swapsCount)
     if (isLXBalance || isLXDeposit || isLXLockedDeposit || newProps.swapsCount > 0) {
       return { step: WIDGET_SECOND_STEP }
     }
@@ -154,10 +148,6 @@ export default class LaborXConnectWidget extends PureComponent {
 
     // for first step
     return onOpenLXConnectForm()
-  }
-
-  handleContinue = () => {
-    return this.props.handleObtainAllOpenSwaps()
   }
 
   handleOpenSettings = () => {
@@ -196,15 +186,12 @@ export default class LaborXConnectWidget extends PureComponent {
     const isLXDeposit = lxDeposit && lxDeposit.gt(0)
     const isLXLockedDeposit = lxLockedDeposit && lxLockedDeposit.gt(0)
     let renderBalance = lhtWallet.balances[TIME]
-    let undistributedValue = new BigNumber(0)
     let isChronobankPoll
     if (isLXLockedDeposit) {
       renderBalance = lxLockedDeposit
-      undistributedValue = lxDeposit
       isChronobankPoll = false
     } else if (isLXDeposit) {
       renderBalance = lxDeposit
-      undistributedValue = lhtWallet.balances[TIME]
       isChronobankPoll = true
     }
     const isMiningOn = isLXLockedDeposit || isLXDeposit

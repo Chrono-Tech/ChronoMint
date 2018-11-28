@@ -53,11 +53,22 @@ export default class TransactionHandler extends TransactionGuide {
   }
 
   acceptTransaction = (entry) => async (dispatch, getState) => {
+    const web3 = this.getWeb3(getState())
+    const nonce = await dispatch(this.nextNonce({ web3, address: entry.tx.from })) // need for multiple transactions
     dispatch(
-      this.txStatus(entry.key, entry.tx.from, {
-        isAccepted: true,
-        isPending: true,
-      }),
+      this.actions.txUpdate(
+        entry.key,
+        entry.tx.from,
+        new TxEntryModel({
+          ...entry,
+          tx: new TxExecModel({
+            ...entry.tx,
+            nonce,
+          }),
+          isAccepted: true,
+          isPending: true,
+        }),
+      ),
     )
 
     const state = getState()
