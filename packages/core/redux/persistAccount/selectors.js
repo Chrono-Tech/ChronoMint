@@ -16,6 +16,7 @@ export const getPersistAccount = (state) => {
 
 export const getBlockchainList = (state) => {
   const account = getPersistAccount(state)
+  console.log('account.selectedWallet.blockchainList: ', account.selectedWallet.blockchainList, account.selectedWallet)
   return account.selectedWallet.blockchainList || DEFAULT_ACTIVE_BLOCKCHAINS
 }
 

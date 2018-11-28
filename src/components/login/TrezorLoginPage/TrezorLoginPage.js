@@ -6,15 +6,15 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import {
-  onCreateWalletFromDevice,
-} from '@chronobank/login-ui/redux/thunks'
+import { onCreateWalletFromDevice } from '@chronobank/login-ui/redux/thunks'
 import {
   navigateToSelectWallet,
   navigateBack,
 } from '@chronobank/login-ui/redux/navigation'
 import { WALLET_TYPE_TREZOR } from '@chronobank/core/models/constants/AccountEntryModel'
+import { TREZOR_ACTIVE_BLOCKCHAINS } from '@chronobank/core/redux/persistAccount/constants'
 import LoginWithTrezorContainer from '@chronobank/login-ui/components/LoginWithTrezor/LoginWithTrezorContainer'
+import BlockchainChoiceContainer from '@chronobank/login-ui/components/BlockchainChoice/BlockchainChoiceContainer'
 import AccountNameContainer from '@chronobank/login-ui/components/AccountName/AccountNameContainer'
 import DerivationPathFormContainer from '@chronobank/login-ui/components/DerivationPathForm/DerivationPathFormContainer'
 import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
@@ -33,7 +33,8 @@ class TrezorLoginPage extends PureComponent {
   static PAGES = {
     DEVICE_SELECT_FORM: 1,
     ACCOUNT_NAME_FORM: 2,
-    DERIVATION_PATH_FORM: 3,
+    BLOCKCHAIN_CHOICE_FORM: 3,
+    DERIVATION_PATH_FORM: 4,
   }
 
   static propTypes = {
@@ -78,6 +79,15 @@ class TrezorLoginPage extends PureComponent {
           />
         )
 
+      case TrezorLoginPage.PAGES.BLOCKCHAIN_CHOICE_FORM:
+        return (
+          <BlockchainChoiceContainer
+            previousPage={this.previousPage.bind(this)}
+            onSubmitSuccess={this.onSubmitBlockchainChoiceFormSuccess.bind(this)}
+            activeBlockchainList={TREZOR_ACTIVE_BLOCKCHAINS}
+          />
+        )
+
       default:
         return (
           <LoginWithTrezorContainer
@@ -86,6 +96,15 @@ class TrezorLoginPage extends PureComponent {
           />
         )
     }
+  }
+
+  async onSubmitBlockchainChoiceFormSuccess () {
+    const { onCreateWalletFromDevice, navigateToSelectWallet } = this.props
+    const { accountName, device } = this.state
+    console.log('onSubmitBlockchainChoiceFormSuccess: ', accountName, device)
+
+    onCreateWalletFromDevice(accountName, device, null)
+    navigateToSelectWallet()
   }
 
   async onSubmitDevice (device) {
@@ -99,6 +118,7 @@ class TrezorLoginPage extends PureComponent {
 
     // If profile has been got && profile does exist && userName != null then create wallet
     try {
+      throw new Error('Test')
       response = await this.props.getUserInfo([getAddress(device.address, true)])
 
       profile = response.data[0]
@@ -121,10 +141,11 @@ class TrezorLoginPage extends PureComponent {
   }
 
   async onSubmitAccountName (accountName) {
-    const { onCreateWalletFromDevice, navigateToSelectWallet } = this.props
-
-    onCreateWalletFromDevice(accountName, this.state.device, null)
-    navigateToSelectWallet()
+    console.log('onSubmitAccountName: ', accountName)
+    this.setState({
+      accountName,
+      page: TrezorLoginPage.PAGES.BLOCKCHAIN_CHOICE_FORM,
+    })
   }
 
   async onSubmitDerivationPath () {
