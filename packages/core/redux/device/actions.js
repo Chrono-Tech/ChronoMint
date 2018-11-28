@@ -20,6 +20,7 @@ import {
   DEVICE_STATE_LOADED,
   DEVICE_STATE_ERROR,
 } from './constants'
+import { updateSessionWeb3 } from '../session/thunks'
 
 export const deviceAdd = (wallet) => (dispatch) => {
   dispatch({ type: DEVICE_ADD, wallet })
@@ -41,6 +42,10 @@ export const deviceUpdateList = (deviceList) => (dispatch) => {
   dispatch({ type: DEVICE_UPDATE_LIST, deviceList })
 }
 
+export const deviceClearList = () => (dispatch) => {
+  dispatch({ type: DEVICE_CLEAR_LIST })
+}
+
 // eslint-disable-next-line no-unused-vars
 export const initLedgerDevice = (wallet) => async (dispatch) => {
   // @todo replace on EthereumLedgerDevice before any release
@@ -52,7 +57,12 @@ export const initLedgerDevice = (wallet) => async (dispatch) => {
 // eslint-disable-next-line no-unused-vars
 export const initTrezorDevice = (wallet) => async (dispatch) => {
   try {
+    dispatch(deviceUpdateList())
     dispatch({ type: DEVICE_STATE_LOADING })
+    console.log('initTrezorDevice: Before updateWeb3: ', wallet)
+    console.time('updateWeb3')
+    await dispatch(updateSessionWeb3())
+    console.timeEnd('updateWeb3')
     const trezor = new EthereumTrezorDevice()
     const result = await trezor.getAccountInfoList(0, 5)
     console.log('initTrezorDevice: ', result)

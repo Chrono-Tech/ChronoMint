@@ -14,6 +14,7 @@ export const DEVICE_STATE_ERROR = 'DEVICE/STATE_ERROR'
 export const DEVICE_SELECT = 'DEVICE/SELECT'
 export const DEVICE_SET = 'DEVICE/SET'
 export const DEVICE_UPDATE_LIST = 'DEVICE/UPDATE_LIST'
+export const DEVICE_CLEAR_LIST = 'DEVICE/CLEAR_LIST'
 
 export const STATE_LOADING = 'loading'
 export const STATE_LOADED = 'loaded'

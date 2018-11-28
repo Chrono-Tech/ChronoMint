@@ -53,11 +53,12 @@ export const estimateGas = (tx, feeMultiplier = 1) => transactionHandler.estimat
 export const executeTransaction = ({ tx, options }) => transactionHandler.executeTransaction({ tx, options })
 
 export const initEthereum = ({ web3 }) => (dispatch) => {
+  console.log('initEthereum: ', web3)
   dispatch(ethActions.ethWeb3Update(new HolderModel({ value: web3 })))
 }
 
 export const enableEthereum = () => async (dispatch) => {
-  dispatch(initTokens())
+  await dispatch(initTokens())
   await dispatch(initWallet())
 }
 
@@ -132,7 +133,7 @@ const initWallet = () => async (dispatch, getState) => {
     console.log('initWallet path signer: ', path, signer)
 
     if (signer) {
-      console.log('before getAddress: ')
+      console.log('before getAddress: ', path)
 
       const address = await signer.getAddress(path)
       console.log('getAddress: ', address)

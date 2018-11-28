@@ -22,11 +22,12 @@ function mapDispatchToProps (dispatch) {
 
 function mapStateToProps (state) {
   const deviceAccount = state.get(DUCK_DEVICE_ACCOUNT)
+  const deviceList = state.get(DUCK_DEVICE_ACCOUNT).deviceList
 
   return {
-    deviceList: state.get(DUCK_DEVICE_ACCOUNT).deviceList.map(
+    deviceList: Array.isArray(deviceList) ? deviceList.map(
       (wallet) => new DeviceEntryModel({ ...wallet }),
-    ),
+    ) : [],
     deviceState: deviceAccount.status,
   }
 }

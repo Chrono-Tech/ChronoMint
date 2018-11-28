@@ -77,12 +77,18 @@ export const getProviderSettings = () => (dispatch, getState) => {
 }
 
 export const selectProvider = (selectedProviderId) => (dispatch) => {
-  console.log('selectProvider: ', selectedProviderId)
   dispatch(NetworkActions.networkResetNetwork())
   dispatch(NetworkActions.networkSetProvider(selectedProviderId))
 }
 
-export const updateWeb3 = (selectedNetworkId, selectedProviderId) => (dispatch, getState) => {
+/**
+ * At the moment it used only for Trezor login page. Getting addresses balances
+ * @param selectedNetworkId
+ * @param selectedProviderId
+ * @returns {function(*=, *): Promise<any>}
+ */
+export const updateSessionWeb3 = (selectedNetworkId, selectedProviderId) => (dispatch, getState) => {
+  console.log('updateSessionWeb3! ')
 
   const state = getState()
   if (!selectedNetworkId || !selectedProviderId) {
@@ -92,12 +98,8 @@ export const updateWeb3 = (selectedNetworkId, selectedProviderId) => (dispatch, 
   }
 
   const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
-  console.log('updateWeb3 customNetworksList: ', customNetworksList, selectedNetworkId, selectedProviderId)
-
-  console.log('updateWeb3: ', selectedNetworkId, selectedProviderId)
-
   let network = getNetworkById(selectedNetworkId, selectedProviderId)
-  console.log('updateWeb3 network: ', network)
+
   if (!network.id) {
     network = customNetworksList.find((network) => network.id === selectedNetworkId)
   }
@@ -105,13 +107,24 @@ export const updateWeb3 = (selectedNetworkId, selectedProviderId) => (dispatch, 
   return new Promise((resolve, fail) => {
     const web3 = web3Factory(network)
     web3.eth.net.isListening().then(() => {
-      console.log('updateWeb3 network: isListening: ', network)
-      dispatch(SessionActions.updateWeb3(web3))
+      console.log('SessionActions.updateSessionWeb3: ', network)
+      dispatch(SessionActions.updateSessionWeb3(web3))
       resolve()
     }).catch((e) => {
       fail(e)
     })
   })
+}
+
+/**
+ * Close session web3 connection and remove it from the store. At the moment used only for Trezor login
+ */
+export const clearSessionWeb3 = () => (dispatch, getState) => {
+  console.log('clearSessionWeb3! ')
+  dispatch(SessionActions.clearSessionWeb3())
+
+  const web3 = getState().get(DUCK_SESSION).web3
+  web3.currentProvider.disconnect()
 }
 
 export const changeGasSlideValue = (value, blockchain) => (dispatch) =>
@@ -157,6 +170,8 @@ export const login = (account) => async (dispatch, getState) => {
     throw new Error('Session has not been created')
   }
 
+  dispatch(SessionActions.clearSessionWeb3())
+
   console.log('Login check 1: ', account)
 
   let network = getNetworkById(selectedNetworkId, selectedProviderId)
@@ -201,11 +216,10 @@ export const getProfileSignature = (signer, path) => async (dispatch, getState) 
 
   try {
     const addresses = getAccountAddresses(getState())
-    console.log('addresses: ', addresses)
-
     if (!Object.keys(addresses).length) {
       throw new Error('Addresses list is empty')
     }
+
     const signDataString = ProfileService.getSignData(addresses)
     const signData = await signer.signData(signDataString, path)
     const profileSignature = await dispatch(ProfileThunks.getUserProfile(signData.signature, addresses))

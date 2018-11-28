@@ -34,6 +34,8 @@ export const SESSION_PROFILE = 'session/PROFILE'
 export const SESSION_PROFILE_UPDATE = 'session/PROFILE_UPDATE'
 export const SET_PROFILE_SIGNATURE = 'session/SET_PROFILE_SIGNATURE'
 export const SET_WEB3_INSTANCE = 'session/SET_WEB3_INSTANCE'
+export const CLEAR_WEB3_INSTANCE = 'session/CLEAR_WEB3_INSTANCE'
+
 export const PROFILE_PANEL_TOKENS = [
   { symbol: BTC, blockchain: BLOCKCHAIN_BITCOIN, title: 'BTC' },
   { symbol: BCC, blockchain: BLOCKCHAIN_BITCOIN_CASH, title: 'BCC' },
