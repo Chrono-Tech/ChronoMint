@@ -26,5 +26,8 @@ export default {
     unclosedSwapsMainnet: 'You have %{count} unclosed swaps from main network',
     unclosedSwapsLX: 'You have %{count} unclosed swaps from Labor Hour network',
     fix: 'fix',
+    useForMining: 'Use for mining',
+    sendToDeposit: 'Send to TIME Deposit',
+    openSettingsForm: 'Need to open settings form and enter delegate address',
   },
 }

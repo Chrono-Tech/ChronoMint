@@ -4,18 +4,17 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { daoByType, getLXToken, getLXTokenByAddress, getMainLaborHourWallet, getMiningFeeMultiplier, getMiningParams } from '../selectors/mainSelectors'
+import { daoByType, getLXToken, getLXTokenByAddress, getMiningFeeMultiplier, getMiningParams } from '../selectors/mainSelectors'
 import { EVENT_CLOSE, EVENT_EXPIRE, EVENT_OPEN, EVENT_REVOKE } from '../constants'
 import { notify } from '../../notifier/actions'
 import SimpleNoticeModel from '../../../models/notices/SimpleNoticeModel'
 import web3Converter from '../../../utils/Web3Converter'
 import { closeSwap, obtainSwapByMiddlewareFromMainnetToSidechain } from './mainnetToSidechain'
-import { executeLaborHourTransaction, updateLaborHourBalances, updateTimeHolderBalances } from './transactions'
+import { updateLaborHourBalances, updateTimeHolderBalances } from './transactions'
 import { EVENT_BECOME_MINER, EVENT_DEPOSIT, EVENT_RESIGN_MINER, EVENT_WITHDRAW_SHARES } from '../dao/TimeHolderDAO'
-import { startMiningInCustomNode, depositInSidechain } from './mining'
+import { depositInSidechain, startMiningInCustomNode } from './mining'
 import { updateProcessingStatus } from '../actions'
-import { BLOCKCHAIN_LABOR_HOUR } from '../../../dao/constants'
-import { watchProcessingStatus } from './utilsThunks'
+import { revokeTokens } from './sidechainToMainnet'
 
 // eslint-disable-next-line
 export const watch = () => (dispatch, getState) => {
@@ -179,24 +178,10 @@ const withdrawSharesCallback = (event) => async (dispatch, getState) => {
 
     await dispatch(updateLaborHourBalances())
     dispatch(updateTimeHolderBalances())
-    const lhtWallet = getMainLaborHourWallet(getState())
     const token = getLXTokenByAddress(tokenAddress.toLowerCase())(getState())
-    const platformDao = daoByType('ChronoBankPlatformSidechain')(getState())
     const feeMultiplier = getMiningFeeMultiplier(getState())
 
-    const tx = platformDao.revokeAsset(
-      web3Converter.stringToBytes(token.symbol()),
-      lhtWallet.balances[token.symbol()],
-    )
-
-    if (tx) {
-      const entry = await dispatch(executeLaborHourTransaction({ tx, options: { feeMultiplier } }))
-      dispatch(watchProcessingStatus({
-        status: 'chronoBankPlatformSidechain.revoke.revoking',
-        blockchain: BLOCKCHAIN_LABOR_HOUR,
-        entry,
-      }))
-    }
+    dispatch(revokeTokens({ token, feeMultiplier }))
   } catch (e) {
     // eslint-disable-next-line
     console.error('deposit error', e)

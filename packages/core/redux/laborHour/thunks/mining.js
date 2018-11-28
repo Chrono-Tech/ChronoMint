@@ -19,7 +19,7 @@ import {
   getMiningFeeMultiplier,
 } from '../selectors/mainSelectors'
 import TokenModel from '../../../models/tokens/TokenModel'
-import { EVENT_RESIGN_MINER } from '../dao/TimeHolderDAO'
+import { EVENT_BECOME_MINER, EVENT_RESIGN_MINER } from '../dao/TimeHolderDAO'
 import { updateMiningFeeMultiplier, updateMiningNodeType, updateProcessingStatus } from '../actions'
 import { watchProcessingStatus } from './utilsThunks'
 import { BLOCKCHAIN_LABOR_HOUR } from '../../../dao/constants'
@@ -66,6 +66,9 @@ export const startMiningInCustomNode = (delegateAddress, feeMultiplier) => async
 
     if (tx) {
       const entry = await dispatch(executeLaborHourTransaction({ tx, options: { feeMultiplier } }))
+      timeHolderSidechainDAO.once(EVENT_BECOME_MINER, () => {
+        dispatch(updateProcessingStatus(null))
+      })
       dispatch(watchProcessingStatus({
         status: 'timeHolder.becomeMiner.locking',
         blockchain: BLOCKCHAIN_LABOR_HOUR,
@@ -114,7 +117,9 @@ export const unlockLockedDeposit = (token: TokenModel, feeMultiplier) => async (
   const tx = timeHolderDAO.unlockDepositAndResignMiner(token.address())
   if (tx) {
     const entry = await dispatch(executeLaborHourTransaction({ tx, options: { feeMultiplier } }))
-
+    timeHolderDAO.once(EVENT_RESIGN_MINER, () => {
+      dispatch(updateProcessingStatus(null))
+    })
     dispatch(watchProcessingStatus({
       status: 'timeHolder.resignMiner.unlocking',
       blockchain: BLOCKCHAIN_LABOR_HOUR,

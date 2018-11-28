@@ -7,7 +7,7 @@ import {
   daoByType,
   getMainLaborHourWallet,
   getMiningFeeMultiplier,
-  getLXSwapsMtS,
+  getLXSwapsMtS, getLXDeposit, getMiningParams,
 } from '../selectors/mainSelectors'
 import web3Converter from '../../../utils/Web3Converter'
 import SidechainMiddlewareService from '../SidechainMiddlewareService'
@@ -15,7 +15,8 @@ import { getEthereumSigner } from '../../persistAccount/selectors'
 import { notifyUnknownError, watchProcessingStatus } from './utilsThunks'
 import { executeLaborHourTransaction } from './transactions'
 import * as LXSidechainActions from '../actions'
-import { BLOCKCHAIN_LABOR_HOUR } from '../../../dao/constants'
+import { BLOCKCHAIN_LABOR_HOUR, TIME } from '../../../dao/constants'
+import { depositInSidechain, startMiningInCustomNode } from './mining'
 
 export const obtainSwapByMiddlewareFromMainnetToSidechain = (swapId) => async (
   dispatch,
@@ -106,4 +107,21 @@ export const obtainAllMainnetOpenSwaps = () => async (dispatch, getState) => {
       dispatch(closeSwap(data, swapId))
     }
   })
+}
+
+export const fixTokensToMining = () => (dispatch, getState) => {
+  const lhtWallet = getMainLaborHourWallet(getState())
+  const balance = lhtWallet.balances[TIME]
+
+  if (balance.gt(0)) {
+    return dispatch(depositInSidechain())
+  }
+
+  const deposit = getLXDeposit(lhtWallet.address)(getState())
+  const { isCustomNode, delegateAddress } = getMiningParams(getState())
+
+  if (deposit.gt(0) && isCustomNode) {
+    const feeMultiplier = getMiningFeeMultiplier(getState())
+    dispatch(startMiningInCustomNode(delegateAddress, feeMultiplier))
+  }
 }

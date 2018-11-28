@@ -5,9 +5,9 @@
 
 //#region imports
 import {
-  daoByType,
-  getLXLockedDeposit, getLXSwapsStM,
-  getMainLaborHourWallet, getMiningFeeMultiplier,
+  daoByType, getLXDeposit,
+  getLXLockedDeposit, getLXSwapsStM, getLXToken,
+  getMainLaborHourWallet, getMiningFeeMultiplier, getMiningParams,
 } from '../selectors/mainSelectors'
 import { daoByType as daoByTypeMainnet } from '../../daos/selectors'
 import Amount from '../../../models/Amount'
@@ -18,12 +18,42 @@ import { getEthereumSigner } from '../../persistAccount/selectors'
 import { executeTransaction } from '../../ethereum/thunks'
 import { executeLaborHourTransaction } from './transactions'
 import { swapUpdate, updateMiningFeeMultiplier, updateMiningNodeType } from '../actions'
-import { notifyUnknownError } from './utilsThunks'
+import { notifyUnknownError, watchProcessingStatus } from './utilsThunks'
 import { EVENT_RESIGN_MINER } from '../dao/TimeHolderDAO'
 import { unlockLockedDeposit } from './mining'
-import { watchProcessingStatus } from './utilsThunks'
-import { BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LABOR_HOUR } from '../../../dao/constants'
+import { BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LABOR_HOUR, TIME } from '../../../dao/constants'
 //#endregion
+
+export const revokeTokens = ({ token, feeMultiplier }) => async (dispatch, getState) => {
+  const lhtWallet = getMainLaborHourWallet(getState())
+  const platformDao = daoByType('ChronoBankPlatformSidechain')(getState())
+  const tx = platformDao.revokeAsset(
+    web3Converter.stringToBytes(token.symbol()),
+    lhtWallet.balances[token.symbol()],
+  )
+
+  if (tx) {
+    const entry = await dispatch(executeLaborHourTransaction({ tx, options: { feeMultiplier } }))
+    dispatch(watchProcessingStatus({
+      status: 'chronoBankPlatformSidechain.revoke.revoking',
+      blockchain: BLOCKCHAIN_LABOR_HOUR,
+      entry,
+    }))
+  }
+}
+
+const withdraw = ({ token, amount, feeMultiplier }) => async (dispatch, getState) => {
+  const timeHolderDAO = daoByType('TimeHolderSidechain')(getState())
+  const tx = timeHolderDAO.withdrawShares(token.address(), amount)
+  if (tx) {
+    const entry = await dispatch(executeLaborHourTransaction({ tx, options: { feeMultiplier } }))
+    dispatch(watchProcessingStatus({
+      status: 'timeHolder.withdrawShares.withdrawing',
+      blockchain: BLOCKCHAIN_LABOR_HOUR,
+      entry,
+    }))
+  }
+}
 
 export const sidechainWithdraw = (
   amount: Amount,
@@ -40,25 +70,13 @@ export const sidechainWithdraw = (
     const lhthWallet = getMainLaborHourWallet(getState())
     const lockedDeposit = getLXLockedDeposit(lhthWallet.address)(getState())
 
-    const withdraw = async () => {
-      const tx = timeHolderDAO.withdrawShares(token.address(), amount)
-      if (tx) {
-        const entry = await dispatch(executeLaborHourTransaction({ tx, options: { feeMultiplier } }))
-        dispatch(watchProcessingStatus({
-          status: 'timeHolder.withdrawShares.withdrawing',
-          blockchain: BLOCKCHAIN_LABOR_HOUR,
-          entry,
-        }))
-      }
-    }
-
     if (lockedDeposit.gt(0)) {
       dispatch(unlockLockedDeposit(token, feeMultiplier))
       timeHolderDAO.once(EVENT_RESIGN_MINER, () => {
-        withdraw()
+        dispatch(withdraw({ token, amount, feeMultiplier }))
       })
     } else {
-      withdraw()
+      dispatch(withdraw({ token, amount, feeMultiplier }))
     }
   } catch (e) {
     // eslint-disable-next-line
@@ -133,4 +151,20 @@ export const obtainAllLXOpenSwaps = () => async (dispatch, getState) => {
       dispatch(unlockShares(swapId, data))
     }
   })
+}
+
+export const fixTokensToMainnet = () => (dispatch, getState) => {
+  const lhtWallet = getMainLaborHourWallet(getState())
+  const { isCustomNode } = getMiningParams(getState())
+  const deposit = getLXDeposit(lhtWallet.address)(getState())
+  const token = getLXToken(TIME)(getState())
+  if (deposit.gt(0) && isCustomNode) {
+    return dispatch(withdraw({ token, amount: deposit }))
+  }
+
+  const balance = lhtWallet.balances[TIME]
+
+  if (balance.gt(0)) {
+    return dispatch(revokeTokens({ token }))
+  }
 }

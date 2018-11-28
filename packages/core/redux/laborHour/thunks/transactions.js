@@ -78,4 +78,8 @@ export const updateTimeHolderBalances = () => async (dispatch, getState) => {
 
   const lockedDepositBalance = await timeHolderDao.getLockedDepositBalance(timeToken.address(), wallet.address)
   dispatch(LXSidechainActions.updateLockedDeposit(wallet.address, new Amount(lockedDepositBalance, timeToken.symbol())))
+  if (lockedDepositBalance > 0) { // it is a number
+    dispatch(LXSidechainActions.updateMiningNodeType({ isCustomNode: true })) // TODO @Abdulov to add getting
+    // delegate address from middleware
+  }
 }

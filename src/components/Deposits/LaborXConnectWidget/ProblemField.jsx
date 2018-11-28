@@ -3,16 +3,20 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import classnames from 'classnames'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Button from 'components/common/ui/Button/Button'
 import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 import { TIME } from '@chronobank/core/dao/constants'
-import BigNumber from 'bignumber.js'
 import {
-  getLXDeposit, getLXLMiningProcessingStatus,
-  getLXLockedDeposit, getLXSwapsMtS, getLXSwapsStM, getLXToken,
+  getLXDeposit,
+  getLXLMiningProcessingStatus,
+  getLXLockedDeposit,
+  getLXSwapsMtS,
+  getLXSwapsStM,
+  getLXToken,
   getMainLaborHourWallet,
   getMiningParams,
 } from '@chronobank/core/redux/laborHour/selectors/mainSelectors'
@@ -20,12 +24,14 @@ import {
   obtainAllMainnetOpenSwaps,
   obtainAllLXOpenSwaps,
 } from '@chronobank/core/redux/laborHour/thunks'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import Amount from '@chronobank/core/models/Amount'
+import { fixTokensToMining } from '@chronobank/core/redux/laborHour/thunks/mainnetToSidechain'
+import { fixTokensToMainnet } from '@chronobank/core/redux/laborHour/thunks/sidechainToMainnet'
 import './LaborXConnectWidget.scss'
 import { prefix } from './lang'
 import Preloader from '../../common/Preloader/Preloader'
-import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 
 function mapStateToProps (state) {
   const lhtWallet = getMainLaborHourWallet(state)
@@ -53,6 +59,8 @@ function mapDispatchToProps (dispatch) {
   return {
     handleObtainAllMainnetOpenSwaps: () => dispatch(obtainAllMainnetOpenSwaps()),
     handleObtainAllLXOpenSwaps: () => dispatch(obtainAllLXOpenSwaps()),
+    onFixToMining: () => dispatch(fixTokensToMining()),
+    onFixToMainnet: () => dispatch(fixTokensToMainnet()),
   }
 }
 
@@ -83,6 +91,28 @@ export default class ProblemField extends PureComponent {
     handleObtainAllMainnetOpenSwaps: PropTypes.func,
     handleObtainAllLXOpenSwaps: PropTypes.func,
     timeToken: PropTypes.instanceOf(TokenModel),
+    onFixToMining: PropTypes.func,
+    onFixToMainnet: PropTypes.func,
+    processingStatus: PropTypes.string,
+  }
+
+  constructor () {
+    super(...arguments)
+    this.state = {
+      isOpen: false,
+    }
+  }
+
+  handleOpenToggle = () => this.setState({ isOpen: !this.state.isOpen })
+
+  handleFixToMining = () => {
+    this.handleOpenToggle()
+    this.props.onFixToMining()
+  }
+
+  handleFixToMainnet = () => {
+    this.handleOpenToggle()
+    this.props.onFixToMainnet()
   }
 
   render () {
@@ -96,12 +126,13 @@ export default class ProblemField extends PureComponent {
       handleObtainAllMainnetOpenSwaps,
       processingStatus,
       timeToken,
+      miningParams,
     } = this.props
     const isLXDeposit = lxDeposit && lxDeposit.gt(0)
     const isLXLockedDeposit = lxLockedDeposit && lxLockedDeposit.gt(0)
     let undistributedValue = lhtWallet.balances[TIME]
     if (isLXLockedDeposit) {
-      undistributedValue = lxDeposit
+      undistributedValue = undistributedValue.plus(lxDeposit)
     } else if (isLXDeposit) {
       undistributedValue = lhtWallet.balances[TIME]
     }
@@ -136,7 +167,9 @@ export default class ProblemField extends PureComponent {
             </div>
             <div styleName='title'><Translate value={`${prefix}.unclosedSwapsLX`} count={lxSwaps.length} /></div>
             <div styleName='buttonWrapper'>
-              <Button onClick={handleObtainAllLXOpenSwaps}><Translate value={`${prefix}.fix`} /></Button>
+              <Button onClick={handleObtainAllLXOpenSwaps}>
+                <Translate value={`${prefix}.fix`} />
+              </Button>
             </div>
           </div>
         }
@@ -146,9 +179,36 @@ export default class ProblemField extends PureComponent {
             <div styleName='icon'>
               <div className='chronobank-icon'>warning</div>
             </div>
-            <div styleName='title'><Translate value={`${prefix}.undistributed`} />: TIME {timeToken.removeDecimals(undistributedValue).toNumber()}</div>
+            <div styleName='title'>
+              <Translate value={`${prefix}.undistributed`} />: TIME {timeToken.removeDecimals(undistributedValue).toNumber()}
+            </div>
             <div styleName='buttonWrapper'>
-              <Button>fix</Button>
+              <Button
+                styleName={classnames({ 'openButton': this.state.isOpen })}
+                onClick={this.handleOpenToggle}
+              >
+                <Translate value={`${prefix}.fix`} />
+              </Button>
+
+              <div styleName={classnames('menu', { 'open': this.state.isOpen })}>
+                <button
+                  styleName='item'
+                  onClick={this.handleFixToMining}
+                  disabled={miningParams.isCustomNode && !miningParams.delegateAddress}
+                  title={miningParams.isCustomNode && !miningParams.delegateAddress
+                    ? I18n.t(`${prefix}.openSettingsForm`)
+                    : ''}
+                >
+                  <Translate value={`${prefix}.useForMining`} />
+                </button>
+                <button
+                  styleName='item'
+                  onClick={this.handleFixToMainnet}
+                >
+                  <Translate value={`${prefix}.sendToDeposit`} />
+                </button>
+              </div>
+
             </div>
           </div>
         }

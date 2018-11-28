@@ -160,12 +160,65 @@
           }
 
           .buttonWrapper {
+            .openButton {
+              button {
+                border-radius: 13px 13px 0 0;
+                border-width: 0;
+                background: $color-orange-1;
+              }
+            }
+
             button {
               padding: 0;
               min-height: 25px;
               min-width: 70px;
               font-size: 12px;
               line-height: 14px;
+            }
+
+            .menu {
+              position: absolute;
+              display: none;
+              background: $color-blue-4;
+              border-radius: 2px 0 2px 2px;
+              right: 30px;
+              overflow: hidden;
+
+              &.open {
+                display: block;
+              }
+
+              .item {
+                padding: 10px 20px;
+                border-bottom: 1px solid $button-color-3;
+                color: $color-white;
+                white-space: nowrap;
+                display: block;
+                width: 100%;
+                text-align: left;
+                cursor: pointer;
+
+                &:disabled {
+                  border-bottom: 1px solid $button-color-3;
+                  background: $color-grey-3;
+                  color: $color-grey-7;
+                  cursor: not-allowed;
+
+                  &:hover {
+                    border-bottom: 1px solid $color-grey-3;
+                    background: $color-grey-3;
+                  }
+                }
+
+                &:last-child {
+                  border-bottom: 1px solid $color-blue-4;
+                }
+
+                &:hover {
+                  background: $color-orange-1;
+                  border-bottom: 1px solid $color-orange-1;
+                }
+              }
             }
           }
         }
