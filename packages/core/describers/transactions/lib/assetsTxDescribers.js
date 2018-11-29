@@ -27,10 +27,12 @@ import {
   TX_REMOVE_ASSET_PART_OWNER,
   TX_REVOKE_ASSET,
 } from '../../../dao/constants/ChronoBankPlatformDAO'
+import Amount from '../../../models/Amount'
+import { TIME } from '../../../dao/constants'
 
 export const FUNCTION_CREATE_ASSET_WITH_FEE = new TransactionDescriber(
   findFunctionABI(TokenManagementInterfaceABI, TX_CREATE_ASSET_WITH_FEE),
-  ({ tx, block }, { address } ) => {
+  ({ tx, block }, { address }, { feeSymbol }) => {
     address = address.toLowerCase()
 
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {
@@ -42,6 +44,7 @@ export const FUNCTION_CREATE_ASSET_WITH_FEE = new TransactionDescriber(
         date: new Date(block ? (block.timestamp * 1000) : null),
         title: `${path}.title`,
         eventTitle: `${path}.eventTitle`,
+        symbol: feeSymbol,
         path,
         fields: [
           {
@@ -60,7 +63,7 @@ export const FUNCTION_CREATE_ASSET_WITH_FEE = new TransactionDescriber(
 
 export const FUNCTION_CREATE_ASSET_WITHOUT_FEE = new TransactionDescriber(
   findFunctionABI(TokenManagementInterfaceABI, TX_CREATE_ASSET_WITHOUT_FEE),
-  ({ tx, block }, { address }) => {
+  ({ tx, block }, { address }, { feeSymbol }) => {
     address = address.toLowerCase()
 
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {
@@ -73,6 +76,7 @@ export const FUNCTION_CREATE_ASSET_WITHOUT_FEE = new TransactionDescriber(
         title: `${path}.title`,
         eventTitle: `${path}.eventTitle`,
         path,
+        symbol: feeSymbol,
         fields: [
           {
             value: tx.from,
@@ -90,7 +94,7 @@ export const FUNCTION_CREATE_ASSET_WITHOUT_FEE = new TransactionDescriber(
 
 export const FUNCTION_CREATE_PLATFORM = new TransactionDescriber(
   findFunctionABI(PlatformsManagerABI, TX_CREATE_PLATFORM),
-  ({ tx, block }, { address }) => {
+  ({ tx, block }, { address }, { feeSymbol }) => {
     address = address.toLowerCase()
 
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {
@@ -103,6 +107,7 @@ export const FUNCTION_CREATE_PLATFORM = new TransactionDescriber(
         title: `${path}.title`,
         eventTitle: `${path}.eventTitle`,
         path,
+        symbol: feeSymbol,
         fields: [
           {
             value: tx.from,
@@ -120,7 +125,7 @@ export const FUNCTION_CREATE_PLATFORM = new TransactionDescriber(
 
 export const FUNCTION_ATTACH_PLATFORM = new TransactionDescriber(
   findFunctionABI(PlatformsManagerABI, TX_ATTACH_PLATFORM),
-  ({ tx, block }, { address }) => {
+  ({ tx, block }, { address }, { feeSymbol }) => {
     address = address.toLowerCase()
 
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {
@@ -133,6 +138,7 @@ export const FUNCTION_ATTACH_PLATFORM = new TransactionDescriber(
         title: `${path}.title`,
         eventTitle: `${path}.eventTitle`,
         path,
+        symbol: feeSymbol,
         fields: [
           {
             value: tx.from,
@@ -150,7 +156,7 @@ export const FUNCTION_ATTACH_PLATFORM = new TransactionDescriber(
 
 export const FUNCTION_DETACH_PLATFORM = new TransactionDescriber(
   findFunctionABI(PlatformsManagerABI, TX_DETACH_PLATFORM),
-  ({ tx, block }, { address }) => {
+  ({ tx, block }, { address }, { feeSymbol }) => {
     address = address.toLowerCase()
 
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {
@@ -162,6 +168,7 @@ export const FUNCTION_DETACH_PLATFORM = new TransactionDescriber(
         date: new Date(block ? (block.timestamp * 1000) : null),
         title: `${path}.title`,
         path,
+        symbol: feeSymbol,
         fields: [
           {
             value: tx.from,
@@ -179,7 +186,7 @@ export const FUNCTION_DETACH_PLATFORM = new TransactionDescriber(
 
 export const FUNCTION_REISSUE_ASSET = new TransactionDescriber(
   findFunctionABI(ChronoBankPlatformABI, TX_REISSUE_ASSET),
-  ({ tx, block }, { address }) => {
+  ({ tx, block }, { address }, { feeSymbol }) => {
     address = address.toLowerCase()
 
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {
@@ -191,6 +198,7 @@ export const FUNCTION_REISSUE_ASSET = new TransactionDescriber(
         date: new Date(block ? (block.timestamp * 1000) : null),
         title: `${path}.title`,
         path,
+        symbol: feeSymbol,
         fields: [
           {
             value: tx.from,
@@ -208,7 +216,7 @@ export const FUNCTION_REISSUE_ASSET = new TransactionDescriber(
 
 export const FUNCTION_REMOVE_ASSET_PART_OWNER = new TransactionDescriber(
   findFunctionABI(ChronoBankPlatformABI, TX_REMOVE_ASSET_PART_OWNER),
-  ({ tx, block }, { address }) => {
+  ({ tx, block }, { address }, { feeSymbol }) => {
     address = address.toLowerCase()
 
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {
@@ -220,6 +228,7 @@ export const FUNCTION_REMOVE_ASSET_PART_OWNER = new TransactionDescriber(
         date: new Date(block ? (block.timestamp * 1000) : null),
         title: `${path}.title`,
         path,
+        symbol: feeSymbol,
         fields: [
           {
             value: tx.from,
@@ -237,11 +246,12 @@ export const FUNCTION_REMOVE_ASSET_PART_OWNER = new TransactionDescriber(
 
 export const FUNCTION_REVOKE_ASSET = new TransactionDescriber(
   findFunctionABI(ChronoBankPlatformABI, TX_REVOKE_ASSET),
-  ({ tx, block }, { address }) => {
+  ({ tx, block }, { address }, { feeSymbol, params }) => {
     address = address.toLowerCase()
 
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {
-      const path = `tx.${TokenManagementInterfaceABI.contractName}.${TX_REVOKE_ASSET}`
+      const path = `tx.${ChronoBankPlatformABI.contractName}.${TX_REVOKE_ASSET}`
+      const amount = new Amount(params._value, TIME)
 
       return new LogTxModel({
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
@@ -249,14 +259,15 @@ export const FUNCTION_REVOKE_ASSET = new TransactionDescriber(
         date: new Date(block ? (block.timestamp * 1000) : null),
         title: `${path}.title`,
         path,
+        symbol: feeSymbol,
         fields: [
           {
             value: tx.from,
             description: `${path}.from`,
           },
           {
-            value: tx.to,
-            description: `${path}.to`,
+            value: amount,
+            description: `${path}.amount`,
           },
         ],
       })

@@ -134,10 +134,11 @@ export default class TransactionHandler extends TransactionGuide {
     const state = getState()
     const account = getAccount(state)
     const dao = this.getDAO(entry, state)
+    const symbol = this.symbol
 
     const description = describePendingTx(
       entry,
-      dao.getSymbol ? dao.getSymbol() : ETH,
+      symbol,
       {
         address: account,
         abi: dao.abi,

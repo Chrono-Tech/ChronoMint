@@ -25,13 +25,14 @@ import { EVENT_ERC20_TOKENS_COUNT, EVENT_NEW_ERC20_TOKEN } from '../../dao/const
 import TransactionHandler from '../abstractEthereum/utils/TransactionHandler'
 import { web3Selector } from './selectors'
 import { daoByAddress, daoByType } from '../daos/selectors'
-import { BLOCKCHAIN_LABOR_HOUR, LHT, EVENT_NEW_BLOCK } from '../../dao/constants'
+import { BLOCKCHAIN_LABOR_HOUR, LHT, EVENT_NEW_BLOCK, ETH } from '../../dao/constants'
 import laborHourDAO from '../../dao/LaborHourDAO'
 import { getTokens } from '../tokens/selectors'
 
 class EthereumTransactionHandler extends TransactionHandler {
   constructor () {
     super(BLOCKCHAIN_ETHEREUM)
+    this.symbol = ETH
   }
 
   getDAO (entry, state) {

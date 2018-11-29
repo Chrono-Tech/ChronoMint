@@ -56,9 +56,7 @@ export default class AssetHolderDAO extends AbstractContractDAO {
     return this._tx(TX_DEPOSIT, [tokenAddress, new BigNumber(amount)])
   }
 
-  lock (tokenAddress, amount: BigNumber) {
-    return this._tx(TX_LOCK, [tokenAddress, new BigNumber(amount)])
-  }
+  lock (tokenAddress, amount: BigNumber) { return this._tx(TX_LOCK, [tokenAddress, new BigNumber(amount)]) }
 
   shareholdersCount (): Promise {
     return this.contract.methods.defaultShareholdersCount().call()

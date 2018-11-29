@@ -19,7 +19,7 @@ import { TX_CREATE_POLL } from '../../../dao/constants/VotingManagerDAO'
 
 export const FUNCTION_POLL_CREATED = new TransactionDescriber(
   findFunctionABI(VotingManagerABI, TX_CREATE_POLL),
-  ({ tx, block }, { address }, { params }) => {
+  ({ tx, block }, { address }, { params, feeSymbol }) => {
     address = address.toLowerCase()
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {
 
@@ -33,6 +33,7 @@ export const FUNCTION_POLL_CREATED = new TransactionDescriber(
         title: `${path}.modalTitle`,
         eventTitle: `${path}.eventTitle`,
         path,
+        symbol: feeSymbol,
         fields: [
           {
             value: tx.from,
@@ -62,7 +63,7 @@ export const FUNCTION_POLL_CREATED = new TransactionDescriber(
 
 export const FUNCTION_ACTIVATE_POLL = new TransactionDescriber(
   findFunctionABI(PollInterfaceABI, TX_ACTIVATE_POLL),
-  ({ tx, block }, { address }) => {
+  ({ tx, block }, { address }, { feeSymbol }) => {
     address = address.toLowerCase()
 
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {
@@ -74,6 +75,7 @@ export const FUNCTION_ACTIVATE_POLL = new TransactionDescriber(
         date: new Date(block ? (block.timestamp * 1000) : null),
         title: `${path}.title`,
         eventTitle: `${path}.eventTitle`,
+        symbol: feeSymbol,
         fields: [
           {
             value: tx.from,
@@ -91,7 +93,7 @@ export const FUNCTION_ACTIVATE_POLL = new TransactionDescriber(
 
 export const FUNCTION_VOTE = new TransactionDescriber(
   findFunctionABI(PollInterfaceABI, TX_VOTE),
-  ({ tx, block }, { address }, { params }) => {
+  ({ tx, block }, { address }, { params, feeSymbol }) => {
     address = address.toLowerCase()
 
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {
@@ -103,6 +105,7 @@ export const FUNCTION_VOTE = new TransactionDescriber(
         date: new Date(block ? (block.timestamp * 1000) : null),
         title: `${path}.title`,
         eventTitle: `${path}.eventTitle`,
+        symbol: feeSymbol,
         fields: [
           {
             value: tx.from,
@@ -124,7 +127,7 @@ export const FUNCTION_VOTE = new TransactionDescriber(
 
 export const FUNCTION_REMOVE_POLL = new TransactionDescriber(
   findFunctionABI(PollInterfaceABI, TX_REMOVE_POLL),
-  ({ tx, block }, { address }) => {
+  ({ tx, block }, { address }, { feeSymbol }) => {
     address = address.toLowerCase()
 
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {
@@ -136,6 +139,7 @@ export const FUNCTION_REMOVE_POLL = new TransactionDescriber(
         date: new Date(block ? (block.timestamp * 1000) : null),
         title: `${path}.title`,
         eventTitle: `${path}.eventTitle`,
+        symbol: feeSymbol,
         fields: [
           {
             value: tx.from,
@@ -153,7 +157,7 @@ export const FUNCTION_REMOVE_POLL = new TransactionDescriber(
 
 export const FUNCTION_END_POLL = new TransactionDescriber(
   findFunctionABI(PollInterfaceABI, TX_END_POLL),
-  ({ tx, block }, { address }) => {
+  ({ tx, block }, { address }, { feeSymbol }) => {
     address = address.toLowerCase()
 
     if (tx.to.toLowerCase() === address || tx.from.toLowerCase() === address) {
@@ -165,6 +169,7 @@ export const FUNCTION_END_POLL = new TransactionDescriber(
         date: new Date(block ? (block.timestamp * 1000) : null),
         title: `${path}.title`,
         eventTitle: `${path}.eventTitle`,
+        symbol: feeSymbol,
         fields: [
           {
             value: tx.from,

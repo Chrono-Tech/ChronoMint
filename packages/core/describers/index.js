@@ -122,6 +122,7 @@ export const describePendingTx = (entry, symbol, context = {}) => {
           params: info.params,
           ...context,
           abi: describer.abi,
+          feeSymbol: symbol,
         },
       )
 

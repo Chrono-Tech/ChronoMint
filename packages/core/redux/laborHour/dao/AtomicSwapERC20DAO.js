@@ -5,6 +5,7 @@
 
 import AbstractContractDAO from '../../../dao/AbstractContractDAO'
 
+export const TX_CLOSE = 'close'
 export default class AtomicSwapERC20DAO extends AbstractContractDAO {
   constructor ({ address, history, abi }) {
     super({ address, history, abi })
@@ -13,7 +14,7 @@ export default class AtomicSwapERC20DAO extends AbstractContractDAO {
   connect (web3, options) {
     super.connect(
       web3,
-      options
+      options,
     )
 
     this.allEventsEmitter = this.contract.events.allEvents({}).on('data', this.handleEventsData)
@@ -37,6 +38,6 @@ export default class AtomicSwapERC20DAO extends AbstractContractDAO {
   }
 
   close (swapId, secretKey) {
-    return this._tx('close', [swapId, secretKey])
+    return this._tx(TX_CLOSE, [swapId, secretKey])
   }
 }

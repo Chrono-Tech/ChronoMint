@@ -5,19 +5,24 @@
 
 import uuid from 'uuid/v1'
 import { findFunctionABI, TransactionDescriber } from '../TransactionDescriber'
-import { Amount, LogTxModel } from '../../../models'
-import { AssetHolderABI } from '../../../dao/abi'
+import { LogTxModel } from '../../../models'
+import { TimeHolderABI } from '../../../redux/laborHour/dao/abi'
 import { TIME } from '../../../dao/constants'
-import { TX_DEPOSIT, TX_LOCK, TX_UNLOCK_SHARES, TX_WITHDRAW_SHARES } from '../../../dao/constants/AssetHolderDAO'
+import {
+  TX_DEPOSIT,
+  TX_START_MINING_IN_CUSTOM_NODE,
+  TX_UNLOCK_DEPOSIT_AND_RESIGN_MINER,
+} from '../../../redux/laborHour/dao/TimeHolderDAO'
+import Amount from '../../../models/Amount'
 
 export const FUNCTION_DEPOSIT = new TransactionDescriber(
-  findFunctionABI(AssetHolderABI, TX_DEPOSIT),
+  findFunctionABI(TimeHolderABI, TX_DEPOSIT),
   ({ tx, block }, { address }, { params, feeSymbol }) => {
     address = address.toLowerCase()
 
     if ((tx.to.toLowerCase() === address || tx.from.toLowerCase() === address)) {
       const transferAmount = new Amount(params._amount, TIME)
-      const path = `tx.${AssetHolderABI.contractName}.${TX_DEPOSIT}`
+      const path = `tx.${TimeHolderABI.contractName}.${TX_DEPOSIT}`
 
       return new LogTxModel({
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
@@ -41,14 +46,14 @@ export const FUNCTION_DEPOSIT = new TransactionDescriber(
   },
 )
 
-export const FUNCTION_WITHDRAW = new TransactionDescriber(
-  findFunctionABI(AssetHolderABI, TX_WITHDRAW_SHARES),
+export const FUNCTION_START_MINING_IN_CUSTOM_NODE = new TransactionDescriber(
+  findFunctionABI(TimeHolderABI, TX_START_MINING_IN_CUSTOM_NODE),
   ({ tx, block }, { address }, { params, feeSymbol }) => {
     address = address.toLowerCase()
 
     if ((tx.to.toLowerCase() === address || tx.from.toLowerCase() === address)) {
       const transferAmount = new Amount(params._amount, TIME)
-      const path = `tx.${AssetHolderABI.contractName}.${TX_WITHDRAW_SHARES}`
+      const path = `tx.${TimeHolderABI.contractName}.${TX_START_MINING_IN_CUSTOM_NODE}`
 
       return new LogTxModel({
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
@@ -66,36 +71,9 @@ export const FUNCTION_WITHDRAW = new TransactionDescriber(
             value: transferAmount,
             description: `${path}.amount`,
           },
-        ],
-      })
-    }
-  },
-)
-
-export const FUNCTION_LOCK = new TransactionDescriber(
-  findFunctionABI(AssetHolderABI, TX_LOCK),
-  ({ tx, block }, { address }, { params, feeSymbol }) => {
-    address = address.toLowerCase()
-
-    if ((tx.to.toLowerCase() === address || tx.from.toLowerCase() === address)) {
-      const transferAmount = new Amount(params._amount, TIME)
-      const path = `tx.${AssetHolderABI.contractName}.${TX_LOCK}`
-
-      return new LogTxModel({
-        key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
-        name: 'transfer',
-        date: new Date(block ? (block.timestamp * 1000) : null),
-        title: `${path}.title`,
-        symbol: feeSymbol,
-        eventTitle: `${path}.eventTitle`,
-        fields: [
           {
-            value: tx.from,
-            description: `${path}.from`,
-          },
-          {
-            value: transferAmount,
-            description: `${path}.amount`,
+            value: params._delegate,
+            description: '${path}.delegateAddress',
           },
         ],
       })
@@ -103,21 +81,21 @@ export const FUNCTION_LOCK = new TransactionDescriber(
   },
 )
 
-export const FUNCTION_UNLOCK_SHARES = new TransactionDescriber(
-  findFunctionABI(AssetHolderABI, TX_UNLOCK_SHARES),
+export const FUNCTION_UNLOCK_DEPOSIT_AND_RESIGN_MINER = new TransactionDescriber(
+  findFunctionABI(TimeHolderABI, TX_UNLOCK_DEPOSIT_AND_RESIGN_MINER),
   ({ tx, block }, { address }, { feeSymbol }) => {
     address = address.toLowerCase()
 
     if ((tx.to.toLowerCase() === address || tx.from.toLowerCase() === address)) {
-      const path = `tx.${AssetHolderABI.contractName}.${TX_UNLOCK_SHARES}`
+      const path = `tx.${TimeHolderABI.contractName}.${TX_UNLOCK_DEPOSIT_AND_RESIGN_MINER}`
 
       return new LogTxModel({
         key: block ? `${block.hash}/${tx.transactionIndex}` : uuid(),
         name: 'transfer',
         date: new Date(block ? (block.timestamp * 1000) : null),
         title: `${path}.title`,
-        symbol: feeSymbol,
         eventTitle: `${path}.eventTitle`,
+        symbol: feeSymbol,
         fields: [
           {
             value: tx.from,

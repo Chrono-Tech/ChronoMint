@@ -12,8 +12,8 @@ import { REQUIRED_TIME_AMOUNT } from '../../constants'
 
 export const FUNCTION_TRANSFER = new TransactionDescriber(
   findFunctionABI(ERC20DAODefaultABI, 'transfer'),
-  ({ tx, block }, { address }, { params, token }) => {
-    if(!token) return
+  ({ tx, block }, { address }, { params, token, feeSymbol }) => {
+    if (!token) return
     const symbol = token.symbol()
     address = address.toLowerCase()
 
@@ -27,6 +27,7 @@ export const FUNCTION_TRANSFER = new TransactionDescriber(
         date: new Date(block ? (block.timestamp * 1000) : null),
         title: `${path}.title`,
         eventTitle: `${path}.eventTitle`,
+        symbol: feeSymbol,
         fields: [
           {
             value: tx.from,
@@ -48,7 +49,7 @@ export const FUNCTION_TRANSFER = new TransactionDescriber(
 
 export const FUNCTION_APPROVE = new TransactionDescriber(
   findFunctionABI(ERC20DAODefaultABI, 'approve'),
-  ({ tx, block }, { address }, { params, token }) => {
+  ({ tx, block }, { address }, { params, token, feeSymbol }) => {
     const symbol = token.symbol()
     address = address.toLowerCase()
     if (symbol && (params._spender.toLowerCase() === address || tx.from.toLowerCase() === address)) {
@@ -63,6 +64,7 @@ export const FUNCTION_APPROVE = new TransactionDescriber(
         eventTitle: `${path}.eventTitle`,
         from: '',
         to: '',
+        symbol: feeSymbol,
         fields: [
           {
             value: tx.from,
@@ -84,7 +86,7 @@ export const FUNCTION_APPROVE = new TransactionDescriber(
 
 export const FUNCTION_REQUIRE_TIME = new TransactionDescriber(
   findFunctionABI(AssetDonatorABI, 'sendTime'),
-  ({ tx, block }) => {
+  ({ tx, block }, context, { feeSymbol }) => {
     const symbol = TIME
     const transferAmount = new Amount(REQUIRED_TIME_AMOUNT, symbol)
     const path = `tx.${ERC20DAODefaultABI.contractName}.sendTime`
@@ -95,6 +97,7 @@ export const FUNCTION_REQUIRE_TIME = new TransactionDescriber(
       date: new Date(block ? (block.timestamp * 1000) : null),
       title: `${path}.title`,
       eventTitle: `${path}.eventTitle`,
+      symbol: feeSymbol,
       fields: [
         {
           value: tx.from,

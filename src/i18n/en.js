@@ -14,10 +14,12 @@ import * as platformsManager from '@chronobank/core/dao/constants/PlatformsManag
 import * as pollInterface from '@chronobank/core/dao/constants/PollInterfaceDAO'
 import * as rewards from '@chronobank/core/dao/constants/RewardsDAO'
 import * as time from '@chronobank/core/dao/constants/AssetHolderDAO'
+import * as timeHolderLX from '@chronobank/core/redux/laborHour/dao/TimeHolderDAO'
 import * as user from '@chronobank/core/dao/constants/UserManagerDAO'
 import layouts from 'layouts/lang'
 import * as votingManager from '@chronobank/core/dao/constants/VotingManagerDAO'
 import * as chronoBankAsset from '@chronobank/core/dao/constants/ChronoBankAssetDAO'
+import * as atomicSwapERC20 from '@chronobank/core/redux/laborHour/dao/AtomicSwapERC20DAO'
 import bitcoin from './en-tx-bitcoin'
 import notices from './en-notices'
 import nem from './en-tx-nem'
@@ -170,7 +172,7 @@ export default {
     transactions: 'Transactions',
     blockNumber: 'Block Number',
     noTransactions: 'No transactions',
-    confirm: 'Confirm Transaction',
+    confirm: 'Transaction',
     fee: 'Fee',
     amountFee: 'Amount+Fee',
     balanceAfter: '%{symbol} balance after',
@@ -196,15 +198,17 @@ export default {
         eventTitle: 'Reissue asset',
       },
       revokeAsset: {
-        title: 'Confirm revoke tokens',
-        eventTitle: 'Reissue asset',
+        title: 'Revoke tokens',
+        eventTitle: 'Revoke asset',
+        from: 'From',
+        amount: 'Amount',
       },
       addAssetPartOwner: {
-        title: 'Confirm add manager',
+        title: 'Add manager',
         eventTitle: 'Added manager',
       },
       removeAssetPartOwner: {
-        title: 'Confirm remove manager',
+        title: 'Remove manager',
         eventTitle: 'Removed manager',
       },
     },
@@ -311,6 +315,35 @@ export default {
         eventTitle: 'Withdraw TIME',
         amount: 'Amount',
       },
+      [time.TX_LOCK]: {
+        title: 'Lock deposit',
+        eventTitle: 'Lock',
+        from: 'From',
+        amount: 'Amount',
+      },
+      [timeHolderLX.TX_START_MINING_IN_CUSTOM_NODE]: {
+        title: 'Start mining in custom node',
+        eventTitle: 'Start mining in custom node',
+        from: 'From',
+        amount: 'Amount',
+        delegateAddress: 'Delegate Address',
+      },
+      [timeHolderLX.TX_UNLOCK_DEPOSIT_AND_RESIGN_MINER]: {
+        title: 'Unlock locked deposit',
+        eventTitle: 'Unlock deposit',
+        from: 'From',
+      },
+      [timeHolderLX.TX_WITHDRAW_SHARES]: {
+        title: 'Withdraw deposit',
+        eventTitle: 'Withdraw deposit',
+        from: 'From',
+        amount: 'Amount',
+      },
+      [time.TX_UNLOCK_SHARES]: {
+        title: 'Unlock deposit',
+        eventTitle: 'Unlock deposit',
+        from: 'From',
+      },
     },
     Rewards: {
       [rewards.TX_WITHDRAW_REWARD]: {
@@ -369,6 +402,8 @@ export default {
         title: 'Transfer tokens',
         eventTitle: 'Transfer tokens',
         amount: 'Amount',
+        from: 'From',
+        to: 'To',
       },
     },
     Wallet: {
@@ -480,6 +515,14 @@ export default {
       'create2FAWallet': {
         title: 'Create 2FA wallet',
         eventTitle: 'Created 2FA wallet',
+      },
+    },
+    AtomicSwapERC20: {
+      [atomicSwapERC20.TX_CLOSE]: {
+        title: 'Close swap',
+        eventTitle: 'Close swap',
+        swapID: 'Swap ID',
+        from: 'From',
       },
     },
   },

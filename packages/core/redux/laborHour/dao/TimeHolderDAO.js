@@ -5,7 +5,6 @@
 
 import BigNumber from 'bignumber.js'
 import AbstractContractDAO from '../../../dao/AbstractContractDAO'
-import Amount from '../../../models/Amount'
 
 export const TX_DEPOSIT = 'deposit'
 export const TX_START_MINING_IN_CUSTOM_NODE = 'lockDepositAndBecomeMiner'
@@ -52,10 +51,6 @@ export default class TimeHolderDAO extends AbstractContractDAO {
 
   getMiningDepositLimits (address) {
     return this.contract.methods.getMiningDepositLimits(address).call()
-  }
-
-  deposit (tokenAddress, amount: Amount) {
-    return this._tx(TX_DEPOSIT, [tokenAddress, new BigNumber(amount)])
   }
 
   lockDepositAndBecomeMiner (tokenAddress, amount, delegateAddress) {

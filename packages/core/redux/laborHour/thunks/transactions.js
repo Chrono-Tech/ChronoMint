@@ -9,11 +9,11 @@ import {
   web3Selector,
   getMainLaborHourWallet,
   daoByType,
-  getLXToken, getLXTokens,
+  getLXToken, getLXTokens, daoByAddress,
 } from '../selectors/mainSelectors'
 import laborHourDAO from '../../../dao/LaborHourDAO'
 import TransactionHandler from '../../abstractEthereum/utils/TransactionHandler'
-import { BLOCKCHAIN_LABOR_HOUR } from '../../../dao/constants'
+import { BLOCKCHAIN_LABOR_HOUR, LHT } from '../../../dao/constants'
 import * as LXSidechainActions from '../actions'
 import { WalletModel, Amount } from '../../../models'
 
@@ -21,10 +21,11 @@ class LaborHourTransactionHandler extends TransactionHandler {
   constructor () {
     super(BLOCKCHAIN_LABOR_HOUR)
     this.web3 = null
+    this.symbol = LHT
   }
 
-  getDAO () {
-    return laborHourDAO
+  getDAO (entry, state) {
+    return daoByAddress(entry.tx.to)(state) || laborHourDAO
   }
 
   getWeb3 (state) {

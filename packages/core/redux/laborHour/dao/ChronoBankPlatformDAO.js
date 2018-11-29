@@ -6,7 +6,8 @@
 import BigNumber from 'bignumber.js'
 import AbstractContractDAO from '../../../dao/AbstractContractDAO'
 
-export default class AtomicSwapERC20DAO extends AbstractContractDAO {
+export const TX_REVOKE_ASSET = 'revokeAsset'
+export default class ChronoBankPlatformDAO extends AbstractContractDAO {
   constructor ({ address, history, abi }) {
     super({ address, history, abi })
   }
@@ -44,6 +45,6 @@ export default class AtomicSwapERC20DAO extends AbstractContractDAO {
   }
 
   revokeAsset (symbol, value) {
-    return this._tx('revokeAsset', [symbol, new BigNumber(value)])
+    return this._tx(TX_REVOKE_ASSET, [symbol, new BigNumber(value)])
   }
 }

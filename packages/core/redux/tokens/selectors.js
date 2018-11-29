@@ -27,16 +27,19 @@ import { DUCK_TOKENS } from './constants'
 import { BLOCKCHAIN_EOS, EOS } from '../eos/constants'
 import { getEOSTokens } from '../eos/selectors/mainSelectors'
 import TokensCollection from '../../models/tokens/TokensCollection'
+import { getLXTokens } from '../laborHour/selectors/mainSelectors'
 
 export const getTokens = (state) => {
   return state.get(DUCK_TOKENS)
 }
 
 export const getAllTokens = createSelector(
-  [getTokens, getEOSTokens],
-  (tokens, eosTokens) => {
+  [getTokens, getEOSTokens, getLXTokens],
+  (tokens, eosTokens, lxTokens) => {
     return new TokensCollection({
-      list: tokens.list().merge(eosTokens.list()),
+      list: tokens.list()
+        .merge(eosTokens.list())
+        .merge(lxTokens.list()),
     })
   },
 )
