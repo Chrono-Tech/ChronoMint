@@ -119,7 +119,7 @@ export default class LaborXConnectWidget extends PureComponent {
     const isLXLockedDeposit = newProps.lxLockedDeposit && newProps.lxLockedDeposit.gt(0)
     const isLXBalance = newProps.lhtWallet.balances[TIME] && newProps.lhtWallet.balances[TIME].gt(0)
 
-    if (isLXBalance || isLXDeposit || isLXLockedDeposit || newProps.swapsCount > 0) {
+    if (isLXBalance || isLXDeposit || isLXLockedDeposit /*|| newProps.swapsCount > 0*/) {
       return { step: WIDGET_SECOND_STEP }
     }
     return null

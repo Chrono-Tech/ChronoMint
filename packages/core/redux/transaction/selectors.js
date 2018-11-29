@@ -50,8 +50,8 @@ export const pendingTransactionsSelector = () => createSelector(
       pendingTransactions = pendingTransactions.concat(Object.values(blockchainScope.pending)
         .reduce((accumulator, txList) => {
           return accumulator.concat(Object.values(txList)
-            .filter((tx) => tx.isAccepted && !tx.isMined))
-        }, [])
+            .filter((tx) => tx.isAccepted && !tx.isMined && !tx.isErrored))
+        }, []),
       )
     })
 

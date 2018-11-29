@@ -15,7 +15,7 @@ export const notifyUnknownError = () => {
     new ErrorNoticeModel({
       title: 'errors.labotHour.unknown.title',
       message: 'errors.labotHour.unknown.message',
-    })
+    }),
   )
 }
 

@@ -6,7 +6,6 @@
 import BigNumber from 'bignumber.js'
 import { isNil, omitBy } from 'lodash'
 import uuid from 'uuid/v1'
-import { ETH } from '@chronobank/core/dao/constants'
 import { describePendingTx } from '../../../describers'
 import { TxEntryModel, TxExecModel } from '../../../models'
 import EthereumMemoryDevice from '../../../services/signers/EthereumMemoryDevice'
@@ -42,53 +41,64 @@ export default class TransactionHandler extends TransactionGuide {
   }
 
   executeTransaction = ({ tx, options }) => async (dispatch, getState) => {
-    const web3 = this.getWeb3(getState())
-    const prepared = await dispatch(
-      this.prepareTransaction({ web3, tx, options }),
-    )
-    const entry = createTxEntryModel(prepared, options)
+    try {
+      const web3 = this.getWeb3(getState())
+      const prepared = await dispatch(this.prepareTransaction({ web3, tx, options }))
+      const entry = createTxEntryModel(prepared, options)
 
-    await dispatch(this.actions.txCreate(entry))
-    dispatch(this.submitTransaction(entry))
-    return entry
+      await dispatch(this.actions.txCreate(entry))
+      dispatch(this.submitTransaction(entry))
+      return entry
+    } catch (e) {
+      const entry = TxEntryModel({
+        key: uuid(),
+        isErrored: true,
+      })
+      dispatch(this.submitTransaction(entry))
+      return entry
+    }
   }
 
   acceptTransaction = (entry) => async (dispatch, getState) => {
-    const web3 = this.getWeb3(getState())
-    const nonce = await dispatch(this.nextNonce({ web3, address: entry.tx.from })) // need for multiple transactions
-    dispatch(
-      this.actions.txUpdate(
-        entry.key,
-        entry.tx.from,
-        new TxEntryModel({
-          ...entry,
-          tx: new TxExecModel({
-            ...entry.tx,
-            nonce,
+    try {
+      const web3 = this.getWeb3(getState())
+      const nonce = await dispatch(this.nextNonce({ web3, address: entry.tx.from })) // need for multiple transactions
+      dispatch(
+        this.actions.txUpdate(
+          entry.key,
+          entry.tx.from,
+          new TxEntryModel({
+            ...entry,
+            tx: new TxExecModel({
+              ...entry.tx,
+              nonce,
+            }),
+            isAccepted: true,
+            isPending: true,
           }),
-          isAccepted: true,
-          isPending: true,
-        }),
-      ),
-    )
-
-    const state = getState()
-    let signer = getEthereumSigner(state)
-
-    if (entry.walletDerivedPath) {
-      signer = await this.getDerivedWallet(
-        signer.privateKey,
-        entry.walletDerivedPath,
+        ),
       )
-    }
 
-    return dispatch(
-      this.processTransaction({
-        web3: this.getWeb3(state),
-        entry: this.selectors.pendingEntry(entry.tx.from, entry.key)(state),
-        signer,
-      }),
-    )
+      const state = getState()
+      let signer = getEthereumSigner(state)
+
+      if (entry.walletDerivedPath) {
+        signer = await this.getDerivedWallet(
+          signer.privateKey,
+          entry.walletDerivedPath,
+        )
+      }
+
+      return dispatch(
+        this.processTransaction({
+          web3: this.getWeb3(state),
+          entry: this.selectors.pendingEntry(entry.tx.from, entry.key)(state),
+          signer,
+        }),
+      )
+    } catch (error) {
+      dispatch(this.txStatus(entry.key, entry.tx.from, { isErrored: true, error }))
+    }
   }
 
   txStatus = (key, address, props) => (dispatch, getState) => {
@@ -118,15 +128,19 @@ export default class TransactionHandler extends TransactionGuide {
 
   processTransaction = ({ web3, entry, signer }) => {
     return async (dispatch, getState) => {
-      await dispatch(this.signTransaction({ entry, signer }))
-      return dispatch(
-        this.sendSignedTransaction({
-          web3,
-          entry: this.selectors.pendingEntry(entry.tx.from, entry.key)(
-            getState(),
-          ),
-        }),
-      )
+      try {
+        await dispatch(this.signTransaction({ entry, signer }))
+        return dispatch(
+          this.sendSignedTransaction({
+            web3,
+            entry: this.selectors.pendingEntry(entry.tx.from, entry.key)(
+              getState(),
+            ),
+          }),
+        )
+      } catch (error) {
+        dispatch(this.txStatus(entry.key, entry.tx.from, { isErrored: true, error }))
+      }
     }
   }
 
@@ -215,9 +229,7 @@ export default class TransactionHandler extends TransactionGuide {
       // eslint-disable-next-line no-console
       console.error('signTransaction error: ', error)
       dispatch(closeSignerModal())
-      dispatch(
-        this.txStatus(entry.key, entry.tx.from, { isErrored: true, error }),
-      )
+      dispatch(this.txStatus(entry.key, entry.tx.from, { isErrored: true, error }))
       throw error
     }
   }
@@ -243,10 +255,10 @@ const createTxExecModel = (tx, gasLimit, gasPrice, nonce, chainId) => {
     block: null,
     from: tx.from.toLowerCase(),
     to: tx.to.toLowerCase(),
-    // gasLimit: new BigNumber(gasLimit),
-    // gasPrice,
-    gas: new BigNumber(5700000), // TODO @Abdulov remove hard code and do something
-    gasPrice: new BigNumber(80000000000),
+    gasLimit: new BigNumber(gasLimit),
+    gasPrice,
+    // gas: new BigNumber(5700000), // TODO @Abdulov remove hard code and do something
+    // gasPrice: new BigNumber(80000000000),
     nonce,
     chainId,
   })
