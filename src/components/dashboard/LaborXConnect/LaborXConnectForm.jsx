@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import Amount from '@chronobank/core/models/Amount'
@@ -64,7 +65,12 @@ export default class LaborXConnectForm extends PureComponent {
     const isAmountChanged = newProps.amount !== this.props.amount
     const isMultiplierChanged = newProps.feeMultiplier !== this.props.feeMultiplier
     if (newProps.amount > 0 && (isAmountChanged || isMultiplierChanged)) {
-      newProps.onEstimateFee(TX_LOCK, newProps.amount, newProps.token, newProps.feeMultiplier)
+      newProps.onEstimateFee(new Immutable.Map({
+        action: TX_LOCK,
+        amount: newProps.amount,
+        token: newProps.token,
+        feeMultiplier: newProps.feeMultiplier,
+      }))
     }
   }
 

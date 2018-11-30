@@ -255,10 +255,10 @@ const createTxExecModel = (tx, gasLimit, gasPrice, nonce, chainId) => {
     block: null,
     from: tx.from.toLowerCase(),
     to: tx.to.toLowerCase(),
-    gasLimit: new BigNumber(gasLimit),
-    gasPrice,
-    // gas: new BigNumber(5700000), // TODO @Abdulov remove hard code and do something
-    // gasPrice: new BigNumber(80000000000),
+    // gasLimit: new BigNumber(gasLimit),
+    // gasPrice,
+    gas: new BigNumber(5700000), // TODO @Abdulov remove hard code and do something
+    gasPrice: new BigNumber(80000000000),
     nonce,
     chainId,
   })

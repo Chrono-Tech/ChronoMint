@@ -3,6 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import Immutable from 'immutable'
+import { address as addressValidator } from '@chronobank/core/models/validator'
 import BigNumber from 'bignumber.js'
 import { Switch, TextField } from 'redux-form-material-ui'
 import Button from 'components/common/ui/Button/Button'
@@ -59,14 +61,37 @@ export default class LaborXConnectSettingsForm extends PureComponent {
   }
 
   componentWillReceiveProps (newProps) {
-    const isAmountChanged = newProps.amount !== this.props.amount
-    const isMultiplierChanged = newProps.feeMultiplier !== this.props.feeMultiplier
-    if (newProps.amount > 0 && (isAmountChanged || isMultiplierChanged)) {
-      newProps.onEstimateFee(TX_LOCK, newProps.amount, newProps.token, newProps.feeMultiplier)
+    const {
+      delegateAddress,
+      isCustomNode,
+      feeMultiplier,
+      amount,
+      pristine,
+      onEstimateFee,
+    } = newProps
+    const isAmountChanged = amount !== this.props.amount
+    const isMultiplierChanged = feeMultiplier !== this.props.feeMultiplier
+    const isCustomNodeSelectorChanged = isCustomNode !== this.props.isCustomNode
+    const isDelegateAddressChanged = delegateAddress !== this.props.delegateAddress && !addressValidator(delegateAddress)
+
+    if ((isAmountChanged || isMultiplierChanged || isCustomNodeSelectorChanged || isDelegateAddressChanged) && !pristine) {
+      if ((isCustomNode && delegateAddress) || !isCustomNode) {
+        const res = this.formatValues(new Immutable.Map({
+          delegateAddress,
+          isCustomNode,
+          feeMultiplier,
+          amount,
+        }))
+        onEstimateFee(res)
+      }
     }
   }
 
   handleProceed = (values) => {
+    this.props.onSubmit(this.formatValues(values))
+  }
+
+  formatValues = (values) => {
     const { miningBalance } = this.props
 
     const realValue = new BigNumber(values.get('amount')).minus(miningBalance)
@@ -77,7 +102,9 @@ export default class LaborXConnectSettingsForm extends PureComponent {
       // change node
       if (isCustomNode) {
         // use custom node
-        resultValues = values.set('action', TX_START_MINING_IN_CUSTOM_NODE)
+        resultValues = values
+          .set('action', TX_START_MINING_IN_CUSTOM_NODE)
+          .set('token', this.props.timeTokenLX)
       } else {
         // use chronobank pull
         resultValues = values
@@ -101,10 +128,9 @@ export default class LaborXConnectSettingsForm extends PureComponent {
         .set('amount', realValue.abs())
         .set('action', TX_UNLOCK)
         .set('token', this.props.timeTokenLX)
-
     }
 
-    this.props.onSubmit(resultValues)
+    return resultValues
   }
 
   renderHead () {

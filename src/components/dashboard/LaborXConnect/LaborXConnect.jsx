@@ -23,7 +23,6 @@ import {
   getMiningParams,
 } from '@chronobank/core/redux/laborHour/selectors/mainSelectors'
 import {
-  estimateGasForAssetHolder,
   initAssetsHolder,
   lockDeposit,
 } from '@chronobank/core/redux/assetsHolder/actions'
@@ -41,6 +40,7 @@ import { updateMiningNodeType } from '@chronobank/core/redux/laborHour/actions'
 import { FORM_LABOR_X_CONNECT_SETTINGS } from 'components/constants'
 import { startMiningInCustomNode, unlockLockedDeposit } from '@chronobank/core/redux/laborHour/thunks/mining'
 import { sidechainWithdraw } from '@chronobank/core/redux/laborHour/thunks/sidechainToMainnet'
+import { estimateGasForForms } from '@chronobank/core/redux/laborHour/thunks/utilsThunks'
 import LaborXConnectForm from './LaborXConnectForm'
 import './LaborXConnect.scss'
 import LaborXConnectSettingsForm from './LaborXConnectSettingsForm'
@@ -52,6 +52,7 @@ function mapStateToProps (state, ownProps) {
   const amount = Number.parseFloat(selector(state, 'amount') || 0)
   const feeMultiplier = selector(state, 'feeMultiplier')
   const isCustomNode = selector(state, 'isCustomNode')
+  const delegateAddress = selector(state, 'delegateAddress')
 
   // state
   const wallet: WalletModel = getMainEthWallet(state)
@@ -97,6 +98,7 @@ function mapStateToProps (state, ownProps) {
     isCustomNode,
     lxDeposit,
     lxLockedDeposit,
+    delegateAddress,
   }
 }
 
@@ -108,8 +110,8 @@ function mapDispatchToProps (dispatch, ownProps) {
     sidechainWithdraw: (amount, token, isCustomNode, delegateAddress, feeMultiplier) =>
       dispatch(sidechainWithdraw(amount, token, isCustomNode, delegateAddress, feeMultiplier)),
     onChangeField: (field, value) => dispatch(change(ownProps.formName, field, value)),
-    handleEstimateGas: (mode, params, callback, gasPriceMultiplier) =>
-      dispatch(estimateGasForAssetHolder(mode, params, callback, gasPriceMultiplier)),
+    handleEstimateGas: (params, callback) =>
+      dispatch(estimateGasForForms(params, callback)),
     handleUnlockDeposit: (token, feeMultiplier) => {
       dispatch(updateMiningNodeType({ isCustomNode: false, delegateAddress: null }))
       dispatch(unlockLockedDeposit(token, feeMultiplier))
@@ -146,6 +148,7 @@ export default class LaborXConnect extends PureComponent {
     lxDeposit: PropTypes.instanceOf(Amount),
     lxLockedDeposit: PropTypes.instanceOf(Amount),
     feeMultiplier: PropTypes.number,
+    delegateAddress: PropTypes.string,
   }
 
   constructor (props) {
@@ -160,33 +163,11 @@ export default class LaborXConnect extends PureComponent {
     this.props.initAssetsHolder()
   }
 
-  handleGetGasPrice = (
-    action: string,
-    amount: number,
-    token: string,
-    feeMultiplier: number,
-  ) => {
+  handleGetGasPrice = (params) => {
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
       this.setState({ feeLoading: true })
-      this.props.handleEstimateGas(
-        action,
-        [token.address(), amount],
-        (error, result) => {
-          const { gasFee, gasPrice } = result
-          if (!error) {
-            this.setState({
-              gasFee,
-              gasPrice,
-              feeLoading: false,
-            })
-          } else {
-            // eslint-disable-next-line
-            console.error(error)
-          }
-        },
-        feeMultiplier,
-      )
+      this.props.handleEstimateGas(params, this.feeCallback)
     }, 1000)
   }
 
@@ -231,6 +212,20 @@ export default class LaborXConnect extends PureComponent {
     }
   }
 
+  feeCallback = (error, result) => {
+    const { gasFee, gasPrice } = result
+    if (!error) {
+      this.setState({
+        gasFee,
+        gasPrice,
+        feeLoading: false,
+      })
+    } else {
+      // eslint-disable-next-line
+      console.error(error)
+    }
+  }
+
   render () {
     const {
       amount,
@@ -247,6 +242,7 @@ export default class LaborXConnect extends PureComponent {
       lxDeposit,
       lxLockedDeposit,
       feeMultiplier,
+      delegateAddress,
     } = this.props
     const { gasFee, gasPrice, feeLoading } = this.state
 
@@ -290,6 +286,7 @@ export default class LaborXConnect extends PureComponent {
         onSubmitSuccess={this.handleSubmitSuccess}
         isCustomNode={isCustomNode}
         onEstimateFee={this.handleGetGasPrice}
+        delegateAddress={delegateAddress}
       />
     )
   }

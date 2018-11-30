@@ -53,7 +53,7 @@ export default class MiningContent extends Component {
         <div styleName='content'>
           <div styleName='inner'>
             <LaborXConnectWidget />
-            <LaborXRewardsWidget />
+            {/*<LaborXRewardsWidget />*/}
           </div>
         </div>
       </div>
