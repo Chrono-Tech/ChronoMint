@@ -115,6 +115,7 @@ class WalletImportPage extends PureComponent {
   }
 
   async onSubmitBlockchainChoiceFormSuccess (blockchainList) {
+    console.log('onSubmitBlockchainChoiceFormSuccess: ', blockchainList)
     const { navigateToSelectWallet, updateBlockchainsList } = this.props
     await updateBlockchainsList(blockchainList.toJS())
 
@@ -122,7 +123,9 @@ class WalletImportPage extends PureComponent {
   }
 
   async onSubmitWallet (walletString) {
+    console.log('onSubmitWallet: ', walletString)
     const walletJSON = this.convertWalletFileToJSON(walletString)
+    console.log('onSubmitWallet walletJSON: ', walletJSON)
     this.setState({ walletJSON })
 
     let response = null, userName = null, profile = null
@@ -154,6 +157,7 @@ class WalletImportPage extends PureComponent {
 
   async onSubmitAccountName (accountName) {
     const { onCreateWalletFromJSON } = this.props
+    console.log('onSubmitAccountName: ', accountName, this.state.walletJSON)
     await onCreateWalletFromJSON(accountName, this.state.walletJSON, null)
 
     this.setState({

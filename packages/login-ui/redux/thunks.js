@@ -315,8 +315,8 @@ export const onCreateWalletFromJSON = (name, walletObject, profile) => (dispatch
  * TODO: to add description
  * TODO: to move logic to utils
 */
-export const onCreateWalletFromDevice = (name, device, profile, walletType) => (dispatch) => {
-  const account = createDeviceAccountEntry(name, device, profile, walletType)
+export const onCreateWalletFromDevice = (name, device, profile, walletType, activeBlockchainList = DEFAULT_ACTIVE_BLOCKCHAINS) => (dispatch) => {
+  const account = createDeviceAccountEntry(name, device, profile, walletType, activeBlockchainList)
   dispatch(PersistAccountActions.accountAdd(account))
   dispatch(PersistAccountActions.accountSelect(account))
 }

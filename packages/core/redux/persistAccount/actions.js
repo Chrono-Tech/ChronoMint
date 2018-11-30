@@ -72,6 +72,7 @@ const disableMap = {
 export const enableDefaultBlockchains = () => async (dispatch, getState) => {
   const state = getState()
   const activeBlockchains = getBlockchainList(state)
+  console.log('enableDefaultBlockchains: ', activeBlockchains)
 
   await dispatch(enableEthereum())
   await dispatch(enableBlockchains(activeBlockchains))

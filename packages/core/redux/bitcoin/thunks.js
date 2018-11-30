@@ -17,10 +17,7 @@ import type { Dispatch } from 'redux'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 
 import { modalsOpen } from '../modals/actions'
-import {
-  DUCK_PERSIST_ACCOUNT,
-  WALLETS_CACHE_ADDRESS,
-} from '../persistAccount/constants'
+import { WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
 import { getBalanceDataParser } from './converter'
 import {
   TransferNoticeModel,
@@ -47,7 +44,6 @@ import tokenService from '../../services/TokenService'
 import { getDashSigner } from '../dash/selectors'
 import { EVENT_UPDATE_LAST_BLOCK } from '../../dao/constants'
 import { getWalletsByBlockchain } from '../wallets/selectors/models'
-import TrezorError from '../../services/errors/TrezorError'
 
 const daoMap = {
   [BLOCKCHAIN_BITCOIN]: bitcoinDAO,
@@ -457,7 +453,7 @@ const initWallet = (blockchainName) => async (dispatch, getState) => {
   const state = getState()
   const { network } = getCurrentNetworkSelector(state)
 
-  console.log('initWallet Bitocin network: ', network)
+  console.log('initWallet Bitocin network: ', blockchainName, network)
 
   const addressCache = { ...getAddressCache(state) }
 
@@ -476,20 +472,20 @@ const initWallet = (blockchainName) => async (dispatch, getState) => {
     },
     [BLOCKCHAIN_LITECOIN]: {
       selector: getLitecoinSigner,
-      path: BitcoinUtils.getBitcoinDerivedPath(network[BLOCKCHAIN_LITECOIN], COIN_TYPE_LTC_MAINNET),
+      path: BitcoinUtils.getLitecoinDerivedPath(network[BLOCKCHAIN_LITECOIN], COIN_TYPE_LTC_MAINNET),
     },
   }
 
-  console.log('Bitcoin initWallet: ', addressCache, addressCache[blockchainName])
+  console.log('Bitcoin initWallet: ', blockchainName, addressCache, addressCache[blockchainName])
 
   if (!addressCache[blockchainName] || true) {
     const { selector, path } = signerSelectorsMap[blockchainName]
     const signer = selector(state)
-    console.log('Bitcoin signer: ', signer, path)
+    console.log('Bitcoin signer: ', blockchainName, signer, path)
 
     if (signer) {
       const address = await signer.getAddress(path)
-      console.log('Got Bitcoin address: ', address)
+      console.log('Got Bitcoin address: ', blockchainName, address)
       addressCache[blockchainName] = {
         address,
         path,

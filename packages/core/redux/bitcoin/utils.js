@@ -9,6 +9,7 @@ import bitcoin from 'bitcoinjs-lib'
 import {
   COIN_TYPE_BTC_MAINNET,
   COIN_TYPE_ALLCOINS_TESTNET,
+  COIN_TYPE_LTC_MAINNET,
 } from '@chronobank/login/network/constants'
 import { TxExecModel } from '../../models'
 import { getDerivedPath } from '../wallets/utils'
@@ -52,6 +53,14 @@ export const getBitcoinDerivedPath = (networkName, mainnetCoinType = COIN_TYPE_B
   return getDerivedPath(coinType)
 }
 
+export const getLitecoinDerivedPath = (networkName) => {
+  console.log('getLitecoinDerivedPath: ', networkName)
+  const coinType = networkName === 'litecoin_testnet'
+    ? COIN_TYPE_ALLCOINS_TESTNET
+    : COIN_TYPE_LTC_MAINNET
+  return getDerivedPath(coinType)
+}
+
 export const getBtcFee = (
   recipient,
   amount,
@@ -69,7 +78,8 @@ export const convertSatoshiToBTC = (satoshiAmount) => {
 const describeBitcoinTransaction = (tx, options, utxos) => {
   const { to, from, value } = tx
   const { feeRate, blockchain, network } = options
-  const bitcoinNetwork = bitcoin.networks[network[blockchain]]
+  console.log('describeBitcoinTransaction: ', bitcoin.networks, feeRate, blockchain, network, to, from, value)
+  const bitcoinNetwork = bitcoin.networks[network['Bitcoin']]
   const { inputs, outputs, fee } = selectCoins(to, value, feeRate, utxos)
 
   if (!inputs || !outputs) {
@@ -99,6 +109,7 @@ const describeBitcoinTransaction = (tx, options, utxos) => {
 }
 
 export const prepareBitcoinTransaction = (tx, token, network, utxos, feeMultiplier = 1, satPerByte = null) => () => {
+  console.log('prepareBitcoinTransaction: ', tx, token, network, utxos, feeMultiplier)
   const tokenRate = satPerByte || token.feeRate() // TODO: What if satPerByte will be zero (not null)?
   const options = {
     from: tx.from,

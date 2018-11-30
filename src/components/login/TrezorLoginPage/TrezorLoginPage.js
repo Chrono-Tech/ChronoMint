@@ -19,13 +19,17 @@ import AccountNameContainer from '@chronobank/login-ui/components/AccountName/Ac
 import DerivationPathFormContainer from '@chronobank/login-ui/components/DerivationPathForm/DerivationPathFormContainer'
 import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
 import { getAddress } from '@chronobank/core/redux/persistAccount/utils'
+import {formatBlockchainListToArray} from '../../../../packages/core/redux/persistAccount/utils';
 
 function mapDispatchToProps (dispatch) {
   return {
     getUserInfo: (addresses: string[]) => dispatch(ProfileThunks.getUserInfo(addresses)),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
-    onCreateWalletFromDevice: (name, device, profile) => dispatch(onCreateWalletFromDevice(name, device, profile, WALLET_TYPE_TREZOR)),
-    navigateBack: () => dispatch(navigateBack()),
+    onCreateWalletFromDevice: (name, device, profile, blockchainList) => {
+      console.log('onCreateWalletFromDevice: ', name, device, profile, blockchainList)
+      dispatch(onCreateWalletFromDevice(name, device, profile, WALLET_TYPE_TREZOR, blockchainList))
+    },
+    navigateBack : () => dispatch(navigateBack()),
   }
 }
 
@@ -98,12 +102,17 @@ class TrezorLoginPage extends PureComponent {
     }
   }
 
-  async onSubmitBlockchainChoiceFormSuccess () {
+  async onSubmitBlockchainChoiceFormSuccess (blockchainListValues) {
     const { onCreateWalletFromDevice, navigateToSelectWallet } = this.props
     const { accountName, device } = this.state
     console.log('onSubmitBlockchainChoiceFormSuccess: ', accountName, device)
 
-    onCreateWalletFromDevice(accountName, device, null)
+    onCreateWalletFromDevice(
+      accountName,
+      device,
+      null,
+      formatBlockchainListToArray(blockchainListValues.toJS(), (name, isEnable) => isEnable)
+    )
     navigateToSelectWallet()
   }
 
@@ -118,22 +127,26 @@ class TrezorLoginPage extends PureComponent {
 
     // If profile has been got && profile does exist && userName != null then create wallet
     try {
-      throw new Error('Test')
+      console.log('getUserInfo request: ', getAddress(device.address, true))
       response = await this.props.getUserInfo([getAddress(device.address, true)])
-
-      profile = response.data[0]
+      console.log('getUserInfo response: ', response)
+      profile = response.data && response.data[0]
       userName = profile.userName
+      console.log('await this.props.getUserInfo: ', userName)
 
       if (userName){
-        this.props.onCreateWalletFromDevice(userName, device, profile)
-        this.props.navigateToSelectWallet()
+        this.setState({
+          accountName: userName,
+          page: TrezorLoginPage.PAGES.BLOCKCHAIN_CHOICE_FORM,
+        })
       } else {
         this.setState({
           page: TrezorLoginPage.PAGES.ACCOUNT_NAME_FORM,
         })
       }
-
     } catch (e) {
+      console.log('await this.props.getUserInfo error: ', e)
+
       this.setState({
         page: TrezorLoginPage.PAGES.ACCOUNT_NAME_FORM,
       })
@@ -141,7 +154,6 @@ class TrezorLoginPage extends PureComponent {
   }
 
   async onSubmitAccountName (accountName) {
-    console.log('onSubmitAccountName: ', accountName)
     this.setState({
       accountName,
       page: TrezorLoginPage.PAGES.BLOCKCHAIN_CHOICE_FORM,
@@ -175,7 +187,6 @@ class TrezorLoginPage extends PureComponent {
   }
 
   render () {
-
     return this.getCurrentPage()
   }
 }

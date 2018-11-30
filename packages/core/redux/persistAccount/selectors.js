@@ -7,8 +7,12 @@ import { createSelector } from 'reselect'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import {
   DEFAULT_ACTIVE_BLOCKCHAINS,
-  DUCK_PERSIST_ACCOUNT,
+  DUCK_PERSIST_ACCOUNT, TREZOR_ACTIVE_BLOCKCHAINS,
 } from './constants'
+import {
+  WALLET_TYPE_TREZOR,
+  WALLET_TYPE_TREZOR_MOCK,
+} from '../../models/constants/AccountEntryModel'
 
 export const getPersistAccount = (state) => {
   return state.get(DUCK_PERSIST_ACCOUNT)
@@ -18,6 +22,11 @@ export const getBlockchainList = (state) => {
   const account = getPersistAccount(state)
   console.log('account.selectedWallet.blockchainList: ', account.selectedWallet.blockchainList, account.selectedWallet)
   return account.selectedWallet.blockchainList || DEFAULT_ACTIVE_BLOCKCHAINS
+}
+
+export const getSelectedWallet = (state) => {
+  const account = getPersistAccount(state)
+  return account.selectedWallet
 }
 
 export const getNetwork = (state) => {
@@ -68,3 +77,14 @@ export const getAddressCache = createSelector(
     return account.addressCache[selectedWalletKey]
   }
 )
+
+export const getActiveBlockchainListByType = (walletType) => {
+  switch (walletType) {
+    case WALLET_TYPE_TREZOR:
+    case WALLET_TYPE_TREZOR_MOCK:
+      return TREZOR_ACTIVE_BLOCKCHAINS
+
+    default:
+      return DEFAULT_ACTIVE_BLOCKCHAINS
+  }
+}
