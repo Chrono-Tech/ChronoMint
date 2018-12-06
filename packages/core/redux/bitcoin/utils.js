@@ -46,7 +46,6 @@ export const selectCoins = (to, amount: BigNumber, feeRate, utxos) => {
 }
 
 export const getBitcoinDerivedPath = (networkName, mainnetCoinType = COIN_TYPE_BTC_MAINNET) => {
-  console.log('getBitcoinDerivedPath: ', networkName, bitcoin.networks.testnet, mainnetCoinType)
   const coinType = networkName === 'testnet'
     ? COIN_TYPE_ALLCOINS_TESTNET
     : mainnetCoinType
@@ -54,7 +53,6 @@ export const getBitcoinDerivedPath = (networkName, mainnetCoinType = COIN_TYPE_B
 }
 
 export const getLitecoinDerivedPath = (networkName) => {
-  console.log('getLitecoinDerivedPath: ', networkName)
   const coinType = networkName === 'litecoin_testnet'
     ? COIN_TYPE_ALLCOINS_TESTNET
     : COIN_TYPE_LTC_MAINNET
@@ -78,7 +76,6 @@ export const convertSatoshiToBTC = (satoshiAmount) => {
 const describeBitcoinTransaction = (tx, options, utxos) => {
   const { to, from, value } = tx
   const { feeRate, blockchain, network } = options
-  console.log('describeBitcoinTransaction: ', bitcoin.networks, feeRate, blockchain, network, to, from, value)
   const bitcoinNetwork = bitcoin.networks[network['Bitcoin']]
   const { inputs, outputs, fee } = selectCoins(to, value, feeRate, utxos)
 
@@ -90,8 +87,6 @@ const describeBitcoinTransaction = (tx, options, utxos) => {
   for (const input of inputs) {
     txb.addInput(input.txId, input.vout)
   }
-
-  console.log('describeBitcoinTransaction: ', bitcoinNetwork, inputs, outputs, txb)
 
   for (const output of outputs) {
     if (!output.address) {
@@ -109,7 +104,6 @@ const describeBitcoinTransaction = (tx, options, utxos) => {
 }
 
 export const prepareBitcoinTransaction = (tx, token, network, utxos, feeMultiplier = 1, satPerByte = null) => () => {
-  console.log('prepareBitcoinTransaction: ', tx, token, network, utxos, feeMultiplier)
   const tokenRate = satPerByte || token.feeRate() // TODO: What if satPerByte will be zero (not null)?
   const options = {
     from: tx.from,

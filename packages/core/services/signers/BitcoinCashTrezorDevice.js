@@ -16,21 +16,18 @@ export default class BitcoinCashTrezorDevice {
   }
 
   async getAddress (path) {
-    console.log('BitcoinCashTrezorDevice: getting address: ', path)
-
     if (!this.address) {
       const result = await TrezorConnect.getAddress({
         path: path,
         coin: this.coin,
       })
-      console.log('BitcoinCashTrezorDevice: getting address result: ', result)
+
       if (!result.success) {
         throw new TrezorError(result.code, result.payload.error)
       }
 
       this.address = result.payload.address
     }
-    console.log('BitcoinCashTrezorDevice: address: ', this.address)
 
     return this.address
   }
@@ -84,15 +81,11 @@ export default class BitcoinCashTrezorDevice {
       outputs: outputs,
       coin: this.coin,
     })
-    console.log('BitcoinCashTrezorDevice: signTransaction: ', result)
 
     if (!result.success) {
-      console.log('BitcoinCashTrezorDevice: signTransaction: Error: ', result)
       const { code, error } = result.payload
       throw new TrezorError(code, error)
     }
-
-    console.log('BitcoinCashTrezorDevice: signTransaction: Success: ', result.payload)
 
     return result.payload.serializedTx
   }

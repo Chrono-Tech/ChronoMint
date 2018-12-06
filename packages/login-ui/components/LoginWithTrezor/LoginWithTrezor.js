@@ -55,7 +55,7 @@ class LoginWithTrezor extends Component {
   }
 
   render () {
-    const { previousPage, deviceList, navigateToDerivationPathForm, onDeviceSelect } = this.props
+    const { previousPage, deviceList, /*navigateToDerivationPathForm,*/ onDeviceSelect } = this.props
 
     return (
       <div styleName='form'>
@@ -82,10 +82,10 @@ class LoginWithTrezor extends Component {
         }
 
         <div styleName='actions'>
-          <button onClick={navigateToDerivationPathForm} styleName='link'>
-            <Translate value='LoginWithTrezor.enterPath' />
-          </button>
-          <br />
+          {/*<button onClick={navigateToDerivationPathForm} styleName='link'>*/}
+          {/*<Translate value='LoginWithTrezor.enterPath' />*/}
+          {/*</button>*/}
+          {/*<br />*/}
 
           <Translate value='LoginWithTrezor.or' />
           <br />

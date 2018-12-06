@@ -112,14 +112,12 @@ export default class CommonNetworkSelector extends PureComponent {
   }
 
   handleClickDefaultNetwork (data) {
-    console.log('handleClickDefaultNetwork: ', data)
     this.props.clearErrors()
     this.props.selectProviderWithNetwork(data.network.id, data.provider.id)
     this.handleRequestClose()
   }
 
   handleClickCustomNetwork (data) {
-    console.log('handleClickCustomNetwork: ', data)
     this.props.clearErrors()
     this.props.selectProviderWithNetwork(data.id, data.id)
     this.handleRequestClose()
@@ -174,7 +172,6 @@ export default class CommonNetworkSelector extends PureComponent {
   }
 
   resolveNetwork (providerUrl) {
-    console.log('resolveNetwork: ', providerUrl)
     const web3 = new Web3()
     web3Provider.reinit(web3, web3Utils.createStatusEngine(providerUrl))
     web3Provider.resolve()

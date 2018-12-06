@@ -15,7 +15,7 @@ export class EthereumProvider extends AbstractEthereumProvider {
   async getAccountBalances (address) {
     const node = this._selectNode(this.networkSettings)
     const data = await node.getAddressInfo(address.toLowerCase())
-    console.log('getAccountBalances: ', data)
+
     return {
       balance: data.balance,
       tokens: data.erc20token,

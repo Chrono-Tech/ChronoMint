@@ -53,7 +53,6 @@ export const estimateGas = (tx, feeMultiplier = 1) => transactionHandler.estimat
 export const executeTransaction = ({ tx, options }) => transactionHandler.executeTransaction({ tx, options })
 
 export const initEthereum = ({ web3 }) => (dispatch) => {
-  console.log('initEthereum: ', web3)
   dispatch(ethActions.ethWeb3Update(new HolderModel({ value: web3 })))
 }
 
@@ -125,18 +124,12 @@ const initWallet = () => async (dispatch, getState) => {
   const { network } = getCurrentNetworkSelector(state)
   const addressCache = { ...getAddressCache(state) }
 
-  console.log('initWallet addressCache: ', addressCache)
-
   if (!addressCache[BLOCKCHAIN_ETHEREUM] || true) {
     const path = Utils.getEthereumDerivedPath(network[BLOCKCHAIN_ETHEREUM])
     const signer = getEthereumSigner(state)
-    console.log('initWallet path signer: ', path, signer)
 
     if (signer) {
-      console.log('before getAddress: ', path)
-
       const address = await signer.getAddress(path)
-      console.log('getAddress: ', address)
       addressCache[BLOCKCHAIN_ETHEREUM] = {
         address,
         path,
@@ -158,7 +151,6 @@ const initWallet = () => async (dispatch, getState) => {
     isMain: true,
     walletDerivedPath: path,
   })
-  console.log('initWallet wallet: ', wallet)
 
   ethereumProvider.subscribe(wallet.address)
   dispatch({ type: WALLETS_SET, wallet })
@@ -168,12 +160,10 @@ const initWallet = () => async (dispatch, getState) => {
 }
 
 export const updateWalletBalanceMiddleware = (wallet) => (dispatch) => {
-  console.log('updateWalletBalanceMiddleware: ', wallet)
 
   getWalletBalances({ wallet })
     .then((balancesResult) => {
       try {
-        console.log('balancesResult: ', balancesResult, wallet)
         dispatch({ type: WALLETS_SET, wallet: new WalletModel({
           ...wallet,
           balances: {
@@ -193,7 +183,7 @@ export const updateWalletBalanceMiddleware = (wallet) => (dispatch) => {
     })
 }
 
-export const updateWalletBalance = (wallet) => (dispatch, getState) => {
+export const updateWalletBalance = (wallet) => (dispatch /*, getState*/) => {
   dispatch(updateWalletBalanceMiddleware(wallet))
 }
 
@@ -228,13 +218,10 @@ export const updateWalletBalance = (wallet) => (dispatch, getState) => {
 // }
 
 export const updateWalletBalanceWeb3 = (wallet) => (dispatch, getState) => {
-  console.log('updateWalletBalanceWeb3: ', wallet)
-
   try {
     const web3 = web3Selector()(getState())
     web3.eth.getBalance(wallet.address)
       .then((balance) => {
-        console.log('balancesResult: ', wallet, balance)
         dispatch({
           type: WALLETS_SET, wallet: new WalletModel({
             ...wallet,

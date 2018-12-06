@@ -23,17 +23,12 @@ export const globalWatcher = () => async (dispatch) => {
 // for all logged in users
 export const watcher = ({ web3 }) => async (dispatch) => {
   try {
-    console.log('watcher initDAOs. Before')
-
     await dispatch(initDAOs({ web3 }))
-    console.log('watcher initDAOs')
 
     dispatch(initProviders())
     dispatch(initMultisigWalletManager())
     dispatch(initTokenSubscription())
-    console.log('watcher initTokenSubscription')
     await dispatch(enableDefaultBlockchains())
-    console.log('watcher enableDefaultBlockchains')
     dispatch(watchPlatformManager())
     dispatch(watchInitTokens())
     dispatch(watchInitMonitor())
@@ -42,6 +37,7 @@ export const watcher = ({ web3 }) => async (dispatch) => {
     dispatch(watchEventsToHistory())
     dispatch({ type: WATCHER })
   } catch (e) {
+    //eslint-disable-next-line
     console.log('Watcher error: ', e)
   }
 }

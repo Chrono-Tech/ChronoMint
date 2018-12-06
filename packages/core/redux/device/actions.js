@@ -19,6 +19,7 @@ import {
   DEVICE_STATE_LOADING,
   DEVICE_STATE_LOADED,
   DEVICE_STATE_ERROR,
+  DEVICE_CLEAR_LIST,
 } from './constants'
 import { updateSessionWeb3 } from '../session/thunks'
 
@@ -59,13 +60,9 @@ export const initTrezorDevice = (wallet) => async (dispatch) => {
   try {
     dispatch(deviceUpdateList())
     dispatch({ type: DEVICE_STATE_LOADING })
-    console.log('initTrezorDevice: Before updateWeb3: ', wallet)
-    console.time('updateWeb3')
     await dispatch(updateSessionWeb3())
-    console.timeEnd('updateWeb3')
     const trezor = new EthereumTrezorDevice()
     const result = await trezor.getAccountInfoList(0, 5)
-    console.log('initTrezorDevice: ', result)
     dispatch(deviceUpdateList(result))
     dispatch({ type: DEVICE_STATE_LOADED })
   } catch (e) {

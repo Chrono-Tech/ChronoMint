@@ -88,8 +88,6 @@ export const selectProvider = (selectedProviderId) => (dispatch) => {
  * @returns {function(*=, *): Promise<any>}
  */
 export const updateSessionWeb3 = (selectedNetworkId, selectedProviderId) => (dispatch, getState) => {
-  console.log('updateSessionWeb3! ')
-
   const state = getState()
   if (!selectedNetworkId || !selectedProviderId) {
     const network = state.get(DUCK_NETWORK)
@@ -107,7 +105,6 @@ export const updateSessionWeb3 = (selectedNetworkId, selectedProviderId) => (dis
   return new Promise((resolve, fail) => {
     const web3 = web3Factory(network)
     web3.eth.net.isListening().then(() => {
-      console.log('SessionActions.updateSessionWeb3: ', network)
       dispatch(SessionActions.updateSessionWeb3(web3))
       resolve()
     }).catch((e) => {
@@ -120,7 +117,6 @@ export const updateSessionWeb3 = (selectedNetworkId, selectedProviderId) => (dis
  * Close session web3 connection and remove it from the store. At the moment used only for Trezor login
  */
 export const clearSessionWeb3 = () => (dispatch, getState) => {
-  console.log('clearSessionWeb3! ')
   dispatch(SessionActions.clearSessionWeb3())
 
   const web3 = getState().get(DUCK_SESSION).web3
@@ -172,35 +168,26 @@ export const login = (account) => async (dispatch, getState) => {
 
   dispatch(SessionActions.clearSessionWeb3())
 
-  console.log('Login check 1: ', account)
-
   let network = getNetworkById(selectedNetworkId, selectedProviderId)
   if (!network.id) {
     network = customNetworksList.find((network) => network.id === selectedNetworkId)
   }
-  console.log('Login check 2: ', account)
 
   const web3 = typeof window !== 'undefined'
     ? web3Factory(network)
     : null
-  console.log('Login check 3: ', account)
 
   await dispatch(initEthereum({ web3 }))
-  console.log('Login check 4: ', account)
-
   await dispatch(watcher({ web3 }))
-  console.log('Login check 5: ', account)
 
   const userManagerDAO = daoByType('UserManager')(getState())
   const [isCBE, profile] = await Promise.all([
     userManagerDAO.isCBE(account),
     userManagerDAO.getMemberProfile(account, web3),
   ])
-  console.log('Login check 6: ', account)
 
   dispatch(SessionActions.sessionProfile(profile, isCBE))
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
-  console.log('Login check 7: ', account)
 
   return defaultURL
 }

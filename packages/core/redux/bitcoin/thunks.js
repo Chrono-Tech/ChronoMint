@@ -78,7 +78,6 @@ export const executeBitcoinTransaction = ({ tx, options = {} }) => async (dispat
     dispatch(BitcoinActions.bitcoinTxUpdate(entry))
     dispatch(submitTransaction(entry))
   } catch (error) {
-    console.log('bitcoinExecuteTxFailure error: ', error)
     dispatch(BitcoinActions.bitcoinExecuteTxFailure(error))
   }
 }
@@ -271,9 +270,7 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     const unsignedTxHex = entry.tx.prepared.buildIncomplete().toHex()
 
     dispatch(showSignerModal())
-    console.log('dispatch(showSignerModal()) BEFORE: ')
     const signedHex = await signer.signTransaction(unsignedTxHex, BitcoinUtils.getBitcoinDerivedPath(network[BLOCKCHAIN_BITCOIN]))
-    console.log('dispatch(showSignerModal()) AFTER: ', signedHex)
     dispatch(closeSignerModal())
 
     const bitcoinTransaction = bitcoin.Transaction.fromHex(signedHex)
@@ -291,8 +288,6 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     dispatch(BitcoinActions.bitcoinSignTxSuccess(bitcoinTxEntry))
     return bitcoinTxEntry
   } catch (error) {
-    console.log('Sign transaction error: ', error.message)
-
     dispatch(closeSignerModal())
     dispatch(notifyError(error, 'Trezor'))
 
@@ -453,8 +448,6 @@ const initWallet = (blockchainName) => async (dispatch, getState) => {
   const state = getState()
   const { network } = getCurrentNetworkSelector(state)
 
-  console.log('initWallet Bitocin network: ', blockchainName, network)
-
   const addressCache = { ...getAddressCache(state) }
 
   const signerSelectorsMap = {
@@ -476,16 +469,12 @@ const initWallet = (blockchainName) => async (dispatch, getState) => {
     },
   }
 
-  console.log('Bitcoin initWallet: ', blockchainName, addressCache, addressCache[blockchainName])
-
   if (!addressCache[blockchainName] || true) {
     const { selector, path } = signerSelectorsMap[blockchainName]
     const signer = selector(state)
-    console.log('Bitcoin signer: ', blockchainName, signer, path)
 
     if (signer) {
       const address = await signer.getAddress(path)
-      console.log('Got Bitcoin address: ', blockchainName, address)
       addressCache[blockchainName] = {
         address,
         path,
@@ -501,8 +490,6 @@ const initWallet = (blockchainName) => async (dispatch, getState) => {
   }
 
   const { address, path } = addressCache[blockchainName]
-  console.log('Create Bitcoin wallet: ', address, path)
-
   const wallet = new WalletModel({
     address,
     blockchain: blockchainName,

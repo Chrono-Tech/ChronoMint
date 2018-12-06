@@ -21,7 +21,6 @@ function mapStateToProps (state) {
   const activeList = getBlockchainList(state)
   const selectedWallet = getSelectedWallet(state)
   const allBlockchainList = getActiveBlockchainListByType(selectedWallet.type)
-  console.log('BlockchainChoice: selectedWallet: ', selectedWallet, allBlockchainList)
 
   const initialBlockchains = DEFAULT_ACTIVE_BLOCKCHAINS.reduce((result, item) => {
     result[item] = activeList.includes(item)

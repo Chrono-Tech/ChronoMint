@@ -142,21 +142,14 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
     case WALLET_TYPE_LEDGER_MOCK: {
       try {
 
-        console.log('accountWallet: ', accountWallet)
-
         const wallet = await dispatch(DeviceActions.loadDeviceAccount(accountWallet))
         const signer = getEthereumSigner(getState())
-        console.log('wallet: ', wallet)
-        console.log('wallet.entry.encrypted[0].address: ', wallet.entry.encrypted[0].address)
-        console.log('wallet signer: ', signer)
 
         await dispatch(SessionThunks.getProfileSignature(signer, wallet.entry.encrypted[0].path))
 
         dispatch(NetworkActions.selectAccount(wallet.entry.encrypted[0].address))
         dispatch(NetworkActions.loading())
         dispatch(NetworkActions.clearErrors())
-
-        console.log('wallet: after clearErrors')
 
         const {
           selectedAccount,
@@ -165,21 +158,15 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         } = getState().get(DUCK_NETWORK)
         dispatch(NetworkActions.clearErrors())
 
-        console.log('wallet: after clearErrors 2')
-
         dispatch(SessionThunks.createNetworkSession(
           selectedAccount,
           selectedProviderId,
           selectedNetworkId,
         ))
-        console.log('wallet: after createNetworkSession')
 
         localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
-        console.log('wallet: after localStorage.createSession: ', selectedAccount)
 
         const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
-
-        console.log('wallet: after createSession')
 
         dispatch(replace(localStorage.getLastURL() || defaultURL))
       } catch (e) {

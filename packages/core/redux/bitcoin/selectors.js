@@ -56,7 +56,6 @@ export const getBitcoinSigner = (state) => {
   const networkData = getSelectedNetwork()(state)
   const network = bitcoin.networks[networkData[BLOCKCHAIN_BITCOIN]]
   const isTestnet = networkData[BLOCKCHAIN_BITCOIN] === 'testnet'
-  console.log('getBitcoinSigner isTestnet: ', isTestnet, networkData)
 
   switch (account.decryptedWallet.entry.encrypted[0].type) {
     case WALLET_TYPE_MEMORY: {
@@ -84,7 +83,6 @@ export const getBitcoinCashSigner = (state) => {
   const networkData = getSelectedNetwork()(state)
   const network = bitcoin.networks[networkData[BLOCKCHAIN_BITCOIN_CASH]]
   const isTestnet = networkData[BLOCKCHAIN_BITCOIN_CASH] === 'testnet'
-  console.log('getBitcoinCashSigner isTestnet: ', isTestnet, networkData)
 
   switch (account.decryptedWallet.entry.encrypted[0].type) {
     case WALLET_TYPE_MEMORY: {
@@ -112,7 +110,6 @@ export const getLitecoinSigner = (state) => {
   const networkData = getSelectedNetwork()(state)
   const network = bitcoin.networks[networkData[BLOCKCHAIN_LITECOIN]]
   const isTestnet = networkData[BLOCKCHAIN_LITECOIN] === 'litecoin_testnet'
-  console.log('getLitecoinSigner isTestnet: ', isTestnet, networkData)
 
   switch (account.decryptedWallet.entry.encrypted[0].type) {
     case WALLET_TYPE_MEMORY: {

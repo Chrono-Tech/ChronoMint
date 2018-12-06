@@ -42,7 +42,6 @@ export const subscribeWallet = ({ wallet }) => async (dispatch) => {
     const checkedFrom = data.from ? data.from.toLowerCase() === wallet.address.toLowerCase() : false
     const checkedTo = data.to ? data.to.toLowerCase() === wallet.address.toLowerCase() : false
     if (checkedFrom || checkedTo) {
-      console.log('subscribeWallet: ', checkedFrom || checkedTo, checkedFrom, checkedTo)
       if (wallet.isMain || wallet.isDerived) {
         dispatch(updateEthWalletBalance({ wallet }))
       }

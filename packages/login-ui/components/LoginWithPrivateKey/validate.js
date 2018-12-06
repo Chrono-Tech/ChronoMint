@@ -14,8 +14,6 @@ export default (values) => {
   privateKeyErrors.add(validator.required(privateKey))
   privateKeyErrors.add(validator.privateKey(privateKey))
 
-  console.log('privateKeyErrors.add(validator.privateKey(privateKey)): ', validator.privateKey(privateKey), privateKey)
-
   return {
     pk: privateKeyErrors.getErrors(),
   }

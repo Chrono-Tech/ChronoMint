@@ -41,7 +41,6 @@ export default class WalletMainCoinBalance extends PureComponent {
 
   render () {
     const { selectedCurrency, mainSymbol, balance, amount } = this.props
-    console.log('selectedCurrency, mainSymbol, balance, amount: ', selectedCurrency, mainSymbol, balance, amount)
 
     return (
       <div styleName='token-amount' className='WalletMainCoinBalance__root'>

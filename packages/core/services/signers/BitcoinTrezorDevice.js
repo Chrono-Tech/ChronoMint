@@ -81,15 +81,11 @@ export default class BitcoinTrezorDevice {
       outputs: outputs,
       coin: this.coin,
     })
-    console.log('BitcoinTrezorDevice: signTransaction: ', result)
 
     if (!result.success) {
-      console.log('BitcoinTrezorDevice: signTransaction: Error: ', result)
       const { code, error } = result.payload
       throw new TrezorError(code, error)
     }
-
-    console.log('BitcoinTrezorDevice: signTransaction: Success: ', result.payload)
 
     return result.payload.serializedTx
   }

@@ -29,7 +29,6 @@ export default class EthereumTrezorDevice {
 
   async getXpubkey (path) {
     if (!this.xPubKey) {
-      console.log('getXpubkey: TrezorConnect.getPublicKey: before: ', path, this)
       const result = await TrezorConnect.getPublicKey({ path: path })
       if (!result.success) {
         throw new TrezorError(result.code, result.payload.error)

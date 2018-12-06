@@ -19,8 +19,6 @@ export const address = (value, required = true, blockchain = 'Ethereum') => {
 }
 
 export const bitcoinAddress = (validateAddress, blockchain) => (value, required = true) => {
-  // TODO @ipavlenko: Provide better validation
-  console.log('bitcoinAddress: ', validateAddress, blockchain)
   if ((!value && required) || (value && !validateAddress(value))) {
     return { value: 'errors.invalidAddress', blockchain }
   }

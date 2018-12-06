@@ -4,8 +4,6 @@
  */
 
 import EventEmitter from 'events'
-import bitcoin from 'bitcoinjs-lib'
-import { BLOCKCHAIN_BITCOIN } from './constants'
 
 export default class AbstractProvider extends EventEmitter {
   constructor (selectNode) {
