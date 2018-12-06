@@ -162,7 +162,7 @@ export const chronoBankMainnet = {
 
 export const chronoBankTestnet = {
   ...RINKEBY_BASE,
-  host: 'rinkeby-full-geth-ws.chronobank.io/',
+  host: 'rinkeby-full-geth-rpc.chronobank.io/',
   ws: 'wss://rinkeby-full-geth-ws.chronobank.io',
 }
 
