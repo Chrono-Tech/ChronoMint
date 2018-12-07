@@ -228,6 +228,8 @@ export default class Bitcoin extends PureComponent {
         </span>)
     }
 
+    // comment
+
     if (fee) {
       return (
         <span styleName='description'>
