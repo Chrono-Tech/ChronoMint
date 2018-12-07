@@ -40,6 +40,7 @@ import validate from './validate'
 
 function mapStateToProps (state, ownProps) {
 
+  // @todo Research about curl braces
   const { selectedCurrency } = selectCurrentCurrency(state)
   const selector = formValueSelector(FORM_SEND_TOKENS)
   const formValues = getFormValues(FORM_SEND_TOKENS)
