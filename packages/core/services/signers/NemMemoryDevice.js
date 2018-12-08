@@ -3,13 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import EventEmitter from 'events'
 import nem from 'nem-sdk'
 import xor from 'buffer-xor'
 
-export default class NemMemoryDevice extends EventEmitter {
+export default class NemMemoryDevice {
   constructor ({ privateKey, network }) {
-    super()
     this.privateKey = privateKey
     this.network = network
     Object.freeze(this)
@@ -17,6 +15,10 @@ export default class NemMemoryDevice extends EventEmitter {
 
   getPublicKey () {
     return this.getKeyPair().publicKey.toString()
+  }
+
+  getPrivateKey () {
+    return this.privateKey
   }
 
   getAddress () {

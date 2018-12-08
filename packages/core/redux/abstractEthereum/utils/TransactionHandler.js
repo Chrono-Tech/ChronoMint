@@ -12,7 +12,7 @@ import EthereumMemoryDevice from '../../../services/signers/EthereumMemoryDevice
 import { modalsOpen } from '../../modals/actions'
 import { showSignerModal, closeSignerModal } from '../../modals/thunks'
 import { DUCK_PERSIST_ACCOUNT } from '../../persistAccount/constants'
-import { getEthereumSigner } from '../../persistAccount/selectors'
+import { getEthereumSigner } from '../../ethereum/selectors'
 import { getAccount } from '../../session/selectors/models'
 import {
   pendingSelector,
@@ -38,6 +38,10 @@ export default class TransactionHandler extends TransactionGuide {
       pending: pendingSelector(blockchain),
       pendingEntry: pendingEntrySelector(blockchain),
     }
+  }
+
+  getWeb3 () {
+    throw new Error('getWeb3 method should be implemented. It\'s an abstract method.')
   }
 
   executeTransaction = ({ tx, options }) => async (dispatch, getState) => {

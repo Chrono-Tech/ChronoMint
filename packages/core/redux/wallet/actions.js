@@ -9,6 +9,7 @@ import { WALLET_SELECT_WALLET } from './constants'
 import { BLOCKCHAIN_ETHEREUM, BLOCKCHAIN_LABOR_HOUR } from '../../dao/constants'
 import ethereumDAO from '../../dao/EthereumDAO'
 import laborHourDAO from '../../dao/LaborHourDAO'
+import { updateEthWalletBalance } from '../abstractEthereum/thunk'
 
 export const selectWallet = (blockchain: string, address: string) => (dispatch) => {
   dispatch({ type: WALLET_SELECT_WALLET, blockchain, address })
@@ -31,14 +32,18 @@ export const formatDataAndGetTransactionsForWallet = ({ wallet, address, blockch
   }
 }
 
+/**
+ * Used only at /wallets page
+ * @param wallet
+ * @returns {Function}
+ */
 export const subscribeWallet = ({ wallet }) => async (dispatch) => {
   const listener = function (data) {
     const checkedFrom = data.from ? data.from.toLowerCase() === wallet.address.toLowerCase() : false
     const checkedTo = data.to ? data.to.toLowerCase() === wallet.address.toLowerCase() : false
     if (checkedFrom || checkedTo) {
       if (wallet.isMain || wallet.isDerived) {
-        // dispatch(updateWalletBalance({ wallet }))
-        // @todo Artem Kalashnikov
+        dispatch(updateEthWalletBalance({ wallet }))
       }
       if (wallet.isMultisig) {
         dispatch(updateEthMultisigWalletBalance({ wallet }))
@@ -57,6 +62,12 @@ export const subscribeWallet = ({ wallet }) => async (dispatch) => {
   }
 }
 
+/**
+ * Used only at /wallets page
+ * @param wallet
+ * @param listener
+ * @returns {Function}
+ */
 export const unsubscribeWallet = ({ wallet, listener }) => async () => {
   switch (wallet.blockchain) {
     case BLOCKCHAIN_ETHEREUM:

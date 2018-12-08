@@ -4,7 +4,6 @@
  */
 
 import bip39 from 'bip39'
-import EventEmitter from 'events'
 import hdKey from 'ethereumjs-wallet/hdkey'
 import utils from 'ethereumjs-util'
 import Accounts from 'web3-eth-accounts'
@@ -14,10 +13,9 @@ import { WALLET_TYPE_MEMORY } from '../../models/constants/AccountEntryModel'
 
 export const DEFAULT_PATH = `m/44'/60'/0'/0/0`
 
-export default class EthereumMemoryDevice extends EventEmitter {
+export default class EthereumMemoryDevice {
 
   constructor (privateKey) {
-    super()
     const accounts = new Accounts()
     const wallet = accounts.wallet.create()
     wallet.add(accounts.privateKeyToAccount(privateKey))

@@ -215,6 +215,7 @@ export default class Ethereum extends PureComponent {
           } catch (error) {
             this.setState({
               gasFeeError: true,
+              gasFeeLoading: false,
             })
           }
         }, DEBOUNCE_ESTIMATE_FEE_TIMEOUT)

@@ -7,14 +7,15 @@ import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selec
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/login/network/constants'
 import { HolderModel, ContractDAOModel, ContractModel } from '../../models'
-import { getEthereumSigner, getAddressCache } from '../persistAccount/selectors'
+import { getAddressCache } from '../persistAccount/selectors'
 import ethereumDAO from '../../dao/EthereumDAO'
-import { WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
+import {  WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
 import * as ethActions from './actions'
 import * as Utils from './utils'
 import WalletModel from '../../models/wallet/WalletModel'
 import { WALLETS_SET } from '../wallets/constants'
 import { formatBalances, getWalletBalances } from '../tokens/utils'
+
 import { DUCK_TOKENS } from '../tokens/constants'
 import * as TokensActions from '../tokens/actions'
 import tokenService from '../../services/TokenService'
@@ -23,16 +24,13 @@ import ERC20ManagerDAO from '../../dao/ERC20ManagerDAO'
 import TokenModel from '../../models/tokens/TokenModel'
 import { EVENT_ERC20_TOKENS_COUNT, EVENT_NEW_ERC20_TOKEN } from '../../dao/constants/ERC20ManagerDAO'
 import TransactionHandler from '../abstractEthereum/utils/TransactionHandler'
-import { web3Selector } from './selectors'
+import { web3Selector, getEthereumSigner } from './selectors'
 import { daoByAddress, daoByType } from '../daos/selectors'
-import { BLOCKCHAIN_LABOR_HOUR, LHT, EVENT_NEW_BLOCK, ETH } from '../../dao/constants'
-import laborHourDAO from '../../dao/LaborHourDAO'
-import { getTokens } from '../tokens/selectors'
+import { LHT, EVENT_NEW_BLOCK } from '../../dao/constants'
 
 class EthereumTransactionHandler extends TransactionHandler {
   constructor () {
     super(BLOCKCHAIN_ETHEREUM)
-    this.symbol = ETH
   }
 
   getDAO (entry, state) {
@@ -58,68 +56,39 @@ export const initEthereum = ({ web3 }) => (dispatch) => {
   dispatch(ethActions.ethWeb3Update(new HolderModel({ value: web3 })))
 }
 
-export const updateWalletBalance = (wallet) => (dispatch) => {
-  getWalletBalances({ wallet })
-    .then((balancesResult) => {
-      try {
-        dispatch({
-          type: WALLETS_SET,
-          wallet: new WalletModel({
-            ...wallet,
-            balances: {
-              ...wallet.balances,
-              ...formatBalances(wallet.blockchain, balancesResult),
-            },
-          }),
-        })
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error(e.message)
-      }
-    })
-    .catch((e) => {
-      // eslint-disable-next-line no-console
-      console.error('call balances from middleware is failed getWalletBalances', e)
-    })
-}
-
 export const enableEthereum = () => async (dispatch) => {
   dispatch(initTokens())
   dispatch(initWalletFromKeys())
 }
 
 export const initTokens = () => async (dispatch, getState) => {
-  const state = getState()
+  let state = getState()
   if (state.get(DUCK_TOKENS).isInited()) {
     return
   }
   const web3 = web3Selector()(state)
   ethereumDAO.connect(web3)
-  laborHourDAO.connect(web3)
 
   dispatch(TokensActions.tokensInit())
   dispatch(TokensActions.setTokensFetchingCount(0))
   const erc20: ERC20ManagerDAO = daoByType('ERC20Manager')(state)
 
+  state = getState()
   erc20
     .on(EVENT_ERC20_TOKENS_COUNT, async (count) => {
-      const currentCount = getTokens(getState()).leftToFetch()
-      dispatch(TokensActions.setTokensFetchingCount(currentCount + count + 2 /*+eth+lht-lht(ERC20)*/))
-      const ethLikeDAOs = [ethereumDAO, laborHourDAO]
+      const currentCount = state.get(DUCK_TOKENS).leftToFetch()
+      dispatch(TokensActions.setTokensFetchingCount(currentCount + count + 1 /*+eth+lht-lht(ERC20)*/))
 
-      ethLikeDAOs.map(async (dao) => {
-        const ethLikeToken: TokenModel = await dao.getToken()
-
-        if (ethLikeToken) {
-          dispatch(TokensActions.tokenFetched(ethLikeToken))
-          tokenService.registerDAO(ethLikeToken, dao)
-        }
-      })
+      const ethToken: TokenModel = await ethereumDAO.getToken()
+      if (ethToken) {
+        dispatch(TokensActions.tokenFetched(ethToken))
+        tokenService.registerDAO(ethToken, ethereumDAO)
+      }
     })
     .on(EVENT_NEW_ERC20_TOKEN, (token: TokenModel) => {
       if (token.symbol() === LHT) {
         // eslint-disable-next-line no-console
-        return console.warn(`Unsupported ERC20 token ${token.symbol()} received`)
+        return console.warn(`Unsupported ERC20 token ${token.get('symbol')} received`)
       }
 
       dispatch(TokensActions.tokenFetched(token))
@@ -143,24 +112,11 @@ export const initTokens = () => async (dispatch, getState) => {
 }
 
 export const watchLatestBlock = () => async (dispatch) => {
-  const daosMap = [
-    {
-      blockchain: BLOCKCHAIN_ETHEREUM,
-      dao: ethereumDAO,
-    },
-    {
-      blockchain: BLOCKCHAIN_LABOR_HOUR,
-      dao: laborHourDAO,
-    },
-  ]
-
-  await daosMap.map(async (daoData) => {
-    daoData.dao.on(EVENT_NEW_BLOCK, (block) => {
-      dispatch(TokensActions.setLatestBlock(daoData.blockchain, block))
-    })
-    const block = await daoData.dao.getBlockNumber()
-    dispatch(TokensActions.setLatestBlock(daoData.blockchain, { blockNumber: block }))
+  ethereumDAO.on(EVENT_NEW_BLOCK, (block) => {
+    dispatch(TokensActions.setLatestBlock(BLOCKCHAIN_ETHEREUM, block))
   })
+  const block = await ethereumDAO.getBlockNumber()
+  dispatch(TokensActions.setLatestBlock(BLOCKCHAIN_ETHEREUM, { blockNumber: block }))
 }
 
 const initWalletFromKeys = () => async (dispatch, getState) => {
@@ -168,43 +124,58 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
   const { network } = getCurrentNetworkSelector(state)
   const addressCache = { ...getAddressCache(state) }
 
-  const signerSelectorsMap = {
-    [BLOCKCHAIN_ETHEREUM]: {
-      signerSelector: getEthereumSigner,
-    },
+  if (!addressCache[BLOCKCHAIN_ETHEREUM]) {
+    const path = Utils.getEthereumDerivedPath(network[BLOCKCHAIN_ETHEREUM])
+    const signer = getEthereumSigner(state)
+    if (signer) {
+      const address = await signer.getAddress(path)
+      addressCache[BLOCKCHAIN_ETHEREUM] = {
+        address,
+        path,
+      }
+
+      dispatch({
+        type: WALLETS_CACHE_ADDRESS,
+        blockchain: BLOCKCHAIN_ETHEREUM,
+        address,
+        path,
+      })
+    }
   }
 
-  Object.entries(signerSelectorsMap).map(async ([blockchain, { signerSelector }]) => {
-    if (!addressCache[blockchain]) {
-      const path = Utils.getEthereumDerivedPath(network[blockchain])
-      const signer = signerSelector(state)
-      if (signer) {
-        const address = await signer.getAddress(path).toLowerCase()
-        addressCache[blockchain] = {
-          address,
-          path,
-        }
-
-        dispatch({
-          type: WALLETS_CACHE_ADDRESS,
-          blockchain: blockchain,
-          address,
-          path,
-        })
-      }
-    }
-
-    const { address, path } = addressCache[blockchain]
-    const wallet = new WalletModel({
-      address: address.toLowerCase(),
-      blockchain: blockchain,
-      isMain: true,
-      walletDerivedPath: path,
-    })
-
-    ethereumProvider.subscribe(wallet.address)
-    dispatch({ type: WALLETS_SET, wallet })
-
-    dispatch(updateWalletBalance(wallet))
+  const { address, path } = addressCache[BLOCKCHAIN_ETHEREUM]
+  const wallet = new WalletModel({
+    address,
+    blockchain: BLOCKCHAIN_ETHEREUM,
+    isMain: true,
+    walletDerivedPath: path,
   })
+
+  ethereumProvider.subscribe(wallet.address)
+  dispatch({ type: WALLETS_SET, wallet })
+
+  dispatch(updateWalletBalance(wallet))
+}
+
+export const updateWalletBalance = (wallet) => (dispatch) => {
+  getWalletBalances({ wallet })
+    .then((balancesResult) => {
+      try {
+        dispatch({ type: WALLETS_SET, wallet: new WalletModel({
+          ...wallet,
+          balances: {
+            ...wallet.balances,
+            ...formatBalances(wallet.blockchain, balancesResult),
+          },
+        }),
+        })
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(e.message)
+      }
+    })
+    .catch((e) => {
+      // eslint-disable-next-line no-console
+      console.error('call balances from middleware is failed getWalletBalances', e)
+    })
 }

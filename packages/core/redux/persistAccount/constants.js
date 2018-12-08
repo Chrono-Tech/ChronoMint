@@ -11,6 +11,7 @@ import {
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
   BLOCKCHAIN_EOS,
+  BLOCKCHAIN_LABOR_HOUR,
 } from '@chronobank/login/network/constants'
 
 export const DUCK_PERSIST_ACCOUNT = 'persistAccount'
@@ -34,6 +35,7 @@ export const DEFAULT_ACTIVE_BLOCKCHAINS = [
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
   BLOCKCHAIN_EOS,
+  BLOCKCHAIN_LABOR_HOUR,
 ]
 
 export const FORM_BLOCKCHAIN_ACTIVATE = 'FormBlockchainActivate'

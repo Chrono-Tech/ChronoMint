@@ -4,9 +4,8 @@
  */
 
 import Web3 from 'web3'
-import EventEmitter from 'events'
 
-export default class MetamaskPlugin extends EventEmitter {
+export default class MetamaskPlugin {
   get name () {
     return 'metamask'
   }

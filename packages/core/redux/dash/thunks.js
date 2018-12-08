@@ -2,7 +2,7 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-import { Address, Transaction, Unit } from 'dashcore-lib'
+import { Address, Script, Transaction, Unit } from 'dashcore-lib'
 import BigNumber from 'bignumber.js'
 
 import { TransferNoticeModel, TxExecModel } from '../../models'
@@ -79,11 +79,15 @@ export const estimateFee = (params) => async (dispatch) => {
 
 async function getUnsignedTransaction (dispatch, from, to, amount, blockchain) {
   const utxosRawData = await dispatch(getAddressUTXOS(from, blockchain)) || []
-  const utxos = utxosRawData.map((utxo) => new Transaction.UnspentOutput(utxo))
 
   if (utxosRawData.length < 1) {
     throw new Error(`Can't find utxos for address: ${from}`)
   }
+
+  const utxos = utxosRawData.map(utxo => {
+    utxo.scriptPubKey = Script.fromAddress(utxo.address)
+    return new Transaction.UnspentOutput(utxo)
+  })
 
   return new Transaction()
     .from(utxos)

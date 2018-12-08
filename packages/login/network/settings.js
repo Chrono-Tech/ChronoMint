@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { BLOCKCHAIN_EOS } from '@chronobank/core/redux/eos/constants'
+import { BLOCKCHAIN_EOS } from '@chronobank/core/dao/constants'
 import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN,
@@ -41,8 +41,8 @@ const blockExplorersMap = {
     testnet: 'https://tbcc.blockdozer.com/insight/tx',
   },
   [BLOCKCHAIN_DASH]: {
-    mainnet: 'https://insight.dashevo.org/insight-api-dash/tx',
-    testnet: 'https://testnet-insight.dashevo.org/insight-api-dash/tx',
+    mainnet: 'https://middleware-dash-mainnet-stage.chronobank.io/tx',
+    testnet: 'https://middleware-dash-dev.chronobank.io/tx',
   },
   [BLOCKCHAIN_LABOR_HOUR]: {
     mainnet: [
@@ -70,7 +70,7 @@ const MAINNET_BASE = {
   [BLOCKCHAIN_BITCOIN]: 'bitcoin',
   [BLOCKCHAIN_BITCOIN_CASH]: 'bitcoin',
   [BLOCKCHAIN_DASH]: 'bitcoin',
-  [BLOCKCHAIN_LABOR_HOUR]: { type: 'mainnet', wss: LABOR_HOUR_WSS },
+  [BLOCKCHAIN_LABOR_HOUR]: { type: 'mainnet', ws: LABOR_HOUR_WSS },
   [BLOCKCHAIN_LITECOIN]: 'litecoin',
   [BLOCKCHAIN_NEM]: 'mainnet',
   [BLOCKCHAIN_WAVES]: 'MAINNET_CONFIG',
@@ -85,7 +85,7 @@ const RINKEBY_BASE = {
   [BLOCKCHAIN_BITCOIN]: 'testnet',
   [BLOCKCHAIN_BITCOIN_CASH]: 'testnet',
   [BLOCKCHAIN_DASH]: 'testnet',
-  [BLOCKCHAIN_LABOR_HOUR]: { type: 'testnet', wss: LABOR_HOUR_WSS },
+  [BLOCKCHAIN_LABOR_HOUR]: { type: 'testnet', ws: LABOR_HOUR_WSS },
   [BLOCKCHAIN_LITECOIN]: 'litecoin_testnet',
   [BLOCKCHAIN_NEM]: 'testnet',
   [BLOCKCHAIN_WAVES]: 'TESTNET_CONFIG',
@@ -125,7 +125,7 @@ const mewMainnet = {
   [BLOCKCHAIN_BITCOIN]: 'bitcoin',
   [BLOCKCHAIN_BITCOIN_CASH]: 'bitcoin',
   [BLOCKCHAIN_DASH]: 'bitcoin',
-  [BLOCKCHAIN_LABOR_HOUR]: { type: 'mainnet', wss: LABOR_HOUR_WSS },
+  [BLOCKCHAIN_LABOR_HOUR]: { type: 'mainnet', ws: LABOR_HOUR_WSS },
   [BLOCKCHAIN_LITECOIN]: 'litecoin',
   [BLOCKCHAIN_NEM]: 'mainnet',
   host: `api.myetherapi.com/eth`,
@@ -143,7 +143,7 @@ const givethMainnet = {
   [BLOCKCHAIN_BITCOIN]: 'bitcoin',
   [BLOCKCHAIN_BITCOIN_CASH]: 'bitcoin',
   [BLOCKCHAIN_DASH]: 'bitcoin',
-  [BLOCKCHAIN_LABOR_HOUR]: { type: 'mainnet', wss: LABOR_HOUR_WSS },
+  [BLOCKCHAIN_LABOR_HOUR]: { type: 'mainnet', ws: LABOR_HOUR_WSS },
   [BLOCKCHAIN_LITECOIN]: 'litecoin',
   [BLOCKCHAIN_NEM]: 'mainnet',
   [BLOCKCHAIN_WAVES]: 'MAINNET_CONFIG',
@@ -179,7 +179,7 @@ export const chronoBankPrivate = {
   [BLOCKCHAIN_BITCOIN]: 'testnet',
   [BLOCKCHAIN_BITCOIN_CASH]: 'testnet',
   [BLOCKCHAIN_DASH]: 'testnet',
-  [BLOCKCHAIN_LABOR_HOUR]: { type: 'testnet', wss: LABOR_HOUR_WSS },
+  [BLOCKCHAIN_LABOR_HOUR]: { type: 'testnet', ws: LABOR_HOUR_WSS },
   [BLOCKCHAIN_LITECOIN]: 'litecoin_testnet',
   [BLOCKCHAIN_NEM]: 'testnet',
   [BLOCKCHAIN_WAVES]: 'TESTNET_CONFIG',

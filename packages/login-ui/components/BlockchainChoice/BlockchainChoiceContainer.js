@@ -6,14 +6,18 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
+import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
 import { DEFAULT_ACTIVE_BLOCKCHAINS } from '@chronobank/core/redux/persistAccount/constants'
 import BlockchainChoice from './BlockchainChoice'
+
+import './BlockchainChoice.scss'
 
 function mapStateToProps () {
   const initialBlockchains = DEFAULT_ACTIVE_BLOCKCHAINS.reduce((result, item) => {
     result[item] = true
     return result
   }, {})
+  initialBlockchains[BLOCKCHAIN_ETHEREUM] = true
 
   return {
     allBlockchainList: DEFAULT_ACTIVE_BLOCKCHAINS,
@@ -39,12 +43,15 @@ class BlockchainChoiceContainer extends PureComponent {
     const { initialBlockchains, allBlockchainList } = this.props
 
     return (
-      <BlockchainChoice
-        initialValues={initialBlockchains}
-        onHandleSubmitSuccess={this.handleSubmitSuccess}
-        allBlockchainList={allBlockchainList}
-        navigateToSelectWallet={this.props.navigateToSelectWallet}
-      />
+      <div styleName='container-root'>
+        <BlockchainChoice
+          initialValues={initialBlockchains}
+          onHandleSubmitSuccess={this.handleSubmitSuccess}
+          allBlockchainList={allBlockchainList}
+          navigateToSelectWallet={this.props.navigateToSelectWallet}
+          pageType='login'
+        />
+      </div>
     )
   }
 }

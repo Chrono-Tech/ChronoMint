@@ -17,6 +17,10 @@
   color: $color-primary-0;
 }
 
+.container-root {
+  padding-top: 20px;
+}
+
 .header {
   text-align: center;
 
@@ -45,11 +49,15 @@
 }
 
 .body {
-  margin-top: 20px;
   text-align: center;
 }
 
 .finish {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.row-save-button {
   margin-top: 20px;
   text-align: center;
 }
@@ -79,10 +87,6 @@
   justify-content: center;
   flex-direction: row;
   margin-bottom: 15px;
-}
-
-.blockchain-list-container div:not(:first-child) {
-  border-top: 1px solid #F2F2F2;
 }
 
 .row-label {

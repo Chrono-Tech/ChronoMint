@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import EventEmitter from 'events'
 import bitcoin from 'bitcoinjs-lib'
 import TransportU2F from '@ledgerhq/hw-transport-u2f'
 import AppBTC from '@ledgerhq/hw-app-btc'
@@ -15,9 +14,8 @@ export const API = axios.create({
   baseURL: BASE_URL,
 })
 
-export default class BitcoinCashLedgerDevice extends EventEmitter {
+export default class BitcoinCashLedgerDevice {
   constructor ({ network }) {
-    super()
     this.network = network
     Object.freeze(this)
   }

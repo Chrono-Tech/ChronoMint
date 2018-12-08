@@ -14,6 +14,7 @@ import {
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
+  BLOCKCHAIN_EOS,
   BTC,
   DASH,
   ETH,
@@ -24,7 +25,7 @@ import {
 } from '../../dao/constants'
 
 import { DUCK_TOKENS } from './constants'
-import { BLOCKCHAIN_EOS, EOS } from '../eos/constants'
+import { EOS } from '../eos/constants'
 import { getEOSTokens } from '../eos/selectors/mainSelectors'
 import TokensCollection from '../../models/tokens/TokensCollection'
 import { getLXTokens } from '../laborHour/selectors/mainSelectors'

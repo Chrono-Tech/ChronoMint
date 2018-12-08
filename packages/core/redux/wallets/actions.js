@@ -43,7 +43,7 @@ import {
   WALLETS_UPDATE_WALLET,
 } from './constants'
 import { executeNemTransaction } from '../nem/thunks'
-import { getEthereumSigner } from '../persistAccount/selectors'
+import { getEthereumSigner } from '../ethereum/selectors'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
 import { BCC, BTC, DASH, ETH, LHT, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, LTC, WAVES, XEM } from '../../dao/constants'

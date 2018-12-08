@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import EventEmitter from 'events'
 import EthereumTx from 'ethereumjs-tx'
 import hdkey from 'ethereumjs-wallet/hdkey'
 import TrezorConnect from 'trezor-connect'
@@ -13,7 +12,7 @@ import Web3Utils from 'web3-utils'
 const DEFAULT_PATH = "m/44'/60'/0'/0"
 const DEFAULT_PATH_FACTORY = (index) => `${DEFAULT_PATH}/${index}`
 
-export default class EthereumTrezorDevice extends EventEmitter {
+export default class EthereumTrezorDevice {
   get name () {
     return 'trezor'
   }
