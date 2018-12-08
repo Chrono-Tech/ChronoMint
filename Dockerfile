@@ -1,4 +1,4 @@
-FROM node:8.9.1-slim 
+FROM node:10.14-slim
 ARG BUILD_BRANCH=develop
 ARG NODE=production
 ARG PUBLIC_BACKEND_REST_URL=https://backend.chronobank.io
