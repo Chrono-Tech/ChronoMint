@@ -11,12 +11,12 @@ import {
 } from '../selectors/mainSelectors'
 import web3Converter from '../../../utils/Web3Converter'
 import SidechainMiddlewareService from '../SidechainMiddlewareService'
-import { getEthereumSigner } from '../../persistAccount/selectors'
 import { notifyUnknownError, watchProcessingStatus } from './utilsThunks'
 import { executeLaborHourTransaction } from './transactions'
 import * as LXSidechainActions from '../actions'
 import { BLOCKCHAIN_LABOR_HOUR, TIME } from '../../../dao/constants'
 import { depositInSidechain, startMiningInCustomNode } from './mining'
+import { getEthereumSigner } from '../../ethereum/selectors'
 
 export const obtainSwapByMiddlewareFromMainnetToSidechain = (swapId) => async (
   dispatch,

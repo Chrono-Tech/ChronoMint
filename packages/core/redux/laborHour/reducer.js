@@ -9,6 +9,7 @@ import {
   LABOR_HOUR_TX_REMOVE,
   LABOR_HOUR_TX_UPDATE,
   LABOR_HOUR_UPDATE_WALLET,
+  LABOR_HOUR_UNSET_WALLET,
   LABOR_HOUR_WEB3_UPDATE,
   LABOR_HOUR_DAOS_REGISTER,
   LABOR_HOUR_SWAP_UPDATE,
@@ -21,7 +22,7 @@ import {
   LABOR_HOUR_UPDATE_LOCKED_DEPOSIT,
   LABOR_HOUR_UPDATE_FEE_MULTIPLIER,
   LABOR_HOUR_SWAP_LIST_UPDATE,
-  LABOR_HOUR_UPDATE_PROCESSING_STATUS,
+  LABOR_HOUR_UPDATE_PROCESSING_STATUS, LABOR_HOUR_TOKENS_UPDATE_LATEST_BLOCK,
 } from './constants'
 import TokensCollection from '../../models/tokens/TokensCollection'
 
@@ -101,12 +102,31 @@ const mutations = {
       tokens: state.tokens.leftToFetch(state.leftToFetch() - 1),
     }
   },
+  [LABOR_HOUR_TOKENS_UPDATE_LATEST_BLOCK]: (state, { blockchain, block }) => {
+    return {
+      ...state,
+      tokens: state.tokens.latestBlocks({
+        ...state.tokens.latestBlocks(),
+        [blockchain]: block,
+      }),
+    }
+  },
   [LABOR_HOUR_UPDATE_WALLET]: (state, { wallet }) => {
     return {
       ...state,
       wallets: {
         ...state.wallets,
         [`${wallet.blockchain}-${wallet.address}`]: wallet,
+      },
+    }
+  },
+  [LABOR_HOUR_UNSET_WALLET]: (state, { wallet }) => {
+    const list = { ...state.list }
+    delete list[wallet.id]
+    return {
+      ...state,
+      list: {
+        ...list,
       },
     }
   },

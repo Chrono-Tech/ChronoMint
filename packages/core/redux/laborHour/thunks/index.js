@@ -10,6 +10,8 @@ import {
 } from '@chronobank/login/network/LaborHourProvider'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 import { TIME } from '@chronobank/login/network/constants'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
+import { getNetworkById } from '@chronobank/login/network/settings'
 import {
   daoByType,
   getLXToken,
@@ -28,16 +30,13 @@ import ERC20TokenDAO from '../../../dao/ERC20TokenDAO'
 import web3Converter from '../../../utils/Web3Converter'
 import TokenModel from '../../../models/tokens/TokenModel'
 import ContractModel from '../../../models/contracts/ContractModel'
-import {
-  getAddressCache,
-  getEthereumSigner,
-} from '../../persistAccount/selectors'
-import { WALLETS_CACHE_ADDRESS } from '../../persistAccount/constants'
+import { getAddressCache } from '../../persistAccount/selectors'
+import { DUCK_PERSIST_ACCOUNT, WALLETS_CACHE_ADDRESS } from '../../persistAccount/constants'
 import ErrorNoticeModel from '../../../models/notices/ErrorNoticeModel'
 import * as LXSidechainActions from '../actions'
 import HolderModel from '../../../models/HolderModel'
 import laborHourDAO from '../../../dao/LaborHourDAO'
-import { BLOCKCHAIN_LABOR_HOUR } from '../../../dao/constants'
+import { BLOCKCHAIN_LABOR_HOUR, EVENT_NEW_BLOCK } from '../../../dao/constants'
 import { getEthereumDerivedPath } from '../../ethereum/utils'
 import { WalletModel } from '../../../models/index'
 import { watch } from './watchers'
@@ -48,12 +47,44 @@ import {
   executeLaborHourTransaction,
   getTokenBalance,
 } from './transactions'
+import web3Factory from '../../../../core/web3'
+import { getWalletsByBlockchain } from '../../wallets/selectors/models'
+import { WALLETS_UNSET } from '../../wallets/constants'
+import { getEthereumSigner } from '../../ethereum/selectors'
 //#endregion
 
 export { executeLaborHourTransaction }
 export { estimateLaborHourGas }
 export { obtainAllMainnetOpenSwaps }
 export { obtainAllLXOpenSwaps }
+
+export const enableLaborHour = () => async (dispatch, getState) => {
+  const state = getState()
+  const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
+  const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
+
+  let network = getNetworkById(selectedNetworkId, selectedProviderId)
+  if (!network.id) {
+    network = customNetworksList.find((network) => network.id === selectedNetworkId)
+  }
+
+  dispatch(initLaborHour({ web3: web3Factory(network[BLOCKCHAIN_LABOR_HOUR]) }))
+
+  await dispatch(initTokens())
+  dispatch(initWalletFromKeys())
+}
+
+export const disableLaborHour = () => async (dispatch, getState) => {
+  const wallets = getWalletsByBlockchain(BLOCKCHAIN_LABOR_HOUR)(getState())
+
+  wallets.forEach((wallet) => {
+    laborHourProvider.unsubscribe(wallet.address)
+    dispatch({ type: WALLETS_UNSET, wallet })
+  })
+
+  laborHourDAO.removeAllListeners()
+  laborHourDAO.disconnect()
+}
 
 export const initLaborHour = ({ web3 }) => async (dispatch) => {
   await dispatch(
@@ -125,6 +156,7 @@ const initTokens = () => async (dispatch, getState) => {
     promises.push(dispatch(loadTokenByIndex(i)))
   }
   await Promise.all(promises)
+  dispatch(watchLatestBlock())
 }
 
 const loadTokenByIndex = (symbolIndex) => async (dispatch, getState) => {
@@ -235,4 +267,15 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
 
   laborHourProvider.subscribe(wallet.address)
   dispatch(LXSidechainActions.updateWallet(wallet))
+}
+
+export const watchLatestBlock = () => async (dispatch) => {
+
+  laborHourDAO
+    .on(EVENT_NEW_BLOCK, (block) => {
+      dispatch(LXSidechainActions.setLatestBlock(BLOCKCHAIN_LABOR_HOUR, block))
+    })
+
+  const block = await laborHourDAO.getBlockNumber()
+  dispatch(LXSidechainActions.setLatestBlock(BLOCKCHAIN_LABOR_HOUR, { blockNumber: block }))
 }

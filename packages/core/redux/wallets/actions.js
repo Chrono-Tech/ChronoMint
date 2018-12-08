@@ -334,13 +334,12 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
 
   switch (blockchain) {
     case BLOCKCHAIN_ETHEREUM:
-    case BLOCKCHAIN_LABOR_HOUR:
       if (newDeriveNumber === undefined || newDeriveNumber === null) {
         newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
       }
       derivedPath = `${WALLET_HD_PATH}/${newDeriveNumber}`
       const newWalletSigner = await EthereumMemoryDevice.getDerivedWallet(signer.privateKey, derivedPath)
-      address = newWalletSigner.address
+      address = newWalletSigner.address.toLowerCase()
       break
 
     case BLOCKCHAIN_BITCOIN:

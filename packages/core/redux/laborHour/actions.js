@@ -19,7 +19,7 @@ import {
   LABOR_HOUR_UPDATE_DEPOSIT,
   LABOR_HOUR_UPDATE_LOCKED_DEPOSIT,
   LABOR_HOUR_UPDATE_FEE_MULTIPLIER,
-  LABOR_HOUR_SWAP_LIST_UPDATE, LABOR_HOUR_UPDATE_PROCESSING_STATUS,
+  LABOR_HOUR_SWAP_LIST_UPDATE, LABOR_HOUR_UPDATE_PROCESSING_STATUS, LABOR_HOUR_TOKENS_UPDATE_LATEST_BLOCK,
 } from './constants'
 
 export const updateWeb3 = (web3) =>
@@ -132,4 +132,11 @@ export const updateProcessingStatus = (status) =>
   ({
     type: LABOR_HOUR_UPDATE_PROCESSING_STATUS,
     status,
+  })
+
+export const setLatestBlock = (blockchain, block) =>
+  ({
+    type: LABOR_HOUR_TOKENS_UPDATE_LATEST_BLOCK,
+    blockchain,
+    block,
   })

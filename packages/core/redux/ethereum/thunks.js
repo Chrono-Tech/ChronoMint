@@ -9,7 +9,7 @@ import { BLOCKCHAIN_ETHEREUM } from '@chronobank/login/network/constants'
 import { HolderModel, ContractDAOModel, ContractModel } from '../../models'
 import { getAddressCache } from '../persistAccount/selectors'
 import ethereumDAO from '../../dao/EthereumDAO'
-import {  WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
+import { WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
 import * as ethActions from './actions'
 import * as Utils from './utils'
 import WalletModel from '../../models/wallet/WalletModel'
@@ -26,11 +26,13 @@ import { EVENT_ERC20_TOKENS_COUNT, EVENT_NEW_ERC20_TOKEN } from '../../dao/const
 import TransactionHandler from '../abstractEthereum/utils/TransactionHandler'
 import { web3Selector, getEthereumSigner } from './selectors'
 import { daoByAddress, daoByType } from '../daos/selectors'
-import { LHT, EVENT_NEW_BLOCK } from '../../dao/constants'
+import { LHT, EVENT_NEW_BLOCK, ETH } from '../../dao/constants'
 
 class EthereumTransactionHandler extends TransactionHandler {
   constructor () {
     super(BLOCKCHAIN_ETHEREUM)
+    this.web3 = null
+    this.symbol = ETH
   }
 
   getDAO (entry, state) {
@@ -145,7 +147,7 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
 
   const { address, path } = addressCache[BLOCKCHAIN_ETHEREUM]
   const wallet = new WalletModel({
-    address,
+    address: address.toLowerCase(),
     blockchain: BLOCKCHAIN_ETHEREUM,
     isMain: true,
     walletDerivedPath: path,
@@ -161,13 +163,14 @@ export const updateWalletBalance = (wallet) => (dispatch) => {
   getWalletBalances({ wallet })
     .then((balancesResult) => {
       try {
-        dispatch({ type: WALLETS_SET, wallet: new WalletModel({
-          ...wallet,
-          balances: {
-            ...wallet.balances,
-            ...formatBalances(wallet.blockchain, balancesResult),
-          },
-        }),
+        dispatch({
+          type: WALLETS_SET, wallet: new WalletModel({
+            ...wallet,
+            balances: {
+              ...wallet.balances,
+              ...formatBalances(wallet.blockchain, balancesResult),
+            },
+          }),
         })
       } catch (e) {
         // eslint-disable-next-line no-console
