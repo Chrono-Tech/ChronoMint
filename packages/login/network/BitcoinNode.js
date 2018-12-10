@@ -105,7 +105,7 @@ const DASH_MAINNET_NODE = new BitcoinMiddlewareNode({
   blockchain: BLOCKCHAIN_DASH,
   symbol: DASH,
   socket: {
-    baseURL: 'https://rabbitmq-stage-webstomp.chronobank.io/stomp',
+    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
     user: 'rabbit',
     password: 'nC865xfpbU41',
     channels: {
@@ -125,7 +125,7 @@ const DASH_TESTNET_NODE = new BitcoinMiddlewareNode({
   blockchain: BLOCKCHAIN_DASH,
   symbol: DASH,
   socket: {
-    baseURL: 'https://rabbitmq-stage-webstomp.chronobank.io/stomp',
+    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
     user: 'rabbit',
     password: 'nC865xfpbU41',
     channels: {
