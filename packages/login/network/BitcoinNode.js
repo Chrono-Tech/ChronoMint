@@ -99,7 +99,7 @@ const BCC_TESTNET_NODE = new BitcoinMiddlewareNode({
 
 const DASH_MAINNET_NODE = new BitcoinMiddlewareNode({
   api: axios.create({
-    baseURL: 'https://middleware-dash-mainnet-stage.chronobank.io',
+    baseURL: 'https://middleware-dash-mainnet.chronobank.io',
     timeout: 10000,
   }),
   blockchain: BLOCKCHAIN_DASH,
