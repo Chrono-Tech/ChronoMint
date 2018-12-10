@@ -33,6 +33,10 @@ export default class AssetHolderDAO extends AbstractContractDAO {
       .on('data', this.handleEventsData)
   }
 
+  getSymbol () {
+    return 'ETH'
+  }
+
   async getSharesContract (): Promise {
     return this.contract.methods.getDefaultShares().call()
   }

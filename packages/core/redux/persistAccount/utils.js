@@ -79,7 +79,13 @@ export const createAccountEntry = (name, walletFileImportObject, profile = null)
   })
 }
 
-export const createDeviceAccountEntry = (name, device, profile = null, walletType = null) => {
+export const createDeviceAccountEntry = (
+  name,
+  device,
+  profile = null,
+  walletType = null,
+  blockchainList = DEFAULT_ACTIVE_BLOCKCHAINS
+) => {
   if (!walletType) {
     throw new Error('WalletDeviceType is empty')
   }
@@ -90,7 +96,7 @@ export const createDeviceAccountEntry = (name, device, profile = null, walletTyp
     type: walletType,
     encrypted: [device],
     profile,
-    blockchainList: DEFAULT_ACTIVE_BLOCKCHAINS,
+    blockchainList,
   })
 }
 

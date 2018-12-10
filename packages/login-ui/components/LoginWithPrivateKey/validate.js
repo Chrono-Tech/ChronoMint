@@ -10,8 +10,9 @@ export default (values) => {
 
   const privateKey = values.get('pk')
 
-  let privateKeyErrors = new ErrorList()
+  const privateKeyErrors = new ErrorList()
   privateKeyErrors.add(validator.required(privateKey))
+  privateKeyErrors.add(validator.privateKey(privateKey))
 
   return {
     pk: privateKeyErrors.getErrors(),

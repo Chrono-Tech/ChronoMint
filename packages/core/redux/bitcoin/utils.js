@@ -9,6 +9,7 @@ import bitcoin from 'bitcoinjs-lib'
 import {
   COIN_TYPE_BTC_MAINNET,
   COIN_TYPE_ALLCOINS_TESTNET,
+  COIN_TYPE_LTC_MAINNET,
 } from '@chronobank/login/network/constants'
 import { TxExecModel } from '../../models'
 import { getDerivedPath } from '../wallets/utils'
@@ -45,9 +46,16 @@ export const selectCoins = (to, amount: BigNumber, feeRate, utxos) => {
 }
 
 export const getBitcoinDerivedPath = (networkName, mainnetCoinType = COIN_TYPE_BTC_MAINNET) => {
-  const coinType = networkName === bitcoin.networks.testnet
+  const coinType = networkName === 'testnet'
     ? COIN_TYPE_ALLCOINS_TESTNET
     : mainnetCoinType
+  return getDerivedPath(coinType)
+}
+
+export const getLitecoinDerivedPath = (networkName) => {
+  const coinType = networkName === 'litecoin_testnet'
+    ? COIN_TYPE_ALLCOINS_TESTNET
+    : COIN_TYPE_LTC_MAINNET
   return getDerivedPath(coinType)
 }
 
@@ -68,7 +76,7 @@ export const convertSatoshiToBTC = (satoshiAmount) => {
 const describeBitcoinTransaction = (tx, options, utxos) => {
   const { to, from, value } = tx
   const { feeRate, blockchain, network } = options
-  const bitcoinNetwork = bitcoin.networks[network[blockchain]]
+  const bitcoinNetwork = bitcoin.networks[network['Bitcoin']]
   const { inputs, outputs, fee } = selectCoins(to, value, feeRate, utxos)
 
   if (!inputs || !outputs) {

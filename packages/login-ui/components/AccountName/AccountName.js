@@ -30,19 +30,15 @@ class AccountName extends PureComponent {
 
     return (
       <form styleName='form' name={FORM_ACCOUNT_NAME} onSubmit={handleSubmit}>
-
         <div styleName='page-title'>
           <Translate value='AccountName.title' />
         </div>
-
         <p styleName='description'>
           <Translate value='AccountName.description' />
           <br />
           <Translate value='AccountName.descriptionExtra' />
         </p>
-
         <div styleName='content'>
-
           <div styleName='field'>
             <Field
               component={TextField}
@@ -52,7 +48,6 @@ class AccountName extends PureComponent {
               {...styles.textField}
             />
           </div>
-
           <div styleName='actions'>
             <Button
               styleName='button'
@@ -81,7 +76,6 @@ class AccountName extends PureComponent {
             </button>
           </div>
         </div>
-
       </form>
     )
   }

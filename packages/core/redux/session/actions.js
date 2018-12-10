@@ -9,6 +9,8 @@ import {
   SESSION_DESTROY,
   SESSION_PROFILE,
   SET_PROFILE_SIGNATURE,
+  SET_WEB3_INSTANCE,
+  CLEAR_WEB3_INSTANCE,
 } from './constants'
 
 // TODO: to think about better place for this action
@@ -37,3 +39,16 @@ export const setProfileSignature = (signature) => ({
   type: SET_PROFILE_SIGNATURE,
   signature,
 })
+
+export const updateSessionWeb3 = (web3) => (
+  {
+    type: SET_WEB3_INSTANCE,
+    web3,
+  }
+)
+
+export const clearSessionWeb3 = () => (
+  {
+    type: CLEAR_WEB3_INSTANCE,
+  }
+)

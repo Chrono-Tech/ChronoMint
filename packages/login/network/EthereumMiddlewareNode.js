@@ -30,15 +30,12 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     this.addListener('unsubscribe', (address) => this._handleUnsubscribe(address))
   }
 
-  async _handleSubscribe (ethAddress) {
+  async _handleSubscribe (address) {
     if (!this._socket) {
       return
     }
     try {
-      this.addMiddlewareSupportForAddress({
-        address: ethAddress,
-      })
-
+      this._api.post('addr', address)
       this.executeOrSchedule(() => {
         eventsList.forEach((event) => {
           this._openSubscription(`${this._socket.channels.events}.${event}`, (data) => {
@@ -51,15 +48,6 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     } catch (e) {
       this.trace('Address subscription error', e)
     }
-  }
-
-  /**
-   * Method for adding Middleware support for the address
-   * @param addressData
-   * @returns {Promise<void>}
-   */
-  async addMiddlewareSupportForAddress (addressData) {
-    await this._api.post('addr', addressData)
   }
 
   async _handleUnsubscribe (/*ethAddress*/) {

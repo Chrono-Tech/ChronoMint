@@ -4,8 +4,6 @@
  */
 
 import EventEmitter from 'events'
-import bitcoin from 'bitcoinjs-lib'
-import { BLOCKCHAIN_BITCOIN } from './constants'
 
 export default class AbstractProvider extends EventEmitter {
   constructor (selectNode) {
@@ -38,14 +36,5 @@ export default class AbstractProvider extends EventEmitter {
     const node = this._selectNode(this.networkSettings)
     node.emit('unsubscribe', address)
     return node
-  }
-
-  isAddressValid (address) {
-    try {
-      bitcoin.address.toOutputScript(address, bitcoin.networks[this.networkSettings[BLOCKCHAIN_BITCOIN]])
-      return true
-    } catch (e) {
-      return false
-    }
   }
 }

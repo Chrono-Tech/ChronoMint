@@ -81,6 +81,48 @@ export const selectProvider = (selectedProviderId) => (dispatch) => {
   dispatch(NetworkActions.networkSetProvider(selectedProviderId))
 }
 
+/**
+ * At the moment it used only for Trezor login page. Getting addresses balances
+ * @param selectedNetworkId
+ * @param selectedProviderId
+ * @returns {function(*=, *): Promise<any>}
+ */
+export const updateSessionWeb3 = (selectedNetworkId, selectedProviderId) => (dispatch, getState) => {
+  const state = getState()
+  if (!selectedNetworkId || !selectedProviderId) {
+    const network = state.get(DUCK_NETWORK)
+    selectedNetworkId = network.selectedNetworkId
+    selectedProviderId = network.selectedProviderId
+  }
+
+  const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
+  let network = getNetworkById(selectedNetworkId, selectedProviderId)
+
+  if (!network.id) {
+    network = customNetworksList.find((network) => network.id === selectedNetworkId)
+  }
+
+  return new Promise((resolve, fail) => {
+    const web3 = web3Factory(network)
+    web3.eth.net.isListening().then(() => {
+      dispatch(SessionActions.updateSessionWeb3(web3))
+      resolve()
+    }).catch((e) => {
+      fail(e)
+    })
+  })
+}
+
+/**
+ * Close session web3 connection and remove it from the store. At the moment used only for Trezor login
+ */
+export const clearSessionWeb3 = () => (dispatch, getState) => {
+  dispatch(SessionActions.clearSessionWeb3())
+
+  const web3 = getState().get(DUCK_SESSION).web3
+  web3.currentProvider.disconnect()
+}
+
 export const changeGasSlideValue = (value, blockchain) => (dispatch) =>
   dispatch(SessionActions.gasSliderMultiplierChange(value, blockchain))
 
@@ -124,6 +166,8 @@ export const login = (account) => async (dispatch, getState) => {
     throw new Error('Session has not been created')
   }
 
+  dispatch(SessionActions.clearSessionWeb3())
+
   let network = getNetworkById(selectedNetworkId, selectedProviderId)
   if (!network.id) {
     network = customNetworksList.find((network) => network.id === selectedNetworkId)
@@ -144,6 +188,7 @@ export const login = (account) => async (dispatch, getState) => {
 
   dispatch(SessionActions.sessionProfile(profile, isCBE))
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
+
   return defaultURL
 }
 
@@ -158,6 +203,10 @@ export const getProfileSignature = (signer, path) => async (dispatch, getState) 
 
   try {
     const addresses = getAccountAddresses(getState())
+    if (!Object.keys(addresses).length) {
+      throw new Error('Addresses list is empty')
+    }
+
     const signDataString = ProfileService.getSignData(addresses)
     const signData = await signer.signData(signDataString, path)
     const profileSignature = await dispatch(ProfileThunks.getUserProfile(signData.signature, addresses))

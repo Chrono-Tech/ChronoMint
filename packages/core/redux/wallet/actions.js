@@ -50,6 +50,7 @@ export const subscribeWallet = ({ wallet }) => async (dispatch) => {
       }
     }
   }
+
   switch (wallet.blockchain) {
     case BLOCKCHAIN_ETHEREUM:
       ethereumDAO.on('tx', listener)

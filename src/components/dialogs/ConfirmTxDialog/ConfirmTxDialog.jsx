@@ -23,7 +23,7 @@ function mapDispatchToProps (dispatch, props) {
   return {
     modalsClear: () => dispatch(modalsClear()),
     modalsClose: () => dispatch(modalsClose()),
-    handleAccept: (entry) => dispatch(props.accept(entry)),
+    handleAccept: async (entry) => dispatch(props.accept(entry)),
     handleReject: (entry) => dispatch(props.reject(entry)),
   }
 }
@@ -42,9 +42,9 @@ export default class ConfirmTxDialog extends PureComponent {
     feeMultiplier: PropTypes.number,
   }
 
-  handleConfirm = () => {
+  handleConfirm = async () => {
     this.props.modalsClear()
-    this.props.handleAccept(this.props.entry)
+    await this.props.handleAccept(this.props.entry)
   }
 
   handleClose = () => {

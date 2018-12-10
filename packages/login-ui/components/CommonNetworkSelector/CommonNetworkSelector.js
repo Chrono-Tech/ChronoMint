@@ -82,7 +82,7 @@ const mapDispatchToProps = (dispatch) => ({
     componentName: 'NetworkCreateModal',
     props: { network },
   })),
-  autoSelect: () => dispatch(autoSelect())
+  autoSelect: () => dispatch(autoSelect()),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)

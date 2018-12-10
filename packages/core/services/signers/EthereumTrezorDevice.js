@@ -8,11 +8,17 @@ import hdkey from 'ethereumjs-wallet/hdkey'
 import TrezorConnect from 'trezor-connect'
 import { omitBy, isNil } from 'lodash'
 import Web3Utils from 'web3-utils'
+import TrezorError from '../errors/TrezorError'
 
 const DEFAULT_PATH = "m/44'/60'/0'/0"
 const DEFAULT_PATH_FACTORY = (index) => `${DEFAULT_PATH}/${index}`
 
 export default class EthereumTrezorDevice {
+
+  constructor () {
+    this.xPubKey = null
+  }
+
   get name () {
     return 'trezor'
   }
@@ -21,28 +27,38 @@ export default class EthereumTrezorDevice {
     return 'Trezor Device'
   }
 
-  async getAddress (path) {
-    if (this.isConnected) {
-      const hdKey = hdkey.fromExtendedKey(this.xpubkey)
-      const wallet = hdKey.derivePath(path).getWallet()
-      return `0x${wallet.getAddress().toString('hex')}`
+  async getXpubkey (path) {
+    if (!this.xPubKey) {
+      const result = await TrezorConnect.getPublicKey({ path: path })
+      if (!result.success) {
+        throw new TrezorError(result.code, result.payload.error)
+      }
+
+      const { xpub } = result.payload
+      this.xPubKey = xpub
     }
-    return
+
+    return this.xPubKey
   }
 
-  async getAddressInfoList (from: number = 0, limit: number = 5): String {
-    if (!this.xpubkey) {
-      const result = await TrezorConnect.getPublicKey({ path: DEFAULT_PATH })
-      const { xpub } = result.payload
-      this.xpubkey = xpub
-    }
-    const hdKey = hdkey.fromExtendedKey(this.xpubkey)
+  async getAddress (path) {
+    const xPubKey = await this.getXpubkey(path)
+    const hdKey = hdkey.fromExtendedKey(xPubKey)
+    const wallet = hdKey.deriveChild(0).getWallet()
+
+    return `0x${wallet.getAddress().toString('hex')}`
+  }
+
+  async getAccountInfoList (from: number = 0, limit: number = 5): String {
+    const xpubKey = await this.getXpubkey(DEFAULT_PATH)
+    const hdKey = hdkey.fromExtendedKey(xpubKey)
+
     return Array.from({ length: limit }).map((element, index) => {
       const wallet = hdKey.deriveChild(from + index).getWallet()
       return {
         path: DEFAULT_PATH_FACTORY(index),
         address: `0x${wallet.getAddress().toString('hex')}`,
-        xpubkey: this.xpubkey,
+        xpubkey: xpubKey,
         type: this.name,
       }
     })

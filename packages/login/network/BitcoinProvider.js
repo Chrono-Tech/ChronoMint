@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import bitcoin from 'bitcoinjs-lib'
 import TxModel from '@chronobank/core/models/TxModel'
 import Amount from '@chronobank/core/models/Amount'
 import AbstractProvider from './AbstractProvider'
@@ -125,6 +126,15 @@ export class BitcoinProvider extends AbstractProvider {
 
   getNode () {
     return this._selectNode(this.networkSettings)
+  }
+
+  isAddressValid (address) {
+    try {
+      bitcoin.address.toOutputScript(address, bitcoin.networks[this.networkSettings[BLOCKCHAIN_BITCOIN]])
+      return true
+    } catch (e) {
+      return false
+    }
   }
 }
 

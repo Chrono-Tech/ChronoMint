@@ -10,6 +10,7 @@ export const COIN_TYPE_BTC_MAINNET = 0
 export const COIN_TYPE_BTC_TESTNET = 1
 export const COIN_TYPE_LTC_MAINNET = 2
 export const COIN_TYPE_DASH_MAINNET = 5
+export const COIN_TYPE_NEM_MAINNET = 43
 export const COIN_TYPE_BCC_MAINNET = 145
 export const COIN_TYPE_ETH = 60
 

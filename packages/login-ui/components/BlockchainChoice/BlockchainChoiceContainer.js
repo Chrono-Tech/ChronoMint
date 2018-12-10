@@ -12,15 +12,16 @@ import BlockchainChoice from './BlockchainChoice'
 
 import './BlockchainChoice.scss'
 
-function mapStateToProps () {
-  const initialBlockchains = DEFAULT_ACTIVE_BLOCKCHAINS.reduce((result, item) => {
+function mapStateToProps (ownState, ownProps) {
+  const blockchainList = ownProps.activeBlockchainList || DEFAULT_ACTIVE_BLOCKCHAINS
+  const initialBlockchains = blockchainList.reduce((result, item) => {
     result[item] = true
     return result
   }, {})
   initialBlockchains[BLOCKCHAIN_ETHEREUM] = true
 
   return {
-    allBlockchainList: DEFAULT_ACTIVE_BLOCKCHAINS,
+    allBlockchainList: ownProps.activeBlockchainList || DEFAULT_ACTIVE_BLOCKCHAINS,
     initialBlockchains,
   }
 }
@@ -33,6 +34,7 @@ class BlockchainChoiceContainer extends PureComponent {
     updateBlockchainsList: PropTypes.func,
     navigateToSelectWallet: PropTypes.func,
     allBlockchainList: PropTypes.arrayOf(PropTypes.string),
+    activeBlockchainList: PropTypes.arrayOf(PropTypes.string),
   }
 
   handleSubmitSuccess = async (blockchainValuesList) => {
