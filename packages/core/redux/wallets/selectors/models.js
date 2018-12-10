@@ -3,8 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { createSelector } from 'reselect'
 import { DUCK_WALLETS } from '../constants'
 import { BLOCKCHAIN_ETHEREUM } from '../../../dao/constants'
+import { getWallets as getLHTWallets } from '../../laborHour/selectors/mainSelectors'
 
 export const getWallet = (blockchain, address) => (state) => {
   const walletId = `${blockchain}-${address}`
@@ -22,9 +24,19 @@ export const getWalletsByBlockchain = (blockchain) => (state) => {
   })
 }
 
-export const getWallets = (state) => {
+export const getWalletsList = (state) => {
   return state.get(DUCK_WALLETS).list
 }
+
+export const getWallets = createSelector(
+  [getWalletsList, getLHTWallets],
+  (wallets, lhtWallets) => {
+    return {
+      ...wallets,
+      ...lhtWallets,
+    }
+  },
+)
 
 export const getMainEthWallet = (state) => {
   const wallets = getWallets(state)

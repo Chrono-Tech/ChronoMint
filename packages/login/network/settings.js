@@ -378,7 +378,10 @@ export const LABOR_HOUR_NETWORK_CONFIG = {
   [BLOCKCHAIN_BITCOIN]: 'testnet',
   [BLOCKCHAIN_BITCOIN_CASH]: 'testnet',
   [BLOCKCHAIN_DASH]: 'testnet',
-  [BLOCKCHAIN_LABOR_HOUR]: { type: 'testnet', wss: 'ws://localhost:8546' },
+  [BLOCKCHAIN_LABOR_HOUR]: {
+    type: 'testnet',
+    ws: 'ws://localhost:8546',
+  },
   [BLOCKCHAIN_LITECOIN]: 'litecoin_testnet',
   [BLOCKCHAIN_NEM]: 'testnet',
   [BLOCKCHAIN_WAVES]: 'TESTNET_CONFIG',

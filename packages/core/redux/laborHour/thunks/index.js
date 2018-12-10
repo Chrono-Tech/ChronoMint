@@ -4,14 +4,11 @@
  */
 
 //#region imports
-import {
-  getLaborHourWeb3,
-  laborHourProvider,
-} from '@chronobank/login/network/LaborHourProvider'
+import { laborHourProvider } from '@chronobank/login/network/LaborHourProvider'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 import { TIME } from '@chronobank/login/network/constants'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
-import { getNetworkById } from '@chronobank/login/network/settings'
+import { getNetworkById, LABOR_HOUR_NETWORK_CONFIG } from '@chronobank/login/network/settings'
 import {
   daoByType,
   getLXToken,
@@ -24,6 +21,7 @@ import {
   MULTI_EVENTS_HISTORY,
   TIME_HOLDER,
 } from '../dao/ContractList'
+import tokenService from '../../../services/TokenService'
 import ContractDAOModel from '../../../models/contracts/ContractDAOModel'
 import { notify } from '../../notifier/actions'
 import ERC20TokenDAO from '../../../dao/ERC20TokenDAO'
@@ -68,10 +66,10 @@ export const enableLaborHour = () => async (dispatch, getState) => {
     network = customNetworksList.find((network) => network.id === selectedNetworkId)
   }
 
-  dispatch(initLaborHour({ web3: web3Factory(network[BLOCKCHAIN_LABOR_HOUR]) }))
-
-  await dispatch(initTokens())
-  dispatch(initWalletFromKeys())
+  const lhtNetwork = network[BLOCKCHAIN_LABOR_HOUR]
+    ? network[BLOCKCHAIN_LABOR_HOUR]
+    : LABOR_HOUR_NETWORK_CONFIG[BLOCKCHAIN_LABOR_HOUR]
+  dispatch(initLaborHour({ web3: web3Factory(lhtNetwork) }))
 }
 
 export const disableLaborHour = () => async (dispatch, getState) => {
@@ -87,9 +85,7 @@ export const disableLaborHour = () => async (dispatch, getState) => {
 }
 
 export const initLaborHour = ({ web3 }) => async (dispatch) => {
-  await dispatch(
-    LXSidechainActions.updateWeb3(new HolderModel({ value: web3 })),
-  )
+  await dispatch(LXSidechainActions.updateWeb3(new HolderModel({ value: web3 })))
   await dispatch(initContracts())
   await dispatch(initWalletFromKeys())
   await dispatch(initTokens())
@@ -113,7 +109,7 @@ const getParams = () => async (dispatch, getState) => {
 
 //#region init
 const initContracts = () => async (dispatch, getState) => {
-  const web3 = getLaborHourWeb3(web3Selector()(getState()))
+  const web3 = web3Selector()(getState())
   const networkId = await web3.eth.net.getId()
   const contracts = [
     CHRONOBANK_PLATFORM_SIDECHAIN,
@@ -162,7 +158,7 @@ const initTokens = () => async (dispatch, getState) => {
 const loadTokenByIndex = (symbolIndex) => async (dispatch, getState) => {
   try {
     const state = getState()
-    const web3 = getLaborHourWeb3(web3Selector()(getState()))
+    const web3 = web3Selector()(getState())
     const platformDao = daoByType('ChronoBankPlatformSidechain')(state)
     const symbol = await platformDao.symbols(symbolIndex) // bytes32
     const address = await platformDao.proxies(symbol)
@@ -178,6 +174,7 @@ const loadTokenByIndex = (symbolIndex) => async (dispatch, getState) => {
     token = token.set('decimals', decimals)
     tokenDao.token = token
 
+    tokenService.registerDAO(token, tokenDao)
     dispatch(LXSidechainActions.tokenFetched(token))
     dispatch(
       LXSidechainActions.daosRegister(
@@ -199,11 +196,12 @@ const loadTokenByIndex = (symbolIndex) => async (dispatch, getState) => {
 }
 
 const loadLHTToken = () => async (dispatch, getState) => {
-  const web3 = getLaborHourWeb3(web3Selector()(getState()))
+  const web3 = web3Selector()(getState())
   laborHourDAO.connect(web3)
   const token = await laborHourDAO.getToken()
 
   if (token) {
+    tokenService.registerDAO(token, laborHourDAO)
     dispatch(LXSidechainActions.tokenFetched(token))
     dispatch(
       LXSidechainActions.daosRegister(

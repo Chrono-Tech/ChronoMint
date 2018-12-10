@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { getNetworkById, LABOR_HOUR_NETWORK_CONFIG } from '@chronobank/login/network/settings'
+import { getNetworkById } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
@@ -15,11 +15,9 @@ import * as SessionActions from './actions'
 import * as ProfileThunks from '../profile/thunks'
 import ProfileService from '../profile/service'
 import { daoByType } from '../../redux/daos/selectors'
-import { BLOCKCHAIN_LABOR_HOUR } from '../../dao/constants'
 import web3Factory from '../../web3'
 import { watcher } from '../watcher/actions'
 import { initEthereum } from '../ethereum/thunks'
-import { initLaborHour } from '../laborHour/thunks'
 import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
 import { DEFAULT_CBE_URL, DEFAULT_USER_URL, DUCK_SESSION } from './constants'
 import { getAccountAddresses } from './selectors/session'
@@ -181,10 +179,6 @@ export const login = (account) => async (dispatch, getState) => {
 
   await dispatch(initEthereum({ web3 }))
   await dispatch(watcher({ web3 }))
-  const url = network[BLOCKCHAIN_LABOR_HOUR]
-    ? network[BLOCKCHAIN_LABOR_HOUR].wss
-    : LABOR_HOUR_NETWORK_CONFIG[BLOCKCHAIN_LABOR_HOUR].wss
-  dispatch(initLaborHour({ web3: url }))
 
   const userManagerDAO = daoByType('UserManager')(getState())
   const [isCBE, profile] = await Promise.all([

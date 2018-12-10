@@ -43,7 +43,7 @@ export default class ConfirmTxDialog extends PureComponent {
   }
 
   handleConfirm = async () => {
-    this.props.modalsClose()
+    this.props.modalsClear()
     await this.props.handleAccept(this.props.entry)
   }
 

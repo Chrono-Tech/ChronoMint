@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { getLaborHourWeb3 } from '@chronobank/login/network/LaborHourProvider'
 import { TIME } from '@chronobank/login/network/constants'
 import {
   web3Selector,
@@ -30,7 +29,7 @@ class LaborHourTransactionHandler extends TransactionHandler {
 
   getWeb3 (state) {
     if (this.web3 === null) {
-      this.web3 = getLaborHourWeb3(web3Selector()(state))
+      this.web3 = web3Selector()(state)
     }
 
     return this.web3

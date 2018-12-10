@@ -27,7 +27,7 @@ import { FORM_LABOR_X_CONNECT_SETTINGS } from 'components/constants'
 import TokenValueSimple from 'components/common/TokenValueSimple/TokenValueSimple'
 import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
 import PropTypes from 'prop-types'
-import LHT_LOGO_SVG from 'assets/img/lht.svg'
+import LHT_LOGO_SVG from 'assets/img/icn-lht.svg'
 import './LaborXConnectWidget.scss'
 import { prefix } from './lang'
 import Preloader from '../../common/Preloader/Preloader'
@@ -239,7 +239,7 @@ export default class LaborXConnectWidget extends PureComponent {
             <div styleName='title'>
               Reward: LHT{' '}
               {integerWithDelimiter(
-                this.props.lht.removeDecimals(renderBalance.mul(rewardsCoefficient)),
+                this.props.lht.removeDecimals(renderBalance.mul(rewardsCoefficient || 1)),
                 true,
               )}{' '}
               / block

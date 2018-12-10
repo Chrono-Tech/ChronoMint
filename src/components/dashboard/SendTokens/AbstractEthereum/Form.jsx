@@ -36,6 +36,7 @@ import { ACTION_APPROVE, ACTION_TRANSFER, FORM_SEND_TOKENS, MODE_ADVANCED, MODE_
 import { prefix } from '../lang'
 import '../form.scss'
 import validate from '../validate'
+import { getTokens } from '@chronobank/core/redux/tokens/selectors'
 
 const DEBOUNCE_ESTIMATE_FEE_TIMEOUT = 1000
 
@@ -54,12 +55,13 @@ export function mapStateToProps (state, ownProps) {
   const gasLimit = selector(state, 'gasLimit')
   const mode = selector(state, 'mode')
   const formErrors = getFormSyncErrors(FORM_SEND_TOKENS)(state)
-  const token = state.get(DUCK_TOKENS).item(tokenId)
+  const tokens = getTokens(state)
+  const token = tokens.item(tokenId)
   const isMultiToken = walletInfo.tokens.length > 1
 
   return {
     selectedCurrency,
-    tokens: state.get(DUCK_TOKENS),
+    tokens,
     account: state.get(DUCK_SESSION).account,
     amount,
     token,
@@ -289,7 +291,6 @@ export default class Ethereum extends PureComponent {
                     name='symbol'
                     styleName='symbolSelector'
                     menu-symbol='symbolSelectorMenu'
-                    floatingLabelStyle={{ color: 'white' }}
                   >
                     {walletInfo.tokens
                       .map((tokenData) => {

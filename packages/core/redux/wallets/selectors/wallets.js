@@ -9,7 +9,6 @@ import WalletModel from '../../../models/wallet/WalletModel'
 import { getAccount } from '../../session/selectors/models'
 import { getEthMultisigWallets } from '../../multisigWallet/selectors/models'
 import { getEosWallets } from '../../eos/selectors/mainSelectors'
-import { getWallets as getLHTWallets } from '../../laborHour/selectors/mainSelectors'
 
 export const selectWalletsList = createSelector(
   [
@@ -17,16 +16,14 @@ export const selectWalletsList = createSelector(
     getWallets,
     getEthMultisigWallets,
     getEosWallets,
-    getLHTWallets,
   ],
-  (account, wallets, ethMultisigWallets, eosWallets, lhtWallets) => {
+  (account, wallets, ethMultisigWallets, eosWallets) => {
     return [
       ...Object.values(wallets)
         .filter((wallet: WalletModel) => !(!wallet.address || !wallet.blockchain))
         .filter((wallet: WalletModel) => wallet.isDerived ? wallet.owners.includes(account) : true),
       ...ethMultisigWallets.items(),
       ...Object.values(eosWallets),
-      ...Object.values(lhtWallets),
     ]
       .map((wallet: WalletModel) => {
         const jsWallet = Object.create(null)

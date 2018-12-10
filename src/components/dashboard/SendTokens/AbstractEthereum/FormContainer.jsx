@@ -11,7 +11,6 @@ import web3Converter from '@chronobank/core/utils/Web3Converter'
 import React, { PureComponent } from 'react'
 import { mainApprove, mainTransfer } from '@chronobank/core/redux/wallets/actions'
 import { multisigTransfer } from '@chronobank/core/redux/multisigWallet/actions'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { MultisigEthWalletModel } from '@chronobank/core/models'
@@ -21,12 +20,17 @@ import {
   MODE_ADVANCED,
   MODE_SIMPLE,
 } from 'components/constants'
+import { getTokens } from '@chronobank/core/redux/tokens/selectors'
+import { getLXTokens } from '@chronobank/core/redux/laborHour/selectors/mainSelectors'
+import { BLOCKCHAIN_LABOR_HOUR } from '@chronobank/core/dao/constants'
 
 export function mapStateToProps (state, props) {
-  const tokens = state.get(DUCK_TOKENS)
+  const tokens = getTokens(state)
+  const lxTokens = getLXTokens(state)
 
   return {
     tokens,
+    lxTokens,
     token: tokens.item(props.tokenSymbol),
   }
 }
@@ -53,20 +57,24 @@ export default class SendTokens extends PureComponent {
     mainTransfer: PropTypes.func,
     multisigTransfer: PropTypes.func,
     tokens: PropTypes.instanceOf(TokensCollection),
+    lxTokens: PropTypes.instanceOf(TokensCollection),
     tokenSymbol: PropTypes.string.isRequired,
     token: PropTypes.instanceOf(TokenModel),
   }
 
   handleSubmit = (values, formState) => {
-    const { wallet, tokens } = this.props
+    const { wallet, tokens, lxTokens } = this.props
 
     const { action, symbol, amount, recipient, feeMultiplier, gweiPerGas, gasLimit, mode } = values.toJS()
     let advancedModeParams = {
       mode,
     }
 
-    const token = tokens.item(symbol)
-    if (mode === MODE_ADVANCED ) {
+    const token = wallet.blockchain === BLOCKCHAIN_LABOR_HOUR
+      ? lxTokens.item(symbol)
+      : tokens.item(symbol)
+
+    if (mode === MODE_ADVANCED) {
       const currentGasLimit = gasLimit || formState.gasLimitEstimated
       const gweiPerGasBN = new BigNumber(web3Converter.toWei(gweiPerGas, 'gwei'))
       advancedModeParams = {
@@ -90,22 +98,22 @@ export default class SendTokens extends PureComponent {
     }
   }
 
-  getInitialValues = (token) => ({
+  getInitialValues = () => ({
     feeMultiplier: 1,
-    symbol: token.symbol(),
+    symbol: this.props.token.symbol() || this.props.tokenSymbol,
     mode: MODE_SIMPLE,
   })
 
   render () {
-    const { form: Form, symbol, token } = this.props
+    const { form: Form, symbol, token, wallet } = this.props
 
     return (
       <Form
-        initialValues={this.getInitialValues(token)}
+        initialValues={this.getInitialValues()}
         onSubmit={this.handleSubmit}
         symbol={symbol}
-        token={this.props.token}
-        wallet={this.props.wallet}
+        token={token}
+        wallet={wallet}
       />
     )
   }
