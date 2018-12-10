@@ -99,15 +99,15 @@ const BCC_TESTNET_NODE = new BitcoinMiddlewareNode({
 
 const DASH_MAINNET_NODE = new BitcoinMiddlewareNode({
   api: axios.create({
-    baseURL: 'https://middleware-dash-mainnet-stage.chronobank.io',
+    baseURL: 'https://middleware-dash-mainnet.chronobank.io',
     timeout: 10000,
   }),
   blockchain: BLOCKCHAIN_DASH,
   symbol: DASH,
   socket: {
-    baseURL: 'https://rabbitmq-stage-webstomp.chronobank.io/stomp',
-    user: 'rabbit',
-    password: 'nC865xfpbU41',
+    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
+    user: 'rabbitmq_user',
+    password: '38309100024',
     channels: {
       balance: '/exchange/events/mainnet-dash-middleware-chronobank-io_balance',
       transaction: '/exchange/events/mainnet-dash-middleware-chronobank-io_transaction',
@@ -125,9 +125,9 @@ const DASH_TESTNET_NODE = new BitcoinMiddlewareNode({
   blockchain: BLOCKCHAIN_DASH,
   symbol: DASH,
   socket: {
-    baseURL: 'https://rabbitmq-stage-webstomp.chronobank.io/stomp',
-    user: 'rabbit',
-    password: 'nC865xfpbU41',
+    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
+    user: 'rabbitmq_user',
+    password: '38309100024',
     channels: {
       balance: '/exchange/events/testnet-dash-middleware-chronobank-io_balance',
       transaction: '/exchange/events/testnet-dash-middleware-chronobank-io_transaction',
@@ -196,7 +196,7 @@ export function selectDASHNode (network) {
 }
 
 export function selectLTCNode (network) {
-  return network.Litecoin === 'testnet'
+  return network.Litecoin === 'litecoin_testnet'
     ? LTC_TESTNET_NODE
     : LTC_MAINNET_NODE
 }

@@ -239,8 +239,8 @@ const rejectTransaction = (entry) => (dispatch) => {
 }
 
 export const enableNem = () => async (dispatch) => {
-  dispatch(initToken())
-  dispatch(initWalletFromKeys())
+  await dispatch(initToken())
+  await dispatch(initWalletFromKeys())
 }
 
 const initToken = () => async (dispatch) => {
@@ -276,7 +276,7 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
   const { network } = getCurrentNetworkSelector(state)
   const addressCache = { ...getAddressCache(state) }
 
-  if (!addressCache[BLOCKCHAIN_NEM]) {
+  if (!addressCache[BLOCKCHAIN_NEM] || true) {
     const path = NemUtils.getNemDerivedPath(network[BLOCKCHAIN_NEM])
     const signer = getNemSigner(state)
 

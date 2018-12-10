@@ -15,7 +15,7 @@ export default class AbstractEthereumProvider extends AbstractProvider {
     const node = this._selectNode(this.networkSettings)
 
     node.emit('subscribe', {
-      ethAddress,
+      address: ethAddress,
     })
     return node
   }

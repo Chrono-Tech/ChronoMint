@@ -19,7 +19,6 @@ export const address = (value, required = true, blockchain = 'Ethereum') => {
 }
 
 export const bitcoinAddress = (validateAddress, blockchain) => (value, required = true) => {
-  // TODO @ipavlenko: Provide better validation
   if ((!value && required) || (value && !validateAddress(value))) {
     return { value: 'errors.invalidAddress', blockchain }
   }
@@ -194,22 +193,16 @@ export const privateKey = (value) => {
     wallet.fromPrivateKey(Buffer.from(value, 'hex'))
     return null
   } catch (e) {
-    return 'validator.invalidPrivateKey'
+    return 'errors.invalidPrivateKey'
   }
 }
 
 export const isEthereumAddress = (value) => {
   if (!value || Web3.isAddress(value)) {
-    return { value: 'validator.invalidAddress', blockchain: 'Ethereum' }
+    return { value: 'errors.invalidAddress', blockchain: 'Ethereum' }
   }
   return null
 }
-
-// export const required = (value) => {
-//   return value
-//     ? null
-//     : 'validator.required'
-// }
 
 // eslint-disable-next-line complexity
 export const notEmpty = (value) => {

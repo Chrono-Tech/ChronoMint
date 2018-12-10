@@ -9,7 +9,7 @@ import Amount from '../models/Amount'
 import TokenModel from '../models/tokens/TokenModel'
 import TxModel from '../models/TxModel'
 import AbstractTokenDAO from './AbstractTokenDAO'
-import { EVENT_NEW_BLOCK } from './constants'
+import { EVENT_NEW_BLOCK, DECIMALS_ETHEREUM } from './constants'
 import TxDescModel from '../models/TxDescModel'
 
 const transferSignature = '0x940c4b3549ef0aaff95807dc27f62d88ca15532d1bf535d7d63800f40395d16c'
@@ -40,7 +40,7 @@ export class AbstractEthereumDAO extends AbstractTokenDAO {
   constructor (symbol, contractName, provider, ...rest) {
     super(...rest)
 
-    this._decimals = 18
+    this._decimals = DECIMALS_ETHEREUM
     this._symbol = symbol
     this._contractName = contractName
     this.provider = provider

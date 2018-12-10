@@ -41,7 +41,7 @@ const blockExplorersMap = {
     testnet: 'https://tbcc.blockdozer.com/insight/tx',
   },
   [BLOCKCHAIN_DASH]: {
-    mainnet: 'https://middleware-dash-mainnet-stage.chronobank.io/tx',
+    mainnet: 'https://middleware-dash-mainnet.chronobank.io/tx',
     testnet: 'https://middleware-dash-dev.chronobank.io/tx',
   },
   [BLOCKCHAIN_LABOR_HOUR]: {
@@ -156,7 +156,7 @@ export const givethNetworkMap = [
 
 export const chronoBankMainnet = {
   ...MAINNET_BASE,
-  host: 'mainnet-full-parity-rpc.chronobank.io/',
+  host: 'mainnet-full-parity-ws.chronobank.io/',
   ws: 'wss://mainnet-full-parity-ws.chronobank.io',
 }
 

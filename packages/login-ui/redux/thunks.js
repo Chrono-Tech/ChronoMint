@@ -141,8 +141,10 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
     case WALLET_TYPE_LEDGER:
     case WALLET_TYPE_LEDGER_MOCK: {
       try {
+
         const wallet = await dispatch(DeviceActions.loadDeviceAccount(accountWallet))
         const signer = getEthereumSigner(getState())
+
         await dispatch(SessionThunks.getProfileSignature(signer, wallet.entry.encrypted[0].path))
 
         dispatch(NetworkActions.selectAccount(wallet.entry.encrypted[0].address))
@@ -161,7 +163,9 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
           selectedProviderId,
           selectedNetworkId,
         ))
+
         localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
+
         const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
 
         dispatch(replace(localStorage.getLastURL() || defaultURL))
@@ -298,8 +302,8 @@ export const onCreateWalletFromJSON = (name, walletObject, profile) => (dispatch
  * TODO: to add description
  * TODO: to move logic to utils
 */
-export const onCreateWalletFromDevice = (name, device, profile, walletType) => (dispatch) => {
-  const account = createDeviceAccountEntry(name, device, profile, walletType)
+export const onCreateWalletFromDevice = (name, device, profile, walletType, activeBlockchainList = DEFAULT_ACTIVE_BLOCKCHAINS) => (dispatch) => {
+  const account = createDeviceAccountEntry(name, device, profile, walletType, activeBlockchainList)
   dispatch(PersistAccountActions.accountAdd(account))
   dispatch(PersistAccountActions.accountSelect(account))
 }

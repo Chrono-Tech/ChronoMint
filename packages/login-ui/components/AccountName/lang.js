@@ -10,5 +10,5 @@ export const en = {
   accountNamePlaceholder: 'Enter your account name',
   or: 'or',
   back: 'Back',
-  submit: 'Proceed to log in',
+  submit: 'Choose active blockchains',
 }

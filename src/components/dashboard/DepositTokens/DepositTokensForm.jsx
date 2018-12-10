@@ -429,7 +429,7 @@ export default class DepositTokensForm extends PureComponent {
             />
           </div>
         )}
-        {this.state.step === DEPOSIT_FIRST && isShowTIMERequired && (
+        { (
           <div styleName='action'>
             <Button
               styleName='actionButton'

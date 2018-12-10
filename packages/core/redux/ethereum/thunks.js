@@ -59,8 +59,8 @@ export const initEthereum = ({ web3 }) => (dispatch) => {
 }
 
 export const enableEthereum = () => async (dispatch) => {
-  dispatch(initTokens())
-  dispatch(initWalletFromKeys())
+  await dispatch(initTokens())
+  await dispatch(initWallet())
 }
 
 export const initTokens = () => async (dispatch, getState) => {
@@ -121,14 +121,15 @@ export const watchLatestBlock = () => async (dispatch) => {
   dispatch(TokensActions.setLatestBlock(BLOCKCHAIN_ETHEREUM, { blockNumber: block }))
 }
 
-const initWalletFromKeys = () => async (dispatch, getState) => {
+const initWallet = () => async (dispatch, getState) => {
   const state = getState()
   const { network } = getCurrentNetworkSelector(state)
   const addressCache = { ...getAddressCache(state) }
 
-  if (!addressCache[BLOCKCHAIN_ETHEREUM]) {
+  if (!addressCache[BLOCKCHAIN_ETHEREUM] || true) {
     const path = Utils.getEthereumDerivedPath(network[BLOCKCHAIN_ETHEREUM])
     const signer = getEthereumSigner(state)
+
     if (signer) {
       const address = await signer.getAddress(path)
       addressCache[BLOCKCHAIN_ETHEREUM] = {
@@ -156,10 +157,12 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
   ethereumProvider.subscribe(wallet.address)
   dispatch({ type: WALLETS_SET, wallet })
 
+  dispatch(updateWalletBalanceMiddleware(wallet))
   dispatch(updateWalletBalance(wallet))
 }
 
-export const updateWalletBalance = (wallet) => (dispatch) => {
+export const updateWalletBalanceMiddleware = (wallet) => (dispatch) => {
+
   getWalletBalances({ wallet })
     .then((balancesResult) => {
       try {
@@ -181,4 +184,64 @@ export const updateWalletBalance = (wallet) => (dispatch) => {
       // eslint-disable-next-line no-console
       console.error('call balances from middleware is failed getWalletBalances', e)
     })
+}
+
+export const updateWalletBalance = (wallet) => (dispatch /*, getState*/) => {
+  dispatch(updateWalletBalanceMiddleware(wallet))
+}
+
+//
+// export const updateWalletBalance = (wallet) => (dispatch, getState) => {
+//   const web3 = web3Selector()(getState())
+//   web3.eth.getBalance(wallet.address).then((balances) => {
+//     console.log('balances web3: ', balances)
+//   })
+//
+//   getWalletBalances({ wallet })
+//     .then((balancesResult) => {
+//       try {
+//         console.log('balancesResult: ', balancesResult, wallet)
+//         dispatch({ type: WALLETS_SET, wallet: new WalletModel({
+//           ...wallet,
+//           balances: {
+//             ...wallet.balances,
+//             ...formatBalances(wallet.blockchain, balancesResult),
+//           },
+//         }),
+//         })
+//       } catch (e) {
+//         // eslint-disable-next-line no-console
+//         console.error(e.message)
+//       }
+//     })
+//     .catch((e) => {
+//       // eslint-disable-next-line no-console
+//       console.error('call balances from middleware is failed getWalletBalances', e)
+//     })
+// }
+
+export const updateWalletBalanceWeb3 = (wallet) => (dispatch, getState) => {
+  try {
+    const web3 = web3Selector()(getState())
+    web3.eth.getBalance(wallet.address)
+      .then((balance) => {
+        dispatch({
+          type: WALLETS_SET, wallet: new WalletModel({
+            ...wallet,
+            balances: {
+              ...wallet.balances,
+              ...formatBalances(wallet.blockchain, balance),
+            },
+          }),
+        })
+      })
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error('call balances from Web3 is failed: ', error)
+      })
+
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('call balances from is failed: ', e)
+  }
 }

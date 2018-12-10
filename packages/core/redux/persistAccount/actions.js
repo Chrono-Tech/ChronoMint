@@ -69,24 +69,31 @@ const disableMap = {
   [BLOCKCHAIN_LABOR_HOUR]: disableLaborHour(),
 }
 
-export const enableDefaultBlockchains = () => (dispatch, getState) => {
+export const enableDefaultBlockchains = () => async (dispatch, getState) => {
   const state = getState()
   const activeBlockchains = getBlockchainList(state)
 
-  dispatch(enableEthereum())
-  dispatch(enableBlockchains(activeBlockchains))
+  await dispatch(enableEthereum())
+  await dispatch(enableBlockchains(activeBlockchains))
 }
 
-export const enableBlockchains = (blockchains) => (dispatch) => {
-  blockchains.forEach((blockchain) => {
-    // TODO @Abdulov remove if
-    if (blockchain !== 'Ethereum') {
-      return
+async function asyncForEach (array, callback) {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index])
+  }
+}
+
+const enableBlockchains = (blockchains) => async (dispatch) => {
+  await asyncForEach(blockchains, async (blockchain) => {
+    try {
+      if (!enableMap[blockchain]) {
+        return
+      }
+      await dispatch(enableMap[blockchain])
+    } catch (error) {
+      //eslint-disable-next-line
+      console.error(`${blockchain} Initialization error: `, error)
     }
-    if (!enableMap[blockchain]) {
-      return
-    }
-    dispatch(enableMap[blockchain])
   })
 }
 

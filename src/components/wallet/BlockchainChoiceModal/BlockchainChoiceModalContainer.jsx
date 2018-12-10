@@ -11,7 +11,7 @@ import {
 } from '@chronobank/core/redux/persistAccount/constants'
 import { modalsClear, modalsClose } from '@chronobank/core/redux/modals/actions'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
-import { getBlockchainList } from '@chronobank/core/redux/persistAccount/selectors'
+import { getBlockchainList, getSelectedWallet, getActiveBlockchainListByType } from '@chronobank/core/redux/persistAccount/selectors'
 import BlockchainChoice from '@chronobank/login-ui/components/BlockchainChoice/BlockchainChoice'
 import { updateBlockchainActivity } from '@chronobank/core/redux/persistAccount/actions'
 
@@ -19,6 +19,9 @@ import ModalDialog from '../../dialogs/ModalDialog'
 
 function mapStateToProps (state) {
   const activeList = getBlockchainList(state)
+  const selectedWallet = getSelectedWallet(state)
+  const allBlockchainList = getActiveBlockchainListByType(selectedWallet.type)
+
   const initialBlockchains = DEFAULT_ACTIVE_BLOCKCHAINS.reduce((result, item) => {
     result[item] = activeList.includes(item)
     return result
@@ -26,7 +29,7 @@ function mapStateToProps (state) {
   initialBlockchains[BLOCKCHAIN_ETHEREUM] = true
 
   return {
-    allBlockchainList: DEFAULT_ACTIVE_BLOCKCHAINS,
+    allBlockchainList: allBlockchainList,
     initialBlockchains,
   }
 }

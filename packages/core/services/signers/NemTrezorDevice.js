@@ -4,19 +4,21 @@
  */
 
 import TrezorConnect from 'trezor-connect'
+import TrezorError from '../errors/TrezorError'
 
 export default class NemTrezorDevice {
-  constructor ({ seed, network }) {
-    this.seed = seed
+  constructor ({ network }) {
     this.network = network
-    Object.freeze(this)
   }
 
   async getAddress (path) {
     const result = await TrezorConnect.nemGetAddress({
       path: path,
-      network: this.network,
+      network: 152,
     })
+    if (!result.success) {
+      throw new TrezorError(result.code, result.payload.error)
+    }
 
     return result.payload.address
   }

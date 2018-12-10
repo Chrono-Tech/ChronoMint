@@ -8,7 +8,7 @@ import * as a from './constants'
 const initialState = {
   deviceList: [],
   selectedDevice: null,
-  isLoading: false,
+  status: null,
 }
 
 export default (state = initialState, action) => {
@@ -18,17 +18,30 @@ export default (state = initialState, action) => {
         ...state,
         selectedWallet: action.wallet,
       }
-
     case a.DEVICE_UPDATE_LIST:
       return {
         ...state,
         deviceList: action.deviceList,
       }
-
-    case a.DEVICE_SET_STATUS:
+    case a.DEVICE_CLEAR_LIST:
       return {
         ...state,
-        isLoading: action.deviceStatus,
+        deviceList: [],
+      }
+    case a.DEVICE_STATE_LOADING:
+      return {
+        ...state,
+        status: a.STATE_LOADING,
+      }
+    case a.DEVICE_STATE_LOADED:
+      return {
+        ...state,
+        status: a.STATE_LOADED,
+      }
+    case a.DEVICE_STATE_ERROR:
+      return {
+        ...state,
+        status: a.STATE_ERROR,
       }
 
     default:

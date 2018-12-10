@@ -18,7 +18,6 @@ export default class AccountNameContainer extends PureComponent {
     let accountName = values.get('accountName')
 
     accountName = accountName.trim()
-
     onSubmit && onSubmit(accountName)
   }
 

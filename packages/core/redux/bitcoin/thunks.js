@@ -17,10 +17,7 @@ import type { Dispatch } from 'redux'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 
 import { modalsOpen } from '../modals/actions'
-import {
-  DUCK_PERSIST_ACCOUNT,
-  WALLETS_CACHE_ADDRESS,
-} from '../persistAccount/constants'
+import { WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
 import { getBalanceDataParser } from './converter'
 import {
   TransferNoticeModel,
@@ -266,15 +263,14 @@ export const updateWalletBalance = (wallet) => async (dispatch) => {
 }
 
 const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
-  dispatch(BitcoinActions.bitcoinSignTx())
-
   try {
+    dispatch(BitcoinActions.bitcoinSignTx())
+
     const network = getSelectedNetwork()(getState())
-    const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
     const unsignedTxHex = entry.tx.prepared.buildIncomplete().toHex()
 
     dispatch(showSignerModal())
-    const signedHex = await signer.signTransaction(unsignedTxHex, selectedWallet.encrypted[0].path)
+    const signedHex = await signer.signTransaction(unsignedTxHex, BitcoinUtils.getBitcoinDerivedPath(network[BLOCKCHAIN_BITCOIN]))
     dispatch(closeSignerModal())
 
     const bitcoinTransaction = bitcoin.Transaction.fromHex(signedHex)
@@ -293,6 +289,7 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     return bitcoinTxEntry
   } catch (error) {
     dispatch(closeSignerModal())
+    dispatch(notifyError(error, 'Trezor'))
 
     const bitcoinErrorTxEntry = BitcoinUtils.createBitcoinTxEntryModel({
       ...entry,
@@ -366,7 +363,7 @@ const sendSignedTransaction = (entry) => async (dispatch, getState) => {
           dispatch(notifyBitcoinTransfer(txEntry))
         }
 
-        dispatch(BitcoinActions.bitcoinExecuteTxSuccess(response.data)) // TODO: mve it to appropriate place
+        dispatch(BitcoinActions.bitcoinExecuteTxSuccess(response.data)) // TODO: move it to appropriate place
         // TODO: need to check that res.status is equal 200 etc. Or it is better to check right in fetchPersonInfo.
         return response.data // TODO: to verify, that 'data' is JSON, not HTML like 502.html or 404.html
       })
@@ -416,8 +413,8 @@ export const enableBitcoin = (blockchainName) => async (dispatch) => {
     throw new Error(`Blockchain name is empty or not a BTC like: [${blockchainName}]`)
   }
 
-  dispatch(initToken(blockchainName))
-  dispatch(initWalletFromKeys(blockchainName))
+  await dispatch(initToken(blockchainName))
+  await dispatch(initWallet(blockchainName))
 }
 
 const initToken = (blockchainName) => async (dispatch, getState) => {
@@ -447,7 +444,7 @@ const initToken = (blockchainName) => async (dispatch, getState) => {
   }
 }
 
-const initWalletFromKeys = (blockchainName) => async (dispatch, getState) => {
+const initWallet = (blockchainName) => async (dispatch, getState) => {
   const state = getState()
   const { network } = getCurrentNetworkSelector(state)
 
@@ -468,13 +465,14 @@ const initWalletFromKeys = (blockchainName) => async (dispatch, getState) => {
     },
     [BLOCKCHAIN_LITECOIN]: {
       selector: getLitecoinSigner,
-      path: BitcoinUtils.getBitcoinDerivedPath(network[BLOCKCHAIN_LITECOIN], COIN_TYPE_LTC_MAINNET),
+      path: BitcoinUtils.getLitecoinDerivedPath(network[BLOCKCHAIN_LITECOIN], COIN_TYPE_LTC_MAINNET),
     },
   }
 
-  if (!addressCache[blockchainName]) {
+  if (!addressCache[blockchainName] || true) {
     const { selector, path } = signerSelectorsMap[blockchainName]
     const signer = selector(state)
+
     if (signer) {
       const address = await signer.getAddress(path)
       addressCache[blockchainName] = {
