@@ -25,7 +25,7 @@ class LoginWithTrezor extends Component {
 
   renderError () {
     return (
-      <div styleName='state' key='1'>
+      <div styleName='state'>
         <div styleName='titleContent'>
           <div styleName='title'>Trezor not found</div>
           <div styleName='subtitle'>Connect your Trezor</div>
@@ -36,7 +36,7 @@ class LoginWithTrezor extends Component {
 
   renderLoading () {
     return (
-      <div styleName='stateLoading' key='1'>
+      <div styleName='stateLoading'>
         <div styleName='titleContent'>
           <div styleName='title'>Loading</div>
         </div>

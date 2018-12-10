@@ -106,8 +106,8 @@ const DASH_MAINNET_NODE = new BitcoinMiddlewareNode({
   symbol: DASH,
   socket: {
     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
-    user: 'rabbit',
-    password: 'nC865xfpbU41',
+    user: 'rabbitmq_user',
+    password: '38309100024',
     channels: {
       balance: '/exchange/events/mainnet-dash-middleware-chronobank-io_balance',
       transaction: '/exchange/events/mainnet-dash-middleware-chronobank-io_transaction',
@@ -126,8 +126,8 @@ const DASH_TESTNET_NODE = new BitcoinMiddlewareNode({
   symbol: DASH,
   socket: {
     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
-    user: 'rabbit',
-    password: 'nC865xfpbU41',
+    user: 'rabbitmq_user',
+    password: '38309100024',
     channels: {
       balance: '/exchange/events/testnet-dash-middleware-chronobank-io_balance',
       transaction: '/exchange/events/testnet-dash-middleware-chronobank-io_transaction',
