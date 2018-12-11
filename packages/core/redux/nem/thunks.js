@@ -279,9 +279,12 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
   if (!addressCache[BLOCKCHAIN_NEM] || true) {
     const path = NemUtils.getNemDerivedPath(network[BLOCKCHAIN_NEM])
     const signer = getNemSigner(state)
+    console.log('Nem signer: ', signer)
 
     if (signer) {
       const address = await signer.getAddress(path)
+      console.log('Nem signer address: ', address)
+
       addressCache[BLOCKCHAIN_NEM] = {
         address,
         path,
