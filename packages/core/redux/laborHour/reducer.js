@@ -22,7 +22,10 @@ import {
   LABOR_HOUR_UPDATE_LOCKED_DEPOSIT,
   LABOR_HOUR_UPDATE_FEE_MULTIPLIER,
   LABOR_HOUR_SWAP_LIST_UPDATE,
-  LABOR_HOUR_UPDATE_PROCESSING_STATUS, LABOR_HOUR_TOKENS_UPDATE_LATEST_BLOCK, STATUS_DISCONNECTED, LABOR_HOUR_UPDATE_MIDDLEWARE_CONNECTING_STATUS, LABOR_HOUR_UPDATE_NODE_CONNECTING_STATUS,
+  LABOR_HOUR_UPDATE_PROCESSING_STATUS,
+  LABOR_HOUR_TOKENS_UPDATE_LATEST_BLOCK,
+  STATUS_DISCONNECTED,
+  LABOR_HOUR_UPDATE_MIDDLEWARE_CONNECTING_STATUS,
 } from './constants'
 import TokensCollection from '../../models/tokens/TokensCollection'
 
@@ -44,7 +47,6 @@ const initialState = {
   },
   statuses: {
     middleware: STATUS_DISCONNECTED,
-    node: STATUS_DISCONNECTED,
   },
 }
 
@@ -61,15 +63,6 @@ const mutations = {
       statuses: {
         ...state.statuses,
         middleware: status,
-      },
-    }
-  },
-  [LABOR_HOUR_UPDATE_NODE_CONNECTING_STATUS]: (state, { status }) => {
-    return {
-      ...state,
-      statuses: {
-        ...state.statuses,
-        node: status,
       },
     }
   },

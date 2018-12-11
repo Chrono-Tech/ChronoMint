@@ -70,12 +70,7 @@ export const enableLaborHour = () => async (dispatch, getState) => {
   const lhtNetwork = network[BLOCKCHAIN_LABOR_HOUR]
     ? network[BLOCKCHAIN_LABOR_HOUR]
     : LABOR_HOUR_NETWORK_CONFIG[BLOCKCHAIN_LABOR_HOUR]
-  try {
-    dispatch(initLaborHour({ web3: web3Factory(lhtNetwork) }))
-    dispatch(LXSidechainActions.setNodeConnectionStatus(STATUS_CONNECTED))
-  } catch (e) {
-    dispatch(LXSidechainActions.setNodeConnectionStatus(STATUS_DISCONNECTED))
-  }
+  dispatch(initLaborHour({ web3: web3Factory(lhtNetwork) }))
 }
 
 export const disableLaborHour = () => async (dispatch, getState) => {
@@ -126,23 +121,19 @@ const initContracts = () => async (dispatch, getState) => {
   const historyAddress = MULTI_EVENTS_HISTORY.abi.networks[networkId].address
 
   const getDaoModel = async (contract) => {
-    try {
-      const contractAddress = contract.abi.networks[networkId].address
-      const contractDAO = contract.create(contractAddress, historyAddress)
-      await contractDAO.connect(web3)
+    const contractAddress = contract.abi.networks[networkId].address
+    const contractDAO = contract.create(contractAddress, historyAddress)
+    await contractDAO.connect(web3)
 
-      dispatch(
-        LXSidechainActions.daosRegister(
-          new ContractDAOModel({
-            contract,
-            address: contractDAO.address,
-            dao: contractDAO,
-          }),
-        ),
-      )
-    } catch (e) {
-      dispatch(LXSidechainActions.setNodeConnectionStatus(STATUS_DISCONNECTED))
-    }
+    dispatch(
+      LXSidechainActions.daosRegister(
+        new ContractDAOModel({
+          contract,
+          address: contractDAO.address,
+          dao: contractDAO,
+        }),
+      ),
+    )
   }
 
   await Promise.all(
@@ -286,11 +277,4 @@ export const watchLatestBlock = () => async (dispatch) => {
 
   const block = await laborHourDAO.getBlockNumber()
   dispatch(LXSidechainActions.setLatestBlock(BLOCKCHAIN_LABOR_HOUR, { blockNumber: block }))
-}
-
-export const watchNodeStatus = () => (dispatch, getState) => {
-  const timeoutId = setTimeout(() => {
-    dispatch(initLaborHour())
-
-  }, 60 * 1000)
 }

@@ -146,9 +146,3 @@ export const setMiddlewareConnectionStatus = (status) =>
     type: LABOR_HOUR_UPDATE_MIDDLEWARE_CONNECTING_STATUS,
     status,
   })
-
-export const setNodeConnectionStatus = (status) =>
-  ({
-    type: LABOR_HOUR_UPDATE_MIDDLEWARE_CONNECTING_STATUS,
-    status,
-  })
