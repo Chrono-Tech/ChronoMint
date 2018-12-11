@@ -160,6 +160,7 @@
     "testrpc": "ganache-cli --mnemonic \"video visa alcohol fault earth naive army senior major inherit convince electric\"",
     "bridge": "cd node_modules/ethereum-bridge && mkdir -p database && node bridge.js",
     "contracts:compile": "cd node_modules/chronobank-smart-contracts && node --max_old_space_size=8000 ../truffle/build/cli.bundled.js compile --all",
+    "contracts-lx:compile": "cd node_modules/LXsidechain-sc && node --max_old_space_size=8000 ../truffle/build/cli.bundled.js compile --all",
     "contracts": "cd node_modules/chronobank-smart-contracts && node --max_old_space_size=8000 ../truffle/build/cli.bundled.js migrate --network development",
     "tconsole": "cd node_modules/chronobank-smart-contracts && node ../truffle/build/cli.bundled.js console --verbose-rpc",
     "hs": "openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem && hs build -a localhost -o -S",
