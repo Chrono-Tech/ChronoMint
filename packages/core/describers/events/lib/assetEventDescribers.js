@@ -214,7 +214,8 @@ export const EVENT_TRANSFER = new EventDescriber(
   },
 )
 
-export const EVENT_ERROR = new EventDescriber(
+// TODO MINT-2322
+/*export const EVENT_ERROR = new EventDescriber(
   findEventABI(ChronoBankPlatformEmitterABI, 'Error'),
   ({ log, block, tx }, context, { params }) => {
 
@@ -229,7 +230,7 @@ export const EVENT_ERROR = new EventDescriber(
       target: null,
     })
   },
-)
+)*/
 
 export const EVENT_ASSET_CREATED = new EventDescriber(
   findEventABI(PlatformTokenExtensionGatewayManagerEmitterABI, TX_ASSET_CREATED),

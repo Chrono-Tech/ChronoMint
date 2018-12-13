@@ -214,7 +214,8 @@ export const FUNCTION_REISSUE_ASSET = new TransactionDescriber(
   },
 )
 
-export const FUNCTION_REMOVE_ASSET_PART_OWNER = new TransactionDescriber(
+// TODO MINT-2322
+/*export const FUNCTION_REMOVE_ASSET_PART_OWNER = new TransactionDescriber(
   findFunctionABI(ChronoBankPlatformABI, TX_REMOVE_ASSET_PART_OWNER),
   ({ tx, block }, { address }, { feeSymbol }) => {
     address = address.toLowerCase()
@@ -242,7 +243,7 @@ export const FUNCTION_REMOVE_ASSET_PART_OWNER = new TransactionDescriber(
       })
     }
   },
-)
+)*/
 
 export const FUNCTION_REVOKE_ASSET = new TransactionDescriber(
   findFunctionABI(ChronoBankPlatformABI, TX_REVOKE_ASSET),

@@ -34,6 +34,10 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
   const account = getAccount(state)
   AbstractContractDAO.setAccount(account)
   const networkId = await web3.eth.net.getId()
+  // TODO @abdulov remove console.log
+  console.log('%c networkId', 'background: #222; color: #fff', networkId)
+  // TODO @abdulov remove console.log
+  console.log('%c ContractsManagerABI.networks', 'background: #222; color: #fff', ContractsManagerABI.networks)
   const contractManagerAddress = ContractsManagerABI.networks[networkId].address
   const contractManagerDAO = CONTRACTS_MANAGER.create(contractManagerAddress)
   await contractManagerDAO.connect(web3)

@@ -10,7 +10,7 @@
     "bignumber.js": "^4.1.0",
     "bn.js": "^4.11.8",
     "bs58": "latest",
-    "chronobank-smart-contracts": "file:../../../SmartContractsDevelop",
+    "chronobank-smart-contracts": "1.1.48-pre3",
     "eosjs": "^16.0.8",
     "eosjs-ecc": "^4.0.4",
     "eth-crypto": "^1.2.2",
