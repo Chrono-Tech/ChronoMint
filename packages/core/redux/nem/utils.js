@@ -12,7 +12,6 @@ import {
 } from '@chronobank/login/network/constants'
 import { TxEntryModel, TxExecModel } from '../../models'
 import { DECIMALS } from './constants'
-import { getDerivedPath } from '../wallets/utils'
 
 export const createNemTxEntryModel = (entry, options = {}) =>
   new TxEntryModel({
@@ -42,6 +41,8 @@ export const describeXemTransaction = (tx, network) => {
 
   const nemNetwork = nemSdk.model.network.data[network[BLOCKCHAIN_NEM]]
   const transactionEntity = nemSdk.model.transactions.prepare('transferTransaction')(common, transferTransaction, nemNetwork.id)
+  console.log('describeXemTransaction transactionEntity: ', transactionEntity)
+
   return new TxExecModel({
     prepared: transactionEntity,
     hash: null,
@@ -80,10 +81,16 @@ export const describeMosaicTransaction = (tx, network) => {
   })
 }
 
-export const createXemTransaction = async (prepared, signer, signerPath) => {
-  const serialized = nemSdk.utils.serialization.serializeTransaction({ ...prepared, signer: signer.getPublicKey() })
-  const signature = await signer.signTransaction(serialized, signerPath)
-  const address = await signer.getAddress(signerPath)
+export const createXemTransaction = async (prepared, signer, signerPath, address) => {
+  console.log('createXemTransaction: ', prepared, signer, signerPath)
+  const serialized = nemSdk.utils.serialization.serializeTransaction({ ...prepared })
+  console.log('createXemTransaction serialized: ', serialized)
+  const signature = await signer.signTransaction(prepared, signerPath)
+
+  console.log('createXemTransaction signature: ', signature)
+
+  // get address from cache
+  // const address = await signer.getAddress(signerPath)
 
   return {
     tx: {
@@ -99,5 +106,5 @@ export const getNemDerivedPath = (networkName) => {
   const coinType = nemSdk.model.network.data[networkName] === nemSdk.model.network.data.mainnet
     ? COIN_TYPE_NEM_MAINNET
     : COIN_TYPE_ALLCOINS_TESTNET
-  return getDerivedPath(coinType)
+  return `m/44'/${coinType}'/0'/0'/0'`
 }

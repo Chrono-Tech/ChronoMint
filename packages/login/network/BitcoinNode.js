@@ -59,7 +59,7 @@ export const BTC_TESTNET_NODE = new BitcoinMiddlewareNode({
 
 const BCC_MAINNET_NODE = new BitcoinMiddlewareNode({
   api: axios.create({
-    baseURL: 'https://test-bcc.chronobank.io',  // @todo MINT-2028 Ask Egor when BCC prod node is ready
+    baseURL: 'https://bcc-testnet-rest-stage.chronobank.io/',  // @todo MINT-2028 Ask Egor when BCC prod node is ready
     timeout: 10000,
   }),
   blockchain: BLOCKCHAIN_BITCOIN_CASH,
@@ -79,7 +79,7 @@ const BCC_MAINNET_NODE = new BitcoinMiddlewareNode({
 
 const BCC_TESTNET_NODE = new BitcoinMiddlewareNode({
   api: axios.create({
-    baseURL: 'https://test-bcc.chronobank.io',
+    baseURL: 'https://bcc-testnet-rest-stage.chronobank.io/',
     timeout: 10000,
   }),
   blockchain: BLOCKCHAIN_BITCOIN_CASH,
@@ -196,6 +196,8 @@ export function selectDASHNode (network) {
 }
 
 export function selectLTCNode (network) {
+  console.log('selectLTCNode: ', network, network.Litecoin)
+
   return network.Litecoin === 'litecoin_testnet'
     ? LTC_TESTNET_NODE
     : LTC_MAINNET_NODE

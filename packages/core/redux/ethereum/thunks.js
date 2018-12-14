@@ -124,7 +124,9 @@ const initWallet = () => async (dispatch, getState) => {
   const { network } = getCurrentNetworkSelector(state)
   const addressCache = { ...getAddressCache(state) }
 
-  if (!addressCache[BLOCKCHAIN_ETHEREUM] || true) {
+  console.log('Ethereum init wallet: ', addressCache[BLOCKCHAIN_ETHEREUM], addressCache)
+
+  if (!addressCache[BLOCKCHAIN_ETHEREUM]) {
     const path = Utils.getEthereumDerivedPath(network[BLOCKCHAIN_ETHEREUM])
     const signer = getEthereumSigner(state)
 
@@ -155,7 +157,6 @@ const initWallet = () => async (dispatch, getState) => {
   ethereumProvider.subscribe(wallet.address)
   dispatch({ type: WALLETS_SET, wallet })
 
-  dispatch(updateWalletBalanceMiddleware(wallet))
   dispatch(updateWalletBalance(wallet))
 }
 
@@ -186,36 +187,6 @@ export const updateWalletBalanceMiddleware = (wallet) => (dispatch) => {
 export const updateWalletBalance = (wallet) => (dispatch /*, getState*/) => {
   dispatch(updateWalletBalanceMiddleware(wallet))
 }
-
-//
-// export const updateWalletBalance = (wallet) => (dispatch, getState) => {
-//   const web3 = web3Selector()(getState())
-//   web3.eth.getBalance(wallet.address).then((balances) => {
-//     console.log('balances web3: ', balances)
-//   })
-//
-//   getWalletBalances({ wallet })
-//     .then((balancesResult) => {
-//       try {
-//         console.log('balancesResult: ', balancesResult, wallet)
-//         dispatch({ type: WALLETS_SET, wallet: new WalletModel({
-//           ...wallet,
-//           balances: {
-//             ...wallet.balances,
-//             ...formatBalances(wallet.blockchain, balancesResult),
-//           },
-//         }),
-//         })
-//       } catch (e) {
-//         // eslint-disable-next-line no-console
-//         console.error(e.message)
-//       }
-//     })
-//     .catch((e) => {
-//       // eslint-disable-next-line no-console
-//       console.error('call balances from middleware is failed getWalletBalances', e)
-//     })
-// }
 
 export const updateWalletBalanceWeb3 = (wallet) => (dispatch, getState) => {
   try {

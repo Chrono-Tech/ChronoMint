@@ -34,10 +34,14 @@ export default class NemTrezorDevice {
   }
 
   async signTransaction (data, path) {
+    console.log('signTransaction: ', data, path)
+
     const result = await TrezorConnect.nemSignTransaction({
       path: path,
       transaction: data,
     })
+
+    console.log('signTransaction result: ', result)
 
     return result.payload.signature
   }

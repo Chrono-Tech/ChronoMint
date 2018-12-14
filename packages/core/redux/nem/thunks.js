@@ -20,10 +20,7 @@ import * as NemUtils from './utils'
 import { getToken } from '../tokens/selectors'
 import { notify } from '../notifier/actions'
 import tokenService from '../../services/TokenService'
-import {
-  DUCK_PERSIST_ACCOUNT,
-  WALLETS_CACHE_ADDRESS,
-} from '../persistAccount/constants'
+import { WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
 import { showSignerModal, closeSignerModal } from '../modals/thunks'
 
 import * as TokensActions from '../tokens/actions'
@@ -122,13 +119,18 @@ const processTransaction = ({ entry, signer }) => async (dispatch, getState) => 
 
 const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   try {
-    const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
+    console.log('signTransaction: ', entry, signer)
+    const state = getState()
+    const { network } = getCurrentNetworkSelector(state)
+    const nemPath = NemUtils.getNemDerivedPath(network[BLOCKCHAIN_NEM])
+    const addressCache = { ...getAddressCache(state) }
 
     dispatch(NemActions.nemTxSignTransaction({ entry, signer }))
 
     dispatch(showSignerModal())
     const { tx } = entry
-    const signed = await NemUtils.createXemTransaction(tx.prepared, signer, selectedWallet.encrypted[0].path)
+    console.log('signTransaction: ', tx)
+    const signed = await NemUtils.createXemTransaction(tx.prepared, signer, nemPath, addressCache[BLOCKCHAIN_NEM])
     dispatch(closeSignerModal())
 
     dispatch(NemActions.nemTxUpdate(entry.key, entry.tx.from, NemUtils.createNemTxEntryModel({
@@ -140,6 +142,7 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     })))
 
   } catch (error) {
+    console.log('signTransaction: ', error)
     dispatch(closeSignerModal())
 
     dispatch(NemActions.nemTxSignTransactionError({ error }))
@@ -149,6 +152,8 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
 }
 
 const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
+  console.log('sendSignedTransaction: ', entry)
+
   dispatch(NemActions.nemTxSendSignedTransaction({ entry }))
   dispatch(nemTxStatus(entry.key, entry.tx.from, { isPending: true }))
 
@@ -219,6 +224,7 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
 
   const state = getState()
   const signer = getNemSigner(state)
+  console.log('getNemSigner(state): ', signer)
 
   const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key)(getState())
   if (!selectedEntry) {
@@ -276,9 +282,9 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
   const { network } = getCurrentNetworkSelector(state)
   const addressCache = { ...getAddressCache(state) }
 
-  if (!addressCache[BLOCKCHAIN_NEM] || true) {
+  if (!addressCache[BLOCKCHAIN_NEM]) {
     const path = NemUtils.getNemDerivedPath(network[BLOCKCHAIN_NEM])
-    const signer = getNemSigner(state)
+    const signer = getNemSigner(state, path)
     console.log('Nem signer: ', signer)
 
     if (signer) {
