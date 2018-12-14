@@ -49,7 +49,6 @@ import web3Factory from '../../../../core/web3'
 import { getWalletsByBlockchain } from '../../wallets/selectors/models'
 import { WALLETS_UNSET } from '../../wallets/constants'
 import { getEthereumSigner } from '../../ethereum/selectors'
-import { STATUS_CONNECTED, STATUS_DISCONNECTED } from '../constants'
 //#endregion
 
 export { executeLaborHourTransaction }
@@ -93,6 +92,8 @@ export const initLaborHour = ({ web3 }) => async (dispatch) => {
   await dispatch(watch())
   await dispatch(getSwapList())
   await dispatch(getParams())
+  // await dispatch(obtainAllMainnetOpenSwaps())
+  // await dispatch(obtainAllLXOpenSwaps())
 }
 
 const getParams = () => async (dispatch, getState) => {

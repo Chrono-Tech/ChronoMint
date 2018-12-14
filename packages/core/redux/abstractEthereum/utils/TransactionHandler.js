@@ -54,7 +54,8 @@ export default class TransactionHandler extends TransactionGuide {
       dispatch(this.submitTransaction(entry))
       return entry
     } catch (e) {
-      const entry = TxEntryModel({
+      const entry = new TxEntryModel({
+        tx: {},
         key: uuid(),
         isErrored: true,
       })

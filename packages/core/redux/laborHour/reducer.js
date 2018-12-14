@@ -4,29 +4,7 @@
  */
 
 import { omit } from 'lodash'
-import {
-  LABOR_HOUR_TX_CREATE,
-  LABOR_HOUR_TX_REMOVE,
-  LABOR_HOUR_TX_UPDATE,
-  LABOR_HOUR_UPDATE_WALLET,
-  LABOR_HOUR_UNSET_WALLET,
-  LABOR_HOUR_WEB3_UPDATE,
-  LABOR_HOUR_DAOS_REGISTER,
-  LABOR_HOUR_SWAP_UPDATE,
-  LABOR_HOUR_TOKENS_FETCHING,
-  LABOR_HOUR_TOKENS_FETCHED,
-  LABOR_HOUR_TOKENS_FAILED,
-  LABOR_HOUR_DEPOSIT_PARAMS_UPDATE,
-  LABOR_HOUR_UPDATE_MINING_NODE_TYPE,
-  LABOR_HOUR_UPDATE_DEPOSIT,
-  LABOR_HOUR_UPDATE_LOCKED_DEPOSIT,
-  LABOR_HOUR_UPDATE_FEE_MULTIPLIER,
-  LABOR_HOUR_SWAP_LIST_UPDATE,
-  LABOR_HOUR_UPDATE_PROCESSING_STATUS,
-  LABOR_HOUR_TOKENS_UPDATE_LATEST_BLOCK,
-  STATUS_DISCONNECTED,
-  LABOR_HOUR_UPDATE_MIDDLEWARE_CONNECTING_STATUS,
-} from './constants'
+import * as types from './constants'
 import TokensCollection from '../../models/tokens/TokensCollection'
 
 const initialState = {
@@ -46,18 +24,22 @@ const initialState = {
     lockedDeposit: {},
   },
   statuses: {
-    middleware: STATUS_DISCONNECTED,
+    middleware: types.STATUS_DISCONNECTED,
+  },
+  rewards: {
+    total: null,
+    list: {},
   },
 }
 
 const mutations = {
-  [LABOR_HOUR_WEB3_UPDATE]: (state, { web3 }) => {
+  [types.LABOR_HOUR_WEB3_UPDATE]: (state, { web3 }) => {
     return {
       ...state,
       web3,
     }
   },
-  [LABOR_HOUR_UPDATE_MIDDLEWARE_CONNECTING_STATUS]: (state, { status }) => {
+  [types.LABOR_HOUR_UPDATE_MIDDLEWARE_CONNECTING_STATUS]: (state, { status }) => {
     return {
       ...state,
       statuses: {
@@ -66,7 +48,7 @@ const mutations = {
       },
     }
   },
-  [LABOR_HOUR_DAOS_REGISTER] (state, { model }) {
+  [types.LABOR_HOUR_DAOS_REGISTER] (state, { model }) {
     return {
       ...state,
       daos: {
@@ -81,7 +63,7 @@ const mutations = {
       },
     }
   },
-  [LABOR_HOUR_SWAP_UPDATE]: (state, { swap }) => {
+  [types.LABOR_HOUR_SWAP_UPDATE]: (state, { swap }) => {
     return {
       ...state,
       swaps: {
@@ -90,7 +72,7 @@ const mutations = {
       },
     }
   },
-  [LABOR_HOUR_SWAP_LIST_UPDATE]: (state, { swaps }) => {
+  [types.LABOR_HOUR_SWAP_LIST_UPDATE]: (state, { swaps }) => {
     return {
       ...state,
       swaps: {
@@ -99,25 +81,25 @@ const mutations = {
       },
     }
   },
-  [LABOR_HOUR_TOKENS_FETCHING]: (state, { count }) => {
+  [types.LABOR_HOUR_TOKENS_FETCHING]: (state, { count }) => {
     return {
       ...state,
       tokens: state.tokens.leftToFetch(count),
     }
   },
-  [LABOR_HOUR_TOKENS_FETCHED]: (state, { token }) => {
+  [types.LABOR_HOUR_TOKENS_FETCHED]: (state, { token }) => {
     return {
       ...state,
       tokens: state.tokens.itemFetched(token),
     }
   },
-  [LABOR_HOUR_TOKENS_FAILED]: (state) => {
+  [types.LABOR_HOUR_TOKENS_FAILED]: (state) => {
     return {
       ...state,
       tokens: state.tokens.leftToFetch(state.leftToFetch() - 1),
     }
   },
-  [LABOR_HOUR_TOKENS_UPDATE_LATEST_BLOCK]: (state, { blockchain, block }) => {
+  [types.LABOR_HOUR_TOKENS_UPDATE_LATEST_BLOCK]: (state, { blockchain, block }) => {
     return {
       ...state,
       tokens: state.tokens.latestBlocks({
@@ -126,7 +108,7 @@ const mutations = {
       }),
     }
   },
-  [LABOR_HOUR_UPDATE_WALLET]: (state, { wallet }) => {
+  [types.LABOR_HOUR_UPDATE_WALLET]: (state, { wallet }) => {
     return {
       ...state,
       wallets: {
@@ -135,7 +117,7 @@ const mutations = {
       },
     }
   },
-  [LABOR_HOUR_UNSET_WALLET]: (state, { wallet }) => {
+  [types.LABOR_HOUR_UNSET_WALLET]: (state, { wallet }) => {
     const list = { ...state.list }
     delete list[wallet.id]
     return {
@@ -145,7 +127,7 @@ const mutations = {
       },
     }
   },
-  [LABOR_HOUR_TX_CREATE]: (state, { entry }) => {
+  [types.LABOR_HOUR_TX_CREATE]: (state, { entry }) => {
     const account = entry.tx.from
     const pending = state.pending
     const scope = pending[account]
@@ -160,7 +142,7 @@ const mutations = {
       },
     }
   },
-  [LABOR_HOUR_TX_UPDATE]: (state, { key, address, tx }) => {
+  [types.LABOR_HOUR_TX_UPDATE]: (state, { key, address, tx }) => {
     const scope = state.pending[address]
     return {
       ...state,
@@ -172,7 +154,7 @@ const mutations = {
       },
     }
   },
-  [LABOR_HOUR_TX_REMOVE]: (state, { key, address }) => {
+  [types.LABOR_HOUR_TX_REMOVE]: (state, { key, address }) => {
     const scope = state.pending[address]
     if (!scope || !scope[key]) return state
     return {
@@ -180,7 +162,7 @@ const mutations = {
       pending: omit(state.pending, [key]),
     }
   },
-  [LABOR_HOUR_DEPOSIT_PARAMS_UPDATE]: (state, { minDepositLimit, rewardsCoefficient }) => {
+  [types.LABOR_HOUR_DEPOSIT_PARAMS_UPDATE]: (state, { minDepositLimit, rewardsCoefficient }) => {
     return {
       ...state,
       miningParams: {
@@ -189,7 +171,7 @@ const mutations = {
       },
     }
   },
-  [LABOR_HOUR_UPDATE_MINING_NODE_TYPE]: (state, { miningParams }) => {
+  [types.LABOR_HOUR_UPDATE_MINING_NODE_TYPE]: (state, { miningParams }) => {
     return {
       ...state,
       miningParams: {
@@ -198,7 +180,7 @@ const mutations = {
       },
     }
   },
-  [LABOR_HOUR_UPDATE_FEE_MULTIPLIER]: (state, { feeMultiplier }) => {
+  [types.LABOR_HOUR_UPDATE_FEE_MULTIPLIER]: (state, { feeMultiplier }) => {
     return {
       ...state,
       miningParams: {
@@ -207,7 +189,7 @@ const mutations = {
       },
     }
   },
-  [LABOR_HOUR_UPDATE_DEPOSIT]: (state, { address, amount }) => {
+  [types.LABOR_HOUR_UPDATE_DEPOSIT]: (state, { address, amount }) => {
     return {
       ...state,
       timeHolder: {
@@ -219,7 +201,7 @@ const mutations = {
       },
     }
   },
-  [LABOR_HOUR_UPDATE_LOCKED_DEPOSIT]: (state, { address, amount }) => {
+  [types.LABOR_HOUR_UPDATE_LOCKED_DEPOSIT]: (state, { address, amount }) => {
     return {
       ...state,
       timeHolder: {
@@ -231,12 +213,21 @@ const mutations = {
       },
     }
   },
-  [LABOR_HOUR_UPDATE_PROCESSING_STATUS]: (state, { status }) => {
+  [types.LABOR_HOUR_UPDATE_PROCESSING_STATUS]: (state, { status }) => {
     return {
       ...state,
       miningParams: {
         ...state.miningParams,
         processingStatus: status,
+      },
+    }
+  },
+  [types.LABOR_HOUR_UPDATE_TOTAL_REWARDS]: (state, { total }) => {
+    return {
+      ...state,
+      rewards: {
+        ...state.rewards,
+        total,
       },
     }
   },
