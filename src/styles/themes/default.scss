@@ -31,6 +31,12 @@
     padding: 0;
     border: 0;
   }
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    color: $color-white !important;
+  }
 
   #react-root {
   }
