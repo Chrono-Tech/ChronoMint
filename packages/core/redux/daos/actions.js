@@ -6,7 +6,7 @@
 import ContractDAOModel from '../../models/contracts/ContractDAOModel'
 import { getAccount } from '../session/selectors/models'
 import AbstractContractDAO from '../../dao/AbstractContractDAO'
-import { ContractsManagerABI } from '../../dao/abi'
+import { DeployedAddresses } from '../../dao/abi'
 import {
   ASSET_HOLDER_LIBRARY,
   ASSET_DONATOR_LIBRARY,
@@ -34,11 +34,8 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
   const account = getAccount(state)
   AbstractContractDAO.setAccount(account)
   const networkId = await web3.eth.net.getId()
-  // TODO @abdulov remove console.log
-  console.log('%c networkId', 'background: #222; color: #fff', networkId)
-  // TODO @abdulov remove console.log
-  console.log('%c ContractsManagerABI.networks', 'background: #222; color: #fff', ContractsManagerABI.networks)
-  const contractManagerAddress = ContractsManagerABI.networks[networkId].address
+  const addresses = DeployedAddresses[networkId]
+  const contractManagerAddress = addresses.ContractsManager.address
   const contractManagerDAO = CONTRACTS_MANAGER.create(contractManagerAddress)
   await contractManagerDAO.connect(web3)
 
@@ -67,7 +64,9 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
   const getDaoModel = async (contract, contractAddress: string, isGetAddressFromContract: boolean = true) => {
     let address = contractAddress
     if (!address && isGetAddressFromContract) {
-      address = await contractManagerDAO.getContractAddressByType(contract.type)
+      address = addresses[contract.type]
+        ? addresses[contract.type].address
+        : await contractManagerDAO.getContractAddressByType(contract.type)
       address = typeof address === 'string' ? address.toLowerCase() : null
     }
 

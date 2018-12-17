@@ -3,12 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import resultCodes from 'chronobank-smart-contracts/common/errors'
 import EventEmitter from 'events'
 import OwnerModel from '../models/wallet/OwnerModel'
 import MultisigWalletDAO from '../dao/MultisigWalletDAO'
 import type MultisigTransactionModel from '../models/wallet/MultisigTransactionModel'
-import MultisigWalletPendingTxModel from '../models/wallet/MultisigWalletPendingTxModel'
 import {
   EE_CONFIRMATION,
   EE_CONFIRMATION_NEEDED,
@@ -77,13 +75,6 @@ class MultisigWalletService extends EventEmitter {
       }),
       dao.watchConfirmation((id, owner) => {
         this.emit(EE_CONFIRMATION, wallet.id, id, owner)
-      }),
-      dao.watchError((errorCode) => {
-        if (errorCode === resultCodes.WALLET_CONFIRMATION_NEEDED) {
-          this.emit(EE_CONFIRMATION_NEEDED, wallet.id, new MultisigWalletPendingTxModel({
-            // TODO @dkchv: no id (operation here) :(
-          }))
-        }
       }),
       dao.watchRequirementChanged((required) => {
         this.emit(EE_REQUIREMENT_CHANGED, wallet.id, required)

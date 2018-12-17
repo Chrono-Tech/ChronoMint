@@ -5,7 +5,6 @@
 
 import { zipWith } from 'lodash'
 import BigNumber from 'bignumber.js'
-import resultCodes from 'chronobank-smart-contracts/common/errors'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import AbstractContractDAO from './AbstractContractDAO'
 import Amount from '../models/Amount'
@@ -22,7 +21,6 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   constructor (address, history) {
     super({ address, history, abi: WalletABI })
-    this._okCodes.push(resultCodes.WALLET_CONFIRMATION_NEEDED)
   }
 
   // watchers

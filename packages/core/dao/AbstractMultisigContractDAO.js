@@ -4,7 +4,6 @@
  */
 
 import BigNumber from 'bignumber.js'
-import resultCodes from 'chronobank-smart-contracts/common/errors'
 import ethABI from 'ethereumjs-abi'
 import TxExecModel from '../models/TxExecModel'
 import AbstractContractDAO from './AbstractContractDAO'
@@ -15,8 +14,6 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
     if (new.target === AbstractMultisigContractDAO) {
       throw new TypeError('Cannot construct AbstractMultisigContractDAO instance directly')
     }
-
-    this._okCodes = [resultCodes.OK, resultCodes.MULTISIG_ADDED]
   }
 
   /**

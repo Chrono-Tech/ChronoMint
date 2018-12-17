@@ -4,7 +4,6 @@
  */
 
 import BigNumber from 'bignumber.js'
-import resultCodes from 'chronobank-smart-contracts/common/errors'
 import tokenService from '../services/TokenService'
 import AbstractContractDAO from './AbstractContractDAO'
 import type ERC20DAO from './ERC20DAO'
@@ -14,8 +13,6 @@ import { TX_DEPOSIT, TX_LOCK, TX_UNLOCK_SHARES, TX_WITHDRAW_SHARES } from './con
 export default class AssetHolderDAO extends AbstractContractDAO {
   constructor ({ address, history, abi }) {
     super({ address, history, abi })
-
-    this._okCodes = [resultCodes.OK, resultCodes.TIMEHOLDER_DEPOSIT_FAILED, resultCodes.TIMEHOLDER_WITHDRAWN_FAILED]
   }
 
   connect (web3, options) {

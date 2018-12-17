@@ -60,7 +60,9 @@ const blockExplorersMap = {
   },
 }
 
-const LABOR_HOUR_WSS = 'wss://parity.tp.ntr1x.com:8546'
+const LABOR_HOUR_WSS =
+  // 'wss://parity.tp.ntr1x.com:8546'
+  'wss://sidechain-node1-ws-stage.chronobank.io'
 
 const MAINNET_BASE = {
   id: NETWORK_MAIN_ID,
