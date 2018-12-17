@@ -392,7 +392,6 @@ export const getTransactionsForMainWallet = ({ blockchain, address, forcedOffset
   if (!wallet) {
     return null
   }
-
   dispatch({
     type: WALLETS_UPDATE_WALLET,
     wallet: new WalletModel({
@@ -453,7 +452,7 @@ export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
   const blocks = transactions.blocks
   let endOfList = false
   if (dao) {
-    const txList = await dao.getTransfer(wallet.address, wallet.address, offset, TXS_PER_PAGE, tokens)
+    const txList = await dao.getTransfer(wallet.address, wallet.address, 0, TXS_PER_PAGE, tokens)
 
     txList.sort((a, b) => b.time - a.time)
 

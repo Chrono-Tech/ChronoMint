@@ -15,7 +15,7 @@ import TxHistoryModel from '@chronobank/core/models/wallet/TxHistoryModel'
 import { prefix } from './lang'
 import './TransactionsListWidget.scss'
 
-function makeMapStateToProps (state, props) {
+function makeMapStateToProps(state, props) {
   const { wallet } = props
   const getTransactions = getTxListForWallet(wallet.id)
 
@@ -26,7 +26,7 @@ function makeMapStateToProps (state, props) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     getTransactions: (params) => dispatch(formatDataAndGetTransactionsForWallet(params)),
   }
@@ -40,7 +40,7 @@ export default class TransactionsListWidget extends PureComponent {
     getTransactions: PropTypes.func,
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.handleGetTransactions()
   }
 
@@ -53,7 +53,7 @@ export default class TransactionsListWidget extends PureComponent {
     })
   }
 
-  render () {
+  render() {
     const { wallet, transactionsHistory } = this.props
 
     return (

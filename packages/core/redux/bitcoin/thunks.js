@@ -43,7 +43,8 @@ import { DUCK_TOKENS } from '../tokens/constants'
 import tokenService from '../../services/TokenService'
 import { getDashSigner } from '../dash/selectors'
 import { EVENT_UPDATE_LAST_BLOCK } from '../../dao/constants'
-import { getWalletsByBlockchain } from '../wallets/selectors/models'
+import { getWalletsByBlockchain, getWallet } from '../wallets/selectors/models'
+import { formatDataAndGetTransactionsForWallet } from '../wallet/actions'
 
 const daoMap = {
   [BLOCKCHAIN_BITCOIN]: bitcoinDAO,
@@ -358,7 +359,12 @@ const sendSignedTransaction = (entry) => async (dispatch, getState) => {
               hash: response.hash,
             },
           })
-
+          const wallet = getWallet(blockchain, txEntry.tx.from)(state)
+          dispatch(formatDataAndGetTransactionsForWallet({
+            wallet,
+            address: wallet.address,
+            blockchain: wallet.blockchain,
+          }))
           dispatch(BitcoinActions.bitcoinTxUpdate(txEntry))
           dispatch(notifyBitcoinTransfer(txEntry))
         }
