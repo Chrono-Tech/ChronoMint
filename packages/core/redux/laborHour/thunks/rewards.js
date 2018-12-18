@@ -24,7 +24,6 @@ export const getRewardsBlocksList = () => async (dispatch, getState) => {
   const skip = selectRewardsBlocksListLength(state)
   dispatch(setRewardsBlocksListLoadingFlag(true))
   const { data } = await BlockRewardsMiddlewareService.getBlocksList(skip, PAGE_LENGTH)
-  // TODO @Abdulov add ending flag
   setTimeout(() => {
     dispatch(setRewardsBlocksList(data.reduce((accumulator, block) => {
       return {

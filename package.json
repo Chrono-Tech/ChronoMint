@@ -89,7 +89,7 @@
     "webpack-compile-time-plugin": "^1.0.0",
     "webpack-dev-server": "2.11.3",
     "webpack-filter-warnings-plugin": "^1.2.0",
-    "LXsidechain-sc": "github:ChronoBank/LXsidechain-sc"
+    "LXsidechain-sc": "git+ssh://git@gitlab.chronobank.io:SmartContracts/LXsidechain-sc#feature/dev-282-lx-chain-development"
   },
   "dependencies": {
     "@material-ui/core": "latest",

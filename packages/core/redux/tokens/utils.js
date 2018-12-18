@@ -5,7 +5,6 @@
 import { bccProvider, btcProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { dashProvider } from '@chronobank/login/network/DashProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
-import { laborHourProvider } from '@chronobank/login/network/LaborHourProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 

@@ -4,20 +4,20 @@
  */
 
 import axios from 'axios'
-import { BigNumber } from 'bignumber.js'
+// import { BigNumber } from 'bignumber.js'
 import { LHT } from '../../dao/constants'
 import Amount from '../../models/Amount'
 
 const URL_MIDDLEWARE_SIDECHAIN_HOST = 'http://localhost:8081/'
 
-const URL_TOTAL_REWARD = ''
-const URL_BLOCK = ''
-const URL_BLOCKS_LIST = 'blocks/history'
+// const URL_TOTAL_REWARD = ''
+// const URL_BLOCK = ''
+// const URL_BLOCKS_LIST = 'blocks/history'
 
 export default class BlockRewardsMiddlewareService {
   static service = axios.create({ baseURL: URL_MIDDLEWARE_SIDECHAIN_HOST })
 
-  static getTotalReward (userAddress: string) {
+  static getTotalReward () {
     /*return SidechainMiddlewareService.service.request({
       url: `${URL_SWAPS_LIST}${userAddress}`,
       json: true,

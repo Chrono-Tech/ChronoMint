@@ -22,12 +22,20 @@ import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import Select from 'redux-form-material-ui/es/Select'
 import Slider from 'components/common/Slider'
-import { change, Field, formPropTypes, formValueSelector, getFormSyncErrors, getFormValues, reduxForm } from 'redux-form/immutable'
+import {
+  change,
+  Field,
+  formPropTypes,
+  formValueSelector,
+  getFormSyncErrors,
+  getFormValues,
+  reduxForm,
+} from 'redux-form/immutable'
 import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/wallets/constants'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
 import { walletInfoSelector } from '@chronobank/core/redux/wallet/selectors/selectors'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/constants'
+import { getTokens } from '@chronobank/core/redux/tokens/selectors'
 import inversedTheme from 'styles/themes/inversed'
 import { selectCurrentCurrency } from '@chronobank/market/redux/selectors'
 import { MultisigEthWalletModel } from '@chronobank/core/models'
@@ -36,7 +44,6 @@ import { ACTION_APPROVE, ACTION_TRANSFER, FORM_SEND_TOKENS, MODE_ADVANCED, MODE_
 import { prefix } from '../lang'
 import '../form.scss'
 import validate from '../validate'
-import { getTokens } from '@chronobank/core/redux/tokens/selectors'
 
 const DEBOUNCE_ESTIMATE_FEE_TIMEOUT = 1000
 

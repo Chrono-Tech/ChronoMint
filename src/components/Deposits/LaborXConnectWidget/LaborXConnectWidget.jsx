@@ -107,7 +107,7 @@ export default class LaborXConnectWidget extends PureComponent {
 
   constructor (props) {
     super(props)
-    let step = WIDGET_SECOND_STEP
+    let step = WIDGET_FIRST_STEP
     if (props.lhtWallet.balances[TIME] && props.lhtWallet.balances[TIME].gt(0)) {
       step = WIDGET_SECOND_STEP
     }

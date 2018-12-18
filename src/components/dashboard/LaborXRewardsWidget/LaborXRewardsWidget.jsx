@@ -6,7 +6,13 @@
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { getMainLaborHourWallet, selectRewardsBlocksList, selectRewardsBlocksListLoadingFlag, selectTotalRewards } from '@chronobank/core/redux/laborHour/selectors'
+import { LHT } from '@chronobank/core/dao/constants'
+import {
+  getMainLaborHourWallet,
+  selectRewardsBlocksList,
+  selectRewardsBlocksListLoadingFlag,
+  selectTotalRewards,
+} from '@chronobank/core/redux/laborHour/selectors'
 import { selectWallet } from '@chronobank/core/redux/wallet/actions'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import { getGetRewardsInfo, getRewardsBlocksList } from '@chronobank/core/redux/laborHour/thunks/rewards'
@@ -18,7 +24,6 @@ import './LaborXRewardsWidget.scss'
 import TokenValueSimple from '../../common/TokenValueSimple/TokenValueSimple'
 import Preloader from '../../common/Preloader/Preloader'
 import Moment from '../../common/Moment'
-import { LHT } from '@chronobank/core/dao/constants'
 import Button from '../../common/ui/Button/Button'
 
 function mapStateToProps (state) {
@@ -34,7 +39,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch, ownProps) {
+function mapDispatchToProps (dispatch) {
   return {
     selectWallet: (blockchain, address) => dispatch(selectWallet(blockchain, address)),
     handleGetRewards: () => dispatch(getGetRewardsInfo()),

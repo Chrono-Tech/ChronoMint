@@ -24,7 +24,6 @@ import {
 
 import {
   TX_REISSUE_ASSET,
-  TX_REMOVE_ASSET_PART_OWNER,
   TX_REVOKE_ASSET,
 } from '../../../dao/constants/ChronoBankPlatformDAO'
 import Amount from '../../../models/Amount'
