@@ -4,6 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
+import { get } from 'lodash'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -14,7 +15,7 @@ import { PTWallet } from '@chronobank/core/redux/wallet/types'
 import { formatDataAndGetTransactionsForWallet } from '@chronobank/core/redux/wallet/actions'
 import './WalletWidget.scss'
 
-function makeMapStateToProps(state, props) {
+function makeMapStateToProps (state, props) {
   const { wallet } = props
   const mainSymbol = getMainSymbolForBlockchain(wallet.blockchain)
   const getAmount = walletAmountSelector(wallet.id, mainSymbol)
@@ -31,7 +32,7 @@ function makeMapStateToProps(state, props) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     getTransactions: (params) => dispatch(formatDataAndGetTransactionsForWallet(params)),
   }
@@ -45,21 +46,22 @@ export default class WalletMainCoinBalance extends PureComponent {
     amount: PropTypes.number,
     selectedCurrency: PropTypes.string,
     wallet: PTWallet,
+    getTransactions: PropTypes.func,
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.balance !== nextProps.balance) {
+  componentWillReceiveProps (nextProps) {
+    if (get(this.props, "balance") !== get(nextProps, "balance")) {
       this.props.getTransactions({
-        wallet: nextProps.wallet,
-        address: nextProps.wallet.address,
-        blockchain: nextProps.wallet.blockchain,
+        wallet: get(nextProps, "wallet"),
+        address: get(nextProps, "wallet.address"),
+        blockchain: get(nextProps, "wallet.blockchain"),
         forcedOffset: true,
       })
     }
 
   }
 
-  render() {
+  render () {
     const { selectedCurrency, mainSymbol, balance, amount } = this.props
 
     return (
