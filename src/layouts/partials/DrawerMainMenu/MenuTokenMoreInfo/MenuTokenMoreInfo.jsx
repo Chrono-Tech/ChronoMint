@@ -171,7 +171,7 @@ export default class MenuTokenMoreInfo extends PureComponent {
               to='/wallet'
               styleName='walletTitle'
               onClick={() => {
-                this.handleSelectLink(token.blockchain(), walletAddress)
+                this.handleSelectLink(selectedToken.blockchain, selectedToken.address)
               }}
             >
               <div styleName='walletName'><Translate value={`${prefix}.mainWalletTitle`} /></div>

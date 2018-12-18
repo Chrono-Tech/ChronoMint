@@ -11,7 +11,12 @@ import { updateProcessingStatus } from '../actions'
 import { pendingEntrySelector } from '../../transaction/selectors'
 import { TX_DEPOSIT, TX_LOCK, TX_UNLOCK } from '../../../dao/constants/AssetHolderDAO'
 import Amount from '../../../models/Amount'
-import { daoByType, getLXDeposit, getLXLockedDeposit, getMainLaborHourWallet } from '../selectors/mainSelectors'
+import {
+  daoByType,
+  getLXDeposit,
+  getLXLockedDeposit,
+  getMainLaborHourWallet,
+} from '../selectors'
 import { daoByType as daoByTypeMainnet } from '../../daos/selectors'
 import { TX_START_MINING_IN_CUSTOM_NODE } from '../dao/TimeHolderDAO'
 import { estimateLaborHourGas } from './transactions'

@@ -10,7 +10,7 @@ import { getWalletById } from './models'
 import { PTWallet } from '../../wallet/types'
 import { getEthMultisigWallet } from '../../multisigWallet/selectors/models'
 import { getEOSWallet } from '../../eos/selectors/mainSelectors'
-import { getWalletById as getLHTWallet } from '../../laborHour/selectors/mainSelectors'
+import { getWalletById as getLHTWallet } from '../../laborHour/selectors'
 
 export const filteredBalancesAndTokens = (walletId, symbol) =>
   createSelector(

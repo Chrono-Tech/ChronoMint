@@ -12,6 +12,8 @@ import laborHourDAO from '../../dao/LaborHourDAO'
 import { updateEthWalletBalance } from '../abstractEthereum/thunk'
 
 export const selectWallet = (blockchain: string, address: string) => (dispatch) => {
+  // TODO @abdulov remove console.log
+  console.log('%c blockchain, address', 'background: #222; color: #fff', blockchain, address)
   dispatch({ type: WALLET_SELECT_WALLET, blockchain, address })
 }
 

@@ -8,9 +8,11 @@ export const prefix = 'LaborXRewardsWidget'
 export default {
   en: {
     title: 'Rewards',
-    subTitle: 'All rewards are being sent to your LHT Wallet',
+    subTitle: 'All rewards are being sent to your',
+    walletLink: 'LHT Wallet',
     date: 'Date',
     block: 'Block #',
-    reward: 'Reward',
+    reward: 'Rewards: LHT ',
+    more: 'Load more',
   },
 }

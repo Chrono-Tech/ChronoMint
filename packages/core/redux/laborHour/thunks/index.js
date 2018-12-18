@@ -13,7 +13,7 @@ import {
   daoByType,
   getLXToken,
   web3Selector,
-} from '../selectors/mainSelectors'
+} from '../selectors'
 import {
   ATOMIC_SWAP_ERC20,
   CHRONOBANK_PLATFORM_SIDECHAIN,

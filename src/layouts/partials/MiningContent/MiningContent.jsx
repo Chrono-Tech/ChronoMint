@@ -25,7 +25,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     initAssetsHolder: () => dispatch(initAssetsHolder()),
-    initLXTimeHolder: ()=> dispatch(updateTimeHolderBalances()),
+    initLXTimeHolder: () => dispatch(updateTimeHolderBalances()),
     addDeposit: (props) => dispatch(modalsOpen({
       componentName: 'DepositTokensModal',
       props,
@@ -38,7 +38,7 @@ export default class MiningContent extends Component {
   static propTypes = {
     deposit: PropTypes.instanceOf(Amount),
     initAssetsHolder: PropTypes.func,
-    initLXTimeHolder:  PropTypes.func,
+    initLXTimeHolder: PropTypes.func,
     addDeposit: PropTypes.func,
   }
 
@@ -53,7 +53,7 @@ export default class MiningContent extends Component {
         <div styleName='content'>
           <div styleName='inner'>
             <LaborXConnectWidget />
-            {/*<LaborXRewardsWidget />*/}
+            <LaborXRewardsWidget />
           </div>
         </div>
       </div>

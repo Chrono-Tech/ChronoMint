@@ -5,10 +5,15 @@
 
 //#region imports
 import {
-  daoByType, getLXDeposit,
-  getLXLockedDeposit, getLXSwapsStM, getLXToken,
-  getMainLaborHourWallet, getMiningFeeMultiplier, getMiningParams,
-} from '../selectors/mainSelectors'
+  daoByType,
+  getLXDeposit,
+  getLXLockedDeposit,
+  getLXSwapsStM,
+  getLXToken,
+  getMainLaborHourWallet,
+  getMiningFeeMultiplier,
+  getMiningParams,
+} from '../selectors'
 import { daoByType as daoByTypeMainnet } from '../../daos/selectors'
 import Amount from '../../../models/Amount'
 import web3Converter from '../../../utils/Web3Converter'

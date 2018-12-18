@@ -28,7 +28,7 @@ import { DUCK_TOKENS } from './constants'
 import { EOS } from '../eos/constants'
 import { getEOSTokens } from '../eos/selectors/mainSelectors'
 import TokensCollection from '../../models/tokens/TokensCollection'
-import { getLXTokens } from '../laborHour/selectors/mainSelectors'
+import { getLXTokens } from '../laborHour/selectors'
 
 export const getTokens = (state) => {
   return state.get(DUCK_TOKENS)

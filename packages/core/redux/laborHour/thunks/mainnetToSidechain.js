@@ -8,7 +8,7 @@ import {
   getMainLaborHourWallet,
   getMiningFeeMultiplier,
   getLXSwapsMtS, getLXDeposit, getMiningParams,
-} from '../selectors/mainSelectors'
+} from '../selectors'
 import web3Converter from '../../../utils/Web3Converter'
 import SidechainMiddlewareService from '../SidechainMiddlewareService'
 import { notifyUnknownError, watchProcessingStatus } from './utilsThunks'

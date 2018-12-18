@@ -6,7 +6,7 @@
 import { createSelector } from 'reselect'
 import { DUCK_WALLETS } from '../constants'
 import { BLOCKCHAIN_ETHEREUM } from '../../../dao/constants'
-import { getWallets as getLHTWallets } from '../../laborHour/selectors/mainSelectors'
+import { getWallets as getLHTWallets } from '../../laborHour/selectors'
 
 export const getWallet = (blockchain, address) => (state) => {
   const walletId = `${blockchain}-${address}`

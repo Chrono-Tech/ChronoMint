@@ -9,7 +9,7 @@ import { getWallet } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
 import Amount from '../../../models/Amount'
 import { getEthMultisigWallet } from '../../multisigWallet/selectors/models'
-import { getWallet as getLHTWallet } from '../../laborHour/selectors/mainSelectors'
+import { getWallet as getLHTWallet } from '../../laborHour/selectors'
 import { getEOSWallet } from '../../eos/selectors/mainSelectors'
 
 export const selectWallet = (blockchain, address) =>

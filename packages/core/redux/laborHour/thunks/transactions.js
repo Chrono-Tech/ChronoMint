@@ -9,7 +9,7 @@ import {
   getMainLaborHourWallet,
   daoByType,
   getLXToken, getLXTokens, daoByAddress,
-} from '../selectors/mainSelectors'
+} from '../selectors'
 import laborHourDAO from '../../../dao/LaborHourDAO'
 import TransactionHandler from '../../abstractEthereum/utils/TransactionHandler'
 import { BLOCKCHAIN_LABOR_HOUR, LHT } from '../../../dao/constants'

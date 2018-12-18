@@ -137,6 +137,12 @@ export const getLXLMiningProcessingStatus = createSelector(
     return processingStatus
   })
 
+export const selectTotalRewards = createSelector(
+  LXSDuckSelector,
+  ({ rewards }) => {
+    return rewards.total
+  })
+
 export const selectRewardsBlocksList = createSelector(
   LXSDuckSelector,
   ({ rewards }) => {
@@ -147,4 +153,10 @@ export const selectRewardsBlocksListLength = createSelector(
   selectRewardsBlocksList,
   (list) => {
     return Object.values(list).length
+  })
+
+export const selectRewardsBlocksListLoadingFlag = createSelector(
+  LXSDuckSelector,
+  ({ rewards }) => {
+    return rewards.isLoading
   })

@@ -21,7 +21,7 @@ import {
   MODE_SIMPLE,
 } from 'components/constants'
 import { getTokens } from '@chronobank/core/redux/tokens/selectors'
-import { getLXTokens } from '@chronobank/core/redux/laborHour/selectors/mainSelectors'
+import { getLXTokens } from '@chronobank/core/redux/laborHour/selectors'
 import { BLOCKCHAIN_LABOR_HOUR } from '@chronobank/core/dao/constants'
 
 export function mapStateToProps (state, props) {

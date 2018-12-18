@@ -19,7 +19,7 @@ import {
   getLXToken,
   getMainLaborHourWallet,
   getMiningParams,
-} from '@chronobank/core/redux/laborHour/selectors/mainSelectors'
+} from '@chronobank/core/redux/laborHour/selectors'
 import {
   obtainAllMainnetOpenSwaps,
   obtainAllLXOpenSwaps,

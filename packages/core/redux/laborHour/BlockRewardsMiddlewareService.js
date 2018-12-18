@@ -5,6 +5,8 @@
 
 import axios from 'axios'
 import { BigNumber } from 'bignumber.js'
+import { LHT } from '../../dao/constants'
+import Amount from '../../models/Amount'
 
 const URL_MIDDLEWARE_SIDECHAIN_HOST = 'http://localhost:8081/'
 
@@ -20,7 +22,7 @@ export default class BlockRewardsMiddlewareService {
       url: `${URL_SWAPS_LIST}${userAddress}`,
       json: true,
     })*/
-    return { data: new BigNumber(10000) }
+    return { data: new Amount(1000000000000000000, LHT) }
   }
 
   static getBlocksList (/*skip, limit*/) {
@@ -30,104 +32,79 @@ export default class BlockRewardsMiddlewareService {
     return {
       data: [
         {
-          hash:
-            '0x26c08f1e0022a17e7e88324a2d78f04969a2a40f349271715b2a056d6c0ed9b6',
-          miner: '0x00d6cc1ba9cf89bd2e58009741f4f7325badc0ed',
-          number: 9591279,
-          timestamp: 1544014044,
-          totalTxFee: '6004278000000000',
-          uncleAmount: 0,
-          reward: 500000,
+          "hash": "0x83649bc4986b45c9c5c508b945c0b195bce9c17952817fbe9c52ba4ee3b12b4e",
+          "miner": "0x52bc44d5378309ee2abf1539bf71de1b7d7be3b5",
+          "signers": [],
+          "number": 346561,
+          "timestamp": 1444208649,
+          "totalTxFee": "1050000000000000",
+          "uncleAmount": 0,
+          "rewards": [
+            {
+              "reward": "5001050000000000000",
+              "address": "0x52bc44d5378309ee2abf1539bf71de1b7d7be3b5",
+            },
+          ],
         },
         {
-          hash:
-            '0x4b279b3a6e7fdbc4e06428e18db9b83a4ba7b8fe6325b4bac1c32d418f2af561',
-          miner: '0x00a0a24b9f0e5ec7aa4c7389b8302fd0123194de',
-          number: 9591278,
-          timestamp: 1544014040,
-          totalTxFee: '1696262000000000',
-          uncleAmount: 0,
-          reward: 500000,
+          "hash": "0x36ee7163f05e2b7b52f6794773ddb3801c57e25f8a1ce49532be9f0ff5b29c69",
+          "miner": "0x95581ea0c5b362933f3523138f54d51eae817211",
+          "signers": [],
+          "number": 346560,
+          "timestamp": 1444208631,
+          "totalTxFee": "0",
+          "uncleAmount": 0,
+          "rewards": [
+            {
+              "reward": "5000000000000000000",
+              "address": "0x95581ea0c5b362933f3523138f54d51eae817211",
+            },
+          ],
         },
         {
-          hash:
-            '0x5a9f26b4659d21e51aa4759c4b303bfc372ca5236fc0e5ff3d84c110e3671314',
-          miner: '0x007733a1fe69cf3f2cf989f81c7b4cac1693387a',
-          number: 9591277,
-          timestamp: 1544014028,
-          totalTxFee: '188323000000000',
-          uncleAmount: 0,
-          reward: 500000,
+          "hash": "0xb64b5cd07c17801095ce90d574a8c7c57e16a873f212bfae35d999ef47043f65",
+          "miner": "0x52bc44d5378309ee2abf1539bf71de1b7d7be3b5",
+          "signers": [],
+          "number": 346559,
+          "timestamp": 1444208614,
+          "totalTxFee": "0",
+          "uncleAmount": 1,
+          "rewards": [
+            {
+              "reward": "5156250000000000000",
+              "address": "0x52bc44d5378309ee2abf1539bf71de1b7d7be3b5",
+            },
+          ],
         },
         {
-          hash:
-            '0xe85124ff4c629ad8a8f7c3edf543af2f4c34d4b466efbf36c1eca8fb9a7cfcae',
-          miner: '0x0010f94b296a852aaac52ea6c5ac72e03afd032d',
-          number: 9591276,
-          timestamp: 1544014024,
-          totalTxFee: '240042000000000',
-          uncleAmount: 0,
-          reward: 500000,
+          "hash": "0x9fb7b0408a2fb1fb874e59c5f5471a1bfe01070548855a0c8feccb2428fad199",
+          "miner": "0xabeac6e2183a94cf507a3b2de48e560709450281",
+          "signers": [],
+          "number": 346558,
+          "timestamp": 1444208608,
+          "totalTxFee": "0",
+          "uncleAmount": 0,
+          "rewards": [
+            {
+              "reward": "5000000000000000000",
+              "address": "0xabeac6e2183a94cf507a3b2de48e560709450281",
+            },
+          ],
         },
         {
-          hash:
-            '0x3832d52ec98cec172a1d486246b2e56c9f5c615394db37fa3431a3ba8d8d6e77',
-          miner: '0x0020ee4be0e2027d76603cb751ee069519ba81a1',
-          number: 9591275,
-          timestamp: 1544014020,
-          totalTxFee: '782042166000000',
-          uncleAmount: 0,
-          reward: 500000,
-        },
-        {
-          hash:
-            '0x7bd8cfc2ca64d97b0aa3217be0436f4b89944948b984fa1b983b40daca3adece',
-          miner: '0x00d6cc1ba9cf89bd2e58009741f4f7325badc0ed',
-          number: 9591274,
-          timestamp: 1544014008,
-          totalTxFee: '444548500000000',
-          uncleAmount: 0,
-          reward: 500000,
-        },
-        {
-          hash:
-            '0x830178ae5e3a6c5b483cd89c9ed11230549292cf702975ed638688250c888aba',
-          miner: '0x00a0a24b9f0e5ec7aa4c7389b8302fd0123194de',
-          number: 9591273,
-          timestamp: 1544014004,
-          totalTxFee: '231648000000000',
-          uncleAmount: 0,
-          reward: 500000,
-        },
-        {
-          hash:
-            '0x0bca49f4c22219f2f46c4e0e8e920623e1c157f9243291283b5966aee15ca5c5',
-          miner: '0x007733a1fe69cf3f2cf989f81c7b4cac1693387a',
-          number: 9591272,
-          timestamp: 1544013992,
-          totalTxFee: '21507846000000000',
-          uncleAmount: 0,
-          reward: 500000,
-        },
-        {
-          hash:
-            '0x706dcaa0a209b37c4640c7e42a5143ec40b5c9220273346d22681122ae21a498',
-          miner: '0x0010f94b296a852aaac52ea6c5ac72e03afd032d',
-          number: 9591271,
-          timestamp: 1544013988,
-          totalTxFee: '383697000000000',
-          uncleAmount: 0,
-          reward: 500000,
-        },
-        {
-          hash:
-            '0x457f1bb9cda5edbf4818eab3f9315ec8f5da9c95a874abefe6102d92d0ac7112',
-          miner: '0x0020ee4be0e2027d76603cb751ee069519ba81a1',
-          number: 9591270,
-          timestamp: 1544013984,
-          totalTxFee: '5271232000000000',
-          uncleAmount: 0,
-          reward: 500000,
+          "hash": "0x1fc83f99ac2092f31b41d8c44878693560b4e1963baebc65a306519080c068bf",
+          "miner": "0x4bb96091ee9d802ed039c4d1a5f6216f90f81b01",
+          "signers": [],
+          "number": 346557,
+          "timestamp": 1444208599,
+          "totalTxFee": "0",
+          "uncleAmount": 0,
+          "rewards": [
+            {
+              "reward": "5000000000000000000",
+              "address": "0x4bb96091ee9d802ed039c4d1a5f6216f90f81b01",
+            },
+          ],
         },
       ],
     }

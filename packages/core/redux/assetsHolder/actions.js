@@ -16,7 +16,7 @@ import {
   daoByType as daoByTypeSidechain,
   getLXLockedDeposit, getLXToken,
   getMainLaborHourWallet,
-} from '../laborHour/selectors/mainSelectors'
+} from '../laborHour/selectors'
 import { BLOCKCHAIN_ETHEREUM, ETH, TIME } from '../../dao/constants'
 import { getWallet } from '../wallets/selectors/models'
 import { WALLETS_UPDATE_WALLET } from '../wallets/constants'

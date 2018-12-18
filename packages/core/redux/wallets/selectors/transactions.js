@@ -7,7 +7,7 @@ import { createSelector } from 'reselect'
 
 import { getWalletTransactions } from './models'
 import { getEthMultisigWalletTransactions } from '../../multisigWallet/selectors/models'
-import { getWalletTransactions as getLHTWalletTransactions } from '../../laborHour/selectors/mainSelectors'
+import { getWalletTransactions as getLHTWalletTransactions } from '../../laborHour/selectors'
 import { getEosSigner, getEOSWalletTransactions } from '../../eos/selectors/mainSelectors'
 import {
   BLOCKCHAIN_BITCOIN,

@@ -17,7 +17,7 @@ import {
   getMiningParams,
   getLXLockedDeposit,
   getMiningFeeMultiplier,
-} from '../selectors/mainSelectors'
+} from '../selectors'
 import TokenModel from '../../../models/tokens/TokenModel'
 import { EVENT_BECOME_MINER, EVENT_RESIGN_MINER } from '../dao/TimeHolderDAO'
 import { updateMiningFeeMultiplier, updateMiningNodeType, updateProcessingStatus } from '../actions'

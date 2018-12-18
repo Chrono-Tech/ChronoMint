@@ -18,7 +18,7 @@ import {
   getLXToken,
   getLXDeposit,
   getLXLockedDeposit,
-} from '@chronobank/core/redux/laborHour/selectors/mainSelectors'
+} from '@chronobank/core/redux/laborHour/selectors'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import Amount from '@chronobank/core/models/Amount'

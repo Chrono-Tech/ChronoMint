@@ -29,6 +29,7 @@ const initialState = {
   rewards: {
     total: null,
     list: {},
+    isLoading: false, // flag for list
   },
 }
 
@@ -228,6 +229,25 @@ const mutations = {
       rewards: {
         ...state.rewards,
         total,
+      },
+    }
+  },
+  [types.LABOR_HOUR_UPDATE_REWARDS_BLOCKS_LIST]: (state, { list }) => {
+    return {
+      ...state,
+      rewards: {
+        ...state.rewards,
+        list,
+        isLoading: false,
+      },
+    }
+  },
+  [types.LABOR_HOUR_UPDATE_REWARDS_BLOCKS_LIST_LOADING_FLAG]: (state, { isLoading }) => {
+    return {
+      ...state,
+      rewards: {
+        ...state.rewards,
+        isLoading,
       },
     }
   },

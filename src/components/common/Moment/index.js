@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import { FULL_DATE }  from '@chronobank/core/models/constants'
+import { FULL_DATE } from '@chronobank/core/models/constants'
 
 const mapStateToProps = (state) => ({
   locale: state.get('i18n').locale,
@@ -18,6 +18,7 @@ class Moment extends Component {
   static propTypes = {
     locale: PropTypes.string,
     date: PropTypes.oneOfType([
+      PropTypes.number,
       PropTypes.string,
       PropTypes.object,
       PropTypes.instanceOf(Date),

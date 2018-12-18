@@ -143,7 +143,7 @@ const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
         }),
       ))
       dispatch(getAccountBalances(entry.tx.from))
-      dispatch(getEOSWalletTransactions(`${BLOCKCHAIN_EOS }-${entry.tx.from}`, true))
+      dispatch(getEOSWalletTransactions(`${BLOCKCHAIN_EOS}-${entry.tx.from}`, true))
     })
   } catch (error) {
     dispatch(eosTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
@@ -210,7 +210,7 @@ export const createEosWallet = () => async (dispatch, getState) => {
         walletDerivedPath: null,
       })))
       await dispatch(getAccountBalances(accountName))
-      dispatch(getEOSWalletTransactions(`${BLOCKCHAIN_EOS }-${accountName}`))
+      dispatch(getEOSWalletTransactions(`${BLOCKCHAIN_EOS}-${accountName}`))
     } else {
       // eslint-disable-next-line no-console
       console.log('EOS account not found')
@@ -241,7 +241,7 @@ export const getAccountBalances = (account) => async (dispatch, getState) => {
         }
       }, {})
 
-      const wallet = getEOSWallet(`${BLOCKCHAIN_EOS }-${account}`)(state)
+      const wallet = getEOSWallet(`${BLOCKCHAIN_EOS}-${account}`)(state)
       dispatch(EosActions.updateWallet(new WalletModel({ ...wallet, balances })))
     }
   } catch (error) {

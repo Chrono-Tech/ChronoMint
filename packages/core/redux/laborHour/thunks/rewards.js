@@ -3,28 +3,36 @@
  * Licensed under the AGPL Version 3 license.
  */
 import BlockRewardsMiddlewareService from '../BlockRewardsMiddlewareService'
-import { getMainLaborHourWallet, selectRewardsBlocksListLength } from '../selectors/mainSelectors'
-import { setRewardsBlocksList, setTotalRewards } from '../actions'
+import { getMainLaborHourWallet, selectRewardsBlocksListLength } from '../selectors'
+import { setRewardsBlocksList, setRewardsBlocksListLoadingFlag, setTotalRewards } from '../actions'
 
 const PAGE_LENGTH = 20
 
-export const getTotalReward = () => (dispatch, getState) => {
+export const getGetRewardsInfo = () => (dispatch) => {
+  dispatch(getTotalReward())
+  dispatch(getRewardsBlocksList())
+}
+
+export const getTotalReward = () => async (dispatch, getState) => {
   const wallet = getMainLaborHourWallet(getState())
-  const { data } = BlockRewardsMiddlewareService.getTotalReward(wallet.address)
+  const { data } = await BlockRewardsMiddlewareService.getTotalReward(wallet.address)
   dispatch(setTotalRewards(data))
 }
 
-export const getRewardsBlocksList = () => (dispatch, getState) => {
+export const getRewardsBlocksList = () => async (dispatch, getState) => {
   const state = getState()
   const skip = selectRewardsBlocksListLength(state)
-  const { data } = BlockRewardsMiddlewareService.getBlocksList(skip, PAGE_LENGTH)
+  dispatch(setRewardsBlocksListLoadingFlag(true))
+  const { data } = await BlockRewardsMiddlewareService.getBlocksList(skip, PAGE_LENGTH)
   // TODO @Abdulov add ending flag
-  dispatch(setRewardsBlocksList(data.reduce((accumulator, block) => {
-    return {
-      ...accumulator,
-      [block.number]: block,
-    }
-  }, {})))
+  setTimeout(() => {
+    dispatch(setRewardsBlocksList(data.reduce((accumulator, block) => {
+      return {
+        ...accumulator,
+        [block.number]: block,
+      }
+    }, {})))
+  }, 5000)
 }
 
 export const getRewardsBlock = (blockNumberOrHash) => (dispatch) => {

@@ -141,3 +141,10 @@ export const setRewardsBlocksList = (list) =>
     type: types.LABOR_HOUR_UPDATE_REWARDS_BLOCKS_LIST,
     list,
   })
+
+export const setRewardsBlocksListLoadingFlag = (isLoading) =>
+  ({
+    type: types.LABOR_HOUR_UPDATE_REWARDS_BLOCKS_LIST_LOADING_FLAG,
+    isLoading,
+  })
+

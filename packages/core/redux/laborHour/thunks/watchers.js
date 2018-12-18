@@ -4,7 +4,7 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { daoByType, getLXToken, getLXTokenByAddress, getMiningFeeMultiplier, getMiningParams } from '../selectors/mainSelectors'
+import { daoByType, getLXToken, getLXTokenByAddress, getMiningFeeMultiplier, getMiningParams } from '../selectors'
 import { EVENT_CLOSE, EVENT_EXPIRE, EVENT_OPEN, EVENT_REVOKE } from '../constants'
 import { notify } from '../../notifier/actions'
 import SimpleNoticeModel from '../../../models/notices/SimpleNoticeModel'
