@@ -88,7 +88,7 @@ export default class Eos {
         boolChaincode ? P2_CHAINCODE : P2_NO_CHAINCODE,
         buffer
       )
-      .then(response => {
+      .then((response) => {
         const result = {}
         const publicKeyLength = response[0]
         const addressLength = response[1 + publicKeyLength]
@@ -156,7 +156,7 @@ export default class Eos {
     return foreach(toSend, (data, i) =>
       this.transport
         .send(CLA, INS_SIGN, i === 0 ? P1_FIRST : P1_MORE, 0x00, data)
-        .then(apduResponse => {
+        .then((apduResponse) => {
           response = apduResponse
           return response
         })
