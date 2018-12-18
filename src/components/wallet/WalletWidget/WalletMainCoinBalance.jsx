@@ -11,9 +11,10 @@ import { getMainSymbolForBlockchain } from '@chronobank/core/redux/tokens/select
 import { walletAmountSelector, walletBalanceSelector } from '@chronobank/core/redux/wallets/selectors/balances'
 import { selectCurrentCurrency } from '@chronobank/market/redux/selectors'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
+import { formatDataAndGetTransactionsForWallet } from '@chronobank/core/redux/wallet/actions'
 import './WalletWidget.scss'
 
-function makeMapStateToProps (state, props) {
+function makeMapStateToProps(state, props) {
   const { wallet } = props
   const mainSymbol = getMainSymbolForBlockchain(wallet.blockchain)
   const getAmount = walletAmountSelector(wallet.id, mainSymbol)
@@ -21,6 +22,7 @@ function makeMapStateToProps (state, props) {
   return (ownState) => {
     const selectedCurrency = selectCurrentCurrency(ownState)
     return {
+      wallet,
       mainSymbol,
       balance: getBalance(ownState),
       amount: getAmount(ownState),
@@ -29,7 +31,13 @@ function makeMapStateToProps (state, props) {
   }
 }
 
-@connect(makeMapStateToProps)
+function mapDispatchToProps(dispatch) {
+  return {
+    getTransactions: (params) => dispatch(formatDataAndGetTransactionsForWallet(params)),
+  }
+}
+
+@connect(makeMapStateToProps, mapDispatchToProps)
 export default class WalletMainCoinBalance extends PureComponent {
   static propTypes = {
     mainSymbol: PropTypes.string,
@@ -39,7 +47,19 @@ export default class WalletMainCoinBalance extends PureComponent {
     wallet: PTWallet,
   }
 
-  render () {
+  componentWillReceiveProps(nextProps) {
+    if (this.props.balance !== nextProps.balance) {
+      this.props.getTransactions({
+        wallet: nextProps.wallet,
+        address: nextProps.wallet.address,
+        blockchain: nextProps.wallet.blockchain,
+        forcedOffset: true,
+      })
+    }
+
+  }
+
+  render() {
     const { selectedCurrency, mainSymbol, balance, amount } = this.props
 
     return (
