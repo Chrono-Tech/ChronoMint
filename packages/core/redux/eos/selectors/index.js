@@ -89,3 +89,14 @@ export const getEOSWalletTransactions = (walletId) => (state) => {
   const wallet = getEOSWallet(walletId)(state)
   return wallet ? wallet.transactions : null
 }
+
+export const getEOSWalletsTokens = (walletId) => createSelector(
+  [
+    getEOSWallet(walletId),
+  ],
+  (
+    wallet,
+  ) => {
+    return Object.keys(wallet.balances)
+  },
+)

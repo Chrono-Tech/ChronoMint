@@ -14,7 +14,7 @@ import {
 import { getMainWallets } from '../../wallets/selectors/models'
 import { getGasSliderCollection, getIsCBE } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
-import { getEosWallets } from '../../eos/selectors/mainSelectors'
+import { getEosWallets } from '../../eos/selectors'
 
 export const getGasPriceMultiplier = (blockchain) => createSelector([getGasSliderCollection],
   (gasSliderCollection) => {

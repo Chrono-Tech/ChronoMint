@@ -5,12 +5,12 @@
 
 import Eos from 'eosjs'
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
-import * as EosActions from './actions'
-import * as EosUtils from './utils'
-import Amount from '../../models/Amount'
-import WalletModel from '../../models/wallet/WalletModel'
-import { BLOCKCHAIN_EOS } from '../../dao/constants'
-import { describePendingEosTx } from '../../describers'
+import * as EosActions from '../actions'
+import * as EosUtils from '../utils'
+import Amount from '../../../models/Amount'
+import WalletModel from '../../../models/wallet/WalletModel'
+import { BLOCKCHAIN_EOS } from '../../../dao/constants'
+import { describePendingEosTx } from '../../../describers'
 import {
   eosPendingEntrySelector,
   EOSPendingSelector,
@@ -20,14 +20,14 @@ import {
   getEOSWallet,
   getEosWallets,
   getWatchTimeoutId,
-} from './selectors/mainSelectors'
-import { ErrorNoticeModel, TransferNoticeModel } from '../../models'
-import { notify } from '../notifier/actions'
-import { getSelectedNetwork } from '../persistAccount/selectors'
-import TxHistoryModel from '../../models/wallet/TxHistoryModel'
-import TokenModel from '../../models/tokens/TokenModel'
-import { WALLETS_UNSET } from '../wallets/constants'
-import { getWalletsByBlockchain } from '../wallets/selectors/models'
+} from '../selectors'
+import { ErrorNoticeModel, TransferNoticeModel } from '../../../models'
+import { notify } from '../../notifier/actions'
+import { getSelectedNetwork } from '../../persistAccount/selectors'
+import TxHistoryModel from '../../../models/wallet/TxHistoryModel'
+import TokenModel from '../../../models/tokens/TokenModel'
+import { WALLETS_UNSET } from '../../wallets/constants'
+import { getWalletsByBlockchain } from '../../wallets/selectors/models'
 
 const PAGE_SIZE = 20
 
@@ -143,7 +143,7 @@ const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
         }),
       ))
       dispatch(getAccountBalances(entry.tx.from))
-      dispatch(getEOSWalletTransactions(`${BLOCKCHAIN_EOS }-${entry.tx.from}`, true))
+      dispatch(getEOSWalletTransactions(`${BLOCKCHAIN_EOS}-${entry.tx.from}`, true))
     })
   } catch (error) {
     dispatch(eosTxStatus(entry.key, entry.tx.from, { isErrored: true, error }))
@@ -210,7 +210,7 @@ export const createEosWallet = () => async (dispatch, getState) => {
         walletDerivedPath: null,
       })))
       await dispatch(getAccountBalances(accountName))
-      dispatch(getEOSWalletTransactions(`${BLOCKCHAIN_EOS }-${accountName}`))
+      dispatch(getEOSWalletTransactions(`${BLOCKCHAIN_EOS}-${accountName}`))
     } else {
       // eslint-disable-next-line no-console
       console.log('EOS account not found')
@@ -241,7 +241,7 @@ export const getAccountBalances = (account) => async (dispatch, getState) => {
         }
       }, {})
 
-      const wallet = getEOSWallet(`${BLOCKCHAIN_EOS }-${account}`)(state)
+      const wallet = getEOSWallet(`${BLOCKCHAIN_EOS}-${account}`)(state)
       dispatch(EosActions.updateWallet(new WalletModel({ ...wallet, balances })))
     }
   } catch (error) {

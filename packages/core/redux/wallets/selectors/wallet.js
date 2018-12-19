@@ -10,7 +10,7 @@ import WalletModel from '../../../models/wallet/WalletModel'
 import Amount from '../../../models/Amount'
 import { getEthMultisigWallet } from '../../multisigWallet/selectors/models'
 import MultisigEthWalletModel from '../../../models/wallet/MultisigEthWalletModel'
-import { getEOSWallet } from '../../eos/selectors/mainSelectors'
+import { getEOSWallet } from '../../eos/selectors'
 
 export const selectWallet = (blockchain, address) => createSelector(
   [

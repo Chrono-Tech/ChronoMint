@@ -28,7 +28,7 @@ import inversedTheme from 'styles/themes/inversed'
 import { EOS } from '@chronobank/core/redux/eos/constants'
 import { MultisigEthWalletModel } from '@chronobank/core/models'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
-import { getEOSWalletsTokens } from '@chronobank/core/redux/eos/selectors/tokens'
+import { getEOSWalletsTokens } from '@chronobank/core/redux/eos/selectors'
 import {
   ACTION_TRANSFER,
   FORM_SEND_TOKENS,

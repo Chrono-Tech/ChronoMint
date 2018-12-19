@@ -14,7 +14,7 @@ import { pendingTransactionsSelector } from '@chronobank/core/redux/wallets/sele
 import { DUCK_WATCHER } from '@chronobank/core/redux/watcher/constants'
 import { pendingTransactionsNumberSelector } from '@chronobank/core/redux/transaction/selectors'
 import { NOTIFICATION_PANEL_KEY } from 'redux/sides/constants'
-import { eosPendingCountSelector } from '@chronobank/core/redux/eos/selectors/mainSelectors'
+import { eosPendingCountSelector } from '@chronobank/core/redux/eos/selectors'
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 import './HeaderPartial.scss'
 

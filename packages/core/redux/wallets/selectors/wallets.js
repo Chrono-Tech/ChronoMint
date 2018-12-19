@@ -8,7 +8,7 @@ import { getWallets, getWalletsLengthFromState } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
 import { getAccount } from '../../session/selectors/models'
 import { getEthMultisigWallets } from '../../multisigWallet/selectors/models'
-import { getEosWallets } from '../../eos/selectors/mainSelectors'
+import { getEosWallets } from '../../eos/selectors'
 
 export const selectWalletsList = createSelector(
   [

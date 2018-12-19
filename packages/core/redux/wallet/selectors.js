@@ -11,7 +11,7 @@ import Amount from '../../models/Amount'
 import { getMultisigWallets, selectTokensStore } from './selectors/models'
 import { getWallet } from '../wallets/selectors/models'
 import { getEthMultisigWallet } from '../multisigWallet/selectors/models'
-import { getEOSWallet } from '../eos/selectors/mainSelectors'
+import { getEOSWallet } from '../eos/selectors'
 
 export {
   getMultisigWallets,
