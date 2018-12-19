@@ -62,9 +62,14 @@ export const removeWalletAndNavigateToWallets = (wallet: MultisigEthWalletModel)
   dispatch(removeWallet(wallet))
 }
 
-export const loginAndSetLocalStorage = (account) => async (dispatch) => {
-  const defaultURL = await dispatch(login(account))
-  dispatch(replace(localStorage.getLastURL() || defaultURL))
+export const loginAndSetLocalStorage = (account) => (dispatch) => {
+  dispatch(login(account))
+    .then((defaultURL) => {
+      dispatch(replace(localStorage.getLastURL() || defaultURL))
+    })
+    .catch(() => {
+      dispatch(logoutAndNavigateToRoot())
+    })
 }
 
 export const goBackForAddWalletsForm = () => (dispatch, getState) => {

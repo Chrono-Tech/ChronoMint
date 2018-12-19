@@ -156,40 +156,46 @@ export const logout = () => async (dispatch) => {
   }
 }
 
-export const login = (account) => async (dispatch, getState) => {
-  const state = getState()
+export const login = (account) => (dispatch, getState) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const state = getState()
 
-  const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
-  const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
-  if (!state.get(DUCK_SESSION).isSession) {
-    // setup and check network first and create session
-    throw new Error('Session has not been created')
-  }
-
-  dispatch(SessionActions.clearSessionWeb3())
-
-  let network = getNetworkById(selectedNetworkId, selectedProviderId)
-  if (!network.id) {
-    network = customNetworksList.find((network) => network.id === selectedNetworkId)
-  }
-
-  const web3 = typeof window !== 'undefined'
-    ? web3Factory(network)
-    : null
-
-  await dispatch(initEthereum({ web3 }))
-  await dispatch(watcher({ web3 }))
-
-  const userManagerDAO = daoByType('UserManager')(getState())
-  const [isCBE, profile] = await Promise.all([
-    userManagerDAO.isCBE(account),
-    userManagerDAO.getMemberProfile(account, web3),
-  ])
-
-  dispatch(SessionActions.sessionProfile(profile, isCBE))
-  const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
-
-  return defaultURL
+      const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
+      const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
+      if (!state.get(DUCK_SESSION).isSession) {
+        // setup and check network first and create session
+        throw new Error('Session has not been created')
+      }
+    
+      dispatch(SessionActions.clearSessionWeb3())
+    
+      let network = getNetworkById(selectedNetworkId, selectedProviderId)
+      if (!network.id) {
+        network = customNetworksList.find((network) => network.id === selectedNetworkId)
+      }
+    
+      const web3 = typeof window !== 'undefined'
+        ? web3Factory(network)
+        : null
+    
+      await dispatch(initEthereum({ web3 }))
+      await dispatch(watcher({ web3 }))
+    
+      const userManagerDAO = daoByType('UserManager')(getState())
+      const [isCBE, profile] = await Promise.all([
+        userManagerDAO.isCBE(account),
+        userManagerDAO.getMemberProfile(account, web3),
+      ])
+    
+      dispatch(SessionActions.sessionProfile(profile, isCBE))
+      const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
+    
+      return resolve(defaultURL)
+    } catch (error) {
+      return reject(error)
+    }
+  })
 }
 
 export const bootstrap = () => async () => {
