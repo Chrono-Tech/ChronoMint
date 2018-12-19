@@ -46,6 +46,11 @@ import {
   FORM_FOOTER_EMAIL_SUBSCRIPTION,
 } from './constants'
 import userMonitorService from './userMonitorService'
+import {BLOCKCHAIN_ETHEREUM} from '../../login/network/constants';
+import {WALLETS_CACHE_ADDRESS} from '../../core/redux/persistAccount/constants';
+import * as Utils from '../../core/redux/ethereum/utils';
+import {getCurrentNetworkSelector} from '../../login/redux/network/selectors';
+import {getAddressCache} from '../../core/redux/persistAccount/selectors';
 
 /*
  * Thunk dispatched by "" screen.
@@ -143,11 +148,25 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
       try {
 
         const wallet = await dispatch(DeviceActions.loadDeviceAccount(accountWallet))
+        const { path, address } = wallet.entry.encrypted[0]
         const signer = getEthereumSigner(getState())
+        const addressCache = { ...getAddressCache(state) }
 
-        await dispatch(SessionThunks.getProfileSignature(signer, wallet.entry.encrypted[0].path))
+        const signerAddress = await signer.getAddress(path)
+        if (addressCache[BLOCKCHAIN_ETHEREUM] && signerAddress !== addressCache[BLOCKCHAIN_ETHEREUM]) {
+          throw new Error('Different device for this account')
+        }
 
-        dispatch(NetworkActions.selectAccount(wallet.entry.encrypted[0].address))
+        dispatch({
+          type: WALLETS_CACHE_ADDRESS,
+          blockchain: BLOCKCHAIN_ETHEREUM,
+          address: signerAddress,
+          path,
+        })
+
+        await dispatch(SessionThunks.getProfileSignature(signer, path))
+
+        dispatch(NetworkActions.selectAccount(address))
         dispatch(NetworkActions.loading())
         dispatch(NetworkActions.clearErrors())
 
@@ -172,7 +191,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
       } catch (e) {
         //eslint-disable-next-line
         console.warn('Device type error: ', e)
-        throw new SubmissionError({ password: e && e.message })
+        throw new SubmissionError({ error: e && e.message })
       }
       break
     }
