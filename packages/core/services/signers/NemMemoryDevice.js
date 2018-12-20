@@ -26,15 +26,11 @@ export default class NemMemoryDevice {
   }
 
   signTransaction (unsignedTxData) {
-    console.log('signTransaction: ', unsignedTxData)
     return this.getKeyPair().sign(unsignedTxData)
   }
 
   getKeyPair () {
-    console.log('this.privateKey: ', this.privateKey)
     if (this.privateKey.length > 64) {
-      console.log('this.privateKey: this.privateKey.length > 64: ', this.privateKey)
-
       const part1 = Buffer.from(this.privateKey.substr(0, 64), 'hex')
       const part2 = Buffer.from(this.privateKey.substr(64, 64), 'hex')
       const hex = xor(part1, part2).toString('hex')

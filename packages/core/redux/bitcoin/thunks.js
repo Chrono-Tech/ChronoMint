@@ -449,10 +449,7 @@ const initWallet = (blockchainName) => async (dispatch, getState) => {
   const state = getState()
   const { network } = getCurrentNetworkSelector(state)
 
-  console.log('initWallet Bitcoin: ', blockchainName, network)
-
   const addressCache = { ...getAddressCache(state) }
-  console.log('addressCache: ', addressCache)
 
   const signerSelectorsMap = {
     [BLOCKCHAIN_BITCOIN]: {
@@ -473,17 +470,12 @@ const initWallet = (blockchainName) => async (dispatch, getState) => {
     },
   }
 
-  console.log('Cached bitcoin address: ', addressCache[blockchainName], blockchainName, addressCache)
-
   if (!addressCache[blockchainName]) {
     const { selector, path } = signerSelectorsMap[blockchainName]
     const signer = selector(state)
 
-    console.log('addressCache selector, path, signer: ', selector, path, signer)
-
     if (signer) {
       const address = await signer.getAddress(path)
-      console.log('await signer.getAddress(path): ', address)
 
       addressCache[blockchainName] = {
         address,

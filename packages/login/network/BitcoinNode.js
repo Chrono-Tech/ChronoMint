@@ -196,8 +196,6 @@ export function selectDASHNode (network) {
 }
 
 export function selectLTCNode (network) {
-  console.log('selectLTCNode: ', network, network.Litecoin)
-
   return network.Litecoin === 'litecoin_testnet'
     ? LTC_TESTNET_NODE
     : LTC_MAINNET_NODE

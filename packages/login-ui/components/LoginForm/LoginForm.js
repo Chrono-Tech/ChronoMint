@@ -141,26 +141,20 @@ class LoginForm extends React.Component {
   renderDeviceTypeForm () {
     const { classes, error, submitting } = this.props
 
-    console.log('renderDeviceTypeForm: ', classes, error)
-
     return (
-      <div styleName='actions'>
-        <Button
-          styleName='button'
-          buttonType='login'
-          type='submit'
-          label={<Translate value='LoginForm.submitButton' />}
-          isLoading={submitting}
-        />
+      <div>
 
-        <Field
-          component={TextField}
-          name='error'
-          type='hidden'
-          InputProps={{ className: classes.input }}
-        />
+        <div styleName='actions'>
+          <Button
+            styleName='button'
+            buttonType='login'
+            type='submit'
+            label={<Translate value='LoginForm.submitButton' />}
+            isLoading={submitting}
+          />
 
-        {error ? (<div styleName='form-error'>{error}</div>) : null}
+          {error ? (<div styleName='form-error'>{error}</div>) : null}
+        </div>
       </div>
     )
   }

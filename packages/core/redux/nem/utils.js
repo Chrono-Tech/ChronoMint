@@ -41,7 +41,6 @@ export const describeXemTransaction = (tx, network) => {
 
   const nemNetwork = nemSdk.model.network.data[network[BLOCKCHAIN_NEM]]
   const transactionEntity = nemSdk.model.transactions.prepare('transferTransaction')(common, transferTransaction, nemNetwork.id)
-  console.log('describeXemTransaction transactionEntity: ', transactionEntity)
 
   return new TxExecModel({
     prepared: transactionEntity,
@@ -82,15 +81,8 @@ export const describeMosaicTransaction = (tx, network) => {
 }
 
 export const createXemTransaction = async (prepared, signer, signerPath, address) => {
-  console.log('createXemTransaction: ', prepared, signer, signerPath)
   const serialized = nemSdk.utils.serialization.serializeTransaction({ ...prepared })
-  console.log('createXemTransaction serialized: ', serialized)
   const signature = await signer.signTransaction(prepared, signerPath)
-
-  console.log('createXemTransaction signature: ', signature)
-
-  // get address from cache
-  // const address = await signer.getAddress(signerPath)
 
   return {
     tx: {

@@ -129,8 +129,7 @@ const initWallet = () => async (dispatch, getState) => {
 
   if (addressCache[BLOCKCHAIN_ETHEREUM]) {
     const cacheAddress = addressCache[BLOCKCHAIN_ETHEREUM]
-    console.log('cacheAddress: ', address, cacheAddress.address)
-    if (cacheAddress.address !== address || 1) {
+    if (cacheAddress.address !== address) {
       throw new Error('Address from saved account doesn\'t match the current one')
     }
   } else {

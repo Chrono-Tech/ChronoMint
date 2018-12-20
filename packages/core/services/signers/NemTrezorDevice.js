@@ -17,14 +17,12 @@ export default class NemTrezorDevice {
    * @returns {Promise<*>}
    */
   async getAddress (path) {
-    console.log('getAddress: ', path)
 
     const result = await TrezorConnect.nemGetAddress({
       path,
       network: this.network.id,
       showOnTrezor: true,
     })
-    console.log('TrezorConnect.nemGetAddress: ', result)
 
     if (!result.success) {
       throw new TrezorError(result.code, result.payload.error)
@@ -34,14 +32,10 @@ export default class NemTrezorDevice {
   }
 
   async signTransaction (data, path) {
-    console.log('signTransaction: ', data, path)
-
     const result = await TrezorConnect.nemSignTransaction({
       path: path,
       transaction: data,
     })
-
-    console.log('signTransaction result: ', result)
 
     return result.payload.signature
   }

@@ -110,7 +110,6 @@ export const getLitecoinSigner = (state) => {
   const networkData = getSelectedNetwork()(state)
   const network = bitcoin.networks[networkData[BLOCKCHAIN_LITECOIN]]
   const isTestnet = networkData[BLOCKCHAIN_LITECOIN] === 'litecoin_testnet'
-  console.log('getLitecoinSigner: ', bitcoin.networks, network, isTestnet)
 
   switch (account.decryptedWallet.entry.encrypted[0].type) {
     case WALLET_TYPE_MEMORY: {

@@ -119,7 +119,6 @@ const processTransaction = ({ entry, signer }) => async (dispatch, getState) => 
 
 const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   try {
-    console.log('signTransaction: ', entry, signer)
     const state = getState()
     const { network } = getCurrentNetworkSelector(state)
     const nemPath = NemUtils.getNemDerivedPath(network[BLOCKCHAIN_NEM])
@@ -129,7 +128,6 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
 
     dispatch(showSignerModal())
     const { tx } = entry
-    console.log('signTransaction: ', tx)
     const signed = await NemUtils.createXemTransaction(tx.prepared, signer, nemPath, addressCache[BLOCKCHAIN_NEM])
     dispatch(closeSignerModal())
 
@@ -142,7 +140,6 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     })))
 
   } catch (error) {
-    console.log('signTransaction: ', error)
     dispatch(closeSignerModal())
 
     dispatch(NemActions.nemTxSignTransactionError({ error }))
@@ -152,7 +149,6 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
 }
 
 const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
-  console.log('sendSignedTransaction: ', entry)
 
   dispatch(NemActions.nemTxSendSignedTransaction({ entry }))
   dispatch(nemTxStatus(entry.key, entry.tx.from, { isPending: true }))
@@ -224,7 +220,6 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
 
   const state = getState()
   const signer = getNemSigner(state)
-  console.log('getNemSigner(state): ', signer)
 
   const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key)(getState())
   if (!selectedEntry) {
@@ -285,11 +280,9 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
   if (!addressCache[BLOCKCHAIN_NEM]) {
     const path = NemUtils.getNemDerivedPath(network[BLOCKCHAIN_NEM])
     const signer = getNemSigner(state, path)
-    console.log('Nem signer: ', signer)
 
     if (signer) {
       const address = await signer.getAddress(path)
-      console.log('Nem signer address: ', address)
 
       addressCache[BLOCKCHAIN_NEM] = {
         address,

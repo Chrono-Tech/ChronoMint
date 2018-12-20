@@ -28,7 +28,12 @@ import {
 import {
   DUCK_PERSIST_ACCOUNT,
   DEFAULT_ACTIVE_BLOCKCHAINS,
+  WALLETS_CACHE_ADDRESS,
 } from '@chronobank/core/redux/persistAccount/constants'
+import { BLOCKCHAIN_ETHEREUM } from '@chronobank/login/network/constants'
+import * as Utils from '@chronobank/core/redux/ethereum/utils'
+import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
+import { getAddressCache } from '@chronobank/core/redux/persistAccount/selectors'
 import * as NetworkThunks from '@chronobank/login/redux/network/thunks'
 import * as SessionThunks from '@chronobank/core/redux/session/thunks'
 import { modalsOpen, modalsClose } from '@chronobank/core/redux/modals/actions'
@@ -46,11 +51,6 @@ import {
   FORM_FOOTER_EMAIL_SUBSCRIPTION,
 } from './constants'
 import userMonitorService from './userMonitorService'
-import {BLOCKCHAIN_ETHEREUM} from '../../login/network/constants';
-import {WALLETS_CACHE_ADDRESS} from '../../core/redux/persistAccount/constants';
-import * as Utils from '../../core/redux/ethereum/utils';
-import {getCurrentNetworkSelector} from '../../login/redux/network/selectors';
-import {getAddressCache} from '../../core/redux/persistAccount/selectors';
 
 /*
  * Thunk dispatched by "" screen.
@@ -150,10 +150,12 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         const wallet = await dispatch(DeviceActions.loadDeviceAccount(accountWallet))
         const { path, address } = wallet.entry.encrypted[0]
         const signer = getEthereumSigner(getState())
+        const { network } = getCurrentNetworkSelector(state)
+        const networkPath = Utils.getEthereumDerivedPath(network[BLOCKCHAIN_ETHEREUM])
         const addressCache = { ...getAddressCache(state) }
+        const signerAddress = await signer.getAddress(networkPath)
 
-        const signerAddress = await signer.getAddress(path)
-        if (addressCache[BLOCKCHAIN_ETHEREUM] && signerAddress !== addressCache[BLOCKCHAIN_ETHEREUM]) {
+        if (addressCache[BLOCKCHAIN_ETHEREUM] && signerAddress !== addressCache[BLOCKCHAIN_ETHEREUM].address || 1) {
           throw new Error('Different device for this account')
         }
 
@@ -161,7 +163,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
           type: WALLETS_CACHE_ADDRESS,
           blockchain: BLOCKCHAIN_ETHEREUM,
           address: signerAddress,
-          path,
+          path: networkPath,
         })
 
         await dispatch(SessionThunks.getProfileSignature(signer, path))
@@ -191,7 +193,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
       } catch (e) {
         //eslint-disable-next-line
         console.warn('Device type error: ', e)
-        throw new SubmissionError({ error: e && e.message })
+        throw new SubmissionError({ _error: e && e.message })
       }
       break
     }

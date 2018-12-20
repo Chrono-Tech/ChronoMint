@@ -82,8 +82,6 @@ export default class BitcoinTrezorDevice {
       coin: this.coin,
     })
 
-    console.log('TrezorConnect.signTransaction: ', result, inputs, outputs, this.coin)
-
     if (!result.success) {
       const { code, error } = result.payload
       throw new TrezorError(code, error)
