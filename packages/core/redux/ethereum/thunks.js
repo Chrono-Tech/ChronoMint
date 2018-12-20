@@ -123,16 +123,12 @@ const initWallet = () => async (dispatch, getState) => {
   const state = getState()
   const { network } = getCurrentNetworkSelector(state)
   const addressCache = { ...getAddressCache(state) }
-  const path = Utils.getEthereumDerivedPath(network[BLOCKCHAIN_ETHEREUM])
-  const signer = getEthereumSigner(state)
-  const address = await signer.getAddress(path)
 
-  if (addressCache[BLOCKCHAIN_ETHEREUM]) {
-    const cacheAddress = addressCache[BLOCKCHAIN_ETHEREUM]
-    if (cacheAddress.address !== address) {
-      throw new Error('Address from saved account doesn\'t match the current one')
-    }
-  } else {
+  if (!addressCache[BLOCKCHAIN_ETHEREUM]) {
+    const path = Utils.getEthereumDerivedPath(network[BLOCKCHAIN_ETHEREUM])
+    const signer = getEthereumSigner(state)
+    const address = await signer.getAddress(path)
+
     dispatch({
       type: WALLETS_CACHE_ADDRESS,
       blockchain: BLOCKCHAIN_ETHEREUM,
@@ -140,6 +136,10 @@ const initWallet = () => async (dispatch, getState) => {
       path,
     })
   }
+
+  const { address, path }  = addressCache[BLOCKCHAIN_ETHEREUM]
+
+  console.log('address, path: ', address, path)
 
   const wallet = new WalletModel({
     address,

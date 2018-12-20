@@ -20,8 +20,9 @@ import { watcher } from '../watcher/actions'
 import { initEthereum } from '../ethereum/thunks'
 import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
 import { DEFAULT_CBE_URL, DEFAULT_USER_URL, DUCK_SESSION } from './constants'
-import { getAccountAddresses } from './selectors/session'
+import { getAccountAddresses, getDeviceAccountAddresses } from './selectors/session'
 import { cleanWalletsList } from '../wallets/actions'
+import { getAddressCache } from '../persistAccount/selectors'
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
@@ -203,6 +204,33 @@ export const getProfileSignature = (signer, path) => async (dispatch, getState) 
 
   try {
     const addresses = getAccountAddresses(getState())
+    console.log('getProfileSignature: addresses: ', addresses)
+    if (!Object.keys(addresses).length) {
+      throw new Error('Addresses list is empty')
+    }
+
+    const signDataString = ProfileService.getSignData(addresses)
+    const signData = await signer.signData(signDataString, path)
+    const profileSignature = await dispatch(ProfileThunks.getUserProfile(signData.signature, addresses))
+    dispatch(SessionActions.setProfileSignature(profileSignature))
+
+    return profileSignature
+  } catch (error) {
+    // FIXME: to handle it in appropriate way
+    // eslint-disable-next-line no-console
+    console.warn('getProfileSignature error: ', error)
+  }
+}
+
+export const getProfileSignatureForDevice = (signer, path) => async (dispatch, getState) => {
+  if (!signer) {
+    return
+  }
+
+  try {
+    const addresses = getDeviceAccountAddresses(getState())
+    console.log('getProfileSignatureForDevice addressCache: ', addresses)
+
     if (!Object.keys(addresses).length) {
       throw new Error('Addresses list is empty')
     }

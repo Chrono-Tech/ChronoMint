@@ -150,12 +150,12 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         const wallet = await dispatch(DeviceActions.loadDeviceAccount(accountWallet))
         const { path, address } = wallet.entry.encrypted[0]
         const signer = getEthereumSigner(getState())
-        const { network } = getCurrentNetworkSelector(state)
-        const networkPath = Utils.getEthereumDerivedPath(network[BLOCKCHAIN_ETHEREUM])
         const addressCache = { ...getAddressCache(state) }
-        const signerAddress = await signer.getAddress(networkPath)
+        const signerAddress = await signer.getAddress(path)
 
-        if (addressCache[BLOCKCHAIN_ETHEREUM] && signerAddress !== addressCache[BLOCKCHAIN_ETHEREUM].address || 1) {
+        if (addressCache[BLOCKCHAIN_ETHEREUM] && signerAddress !== addressCache[BLOCKCHAIN_ETHEREUM].address) {
+          //eslint-disable-next-line
+          console.error(`Different device for this account [${signerAddress}] [${addressCache[BLOCKCHAIN_ETHEREUM].address}]`)
           throw new Error('Different device for this account')
         }
 
@@ -163,10 +163,8 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
           type: WALLETS_CACHE_ADDRESS,
           blockchain: BLOCKCHAIN_ETHEREUM,
           address: signerAddress,
-          path: networkPath,
+          path,
         })
-
-        await dispatch(SessionThunks.getProfileSignature(signer, path))
 
         dispatch(NetworkActions.selectAccount(address))
         dispatch(NetworkActions.loading())
@@ -188,6 +186,9 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
 
         const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
+
+        // after login
+        dispatch(SessionThunks.getProfileSignatureForDevice(signer, path))
 
         dispatch(replace(localStorage.getLastURL() || defaultURL))
       } catch (e) {
