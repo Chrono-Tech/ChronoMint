@@ -28,6 +28,10 @@ import TxHistoryModel from '../../../models/wallet/TxHistoryModel'
 import TokenModel from '../../../models/tokens/TokenModel'
 import { WALLETS_UNSET } from '../../wallets/constants'
 import { getWalletsByBlockchain } from '../../wallets/selectors/models'
+import { createAccount } from './createAccount'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
+import { DUCK_PERSIST_ACCOUNT } from '../../persistAccount/constants'
+import { getNetworkById } from '@chronobank/login/network/settings'
 
 const PAGE_SIZE = 20
 
@@ -179,6 +183,7 @@ export const enableEos = () => (dispatch) => {
   dispatch(setEos())
   dispatch(createEosWallet())
   dispatch(watchEOS())
+  dispatch(createAccount())
 }
 
 export const disableEos = () => (dispatch, getState) => {
@@ -253,8 +258,16 @@ export const getAccountBalances = (account) => async (dispatch, getState) => {
 
 export const setEos = () => async (dispatch, getState) => {
   try {
-    const network = getSelectedNetwork()(getState())
-    const { httpEndpoint, chainId } = EosUtils.getEOSNetworkConfig(network[BLOCKCHAIN_EOS])
+    const state = getState()
+    const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
+    const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
+
+    let network = getNetworkById(selectedNetworkId, selectedProviderId)
+    if (!network.id) {
+      network = customNetworksList.find((network) => network.id === selectedNetworkId)
+    }
+
+    const { httpEndpoint, chainId } = EosUtils.getEOSNetworkConfig(network[BLOCKCHAIN_EOS] || 'testnet') // TODO @Abdulov remove hardcode
     const eos = Eos({ httpEndpoint, chainId }) // create eos read-only instance
     dispatch(EosActions.updateEos(eos))
   } catch (error) {

@@ -136,16 +136,24 @@ export default class TransactionHandler extends TransactionGuide {
     entry = this.selectors.pendingEntry(entry.tx.from, entry.key)(getState())
     dispatch(this.actions.nonceUpdate(entry.tx.from, entry.tx.nonce))
 
+    // TODO @abdulov remove console.log
+    console.log('%c entry.raw', 'background: #222; color: #fff', entry.raw)
     return new Promise((resolve, reject) => {
       web3.eth.sendSignedTransaction(entry.raw)
         .on('transactionHash', (hash) => {
+          // TODO @abdulov remove console.log
+          console.log('%c hash', 'background: #222; color: #fff', hash)
           dispatch(this.txStatus(entry.key, entry.tx.from, { isSent: true, hash }))
         })
         .on('receipt', (receipt) => {
+          // TODO @abdulov remove console.log
+          console.log('%c receipt', 'background: #222; color: #fff', receipt)
           dispatch(this.txStatus(entry.key, entry.tx.from, { isMined: true, receipt }))
           resolve(receipt)
         })
         .on('error', (error) => {
+          // TODO @abdulov remove console.log
+          console.log('%c error', 'background: #222; color: #fff', error)
           dispatch(this.txStatus(entry.key, entry.tx.from, { isErrored: true, error }))
           reject(error)
         })

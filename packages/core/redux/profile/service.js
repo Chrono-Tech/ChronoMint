@@ -96,4 +96,14 @@ export default class ProfileService {
       }),
     )
   }
+
+  static getUserToken () {
+    const id = 'middleware_eos_account'
+    const secret = '123'
+    return axios.post(`http://localhost:8082/tokens`, {
+      id,
+      secret,
+      scopes: ['middleware_eos_account'],
+    })
+  }
 }
