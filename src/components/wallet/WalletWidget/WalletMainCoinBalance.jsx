@@ -1,10 +1,4 @@
-/**
- * Copyright 2017–2018, LaborX PTY
- * Licensed under the AGPL Version 3 license.
- */
-
 import PropTypes from 'prop-types'
-import { get } from 'lodash'
 import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -12,10 +6,9 @@ import { getMainSymbolForBlockchain } from '@chronobank/core/redux/tokens/select
 import { walletAmountSelector, walletBalanceSelector } from '@chronobank/core/redux/wallets/selectors/balances'
 import { selectCurrentCurrency } from '@chronobank/market/redux/selectors'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
-import { formatDataAndGetTransactionsForWallet } from '@chronobank/core/redux/wallet/actions'
 import './WalletWidget.scss'
 
-function makeMapStateToProps (state, props) {
+function makeMapStateToProps(state, props) {
   const { wallet } = props
   const mainSymbol = getMainSymbolForBlockchain(wallet.blockchain)
   const getAmount = walletAmountSelector(wallet.id, mainSymbol)
@@ -23,7 +16,6 @@ function makeMapStateToProps (state, props) {
   return (ownState) => {
     const selectedCurrency = selectCurrentCurrency(ownState)
     return {
-      wallet,
       mainSymbol,
       balance: getBalance(ownState),
       amount: getAmount(ownState),
@@ -32,13 +24,7 @@ function makeMapStateToProps (state, props) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return {
-    getTransactions: (params) => dispatch(formatDataAndGetTransactionsForWallet(params)),
-  }
-}
-
-@connect(makeMapStateToProps, mapDispatchToProps)
+@connect(makeMapStateToProps)
 export default class WalletMainCoinBalance extends PureComponent {
   static propTypes = {
     mainSymbol: PropTypes.string,
@@ -46,22 +32,9 @@ export default class WalletMainCoinBalance extends PureComponent {
     amount: PropTypes.number,
     selectedCurrency: PropTypes.string,
     wallet: PTWallet,
-    getTransactions: PropTypes.func,
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (get(this.props, "balance") !== get(nextProps, "balance")) {
-      this.props.getTransactions({
-        wallet: get(nextProps, "wallet"),
-        address: get(nextProps, "wallet.address"),
-        blockchain: get(nextProps, "wallet.blockchain"),
-        forcedOffset: true,
-      })
-    }
-
-  }
-
-  render () {
+  render() {
     const { selectedCurrency, mainSymbol, balance, amount } = this.props
 
     return (

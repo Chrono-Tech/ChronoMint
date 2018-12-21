@@ -46,7 +46,7 @@ import { executeNemTransaction } from '../nem/thunks'
 import { getEthereumSigner } from '../ethereum/selectors'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
-import { BCC, BTC, DASH, ETH, LHT, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, LTC, WAVES, XEM } from '../../dao/constants'
+import { BCC, BTC, DASH, ETH, LHT, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, EVENT_UPDATE_TRANSACTION, LTC, WAVES, XEM } from '../../dao/constants'
 
 import TxDescModel from '../../models/TxDescModel'
 import { getTokens } from '../tokens/selectors'
@@ -190,6 +190,20 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
           console.warn('Update balance of unknown token blockchain: ', account, balance, token.toJSON())
           break
       }
+    })
+    .on(EVENT_UPDATE_TRANSACTION, ({ tx, address, bitcoin, symbol }) => {
+      const wallet = getMainWalletForBlockchain(token.blockchain())(getState())
+      if (wallet && wallet.address) {
+        dispatch(getTransactionsForMainWallet({
+          address: wallet.address,
+          blockchain: token.blockchain(),
+          forcedOffset: true,
+        }))
+      }
+      console.log(tx)
+      console.log(address)
+      console.log(bitcoin)
+      console.log(symbol)
     })
 
   dispatch(marketAddToken(token.symbol()))
