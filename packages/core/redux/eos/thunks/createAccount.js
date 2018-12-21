@@ -29,8 +29,6 @@ export const createAccount = (payBlockchain = 'eth', accountName = 'chronobank42
 }
 
 export const payForAccount = (claim) => (dispatch, getState) => {
-  // TODO @abdulov remove console.log
-  console.log('%c claim', 'background: #222; color: #fff', claim)
   const payBlockchains = {
     eth: executeTransaction,
     btc: executeBitcoinTransaction,
@@ -43,8 +41,6 @@ export const payForAccount = (claim) => (dispatch, getState) => {
       value: claim.requiredAmount,
       data: '',
     }
-    // TODO @abdulov remove console.log
-    console.log('%c tx', 'background: #222; color: #fff', tx)
     dispatch(payBlockchains[claim.blockchain]({ tx }))
   }
 }

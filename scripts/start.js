@@ -21,7 +21,7 @@ const baseSchema = process.env.BASE_SCHEMA || 'https'
 // This shouldn't be exposed to the user.
 let handleCompile
 const isSmokeTest = process.argv.some((arg) =>
-  arg.indexOf('--smoke-test') > -1
+  arg.indexOf('--smoke-test') > -1,
 )
 if (isSmokeTest) {
   handleCompile = function (err, stats) {
@@ -48,12 +48,12 @@ function formatMessage (message) {
     .replace(
       // Babel syntax error
       'Module build failed: SyntaxError:',
-      friendlySyntaxErrorLabel
+      friendlySyntaxErrorLabel,
     )
     .replace(
       // Webpack file not found error
       /Module not found: Error: Cannot resolve 'file' or 'directory'/,
-      'Module not found:'
+      'Module not found:',
     )
     // Internal stacks are generally useless so we strip them
     .replace(/^\s*at\s.*:\d+:\d+[\s)]*\n/gm, '') // at ... ...:x:y
@@ -109,7 +109,7 @@ compiler.plugin('done', function (stats) {
   const hasWarnings = stats.hasWarnings()
   if (!hasErrors && !hasWarnings) {
     let showStats = process.argv.some((arg) =>
-      arg.indexOf('--stats') > -1
+      arg.indexOf('--stats') > -1,
     )
     if (showStats) {
       decycle(stats)
@@ -133,10 +133,10 @@ compiler.plugin('done', function (stats) {
 
   const json = stats.toJson()
   let formattedErrors = json.errors.map((message) =>
-    'Error in ' + formatMessage(message)
+    'Error in ' + formatMessage(message),
   )
   const formattedWarnings = json.warnings.map((message) =>
-    'Warning in ' + formatMessage(message)
+    'Warning in ' + formatMessage(message),
   )
 
   if (hasErrors) {
@@ -186,6 +186,14 @@ new WebpackDevServer(compiler, {
   proxy: {
     '/web3/*': {
       target: 'http://localhost:8545',
+    },
+    '/ws/*': {
+      // target: 'ws://localhost:8088',
+      target: 'ws://localhost:15674',
+      ws: true,
+      // ignorePath: true,
+      // changeOrigin: true,
+      // secure: false,
     },
     "/_exchange": {
       "target": {

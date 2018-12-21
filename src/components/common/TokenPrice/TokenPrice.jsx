@@ -12,7 +12,7 @@ import { priceTokenSelector } from '@chronobank/core/redux/wallet/selectors'
 import { getToken } from '@chronobank/core/redux/tokens/selectors'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 
-function makeMapStateToProps (state, props) {
+function makeMapStateToProps(state, props) {
   const getPrice = priceTokenSelector(props.value)
   const mapStateToProps = (ownState) => {
     return {

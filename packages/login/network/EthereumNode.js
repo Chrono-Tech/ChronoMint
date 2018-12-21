@@ -18,12 +18,13 @@ const ETHEREUM_TESTNET_NODE = new EthereumMiddlewareNode({
     timeout: 10000,
   }),
   socket: {
-    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
+    baseURL: '/ws',
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
       balance: '/exchange/events/rinkeby-ethereum-middleware-chronobank-io_balance',
       events: '/exchange/events/rinkeby-ethereum-middleware-chronobank-io_chrono_sc',
+      eos: '/exchange/events/eos_account.claim',
     },
   },
   trace: true,

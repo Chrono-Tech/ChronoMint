@@ -42,6 +42,12 @@ export default class EthereumMiddlewareNode extends AbstractNode {
             this.trace(event, data)
             this.emit(event, data)
           })
+          this._openSubscription(`${this._socket.channels.eos}.5c1ce6a51f3a19120acf2096`, (data) => {
+            // TODO @abdulov remove console.log
+            console.log('%c data', 'background: red; color: #fff', data)
+            this.trace(event, data)
+            this.emit(event, data)
+          })
         })
       })
 
