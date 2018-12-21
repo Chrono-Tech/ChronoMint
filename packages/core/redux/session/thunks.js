@@ -12,6 +12,7 @@ import metaMaskResolver from '@chronobank/login/network/metaMaskResolver'
 import { stopMarket } from '@chronobank/market/middleware/thunks'
 
 import * as SessionActions from './actions'
+import * as PersistAccountActions from '../persistAccount/actions'
 import * as ProfileThunks from '../profile/thunks'
 import ProfileService from '../profile/service'
 import { daoByType } from '../../redux/daos/selectors'
@@ -22,7 +23,7 @@ import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
 import { DEFAULT_CBE_URL, DEFAULT_USER_URL, DUCK_SESSION } from './constants'
 import { getAccountAddresses, getDeviceAccountAddresses } from './selectors/session'
 import { cleanWalletsList } from '../wallets/actions'
-import { getAddressCache } from '../persistAccount/selectors'
+import {getAddressListSent} from '../persistAccount/selectors';
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
@@ -204,7 +205,6 @@ export const getProfileSignature = (signer, path) => async (dispatch, getState) 
 
   try {
     const addresses = getAccountAddresses(getState())
-    console.log('getProfileSignature: addresses: ', addresses)
     if (!Object.keys(addresses).length) {
       throw new Error('Addresses list is empty')
     }
@@ -228,8 +228,17 @@ export const getProfileSignatureForDevice = (signer, path) => async (dispatch, g
   }
 
   try {
+    const state = getState()
     const addresses = getDeviceAccountAddresses(getState())
-    console.log('getProfileSignatureForDevice addressCache: ', addresses)
+    const addressList = addresses.map((a) => a.value)
+    const addressListSent = getAddressListSent(state)
+    const diff = addressList.filter((i) => !addressListSent.includes(i))
+
+    if (!diff.length) {
+      //eslint-disable-next-line
+      console.log('all addresses has already been sent to ProfileService ', addressListSent)
+      return
+    }
 
     if (!Object.keys(addresses).length) {
       throw new Error('Addresses list is empty')
@@ -239,6 +248,7 @@ export const getProfileSignatureForDevice = (signer, path) => async (dispatch, g
     const signData = await signer.signData(signDataString, path)
     const profileSignature = await dispatch(ProfileThunks.getUserProfile(signData.signature, addresses))
     dispatch(SessionActions.setProfileSignature(profileSignature))
+    dispatch(PersistAccountActions.sentAddresses(addressList))
 
     return profileSignature
   } catch (error) {

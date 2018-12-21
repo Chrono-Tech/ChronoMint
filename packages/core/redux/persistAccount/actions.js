@@ -28,6 +28,8 @@ import {
 } from '../../models/wallet/persistAccount'
 
 import {
+  ADDRESSES_SENT_TO_PROFILE_SERVICE,
+  BLOCKCHAIN_LIST_UPDATE,
   CUSTOM_NETWORKS_LIST_ADD,
   CUSTOM_NETWORKS_LIST_RESET,
   CUSTOM_NETWORKS_LIST_UPDATE,
@@ -37,7 +39,6 @@ import {
   WALLETS_SELECT,
   WALLETS_UPDATE_LIST,
   WALLETS_LOAD,
-  BLOCKCHAIN_LIST_UPDATE,
 } from './constants'
 
 import { getBlockchainList, getPersistAccount } from './selectors'
@@ -104,6 +105,15 @@ export const disableBlockchains = (blockchains) => (dispatch) => {
     }
     dispatch(disableMap[blockchain])
   })
+}
+
+/**
+ * List of addresses that was sent to the middleware profile service. To avoid this request multiple times
+ * @param wallet
+ * @returns {Function}
+ */
+export const sentAddresses = (addressList) => (dispatch) => {
+  dispatch({ type: ADDRESSES_SENT_TO_PROFILE_SERVICE, addressList })
 }
 
 export const accountAdd = (wallet) => (dispatch) => {

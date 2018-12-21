@@ -16,6 +16,8 @@ import {
 
 export const DUCK_PERSIST_ACCOUNT = 'persistAccount'
 
+export const ADDRESSES_SENT_TO_PROFILE_SERVICE = 'persistAccount/ADDRESSES_SENT_TO_PROFILE_SERVICE'
+export const BLOCKCHAIN_LIST_UPDATE = 'persistAccount/BLOCKCHAIN_LIST_UPDATE'
 export const CUSTOM_NETWORKS_LIST_ADD = 'persistAccount/CUSTOM_NETWORKS_LIST_ADD'
 export const CUSTOM_NETWORKS_LIST_RESET = 'persistAccount/CUSTOM_NETWORKS_LIST_RESET'
 export const CUSTOM_NETWORKS_LIST_UPDATE = 'persistAccount/CUSTOM_NETWORKS_LIST_UPDATE'
@@ -25,7 +27,6 @@ export const WALLETS_LOAD = 'persistAccount/WALLETS_LOAD'
 export const WALLETS_SELECT = 'persistAccount/WALLETS_SELECT'
 export const WALLETS_UPDATE_LIST = 'persistAccount/WALLETS_UPDATE_LIST'
 export const WALLETS_CACHE_ADDRESS = 'persistAccount/WALLETS_CACHE_ADDRESS'
-export const BLOCKCHAIN_LIST_UPDATE = 'persistAccount/BLOCKCHAIN_LIST_UPDATE'
 
 export const DEFAULT_ACTIVE_BLOCKCHAINS = [
   BLOCKCHAIN_BITCOIN,
