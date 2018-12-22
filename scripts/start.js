@@ -187,14 +187,6 @@ new WebpackDevServer(compiler, {
     '/web3/*': {
       target: 'http://localhost:8545',
     },
-    '/ws/*': {
-      // target: 'ws://localhost:8088',
-      target: 'ws://localhost:15674',
-      ws: true,
-      // ignorePath: true,
-      // changeOrigin: true,
-      // secure: false,
-    },
     "/_exchange": {
       "target": {
         "host": "localhost",

@@ -11,6 +11,7 @@ import {
   USER_ADDED_TO_BLACKLIST,
   USER_DELETED_FROM_BLACKLIST,
 } from '@chronobank/core/models/notices/AssetsManagerNoticeModel'
+import eosNotices from './en-notices-eos'
 
 export default {
   approval: {
@@ -82,4 +83,5 @@ export default {
     [USER_ADDED_TO_BLACKLIST]: 'User (%{address}) was added to blacklist',
     [USER_DELETED_FROM_BLACKLIST]: 'User (%{address}) was deleted from blacklist',
   },
+  eosNotices,
 }

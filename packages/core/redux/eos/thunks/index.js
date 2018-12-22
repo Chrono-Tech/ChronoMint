@@ -5,6 +5,8 @@
 
 import Eos from 'eosjs'
 import { modalsOpen } from '@chronobank/core/redux/modals/actions'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
+import { getNetworkById } from '@chronobank/login/network/settings'
 import * as EosActions from '../actions'
 import * as EosUtils from '../utils'
 import Amount from '../../../models/Amount'
@@ -29,9 +31,7 @@ import TokenModel from '../../../models/tokens/TokenModel'
 import { WALLETS_UNSET } from '../../wallets/constants'
 import { getWalletsByBlockchain } from '../../wallets/selectors/models'
 import { createAccount } from './createAccount'
-import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { DUCK_PERSIST_ACCOUNT } from '../../persistAccount/constants'
-import { getNetworkById } from '@chronobank/login/network/settings'
 
 const PAGE_SIZE = 20
 
