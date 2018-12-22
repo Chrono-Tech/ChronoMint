@@ -122,14 +122,14 @@ export const watchLatestBlock = () => async (dispatch) => {
 const initWallet = () => async (dispatch, getState) => {
   const state = getState()
   const { network } = getCurrentNetworkSelector(state)
-  const addressCache = { ...getAddressCache(state) }
+  var addressCache = { ...getAddressCache(state) }
 
-  if (!addressCache[BLOCKCHAIN_ETHEREUM]) {
+  if (!addressCache[BLOCKCHAIN_ETHEREUM] || 1) {
     const path = Utils.getEthereumDerivedPath(network[BLOCKCHAIN_ETHEREUM])
     const signer = getEthereumSigner(state)
     const address = await signer.getAddress(path)
 
-    dispatch({
+    await dispatch({
       type: WALLETS_CACHE_ADDRESS,
       blockchain: BLOCKCHAIN_ETHEREUM,
       address,
@@ -137,9 +137,8 @@ const initWallet = () => async (dispatch, getState) => {
     })
   }
 
-  const { address, path }  = addressCache[BLOCKCHAIN_ETHEREUM]
-
-  console.log('address, path: ', address, path)
+  addressCache = { ...getAddressCache(getState()) }
+  const { address, path } = addressCache[BLOCKCHAIN_ETHEREUM]
 
   const wallet = new WalletModel({
     address,

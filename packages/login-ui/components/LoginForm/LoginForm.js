@@ -139,7 +139,7 @@ class LoginForm extends React.Component {
   }
 
   renderDeviceTypeForm () {
-    const { classes, error, submitting } = this.props
+    const { error, submitting } = this.props
 
     return (
       <div>

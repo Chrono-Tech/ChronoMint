@@ -31,8 +31,6 @@ import {
   WALLETS_CACHE_ADDRESS,
 } from '@chronobank/core/redux/persistAccount/constants'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/login/network/constants'
-import * as Utils from '@chronobank/core/redux/ethereum/utils'
-import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 import { getAddressCache } from '@chronobank/core/redux/persistAccount/selectors'
 import * as NetworkThunks from '@chronobank/login/redux/network/thunks'
 import * as SessionThunks from '@chronobank/core/redux/session/thunks'
@@ -104,6 +102,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   const state = getState()
   const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
   const accountWallet = new AccountEntryModel(selectedWallet)
+  console.log('selectedWallet: ', selectedWallet)
 
   switch (accountWallet.type) {
     case WALLET_TYPE_MEMORY: {
@@ -326,6 +325,7 @@ export const onCreateWalletFromJSON = (name, walletObject, profile) => (dispatch
 */
 export const onCreateWalletFromDevice = (name, device, profile, walletType, activeBlockchainList = DEFAULT_ACTIVE_BLOCKCHAINS) => (dispatch) => {
   const account = createDeviceAccountEntry(name, device, profile, walletType, activeBlockchainList)
+  console.log('onCreateWalletFromDevice: ', account)
   dispatch(PersistAccountActions.accountAdd(account))
   dispatch(PersistAccountActions.accountSelect(account))
 }

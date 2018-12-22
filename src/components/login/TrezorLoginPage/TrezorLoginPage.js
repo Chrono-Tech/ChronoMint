@@ -114,8 +114,9 @@ class TrezorLoginPage extends PureComponent {
   }
 
   async onSubmitDevice (device) {
+    console.log('onSubmitDevice (device): ', device)
     this.setState({
-      device: device,
+      device,
     })
 
     let response = null, userName = null, profile = null

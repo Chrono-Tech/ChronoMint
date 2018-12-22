@@ -148,13 +148,14 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
   dispatch({ type: WALLETS_UPDATE_LIST, walletsList: copyWalletList })
 }
 
-export const updateBlockchainActivity = (blockchainList, enableDisable = false) => (dispatch, getState) => {
+export const updateBlockchainActivity = (blockchainList, enableDisable = false) => async (dispatch, getState) => {
   const state = getState()
   const currentBlockchains = getBlockchainList(state)
 
   const blockchainToEnable = AccountUtils.formatBlockchainListToArray(blockchainList, (name, isEnabled) => isEnabled && !currentBlockchains.includes(name))
   if (enableDisable && blockchainToEnable) {
-    dispatch(enableBlockchains(blockchainToEnable))
+    await dispatch(enableBlockchains(blockchainToEnable))
+
   }
 
   const blockchainToDisable = AccountUtils.formatBlockchainListToArray(blockchainList, (name, isEnabled) => !isEnabled)

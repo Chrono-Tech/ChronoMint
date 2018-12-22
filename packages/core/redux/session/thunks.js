@@ -23,7 +23,7 @@ import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
 import { DEFAULT_CBE_URL, DEFAULT_USER_URL, DUCK_SESSION } from './constants'
 import { getAccountAddresses, getDeviceAccountAddresses } from './selectors/session'
 import { cleanWalletsList } from '../wallets/actions'
-import {getAddressListSent} from '../persistAccount/selectors';
+import { getAddressListSent } from '../persistAccount/selectors'
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
@@ -247,6 +247,8 @@ export const getProfileSignatureForDevice = (signer, path) => async (dispatch, g
     const signDataString = ProfileService.getSignData(addresses)
     const signData = await signer.signData(signDataString, path)
     const profileSignature = await dispatch(ProfileThunks.getUserProfile(signData.signature, addresses))
+
+    // if you need profile signature data. Feel free to disable address list cache
     dispatch(SessionActions.setProfileSignature(profileSignature))
     dispatch(PersistAccountActions.sentAddresses(addressList))
 
