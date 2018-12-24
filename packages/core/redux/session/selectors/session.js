@@ -117,12 +117,8 @@ export const getDeviceAccountAddresses = createSelector(
     getAddressCache,
   ],
   (addresses) => {
-    console.log('getDeviceAccountAddresses: ', addresses)
-    console.log('getDeviceAccountAddresses  ss: ', Object.values(addresses))
-
     return Object.entries(addresses)
       .reduce((accumulator, [blockchainName, data]) => {
-        console.log('Object.values: ', data, blockchain)
         const blockchain = blockchainName.toLowerCase().replace(/\W/, '-')
         return [
           ...accumulator,

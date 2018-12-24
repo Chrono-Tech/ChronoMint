@@ -21,6 +21,7 @@ const initialState = {
   customNetworksList: [],
   addressCache: {},
   addressListSent: [],
+  lastLoginNetworkId: null,
 }
 
 const persistAccount = (state = initialState, action) => {
@@ -33,8 +34,6 @@ const persistAccount = (state = initialState, action) => {
       }
 
     case a.ADDRESSES_SENT_TO_PROFILE_SERVICE:
-      console.log('ADDRESSES_SENT_TO_PROFILE_SERVICE: ', action, state.addressListSent.concat(action.addressList).filter((v, i, ar) => ar.indexOf(v) === i))
-
       return {
         ...state,
         addressListSent: state.addressListSent.concat(action.addressList).filter((v, i, ar) => ar.indexOf(v) === i),
@@ -82,6 +81,19 @@ const persistAccount = (state = initialState, action) => {
             },
           },
         },
+      }
+    }
+
+    case a.WALLETS_CACHE_ADDRESS_CLEAR: {
+      return {
+        ...state,
+        addressCache: {},
+      }
+    }
+    case a.UPDATE_LAST_NETWORK_ID: {
+      return {
+        ...state,
+        lastLoginNetworkId: action.lastNetworkId,
       }
     }
 

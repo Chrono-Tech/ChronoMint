@@ -39,6 +39,8 @@ import {
   WALLETS_SELECT,
   WALLETS_UPDATE_LIST,
   WALLETS_LOAD,
+  WALLETS_CACHE_ADDRESS_CLEAR,
+  UPDATE_LAST_NETWORK_ID,
 } from './constants'
 
 import { getBlockchainList, getPersistAccount } from './selectors'
@@ -114,6 +116,15 @@ export const disableBlockchains = (blockchains) => (dispatch) => {
  */
 export const sentAddresses = (addressList) => (dispatch) => {
   dispatch({ type: ADDRESSES_SENT_TO_PROFILE_SERVICE, addressList })
+}
+
+/**
+ * Update last network id. Used for proper address cache usage
+ * @param networkData
+ * @returns {Function}
+ */
+export const updateLastNetworkId = (lastNetworkId) => (dispatch) => {
+  dispatch({ type: UPDATE_LAST_NETWORK_ID, lastNetworkId })
 }
 
 export const accountAdd = (wallet) => (dispatch) => {
@@ -324,4 +335,8 @@ export const customNetworksListUpdate = (list) => (dispatch) => {
 
 export const customNetworksListReset = () => (dispatch) => {
   dispatch({ type: CUSTOM_NETWORKS_LIST_RESET })
+}
+
+export const clearWalletsAddressCache = () => (dispatch) => {
+  dispatch({ type: WALLETS_CACHE_ADDRESS_CLEAR })
 }

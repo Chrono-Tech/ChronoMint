@@ -20,7 +20,7 @@ import * as NemUtils from './utils'
 import { getToken } from '../tokens/selectors'
 import { notify } from '../notifier/actions'
 import tokenService from '../../services/TokenService'
-import { WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
+import {DUCK_PERSIST_ACCOUNT, WALLETS_CACHE_ADDRESS} from '../persistAccount/constants'
 import { showSignerModal, closeSignerModal } from '../modals/thunks'
 
 import * as TokensActions from '../tokens/actions'
@@ -121,7 +121,9 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   try {
     const state = getState()
     const { network } = getCurrentNetworkSelector(state)
-    const nemPath = NemUtils.getNemDerivedPath(network[BLOCKCHAIN_NEM])
+    const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
+    const { accountIndex } = selectedWallet.encrypted[0]
+    const nemPath = NemUtils.getNemDerivedPath(network[BLOCKCHAIN_NEM], accountIndex)
     const addressCache = { ...getAddressCache(state) }
 
     dispatch(NemActions.nemTxSignTransaction({ entry, signer }))
@@ -276,9 +278,11 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
   const state = getState()
   const { network } = getCurrentNetworkSelector(state)
   const addressCache = { ...getAddressCache(state) }
+  const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
+  const { accountIndex } = selectedWallet.encrypted[0]
 
   if (!addressCache[BLOCKCHAIN_NEM]) {
-    const path = NemUtils.getNemDerivedPath(network[BLOCKCHAIN_NEM])
+    const path = NemUtils.getNemDerivedPath(network[BLOCKCHAIN_NEM], accountIndex)
     const signer = getNemSigner(state, path)
 
     if (signer) {

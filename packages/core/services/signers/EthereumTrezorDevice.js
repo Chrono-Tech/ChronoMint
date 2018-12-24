@@ -42,7 +42,6 @@ export default class EthereumTrezorDevice {
   }
 
   async getAddress (path) {
-    console.warn('Thereum Trezor Device: getAddress (path: ', path)
     const result = await TrezorConnect.ethereumGetAddress({
       path: path,
       showOnTrezor: true,
@@ -50,8 +49,6 @@ export default class EthereumTrezorDevice {
     if (!result.success) {
       throw new TrezorError(result.code, result.payload.error)
     }
-
-    console.log('getAddress: ', result)
 
     return result.payload.address
   }
@@ -67,6 +64,7 @@ export default class EthereumTrezorDevice {
         address: `0x${wallet.getAddress().toString('hex')}`,
         xpubkey: xpubKey,
         type: this.name,
+        accountIndex: from + index,
       }
     })
   }

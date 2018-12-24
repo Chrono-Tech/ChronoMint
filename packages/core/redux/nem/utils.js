@@ -94,9 +94,9 @@ export const createXemTransaction = async (prepared, signer, signerPath, address
   }
 }
 
-export const getNemDerivedPath = (networkName) => {
+export const getNemDerivedPath = (networkName, accountIndex = 0) => {
   const coinType = nemSdk.model.network.data[networkName] === nemSdk.model.network.data.mainnet
     ? COIN_TYPE_NEM_MAINNET
     : COIN_TYPE_ALLCOINS_TESTNET
-  return `m/44'/${coinType}'/0'/0'/0'`
+  return `m/44'/${coinType}'/0'/0'/${accountIndex}'`
 }

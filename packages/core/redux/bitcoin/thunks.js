@@ -17,7 +17,7 @@ import type { Dispatch } from 'redux'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 
 import { modalsOpen } from '../modals/actions'
-import { WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
+import {DUCK_PERSIST_ACCOUNT, WALLETS_CACHE_ADDRESS} from '../persistAccount/constants'
 import { getBalanceDataParser } from './converter'
 import {
   TransferNoticeModel,
@@ -44,6 +44,7 @@ import tokenService from '../../services/TokenService'
 import { getDashSigner } from '../dash/selectors'
 import { EVENT_UPDATE_LAST_BLOCK } from '../../dao/constants'
 import { getWalletsByBlockchain } from '../wallets/selectors/models'
+import {COIN_TYPE_BTC_MAINNET} from '../../../login/network/constants';
 
 const daoMap = {
   [BLOCKCHAIN_BITCOIN]: bitcoinDAO,
@@ -270,6 +271,7 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     const unsignedTxHex = entry.tx.prepared.buildIncomplete().toHex()
 
     dispatch(showSignerModal())
+    // @todo Check cointype for LTC, BCC, DASH in BitcoinUtils.getBitcoinDerivedPath
     const signedHex = await signer.signTransaction(unsignedTxHex, BitcoinUtils.getBitcoinDerivedPath(network[BLOCKCHAIN_BITCOIN]))
     dispatch(closeSignerModal())
 
@@ -288,7 +290,6 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     dispatch(BitcoinActions.bitcoinSignTxSuccess(bitcoinTxEntry))
     return bitcoinTxEntry
   } catch (error) {
-    console.log('SignTransaction error: ', error, entry, signer)
     dispatch(closeSignerModal())
     dispatch(notifyError(error, 'Trezor'))
 
@@ -448,27 +449,33 @@ const initToken = (blockchainName) => async (dispatch, getState) => {
 const initWallet = (blockchainName) => async (dispatch, getState) => {
   const state = getState()
   const { network } = getCurrentNetworkSelector(state)
+  const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
+  const { accountIndex } = selectedWallet.encrypted[0]
+  console.log('initWallet = (blockchainName: ', blockchainName, selectedWallet.encrypted[0])
 
   const addressCache = { ...getAddressCache(state) }
 
   const signerSelectorsMap = {
     [BLOCKCHAIN_BITCOIN]: {
       selector: getBitcoinSigner,
-      path: BitcoinUtils.getBitcoinDerivedPath(network[BLOCKCHAIN_BITCOIN]),
+      path: BitcoinUtils.getBitcoinDerivedPath(network[BLOCKCHAIN_BITCOIN], COIN_TYPE_BTC_MAINNET, accountIndex),
     },
     [BLOCKCHAIN_BITCOIN_CASH]: {
       selector: getBitcoinCashSigner,
-      path: BitcoinUtils.getBitcoinDerivedPath(network[BLOCKCHAIN_BITCOIN_CASH], COIN_TYPE_BCC_MAINNET),
+      path: BitcoinUtils.getBitcoinDerivedPath(network[BLOCKCHAIN_BITCOIN_CASH], COIN_TYPE_BCC_MAINNET, accountIndex),
     },
     [BLOCKCHAIN_DASH]: {
       selector: getDashSigner,
-      path: BitcoinUtils.getBitcoinDerivedPath(network[BLOCKCHAIN_DASH], COIN_TYPE_DASH_MAINNET),
+      path: BitcoinUtils.getBitcoinDerivedPath(network[BLOCKCHAIN_DASH], COIN_TYPE_DASH_MAINNET, accountIndex),
     },
     [BLOCKCHAIN_LITECOIN]: {
       selector: getLitecoinSigner,
-      path: BitcoinUtils.getLitecoinDerivedPath(network[BLOCKCHAIN_LITECOIN], COIN_TYPE_LTC_MAINNET),
+      path: BitcoinUtils.getLitecoinDerivedPath(network[BLOCKCHAIN_LITECOIN], COIN_TYPE_LTC_MAINNET, accountIndex),
     },
   }
+
+  console.log('signerSelectorsMap ', signerSelectorsMap)
+  console.log('addressCache[blockchainName] ', addressCache[blockchainName], addressCache)
 
   if (!addressCache[blockchainName]) {
     const { selector, path } = signerSelectorsMap[blockchainName]

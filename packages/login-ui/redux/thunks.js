@@ -100,15 +100,19 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   dispatch(NetworkActions.networkSetLoginSubmitting())
 
   const state = getState()
-  const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
+  const { selectedWallet, lastLoginNetworkId } = state.get(DUCK_PERSIST_ACCOUNT)
   const accountWallet = new AccountEntryModel(selectedWallet)
-  console.log('selectedWallet: ', selectedWallet)
+  const { selectedNetworkId } = getState().get(DUCK_NETWORK)
+  console.log('lastLoginNetworkId !== selectedNetworkId: ', lastLoginNetworkId, selectedNetworkId, lastLoginNetworkId !== selectedNetworkId)
+  if (lastLoginNetworkId !== selectedNetworkId) {
+    dispatch(PersistAccountActions.clearWalletsAddressCache())
+  }
+  dispatch(PersistAccountActions.updateLastNetworkId(selectedNetworkId))
 
   switch (accountWallet.type) {
     case WALLET_TYPE_MEMORY: {
       try {
         const wallet = await dispatch(PersistAccountActions.decryptAccount(accountWallet, password))
-
         await dispatch(PersistAccountActions.accountLoad(wallet))
 
         dispatch(NetworkActions.selectAccount(accountWallet.address))

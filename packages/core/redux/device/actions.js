@@ -63,7 +63,6 @@ export const initTrezorDevice = (wallet) => async (dispatch) => {
     await dispatch(updateSessionWeb3())
     const trezor = new EthereumTrezorDevice()
     const result = await trezor.getAccountInfoList(0, 5)
-    console.log('trezor.getAccountInfoList: ', result)
     dispatch(deviceUpdateList(result))
     dispatch({ type: DEVICE_STATE_LOADED })
   } catch (e) {

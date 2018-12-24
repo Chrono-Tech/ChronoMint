@@ -3,15 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/login/network/constants'
 import { HolderModel, ContractDAOModel, ContractModel } from '../../models'
 import { getAddressCache } from '../persistAccount/selectors'
 import ethereumDAO from '../../dao/EthereumDAO'
-import {  WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
+import { DUCK_PERSIST_ACCOUNT, WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
 import * as ethActions from './actions'
-import * as Utils from './utils'
 import WalletModel from '../../models/wallet/WalletModel'
 import { WALLETS_SET } from '../wallets/constants'
 import { formatBalances, getWalletBalances } from '../tokens/utils'
@@ -121,11 +119,11 @@ export const watchLatestBlock = () => async (dispatch) => {
 
 const initWallet = () => async (dispatch, getState) => {
   const state = getState()
-  const { network } = getCurrentNetworkSelector(state)
   var addressCache = { ...getAddressCache(state) }
 
-  if (!addressCache[BLOCKCHAIN_ETHEREUM] || 1) {
-    const path = Utils.getEthereumDerivedPath(network[BLOCKCHAIN_ETHEREUM])
+  if (!addressCache[BLOCKCHAIN_ETHEREUM]) {
+    const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
+    const { path } = selectedWallet.encrypted[0]
     const signer = getEthereumSigner(state)
     const address = await signer.getAddress(path)
 
