@@ -8,7 +8,7 @@ import { selectCurrentCurrency } from '@chronobank/market/redux/selectors'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
 import './WalletWidget.scss'
 
-function makeMapStateToProps(state, props) {
+function makeMapStateToProps (state, props) {
   const { wallet } = props
   const mainSymbol = getMainSymbolForBlockchain(wallet.blockchain)
   const getAmount = walletAmountSelector(wallet.id, mainSymbol)
@@ -34,7 +34,7 @@ export default class WalletMainCoinBalance extends PureComponent {
     wallet: PTWallet,
   }
 
-  render() {
+  render () {
     const { selectedCurrency, mainSymbol, balance, amount } = this.props
 
     return (

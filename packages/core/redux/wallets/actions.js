@@ -58,6 +58,7 @@ import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 import { DUCK_ETH_MULTISIG_WALLET, ETH_MULTISIG_BALANCE, ETH_MULTISIG_FETCHED } from '../multisigWallet/constants'
 import BalanceModel from '../../models/tokens/BalanceModel'
 import { getMultisigWallets } from '../wallet/selectors/models'
+import { serializeToTxDescModel } from './utils'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -191,19 +192,38 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
           break
       }
     })
-    .on(EVENT_UPDATE_TRANSACTION, ({ tx, address, bitcoin, symbol }) => {
+    .on(EVENT_UPDATE_TRANSACTION, ({ tx }) => {
       const wallet = getMainWalletForBlockchain(token.blockchain())(getState())
-      if (wallet && wallet.address) {
-        dispatch(getTransactionsForMainWallet({
-          address: wallet.address,
-          blockchain: token.blockchain(),
-          forcedOffset: true,
-        }))
+      const tdx = serializeToTxDescModel(tx)
+      const blocks = { ...wallet.transactions.blocks }
+      if (blocks[tx.blockNumber()]) {
+        let isOut = true
+        const transactions = blocks[tx.blockNumber()].transactions
+        for (const i in transactions) {
+          if (transactions[i].hash === tdx.hash) {
+            transactions[i] = tdx
+            isOut = false
+            break
+          }
+        }
+        if (isOut) transactions.push(tdx)
+      } else {
+        blocks[tx.blockNumber()] = {
+          transactions: [tdx],
+        }
       }
-      console.log(tx)
-      console.log(address)
-      console.log(bitcoin)
-      console.log(symbol)
+
+      dispatch({
+        type: WALLETS_UPDATE_WALLET,
+        wallet: new WalletModel({
+          ...wallet,
+          transactions: new TxHistoryModel(
+            {
+              blocks,
+              isFetching: true,
+            }),
+        }),
+      })
     })
 
   dispatch(marketAddToken(token.symbol()))
