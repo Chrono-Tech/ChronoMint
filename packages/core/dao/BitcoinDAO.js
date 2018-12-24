@@ -185,7 +185,7 @@ export default class BitcoinDAO extends EventEmitter {
 
   }
 
-  resetFilterCache() {
+  resetFilterCache () {
     // do nothing
   }
 
