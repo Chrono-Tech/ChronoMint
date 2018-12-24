@@ -18,8 +18,7 @@ const ETHEREUM_TESTNET_NODE = new EthereumMiddlewareNode({
     timeout: 10000,
   }),
   socket: {
-    // baseURL: 'https://192.168.31.221:32769/stomp',
-    baseURL: 'http://localhost:5672/ws',
+    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {

@@ -51,8 +51,6 @@ export const getSelectedNetwork = (blockchain) => createSelector(
 
       return networks[blockchain]
     } else {
-      // TODO @abdulov remove console.log
-      console.log('%c network.networks', 'background: #222; color: #fff', network)
       return network.networks.find(
         (item) => item.id === network.selectedNetworkId,
       )

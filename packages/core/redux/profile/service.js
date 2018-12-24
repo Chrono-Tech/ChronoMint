@@ -15,6 +15,7 @@ const URL_PROFILE_BASE_PATH = 'api/v1/'
 const URL_PROFILE_USER_INFO = 'security/persons/query'
 const URL_PROFILE_SIGNATURE = 'security/signin/signature/chronomint'
 const URL_PROFILE_UPDATE_PROFILE = 'security/me/profile/combine/update'
+const URL_USER_AUTH_TOKEN = 'security/auth-tokens'
 
 // URLs for avatar
 const URL_PROFILE_IMAGE_DOWNLOAD = `media/image/`
@@ -97,13 +98,14 @@ export default class ProfileService {
     )
   }
 
-  static getUserToken () {
-    const id = 'middleware_eos_account'
-    const secret = '123'
-    return axios.post(`http://localhost:8082/tokens`, {
-      id,
-      secret,
-      scopes: ['middleware_eos_account'],
+  static getUserToken (signature) {
+    return ProfileService.service.request({
+      method: 'POST',
+      url: URL_USER_AUTH_TOKEN,
+      data: {
+        scopes: ['middleware-eos-account'],
+      },
+      headers: Utils.getPostConfigWithAuthorizationSignature(signature),
     })
   }
 }
