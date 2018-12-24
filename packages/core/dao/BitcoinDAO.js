@@ -29,7 +29,7 @@ const EVENT_BALANCE = 'balance'
 const EVENT_LAST_BLOCK = 'lastBlock'
 
 export default class BitcoinDAO extends EventEmitter {
-  constructor(name, symbol, bitcoinProvider) {
+  constructor (name, symbol, bitcoinProvider) {
     super()
     this._name = name
     this._symbol = symbol
@@ -37,44 +37,44 @@ export default class BitcoinDAO extends EventEmitter {
     this._decimals = 8
   }
 
-  getBlockchain() {
+  getBlockchain () {
     return this._name
   }
 
-  getAddressValidator() {
+  getAddressValidator () {
     return bitcoinAddress(this._bitcoinProvider.isAddressValid.bind(this._bitcoinProvider), this._name)
   }
 
-  getAccount() {
+  getAccount () {
     return this._bitcoinProvider.getAddress()
   }
 
-  getInitAddress() {
+  getInitAddress () {
     // BitcoinDAO is not a cntract DAO, bitcoin have no initial address, but it have a token name.
     return `Bitcoin/${this._symbol}`
   }
 
-  getCurrentBlockHeight() {
+  getCurrentBlockHeight () {
     return this._bitcoinProvider.getCurrentBlockHeight()
   }
 
-  isInitialized() {
+  isInitialized () {
     return this._bitcoinProvider.isInitialized()
   }
 
-  async getFeeRate() {
+  async getFeeRate () {
     return this._bitcoinProvider.getFeeRate()
   }
 
-  getAccountBalances(address) {
+  getAccountBalances (address) {
     return this._bitcoinProvider.getAccountBalances(address)
   }
 
-  getAccountBalance(address) {
+  getAccountBalance (address) {
     return this.getAccountBalances(address)
   }
 
-  transfer(from: string, to: string, amount: BigNumber) {
+  transfer (from: string, to: string, amount: BigNumber) {
     return {
       from,
       to,
@@ -82,7 +82,7 @@ export default class BitcoinDAO extends EventEmitter {
     }
   }
 
-  async getTransfer(id, account, skip, offset): Array<TxModel> {
+  async getTransfer (id, account, skip, offset): Array<TxModel> {
     const txs = []
     try {
       const txsResult = await this._bitcoinProvider.getTransactionsList(account, skip, offset)
@@ -124,7 +124,7 @@ export default class BitcoinDAO extends EventEmitter {
     return txs
   }
 
-  watch(/*account*/): Promise {
+  watch (/*account*/): Promise {
     return Promise.all([
       this.watchTransfer(),
       this.watchBalance(),
@@ -132,7 +132,7 @@ export default class BitcoinDAO extends EventEmitter {
     ])
   }
 
-  async watchTransaction() {
+  async watchTransaction () {
     this._bitcoinProvider.addListener(EVENT_TRANSACTION_MAINED, async ({ tx, address, bitcoin, symbol }) => {
       this.emit(
         EVENT_UPDATE_TRANSACTION,
@@ -146,7 +146,7 @@ export default class BitcoinDAO extends EventEmitter {
     })
   }
 
-  async watchTransfer() {
+  async watchTransfer () {
     this._bitcoinProvider.addListener(EVENT_TX, async ({ tx }) => {
       this.emit(
         EVENT_NEW_TRANSFER,
@@ -165,13 +165,13 @@ export default class BitcoinDAO extends EventEmitter {
     })
   }
 
-  async watchBalance() {
+  async watchBalance () {
     this._bitcoinProvider.addListener(EVENT_BALANCE, async ({ account, time, balance }) => {
       this.emit(EVENT_UPDATE_BALANCE, { account, time, balance: balance.balance0 })
     })
   }
 
-  async watchLastBlock() {
+  async watchLastBlock () {
     this._bitcoinProvider.addListener(EVENT_LAST_BLOCK, async ({ block }) => {
       this.emit(EVENT_UPDATE_LAST_BLOCK, {
         blockchain: this._name,
@@ -180,7 +180,7 @@ export default class BitcoinDAO extends EventEmitter {
     })
   }
 
-  async stopWatching() {
+  async stopWatching () {
     // Ignore
 
   }
@@ -189,7 +189,7 @@ export default class BitcoinDAO extends EventEmitter {
     // do nothing
   }
 
-  async fetchToken() {
+  async fetchToken () {
     if (!this.isInitialized()) {
       const message = `${this._symbol} support is not available`
       // eslint-disable-next-line
@@ -208,7 +208,7 @@ export default class BitcoinDAO extends EventEmitter {
     })
   }
 
-  subscribeNewWallet(address) {
+  subscribeNewWallet (address) {
     this._bitcoinProvider.subscribeNewWallet(address)
   }
 }

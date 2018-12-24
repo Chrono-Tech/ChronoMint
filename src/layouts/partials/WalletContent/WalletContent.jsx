@@ -22,7 +22,7 @@ import { navigateToWallets } from 'redux/ui/navigation'
 
 import './WalletContent.scss'
 
-function makeMapStateToProps(state) {
+function makeMapStateToProps (state) {
   const { blockchain, address } = state.get(DUCK_WALLET)
   const getWallet = getWalletInfo(blockchain, address)
 
@@ -38,7 +38,7 @@ function makeMapStateToProps(state) {
   return mapStateToProps
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     navigateToWallets: () => dispatch(navigateToWallets()),
   }
