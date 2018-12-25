@@ -130,7 +130,7 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
 
     dispatch(showSignerModal())
     const { tx } = entry
-    const signed = await NemUtils.createXemTransaction(tx.prepared, signer, nemPath, addressCache[BLOCKCHAIN_NEM])
+    const signed = await NemUtils.createXemTransaction(tx.prepared, signer, nemPath, addressCache[BLOCKCHAIN_NEM].address)
     dispatch(closeSignerModal())
 
     dispatch(NemActions.nemTxUpdate(entry.key, entry.tx.from, NemUtils.createNemTxEntryModel({
@@ -162,6 +162,8 @@ const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
     console.error('entry is null', entry)
     return // stop execute
   }
+
+  console.log('sendSignedTransaction: ', entry.tx)
 
   const node = nemProvider.getNode()
   const res = await node.send({ ...entry.tx.signed.tx, fee: entry.tx.signed.fee }) || {}
