@@ -118,4 +118,3 @@ class BlockchainChoice extends PureComponent {
 }
 
 export default BlockchainChoice
-
