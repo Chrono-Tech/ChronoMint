@@ -3,6 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export const getDerivedPath = (coinType) => {
-  return `m/44'/${coinType}'/0'/0/0`
+export const getDerivedPath = (coinType, accountIndex = 0) => {
+  return `m/44'/${coinType}'/0'/0/${accountIndex}`
 }

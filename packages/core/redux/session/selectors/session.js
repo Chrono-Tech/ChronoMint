@@ -15,6 +15,7 @@ import { getMainWallets } from '../../wallets/selectors/models'
 import { getGasSliderCollection, getIsCBE } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
 import { getEosWallets } from '../../eos/selectors/mainSelectors'
+import { getAddressCache } from '../../persistAccount/selectors'
 
 export const getGasPriceMultiplier = (blockchain) => createSelector([getGasSliderCollection],
   (gasSliderCollection) => {
@@ -99,12 +100,33 @@ export const getAccountAddresses = createSelector(
   (wallets, eosWallets) => {
     return Object.values({ ...wallets, ...eosWallets })
       .reduce((accumulator, wallet) => {
+        // replace all non chars symbols with -
         const blockchain = wallet.blockchain.toLowerCase().replace(/\W/, '-')
         return [
           ...accumulator,
           {
             type: `${blockchain}-address`,
             value: wallet.address,
+          },
+        ]
+      }, {})
+  },
+)
+
+export const getDeviceAccountAddresses = createSelector(
+  [
+    getAddressCache,
+  ],
+  (addresses) => {
+    return Object.entries(addresses)
+      .reduce((accumulator, [blockchainName, data]) => {
+        // replace all non chars symbols with -
+        const blockchain = blockchainName.toLowerCase().replace(/\W/, '-')
+        return [
+          ...accumulator,
+          {
+            type: `${blockchain}-address`,
+            value: data.address,
           },
         ]
       }, {})

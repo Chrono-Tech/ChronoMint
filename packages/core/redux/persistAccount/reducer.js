@@ -20,6 +20,8 @@ const initialState = {
   rehydrated: false,
   customNetworksList: [],
   addressCache: {},
+  addressListSent: [],
+  lastLoginNetworkId: null,
 }
 
 const persistAccount = (state = initialState, action) => {
@@ -30,6 +32,13 @@ const persistAccount = (state = initialState, action) => {
         ...action.payload.persistAccount,
         rehydrated: true,
       }
+
+    case a.ADDRESSES_SENT_TO_PROFILE_SERVICE:
+      return {
+        ...state,
+        addressListSent: state.addressListSent.concat(action.addressList).filter((v, i, ar) => ar.indexOf(v) === i),
+      }
+
     case a.WALLETS_ADD:
       return {
         ...state,
@@ -72,6 +81,19 @@ const persistAccount = (state = initialState, action) => {
             },
           },
         },
+      }
+    }
+
+    case a.WALLETS_CACHE_ADDRESS_CLEAR: {
+      return {
+        ...state,
+        addressCache: {},
+      }
+    }
+    case a.UPDATE_LAST_NETWORK_ID: {
+      return {
+        ...state,
+        lastLoginNetworkId: action.lastNetworkId,
       }
     }
 

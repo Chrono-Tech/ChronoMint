@@ -63,6 +63,11 @@ export const getCustomNetworksList = createSelector(
   (persistAccount) => persistAccount.customNetworksList,
 )
 
+export const getAddressListSent = createSelector(
+  (state) => state.get(DUCK_PERSIST_ACCOUNT),
+  (persistAccount) => persistAccount.addressListSent,
+)
+
 export const getSelectedWalletKey = createSelector(
   getPersistAccount,
   (account) => {

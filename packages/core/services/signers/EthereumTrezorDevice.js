@@ -42,11 +42,15 @@ export default class EthereumTrezorDevice {
   }
 
   async getAddress (path) {
-    const xPubKey = await this.getXpubkey(path)
-    const hdKey = hdkey.fromExtendedKey(xPubKey)
-    const wallet = hdKey.deriveChild(0).getWallet()
+    const result = await TrezorConnect.ethereumGetAddress({
+      path: path,
+      showOnTrezor: true,
+    })
+    if (!result.success) {
+      throw new TrezorError(result.code, result.payload.error)
+    }
 
-    return `0x${wallet.getAddress().toString('hex')}`
+    return result.payload.address
   }
 
   async getAccountInfoList (from: number = 0, limit: number = 5): String {
@@ -60,6 +64,7 @@ export default class EthereumTrezorDevice {
         address: `0x${wallet.getAddress().toString('hex')}`,
         xpubkey: xpubKey,
         type: this.name,
+        accountIndex: from + index,
       }
     })
   }

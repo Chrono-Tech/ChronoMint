@@ -98,6 +98,7 @@
     "babel-plugin-react-css-modules": "^2.7.1",
     "bignumber.js": "^4.1.0",
     "bip39": "^2.3.0",
+    "bip32-path": "^0.4.2",
     "classnames": "^2.2.5",
     "d3": "^4.10.0",
     "debug": "^3.1.0",

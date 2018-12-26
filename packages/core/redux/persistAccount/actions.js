@@ -28,6 +28,8 @@ import {
 } from '../../models/wallet/persistAccount'
 
 import {
+  ADDRESSES_SENT_TO_PROFILE_SERVICE,
+  BLOCKCHAIN_LIST_UPDATE,
   CUSTOM_NETWORKS_LIST_ADD,
   CUSTOM_NETWORKS_LIST_RESET,
   CUSTOM_NETWORKS_LIST_UPDATE,
@@ -37,7 +39,8 @@ import {
   WALLETS_SELECT,
   WALLETS_UPDATE_LIST,
   WALLETS_LOAD,
-  BLOCKCHAIN_LIST_UPDATE,
+  WALLETS_CACHE_ADDRESS_CLEAR,
+  UPDATE_LAST_NETWORK_ID,
 } from './constants'
 
 import { getBlockchainList, getPersistAccount } from './selectors'
@@ -106,6 +109,24 @@ export const disableBlockchains = (blockchains) => (dispatch) => {
   })
 }
 
+/**
+ * List of addresses that was sent to the middleware profile service. To avoid this request multiple times
+ * @param wallet
+ * @returns {Function}
+ */
+export const sentAddresses = (addressList) => (dispatch) => {
+  dispatch({ type: ADDRESSES_SENT_TO_PROFILE_SERVICE, addressList })
+}
+
+/**
+ * Update last network id. Used for proper address cache usage
+ * @param networkData
+ * @returns {Function}
+ */
+export const updateLastNetworkId = (lastNetworkId) => (dispatch) => {
+  dispatch({ type: UPDATE_LAST_NETWORK_ID, lastNetworkId })
+}
+
 export const accountAdd = (wallet) => (dispatch) => {
   dispatch({ type: WALLETS_ADD, wallet })
 }
@@ -138,13 +159,14 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
   dispatch({ type: WALLETS_UPDATE_LIST, walletsList: copyWalletList })
 }
 
-export const updateBlockchainActivity = (blockchainList, enableDisable = false) => (dispatch, getState) => {
+export const updateBlockchainActivity = (blockchainList, enableDisable = false) => async (dispatch, getState) => {
   const state = getState()
   const currentBlockchains = getBlockchainList(state)
 
   const blockchainToEnable = AccountUtils.formatBlockchainListToArray(blockchainList, (name, isEnabled) => isEnabled && !currentBlockchains.includes(name))
   if (enableDisable && blockchainToEnable) {
-    dispatch(enableBlockchains(blockchainToEnable))
+    await dispatch(enableBlockchains(blockchainToEnable))
+
   }
 
   const blockchainToDisable = AccountUtils.formatBlockchainListToArray(blockchainList, (name, isEnabled) => !isEnabled)
@@ -313,4 +335,8 @@ export const customNetworksListUpdate = (list) => (dispatch) => {
 
 export const customNetworksListReset = () => (dispatch) => {
   dispatch({ type: CUSTOM_NETWORKS_LIST_RESET })
+}
+
+export const clearWalletsAddressCache = () => (dispatch) => {
+  dispatch({ type: WALLETS_CACHE_ADDRESS_CLEAR })
 }

@@ -55,7 +55,7 @@ class LoginWithTrezor extends Component {
   }
 
   render () {
-    const { previousPage, deviceList, /*navigateToDerivationPathForm,*/ onDeviceSelect } = this.props
+    const { previousPage, deviceList, onDeviceSelect } = this.props
 
     return (
       <div styleName='form'>

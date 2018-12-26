@@ -16,7 +16,6 @@ export default class BitcoinTrezorDevice {
   }
 
   async getAddress (path) {
-
     if (!this.address) {
       const result = await TrezorConnect.getAddress({
         path: path,

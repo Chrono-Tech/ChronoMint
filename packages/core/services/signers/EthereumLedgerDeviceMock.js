@@ -21,11 +21,11 @@ export default class EthereumLedgerDeviceMock {
 
   async getAddressInfoList (from: number = 0, limit: number = 5): String {
     return Array.from({ length: limit }).map((element, index) => {
-      return this.getAddressInfo(DEFAULT_PATH_FACTORY(from + index))
+      return this.getAddressInfo(DEFAULT_PATH_FACTORY(from + index), from + index)
     })
   }
 
-  getAddressInfo (path) {
+  getAddressInfo (path, accountIndex) {
     const hdKey = hdkey.fromMasterSeed(MOCK_SEED)
     const wallet = hdKey.derivePath(path).getWallet()
 
@@ -34,6 +34,7 @@ export default class EthereumLedgerDeviceMock {
       address: `0x${wallet.getAddress().toString('hex')}`,
       publicKey: wallet.getPublicKey().toString('hex'),
       type: this.name,
+      accountIndex,
     }
   }
 

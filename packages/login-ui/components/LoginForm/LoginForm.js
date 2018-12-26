@@ -142,16 +142,19 @@ class LoginForm extends React.Component {
     const { error, submitting } = this.props
 
     return (
-      <div styleName='actions'>
-        <Button
-          styleName='button'
-          buttonType='login'
-          type='submit'
-          label={<Translate value='LoginForm.submitButton' />}
-          isLoading={submitting}
-        />
+      <div>
 
-        {error ? (<div styleName='form-error'>{error}</div>) : null}
+        <div styleName='actions'>
+          <Button
+            styleName='button'
+            buttonType='login'
+            type='submit'
+            label={<Translate value='LoginForm.submitButton' />}
+            isLoading={submitting}
+          />
+
+          {error ? (<div styleName='form-error'>{error}</div>) : null}
+        </div>
       </div>
     )
   }

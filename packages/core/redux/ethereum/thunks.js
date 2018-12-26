@@ -3,15 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/login/network/constants'
 import { HolderModel, ContractDAOModel, ContractModel } from '../../models'
 import { getAddressCache } from '../persistAccount/selectors'
 import ethereumDAO from '../../dao/EthereumDAO'
-import {  WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
+import { DUCK_PERSIST_ACCOUNT, WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
 import * as ethActions from './actions'
-import * as Utils from './utils'
 import WalletModel from '../../models/wallet/WalletModel'
 import { WALLETS_SET } from '../wallets/constants'
 import { formatBalances, getWalletBalances } from '../tokens/utils'
@@ -121,30 +119,25 @@ export const watchLatestBlock = () => async (dispatch) => {
 
 const initWallet = () => async (dispatch, getState) => {
   const state = getState()
-  const { network } = getCurrentNetworkSelector(state)
-  const addressCache = { ...getAddressCache(state) }
+  var addressCache = { ...getAddressCache(state) }
 
-  if (!addressCache[BLOCKCHAIN_ETHEREUM] || true) {
-    const path = Utils.getEthereumDerivedPath(network[BLOCKCHAIN_ETHEREUM])
+  if (!addressCache[BLOCKCHAIN_ETHEREUM]) {
+    const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
+    const { path } = selectedWallet.encrypted[0]
     const signer = getEthereumSigner(state)
+    const address = await signer.getAddress(path)
 
-    if (signer) {
-      const address = await signer.getAddress(path)
-      addressCache[BLOCKCHAIN_ETHEREUM] = {
-        address,
-        path,
-      }
-
-      dispatch({
-        type: WALLETS_CACHE_ADDRESS,
-        blockchain: BLOCKCHAIN_ETHEREUM,
-        address,
-        path,
-      })
-    }
+    await dispatch({
+      type: WALLETS_CACHE_ADDRESS,
+      blockchain: BLOCKCHAIN_ETHEREUM,
+      address,
+      path,
+    })
   }
 
+  addressCache = { ...getAddressCache(getState()) }
   const { address, path } = addressCache[BLOCKCHAIN_ETHEREUM]
+
   const wallet = new WalletModel({
     address,
     blockchain: BLOCKCHAIN_ETHEREUM,
@@ -155,7 +148,6 @@ const initWallet = () => async (dispatch, getState) => {
   ethereumProvider.subscribe(wallet.address)
   dispatch({ type: WALLETS_SET, wallet })
 
-  dispatch(updateWalletBalanceMiddleware(wallet))
   dispatch(updateWalletBalance(wallet))
 }
 
@@ -186,36 +178,6 @@ export const updateWalletBalanceMiddleware = (wallet) => (dispatch) => {
 export const updateWalletBalance = (wallet) => (dispatch /*, getState*/) => {
   dispatch(updateWalletBalanceMiddleware(wallet))
 }
-
-//
-// export const updateWalletBalance = (wallet) => (dispatch, getState) => {
-//   const web3 = web3Selector()(getState())
-//   web3.eth.getBalance(wallet.address).then((balances) => {
-//     console.log('balances web3: ', balances)
-//   })
-//
-//   getWalletBalances({ wallet })
-//     .then((balancesResult) => {
-//       try {
-//         console.log('balancesResult: ', balancesResult, wallet)
-//         dispatch({ type: WALLETS_SET, wallet: new WalletModel({
-//           ...wallet,
-//           balances: {
-//             ...wallet.balances,
-//             ...formatBalances(wallet.blockchain, balancesResult),
-//           },
-//         }),
-//         })
-//       } catch (e) {
-//         // eslint-disable-next-line no-console
-//         console.error(e.message)
-//       }
-//     })
-//     .catch((e) => {
-//       // eslint-disable-next-line no-console
-//       console.error('call balances from middleware is failed getWalletBalances', e)
-//     })
-// }
 
 export const updateWalletBalanceWeb3 = (wallet) => (dispatch, getState) => {
   try {

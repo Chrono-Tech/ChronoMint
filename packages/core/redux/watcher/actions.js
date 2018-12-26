@@ -24,7 +24,6 @@ export const globalWatcher = () => async (dispatch) => {
 export const watcher = ({ web3 }) => async (dispatch) => {
   try {
     await dispatch(initDAOs({ web3 }))
-
     dispatch(initProviders())
     dispatch(initMultisigWalletManager())
     dispatch(initTokenSubscription())
@@ -39,5 +38,6 @@ export const watcher = ({ web3 }) => async (dispatch) => {
   } catch (e) {
     //eslint-disable-next-line
     console.log('Watcher error: ', e)
+    throw e
   }
 }
