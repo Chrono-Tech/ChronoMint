@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import BigNumber from 'bignumber.js'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { BLOCKCHAIN_NEM } from '@chronobank/login/network/constants'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
@@ -210,8 +209,8 @@ export const updateWalletBalance = (wallet) => (dispatch) => {
       const dao = tokenService.getDAO(token)
       const balance = await dao.getAccountBalance(wallet.address)
 
-      if (balance || 1) {
-        dispatch({ type: WALLETS_UPDATE_BALANCE, walletId: wallet.id, balance: new Amount(new BigNumber(100000000), token.symbol(), true) })
+      if (balance) {
+        dispatch({ type: WALLETS_UPDATE_BALANCE, walletId: wallet.id, balance: new Amount(balance, token.symbol(), true) })
       }
     }
   }

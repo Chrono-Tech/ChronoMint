@@ -100,6 +100,7 @@ export const getAccountAddresses = createSelector(
   (wallets, eosWallets) => {
     return Object.values({ ...wallets, ...eosWallets })
       .reduce((accumulator, wallet) => {
+        // replace all non chars symbols with -
         const blockchain = wallet.blockchain.toLowerCase().replace(/\W/, '-')
         return [
           ...accumulator,
@@ -119,6 +120,7 @@ export const getDeviceAccountAddresses = createSelector(
   (addresses) => {
     return Object.entries(addresses)
       .reduce((accumulator, [blockchainName, data]) => {
+        // replace all non chars symbols with -
         const blockchain = blockchainName.toLowerCase().replace(/\W/, '-')
         return [
           ...accumulator,
