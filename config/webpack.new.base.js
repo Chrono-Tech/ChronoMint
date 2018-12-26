@@ -13,6 +13,7 @@ module.exports = {
   externals: {
     fs: 'fs',
     net: 'net',
+    tls: 'tls',
   },
   entry: path.resolve(__dirname, '../src/index.js'),
   target: 'web', // Make web variables accessible to webpack, e.g. window
