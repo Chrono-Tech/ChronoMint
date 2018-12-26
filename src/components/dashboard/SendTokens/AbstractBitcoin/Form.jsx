@@ -118,7 +118,6 @@ export default class Bitcoin extends PureComponent {
       try {
         const { wallet, recipient, token, symbol, amount } = this.props
         const value = new Amount(token.addDecimals(new BigNumber(amount)), symbol)
-        console.log('handleEstimateFee: ', wallet, recipient, token, symbol, amount)
         this.handleEstimateFee(wallet.address, recipient, value, this.getFormFee(this.props), token.blockchain())
       } catch (error) {
         // eslint-disable-next-line
@@ -196,7 +195,6 @@ export default class Bitcoin extends PureComponent {
   }
 
   getFormFee = (props = this.props) => {
-    console.log('getFormFee: ', props, this.props)
     return this.props.mode === MODE_SIMPLE ? Number((props.feeMultiplier * props.token.feeRate()).toFixed(1)) : props.satPerByte
   }
 

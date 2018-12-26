@@ -16,9 +16,6 @@ export default class BitcoinTrezorDevice {
   }
 
   async getAddress (path) {
-
-    console.log('getAddress: ', path, this.address)
-
     if (!this.address) {
       const result = await TrezorConnect.getAddress({
         path: path,
@@ -30,7 +27,6 @@ export default class BitcoinTrezorDevice {
 
       this.address = result.payload.address
     }
-    console.log('getAddress: returned: ', path, this.address)
 
     return this.address
   }

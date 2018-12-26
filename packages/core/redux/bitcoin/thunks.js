@@ -67,7 +67,6 @@ export { getAddressUTXOS } from '../abstractBitcoin/thunks'
 export const executeBitcoinTransaction = ({ tx, options = {} }) => async (dispatch, getState) => {
   dispatch(BitcoinActions.bitcoinExecuteTx())
   try {
-    console.log('executeBitcoinTransaction: ', tx)
     const state = getState()
     const token = getToken(options.symbol)(state)
     const blockchain = token.blockchain()
@@ -81,7 +80,6 @@ export const executeBitcoinTransaction = ({ tx, options = {} }) => async (dispat
     dispatch(BitcoinActions.bitcoinTxUpdate(entry))
     dispatch(submitTransaction(entry))
   } catch (error) {
-    console.log('BitcoinActions.bitcoinExecuteTxFailure: ', error)
     dispatch(BitcoinActions.bitcoinExecuteTxFailure(error))
   }
 }
@@ -274,8 +272,6 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     const network = getSelectedNetwork()(getState())
     const unsignedTxHex = entry.tx.prepared.buildIncomplete().toHex()
 
-    console.log('signTransaction BITCOIN: ', signer, entry, unsignedTxHex)
-
     dispatch(showSignerModal())
     // @todo Check cointype for LTC, BCC, DASH in BitcoinUtils.getBitcoinDerivedPath
     const signedHex = await signer.signTransaction(unsignedTxHex, BitcoinUtils.getBitcoinDerivedPath(network[BLOCKCHAIN_BITCOIN]))
@@ -407,7 +403,6 @@ const notifyBitcoinTransfer = (entry) => (dispatch, getState) => {
 }
 
 export const estimateBtcFee = (params) => async (dispatch) => {
-  console.log('estimateBtcFee: ', params)
   const { address, recipient, amount, formFee, blockchain } = params
   const utxos = await dispatch(getAddressUTXOS(address, blockchain))
   if (!utxos) {
@@ -441,7 +436,6 @@ const initToken = (blockchainName) => async (dispatch, getState) => {
   dao.watch()
   const token = await dao.fetchToken()
   tokenService.registerDAO(token, dao)
-  console.log('TokensActions.tokenFetched: ', token)
   dispatch(TokensActions.tokenFetched(token))
 
   try {
@@ -459,7 +453,6 @@ const initWallet = (blockchainName) => async (dispatch, getState) => {
   const { network } = getCurrentNetworkSelector(state)
   const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
   const { accountIndex } = selectedWallet.encrypted[0]
-  console.log('initWallet = (blockchainName: ', blockchainName, selectedWallet.encrypted[0])
 
   const addressCache = { ...getAddressCache(state) }
 
@@ -481,9 +474,6 @@ const initWallet = (blockchainName) => async (dispatch, getState) => {
       path: BitcoinUtils.getLitecoinDerivedPath(network[BLOCKCHAIN_LITECOIN], COIN_TYPE_LTC_MAINNET, accountIndex),
     },
   }
-
-  console.log('signerSelectorsMap ', signerSelectorsMap)
-  console.log('addressCache[blockchainName] ', addressCache[blockchainName], addressCache)
 
   if (!addressCache[blockchainName]) {
     const { selector, path } = signerSelectorsMap[blockchainName]

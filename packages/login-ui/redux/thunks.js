@@ -103,7 +103,6 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   const { selectedWallet, lastLoginNetworkId } = state.get(DUCK_PERSIST_ACCOUNT)
   const accountWallet = new AccountEntryModel(selectedWallet)
   const { selectedNetworkId } = getState().get(DUCK_NETWORK)
-  console.log('lastLoginNetworkId !== selectedNetworkId: ', lastLoginNetworkId, selectedNetworkId, lastLoginNetworkId !== selectedNetworkId)
   if (lastLoginNetworkId !== selectedNetworkId) {
     dispatch(PersistAccountActions.clearWalletsAddressCache())
   }
@@ -329,7 +328,6 @@ export const onCreateWalletFromJSON = (name, walletObject, profile) => (dispatch
 */
 export const onCreateWalletFromDevice = (name, device, profile, walletType, activeBlockchainList = DEFAULT_ACTIVE_BLOCKCHAINS) => (dispatch) => {
   const account = createDeviceAccountEntry(name, device, profile, walletType, activeBlockchainList)
-  console.log('onCreateWalletFromDevice: ', account)
   dispatch(PersistAccountActions.accountAdd(account))
   dispatch(PersistAccountActions.accountSelect(account))
 }

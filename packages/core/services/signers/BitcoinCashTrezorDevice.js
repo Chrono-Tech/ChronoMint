@@ -34,8 +34,6 @@ export default class BitcoinCashTrezorDevice {
 
   async signTransaction (unsignedTxHex, path) {
 
-    console.log('signTransaction: ', path, unsignedTxHex)
-
     const txb = new bitcoin.TransactionBuilder
       .fromTransaction(bitcoin.Transaction.fromHex(unsignedTxHex), this.network)
     const localAddress = await this.getAddress(path)

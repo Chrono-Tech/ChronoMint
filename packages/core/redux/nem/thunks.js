@@ -164,8 +164,6 @@ const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
     return // stop execute
   }
 
-  console.log('sendSignedTransaction: ', entry.tx)
-
   const node = nemProvider.getNode()
   const res = await node.send({ ...entry.tx.signed.tx, fee: entry.tx.signed.fee }) || {}
 

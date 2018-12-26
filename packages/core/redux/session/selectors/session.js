@@ -15,7 +15,7 @@ import { getMainWallets } from '../../wallets/selectors/models'
 import { getGasSliderCollection, getIsCBE } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
 import { getEosWallets } from '../../eos/selectors/mainSelectors'
-import {getAddressCache} from '../../persistAccount/selectors';
+import { getAddressCache } from '../../persistAccount/selectors'
 
 export const getGasPriceMultiplier = (blockchain) => createSelector([getGasSliderCollection],
   (gasSliderCollection) => {

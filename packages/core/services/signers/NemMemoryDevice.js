@@ -27,8 +27,6 @@ export default class NemMemoryDevice {
 
   signTransaction (txPreparedObject) {
     const serialized = nem.utils.serialization.serializeTransaction({ ...txPreparedObject })
-
-    console.log('signTransaction: ', txPreparedObject, serialized)
     return this.getKeyPair().sign(serialized)
   }
 
