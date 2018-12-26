@@ -197,6 +197,7 @@ export default class BitcoinDAO extends EventEmitter {
       throw new Error(message)
     }
     const feeRate = await this.getFeeRate()
+    console.log('fetchToken feeRate: ', feeRate)
 
     return new TokenModel({
       name: this._name,

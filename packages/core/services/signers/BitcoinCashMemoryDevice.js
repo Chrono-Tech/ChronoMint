@@ -32,6 +32,7 @@ export default class BitcoinCashMemoryDevice {
   }
 
   getKeyPair () {
+    console.log('bitcoin.ECPair: ', bitcoin)
     return new bitcoin.ECPair.fromPrivateKey(Buffer.from(this.privateKey, 'hex'), { network: this.network })
   }
 }

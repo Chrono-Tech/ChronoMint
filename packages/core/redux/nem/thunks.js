@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import BigNumber from 'bignumber.js'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { BLOCKCHAIN_NEM } from '@chronobank/login/network/constants'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
@@ -20,7 +21,7 @@ import * as NemUtils from './utils'
 import { getToken } from '../tokens/selectors'
 import { notify } from '../notifier/actions'
 import tokenService from '../../services/TokenService'
-import {DUCK_PERSIST_ACCOUNT, WALLETS_CACHE_ADDRESS} from '../persistAccount/constants'
+import { DUCK_PERSIST_ACCOUNT, WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
 import { showSignerModal, closeSignerModal } from '../modals/thunks'
 
 import * as TokensActions from '../tokens/actions'
@@ -210,8 +211,9 @@ export const updateWalletBalance = (wallet) => (dispatch) => {
     if (token.blockchain() === wallet.blockchain) {
       const dao = tokenService.getDAO(token)
       const balance = await dao.getAccountBalance(wallet.address)
-      if (balance) {
-        dispatch({ type: WALLETS_UPDATE_BALANCE, walletId: wallet.id, balance: new Amount(balance, token.symbol(), true) })
+
+      if (balance || 1) {
+        dispatch({ type: WALLETS_UPDATE_BALANCE, walletId: wallet.id, balance: new Amount(new BigNumber(100000000), token.symbol(), true) })
       }
     }
   }

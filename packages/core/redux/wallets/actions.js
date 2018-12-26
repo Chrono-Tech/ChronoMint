@@ -248,6 +248,7 @@ export const mainTransfer = (
       [BLOCKCHAIN_ETHEREUM]: executeTransaction,
       [BLOCKCHAIN_NEM]: executeNemTransaction,
       [BLOCKCHAIN_BITCOIN]: executeBitcoinTransaction,
+      [BLOCKCHAIN_BITCOIN_CASH]: executeBitcoinTransaction,
       [BLOCKCHAIN_LITECOIN]: executeBitcoinTransaction,
       [BLOCKCHAIN_DASH]: executeDashTransaction,
       [BLOCKCHAIN_WAVES]: executeWavesTransaction,

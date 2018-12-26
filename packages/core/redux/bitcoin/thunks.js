@@ -12,12 +12,14 @@ import {
   COIN_TYPE_BCC_MAINNET,
   COIN_TYPE_DASH_MAINNET,
   COIN_TYPE_LTC_MAINNET,
+  COIN_TYPE_BTC_MAINNET,
 } from '@chronobank/login/network/constants'
 import type { Dispatch } from 'redux'
 import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
 
 import { modalsOpen } from '../modals/actions'
-import {DUCK_PERSIST_ACCOUNT, WALLETS_CACHE_ADDRESS} from '../persistAccount/constants'
+import { DUCK_PERSIST_ACCOUNT, WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
+
 import { getBalanceDataParser } from './converter'
 import {
   TransferNoticeModel,
@@ -44,7 +46,6 @@ import tokenService from '../../services/TokenService'
 import { getDashSigner } from '../dash/selectors'
 import { EVENT_UPDATE_LAST_BLOCK } from '../../dao/constants'
 import { getWalletsByBlockchain } from '../wallets/selectors/models'
-import {COIN_TYPE_BTC_MAINNET} from '../../../login/network/constants';
 
 const daoMap = {
   [BLOCKCHAIN_BITCOIN]: bitcoinDAO,
@@ -66,6 +67,7 @@ export { getAddressUTXOS } from '../abstractBitcoin/thunks'
 export const executeBitcoinTransaction = ({ tx, options = {} }) => async (dispatch, getState) => {
   dispatch(BitcoinActions.bitcoinExecuteTx())
   try {
+    console.log('executeBitcoinTransaction: ', tx)
     const state = getState()
     const token = getToken(options.symbol)(state)
     const blockchain = token.blockchain()
@@ -79,6 +81,7 @@ export const executeBitcoinTransaction = ({ tx, options = {} }) => async (dispat
     dispatch(BitcoinActions.bitcoinTxUpdate(entry))
     dispatch(submitTransaction(entry))
   } catch (error) {
+    console.log('BitcoinActions.bitcoinExecuteTxFailure: ', error)
     dispatch(BitcoinActions.bitcoinExecuteTxFailure(error))
   }
 }
@@ -204,6 +207,7 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
   dispatch(BitcoinActions.bitcoinTxAccept(entry))
 
   const state = getState()
+  // wrong signer
   const signer = getBitcoinSigner(state)
 
   const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key, entry.blockchain)(state)
@@ -269,6 +273,8 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
 
     const network = getSelectedNetwork()(getState())
     const unsignedTxHex = entry.tx.prepared.buildIncomplete().toHex()
+
+    console.log('signTransaction BITCOIN: ', signer, entry, unsignedTxHex)
 
     dispatch(showSignerModal())
     // @todo Check cointype for LTC, BCC, DASH in BitcoinUtils.getBitcoinDerivedPath
@@ -401,6 +407,7 @@ const notifyBitcoinTransfer = (entry) => (dispatch, getState) => {
 }
 
 export const estimateBtcFee = (params) => async (dispatch) => {
+  console.log('estimateBtcFee: ', params)
   const { address, recipient, amount, formFee, blockchain } = params
   const utxos = await dispatch(getAddressUTXOS(address, blockchain))
   if (!utxos) {
@@ -434,6 +441,7 @@ const initToken = (blockchainName) => async (dispatch, getState) => {
   dao.watch()
   const token = await dao.fetchToken()
   tokenService.registerDAO(token, dao)
+  console.log('TokensActions.tokenFetched: ', token)
   dispatch(TokensActions.tokenFetched(token))
 
   try {

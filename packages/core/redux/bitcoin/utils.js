@@ -65,7 +65,9 @@ export const getBtcFee = (
   formFee,
   utxos,
 ) => {
+  console.log('getBtcFee: ', recipient, amount, formFee, utxos)
   const { fee } = selectCoins(recipient, amount, formFee, utxos)
+  console.log('getBtcFee: fee: ', fee)
   return fee
 }
 
@@ -76,6 +78,7 @@ export const convertSatoshiToBTC = (satoshiAmount) => {
 const describeBitcoinTransaction = (tx, options, utxos) => {
   const { to, from, value } = tx
   const { feeRate, blockchain, network } = options
+  console.log('bitcoin.networks: ', bitcoin.networks)
   const bitcoinNetwork = bitcoin.networks[network['Bitcoin']]
   const { inputs, outputs, fee } = selectCoins(to, value, feeRate, utxos)
 

@@ -82,6 +82,7 @@ export const getBitcoinCashSigner = (state) => {
   const account = getPersistAccount(state)
   const networkData = getSelectedNetwork()(state)
   const network = bitcoin.networks[networkData[BLOCKCHAIN_BITCOIN_CASH]]
+  console.log('getBitcoinCashSigner: ', network, networkData, bitcoin.networks)
   const isTestnet = networkData[BLOCKCHAIN_BITCOIN_CASH] === 'testnet'
 
   switch (account.decryptedWallet.entry.encrypted[0].type) {
