@@ -15,15 +15,18 @@ module.exports = {
     'babel-preset-env',
     'babel-preset-react-hmre',
     'babel-preset-stage-0',
+    'babel-preset-es2015',
+    'babel-preset-es2017',
   ].map(resolver),
   plugins: [
     'babel-plugin-transform-decorators-legacy',
     'babel-plugin-syntax-decorators',
     'babel-plugin-syntax-trailing-function-commas',
-    ['babel-plugin-transform-runtime', { polyfill: false }],
+    'babel-plugin-transform-class-properties',
+    'babel-plugin-transform-regenerator',
+    ['babel-plugin-transform-runtime', { 'polyfill': false, 'regenerator': true }],
     'babel-plugin-transform-object-rest-spread',
     'babel-plugin-transform-react-constant-elements',
-    'babel-plugin-transform-class-properties',
     ['babel-plugin-react-css-modules', {
       "generateScopedName": "[name]__[local]___[hash:base64:5]",
       "filetypes": {
