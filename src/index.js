@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import 'babel-polyfill'
 import 'flexboxgrid/css/flexboxgrid.css'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import React from 'react'
