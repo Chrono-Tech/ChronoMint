@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import 'babel-polyfill'
 import EthereumTx from 'ethereumjs-tx'
 import AsyncLock from 'async-lock'
 import { omitBy, isNil } from 'lodash'
