@@ -24,7 +24,6 @@
     "nem-sdk": "^1.6.7",
     "prop-types": "latest",
     "redux-form": "^7.3.0",
-    "redux-persist": "^5.9.1",
     "reselect": "^3.0.1",
     "trezor-connect": "^6.0",
     "uuid": "^3.3.0",

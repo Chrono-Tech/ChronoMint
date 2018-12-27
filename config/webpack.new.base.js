@@ -6,34 +6,41 @@ const path = require('path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const babel = require('./babel.dev')
 const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
+const fs = require('fs')
 
 process.noDeprecation = true
+const isInNodeModules = path.basename(path.resolve(path.join(__dirname, '..', '..'))) === 'node_modules'
+const buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
+
+// creating i18nJson empty file for i18n
+if (!fs.existsSync(buildPath)) {
+  fs.mkdirSync(buildPath)
+}
+fs.writeFileSync(buildPath + '/i18nJson.js', 'var i18nJson = {}')
 
 module.exports = {
   externals: {
-    fs: 'fs',
-    net: 'net',
-    tls: 'tls',
+    // fs: 'fs',
+    // net: 'net',
+    // tls: 'tls',
+  },
+  node: {
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty',
   },
   entry: path.resolve(__dirname, '../src/index.js'),
   target: 'web', // Make web variables accessible to webpack, e.g. window
   resolve: {
     modules: [
-        path.resolve(__dirname, '../src'),
-        path.resolve(__dirname, '../node_modules'),
-        path.resolve(__dirname, '../packages/core/node_modules'),
-        path.resolve(__dirname, '../packages/login/node_modules'),
+      path.resolve(__dirname, '../src'),
+      'node_modules',
+      path.resolve(__dirname, '../node_modules'),
+      path.resolve(__dirname, '../packages/core/node_modules'),
+      path.resolve(__dirname, '../packages/login/node_modules')
     ],
     alias: {
-      // Resolving '@import "~styles/..." inside scss files
-      // redux: path.resolve(__dirname, '../src/redux/'),
       '@chronobank': path.resolve(__dirname, '../packages/'),
-    //   pages: path.resolve(__dirname, '../src/pages/'),
-    //   menu: path.resolve(__dirname, '../src/menu/'),
-    //   layouts: path.resolve(__dirname, '../src/layouts/'),
-    //   components: path.resolve(__dirname, '../src/components/'),
-    //   assets: path.resolve(__dirname, '../src/assets/'),
-    //   styles: path.resolve(__dirname, '../src/styles/'),
     },
   },
   module: {

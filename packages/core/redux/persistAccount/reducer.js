@@ -29,7 +29,7 @@ const persistAccount = (state = initialState, action) => {
     case REHYDRATE:
       return {
         ...state,
-        ...action.payload.persistAccount,
+        ...(action.payload ? action.payload.persistAccount : {}),
         rehydrated: true,
       }
 
@@ -42,10 +42,7 @@ const persistAccount = (state = initialState, action) => {
     case a.WALLETS_ADD:
       return {
         ...state,
-        walletsList: [
-          ...state.walletsList,
-          action.wallet,
-        ],
+        walletsList: [...state.walletsList, action.wallet],
       }
 
     case a.WALLETS_SELECT:
@@ -100,10 +97,7 @@ const persistAccount = (state = initialState, action) => {
     case a.CUSTOM_NETWORKS_LIST_ADD:
       return {
         ...state,
-        customNetworksList: [
-          ...state.customNetworksList,
-          action.network,
-        ],
+        customNetworksList: [...state.customNetworksList, action.network],
       }
 
     case a.CUSTOM_NETWORKS_LIST_UPDATE:
@@ -130,10 +124,7 @@ const persistAccount = (state = initialState, action) => {
 
       return {
         ...state,
-        walletsList: [
-          ...state.walletsList.filter((w) => w.key !== action.walletKey),
-          wallet,
-        ],
+        walletsList: [...state.walletsList.filter((w) => w.key !== action.walletKey), wallet],
       }
 
     default:
