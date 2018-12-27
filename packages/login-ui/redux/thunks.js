@@ -14,9 +14,7 @@ import { replace } from 'react-router-redux'
 import {
   WALLET_TYPE_MEMORY,
   WALLET_TYPE_TREZOR,
-  WALLET_TYPE_TREZOR_MOCK,
   WALLET_TYPE_LEDGER,
-  WALLET_TYPE_LEDGER_MOCK,
 } from '@chronobank/core/models/constants/AccountEntryModel'
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 import { getEthereumSigner } from '@chronobank/core/redux/ethereum/selectors'
@@ -144,9 +142,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
     }
 
     case WALLET_TYPE_TREZOR:
-    case WALLET_TYPE_TREZOR_MOCK:
-    case WALLET_TYPE_LEDGER:
-    case WALLET_TYPE_LEDGER_MOCK: {
+    case WALLET_TYPE_LEDGER: {
       try {
 
         const wallet = await dispatch(DeviceActions.loadDeviceAccount(accountWallet))

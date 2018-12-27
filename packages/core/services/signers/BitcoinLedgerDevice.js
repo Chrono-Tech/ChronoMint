@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import 'babel-polyfill'
 import bitcoin from 'bitcoinjs-lib'
 import TransportU2F from '@ledgerhq/hw-transport-u2f'
 import AppBTC from '@ledgerhq/hw-app-btc'

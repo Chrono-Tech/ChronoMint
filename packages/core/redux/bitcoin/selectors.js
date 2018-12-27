@@ -9,9 +9,7 @@ import { DUCK_BITCOIN } from './constants'
 import { getPersistAccount, getSelectedNetwork } from '../persistAccount/selectors'
 import {
   WALLET_TYPE_TREZOR,
-  WALLET_TYPE_TREZOR_MOCK,
   WALLET_TYPE_LEDGER,
-  WALLET_TYPE_LEDGER_MOCK,
   WALLET_TYPE_MEMORY,
   WALLET_TYPE_METAMASK,
 } from '../../models/constants/AccountEntryModel'
@@ -23,11 +21,13 @@ import {
 import MetamaskPlugin from '../../services/signers/MetamaskPlugin'
 import BitcoinMemoryDevice from '../../services/signers/BitcoinMemoryDevice'
 import BitcoinLedgerDeviceMock from '../../services/signers/BitcoinLedgerDeviceMock'
+import BitcoinLedgerDevice from '../../services/signers/BitcoinLedgerDevice'
 import BitcoinTrezorDeviceMock from '../../services/signers/BitcoinTrezorDeviceMock'
 import BitcoinTrezorDevice from '../../services/signers/BitcoinTrezorDevice'
 
 import BitcoinCashMemoryDevice from '../../services/signers/BitcoinCashMemoryDevice'
 import BitcoinCashLedgerDeviceMock from '../../services/signers/BitcoinCashLedgerDeviceMock'
+import BitcoinCashLedgerDevice from '../../services/signers/BitcoinCashLedgerDevice'
 import BitcoinCashTrezorDeviceMock from '../../services/signers/BitcoinCashTrezorDeviceMock'
 import BitcoinCashTrezorDevice from '../../services/signers/BitcoinCashTrezorDevice'
 
@@ -62,14 +62,16 @@ export const getBitcoinSigner = (state) => {
       const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
       return new BitcoinMemoryDevice({ privateKey, network })
     }
-    case WALLET_TYPE_LEDGER_MOCK:
     case WALLET_TYPE_LEDGER: {
-      return new BitcoinLedgerDeviceMock({ network })
-    }
-    case WALLET_TYPE_TREZOR_MOCK: {
-      return new BitcoinTrezorDeviceMock({ network })
+      if (process.env.DEVICE_MOCKS) {
+        return new BitcoinLedgerDeviceMock({ network })
+      }
+      return new BitcoinLedgerDevice({ network })
     }
     case WALLET_TYPE_TREZOR: {
+      if (process.env.DEVICE_MOCKS) {
+        return new BitcoinTrezorDeviceMock({ network })
+      }
       return new BitcoinTrezorDevice({ network, isTestnet })
     }
     case WALLET_TYPE_METAMASK: {
@@ -89,14 +91,16 @@ export const getBitcoinCashSigner = (state) => {
       const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
       return new BitcoinCashMemoryDevice({ privateKey, network })
     }
-    case WALLET_TYPE_LEDGER_MOCK:
     case WALLET_TYPE_LEDGER: {
-      return new BitcoinCashLedgerDeviceMock({ network })
-    }
-    case WALLET_TYPE_TREZOR_MOCK: {
-      return new BitcoinCashTrezorDeviceMock({ network })
+      if (process.env.DEVICE_MOCKS) {
+        return new BitcoinCashLedgerDeviceMock({ network })
+      }
+      return new BitcoinCashLedgerDevice({ network })
     }
     case WALLET_TYPE_TREZOR: {
+      if (process.env.DEVICE_MOCKS) {
+        return new BitcoinCashTrezorDeviceMock({ network })
+      }
       return new BitcoinCashTrezorDevice({ network, isTestnet })
     }
     case WALLET_TYPE_METAMASK: {
@@ -116,14 +120,16 @@ export const getLitecoinSigner = (state) => {
       const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
       return new BitcoinMemoryDevice({ privateKey, network })
     }
-    case WALLET_TYPE_LEDGER_MOCK:
     case WALLET_TYPE_LEDGER: {
-      return new BitcoinLedgerDeviceMock({ network })
-    }
-    case WALLET_TYPE_TREZOR_MOCK: {
-      return new BitcoinLedgerDeviceMock({ network })
+      if (process.env.DEVICE_MOCKS) {
+        return new BitcoinMemoryDevice({ network })
+      }
+      return new BitcoinMemoryDevice({ network })
     }
     case WALLET_TYPE_TREZOR: {
+      if (process.env.DEVICE_MOCKS) {
+        return new LitecoinTrezorDevice({ network })
+      }
       return new LitecoinTrezorDevice({ network, isTestnet })
     }
     case WALLET_TYPE_METAMASK: {
@@ -136,9 +142,7 @@ export const getSignerModalComponentName = (state) => {
   const { selectedWallet } = getPersistAccount(state)
   switch (selectedWallet.encrypted[0].type) {
     // feel free to add your components here. We have only one component at the moment
-    case WALLET_TYPE_TREZOR_MOCK:
     case WALLET_TYPE_TREZOR:
-    case WALLET_TYPE_LEDGER_MOCK:
     case WALLET_TYPE_LEDGER: {
       return 'ActionRequestDeviceDialog'
     }
