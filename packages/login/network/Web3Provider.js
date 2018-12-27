@@ -150,7 +150,7 @@ export class Web3Provider {
   }
 }
 
-declare type Web3Provider = {
+/*declare type Web3Provider = {
   ...Web3Provider,
   getBlock: Function,
   getBlockNumber: Function,
@@ -162,6 +162,6 @@ declare type Web3Provider = {
   getCode: Function,
   getGasPrice: Function,
   estimateGas: Function,
-}
+}*/
 
 export default new Web3Provider(null, true)

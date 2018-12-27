@@ -4,7 +4,7 @@
 
 const path = require('path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const babel = require('./babel.dev')
+const babel = require('../babel.config.js')
 const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
 const fs = require('fs')
 
@@ -17,6 +17,10 @@ if (!fs.existsSync(buildPath)) {
   fs.mkdirSync(buildPath)
 }
 fs.writeFileSync(buildPath + '/i18nJson.js', 'var i18nJson = {}')
+let relativePath = isInNodeModules ? '../../..' : '..'
+const srcPath = path.resolve(__dirname, relativePath, 'src')
+const srcAppArg = process.argv.find((e) => e.startsWith('--src-app='))
+const srcApp = srcAppArg ? srcAppArg.substr('--src-app='.length) : 'index'
 
 module.exports = {
   externals: {
@@ -29,7 +33,11 @@ module.exports = {
     net: 'empty',
     tls: 'empty',
   },
-  entry: path.resolve(__dirname, '../src/index.js'),
+  entry: [
+      require.resolve('webpack-dev-server/client') + '?http://0.0.0.0:3000',
+      require.resolve('webpack/hot/dev-server'),
+      path.join(srcPath, srcApp),
+    ],
   target: 'web', // Make web variables accessible to webpack, e.g. window
   resolve: {
     modules: [
