@@ -24,7 +24,7 @@ module.exports = {
     'babel-plugin-syntax-trailing-function-commas',
     'babel-plugin-transform-class-properties',
     'babel-plugin-transform-regenerator',
-    ['babel-plugin-transform-runtime', { 'polyfill': false, 'regenerator': true }],
+    ['babel-plugin-transform-runtime', { 'polyfill': false }],
     'babel-plugin-transform-object-rest-spread',
     'babel-plugin-transform-react-constant-elements',
     ['babel-plugin-react-css-modules', {

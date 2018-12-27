@@ -154,7 +154,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         if (addressCache[BLOCKCHAIN_ETHEREUM] && signerAddress !== addressCache[BLOCKCHAIN_ETHEREUM].address) {
           //eslint-disable-next-line
           console.error(`Different device for this account [${signerAddress}] [${addressCache[BLOCKCHAIN_ETHEREUM].address}]`)
-          throw new Error('Different device for this account')
+          // throw new Error('Different device for this account')
         }
 
         dispatch({

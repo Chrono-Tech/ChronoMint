@@ -139,13 +139,16 @@ export default class TransactionHandler extends TransactionGuide {
     return new Promise((resolve, reject) => {
       web3.eth.sendSignedTransaction(entry.raw)
         .on('transactionHash', (hash) => {
+          console.log('transactionHash: ', hash)
           dispatch(this.txStatus(entry.key, entry.tx.from, { isSent: true, hash }))
         })
         .on('receipt', (receipt) => {
+          console.log('receipt: ', receipt)
           dispatch(this.txStatus(entry.key, entry.tx.from, { isMined: true, receipt }))
           resolve(receipt)
         })
         .on('error', (error) => {
+          console.log('error: ', error)
           dispatch(this.txStatus(entry.key, entry.tx.from, { isErrored: true, error }))
           reject(error)
         })
@@ -158,6 +161,7 @@ export default class TransactionHandler extends TransactionGuide {
 
       dispatch(showSignerModal())
       const signed = await signer.signTransaction(omitBy(entry.tx, isNil), selectedWallet.encrypted[0].path)
+      console.log('signTransaction: ', signed)
       dispatch(closeSignerModal())
 
       const raw = signed.rawTransaction

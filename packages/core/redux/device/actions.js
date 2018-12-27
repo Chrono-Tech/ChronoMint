@@ -49,7 +49,7 @@ export const deviceClearList = () => (dispatch) => {
 
 // eslint-disable-next-line no-unused-vars
 export const initLedgerDevice = (wallet) => async (dispatch) => {
-  // @todo replace on EthereumLedgerDevice before any release
+  await dispatch(updateSessionWeb3())
   const ledger = new EthereumLedgerDevice()
   const result = await ledger.getAddressInfoList(0, 5)
   dispatch(deviceUpdateList(result))

@@ -14,6 +14,7 @@ import {
 import { getPersistAccount } from '../persistAccount/selectors'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 import EthereumLedgerDeviceMock from '../../services/signers/EthereumLedgerDeviceMock'
+import EthereumLedgerDevice from '../../services/signers/EthereumLedgerDevice'
 import EthereumTrezorDeviceMock from '../../services/signers/EthereumTrezorDeviceMock'
 import EthereumTrezorDevice from '../../services/signers/EthereumTrezorDevice'
 
@@ -39,10 +40,12 @@ export const getEthereumSigner = (state) => {
       return new EthereumTrezorDevice()
     }
     case WALLET_TYPE_LEDGER: {
+      console.log('WALLET_TYPE_LEDGER: ', process.env.DEVICE_MOCKS, Object.prototype.toString.call(process.env.DEVICE_MOCKS))
       if (process.env.DEVICE_MOCKS) {
+        console.log('new EthereumLedgerDeviceMock: ', )
         return new EthereumLedgerDeviceMock()
       }
-      return new EthereumLedgerDeviceMock()
+      return new EthereumLedgerDevice()
     }
     case WALLET_TYPE_MEMORY: {
       return new EthereumMemoryDevice(account.decryptedWallet.privateKey)
