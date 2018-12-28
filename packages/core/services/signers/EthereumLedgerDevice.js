@@ -42,7 +42,7 @@ export default class EthereumLedgerDevice extends EventEmitter {
         const path = DEFAULT_PATH_FACTORY(i)
         const transport = await TransportU2F.create()
         const app = new AppEth(transport)
-        const { address, publicKey } = await this._getAddressInfo(app, path)
+        const { address, publicKey } = await Promise.race([this._getAddressInfo(app, path), rejectOnTimeout(2000)])
         addresses.push({
           path,
           address,

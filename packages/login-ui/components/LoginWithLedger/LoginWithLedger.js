@@ -27,8 +27,8 @@ class LoginWithLedger extends Component {
     return (
       <div styleName='state'>
         <div styleName='titleContent'>
-          <div styleName='title'>Ledger not found</div>
-          <div styleName='subtitle'>Connect your Ledger</div>
+          <div styleName='title'><Translate value='LoginWithTrezor.ledgerNotFound' /></div>
+          <div styleName='subtitle'><Translate value='LoginWithTrezor.connectYourLedger' /></div>
         </div>
       </div>
     )
@@ -38,7 +38,7 @@ class LoginWithLedger extends Component {
     return (
       <div styleName='stateLoading'>
         <div styleName='titleContent'>
-          <div styleName='title'>Loading</div>
+          <div styleName='title'><Translate value='LoginWithTrezor.loading' /></div>
         </div>
       </div>
     )
