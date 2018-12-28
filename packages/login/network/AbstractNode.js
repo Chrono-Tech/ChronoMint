@@ -4,7 +4,7 @@
  */
 
 import EventEmitter from 'events'
-import SockJS from 'sockjs-client/dist/sockjs.min'
+import SockJS from 'sockjs-client'
 import Stomp from 'webstomp-client'
 
 const TIMEOUT_BASE = 1000
