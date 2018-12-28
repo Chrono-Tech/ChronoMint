@@ -33,7 +33,7 @@ module.exports = (api) => {
     '@babel/plugin-syntax-object-rest-spread',
     '@babel/plugin-transform-object-assign',
     '@babel/plugin-transform-destructuring',
-    ['@babel/plugin-proposal-decorators', { decoratorsBeforeExport: true, legacy: true }],
+    ['@babel/plugin-proposal-decorators', { legacy: true }],
     // plugin-proposal-class-properties must be placed before 'plugin-proposal-decorators'
     // See https://babeljs.io/docs/en/next/babel-plugin-proposal-decorators.html
     ['@babel/plugin-proposal-class-properties', { loose: false }],
@@ -56,10 +56,8 @@ module.exports = (api) => {
 
   const overrides = [
     {
-      'test': ['./config'],
-      'presets': [
-        ['@babel/preset-env'],
-      ],
+      test: ['./config'],
+      presets: [['@babel/preset-env']],
     },
   ]
 
