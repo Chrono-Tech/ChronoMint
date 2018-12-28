@@ -15,27 +15,21 @@ module.exports = (api) => {
   api.cache(true)
 
   const presets = [
+    '@babel/preset-env',
     '@babel/preset-react',
-    [
-      '@babel/preset-env',
-      {
-        debug: false,
-        modules: false,
-      },
-    ],
   ]
 
   const plugins = [
     '@babel/transform-flow-strip-types',
+    '@babel/plugin-transform-runtime',
     '@babel/plugin-transform-computed-properties',
     '@babel/plugin-proposal-export-namespace-from', // to use 'exports * as ...'
-    '@babel/plugin-transform-runtime',
     '@babel/plugin-syntax-object-rest-spread',
     '@babel/plugin-transform-object-assign',
     '@babel/plugin-transform-destructuring',
-    ['@babel/plugin-proposal-decorators', { legacy: true }],
-    // plugin-proposal-class-properties must be placed before 'plugin-proposal-decorators'
+    // plugin-proposal-class-properties must be placed AFTER 'plugin-proposal-decorators'
     // See https://babeljs.io/docs/en/next/babel-plugin-proposal-decorators.html
+    ['@babel/plugin-proposal-decorators', { 'legacy': true }],
     ['@babel/plugin-proposal-class-properties', { loose: false }],
     '@babel/plugin-proposal-export-default-from',
     '@babel/plugin-proposal-throw-expressions',
@@ -64,6 +58,6 @@ module.exports = (api) => {
   return {
     presets,
     plugins,
-    overrides,
+    // overrides,
   }
 }

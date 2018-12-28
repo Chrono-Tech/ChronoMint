@@ -50,7 +50,7 @@ module.exports = config.buildConfig(
       }),
       new ScriptExtHtmlWebpackPlugin({
         defaultAttribute: 'async',
-        sync: ['chronomint-presentation/js/vendor.js', 'chronomint-presentation/js/index.js'],
+        sync: ['chronomint-presentation/js/vendor.js', 'dist/chronomint-presentation/js/index.js'],
       }),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,

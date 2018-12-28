@@ -2,11 +2,14 @@
  * DEVELOPMENT WEBPACK CONFIGURATION
  */
 
-// import webpack from 'webpack'
+const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 // import CircularDependencyPlugin from 'circular-dependency-plugin'
 // import CleanWebpackPlugin from 'clean-webpack-plugin'
 const  baseWebpackConfig = require('./webpack.new.base')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
+const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
 // import CleanTerminalPlugin from 'clean-terminal-webpack-plugin'
 const path = require('path')
 
@@ -47,6 +50,11 @@ module.exports = Object.assign({}, baseWebpackConfig, {
     //   exclude: /node_modules/,
     //   failOnError: true
     // }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
+      // WEB3_RPC_LOCATION: '"' + process.env.WEB3_RPC_LOCATION + '"',
+      PUBLIC_BACKEND_REST_URL: '"' + (process.env.PUBLIC_BACKEND_REST_URL || 'https://backend.chronobank.io') + '"',
+    }),
     new HtmlWebpackPlugin({
       template: 'index.html',
       minify: {
@@ -62,7 +70,31 @@ module.exports = Object.assign({}, baseWebpackConfig, {
         minifyURLs: true
       },
       inject: true
-    })
+    }),
+    process.env.NODE_ENV === 'standalone'
+      ? null
+      : new CopyWebpackPlugin([
+        {
+          context: path.resolve(__dirname, '../node_modules/@chronobank/chronomint-presentation/dist/chronomint-presentation'),
+          from: '**',
+          to: path.resolve(__dirname, '../dist/chronomint-presentation'),
+        },
+      ]),
+    new ScriptExtHtmlWebpackPlugin({
+      defaultAttribute: 'async',
+      sync: ['chronomint-presentation/js/vendor.js', 'chronomint-presentation/js/index.js'],
+    }),
+    process.env.NODE_ENV === 'standalone'
+      ? null
+      : new HtmlWebpackIncludeAssetsPlugin({
+        assets: [
+          'chronomint-presentation/css/index.css',
+          'chronomint-presentation/js/vendor.js',
+          'chronomint-presentation/js/index.js',
+        ],
+        hash: true,
+        append: false,
+      }),
   ],
   performance: {
     hints: false
