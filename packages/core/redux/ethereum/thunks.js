@@ -121,7 +121,7 @@ const initWallet = () => async (dispatch, getState) => {
   const state = getState()
   var addressCache = { ...getAddressCache(state) }
 
-  if (!addressCache[BLOCKCHAIN_ETHEREUM] || 1) {
+  if (!addressCache[BLOCKCHAIN_ETHEREUM]) {
     const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
     const { path } = selectedWallet.encrypted[0]
     const signer = getEthereumSigner(state)

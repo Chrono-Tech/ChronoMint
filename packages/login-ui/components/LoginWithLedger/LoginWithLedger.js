@@ -69,11 +69,10 @@ class LoginWithLedger extends Component {
         {
           deviceList.length > 0 && (
             <div styleName='account'>
-              {deviceList.map((item, i) => {
+              {deviceList.map((item) => {
                 return (<LedgerAddress
                   key={item.address}
                   entryModel={item}
-                  childKey={i}
                   onDeviceSelect={onDeviceSelect}
                 />)
               })}
