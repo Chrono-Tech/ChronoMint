@@ -148,7 +148,7 @@ const initWallet = () => async (dispatch, getState) => {
   ethereumProvider.subscribe(wallet.address)
   dispatch({ type: WALLETS_SET, wallet })
 
-  dispatch(updateWalletBalance(wallet))
+  dispatch(updateWalletBalanceWeb3(wallet))
 }
 
 export const updateWalletBalanceMiddleware = (wallet) => (dispatch) => {

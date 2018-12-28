@@ -17,7 +17,6 @@ import {
   WALLET_TYPE_MEMORY,
   WALLET_TYPE_METAMASK,
   WALLET_TYPE_TREZOR,
-  WALLET_TYPE_TREZOR_MOCK,
 } from '../../models/constants/AccountEntryModel'
 
 export const nemSelector = () => (state) => state.get(DUCK_NEM)
@@ -48,10 +47,10 @@ export const getNemSigner = (state) => {
       const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
       return new NemMemoryDevice({ privateKey, network })
     }
-    case WALLET_TYPE_TREZOR_MOCK: {
-      return new NemTrezorDeviceMock({ network })
-    }
     case WALLET_TYPE_TREZOR: {
+      if (process.env.DEVICE_MOCKS) {
+        return new NemTrezorDeviceMock({ network })
+      }
       return new NemTrezorDevice({ network, isTestnet })
     }
     case WALLET_TYPE_METAMASK: {

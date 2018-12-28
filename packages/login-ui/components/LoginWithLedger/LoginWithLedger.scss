@@ -19,6 +19,16 @@
   line-height: 30px;
 }
 
+.stateLoading {
+  background: $color-green-3;
+  color: white;
+  padding: 30px;
+}
+
+.titleContent {
+  flex-grow: 1;
+}
+
 .link {
   color: $border-color;
   margin:  0 auto 45px;

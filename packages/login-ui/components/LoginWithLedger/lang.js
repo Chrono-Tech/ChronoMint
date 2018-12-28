@@ -5,6 +5,9 @@
 
 export const en = {
   login: 'Login',
+  loading: 'Loading',
+  ledgerNotFound: 'Ledger not found',
+  connectYourLedger: 'Connect your Ledger',
   ethAddress: 'Ethereum address',
   isHttps: {
     successTitle: 'HTTPS protocol provided',

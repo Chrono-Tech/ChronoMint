@@ -9,10 +9,7 @@ import {
   DEFAULT_ACTIVE_BLOCKCHAINS,
   DUCK_PERSIST_ACCOUNT, TREZOR_ACTIVE_BLOCKCHAINS,
 } from './constants'
-import {
-  WALLET_TYPE_TREZOR,
-  WALLET_TYPE_TREZOR_MOCK,
-} from '../../models/constants/AccountEntryModel'
+import { WALLET_TYPE_TREZOR } from '../../models/constants/AccountEntryModel'
 
 export const getPersistAccount = (state) => {
   return state.get(DUCK_PERSIST_ACCOUNT)
@@ -85,7 +82,6 @@ export const getAddressCache = createSelector(
 export const getActiveBlockchainListByType = (walletType) => {
   switch (walletType) {
     case WALLET_TYPE_TREZOR:
-    case WALLET_TYPE_TREZOR_MOCK:
       return TREZOR_ACTIVE_BLOCKCHAINS
 
     default:
