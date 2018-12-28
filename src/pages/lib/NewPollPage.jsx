@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { CSSTransitionGroup } from 'react-transition-group'
 import NewPollContent from 'layouts/partials/NewPollContent/NewPollContent'
 import React, { Component } from 'react'
 
@@ -11,15 +10,7 @@ export default class NewPollPage extends Component {
   render () {
     return (
       <div>
-        <CSSTransitionGroup
-          transitionName='transition-opacity'
-          transitionAppear
-          transitionAppearTimeout={250}
-          transitionEnterTimeout={250}
-          transitionLeaveTimeout={250}
-        >
-          <NewPollContent />
-        </CSSTransitionGroup>
+        <NewPollContent />
       </div>
     )
   }

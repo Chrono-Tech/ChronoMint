@@ -1685,7 +1685,7 @@ async-eventemitter@^0.2.2:
   dependencies:
     async "^2.4.0"
 
-async-eventemitter@ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c:
+"async-eventemitter@github:ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c":
   version "0.2.3"
   resolved "https://codeload.github.com/ahultgren/async-eventemitter/tar.gz/fa06e39e56786ba541c180061dbf2c0a5bbf951c"
   dependencies:
@@ -3443,9 +3443,9 @@ caniuse-api@^2.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000669, caniuse-lite@^1.0.30000792, caniuse-lite@^1.0.30000805, caniuse-lite@^1.0.30000844, caniuse-lite@^1.0.30000921:
-  version "1.0.30000923"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000923.tgz#148f9bda508024b5ce957b463ae2e8302b451bb2"
-  integrity sha512-j5ur7eeluOFjjPUkydtXP4KFAsmH3XaQNch5tvWSO+dLHYt5PE+VgJZLWtbVOodfWij6m6zas28T4gB/cLYq1w==
+  version "1.0.30000925"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000925.tgz#f1a3b9aae2a83071b1eccfa39959d72440409b08"
+  integrity sha512-zcYupoUxtW46rOikuDF7vfL9N1Qe9ZuUBTz3n3q8fFsoJIs/h9UN6Vg/0QpjsmvImXw9mVc3g+ZBfqvUz/iALA==
 
 capture-exit@^1.2.0:
   version "1.2.0"
@@ -5802,7 +5802,7 @@ error@^7.0.2:
     string-template "~0.2.1"
     xtend "~4.0.0"
 
-es-abstract@^1.10.0, es-abstract@^1.5.0, es-abstract@^1.5.1, es-abstract@^1.6.1, es-abstract@^1.7.0:
+es-abstract@^1.10.0, es-abstract@^1.11.0, es-abstract@^1.5.0, es-abstract@^1.5.1, es-abstract@^1.6.1, es-abstract@^1.7.0:
   version "1.12.0"
   resolved "https://registry.yarnpkg.com/es-abstract/-/es-abstract-1.12.0.tgz#9dbbdd27c6856f0001421ca18782d786bf8a6165"
   integrity sha512-C8Fx/0jFmV5IPoMOFPA9P9G5NtqW+4cOPit3MIuvR2t7Ag2K15EJTpxnHAYTzL+aYQJIESYeXZmDBfOBE1HcpA==
@@ -5900,20 +5900,6 @@ escodegen@^1.9.0, escodegen@^1.9.1:
   optionalDependencies:
     source-map "~0.6.1"
 
-eslint-config-airbnb-base@^12.1.0:
-  version "12.1.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-airbnb-base/-/eslint-config-airbnb-base-12.1.0.tgz#386441e54a12ccd957b0a92564a4bafebd747944"
-  integrity sha512-/vjm0Px5ZCpmJqnjIzcFb9TKZrKWz0gnuG/7Gfkt0Db1ELJR51xkZth+t14rYdqWgX836XbuxtArbIHlVhbLBA==
-  dependencies:
-    eslint-restricted-globals "^0.1.1"
-
-eslint-config-airbnb@^16.1.0:
-  version "16.1.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-airbnb/-/eslint-config-airbnb-16.1.0.tgz#2546bfb02cc9fe92284bf1723ccf2e87bc45ca46"
-  integrity sha512-zLyOhVWhzB/jwbz7IPSbkUuj7X2ox4PHXTcZkEmDqTvd0baJmJyuxlFPDlZOE/Y5bC+HQRaEkT3FoHo9wIdRiw==
-  dependencies:
-    eslint-config-airbnb-base "^12.1.0"
-
 eslint-friendly-formatter@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/eslint-friendly-formatter/-/eslint-friendly-formatter-3.0.0.tgz#278874435a6c46ec1d94fa0b1ff494e30ef04290"
@@ -5960,23 +5946,6 @@ eslint-plugin-babel@^5.3.0:
   dependencies:
     eslint-rule-composer "^0.3.0"
 
-"eslint-plugin-chronobank-react@github:chronobank/eslint-plugin-chronobank-react":
-  version "1.2.1"
-  resolved "https://codeload.github.com/chronobank/eslint-plugin-chronobank-react/tar.gz/d6501607b78c37dcd054a7094bc0a3376f882a4b"
-  dependencies:
-    eslint-config-airbnb "^16.1.0"
-    eslint-plugin-chronobank chronobank/eslint-plugin-chronobank
-    eslint-plugin-import "^2.7.0"
-    eslint-plugin-jsx-a11y "^6.0.2"
-    eslint-plugin-react "^7.4.0"
-
-eslint-plugin-chronobank@chronobank/eslint-plugin-chronobank, "eslint-plugin-chronobank@github:chronobank/eslint-plugin-chronobank":
-  version "1.1.0"
-  uid "38dc59c71223ba76825b4476b5e5ecab344fd67e"
-  resolved "https://codeload.github.com/chronobank/eslint-plugin-chronobank/tar.gz/38dc59c71223ba76825b4476b5e5ecab344fd67e"
-  dependencies:
-    eslint-plugin-async-await "0.0.0"
-
 eslint-plugin-flowtype@^2.33.0:
   version "2.50.3"
   resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-2.50.3.tgz#61379d6dce1d010370acd6681740fd913d68175f"
@@ -5984,7 +5953,7 @@ eslint-plugin-flowtype@^2.33.0:
   dependencies:
     lodash "^4.17.10"
 
-eslint-plugin-import@^2.7.0, eslint-plugin-import@^2.8.0:
+eslint-plugin-import@^2.8.0:
   version "2.14.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-import/-/eslint-plugin-import-2.14.0.tgz#6b17626d2e3e6ad52cfce8807a845d15e22111a8"
   integrity sha512-FpuRtniD/AY6sXByma2Wr0TXvXJ4nA/2/04VPlfpmUDPOpOY264x+ILiwnrk/k4RINgDAyFZByxqPUbSQ5YE7g==
@@ -6027,21 +5996,18 @@ eslint-plugin-monorepo@^0.2.0:
     parse-package-name "^0.1.0"
     path-is-inside "^1.0.2"
 
-eslint-plugin-react@^7.1.0, eslint-plugin-react@^7.4.0:
-  version "7.11.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.11.1.tgz#c01a7af6f17519457d6116aa94fc6d2ccad5443c"
-  integrity sha512-cVVyMadRyW7qsIUh3FHp3u6QHNhOgVrLQYdQEB1bPWBsgbNCHdFAeNMquBMCcZJu59eNthX053L70l7gRt4SCw==
+eslint-plugin-react@^7.1.0:
+  version "7.12.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.12.0.tgz#fa6701063f2172c3e1db3a22d3db6d8bdc0179af"
+  integrity sha512-OrmXBWGrZ8gvYWO0W4oiLtASxFWVfe2blgy5pvB57YRwylhghUQL5y5w70fysP/CRTt/XJ+FLv/KXhZxbsQwiw==
   dependencies:
     array-includes "^3.0.3"
     doctrine "^2.1.0"
     has "^1.0.3"
     jsx-ast-utils "^2.0.1"
+    object.fromentries "^2.0.0"
     prop-types "^15.6.2"
-
-eslint-restricted-globals@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/eslint-restricted-globals/-/eslint-restricted-globals-0.1.1.tgz#35f0d5cbc64c2e3ed62e93b4b1a7af05ba7ed4d7"
-  integrity sha1-NfDVy8ZMLj7WLpO0saevBbp+1Nc=
+    resolve "^1.9.0"
 
 eslint-rule-composer@^0.3.0:
   version "0.3.0"
@@ -8713,9 +8679,9 @@ internal-ip@^3.0.1:
     ipaddr.js "^1.5.2"
 
 interpret@^1.0.0, interpret@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.1.0.tgz#7ed1b1410c6a0e0f78cf95d3b8440c63f78b8614"
-  integrity sha1-ftGxQQxqDg94z5XTuEQMY/eLhhQ=
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.2.0.tgz#d5061a6224be58e8083985f5014d844359576296"
+  integrity sha512-mT34yGKMNceBQUoVn7iCDKDntA7SC6gycMAWzGx1z/CMCTV7b2AAtXlo3nRyHZ1FelRkQbQjprHSYGwzLtkVbw==
 
 intl@^1.2:
   version "1.2.5"
@@ -10488,7 +10454,7 @@ ledger-wallet-provider@^2.0.1-beta.3:
     strip-hex-prefix "^1.0.0"
     web3-provider-engine "^13.3.3"
 
-ledgerco@Neufund/ledgerjs#tomek/update_hid:
+"ledgerco@github:Neufund/ledgerjs#tomek/update_hid":
   version "1.2.1"
   resolved "https://codeload.github.com/Neufund/ledgerjs/tar.gz/6ba988f95dd44e1badd5d8b912d95312372c8548"
   dependencies:
@@ -12335,6 +12301,16 @@ object.entries@^1.0.4:
     function-bind "^1.1.0"
     has "^1.0.1"
 
+object.fromentries@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/object.fromentries/-/object.fromentries-2.0.0.tgz#49a543d92151f8277b3ac9600f1e930b189d30ab"
+  integrity sha512-9iLiI6H083uiqUuvzyY6qrlmc/Gz8hLQFOcb/Ri/0xXFkSNS3ctV+CbE6yM2+AnkYfOB3dGjdzC0wrMLIhQICA==
+  dependencies:
+    define-properties "^1.1.2"
+    es-abstract "^1.11.0"
+    function-bind "^1.1.1"
+    has "^1.0.1"
+
 object.getownpropertydescriptors@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/object.getownpropertydescriptors/-/object.getownpropertydescriptors-2.0.3.tgz#8758c846f5b407adab0f236e0986f14b051caa16"
@@ -14175,11 +14151,11 @@ react-dom@^16.1.1:
     scheduler "^0.12.0"
 
 react-event-listener@^0.6.0, react-event-listener@^0.6.2, react-event-listener@^0.6.4:
-  version "0.6.4"
-  resolved "https://registry.yarnpkg.com/react-event-listener/-/react-event-listener-0.6.4.tgz#d0ea5ed897da1a796616c44b5a8758898140f203"
-  integrity sha512-t7VSjIuUFmN+GeyKb+wm025YLeojVB85kJL6sSs0wEBJddfmKBEQz+CNBZ2zBLKVWkPy/fZXM6U5yvojjYBVYQ==
+  version "0.6.5"
+  resolved "https://registry.yarnpkg.com/react-event-listener/-/react-event-listener-0.6.5.tgz#d374dbe5da485c9f9d4702f0e76971afbe9b6b2e"
+  integrity sha512-//lCxOM3DQ0+xmTa/u9mI9mm55zCPdIKp89d8MGjlNsOOnXQ5sFDD1eed+sMBzQXKiRBLBMtSg/2T9RJFtfovw==
   dependencies:
-    "@babel/runtime" "7.0.0"
+    "@babel/runtime" "7.2.0"
     prop-types "^15.6.0"
     warning "^4.0.1"
 
@@ -15076,7 +15052,7 @@ resolve@1.1.7:
   resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.1.7.tgz#203114d82ad2c5ed9e8e0411b3932875e889e97b"
   integrity sha1-IDEU2CrSxe2ejgQRs5ModeiJ6Xs=
 
-resolve@^1.1.6, resolve@^1.3.2, resolve@^1.4.0, resolve@^1.5.0, resolve@^1.6.0, resolve@^1.8.1:
+resolve@^1.1.6, resolve@^1.3.2, resolve@^1.4.0, resolve@^1.5.0, resolve@^1.6.0, resolve@^1.8.1, resolve@^1.9.0:
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.9.0.tgz#a14c6fdfa8f92a7df1d996cb7105fa744658ea06"
   integrity sha512-TZNye00tI67lwYvzxCxHGjwTNlUV70io54/Ed4j6PscB8xVfuBJpRenI/o6dVk0cY0PYTY27AgCoGGxRnYuItQ==
@@ -15554,9 +15530,9 @@ send@0.16.2:
     statuses "~1.4.0"
 
 serialize-javascript@^1.4.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-1.6.0.tgz#b30ce5ddd6517f2c445e129ff5834a399fb5861e"
-  integrity sha512-AQxrNqu4EXWt03dJdgKXI+Au9+pvEuM5+Nk5g6+TmuxMCkEL03VhZ31HM+VKeaaZbFpDHaoSruiHq4PW9AIrOQ==
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-1.6.1.tgz#4d1f697ec49429a847ca6f442a2a755126c4d879"
+  integrity sha512-A5MOagrPFga4YaKQSWHryl7AXvbQkEqpw4NNYMTNYUNV51bA8ABHgYFpqKx+YFFrw59xMV1qGH1R4AgoNIVgCw==
 
 serve-index@^1.7.2:
   version "1.9.1"
@@ -16889,7 +16865,7 @@ truffle-contract@^2.0.3:
     truffle-contract-schema "^0.0.5"
     web3 "^0.20.1"
 
-truffle-hdwallet-provider@mikefluff/truffle-hdwallet-provider#7a2eccca1ba17c235a3ef258914ca74ea5f13014:
+"truffle-hdwallet-provider@github:mikefluff/truffle-hdwallet-provider#7a2eccca1ba17c235a3ef258914ca74ea5f13014":
   version "0.0.5"
   resolved "https://codeload.github.com/mikefluff/truffle-hdwallet-provider/tar.gz/7a2eccca1ba17c235a3ef258914ca74ea5f13014"
   dependencies:

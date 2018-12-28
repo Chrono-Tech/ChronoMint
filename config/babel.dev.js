@@ -4,7 +4,7 @@
  */
 
 const resolver = (module) =>
-  (typeof module === 'string')
+  typeof module === 'string'
     ? require.resolve(module)
     : [require.resolve(module[0]), module[1]]
 
@@ -21,16 +21,25 @@ module.exports = {
     'babel-plugin-syntax-decorators',
     'babel-plugin-syntax-trailing-function-commas',
     'babel-plugin-transform-regenerator',
-    ['babel-plugin-transform-runtime', { 'polyfill': false, 'regenerator': true }],
+    [
+      'babel-plugin-transform-runtime',
+      {
+        polyfill: false,
+        regenerator: true,
+      },
+    ],
     'babel-plugin-transform-object-rest-spread',
     'babel-plugin-transform-react-constant-elements',
     'babel-plugin-transform-class-properties',
-    ['babel-plugin-react-css-modules', {
-      "generateScopedName": "[name]__[local]___[hash:base64:5]",
-      "filetypes": {
-        ".scss": "postcss-scss",
+    [
+      'babel-plugin-react-css-modules',
+      {
+        generateScopedName: '[name]__[local]___[hash:base64:5]',
+        filetypes: {
+          '.scss': 'postcss-scss',
+        },
       },
-    }],
+    ],
     'react-hot-loader/babel',
   ].map(resolver),
 }

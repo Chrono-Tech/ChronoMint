@@ -9,35 +9,37 @@ const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plug
 const fs = require('fs')
 
 process.noDeprecation = true
-const isInNodeModules = path.basename(path.resolve(path.join(__dirname, '..', '..'))) === 'node_modules'
-const buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
+const isInNodeModules =
+  path.basename(path.resolve(path.join(__dirname, '..', '..'))) ===
+  'node_modules'
+const buildPath = path.join(
+  __dirname,
+  isInNodeModules ? '../../..' : '..',
+  'dist'
+)
 
 // creating i18nJson empty file for i18n
 if (!fs.existsSync(buildPath)) {
   fs.mkdirSync(buildPath)
 }
 fs.writeFileSync(buildPath + '/i18nJson.js', 'var i18nJson = {}')
-let relativePath = isInNodeModules ? '../../..' : '..'
+const relativePath = isInNodeModules ? '../../..' : '..'
 const srcPath = path.resolve(__dirname, relativePath, 'src')
 const srcAppArg = process.argv.find((e) => e.startsWith('--src-app='))
 const srcApp = srcAppArg ? srcAppArg.substr('--src-app='.length) : 'index'
 
 module.exports = {
-  externals: {
-    // fs: 'fs',
-    // net: 'net',
-    // tls: 'tls',
-  },
+  externals: {},
   node: {
     fs: 'empty',
     net: 'empty',
     tls: 'empty',
   },
   entry: [
-      require.resolve('webpack-dev-server/client') + '?http://0.0.0.0:3000',
-      require.resolve('webpack/hot/dev-server'),
-      path.join(srcPath, srcApp),
-    ],
+    require.resolve('webpack-dev-server/client') + '?http://0.0.0.0:3000',
+    require.resolve('webpack/hot/dev-server'),
+    path.join(srcPath, srcApp),
+  ],
   target: 'web', // Make web variables accessible to webpack, e.g. window
   resolve: {
     modules: [
@@ -45,7 +47,7 @@ module.exports = {
       'node_modules',
       path.resolve(__dirname, '../node_modules'),
       path.resolve(__dirname, '../packages/core/node_modules'),
-      path.resolve(__dirname, '../packages/login/node_modules')
+      path.resolve(__dirname, '../packages/login/node_modules'),
     ],
     alias: {
       '@chronobank': path.resolve(__dirname, '../packages/'),
@@ -73,8 +75,20 @@ module.exports = {
       {
         test: /\.(sa|sc|c)ss$/,
         use: [
-          process.env.NODE_ENV !== 'production' ? 'style-loader' : MiniCssExtractPlugin.loader,
-          'css-loader',
+          process.env.NODE_ENV !== 'production'
+            ? 'style-loader'
+            : MiniCssExtractPlugin.loader,
+          // 'css-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: false,
+              modules: true,
+              import: true,
+              importLoaders: 1,
+              localIdentName: '[name]__[local]___[hash:base64:5]',
+            },
+          },
           {
             loader: 'resolve-url-loader',
             options: {
@@ -84,9 +98,12 @@ module.exports = {
           {
             loader: 'postcss-loader',
             options: {
-              sourceMap: false,
+              sourceMap: true,
               ident: 'postcss',
-              plugins: () => [require('postcss-cssnext')(), require('postcss-modules-values')],
+              plugins: () => [
+                require('postcss-cssnext')(),
+                require('postcss-modules-values'),
+              ],
             },
           },
           'sass-loader',
@@ -173,7 +190,11 @@ module.exports = {
       {
         test: /node_modules\/chronobank-smart-contracts\/build\/contracts\/.+\.json$/, // only ABI contracts
         loader: path.resolve('./config/abi-loader'),
-        include: [path.resolve('node_modules/chronobank-smart-contracts/build/contracts')],
+        include: [
+          path.resolve(
+            'node_modules/chronobank-smart-contracts/build/contracts'
+          ),
+        ],
       },
     ],
   },

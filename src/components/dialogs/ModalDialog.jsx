@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { CSSTransitionGroup } from 'react-transition-group'
+import { TransitionGroup } from 'react-transition-group'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
@@ -42,7 +42,7 @@ export default class ModalDialog extends PureComponent {
 
   render () {
     return (
-      <CSSTransitionGroup
+      <TransitionGroup
         transitionName='transition-opacity'
         transitionAppear
         transitionAppearTimeout={TRANSITION_TIMEOUT}
@@ -50,7 +50,7 @@ export default class ModalDialog extends PureComponent {
         transitionLeaveTimeout={TRANSITION_TIMEOUT}
       >
         <div styleName='root'>
-          <CSSTransitionGroup
+          <TransitionGroup
             transitionName='transition-swipe'
             transitionAppear
             transitionAppearTimeout={TRANSITION_TIMEOUT}
@@ -72,9 +72,9 @@ export default class ModalDialog extends PureComponent {
                 </div>
               )}
             </div>
-          </CSSTransitionGroup>
+          </TransitionGroup>
         </div>
-      </CSSTransitionGroup>
+      </TransitionGroup>
     )
   }
 }
