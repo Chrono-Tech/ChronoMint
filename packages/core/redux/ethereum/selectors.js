@@ -40,9 +40,7 @@ export const getEthereumSigner = (state) => {
       return new EthereumTrezorDevice()
     }
     case WALLET_TYPE_LEDGER: {
-      console.log('WALLET_TYPE_LEDGER: ', process.env.DEVICE_MOCKS, Object.prototype.toString.call(process.env.DEVICE_MOCKS))
       if (process.env.DEVICE_MOCKS) {
-        console.log('new EthereumLedgerDeviceMock: ', )
         return new EthereumLedgerDeviceMock()
       }
       return new EthereumLedgerDevice()
