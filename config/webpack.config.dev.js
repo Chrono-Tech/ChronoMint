@@ -23,6 +23,7 @@ module.exports = config.buildConfig(
   ({ srcPath, buildPath, indexHtmlPath, faviconPath }) => ({
     devtool: process.env.SOURCE_MAP || 'source-map',
     entry: [
+      'babel-polyfill',
       require.resolve('webpack-dev-server/client') + '?http://0.0.0.0:3000',
       require.resolve('webpack/hot/dev-server'),
       path.join(srcPath, srcApp),
