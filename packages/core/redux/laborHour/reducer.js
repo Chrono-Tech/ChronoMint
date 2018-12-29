@@ -232,12 +232,16 @@ const mutations = {
       },
     }
   },
-  [types.LABOR_HOUR_UPDATE_REWARDS_BLOCKS_LIST]: (state, { list }) => {
+  [types.LABOR_HOUR_UPDATE_REWARDS_BLOCKS_LIST]: (state, { list, endOfList }) => {
     return {
       ...state,
       rewards: {
         ...state.rewards,
-        list,
+        list:{
+          ...state.rewards.list,
+          ...list,
+        },
+        endOfList,
         isLoading: false,
       },
     }

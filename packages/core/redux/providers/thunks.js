@@ -13,7 +13,6 @@ import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selec
 
 export const initProviders = () => async (dispatch, getState) => {
   const { network } = getCurrentNetworkSelector(getState())
-
   ethereumProvider.setNetworkSettings(network)
   bccProvider.setNetworkSettings(network)
   btcProvider.setNetworkSettings(network)

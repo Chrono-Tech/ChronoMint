@@ -36,6 +36,21 @@ export class LaborHourProvider extends AbstractEthereumProvider {
 
     return balanceData
   }
+
+  getBlocksList (address, skip, limit) {
+    const node = this._selectNode(this.networkSettings)
+    return node.getBlocksList(address, skip, limit)
+  }
+
+  getBlock (blockNumberOrHash) {
+    const node = this._selectNode(this.networkSettings)
+    return node.getBlock(blockNumberOrHash)
+  }
+
+  getTotalReward () {
+    const node = this._selectNode(this.networkSettings)
+    return node.getTotalReward()
+  }
 }
 
 export const laborHourProvider = new LaborHourProvider(selectLaborHourNode)

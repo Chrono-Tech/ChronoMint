@@ -16,18 +16,27 @@ const eventsList = [
   'revoke',
 ]
 
+const URL_BLOCK = '/block/'
+const URL_BLOCKS_LIST = (address) =>
+  `blocks/${address ? address + '/' : ''}history`
+const PAGE_SIZE = 20
+
 export default class EthereumMiddlewareNode extends AbstractNode {
   constructor () {
     super(...arguments)
 
     this.addListener('subscribe', (address) => this._handleSubscribe(address))
-    this.addListener('unsubscribe', (address) => this._handleUnsubscribe(address))
+    this.addListener('unsubscribe', (address) =>
+      this._handleUnsubscribe(address)
+    )
     this.connect()
   }
 
   subscribeNewWallet (ethAddress) {
     this._handleSubscribe({ ethAddress })
-    this.addListener('unsubscribe', (address) => this._handleUnsubscribe(address))
+    this.addListener('unsubscribe', (address) =>
+      this._handleUnsubscribe(address)
+    )
   }
 
   async _handleSubscribe (address) {
@@ -38,13 +47,15 @@ export default class EthereumMiddlewareNode extends AbstractNode {
       this._api.post('addr', address)
       this.executeOrSchedule(() => {
         eventsList.forEach((event) => {
-          this._openSubscription(`${this._socket.channels.events}.${event}`, (data) => {
-            this.trace(event, data)
-            this.emit(event, data)
-          })
+          this._openSubscription(
+            `${this._socket.channels.events}.${event}`,
+            (data) => {
+              this.trace(event, data)
+              this.emit(event, data)
+            }
+          )
         })
       })
-
     } catch (e) {
       this.trace('Address subscription error', e)
     }
@@ -63,7 +74,9 @@ export default class EthereumMiddlewareNode extends AbstractNode {
   async getEventsData (eventName: string, queryFilter: string, mapCallback) {
     const response = await this._api.get(`events/${eventName}/?${queryFilter}`)
     if (response && response.data.length) {
-      return typeof mapCallback === 'function' ? response.data.map(mapCallback) : response.data
+      return typeof mapCallback === 'function'
+        ? response.data.map(mapCallback)
+        : response.data
     }
 
     return []
@@ -76,7 +89,10 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     if (data.code) {
       return typeof callback === 'function' ? callback(data) : data
     } else {
-      const code = await EthCrypto.decryptWithPrivateKey(`0x${engine.getPrivateKey()}`, data)
+      const code = await EthCrypto.decryptWithPrivateKey(
+        `0x${engine.getPrivateKey()}`,
+        data
+      )
       if (code) {
         return typeof callback === 'function' ? callback(code) : code
       }
@@ -113,5 +129,27 @@ export default class EthereumMiddlewareNode extends AbstractNode {
   async getAddressInfo (address) {
     const { data } = await this._api.get(`addr/${address}/balance`)
     return data
+  }
+
+  async getBlocksList (address, skip = 0, limit = PAGE_SIZE) {
+    const { data } = await this._api.get(
+      `${URL_BLOCKS_LIST(address)}?skip=${skip}&limit=${limit}`
+    )
+    return data
+  }
+
+  async getBlock (blockNumberOrHash) {
+    const { data } = await this._api.get(
+      `${URL_BLOCK}${blockNumberOrHash}`
+    )
+    return data
+  }
+
+  getTotalReward () {
+    // return this._api.service.request({
+    //   url: `${URL_SWAPS_LIST}${userAddress}`,
+    //   json: true,
+    // })
+    return 1000000000000000000
   }
 }

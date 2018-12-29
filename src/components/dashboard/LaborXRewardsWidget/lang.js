@@ -14,5 +14,6 @@ export default {
     block: 'Block #',
     reward: 'Rewards: LHT ',
     more: 'Load more',
+    load: 'Load',
   },
 }

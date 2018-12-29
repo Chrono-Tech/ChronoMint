@@ -9,7 +9,9 @@ import EthereumMiddlewareNode from './EthereumMiddlewareNode'
 
 const LHT_TESTNET_NODE = new EthereumMiddlewareNode({
   api: axios.create({
-    baseURL: 'https://middleware-sidechain-laborx.chronobank.io',
+    baseURL: 
+    // 'https://middleware-sidechain-laborx.chronobank.io',
+    'https://middleware-sidechain-testnet-rest.chronobank.io/',
     timeout: 10000,
   }),
   trace: true,

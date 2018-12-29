@@ -73,6 +73,10 @@ export const updateTimeHolderBalances = () => async (dispatch, getState) => {
   const wallet = getMainLaborHourWallet(getState())
   const timeToken = getLXToken(TIME)(getState())
 
+  if(!wallet){
+    return null
+  }
+
   const depositBalance = await timeHolderDao.getDepositBalance(timeToken.address(), wallet.address)
   dispatch(LXSidechainActions.updateDeposit(wallet.address, new Amount(depositBalance, timeToken.symbol())))
 

@@ -29,5 +29,6 @@ export default {
     useForMining: 'Use for mining',
     sendToDeposit: 'Send to TIME Deposit',
     openSettingsForm: 'Need to open settings form and enter delegate address',
+    unavailable: 'Wallet is not available'
   },
 }
