@@ -49,6 +49,7 @@ import {
   FORM_FOOTER_EMAIL_SUBSCRIPTION,
 } from './constants'
 import userMonitorService from './userMonitorService'
+import { checkNetwork } from './utils'
 
 /*
  * Thunk dispatched by "" screen.
@@ -103,11 +104,18 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   const { selectedWallet, lastLoginNetworkId } = state.get(DUCK_PERSIST_ACCOUNT)
   const accountWallet = new AccountEntryModel(selectedWallet)
   const { network } = getCurrentNetworkSelector(state)
-  const { selectedNetworkId } = getState().get(DUCK_NETWORK)
+  const { selectedNetworkId, selectedProviderId } = getState().get(DUCK_NETWORK)
   if (lastLoginNetworkId !== selectedNetworkId) {
     dispatch(PersistAccountActions.clearWalletsAddressCache())
   }
-  dispatch(PersistAccountActions.updateLastNetworkId(selectedNetworkId))
+
+  const availableNetwork = await checkNetwork(selectedNetworkId, selectedProviderId)
+  if(availableNetwork){
+    if(availableNetwork.selectedNetworkId !== selectedNetworkId) dispatch(NetworkActions.networkSetNetwork(availableNetwork.selectedNetworkId))
+    if(availableNetwork.selectedProviderId !== selectedProviderId) dispatch(NetworkActions.networkSetProvider(availableNetwork.selectedNetworkId))
+  }
+
+  dispatch(PersistAccountActions.updateLastNetworkId(availableNetwork ? availableNetwork.selectedNetworkId : selectedNetworkId))
 
   switch (accountWallet.type) {
     case WALLET_TYPE_MEMORY: {
