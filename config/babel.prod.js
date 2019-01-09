@@ -13,6 +13,8 @@ module.exports = {
     'babel-preset-env',
     'babel-preset-react',
     'babel-preset-stage-0',
+    'babel-preset-es2015',
+    'babel-preset-es2017',
   ].map(resolver),
   plugins: [
     'babel-plugin-transform-decorators-legacy',

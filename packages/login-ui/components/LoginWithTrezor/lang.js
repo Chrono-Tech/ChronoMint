@@ -6,6 +6,9 @@
 export const en = {
   title: 'Add an Address',
   login: 'Login',
+  loading: 'Loading',
+  notFound: 'Trezor not found',
+  connectYourTrezor: 'Connect your Trezor',
   or: 'or',
   back: 'back',
   ethAddress: 'Ethereum address',

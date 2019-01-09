@@ -2,8 +2,8 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
+process.env.DEVICE_MOCKS = process.env.DEVICE_MOCKS || false
 
 // eslint-disable-next-line
 console.log('NODE_ENV:', process.env.NODE_ENV)
@@ -23,6 +23,7 @@ let handleCompile
 const isSmokeTest = process.argv.some((arg) =>
   arg.indexOf('--smoke-test') > -1
 )
+
 if (isSmokeTest) {
   handleCompile = function (err, stats) {
     if (err || stats.hasErrors() || stats.hasWarnings()) {

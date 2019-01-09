@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import EventEmitter from 'events'
 import EthereumTx from 'ethereumjs-tx'
 import AsyncLock from 'async-lock'
 import { omitBy, isNil } from 'lodash'
@@ -10,7 +11,7 @@ import Web3Utils from 'web3-utils'
 import TransportU2F from '@ledgerhq/hw-transport-u2f'
 import AppEth from '@ledgerhq/hw-app-eth'
 
-const DEFAULT_PATH = "44'/60'/0'"
+const DEFAULT_PATH = "44'/60'/0'/0"
 const DEFAULT_PATH_FACTORY = (index) => `${DEFAULT_PATH}/${index}`
 
 const LOCK = 'LedgerDevice'
@@ -20,8 +21,9 @@ const rejectOnTimeout = (timeout) =>
     setTimeout(() => reject(new Error('Timeout')), timeout)
   })
 
-export default class EthereumLedgerDevice {
+export default class EthereumLedgerDevice extends EventEmitter {
   constructor () {
+    super()
     this.lock = new AsyncLock({ domainReentrant: true })
   }
 
@@ -54,13 +56,10 @@ export default class EthereumLedgerDevice {
 
   async getAddress (path) {
     return this._safeExec(async () => {
-      if (this.isConnected) {
-        const transport = await TransportU2F.create()
-        const app = new AppEth(transport)
-        const { address } = await Promise.race([this._getAddressInfo(app, path), rejectOnTimeout(2000)])
-        return address
-      }
-      return
+      const transport = await TransportU2F.create()
+      const appEthereum = new AppEth(transport)
+      const { address } = await Promise.race([this._getAddressInfo(appEthereum, path), rejectOnTimeout(2000)])
+      return address
     })
   }
 
@@ -152,7 +151,6 @@ export default class EthereumLedgerDevice {
 
   async _getAddressInfo (app, path: String): String {
     const { address, publicKey } = await app.getAddress(path)
-
     return {
       path,
       address,

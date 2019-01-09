@@ -7,7 +7,6 @@
     "@waves/waves-api": "0.28.2",
     "axios": "^0.16.2",
     "bignumber.js": "^4.1.0",
-    "bip39": "^2.3.0",
     "bitcoinjs-lib": "4.0.1",
     "coinselect": "^3.1.11",
     "dashcore-lib": "^8.2.3",

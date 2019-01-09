@@ -162,7 +162,7 @@
     "standalone": "NODE_ENV=standalone node ./scripts/build.js",
     "test": "yarn test:e2e && test:unit",
     "test:unit": "NODE_ENV=development jest --useStderr --forceExit --runInBand --no-cache --config config/jest/config.unit.js",
-    "test:e2e": "NODE_ENV=test jest --useStderr --forceExit --runInBand --no-cache --detectOpenHandles --config config/jest/config.e2e.js",
+    "test:e2e": "DEVICE_MOCKS=true NODE_ENV=test jest --useStderr --forceExit --runInBand --no-cache --detectOpenHandles --config config/jest/config.e2e.js",
     "testrpc": "ganache-cli --mnemonic \"video visa alcohol fault earth naive army senior major inherit convince electric\" --trace_request true | grep -Ev \"FilterSubprovider|eth_getFilterChanges\"",
     "bridge": "cd node_modules/ethereum-bridge && mkdir -p database && node bridge.js",
     "contracts:compile": "cd node_modules/chronobank-smart-contracts && node --max_old_space_size=8000 ../truffle/build/cli.bundled.js compile --all",

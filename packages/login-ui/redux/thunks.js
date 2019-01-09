@@ -14,9 +14,7 @@ import { replace } from 'react-router-redux'
 import {
   WALLET_TYPE_MEMORY,
   WALLET_TYPE_TREZOR,
-  WALLET_TYPE_TREZOR_MOCK,
   WALLET_TYPE_LEDGER,
-  WALLET_TYPE_LEDGER_MOCK,
 } from '@chronobank/core/models/constants/AccountEntryModel'
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 import { getEthereumSigner } from '@chronobank/core/redux/ethereum/selectors'
@@ -25,6 +23,8 @@ import localStorage from 'utils/LocalStorage'
 import {
   DUCK_NETWORK,
 } from '@chronobank/login/redux/network/constants'
+import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
+import * as Utils from '@chronobank/core/redux/ethereum/utils'
 import {
   DUCK_PERSIST_ACCOUNT,
   DEFAULT_ACTIVE_BLOCKCHAINS,
@@ -102,6 +102,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   const state = getState()
   const { selectedWallet, lastLoginNetworkId } = state.get(DUCK_PERSIST_ACCOUNT)
   const accountWallet = new AccountEntryModel(selectedWallet)
+  const { network } = getCurrentNetworkSelector(state)
   const { selectedNetworkId } = getState().get(DUCK_NETWORK)
   if (lastLoginNetworkId !== selectedNetworkId) {
     dispatch(PersistAccountActions.clearWalletsAddressCache())
@@ -144,13 +145,12 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
     }
 
     case WALLET_TYPE_TREZOR:
-    case WALLET_TYPE_TREZOR_MOCK:
-    case WALLET_TYPE_LEDGER:
-    case WALLET_TYPE_LEDGER_MOCK: {
+    case WALLET_TYPE_LEDGER: {
       try {
 
         const wallet = await dispatch(DeviceActions.loadDeviceAccount(accountWallet))
-        const { path, address } = wallet.entry.encrypted[0]
+        const { address } = wallet.entry.encrypted[0]
+        const path = Utils.getEthereumDerivedPath(network[BLOCKCHAIN_ETHEREUM])
         const signer = getEthereumSigner(getState())
         const addressCache = { ...getAddressCache(state) }
         const signerAddress = await signer.getAddress(path)
