@@ -1,6 +1,14 @@
 import { getNetworkById, getNetworksSelectorGroup } from '@chronobank/login/network/settings'
+import web3Factory from '@chronobank/core/web3'
 
-const condition = data => data < 500
+const check = async (network) => {
+  const w3 = web3Factory(network)
+  try{
+    return await w3.eth.net.isListening()
+  } catch(e){
+   return false
+  }
+}
 
  export async function findProvider (providersList){
   let num = 0
@@ -9,9 +17,9 @@ const condition = data => data < 500
       selectedNetworkId: providersList[num].network.id,
       selectedProviderId: providersList[num].provider.id,
     }
-    let network = getNetworkById(netData.selectedNetworkId, netData.selectedProviderId)
-    let res = await fetch(`${network.protocol}://${network.host}`)
-    if (condition(res.status)) return netData
+    netData.network = getNetworkById(netData.selectedNetworkId, netData.selectedProviderId)
+
+    if (await check(netData.network)) return netData
     num++
   }
   return null
@@ -21,8 +29,7 @@ export async function checkNetwork (selectedNetworkId, selectedProviderId) {
   let providersList = getNetworksSelectorGroup()
 
   let network = getNetworkById(selectedNetworkId, selectedProviderId)
-  const res = await fetch(`${network.protocol}://${network.host}`)
-  if(condition(res.status)) return null
+  if(await check(network)) return null
   for (let i in providersList) {
     const level = providersList[i]
     for (let k in level.providers) {
@@ -31,8 +38,9 @@ export async function checkNetwork (selectedNetworkId, selectedProviderId) {
         net.network.id === selectedNetworkId &&
         net.provider.id === selectedProviderId
       ) {
-        delete level.providers[k]
-        return await findProvider(level.providers)
+        let providers = level.providers.filter(net => !(net.network.id === selectedNetworkId &&
+          net.provider.id === selectedProviderId))
+        return await findProvider(providers)
       }
     }
   }
