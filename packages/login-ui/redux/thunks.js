@@ -111,8 +111,10 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   const availableNetwork = await checkNetwork(selectedNetworkId, selectedProviderId)
   if(availableNetwork){
     if(availableNetwork.selectedNetworkId !== selectedNetworkId) dispatch(NetworkActions.networkSetNetwork(availableNetwork.selectedNetworkId))
-    if(availableNetwork.selectedProviderId !== selectedProviderId) dispatch(NetworkActions.networkSetProvider(availableNetwork.selectedProviderId))
-
+    if(availableNetwork.selectedProviderId !== selectedProviderId) {
+      dispatch(NetworkActions.networkSetProvider(availableNetwork.selectedProviderId))
+      dispatch(NetworkActions.disableProvider(selectedProviderId))
+    }
   }
 
   dispatch(PersistAccountActions.updateLastNetworkId(availableNetwork ? availableNetwork.selectedNetworkId : selectedNetworkId))

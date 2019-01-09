@@ -17,9 +17,9 @@ const check = async (network) => {
       selectedNetworkId: providersList[num].network.id,
       selectedProviderId: providersList[num].provider.id,
     }
-    netData.network = getNetworkById(netData.selectedNetworkId, netData.selectedProviderId)
+    const network = getNetworkById(netData.selectedNetworkId, netData.selectedProviderId)
 
-    if (await check(netData.network)) return netData
+    if (await check(network)) return netData
     num++
   }
   return null
