@@ -1,5 +1,6 @@
 import { getNetworkById, getNetworksSelectorGroup } from '@chronobank/login/network/settings'
 import web3Factory from '@chronobank/core/web3'
+import {compact} from 'lodash'
 
 const check = async (network) => {
   const w3 = web3Factory(network)
@@ -29,6 +30,7 @@ export async function checkNetwork (selectedNetworkId, selectedProviderId) {
   let providersList = getNetworksSelectorGroup()
 
   let network = getNetworkById(selectedNetworkId, selectedProviderId)
+  let networkLevel
   if(await check(network)) return null
   for (let i in providersList) {
     const level = providersList[i]
@@ -38,11 +40,14 @@ export async function checkNetwork (selectedNetworkId, selectedProviderId) {
         net.network.id === selectedNetworkId &&
         net.provider.id === selectedProviderId
       ) {
+        networkLevel = i
         let providers = level.providers.filter(net => !(net.network.id === selectedNetworkId &&
           net.provider.id === selectedProviderId))
         return await findProvider(providers)
       }
     }
   }
+  delete providersList[networkLevel]
+  providersList = compact(providersList)
   return await findProvider(providersList[0].providers)
 }
