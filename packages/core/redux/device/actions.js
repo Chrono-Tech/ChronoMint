@@ -49,10 +49,16 @@ export const deviceClearList = () => (dispatch) => {
 
 // eslint-disable-next-line no-unused-vars
 export const initLedgerDevice = (wallet) => async (dispatch) => {
-  await dispatch(updateSessionWeb3())
-  const ledger = new EthereumLedgerDevice()
-  const result = await ledger.getAddressInfoList(0, 5)
-  dispatch(deviceUpdateList(result))
+  try {
+    await dispatch(updateSessionWeb3())
+    const ledger = new EthereumLedgerDevice()
+    const result = await ledger.getAddressInfoList(0, 5)
+    dispatch(deviceUpdateList(result))
+  } catch (e) {
+    //eslint-disable-next-line
+    console.error(e)
+    dispatch({ type: DEVICE_STATE_ERROR })
+  }
 }
 
 // eslint-disable-next-line no-unused-vars

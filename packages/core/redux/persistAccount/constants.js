@@ -30,6 +30,7 @@ export const WALLETS_UPDATE_LIST = 'persistAccount/WALLETS_UPDATE_LIST'
 export const WALLETS_CACHE_ADDRESS = 'persistAccount/WALLETS_CACHE_ADDRESS'
 export const WALLETS_CACHE_ADDRESS_CLEAR = 'persistAccount/WALLETS_CACHE_ADDRESS_CLEAR'
 
+// Ethereum blockchain is active by default
 export const DEFAULT_ACTIVE_BLOCKCHAINS = [
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
@@ -47,6 +48,10 @@ export const TREZOR_ACTIVE_BLOCKCHAINS = [
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_DASH,
   BLOCKCHAIN_NEM,
+]
+
+export const LEDGER_ACTIVE_BLOCKCHAINS = [
+  BLOCKCHAIN_BITCOIN,
 ]
 
 export const FORM_BLOCKCHAIN_ACTIVATE = 'FormBlockchainActivate'

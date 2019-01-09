@@ -36,13 +36,19 @@ export default class EthereumLedgerDevice extends EventEmitter {
   }
 
   async getAddressInfoList (from: number = 0, limit: number = 5): String {
+    console.log('TransportU2F: getAddressInfoList: ', from, limit)
+
     return this._safeExec(async () => {
       const addresses = []
       for (let i = from; i < from + limit; i++) {
         const path = DEFAULT_PATH_FACTORY(i)
         const transport = await TransportU2F.create()
+        console.log('TransportU2F: transport: ', transport)
         const app = new AppEth(transport)
-        const { address, publicKey } = await Promise.race([this._getAddressInfo(app, path), rejectOnTimeout(2000)])
+        const result = await this._getAddressInfo(app, path)
+        console.log('transaport result : ', result)
+
+        const { address, publicKey } = result
         addresses.push({
           path,
           address,
@@ -63,6 +69,44 @@ export default class EthereumLedgerDevice extends EventEmitter {
     })
   }
 
+  async signData (data, path) {
+    return this._safeExec(async () => {
+      const transport = await TransportU2F.create()
+      const app = new AppEth(transport)
+      const result = await app.signPersonalMessage(path, Buffer.from(data).toString('hex'))
+      const v = parseInt(result.v, 10) - 27
+      let vHex = v.toString(16)
+      if (vHex.length < 2) {
+        vHex = `0${v}`
+      }
+      const signature = `0x${result.r}${result.s}${vHex}`
+
+      return {
+        signature: signature,
+      }
+    })
+  }
+
+  async getAddressInfo (path: String): String {
+    const transport = await TransportU2F.create()
+    const app = new AppEth(transport)
+    const addressInfo = await this._getAddressInfo(app, path)
+
+    return addressInfo
+  }
+
+  async _getAddressInfo (app, path: String): String {
+    const result = await app.getAddress(path)
+    console.log('result: ', result)
+    const { address, publicKey } = result
+
+    return {
+      path,
+      address,
+      publicKey,
+    }
+  }
+
   async signTransaction (txData, path) {
     return this._safeExec(async () => {
       const tx = new EthereumTx({
@@ -70,25 +114,25 @@ export default class EthereumLedgerDevice extends EventEmitter {
         ...omitBy(
           {
             value:
-              txData.value == null // nil check
-                ? null
-                : Web3Utils.toBN(txData.value),
+                txData.value == null // nil check
+                  ? null
+                  : Web3Utils.toBN(txData.value),
             fee:
-              txData.fee == null // nil check
-                ? null
-                : Web3Utils.toBN(txData.fee),
+                txData.fee == null // nil check
+                  ? null
+                  : Web3Utils.toBN(txData.fee),
             gasLimit:
-              txData.gasLimit == null // nil check
-                ? null
-                : Web3Utils.toBN(txData.gasLimit),
+                txData.gasLimit == null // nil check
+                  ? null
+                  : Web3Utils.toBN(txData.gasLimit),
             gasPrice:
-              txData.gasPrice == null // nil check
-                ? null
-                : Web3Utils.toBN(txData.gasPrice),
+                txData.gasPrice == null // nil check
+                  ? null
+                  : Web3Utils.toBN(txData.gasPrice),
             nonce:
-              txData.nonce == null // nil check
-                ? null
-                : Web3Utils.toBN(txData.nonce),
+                txData.nonce == null // nil check
+                  ? null
+                  : Web3Utils.toBN(txData.nonce),
           },
           isNil
         ),
@@ -121,41 +165,6 @@ export default class EthereumLedgerDevice extends EventEmitter {
         rawTransaction: `0x${tx.serialize().toString('hex')}`,
       }
     })
-  }
-
-  async signData (data, path) {
-    return this._safeExec(async () => {
-      const transport = await TransportU2F.create()
-      const app = new AppEth(transport)
-      const result = await app.signPersonalMessage(path, Buffer.from(data).toString('hex'))
-      const v = parseInt(result.v, 10) - 27
-      let vHex = v.toString(16)
-      if (vHex.length < 2) {
-        vHex = `0${v}`
-      }
-      const signature = `0x${result.r}${result.s}${vHex}`
-
-      return {
-        signature: signature,
-      }
-    })
-  }
-
-  async getAddressInfo (path: String): String {
-    const transport = await TransportU2F.create()
-    const app = new AppEth(transport)
-    const addressInfo = await this._getAddressInfo(app, path)
-
-    return addressInfo
-  }
-
-  async _getAddressInfo (app, path: String): String {
-    const { address, publicKey } = await app.getAddress(path)
-    return {
-      path,
-      address,
-      publicKey,
-    }
   }
 
   async _safeExec (callable) {

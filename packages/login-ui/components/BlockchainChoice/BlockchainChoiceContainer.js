@@ -13,6 +13,7 @@ import BlockchainChoice from './BlockchainChoice'
 import './BlockchainChoice.scss'
 
 function mapStateToProps (ownState, ownProps) {
+  console.log('ownProps: ', ownProps.activeBlockchainList, ownProps)
   const blockchainList = ownProps.activeBlockchainList || DEFAULT_ACTIVE_BLOCKCHAINS
   const initialBlockchains = blockchainList.reduce((result, item) => {
     result[item] = true
