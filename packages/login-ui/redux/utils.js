@@ -1,6 +1,6 @@
 import { getNetworkById, getNetworksSelectorGroup } from '@chronobank/login/network/settings'
 import web3Factory from '@chronobank/core/web3'
-import {compact} from 'lodash'
+import { compact } from 'lodash'
 
 const check = async (network) => {
   const w3 = web3Factory(network)
