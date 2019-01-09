@@ -11,7 +11,7 @@ console.log('NODE_ENV:', process.env.NODE_ENV)
 const path = require('path')
 const rimrafSync = require('rimraf').sync
 const webpack = require('webpack')
-const config = require('../config/webpack.config.prod')
+const config = require('../config/webpack.new.prod')
 
 const isInNodeModules = path.basename(path.resolve(path.join(__dirname, '..', '..'))) === 'node_modules'
 const relative = isInNodeModules ? '../..' : '.'

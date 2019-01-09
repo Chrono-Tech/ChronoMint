@@ -4,13 +4,13 @@
 
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-// import CircularDependencyPlugin from 'circular-dependency-plugin'
-// import CleanWebpackPlugin from 'clean-webpack-plugin'
+const CircularDependencyPlugin = require('circular-dependency-plugin')
+const CleanWebpackPlugin  = require('clean-webpack-plugin')
 const  baseWebpackConfig = require('./webpack.new.base')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
-// import CleanTerminalPlugin from 'clean-terminal-webpack-plugin'
+const CleanTerminalPlugin = require('clean-terminal-webpack-plugin')
 const path = require('path')
 
 module.exports = Object.assign({}, baseWebpackConfig, {
@@ -42,14 +42,14 @@ module.exports = Object.assign({}, baseWebpackConfig, {
     historyApiFallback: true
   },
   plugins: [
-    // new CleanWebpackPlugin(['../dist']),
-    // new CleanTerminalPlugin({
-    //   message: 'Clean up...'
-    // }),
-    // new CircularDependencyPlugin({
-    //   exclude: /node_modules/,
-    //   failOnError: true
-    // }),
+    new CleanWebpackPlugin(['../dist']),
+    new CleanTerminalPlugin({
+      message: 'Clean up...'
+    }),
+    new CircularDependencyPlugin({
+      exclude: /node_modules/,
+      failOnError: true
+    }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
       // WEB3_RPC_LOCATION: '"' + process.env.WEB3_RPC_LOCATION + '"',

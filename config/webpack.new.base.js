@@ -5,7 +5,6 @@
 const path = require('path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const babel = require('../babel.config.js')
-const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
 const fs = require('fs')
 
 process.noDeprecation = true
@@ -15,7 +14,7 @@ const isInNodeModules =
 const buildPath = path.join(
   __dirname,
   isInNodeModules ? '../../..' : '..',
-  'dist'
+  'dist',
 )
 
 // creating i18nJson empty file for i18n
@@ -192,7 +191,7 @@ module.exports = {
         loader: path.resolve('./config/abi-loader'),
         include: [
           path.resolve(
-            'node_modules/chronobank-smart-contracts/build/contracts'
+            'node_modules/chronobank-smart-contracts/build/contracts',
           ),
         ],
       },
