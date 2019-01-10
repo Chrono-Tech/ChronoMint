@@ -38,7 +38,7 @@ export default class WithLoader extends PureComponent {
   }
 
   renderContent () {
-    const { children, payload, loader, showLoader, ...rest } = this.props
+    const { children, payload, ...rest } = this.props
 
     if (typeof children !== 'function') {
       return 'Children is not a function'

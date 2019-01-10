@@ -42,7 +42,7 @@ export default class MetamaskPlugin {
     return []
   }
 
-  async signTransaction ({ gas, gasPrice, ...txData }) {
+  async signTransaction ({ /*gas, gasPrice,*/ ...txData }) {
     const signed = await this.web3.eth.sendTransaction({
       ...txData,
     })

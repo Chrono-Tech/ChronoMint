@@ -81,10 +81,10 @@ export const getAddressCache = createSelector(
 
 export const getActiveBlockchainListByType = (walletType) => {
   switch (walletType) {
-    case WALLET_TYPE_TREZOR:
-      return TREZOR_ACTIVE_BLOCKCHAINS
+  case WALLET_TYPE_TREZOR:
+    return TREZOR_ACTIVE_BLOCKCHAINS
 
-    default:
-      return DEFAULT_ACTIVE_BLOCKCHAINS
+  default:
+    return DEFAULT_ACTIVE_BLOCKCHAINS
   }
 }

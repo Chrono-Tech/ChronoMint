@@ -59,37 +59,37 @@ class WalletImportPage extends PureComponent {
 
   getCurrentPage () {
     switch(this.state.page){
-      case WalletImportPage.PAGES.WALLET_UPLOAD_FORM:
-        return (
-          <LoginWithWalletContainer
-            previousPage={this.previousPage.bind(this)}
-            onSubmit={this.onSubmitWallet.bind(this)}
-          />
-        )
+    case WalletImportPage.PAGES.WALLET_UPLOAD_FORM:
+      return (
+        <LoginWithWalletContainer
+          previousPage={this.previousPage.bind(this)}
+          onSubmit={this.onSubmitWallet.bind(this)}
+        />
+      )
 
-      case WalletImportPage.PAGES.ACCOUNT_NAME_FORM:
-        return (
-          <AccountNameContainer
-            previousPage={this.previousPage.bind(this)}
-            onSubmit={this.onSubmitAccountName.bind(this)}
-          />
-        )
+    case WalletImportPage.PAGES.ACCOUNT_NAME_FORM:
+      return (
+        <AccountNameContainer
+          previousPage={this.previousPage.bind(this)}
+          onSubmit={this.onSubmitAccountName.bind(this)}
+        />
+      )
 
-      case WalletImportPage.PAGES.BLOCKCHAINCE_CHOICE_FORM:
-        return (
-          <BlockchainChoiceContainer
-            previousPage={this.previousPage.bind(this)}
-            onSubmitSuccess={this.onSubmitBlockchainChoiceFormSuccess.bind(this)}
-          />
-        )
+    case WalletImportPage.PAGES.BLOCKCHAINCE_CHOICE_FORM:
+      return (
+        <BlockchainChoiceContainer
+          previousPage={this.previousPage.bind(this)}
+          onSubmitSuccess={this.onSubmitBlockchainChoiceFormSuccess.bind(this)}
+        />
+      )
 
-      default:
-        return (
-          <LoginWithWalletContainer
-            previousPage={this.previousPage.bind(this)}
-            onSubmit={this.onSubmitWallet.bind(this)}
-          />
-        )
+    default:
+      return (
+        <LoginWithWalletContainer
+          previousPage={this.previousPage.bind(this)}
+          onSubmit={this.onSubmitWallet.bind(this)}
+        />
+      )
     }
   }
 

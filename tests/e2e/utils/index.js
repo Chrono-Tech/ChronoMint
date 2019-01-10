@@ -17,7 +17,7 @@ export async function openBrowser () {
   return await puppeteer.launch({
     headless: false,
     args: [`--window-size=${windowSize.width},${windowSize.height}`],
-    ignoreHTTPSErrors: true
+    ignoreHTTPSErrors: true,
   })
 }
 

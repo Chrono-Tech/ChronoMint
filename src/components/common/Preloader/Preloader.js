@@ -53,7 +53,7 @@ export default class Preloader extends PureComponent {
 
   render () {
     const { size, thickness } = this.props
-    let preset = PRESETS[this.getPreset()]
+    const preset = PRESETS[this.getPreset()]
 
     if (size) {
       preset.size = size

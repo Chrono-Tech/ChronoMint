@@ -39,16 +39,16 @@ export const getWavesSigner = (state) => {
   const networkData = getSelectedNetwork()(state)
   const network = WavesApi[networkData[BLOCKCHAIN_WAVES]]
   switch (account.decryptedWallet.entry.encrypted[0].type) {
-    case WALLET_TYPE_MEMORY: {
-      const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
-      return new WavesMemoryDevice({ seedPhrase: privateKey, network })
-    }
-    case WALLET_TYPE_LEDGER: {
-      // return new WavesLedgerDeviceMock({ network })
-      return new WavesLedgerDevice({ network })
-    }
-    case WALLET_TYPE_METAMASK: {
-      return new MetamaskPlugin()
-    }
+  case WALLET_TYPE_MEMORY: {
+    const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
+    return new WavesMemoryDevice({ seedPhrase: privateKey, network })
+  }
+  case WALLET_TYPE_LEDGER: {
+    // return new WavesLedgerDeviceMock({ network })
+    return new WavesLedgerDevice({ network })
+  }
+  case WALLET_TYPE_METAMASK: {
+    return new MetamaskPlugin()
+  }
   }
 }

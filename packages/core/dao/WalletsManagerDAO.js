@@ -50,12 +50,12 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
       return
     }
     switch (data.event) {
-      case 'WalletCreated' :
-        this.handleWalletCreate(data)
-        break
-      case 'WalletRemoved':
-        this.handleWalletRemoved(data)
-        break
+    case 'WalletCreated' :
+      this.handleWalletCreate(data)
+      break
+    case 'WalletRemoved':
+      this.handleWalletRemoved(data)
+      break
     }
   }
 

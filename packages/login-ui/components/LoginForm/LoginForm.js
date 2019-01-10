@@ -167,16 +167,16 @@ class LoginForm extends React.Component {
     }
 
     switch (selectedWallet.type) {
-      case WALLET_TYPE_MEMORY:
-        return this.renderDefaultTypeForm()
+    case WALLET_TYPE_MEMORY:
+      return this.renderDefaultTypeForm()
 
-      case WALLET_TYPE_LEDGER:
-      case WALLET_TYPE_TREZOR:
-      case WALLET_TYPE_METAMASK:
-        return this.renderDeviceTypeForm()
+    case WALLET_TYPE_LEDGER:
+    case WALLET_TYPE_TREZOR:
+    case WALLET_TYPE_METAMASK:
+      return this.renderDeviceTypeForm()
 
-      default:
-        return this.renderDefaultTypeForm()
+    default:
+      return this.renderDefaultTypeForm()
     }
   }
 

@@ -2,8 +2,7 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
-import { TransitionGroup } from 'react-transition-group'
+import { CSSTransitionGroup } from 'react-transition-group'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
@@ -42,39 +41,29 @@ export default class ModalDialog extends PureComponent {
 
   render () {
     return (
-      <TransitionGroup
+      <CSSTransitionGroup
         transitionName='transition-opacity'
-        transitionAppear
-        transitionAppearTimeout={TRANSITION_TIMEOUT}
         transitionEnterTimeout={TRANSITION_TIMEOUT}
         transitionLeaveTimeout={TRANSITION_TIMEOUT}
       >
         <div styleName='root'>
-          <TransitionGroup
-            transitionName='transition-swipe'
-            transitionAppear
-            transitionAppearTimeout={TRANSITION_TIMEOUT}
-            transitionEnterTimeout={TRANSITION_TIMEOUT}
-            transitionLeaveTimeout={TRANSITION_TIMEOUT}
-          >
-            <div styleName='dialog' onClick={this.handleStopPropagation}>
-              {this.props.title && (
-                <div styleName='header'>
-                  {this.props.title}
-                </div>
-              )}
-              <div styleName='content'>
-                {this.props.children}
+          <div styleName='dialog' onClick={this.handleStopPropagation}>
+            {this.props.title && (
+              <div styleName='header'>
+                {this.props.title}
               </div>
-              {!this.props.hideCloseIcon && (
-                <div styleName='close' onClick={this.handleClose}>
-                  <i className='material-icons'>close</i>
-                </div>
-              )}
+            )}
+            <div styleName='content'>
+              {this.props.children}
             </div>
-          </TransitionGroup>
+            {!this.props.hideCloseIcon && (
+              <div styleName='close' onClick={this.handleClose}>
+                <i className='material-icons'>close</i>
+              </div>
+            )}
+          </div>
         </div>
-      </TransitionGroup>
+      </CSSTransitionGroup>
     )
   }
 }

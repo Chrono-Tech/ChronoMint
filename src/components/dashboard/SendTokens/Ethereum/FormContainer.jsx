@@ -10,7 +10,7 @@ import { estimateGasTransfer } from '@chronobank/core/redux/tokens/thunks'
 import Form, { mapStateToProps as mapFormStateToProps } from '../AbstractEthereum/Form'
 import FormContainer, {
   mapStateToProps as mapContainerStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 } from '../AbstractEthereum/FormContainer'
 
 function mapFormDispatchToProps (dispatch) {

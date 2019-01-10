@@ -17,21 +17,21 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case actions.CHANGE_NETWORK_STATUS:
-      return {
-        ...state,
-        network: {
-          status: action.status,
-        },
-      }
-    case actions.CHANGE_SYNC_STATUS:
-      return {
-        ...state,
-        sync: {
-          status: action.status,
-          progress: action.progress,
-        },
-      }
+  case actions.CHANGE_NETWORK_STATUS:
+    return {
+      ...state,
+      network: {
+        status: action.status,
+      },
+    }
+  case actions.CHANGE_SYNC_STATUS:
+    return {
+      ...state,
+      sync: {
+        status: action.status,
+        progress: action.progress,
+      },
+    }
   }
   return state
 }

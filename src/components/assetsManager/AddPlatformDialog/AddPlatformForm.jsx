@@ -37,7 +37,7 @@ const onSubmit = (values, dispatch) => {
 export default class AddPlatformForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
-    ...formPropTypes
+    ...formPropTypes,
   }
 
   render () {

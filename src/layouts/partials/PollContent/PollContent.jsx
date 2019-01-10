@@ -91,7 +91,7 @@ export default class PollContent extends Component {
     const { poll } = this.props
     const momentPublished = moment(poll.published)
     const momentEndDate = moment(poll.endDate)
-    let isShowMonth = poll.published.getMonth() !== poll.endDate.getMonth()
+    const isShowMonth = poll.published.getMonth() !== poll.endDate.getMonth()
 
     return (
       <span>{momentPublished.format(isShowMonth ? 'DD MMM' : 'DD')} - {momentEndDate.format('DD MMM, YYYY')}</span>

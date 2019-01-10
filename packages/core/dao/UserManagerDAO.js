@@ -42,20 +42,20 @@ export default class UserManagerDAO extends AbstractContractDAO {
   async _decodeArgs (func, args: Object) {
     let profile
     switch (func) {
-      case TX_ADD_CBE:
-        profile = new ProfileModel(await this._ipfs(args._hash))
-        return {
-          address: args._key,
-          name: profile.name(),
-        }
-      case TX_REVOKE_CBE:
-        profile = await this.getMemberProfile(args._key)
-        return {
-          address: args._key,
-          name: profile.name(),
-        }
-      default:
-        return args
+    case TX_ADD_CBE:
+      profile = new ProfileModel(await this._ipfs(args._hash))
+      return {
+        address: args._key,
+        name: profile.name(),
+      }
+    case TX_REVOKE_CBE:
+      profile = await this.getMemberProfile(args._key)
+      return {
+        address: args._key,
+        name: profile.name(),
+      }
+    default:
+      return args
     }
   }
 }

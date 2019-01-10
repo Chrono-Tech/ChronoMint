@@ -1,4 +1,6 @@
 build/**
+dist/**
+tests/**
 config/**
 mocks/**
 nodes/**
