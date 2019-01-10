@@ -187,12 +187,12 @@ export default class TwoFaWalletForm extends PureComponent {
 
   renderStep () {
     switch (this.props.step) {
-      case FORM_2FA_STEPS[2]:
-        return this.renderSuccessStep()
-      case FORM_2FA_STEPS[1]:
-        return this.renderWaitStep()
-      default:
-        return this.renderFormStep()
+    case FORM_2FA_STEPS[2]:
+      return this.renderSuccessStep()
+    case FORM_2FA_STEPS[1]:
+      return this.renderWaitStep()
+    default:
+      return this.renderFormStep()
     }
   }
 

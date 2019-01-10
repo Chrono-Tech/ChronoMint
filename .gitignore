@@ -10,6 +10,7 @@ coverage/
 .vscode
 
 build/
+dist/
 report/
 .truffle-solidity-loader
 package-lock.json

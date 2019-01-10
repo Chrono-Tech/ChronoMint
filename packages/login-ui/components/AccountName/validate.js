@@ -10,7 +10,7 @@ export default (values) => {
 
   const accountName = values.get('accountName')
 
-  let accountNameErrors = new ErrorList()
+  const accountNameErrors = new ErrorList()
   accountNameErrors.add(validator.required(accountName))
 
   return {

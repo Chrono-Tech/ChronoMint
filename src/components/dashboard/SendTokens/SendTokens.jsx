@@ -49,24 +49,24 @@ export default class SendTokens extends PureComponent {
 
   getFormName (blockchain: string) {
     switch (blockchain) {
-      case BLOCKCHAIN_BITCOIN:
-      case BLOCKCHAIN_BITCOIN_CASH:
-      case BLOCKCHAIN_LITECOIN:
-        return Bitcoin
-      case BLOCKCHAIN_DASH:
-        return Dash
-      case BLOCKCHAIN_ETHEREUM:
-        return Ethereum
-      case BLOCKCHAIN_LABOR_HOUR:
-        return LaborHour
-      case BLOCKCHAIN_WAVES:
-        return Waves
-      case BLOCKCHAIN_NEM:
-        return Nem
-      case BLOCKCHAIN_EOS:
-        return Eos
-      default:
-        return null
+    case BLOCKCHAIN_BITCOIN:
+    case BLOCKCHAIN_BITCOIN_CASH:
+    case BLOCKCHAIN_LITECOIN:
+      return Bitcoin
+    case BLOCKCHAIN_DASH:
+      return Dash
+    case BLOCKCHAIN_ETHEREUM:
+      return Ethereum
+    case BLOCKCHAIN_LABOR_HOUR:
+      return LaborHour
+    case BLOCKCHAIN_WAVES:
+      return Waves
+    case BLOCKCHAIN_NEM:
+      return Nem
+    case BLOCKCHAIN_EOS:
+      return Eos
+    default:
+      return null
     }
   }
 

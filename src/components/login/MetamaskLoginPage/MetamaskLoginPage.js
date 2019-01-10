@@ -52,35 +52,35 @@ class MetamaskLoginPage extends PureComponent {
 
   getCurrentPage () {
     switch(this.state.page){
-      case MetamaskLoginPage.PAGES.DEVICE_SELECT_FORM:
-        return (
-          <LoginWithMetamaskContainer
-            previousPage={this.previousPage.bind(this)}
-            onDeviceSelect={this.onSubmitDevice.bind(this)}
-          />
-        )
+    case MetamaskLoginPage.PAGES.DEVICE_SELECT_FORM:
+      return (
+        <LoginWithMetamaskContainer
+          previousPage={this.previousPage.bind(this)}
+          onDeviceSelect={this.onSubmitDevice.bind(this)}
+        />
+      )
 
-      case MetamaskLoginPage.PAGES.ACCOUNT_NAME_FORM:
-        return (
-          <AccountNameContainer
-            previousPage={this.previousPage.bind(this)}
-            onSubmit={this.onSubmitAccountName.bind(this)}
-          />
-        )
+    case MetamaskLoginPage.PAGES.ACCOUNT_NAME_FORM:
+      return (
+        <AccountNameContainer
+          previousPage={this.previousPage.bind(this)}
+          onSubmit={this.onSubmitAccountName.bind(this)}
+        />
+      )
 
-      default:
-        return (
-          <LoginWithMetamaskContainer
-            previousPage={this.previousPage.bind(this)}
-            onDeviceSelect={this.onSubmitDevice.bind(this)}
-          />
-        )
+    default:
+      return (
+        <LoginWithMetamaskContainer
+          previousPage={this.previousPage.bind(this)}
+          onDeviceSelect={this.onSubmitDevice.bind(this)}
+        />
+      )
     }
   }
 
   async onSubmitDevice (device) {
     this.setState({
-      device: device
+      device: device,
     })
 
     let response = null, userName = null, profile = null

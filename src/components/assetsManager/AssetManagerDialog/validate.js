@@ -7,7 +7,7 @@ import ErrorList from 'utils/ErrorList'
 import validator from '@chronobank/core/models/validator'
 
 export default function (values) {
-  let managerAddressErrors = new ErrorList()
+  const managerAddressErrors = new ErrorList()
   managerAddressErrors.add(validator.address(values.get('managerAddress'), true))
 
   return {

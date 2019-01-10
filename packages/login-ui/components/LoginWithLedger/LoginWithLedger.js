@@ -46,11 +46,11 @@ class LoginWithLedger extends Component {
 
   renderState () {
     switch (this.props.deviceState) {
-      case STATE_LOADING:
-        return this.renderLoading()
+    case STATE_LOADING:
+      return this.renderLoading()
 
-      case STATE_ERROR:
-        return this.renderError()
+    case STATE_ERROR:
+      return this.renderError()
     }
   }
 

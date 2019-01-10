@@ -18,20 +18,20 @@ const formatPercent = (value) => Math.round(value * 10000) / 100
 
 const selectStatus = ({ network, sync }) => {
   switch (network.status) {
-    case NETWORK_STATUS_ONLINE: {
-      switch (sync.status) {
-        case SYNC_STATUS_SYNCED:
-          return 'synced'
-        case SYNC_STATUS_SYNCING:
-        default:
-          return 'syncing'
-      }
-    }
-    case NETWORK_STATUS_OFFLINE:
-      return 'offline'
-    case NETWORK_STATUS_UNKNOWN:
+  case NETWORK_STATUS_ONLINE: {
+    switch (sync.status) {
+    case SYNC_STATUS_SYNCED:
+      return 'synced'
+    case SYNC_STATUS_SYNCING:
     default:
-      return 'unknown'
+      return 'syncing'
+    }
+  }
+  case NETWORK_STATUS_OFFLINE:
+    return 'offline'
+  case NETWORK_STATUS_UNKNOWN:
+  default:
+    return 'unknown'
   }
 }
 

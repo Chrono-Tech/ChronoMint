@@ -95,7 +95,7 @@ export default class WavesMiddlewareNode extends WavesAbstractNode {
   }
 
   async getTransactionsList (address, id, skip, offset) {
-    let txs = []
+    const txs = []
     const url = `tx/${address}/history?skip=${skip}&limit=${offset}`
     const { data } = await this._api.get(url)
     if (!data) {

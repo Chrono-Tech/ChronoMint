@@ -80,13 +80,13 @@ export default class SendTokens extends PureComponent {
     const value = new Amount(token.addDecimals(amount), symbol)
 
     switch (action) {
-      case ACTION_APPROVE:
-        !wallet.isMultisig && this.props.mainApprove(token, value, recipient, feeMultiplier)
-        break
-      case ACTION_TRANSFER:
-        wallet.isMultisig
-          ? this.props.multisigTransfer(wallet, token, value, recipient, feeMultiplier, advancedModeParams)
-          : this.props.mainTransfer(wallet, token, value, recipient, feeMultiplier, advancedModeParams)
+    case ACTION_APPROVE:
+      !wallet.isMultisig && this.props.mainApprove(token, value, recipient, feeMultiplier)
+      break
+    case ACTION_TRANSFER:
+      wallet.isMultisig
+        ? this.props.multisigTransfer(wallet, token, value, recipient, feeMultiplier, advancedModeParams)
+        : this.props.mainTransfer(wallet, token, value, recipient, feeMultiplier, advancedModeParams)
     }
   }
 

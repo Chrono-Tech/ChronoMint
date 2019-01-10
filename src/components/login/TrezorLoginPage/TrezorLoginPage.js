@@ -56,47 +56,47 @@ class TrezorLoginPage extends PureComponent {
 
   getCurrentPage () {
     switch(this.state.page){
-      case TrezorLoginPage.PAGES.DEVICE_SELECT_FORM:
-        return (
-          <LoginWithTrezorContainer
-            previousPage={this.previousPage.bind(this)}
-            onDeviceSelect={this.onSubmitDevice.bind(this)}
-            navigateToDerivationPathForm={this.navigateToDerivationPathForm.bind(this)}
-          />
-        )
+    case TrezorLoginPage.PAGES.DEVICE_SELECT_FORM:
+      return (
+        <LoginWithTrezorContainer
+          previousPage={this.previousPage.bind(this)}
+          onDeviceSelect={this.onSubmitDevice.bind(this)}
+          navigateToDerivationPathForm={this.navigateToDerivationPathForm.bind(this)}
+        />
+      )
 
-      case TrezorLoginPage.PAGES.ACCOUNT_NAME_FORM:
-        return (
-          <AccountNameContainer
-            previousPage={this.previousPage.bind(this)}
-            onSubmit={this.onSubmitAccountName.bind(this)}
-          />
-        )
+    case TrezorLoginPage.PAGES.ACCOUNT_NAME_FORM:
+      return (
+        <AccountNameContainer
+          previousPage={this.previousPage.bind(this)}
+          onSubmit={this.onSubmitAccountName.bind(this)}
+        />
+      )
 
-      case TrezorLoginPage.PAGES.DERIVATION_PATH_FORM:
-        return (
-          <DerivationPathFormContainer
-            previousPage={this.navigateToDeviceSelectForm.bind(this)}
-            onSubmit={this.onSubmitDerivationPath.bind(this)}
-          />
-        )
+    case TrezorLoginPage.PAGES.DERIVATION_PATH_FORM:
+      return (
+        <DerivationPathFormContainer
+          previousPage={this.navigateToDeviceSelectForm.bind(this)}
+          onSubmit={this.onSubmitDerivationPath.bind(this)}
+        />
+      )
 
-      case TrezorLoginPage.PAGES.BLOCKCHAIN_CHOICE_FORM:
-        return (
-          <BlockchainChoiceContainer
-            previousPage={this.previousPage.bind(this)}
-            onSubmitSuccess={this.onSubmitBlockchainChoiceFormSuccess.bind(this)}
-            activeBlockchainList={TREZOR_ACTIVE_BLOCKCHAINS}
-          />
-        )
+    case TrezorLoginPage.PAGES.BLOCKCHAIN_CHOICE_FORM:
+      return (
+        <BlockchainChoiceContainer
+          previousPage={this.previousPage.bind(this)}
+          onSubmitSuccess={this.onSubmitBlockchainChoiceFormSuccess.bind(this)}
+          activeBlockchainList={TREZOR_ACTIVE_BLOCKCHAINS}
+        />
+      )
 
-      default:
-        return (
-          <LoginWithTrezorContainer
-            previousPage={this.previousPage.bind(this)}
-            onDeviceSelect={this.onSubmitDevice.bind(this)}
-          />
-        )
+    default:
+      return (
+        <LoginWithTrezorContainer
+          previousPage={this.previousPage.bind(this)}
+          onDeviceSelect={this.onSubmitDevice.bind(this)}
+        />
+      )
     }
   }
 

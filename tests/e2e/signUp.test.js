@@ -1,4 +1,6 @@
 /*global TimeoutLength*/
+/* eslint-disable */
+
 import faker from 'faker'
 
 import { clickText, getText, openBrowser, openPage } from './utils'

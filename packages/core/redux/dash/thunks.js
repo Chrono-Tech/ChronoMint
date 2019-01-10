@@ -84,7 +84,7 @@ async function getUnsignedTransaction (dispatch, from, to, amount, blockchain) {
     throw new Error(`Can't find utxos for address: ${from}`)
   }
 
-  const utxos = utxosRawData.map(utxo => {
+  const utxos = utxosRawData.map((utxo) => {
     utxo.scriptPubKey = Script.fromAddress(utxo.address)
     return new Transaction.UnspentOutput(utxo)
   })

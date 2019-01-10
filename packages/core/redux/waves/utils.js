@@ -32,12 +32,12 @@ export const createWavesTxEntryModel = (entry, options = {}) => {
 
 export const describeTransaction = (type, params) => {
   switch (type) {
-    case TRANSACTION_TYPE_ISSUE :
-      return describeIssueTransaction(params)
-    case TRANSACTION_TYPE_TRANSFER :
-      return describeTransferTransaction(params.to, params.amount)
-    default:
-      return null
+  case TRANSACTION_TYPE_ISSUE :
+    return describeIssueTransaction(params)
+  case TRANSACTION_TYPE_TRANSFER :
+    return describeTransferTransaction(params.to, params.amount)
+  default:
+    return null
   }
 }
 

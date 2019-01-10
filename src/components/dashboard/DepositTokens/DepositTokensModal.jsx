@@ -54,21 +54,21 @@ export default class DepositTokensModal extends PureComponent {
     const feeMultiplier = values.get('feeMultiplier') || 1
 
     switch (values.get('action')) {
-      case ACTION_APPROVE:
-        this.props.mainApprove(token, amount, values.get('spender'), feeMultiplier, {
-          skipSlider: true,
-        })
-        break
-      case ACTION_DEPOSIT:
-        this.props.depositAsset(amount, token, feeMultiplier, {
-          skipSlider: true,
-        })
-        break
-      case ACTION_WITHDRAW:
-        this.props.withdrawAsset(amount, token, feeMultiplier, {
-          skipSlider: true,
-        })
-        break
+    case ACTION_APPROVE:
+      this.props.mainApprove(token, amount, values.get('spender'), feeMultiplier, {
+        skipSlider: true,
+      })
+      break
+    case ACTION_DEPOSIT:
+      this.props.depositAsset(amount, token, feeMultiplier, {
+        skipSlider: true,
+      })
+      break
+    case ACTION_WITHDRAW:
+      this.props.withdrawAsset(amount, token, feeMultiplier, {
+        skipSlider: true,
+      })
+      break
     }
   }
 

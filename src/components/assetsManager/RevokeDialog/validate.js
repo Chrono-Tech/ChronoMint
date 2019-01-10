@@ -7,8 +7,8 @@ import ErrorList from 'utils/ErrorList'
 import validator from '@chronobank/core/models/validator'
 
 export default function validate (values) {
-  let res = {}
-  let amountErrors = new ErrorList()
+  const res = {}
+  const amountErrors = new ErrorList()
   amountErrors.add(validator.positiveNumber(values.get('amount')))
   amountErrors.add(validator.required(values.get('amount')))
   if (amountErrors.getErrors()) {

@@ -1,4 +1,5 @@
 /*global TimeoutLength*/
+/* eslint-disable */
 
 import { openBrowser, openPage } from './utils'
 import sendFunds from './utils/sendFunds'

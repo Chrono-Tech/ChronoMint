@@ -43,18 +43,18 @@ export const getNemSigner = (state) => {
   const isTestnet = true
 
   switch (account.decryptedWallet.entry.encrypted[0].type) {
-    case WALLET_TYPE_MEMORY: {
-      const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
-      return new NemMemoryDevice({ privateKey, network })
+  case WALLET_TYPE_MEMORY: {
+    const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
+    return new NemMemoryDevice({ privateKey, network })
+  }
+  case WALLET_TYPE_TREZOR: {
+    if (process.env.DEVICE_MOCKS) {
+      return new NemTrezorDeviceMock({ network })
     }
-    case WALLET_TYPE_TREZOR: {
-      if (process.env.DEVICE_MOCKS) {
-        return new NemTrezorDeviceMock({ network })
-      }
-      return new NemTrezorDevice({ network, isTestnet })
-    }
-    case WALLET_TYPE_METAMASK: {
-      return new MetamaskPlugin()
-    }
+    return new NemTrezorDevice({ network, isTestnet })
+  }
+  case WALLET_TYPE_METAMASK: {
+    return new MetamaskPlugin()
+  }
   }
 }

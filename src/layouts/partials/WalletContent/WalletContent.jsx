@@ -79,31 +79,31 @@ export default class WalletContent extends Component {
   getWidgets () {
     const { wallet } = this.props
     switch (wallet.blockchain) {
-      case BLOCKCHAIN_EOS:
-        return (
-          <div styleName='root'>
-            <WalletWidgetDetail wallet={wallet} />
+    case BLOCKCHAIN_EOS:
+      return (
+        <div styleName='root'>
+          <WalletWidgetDetail wallet={wallet} />
 
-            <TokensListWidget walletId={wallet.id} />
+          <TokensListWidget walletId={wallet.id} />
 
-            <TransactionsListWidget wallet={wallet} />
-          </div>
-        )
-      default:
-        // TODO @Abdulov refactor this case after wallets refactoring
-        return (
-          <div styleName='root'>
-            <WalletWidgetDetail wallet={wallet} />
+          <TransactionsListWidget wallet={wallet} />
+        </div>
+      )
+    default:
+      // TODO @Abdulov refactor this case after wallets refactoring
+      return (
+        <div styleName='root'>
+          <WalletWidgetDetail wallet={wallet} />
 
-            <TokensListWidget walletId={wallet.id} />
+          <TokensListWidget walletId={wallet.id} />
 
-            <PendingTxWidget wallet={wallet} />
+          <PendingTxWidget wallet={wallet} />
 
-            <OwnersListWidget wallet={wallet} />
+          <OwnersListWidget wallet={wallet} />
 
-            <TransactionsListWidget wallet={wallet} />
-          </div>
-        )
+          <TransactionsListWidget wallet={wallet} />
+        </div>
+      )
     }
 
   }

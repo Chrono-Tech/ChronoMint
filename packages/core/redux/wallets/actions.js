@@ -158,37 +158,37 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
     .on(EVENT_UPDATE_BALANCE, ({ account, balance }) => {
 
       switch (token.blockchain()) {
-        case BLOCKCHAIN_ETHEREUM:
-          const wallets = getState().get(DUCK_ETH_MULTISIG_WALLET)
-          if (wallets.item(account)) {
-            dispatch({
-              type: ETH_MULTISIG_BALANCE,
-              walletId: account,
-              balance: new BalanceModel({
-                id: token.id(),
-                amount: new Amount(balance, token.symbol(), true),
-              }),
-            })
-          } else {
-            const wallet = getWallet(token.blockchain(), account)(getState())
-            dispatch({ type: WALLETS_UPDATE_BALANCE, walletId: wallet.id, balance: new Amount(balance, token.symbol()) })
-          }
-          break
-
-        case BLOCKCHAIN_NEM:
-        case BLOCKCHAIN_BITCOIN:
-        case BLOCKCHAIN_BITCOIN_CASH:
-        case BLOCKCHAIN_DASH:
-        case BLOCKCHAIN_LITECOIN:
-        case BLOCKCHAIN_WAVES:
+      case BLOCKCHAIN_ETHEREUM: {
+        const wallets = getState().get(DUCK_ETH_MULTISIG_WALLET)
+        if (wallets.item(account)) {
+          dispatch({
+            type: ETH_MULTISIG_BALANCE,
+            walletId: account,
+            balance: new BalanceModel({
+              id: token.id(),
+              amount: new Amount(balance, token.symbol(), true),
+            }),
+          })
+        } else {
           const wallet = getWallet(token.blockchain(), account)(getState())
           dispatch({ type: WALLETS_UPDATE_BALANCE, walletId: wallet.id, balance: new Amount(balance, token.symbol()) })
-          break
-
-        default:
-          //eslint-disable-next-line no-console
-          console.warn('Update balance of unknown token blockchain: ', account, balance, token.toJSON())
-          break
+        }
+        break
+      }
+      case BLOCKCHAIN_NEM:
+      case BLOCKCHAIN_BITCOIN:
+      case BLOCKCHAIN_BITCOIN_CASH:
+      case BLOCKCHAIN_DASH:
+      case BLOCKCHAIN_LITECOIN:
+      case BLOCKCHAIN_WAVES: {
+        const wallet = getWallet(token.blockchain(), account)(getState())
+        dispatch({ type: WALLETS_UPDATE_BALANCE, walletId: wallet.id, balance: new Amount(balance, token.symbol()) })
+        break
+      }
+      default:
+        //eslint-disable-next-line no-console
+        console.warn('Update balance of unknown token blockchain: ', account, balance, token.toJSON())
+        break
       }
     })
 
@@ -335,40 +335,40 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
   let address
 
   switch (blockchain) {
-    case BLOCKCHAIN_ETHEREUM:
-    case BLOCKCHAIN_LABOR_HOUR:
-      if (newDeriveNumber === undefined || newDeriveNumber === null) {
-        newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
-      }
-      derivedPath = `${WALLET_HD_PATH}/${newDeriveNumber}`
-      const newWalletSigner = await EthereumMemoryDevice.getDerivedWallet(signer.privateKey, derivedPath)
-      address = newWalletSigner.address
-      break
+  case BLOCKCHAIN_ETHEREUM:
+  case BLOCKCHAIN_LABOR_HOUR: {
+    if (newDeriveNumber === undefined || newDeriveNumber === null) {
+      newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
+    }
+    derivedPath = `${WALLET_HD_PATH}/${newDeriveNumber}`
+    const newWalletSigner = await EthereumMemoryDevice.getDerivedWallet(signer.privateKey, derivedPath)
+    address = newWalletSigner.address
+    break
+  }
+  case BLOCKCHAIN_BITCOIN:
+    if (newDeriveNumber === undefined || newDeriveNumber === null) {
+      newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
+    }
+    derivedPath = `${WALLET_HD_PATH}/${newDeriveNumber}`
+    newWallet = btcProvider.createNewChildAddress(newDeriveNumber)
+    address = newWallet.getAddress()
+    btcProvider.subscribeNewWallet(address)
+    break
 
-    case BLOCKCHAIN_BITCOIN:
-      if (newDeriveNumber === undefined || newDeriveNumber === null) {
-        newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
-      }
-      derivedPath = `${WALLET_HD_PATH}/${newDeriveNumber}`
-      newWallet = btcProvider.createNewChildAddress(newDeriveNumber)
-      address = newWallet.getAddress()
-      btcProvider.subscribeNewWallet(address)
-      break
+  case BLOCKCHAIN_LITECOIN:
+    if (newDeriveNumber === undefined || newDeriveNumber === null) {
+      newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
+    }
+    derivedPath = `${WALLET_HD_PATH}/${newDeriveNumber}`
+    newWallet = ltcProvider.createNewChildAddress(newDeriveNumber)
+    address = newWallet.getAddress()
+    ltcProvider.subscribeNewWallet(address)
+    break
 
-    case BLOCKCHAIN_LITECOIN:
-      if (newDeriveNumber === undefined || newDeriveNumber === null) {
-        newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
-      }
-      derivedPath = `${WALLET_HD_PATH}/${newDeriveNumber}`
-      newWallet = ltcProvider.createNewChildAddress(newDeriveNumber)
-      address = newWallet.getAddress()
-      ltcProvider.subscribeNewWallet(address)
-      break
-
-    case BLOCKCHAIN_NEM:
-    case BLOCKCHAIN_WAVES:
-    default:
-      return null
+  case BLOCKCHAIN_NEM:
+  case BLOCKCHAIN_WAVES:
+  default:
+    return null
   }
 
   const wallet = new WalletModel({
@@ -425,30 +425,30 @@ export const getTxList = async ({ wallet, forcedOffset, tokens }) => {
   let dao
 
   switch (wallet.blockchain) {
-    case BLOCKCHAIN_ETHEREUM:
-      dao = tokenService.getDAO(ETH)
-      break
-    case BLOCKCHAIN_BITCOIN:
-      dao = tokenService.getDAO(BTC)
-      break
-    case BLOCKCHAIN_BITCOIN_CASH:
-      dao = tokenService.getDAO(BCC)
-      break
-    case BLOCKCHAIN_DASH:
-      dao = tokenService.getDAO(DASH)
-      break
-    case BLOCKCHAIN_LABOR_HOUR:
-      dao = tokenService.getDAO(LHT)
-      break
-    case BLOCKCHAIN_LITECOIN:
-      dao = tokenService.getDAO(LTC)
-      break
-    case BLOCKCHAIN_NEM:
-      dao = tokenService.getDAO(XEM)
-      break
-    case BLOCKCHAIN_WAVES:
-      dao = tokenService.getDAO(WAVES)
-      break
+  case BLOCKCHAIN_ETHEREUM:
+    dao = tokenService.getDAO(ETH)
+    break
+  case BLOCKCHAIN_BITCOIN:
+    dao = tokenService.getDAO(BTC)
+    break
+  case BLOCKCHAIN_BITCOIN_CASH:
+    dao = tokenService.getDAO(BCC)
+    break
+  case BLOCKCHAIN_DASH:
+    dao = tokenService.getDAO(DASH)
+    break
+  case BLOCKCHAIN_LABOR_HOUR:
+    dao = tokenService.getDAO(LHT)
+    break
+  case BLOCKCHAIN_LITECOIN:
+    dao = tokenService.getDAO(LTC)
+    break
+  case BLOCKCHAIN_NEM:
+    dao = tokenService.getDAO(XEM)
+    break
+  case BLOCKCHAIN_WAVES:
+    dao = tokenService.getDAO(WAVES)
+    break
   }
 
   const blocks = transactions.blocks
