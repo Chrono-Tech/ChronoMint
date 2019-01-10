@@ -7,7 +7,7 @@ export const en = {
   login: 'Login',
   loading: 'Loading',
   ledgerNotFound: 'Ledger not found',
-  connectYourLedger: 'Connect your Ledger',
+  connectYourLedger: 'Navigate to the Ethereum application on your device',
   ethAddress: 'Ethereum address',
   isHttps: {
     successTitle: 'HTTPS protocol provided',

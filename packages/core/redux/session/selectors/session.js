@@ -109,7 +109,7 @@ export const getAccountAddresses = createSelector(
 				)
 
         return accumulator
-			}, {})
+			}, [])
   },
 )
 
@@ -132,6 +132,6 @@ export const getDeviceAccountAddresses = createSelector(
 				)
 
 				return accumulator
-      }, {})
+      }, [])
   },
 )

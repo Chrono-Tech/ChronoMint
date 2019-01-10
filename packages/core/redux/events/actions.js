@@ -6,6 +6,7 @@
 import { padStart, unionBy, uniq, sortBy } from 'lodash'
 import { describeEvent, describeTx } from '../../describers'
 import { DUCK_SESSION } from '../session/constants'
+import { initLedgerDevice } from '../device/actions'
 import { getHistoryKey } from '../../utils/eventHistory'
 import { showSignerModal, closeSignerModal } from '../modals/thunks'
 
@@ -21,12 +22,14 @@ import {
   EVENTS_LOGS_UPDATED,
   EVENT_LEDGER_MODAL_SHOW,
   EVENT_LEDGER_MODAL_HIDE,
+  EVENT_LEDGER_REINIT_DEVICE,
 } from './constants'
 import { daoByAddress } from '../daos/selectors'
 
 export const watchEventService = () => async (dispatch) => {
   dispatch(watchEventsToHistory())
   dispatch(watchLedgerModal())
+  dispatch(watchLedgerReinit())
 }
 
 export const watchLedgerModal = () => async (dispatch) => {
@@ -39,6 +42,15 @@ export const watchLedgerModal = () => async (dispatch) => {
   EventService.on(EVENT_LEDGER_MODAL_HIDE, (event) => {
     console.log('EVENT_LEDGER_MODAL_HIDE: ', event)
     dispatch(closeSignerModal(event))
+  })
+}
+
+export const watchLedgerReinit = () => async (dispatch) => {
+  EventService.on(EVENT_LEDGER_REINIT_DEVICE, (event) => {
+    console.log('EVENT_LEDGER_REINIT_DEVICE: ', event)
+    setTimeout(() => {
+      dispatch(initLedgerDevice())
+    }, 2000)
   })
 }
 

@@ -14,3 +14,4 @@ export const ADD_EVENT_TO_HISTORY = 'events/addToHistory'
 // show/hide modal to choose required application on Ledger
 export const EVENT_LEDGER_MODAL_SHOW = 'ledgerModalShow'
 export const EVENT_LEDGER_MODAL_HIDE = 'ledgerModalHide'
+export const EVENT_LEDGER_REINIT_DEVICE = 'ledgerReInitDevice'

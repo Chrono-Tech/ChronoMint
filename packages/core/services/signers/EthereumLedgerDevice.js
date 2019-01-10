@@ -36,19 +36,14 @@ export default class EthereumLedgerDevice extends EventEmitter {
   }
 
   async getAddressInfoList (from: number = 0, limit: number = 5): String {
-    console.log('TransportU2F: getAddressInfoList: ', from, limit)
-
     return this._safeExec(async () => {
       const addresses = []
       const transport = await TransportU2F.create()
-      console.log('TransportU2F: transport: ', transport)
       const app = new AppEth(transport)
 
       for (let i = from; i < from + limit; i++) {
         const path = DEFAULT_PATH_FACTORY(i)
         const result = await app.getAddress(path)
-        console.log('transaport result : ', result)
-
         const { address, publicKey } = result
         addresses.push({
           path,
@@ -65,7 +60,7 @@ export default class EthereumLedgerDevice extends EventEmitter {
     return this._safeExec(async () => {
       const transport = await TransportU2F.create()
       const appEthereum = new AppEth(transport)
-      const { address } = await Promise.race([appEthereum.getAddress(path), rejectOnTimeout(2000)])
+      const { address } = await Promise.race([appEthereum.getAddress(path), rejectOnTimeout(3000)])
       return address
     })
   }
@@ -83,7 +78,7 @@ export default class EthereumLedgerDevice extends EventEmitter {
       const signature = `0x${result.r}${result.s}${vHex}`
 
       return {
-        signature: signature,
+        signature,
       }
     })
   }

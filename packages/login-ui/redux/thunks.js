@@ -104,7 +104,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   const accountWallet = new AccountEntryModel(selectedWallet)
   const { network } = getCurrentNetworkSelector(state)
   const { selectedNetworkId } = getState().get(DUCK_NETWORK)
-  if (lastLoginNetworkId !== selectedNetworkId || true) {
+  if (lastLoginNetworkId !== selectedNetworkId || true ) {
     dispatch(PersistAccountActions.clearWalletsAddressCache())
   }
   dispatch(PersistAccountActions.updateLastNetworkId(selectedNetworkId))
@@ -197,7 +197,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         //eslint-disable-next-line
         console.warn('Device type error: ', e)
         if (accountWallet.type === WALLET_TYPE_LEDGER) {
-          throw new SubmissionError({ _error: 'Please, open an Ethereum application on your Ledger device to login' })
+          throw new SubmissionError({ _error: 'Navigate to the Ethereum app on your device' })
         }
         throw new SubmissionError({ _error: e && e.message })
       }

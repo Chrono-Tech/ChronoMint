@@ -27,8 +27,8 @@ class LoginWithLedger extends Component {
     return (
       <div styleName='state'>
         <div styleName='titleContent'>
-          <div styleName='title'><Translate value='LoginWithTrezor.ledgerNotFound' /></div>
-          <div styleName='subtitle'><Translate value='LoginWithTrezor.connectYourLedger' /></div>
+          <div styleName='title'><Translate value='LoginWithLedger.ledgerNotFound' /></div>
+          <div styleName='subtitle'><Translate value='LoginWithLedger.connectYourLedger' /></div>
         </div>
       </div>
     )
@@ -36,9 +36,12 @@ class LoginWithLedger extends Component {
 
   renderLoading () {
     return (
-      <div styleName='stateLoading'>
-        <div styleName='titleContent'>
-          <div styleName='title'><Translate value='LoginWithTrezor.loading' /></div>
+      <div>
+        <div styleName='stateLoading'>
+          <div styleName='titleContent'>
+            <div styleName='title'><Translate value='LoginWithLedger.loading' /></div>
+            <div styleName='subtitle'><Translate value='LoginWithLedger.connectYourLedger' /></div>
+          </div>
         </div>
       </div>
     )

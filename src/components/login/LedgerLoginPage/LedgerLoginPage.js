@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { onCreateWalletFromDevice } from '@chronobank/login-ui/redux/thunks'
-import {WALLET_TYPE_LEDGER, WALLET_TYPE_TREZOR} from '@chronobank/core/models/constants/AccountEntryModel'
+import { WALLET_TYPE_LEDGER } from '@chronobank/core/models/constants/AccountEntryModel'
 import {
   navigateToSelectWallet,
   navigateBack,
@@ -138,7 +138,6 @@ class LedgerLoginPage extends PureComponent {
   }
 
   async onSubmitBlockchainChoiceFormSuccess (blockchainListValues) {
-            console.log('Ledger: ', blockchainListValues.toJS())
     const { onCreateWalletFromDevice, navigateToSelectWallet } = this.props
     const { accountName, device } = this.state
 

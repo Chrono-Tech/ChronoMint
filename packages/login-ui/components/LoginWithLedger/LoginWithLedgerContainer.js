@@ -27,10 +27,15 @@ function mapDispatchToProps (dispatch) {
 }
 
 function mapStateToProps (state) {
+  const deviceAccount = state.get(DUCK_DEVICE_ACCOUNT)
+  const deviceList = state.get(DUCK_DEVICE_ACCOUNT).deviceList
+  console.log('DUCK_DEVICE_ACCOUNT: ', deviceAccount )
+
   return {
-    deviceList: state.get(DUCK_DEVICE_ACCOUNT).deviceList.map(
+    deviceList: Array.isArray(deviceList) ? deviceList.map(
       (wallet) => new DeviceEntryModel({ ...wallet }),
-    ),
+    ) : [],
+    deviceState: deviceAccount.status,
   }
 }
 
@@ -39,6 +44,7 @@ class LoginWithLedgerContainer extends PureComponent {
     previousPage: PropTypes.func,
     onDeviceSelect: PropTypes.func,
     deviceList: PropTypes.array,
+    deviceState: PropTypes.string,
     navigateToCreateAccount: PropTypes.func,
     initLedgerDevice: PropTypes.func,
     navigateToDerivationPathForm: PropTypes.func,
@@ -59,6 +65,7 @@ class LoginWithLedgerContainer extends PureComponent {
       previousPage,
       navigateToCreateAccount,
       deviceList,
+      deviceState,
       onDeviceSelect,
       navigateToDerivationPathForm,
     } = this.props
@@ -67,6 +74,7 @@ class LoginWithLedgerContainer extends PureComponent {
       <LoginWithLedger
         navigateToCreateAccount={navigateToCreateAccount}
         deviceList={deviceList}
+        deviceState={deviceState}
         previousPage={previousPage}
         onDeviceSelect={onDeviceSelect}
         navigateToDerivationPathForm={navigateToDerivationPathForm}

@@ -5,6 +5,7 @@
 
 import EthereumTrezorDevice from '../../services/signers/EthereumTrezorDevice'
 import EthereumLedgerDevice from '../../services/signers/EthereumLedgerDevice'
+import EventService from '../../services/EventService'
 import MetamaskPlugin from '../../services/signers/MetamaskPlugin'
 import { accountLoad } from '../persistAccount/actions'
 import {
@@ -21,6 +22,7 @@ import {
   DEVICE_STATE_ERROR,
   DEVICE_CLEAR_LIST,
 } from './constants'
+import { EVENT_LEDGER_REINIT_DEVICE } from '../events/constants'
 import { updateSessionWeb3 } from '../session/thunks'
 
 export const deviceAdd = (wallet) => (dispatch) => {
@@ -48,21 +50,25 @@ export const deviceClearList = () => (dispatch) => {
 }
 
 // eslint-disable-next-line no-unused-vars
-export const initLedgerDevice = (wallet) => async (dispatch) => {
+export const initLedgerDevice = () => async (dispatch) => {
   try {
+    dispatch(deviceUpdateList())
+    dispatch({ type: DEVICE_STATE_LOADING })
     await dispatch(updateSessionWeb3())
     const ledger = new EthereumLedgerDevice()
     const result = await ledger.getAddressInfoList(0, 5)
     dispatch(deviceUpdateList(result))
+    dispatch({ type: DEVICE_STATE_LOADED })
   } catch (e) {
     //eslint-disable-next-line
     console.error(e)
     dispatch({ type: DEVICE_STATE_ERROR })
+    EventService.emit(EVENT_LEDGER_REINIT_DEVICE)
   }
 }
 
 // eslint-disable-next-line no-unused-vars
-export const initTrezorDevice = (wallet) => async (dispatch) => {
+export const initTrezorDevice = () => async (dispatch) => {
   try {
     dispatch(deviceUpdateList())
     dispatch({ type: DEVICE_STATE_LOADING })
@@ -93,9 +99,4 @@ export const loadDeviceAccount = (entry) => async (dispatch) => {
   await dispatch(accountLoad(wallet))
 
   return wallet
-}
-
-// eslint-disable-next-line no-unused-vars
-export const deviceNextPage = () => (dispatch) => {
-  // TODO
 }
