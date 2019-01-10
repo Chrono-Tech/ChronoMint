@@ -104,102 +104,105 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   const accountWallet = new AccountEntryModel(selectedWallet)
   const { network } = getCurrentNetworkSelector(state)
   const { selectedNetworkId } = getState().get(DUCK_NETWORK)
-  if (lastLoginNetworkId !== selectedNetworkId) {
+  if (lastLoginNetworkId !== selectedNetworkId || true) {
     dispatch(PersistAccountActions.clearWalletsAddressCache())
   }
   dispatch(PersistAccountActions.updateLastNetworkId(selectedNetworkId))
 
   switch (accountWallet.type) {
-  case WALLET_TYPE_MEMORY: {
-    try {
-      const wallet = await dispatch(PersistAccountActions.decryptAccount(accountWallet, password))
-      await dispatch(PersistAccountActions.accountLoad(wallet))
+    case WALLET_TYPE_MEMORY: {
+      try {
+        const wallet = await dispatch(PersistAccountActions.decryptAccount(accountWallet, password))
+        await dispatch(PersistAccountActions.accountLoad(wallet))
 
-      dispatch(NetworkActions.selectAccount(accountWallet.address))
+        dispatch(NetworkActions.selectAccount(accountWallet.address))
 
-      const {
-        selectedAccount,
-        selectedProviderId,
-        selectedNetworkId,
-      } = getState().get(DUCK_NETWORK)
-      dispatch(NetworkActions.clearErrors())
+        const {
+          selectedAccount,
+          selectedProviderId,
+          selectedNetworkId,
+        } = getState().get(DUCK_NETWORK)
+        dispatch(NetworkActions.clearErrors())
 
-      dispatch(SessionThunks.createNetworkSession(
-        selectedAccount,
-        selectedProviderId,
-        selectedNetworkId,
-      ))
+        dispatch(SessionThunks.createNetworkSession(
+          selectedAccount,
+          selectedProviderId,
+          selectedNetworkId,
+        ))
 
-      localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
-      const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
+        localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
+        const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
 
-      dispatch(replace(localStorage.getLastURL() || defaultURL))
-      const signer = getEthereumSigner(getState())
-      await dispatch(SessionThunks.getProfileSignature(signer, accountWallet.encrypted[0].path))
-    } catch (e) {
-      //eslint-disable-next-line
-        console.warn('Memory type error: ', e)
-      throw new SubmissionError({ password: e && e.message })
-    }
-    break
-  }
-
-  case WALLET_TYPE_TREZOR:
-  case WALLET_TYPE_LEDGER: {
-    try {
-
-      const wallet = await dispatch(DeviceActions.loadDeviceAccount(accountWallet))
-      const { address } = wallet.entry.encrypted[0]
-      const path = Utils.getEthereumDerivedPath(network[BLOCKCHAIN_ETHEREUM])
-      const signer = getEthereumSigner(getState())
-      const addressCache = { ...getAddressCache(state) }
-      const signerAddress = await signer.getAddress(path)
-
-      if (addressCache[BLOCKCHAIN_ETHEREUM] && signerAddress !== addressCache[BLOCKCHAIN_ETHEREUM].address) {
+        dispatch(replace(localStorage.getLastURL() || defaultURL))
+        const signer = getEthereumSigner(getState())
+        await dispatch(SessionThunks.getProfileSignature(signer, accountWallet.encrypted[0].path))
+      } catch (e) {
         //eslint-disable-next-line
-          console.error(`Different device for this account [${signerAddress}] [${addressCache[BLOCKCHAIN_ETHEREUM].address}]`)
-        throw new Error('Different device for this account')
+        console.warn('Memory type error: ', e)
+        throw new SubmissionError({ password: e && e.message })
       }
-
-      dispatch({
-        type: WALLETS_CACHE_ADDRESS,
-        blockchain: BLOCKCHAIN_ETHEREUM,
-        address: signerAddress,
-        path,
-      })
-
-      dispatch(NetworkActions.selectAccount(address))
-      dispatch(NetworkActions.loading())
-      dispatch(NetworkActions.clearErrors())
-
-      const {
-        selectedAccount,
-        selectedProviderId,
-        selectedNetworkId,
-      } = getState().get(DUCK_NETWORK)
-      dispatch(NetworkActions.clearErrors())
-
-      dispatch(SessionThunks.createNetworkSession(
-        selectedAccount,
-        selectedProviderId,
-        selectedNetworkId,
-      ))
-
-      localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
-
-      const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
-
-      // after login
-      dispatch(SessionThunks.getProfileSignatureForDevice(signer, path))
-
-      dispatch(replace(localStorage.getLastURL() || defaultURL))
-    } catch (e) {
-      //eslint-disable-next-line
-        console.warn('Device type error: ', e)
-      throw new SubmissionError({ _error: e && e.message })
+      break
     }
-    break
-  }
+
+    case WALLET_TYPE_TREZOR:
+    case WALLET_TYPE_LEDGER: {
+      try {
+
+        const wallet = await dispatch(DeviceActions.loadDeviceAccount(accountWallet))
+        const { address } = wallet.entry.encrypted[0]
+        const path = Utils.getEthereumDerivedPath(network[BLOCKCHAIN_ETHEREUM])
+        const signer = getEthereumSigner(getState())
+        const addressCache = { ...getAddressCache(state) }
+        const signerAddress = await signer.getAddress(path)
+
+        if (addressCache[BLOCKCHAIN_ETHEREUM] && signerAddress !== addressCache[BLOCKCHAIN_ETHEREUM].address) {
+          //eslint-disable-next-line
+          console.error(`Different device for this account [${signerAddress}] [${addressCache[BLOCKCHAIN_ETHEREUM].address}]`)
+          throw new Error('Different device for this account')
+        }
+
+        dispatch({
+          type: WALLETS_CACHE_ADDRESS,
+          blockchain: BLOCKCHAIN_ETHEREUM,
+          address: signerAddress,
+          path,
+        })
+
+        dispatch(NetworkActions.selectAccount(address))
+        dispatch(NetworkActions.loading())
+        dispatch(NetworkActions.clearErrors())
+
+        const {
+          selectedAccount,
+          selectedProviderId,
+          selectedNetworkId,
+        } = getState().get(DUCK_NETWORK)
+        dispatch(NetworkActions.clearErrors())
+
+        dispatch(SessionThunks.createNetworkSession(
+          selectedAccount,
+          selectedProviderId,
+          selectedNetworkId,
+        ))
+
+        localStorage.createSession(selectedAccount, selectedProviderId, selectedNetworkId)
+
+        const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
+
+        // after login
+        dispatch(SessionThunks.getProfileSignatureForDevice(signer, path))
+
+        dispatch(replace(localStorage.getLastURL() || defaultURL))
+      } catch (e) {
+        //eslint-disable-next-line
+        console.warn('Device type error: ', e)
+        if (accountWallet.type === WALLET_TYPE_LEDGER) {
+          throw new SubmissionError({ _error: 'Please, open an Ethereum application on your Ledger device to login' })
+        }
+        throw new SubmissionError({ _error: e && e.message })
+      }
+      break
+    }
   }
 }
 

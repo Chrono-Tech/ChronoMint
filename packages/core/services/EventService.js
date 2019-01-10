@@ -5,10 +5,10 @@
 
 import EventEmitter from 'events'
 
-class EventsService extends EventEmitter {
+class EventService extends EventEmitter {
   constructor () {
     super(...arguments)
   }
 }
 
-export default new EventsService()
+export default new EventService()

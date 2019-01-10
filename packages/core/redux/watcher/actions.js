@@ -6,7 +6,7 @@
 import { watchInitMonitor } from '@chronobank/login/redux/monitor/actions'
 import { startMarket } from '@chronobank/market/middleware/thunks'
 import { watchInitTokens, watchPlatformManager } from '../assetsManager/actions'
-import { watchEventsToHistory } from '../events/actions'
+import { watchEventService } from '../events/actions'
 import { initDAOs } from '../daos/actions'
 import { initProviders } from '../providers/thunks'
 import { watchInitPolls } from '../voting/thunks'
@@ -24,6 +24,7 @@ export const globalWatcher = () => async (dispatch) => {
 export const watcher = ({ web3 }) => async (dispatch) => {
   try {
     await dispatch(initDAOs({ web3 }))
+    dispatch(watchEventService())
     dispatch(initProviders())
     dispatch(initMultisigWalletManager())
     dispatch(initTokenSubscription())
@@ -33,7 +34,6 @@ export const watcher = ({ web3 }) => async (dispatch) => {
     dispatch(watchInitMonitor())
     dispatch(startMarket())
     dispatch(watchInitPolls())
-    dispatch(watchEventsToHistory())
     dispatch({ type: WATCHER })
   } catch (e) {
     //eslint-disable-next-line

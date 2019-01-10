@@ -11,7 +11,7 @@ import web3Converter from '../utils/Web3Converter'
 import { DEFAULT_GAS } from './constants'
 import { ADD_EVENT_TO_HISTORY } from '../redux/events/constants'
 
-import EventsService from '../services/EventsService'
+import EventService from '../services/EventService'
 
 export default class AbstractContractDAO extends EventEmitter {
 
@@ -158,7 +158,7 @@ export default class AbstractContractDAO extends EventEmitter {
       return
     }
 
-    EventsService.emit(ADD_EVENT_TO_HISTORY, data)
+    EventService.emit(ADD_EVENT_TO_HISTORY, data)
     this.emit(data.event, data)
   }
 

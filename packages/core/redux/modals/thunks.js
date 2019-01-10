@@ -11,12 +11,13 @@ import { modalsOpen, modalsClose } from './actions'
  * Licensed under the AGPL Version 3 license.
  */
 
-export const showSignerModal = () => (dispatch, getState) => {
+export const showSignerModal = (options = {}) => (dispatch, getState) => {
   const modalComponentName = getSignerModalComponentName(getState())
 
   if (modalComponentName) {
     dispatch(modalsOpen({
       componentName: modalComponentName,
+      ...options,
     }))
   }
 }

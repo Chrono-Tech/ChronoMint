@@ -7,23 +7,44 @@ import { padStart, unionBy, uniq, sortBy } from 'lodash'
 import { describeEvent, describeTx } from '../../describers'
 import { DUCK_SESSION } from '../session/constants'
 import { getHistoryKey } from '../../utils/eventHistory'
+import { showSignerModal, closeSignerModal } from '../modals/thunks'
 
 import { web3Selector } from '../ethereum/selectors'
 import { eventsSelector } from './selectors'
-import EventsHistory from '../../services/EventsService'
+import EventService from '../../services/EventService'
 import { getTokens } from '../tokens/selectors'
 
 import {
+  ADD_EVENT_TO_HISTORY,
   EVENTS_LOGS_LOADED,
   EVENTS_LOGS_LOADING,
   EVENTS_LOGS_UPDATED,
-  ADD_EVENT_TO_HISTORY,
+  EVENT_LEDGER_MODAL_SHOW,
+  EVENT_LEDGER_MODAL_HIDE,
 } from './constants'
 import { daoByAddress } from '../daos/selectors'
 
+export const watchEventService = () => async (dispatch) => {
+  dispatch(watchEventsToHistory())
+  dispatch(watchLedgerModal())
+}
+
+export const watchLedgerModal = () => async (dispatch) => {
+
+  EventService.on(EVENT_LEDGER_MODAL_SHOW, (event) => {
+    console.log('EVENT_LEDGER_MODAL_SHOW: ', event)
+    dispatch(showSignerModal({ props: event }))
+  })
+
+  EventService.on(EVENT_LEDGER_MODAL_HIDE, (event) => {
+    console.log('EVENT_LEDGER_MODAL_HIDE: ', event)
+    dispatch(closeSignerModal(event))
+  })
+}
+
 export const watchEventsToHistory = () => async (dispatch, getState) => {
 
-  EventsHistory.on(ADD_EVENT_TO_HISTORY, (event) => {
+  EventService.on(ADD_EVENT_TO_HISTORY, (event) => {
     const allHistory = eventsSelector()(getState())
     const topic = event.raw.topics[0]
 

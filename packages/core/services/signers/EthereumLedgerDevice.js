@@ -40,12 +40,13 @@ export default class EthereumLedgerDevice extends EventEmitter {
 
     return this._safeExec(async () => {
       const addresses = []
+      const transport = await TransportU2F.create()
+      console.log('TransportU2F: transport: ', transport)
+      const app = new AppEth(transport)
+
       for (let i = from; i < from + limit; i++) {
         const path = DEFAULT_PATH_FACTORY(i)
-        const transport = await TransportU2F.create()
-        console.log('TransportU2F: transport: ', transport)
-        const app = new AppEth(transport)
-        const result = await this._getAddressInfo(app, path)
+        const result = await app.getAddress(path)
         console.log('transaport result : ', result)
 
         const { address, publicKey } = result
@@ -64,7 +65,7 @@ export default class EthereumLedgerDevice extends EventEmitter {
     return this._safeExec(async () => {
       const transport = await TransportU2F.create()
       const appEthereum = new AppEth(transport)
-      const { address } = await Promise.race([this._getAddressInfo(appEthereum, path), rejectOnTimeout(2000)])
+      const { address } = await Promise.race([appEthereum.getAddress(path), rejectOnTimeout(2000)])
       return address
     })
   }
@@ -90,20 +91,12 @@ export default class EthereumLedgerDevice extends EventEmitter {
   async getAddressInfo (path: String): String {
     const transport = await TransportU2F.create()
     const app = new AppEth(transport)
-    const addressInfo = await this._getAddressInfo(app, path)
-
-    return addressInfo
-  }
-
-  async _getAddressInfo (app, path: String): String {
-    const result = await app.getAddress(path)
-    console.log('result: ', result)
-    const { address, publicKey } = result
+    const { address, publicKey } = await app.getAddress(path)
 
     return {
-      path,
       address,
       publicKey,
+      path,
     }
   }
 

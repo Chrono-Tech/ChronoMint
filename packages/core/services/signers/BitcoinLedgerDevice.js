@@ -3,10 +3,14 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import axios from 'axios'
 import bitcoin from 'bitcoinjs-lib'
 import TransportU2F from '@ledgerhq/hw-transport-u2f'
 import AppBTC from '@ledgerhq/hw-app-btc'
-import axios from 'axios'
+
+import { EVENT_LEDGER_MODAL_SHOW, EVENT_LEDGER_MODAL_HIDE } from '../../redux/events/constants'
+import EventService from '../../services/EventService'
+import { BLOCKCHAIN_BITCOIN } from '../../dao/constants'
 
 const BASE_URL = 'https://test-insight.bitpay.com/api/'
 
@@ -20,11 +24,14 @@ export default class BitcoinLedgerDevice {
     Object.freeze(this)
   }
 
-  // this method is a part of base interface
   async getAddress (path) {
+    console.log('BitcoinLedgerDevice getAddress (path): ', path)
+    EventService.emit(EVENT_LEDGER_MODAL_SHOW, { blockchain: BLOCKCHAIN_BITCOIN })
     const transport = await TransportU2F.create()
     const app = new AppBTC(transport)
     const result = await app.getWalletPublicKey(path)
+    console.log('BitcoinLedgerDevice getAddress result: ', result)
+    EventService.emit(EVENT_LEDGER_MODAL_HIDE)
 
     return result.bitcoinAddress
   }
@@ -52,9 +59,7 @@ export default class BitcoinLedgerDevice {
   }
 
   async signTransaction (rawTx, path) {
-    // tx object
     const txb = new bitcoin.TransactionBuilder.fromTransaction(bitcoin.Transaction.fromHex(rawTx), this.network)
-
     const inputs = []
 
     await txb.buildIncomplete().ins.forEach(async (input) => {
