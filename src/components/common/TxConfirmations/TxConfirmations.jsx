@@ -15,7 +15,7 @@ import {
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_ETHEREUM,
   BLOCKCHAIN_LABOR_HOUR,
-  BLOCKCHAIN_LITECOIN
+  BLOCKCHAIN_LITECOIN,
 } from '@chronobank/core/dao/constants'
 import TxDescModel from '@chronobank/core/models/TxDescModel'
 import { prefix } from './lang'
@@ -41,17 +41,17 @@ export default class TxConfirmations extends PureComponent {
 
   getBlockMiningTime = (blockchain: string) => {
     switch (blockchain) {
-      case BLOCKCHAIN_BITCOIN:
-      case BLOCKCHAIN_BITCOIN_CASH:
-      case BLOCKCHAIN_LITECOIN:
-        return 600
+    case BLOCKCHAIN_BITCOIN:
+    case BLOCKCHAIN_BITCOIN_CASH:
+    case BLOCKCHAIN_LITECOIN:
+      return 600
 
-      case BLOCKCHAIN_ETHEREUM:
-      case BLOCKCHAIN_LABOR_HOUR:
-        return 30
+    case BLOCKCHAIN_ETHEREUM:
+    case BLOCKCHAIN_LABOR_HOUR:
+      return 30
 
-      default:
-        return 0
+    default:
+      return 0
     }
   }
 

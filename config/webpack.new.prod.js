@@ -8,7 +8,7 @@ const baseWebpackConfig = require('./webpack.new.base')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const path = require('path')
 
@@ -19,14 +19,10 @@ const indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html')
 const indexPresentationHtmlPath = path.resolve(
   __dirname,
   relativePath,
-  'index-presentation.html'
+  'index-presentation.html',
 )
 const faviconPath = path.resolve(__dirname, relativePath, 'favicon.png')
-const buildPath = path.join(
-  __dirname,
-  isInNodeModules ? '../../..' : '..',
-  'build'
-)
+const buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
 
 module.exports = Object.assign({}, baseWebpackConfig, {
   mode: 'development',
@@ -85,7 +81,7 @@ module.exports = Object.assign({}, baseWebpackConfig, {
         {
           context: path.join(
             modulesPath,
-            '@chronobank/chronomint-presentation/dist/chronomint-presentation'
+            '@chronobank/chronomint-presentation/dist/chronomint-presentation',
           ),
           from: '**',
           to: path.join(buildPath, 'chronomint-presentation'),

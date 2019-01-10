@@ -5,12 +5,11 @@
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CircularDependencyPlugin = require('circular-dependency-plugin')
-const CleanWebpackPlugin  = require('clean-webpack-plugin')
-const  baseWebpackConfig = require('./webpack.new.base')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
+const baseWebpackConfig = require('./webpack.new.base')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
-const CleanTerminalPlugin = require('clean-terminal-webpack-plugin')
 const path = require('path')
 
 module.exports = Object.assign({}, baseWebpackConfig, {
@@ -19,14 +18,14 @@ module.exports = Object.assign({}, baseWebpackConfig, {
   entry: path.resolve(__dirname, '../src/index.js'),
   output: {
     filename: '[name].js',
-    chunkFilename: '[name].chunk.js'
+    chunkFilename: '[name].chunk.js',
     // path: path.resolve(__dirname, '../dist')
   },
   optimization: {
     splitChunks: {
       // include all types of chunks
-      chunks: 'all'
-    }
+      chunks: 'all',
+    },
   },
   devServer: {
     host: '127.0.0.1',
@@ -34,21 +33,18 @@ module.exports = Object.assign({}, baseWebpackConfig, {
     port: '3000',
     contentBase: path.join(__dirname, '../dist'),
     headers: {
-      'Access-Control-Allow-Origin': '*'
+      'Access-Control-Allow-Origin': '*',
     },
     // publicPath: '/dist',
     hot: true,
     inline: true,
-    historyApiFallback: true
+    historyApiFallback: true,
   },
   plugins: [
     new CleanWebpackPlugin(['../dist']),
-    new CleanTerminalPlugin({
-      message: 'Clean up...'
-    }),
     new CircularDependencyPlugin({
       exclude: /node_modules/,
-      failOnError: true
+      failOnError: true,
     }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
@@ -67,9 +63,9 @@ module.exports = Object.assign({}, baseWebpackConfig, {
         keepClosingSlash: true,
         minifyJS: true,
         minifyCSS: true,
-        minifyURLs: true
+        minifyURLs: true,
       },
-      inject: true
+      inject: true,
     }),
     process.env.NODE_ENV === 'standalone'
       ? null
@@ -97,6 +93,6 @@ module.exports = Object.assign({}, baseWebpackConfig, {
       }),
   ],
   performance: {
-    hints: false
-  }
+    hints: false,
+  },
 })

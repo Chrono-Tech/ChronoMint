@@ -11,17 +11,7 @@ process.noDeprecation = true
 const isInNodeModules =
   path.basename(path.resolve(path.join(__dirname, '..', '..'))) ===
   'node_modules'
-const buildPath = path.join(
-  __dirname,
-  isInNodeModules ? '../../..' : '..',
-  'dist',
-)
 
-// creating i18nJson empty file for i18n
-if (!fs.existsSync(buildPath)) {
-  fs.mkdirSync(buildPath)
-}
-fs.writeFileSync(buildPath + '/i18nJson.js', 'var i18nJson = {}')
 const relativePath = isInNodeModules ? '../../..' : '..'
 const srcPath = path.resolve(__dirname, relativePath, 'src')
 const srcAppArg = process.argv.find((e) => e.startsWith('--src-app='))
@@ -145,10 +135,11 @@ module.exports = {
         include: /node_modules/,
         use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },*/
-      {
-        test: /\.(eot|svg|otf|ttf|woff|woff2)$/,
-        use: 'file-loader',
-      },
+      { test: /\.eot(\?v=\d+.\d+.\d+)?$/, loader: 'file-loader' },
+      { test: /\.otf(\?v=\d+.\d+.\d+)?$/, loader: 'file-loader' },
+      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, use: [{ loader: 'url-loader', options: { limit: '10000', mimetype: 'application/font-woff' } }] },
+      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, use: [{ loader: 'url-loader', options: { limit: '10000', mimetype: 'octet-stream' } }] },
+      { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, use: [{ loader: 'url-loader', options: { limit: '10000', mimetype: 'image/svg+xml' } }] },
       {
         test: /\.(jpg|png|gif)$/,
         use: [

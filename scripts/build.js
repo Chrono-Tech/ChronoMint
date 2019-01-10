@@ -9,6 +9,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'production'
 console.log('NODE_ENV:', process.env.NODE_ENV)
 
 const path = require('path')
+const fs = require('fs')
 const rimrafSync = require('rimraf').sync
 const webpack = require('webpack')
 const config = require('../config/webpack.new.prod')
@@ -16,6 +17,8 @@ const config = require('../config/webpack.new.prod')
 const isInNodeModules = path.basename(path.resolve(path.join(__dirname, '..', '..'))) === 'node_modules'
 const relative = isInNodeModules ? '../..' : '.'
 rimrafSync(relative + '/build_front')
+
+const buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
 
 webpack(config).run(function (err, stats) {
   if (err) {
@@ -25,6 +28,8 @@ webpack(config).run(function (err, stats) {
     console.error(err.message || err)
     process.exit(1)
   }
+
+  fs.writeFileSync(buildPath + '/i18nJson.js', 'var i18nJson = {}')
 
   if (process.env.NODE_ENV === 'standalone') {
     // eslint-disable-next-line
