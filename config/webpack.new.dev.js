@@ -11,6 +11,16 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
 const path = require('path')
+const fs = require('fs')
+
+
+const isInNodeModules = path.basename(path.resolve(path.join(__dirname, '..', '..'))) === 'node_modules'
+const buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
+// creating i18nJson empty file for i18n
+if (!fs.existsSync(buildPath)) {
+  fs.mkdirSync(buildPath)
+}
+fs.writeFileSync(buildPath + '/i18nJson.js', 'var i18nJson = {}')
 
 module.exports = Object.assign({}, baseWebpackConfig, {
   mode: 'development',
@@ -20,6 +30,7 @@ module.exports = Object.assign({}, baseWebpackConfig, {
     filename: '[name].js',
     chunkFilename: '[name].chunk.js',
     // path: path.resolve(__dirname, '../dist')
+    publicPath: '/',
   },
   optimization: {
     splitChunks: {
