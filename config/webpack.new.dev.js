@@ -13,9 +13,13 @@ const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plug
 const path = require('path')
 const fs = require('fs')
 
-
 const isInNodeModules = path.basename(path.resolve(path.join(__dirname, '..', '..'))) === 'node_modules'
 const buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
+let relativePath = isInNodeModules ? '../../..' : '..'
+const modulesPath = path.resolve(__dirname, relativePath, 'node_modules')
+const indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html')
+const indexPresentationHtmlPath = path.resolve(__dirname, relativePath, 'index-presentation.html')
+const faviconPath = path.resolve(__dirname, relativePath, 'favicon.png')
 // creating i18nJson empty file for i18n
 if (!fs.existsSync(buildPath)) {
   fs.mkdirSync(buildPath)
@@ -25,6 +29,10 @@ fs.writeFileSync(buildPath + '/i18nJson.js', 'var i18nJson = {}')
 module.exports = Object.assign({}, baseWebpackConfig, {
   mode: 'development',
   devtool: 'eval-cheap-module-source-map',
+  // entry: {
+  //   app: path.resolve(__dirname, '../src/index.js'),
+  //   adminApp: './src/adminApp.js',
+  // },
   entry: path.resolve(__dirname, '../src/index.js'),
   output: {
     filename: '[name].js',
@@ -63,20 +71,9 @@ module.exports = Object.assign({}, baseWebpackConfig, {
       PUBLIC_BACKEND_REST_URL: '"' + (process.env.PUBLIC_BACKEND_REST_URL || 'https://backend.chronobank.io') + '"',
     }),
     new HtmlWebpackPlugin({
-      template: 'index.html',
-      minify: {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeRedundantAttributes: true,
-        useShortDoctype: true,
-        removeEmptyAttributes: true,
-        removeStyleLinkTypeAttributes: true,
-        keepClosingSlash: true,
-        minifyJS: true,
-        minifyCSS: true,
-        minifyURLs: true,
-      },
       inject: true,
+      template: indexHtmlPath,
+      favicon: faviconPath,
     }),
     process.env.NODE_ENV === 'standalone'
       ? null
@@ -89,7 +86,10 @@ module.exports = Object.assign({}, baseWebpackConfig, {
       ]),
     new ScriptExtHtmlWebpackPlugin({
       defaultAttribute: 'async',
-      sync: ['chronomint-presentation/js/vendor.js', 'chronomint-presentation/js/index.js'],
+      sync: [
+        'chronomint-presentation/js/vendor.js',
+        'chronomint-presentation/js/index.js',
+      ],
     }),
     process.env.NODE_ENV === 'standalone'
       ? null
