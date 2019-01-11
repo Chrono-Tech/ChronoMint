@@ -218,7 +218,9 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
             break
           }
         }
-        if (isOut) transactions.push(tdx)
+        if (isOut){
+          transactions.push(tdx)
+        }
       } else {
         blocks[tx.blockNumber()] = {
           transactions: [tdx],
