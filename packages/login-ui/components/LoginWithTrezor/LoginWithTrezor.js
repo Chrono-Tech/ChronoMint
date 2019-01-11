@@ -27,8 +27,8 @@ class LoginWithTrezor extends Component {
     return (
       <div styleName='state'>
         <div styleName='titleContent'>
-          <div styleName='title'>Trezor not found</div>
-          <div styleName='subtitle'>Connect your Trezor</div>
+          <div styleName='title'><Translate value='LoginWithTrezor.connectYourTrezor' /></div>
+          <div styleName='subtitle'><Translate value='LoginWithTrezor.notFound' /></div>
         </div>
       </div>
     )
@@ -38,7 +38,7 @@ class LoginWithTrezor extends Component {
     return (
       <div styleName='stateLoading'>
         <div styleName='titleContent'>
-          <div styleName='title'>Loading</div>
+          <div styleName='title'><Translate value='LoginWithTrezor.loading' /></div>
         </div>
       </div>
     )
@@ -55,7 +55,7 @@ class LoginWithTrezor extends Component {
   }
 
   render () {
-    const { previousPage, deviceList, /*navigateToDerivationPathForm,*/ onDeviceSelect } = this.props
+    const { previousPage, deviceList, onDeviceSelect } = this.props
 
     return (
       <div styleName='form'>
@@ -69,11 +69,10 @@ class LoginWithTrezor extends Component {
         {
           deviceList.length > 0 && (
             <div styleName='account'>
-              {deviceList.map((item, i) => {
+              {deviceList.map((item) => {
                 return (<TrezorAddress
                   key={item.address}
                   entryModel={item}
-                  childKey={i}
                   onDeviceSelect={onDeviceSelect}
                 />)
               })}

@@ -195,7 +195,7 @@ export default class Bitcoin extends PureComponent {
   }
 
   getFormFee = (props = this.props) => {
-    return this.props.mode === MODE_SIMPLE ? Number(((props.feeMultiplier) * props.token.feeRate()).toFixed(1)) : props.satPerByte
+    return this.props.mode === MODE_SIMPLE ? Number((props.feeMultiplier * props.token.feeRate()).toFixed(1)) : props.satPerByte
   }
 
   getBtcXOfAverage = () => {

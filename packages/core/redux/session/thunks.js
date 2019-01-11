@@ -12,6 +12,7 @@ import metaMaskResolver from '@chronobank/login/network/metaMaskResolver'
 import { stopMarket } from '@chronobank/market/middleware/thunks'
 
 import * as SessionActions from './actions'
+import * as PersistAccountActions from '../persistAccount/actions'
 import * as ProfileThunks from '../profile/thunks'
 import ProfileService from '../profile/service'
 import { daoByType } from '../../redux/daos/selectors'
@@ -20,8 +21,9 @@ import { watcher } from '../watcher/actions'
 import { initEthereum } from '../ethereum/thunks'
 import { DUCK_PERSIST_ACCOUNT } from '../persistAccount/constants'
 import { DEFAULT_CBE_URL, DEFAULT_USER_URL, DUCK_SESSION } from './constants'
-import { getAccountAddresses } from './selectors/session'
+import { getAccountAddresses, getDeviceAccountAddresses } from './selectors/session'
 import { cleanWalletsList } from '../wallets/actions'
+import { getAddressListSent } from '../persistAccount/selectors'
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
@@ -211,6 +213,44 @@ export const getProfileSignature = (signer, path) => async (dispatch, getState) 
     const signData = await signer.signData(signDataString, path)
     const profileSignature = await dispatch(ProfileThunks.getUserProfile(signData.signature, addresses))
     dispatch(SessionActions.setProfileSignature(profileSignature))
+
+    return profileSignature
+  } catch (error) {
+    // FIXME: to handle it in appropriate way
+    // eslint-disable-next-line no-console
+    console.warn('getProfileSignature error: ', error)
+  }
+}
+
+export const getProfileSignatureForDevice = (signer, path) => async (dispatch, getState) => {
+  if (!signer) {
+    return
+  }
+
+  try {
+    const state = getState()
+    const addresses = getDeviceAccountAddresses(getState())
+    const addressList = addresses.map((a) => a.value)
+    const addressListSent = getAddressListSent(state)
+    const diff = addressList.filter((i) => !addressListSent.includes(i))
+
+    if (!diff.length) {
+      //eslint-disable-next-line
+      console.log('all addresses has already been sent to ProfileService ', addressListSent)
+      return
+    }
+
+    if (!Object.keys(addresses).length) {
+      throw new Error('Addresses list is empty')
+    }
+
+    const signDataString = ProfileService.getSignData(addresses)
+    const signData = await signer.signData(signDataString, path)
+    const profileSignature = await dispatch(ProfileThunks.getUserProfile(signData.signature, addresses))
+
+    // if you need profile signature data. Feel free to disable address list cache
+    dispatch(SessionActions.setProfileSignature(profileSignature))
+    dispatch(PersistAccountActions.sentAddresses(addressList))
 
     return profileSignature
   } catch (error) {

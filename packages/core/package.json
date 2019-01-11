@@ -2,9 +2,9 @@
   "name": "@chronobank/core",
   "version": "1.0.0",
   "dependencies": {
-    "@ledgerhq/hw-app-btc": "^4.21.0",
-    "@ledgerhq/hw-app-eth": "^4.21.0",
-    "@ledgerhq/hw-transport-u2f": "^4.21.0",
+    "@ledgerhq/hw-app-btc": "latest",
+    "@ledgerhq/hw-app-eth": "latest",
+    "@ledgerhq/hw-transport-u2f": "latest",
     "async-lock": "^1.1.2",
     "axios": "^0.16.2",
     "bignumber.js": "^4.1.0",
@@ -26,7 +26,7 @@
     "redux-form": "^7.3.0",
     "redux-persist": "^5.9.1",
     "reselect": "^3.0.1",
-    "trezor-connect": "^5.0.31",
+    "trezor-connect": "^6.0",
     "uuid": "^3.3.0",
     "web3": "npm:web3@1.0.0-beta.33",
     "web3-eth-abi": "^1.0.0-beta.33"

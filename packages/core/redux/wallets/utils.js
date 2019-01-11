@@ -5,8 +5,8 @@
 import TxModel from '@chronobank/core/models/TxModel'
 import TxDescModel from '@chronobank/core/models/TxDescModel'
 
-export const getDerivedPath = (coinType) => {
-  return `m/44'/${coinType}'/0'/0/0`
+export const getDerivedPath = (coinType, accountIndex = 0) => {
+  return `m/44'/${coinType}'/0'/0/${accountIndex}`
 }
 
 export const serializeToTxDescModel = (tx: TxModel): TxDescModel => {

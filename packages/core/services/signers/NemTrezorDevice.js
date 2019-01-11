@@ -11,11 +11,18 @@ export default class NemTrezorDevice {
     this.network = network
   }
 
+  /**
+   * Docs: https://github.com/trezor/connect/blob/develop/docs/methods/nemGetAddress.md
+   * @param path
+   * @returns {Promise<*>}
+   */
   async getAddress (path) {
     const result = await TrezorConnect.nemGetAddress({
-      path: path,
-      network: 152,
+      path,
+      network: this.network.id,
+      showOnTrezor: true,
     })
+
     if (!result.success) {
       throw new TrezorError(result.code, result.payload.error)
     }

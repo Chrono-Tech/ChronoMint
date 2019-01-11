@@ -182,7 +182,6 @@ export default class BitcoinDAO extends EventEmitter {
 
   async stopWatching () {
     // Ignore
-
   }
 
   resetFilterCache () {

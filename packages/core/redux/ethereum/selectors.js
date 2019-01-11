@@ -7,14 +7,14 @@ import { createSelector } from 'reselect'
 
 import { DUCK_ETHEREUM } from './constants'
 import {
-  WALLET_TYPE_LEDGER, WALLET_TYPE_LEDGER_MOCK,
+  WALLET_TYPE_LEDGER,
   WALLET_TYPE_MEMORY,
   WALLET_TYPE_TREZOR,
-  WALLET_TYPE_TREZOR_MOCK,
 } from '../../models/constants/AccountEntryModel'
 import { getPersistAccount } from '../persistAccount/selectors'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 import EthereumLedgerDeviceMock from '../../services/signers/EthereumLedgerDeviceMock'
+import EthereumLedgerDevice from '../../services/signers/EthereumLedgerDevice'
 import EthereumTrezorDeviceMock from '../../services/signers/EthereumTrezorDeviceMock'
 import EthereumTrezorDevice from '../../services/signers/EthereumTrezorDevice'
 
@@ -34,16 +34,16 @@ export const getEthereumSigner = (state) => {
 
   switch (account.selectedWallet.type) {
     case WALLET_TYPE_TREZOR: {
+      if (process.env.DEVICE_MOCKS) {
+        return new EthereumTrezorDeviceMock()
+      }
       return new EthereumTrezorDevice()
     }
-    case WALLET_TYPE_TREZOR_MOCK: {
-      return new EthereumTrezorDeviceMock()
-    }
-    case WALLET_TYPE_LEDGER_MOCK: {
-      return new EthereumLedgerDeviceMock()
-    }
     case WALLET_TYPE_LEDGER: {
-      return new EthereumLedgerDeviceMock()
+      if (process.env.DEVICE_MOCKS) {
+        return new EthereumLedgerDeviceMock()
+      }
+      return new EthereumLedgerDevice()
     }
     case WALLET_TYPE_MEMORY: {
       return new EthereumMemoryDevice(account.decryptedWallet.privateKey)

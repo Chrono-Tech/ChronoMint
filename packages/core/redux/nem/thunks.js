@@ -20,10 +20,7 @@ import * as NemUtils from './utils'
 import { getToken } from '../tokens/selectors'
 import { notify } from '../notifier/actions'
 import tokenService from '../../services/TokenService'
-import {
-  DUCK_PERSIST_ACCOUNT,
-  WALLETS_CACHE_ADDRESS,
-} from '../persistAccount/constants'
+import { DUCK_PERSIST_ACCOUNT, WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
 import { showSignerModal, closeSignerModal } from '../modals/thunks'
 
 import * as TokensActions from '../tokens/actions'
@@ -122,13 +119,18 @@ const processTransaction = ({ entry, signer }) => async (dispatch, getState) => 
 
 const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   try {
-    const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
+    const state = getState()
+    const { network } = getCurrentNetworkSelector(state)
+    const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
+    const { accountIndex } = selectedWallet.encrypted[0]
+    const nemPath = NemUtils.getNemDerivedPath(network[BLOCKCHAIN_NEM], accountIndex)
+    const addressCache = { ...getAddressCache(state) }
 
     dispatch(NemActions.nemTxSignTransaction({ entry, signer }))
 
     dispatch(showSignerModal())
     const { tx } = entry
-    const signed = await NemUtils.createXemTransaction(tx.prepared, signer, selectedWallet.encrypted[0].path)
+    const signed = await NemUtils.createXemTransaction(tx.prepared, signer, nemPath, addressCache[BLOCKCHAIN_NEM].address)
     dispatch(closeSignerModal())
 
     dispatch(NemActions.nemTxUpdate(entry.key, entry.tx.from, NemUtils.createNemTxEntryModel({
@@ -149,6 +151,7 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
 }
 
 const sendSignedTransaction = ({ entry }) => async (dispatch, getState) => {
+
   dispatch(NemActions.nemTxSendSignedTransaction({ entry }))
   dispatch(nemTxStatus(entry.key, entry.tx.from, { isPending: true }))
 
@@ -205,6 +208,7 @@ export const updateWalletBalance = (wallet) => (dispatch) => {
     if (token.blockchain() === wallet.blockchain) {
       const dao = tokenService.getDAO(token)
       const balance = await dao.getAccountBalance(wallet.address)
+
       if (balance) {
         dispatch({ type: WALLETS_UPDATE_BALANCE, walletId: wallet.id, balance: new Amount(balance, token.symbol(), true) })
       }
@@ -275,13 +279,16 @@ const initWalletFromKeys = () => async (dispatch, getState) => {
   const state = getState()
   const { network } = getCurrentNetworkSelector(state)
   const addressCache = { ...getAddressCache(state) }
+  const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
+  const { accountIndex } = selectedWallet.encrypted[0]
 
-  if (!addressCache[BLOCKCHAIN_NEM] || true) {
-    const path = NemUtils.getNemDerivedPath(network[BLOCKCHAIN_NEM])
-    const signer = getNemSigner(state)
+  if (!addressCache[BLOCKCHAIN_NEM]) {
+    const path = NemUtils.getNemDerivedPath(network[BLOCKCHAIN_NEM], accountIndex)
+    const signer = getNemSigner(state, path)
 
     if (signer) {
       const address = await signer.getAddress(path)
+
       addressCache[BLOCKCHAIN_NEM] = {
         address,
         path,

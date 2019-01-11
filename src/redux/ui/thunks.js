@@ -63,8 +63,14 @@ export const removeWalletAndNavigateToWallets = (wallet: MultisigEthWalletModel)
 }
 
 export const loginAndSetLocalStorage = (account) => async (dispatch) => {
-  const defaultURL = await dispatch(login(account))
-  dispatch(replace(localStorage.getLastURL() || defaultURL))
+  try {
+    const defaultURL = await dispatch(login(account))
+    dispatch(replace(localStorage.getLastURL() || defaultURL))
+  } catch (e) {
+    //eslint-disable-next-line
+    console.error('loginAndSetLocalStorage: ', e)
+    dispatch(logoutAndNavigateToRoot())
+  }
 }
 
 export const goBackForAddWalletsForm = () => (dispatch, getState) => {

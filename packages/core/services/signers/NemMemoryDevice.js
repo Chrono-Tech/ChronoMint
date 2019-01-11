@@ -25,8 +25,9 @@ export default class NemMemoryDevice {
     return nem.model.address.toAddress(this.getPublicKey(), this.network.id)
   }
 
-  signTransaction (unsignedTxData) {
-    return this.getKeyPair().sign(unsignedTxData)
+  signTransaction (txPreparedObject) {
+    const serialized = nem.utils.serialization.serializeTransaction({ ...txPreparedObject })
+    return this.getKeyPair().sign(serialized)
   }
 
   getKeyPair () {

@@ -23,6 +23,7 @@ module.exports = config.buildConfig(
   ({ srcPath, buildPath, indexHtmlPath, faviconPath }) => ({
     devtool: process.env.SOURCE_MAP || 'source-map',
     entry: [
+      'babel-polyfill',
       require.resolve('webpack-dev-server/client') + '?http://0.0.0.0:3000',
       require.resolve('webpack/hot/dev-server'),
       path.join(srcPath, srcApp),
@@ -76,6 +77,7 @@ module.exports = config.buildConfig(
       }),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
+        'process.env.DEVICE_MOCKS': `${process.env.DEVICE_MOCKS || false}`,
         'process.env.BASE_SCHEMA': `"${process.env.BASE_SCHEMA || 'https'}"`,
         PUBLIC_BACKEND_REST_URL: null, // will be used a default param in the code
       }),

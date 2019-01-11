@@ -14,9 +14,7 @@ import { replace } from 'react-router-redux'
 import {
   WALLET_TYPE_MEMORY,
   WALLET_TYPE_TREZOR,
-  WALLET_TYPE_TREZOR_MOCK,
   WALLET_TYPE_LEDGER,
-  WALLET_TYPE_LEDGER_MOCK,
 } from '@chronobank/core/models/constants/AccountEntryModel'
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 import { getEthereumSigner } from '@chronobank/core/redux/ethereum/selectors'
@@ -25,10 +23,15 @@ import localStorage from 'utils/LocalStorage'
 import {
   DUCK_NETWORK,
 } from '@chronobank/login/redux/network/constants'
+import { getCurrentNetworkSelector } from '@chronobank/login/redux/network/selectors'
+import * as Utils from '@chronobank/core/redux/ethereum/utils'
 import {
   DUCK_PERSIST_ACCOUNT,
   DEFAULT_ACTIVE_BLOCKCHAINS,
+  WALLETS_CACHE_ADDRESS,
 } from '@chronobank/core/redux/persistAccount/constants'
+import { BLOCKCHAIN_ETHEREUM } from '@chronobank/login/network/constants'
+import { getAddressCache } from '@chronobank/core/redux/persistAccount/selectors'
 import * as NetworkThunks from '@chronobank/login/redux/network/thunks'
 import * as SessionThunks from '@chronobank/core/redux/session/thunks'
 import { modalsOpen, modalsClose } from '@chronobank/core/redux/modals/actions'
@@ -97,14 +100,19 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   dispatch(NetworkActions.networkSetLoginSubmitting())
 
   const state = getState()
-  const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
+  const { selectedWallet, lastLoginNetworkId } = state.get(DUCK_PERSIST_ACCOUNT)
   const accountWallet = new AccountEntryModel(selectedWallet)
+  const { network } = getCurrentNetworkSelector(state)
+  const { selectedNetworkId } = getState().get(DUCK_NETWORK)
+  if (lastLoginNetworkId !== selectedNetworkId) {
+    dispatch(PersistAccountActions.clearWalletsAddressCache())
+  }
+  dispatch(PersistAccountActions.updateLastNetworkId(selectedNetworkId))
 
   switch (accountWallet.type) {
     case WALLET_TYPE_MEMORY: {
       try {
         const wallet = await dispatch(PersistAccountActions.decryptAccount(accountWallet, password))
-
         await dispatch(PersistAccountActions.accountLoad(wallet))
 
         dispatch(NetworkActions.selectAccount(accountWallet.address))
@@ -137,17 +145,30 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
     }
 
     case WALLET_TYPE_TREZOR:
-    case WALLET_TYPE_TREZOR_MOCK:
-    case WALLET_TYPE_LEDGER:
-    case WALLET_TYPE_LEDGER_MOCK: {
+    case WALLET_TYPE_LEDGER: {
       try {
 
         const wallet = await dispatch(DeviceActions.loadDeviceAccount(accountWallet))
+        const { address } = wallet.entry.encrypted[0]
+        const path = Utils.getEthereumDerivedPath(network[BLOCKCHAIN_ETHEREUM])
         const signer = getEthereumSigner(getState())
+        const addressCache = { ...getAddressCache(state) }
+        const signerAddress = await signer.getAddress(path)
 
-        await dispatch(SessionThunks.getProfileSignature(signer, wallet.entry.encrypted[0].path))
+        if (addressCache[BLOCKCHAIN_ETHEREUM] && signerAddress !== addressCache[BLOCKCHAIN_ETHEREUM].address) {
+          //eslint-disable-next-line
+          console.error(`Different device for this account [${signerAddress}] [${addressCache[BLOCKCHAIN_ETHEREUM].address}]`)
+          throw new Error('Different device for this account')
+        }
 
-        dispatch(NetworkActions.selectAccount(wallet.entry.encrypted[0].address))
+        dispatch({
+          type: WALLETS_CACHE_ADDRESS,
+          blockchain: BLOCKCHAIN_ETHEREUM,
+          address: signerAddress,
+          path,
+        })
+
+        dispatch(NetworkActions.selectAccount(address))
         dispatch(NetworkActions.loading())
         dispatch(NetworkActions.clearErrors())
 
@@ -168,11 +189,14 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
         const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
 
+        // after login
+        dispatch(SessionThunks.getProfileSignatureForDevice(signer, path))
+
         dispatch(replace(localStorage.getLastURL() || defaultURL))
       } catch (e) {
         //eslint-disable-next-line
         console.warn('Device type error: ', e)
-        throw new SubmissionError({ password: e && e.message })
+        throw new SubmissionError({ _error: e && e.message })
       }
       break
     }
