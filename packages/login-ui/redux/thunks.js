@@ -109,9 +109,11 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
     dispatch(PersistAccountActions.clearWalletsAddressCache())
   }
   const availableNetwork = await checkNetwork(selectedNetworkId, selectedProviderId)
-  if(availableNetwork){
-    if(availableNetwork.selectedNetworkId !== selectedNetworkId) dispatch(NetworkActions.networkSetNetwork(availableNetwork.selectedNetworkId))
-    if(availableNetwork.selectedProviderId !== selectedProviderId) {
+  if (availableNetwork) {
+    if (availableNetwork.selectedNetworkId !== selectedNetworkId){
+      dispatch(NetworkActions.networkSetNetwork(availableNetwork.selectedNetworkId))
+    }
+    if (availableNetwork.selectedProviderId !== selectedProviderId) {
       dispatch(NetworkActions.networkSetProvider(availableNetwork.selectedProviderId))
       dispatch(NetworkActions.disableProvider(selectedProviderId))
     }

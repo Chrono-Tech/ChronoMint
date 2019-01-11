@@ -2,11 +2,12 @@ import { getNetworkById, getNetworksSelectorGroup } from '@chronobank/login/netw
 import web3Factory from '@chronobank/core/web3'
 import { compact } from 'lodash'
 
-const check = async (network) => {
+const isNetworkAvailable = async (network) => {
   const w3 = web3Factory(network)
-  try{
-    return await w3.eth.net.isListening()
-  } catch(e){
+  try {
+    const isListening = await w3.eth.net.isListening()
+    return isListening
+  } catch (e){
    return false
   }
 }
@@ -19,8 +20,8 @@ const check = async (network) => {
       selectedProviderId: providersList[num].provider.id,
     }
     const network = getNetworkById(netData.selectedNetworkId, netData.selectedProviderId)
-
-    if (await check(network)) return netData
+    const isNetworkWorks = await isNetworkAvailable(network)
+    if (isNetworkWorks) return netData
     num++
   }
   return null
@@ -31,7 +32,8 @@ export async function checkNetwork (selectedNetworkId, selectedProviderId) {
 
   let network = getNetworkById(selectedNetworkId, selectedProviderId)
   let networkLevel
-  if(await check(network)) return null
+  const isNetworkWorks = await isNetworkAvailable(network)
+  if(isNetworkWorks) return null
   for (let i in providersList) {
     const level = providersList[i]
     for (let k in level.providers) {
@@ -43,11 +45,13 @@ export async function checkNetwork (selectedNetworkId, selectedProviderId) {
         networkLevel = i
         let providers = level.providers.filter(net => !(net.network.id === selectedNetworkId &&
           net.provider.id === selectedProviderId))
-        return await findProvider(providers)
+        const provider = await findProvider(providers)
+        return provider
       }
     }
   }
   delete providersList[networkLevel]
   providersList = compact(providersList)
-  return await findProvider(providersList[0].providers)
+  const provider = await findProvider(providersList[0].providers)
+  return provider
 }
