@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -101,7 +101,7 @@ export default class FooterPartial extends PureComponent {
         <div styleName='row'>
           <div styleName='columnLeft'>
             <div styleName='copyright'>
-              <p>Copyright © 2018 LaborX Pty Ltd. All Rights Reserved.</p>
+              <p>Copyright © 2019 LaborX Pty Ltd. All Rights Reserved.</p>
             </div>
           </div>
         </div>
