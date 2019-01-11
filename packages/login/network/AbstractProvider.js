@@ -37,4 +37,14 @@ export default class AbstractProvider extends EventEmitter {
     node.emit('unsubscribe', address)
     return node
   }
+
+  connectCurrentNode () {
+    const node = this._selectNode(this.networkSettings)
+    node.connect()
+  }
+
+  disconnectCurrentNode () {
+    const node = this._selectNode(this.networkSettings)
+    node.disconnect()
+  }
 }
