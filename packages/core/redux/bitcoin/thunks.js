@@ -362,7 +362,6 @@ const sendSignedTransaction = (entry) => async (dispatch, getState) => {
               hash: response.hash,
             },
           })
-
           dispatch(BitcoinActions.bitcoinTxUpdate(txEntry))
           dispatch(notifyBitcoinTransfer(txEntry))
         }
