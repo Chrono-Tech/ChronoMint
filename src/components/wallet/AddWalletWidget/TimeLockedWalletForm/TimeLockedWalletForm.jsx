@@ -13,6 +13,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
+import { Map } from 'immutable'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { FORM_TIME_LOCKED_WALLET_ADD } from 'components/constants'
 import { prefix } from './lang'
@@ -21,6 +22,9 @@ import './TimeLockedWalletForm.scss'
 function mapStateToProps (state, ownProps) {
   const selector = formValueSelector(FORM_TIME_LOCKED_WALLET_ADD)
   let owners = selector(state, 'owners')
+  let timeLockDate = selector(state, 'timeLockDate')
+  let timeLockTime = selector(state, 'timeLockTime')
+  let requiredSignatures = selector(state, 'requiredSignatures')
   const wallet = ownProps.wallet || new MultisigEthWalletModel()
 
   return {
@@ -30,6 +34,7 @@ function mapStateToProps (state, ownProps) {
     ownersCount: owners ? owners.size + 1 : 1,
     account: state.get(DUCK_SESSION).account,
     profile: state.get(DUCK_SESSION).profile,
+    data: Map({ owners, timeLockDate, timeLockTime, requiredSignatures })
   }
 }
 
@@ -50,10 +55,17 @@ export default class TimeLockedWalletForm extends PureComponent {
     requiredSignatures: PropTypes.string,
     ...formPropTypes,
   }
+  state = {
+    isHaveMoney: false
+  }
+  componentWillReceiveProps (nextProps): void {
+    if (nextProps.balance !== this.props.balance || nextProps.data !== this.props.data) {
+      this.props.isHaveMoneyToCreate(this.props.data, this.props).then( data => this.setState({ isHaveMoney: data }))
+    }
+  }
 
   render () {
     const { handleSubmit, pristine, valid } = this.props
-
     return (
       <form styleName='root' onSubmit={handleSubmit}>
         <div styleName='body'>
@@ -93,7 +105,7 @@ export default class TimeLockedWalletForm extends PureComponent {
             styleName='action'
             label={<Translate value={`${prefix}.addWallet`} />}
             type='submit'
-            disabled={pristine || !valid}
+            disabled={pristine || !valid || !this.state.isHaveMoney}
           />
         </div>
       </form>

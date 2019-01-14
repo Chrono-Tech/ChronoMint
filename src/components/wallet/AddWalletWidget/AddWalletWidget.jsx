@@ -33,12 +33,23 @@ import { prefix } from './lang'
 import CustomWalletForm from './CustomWalletForm/CustomWalletForm'
 import TwoFaWalletForm from '../TwoFaWalletForm/TwoFaWalletForm'
 import StandardWalletForm from './StandardWalletForm/StandardWalletForm'
+import { estimateGas } from '@chronobank/core/redux/ethereum/thunks'
+import { daoByType } from '@chronobank/core/redux/daos/selectors'
+import { sectionsSelector } from '@chronobank/core/redux/wallets/selectors/wallets'
+import MainWalletModel from '@chronobank/core/models/wallet/MainWalletModel'
+import { walletBalanceSelector } from '@chronobank/core/redux/wallets/selectors/balances'
 
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_ADD_NEW_WALLET)
+  const wallets = sectionsSelector(state)
+  const wallet = wallets.find(wallet => wallet.title === BLOCKCHAIN_ETHEREUM)
+  const walletId = `${wallet.title}-${wallet.address}`
   return {
     blockchain: selector(state, 'blockchain'),
     ethWalletType: selector(state, 'ethWalletType'),
+    walletsManagerDAO: daoByType('WalletsManager')(state),
+    wallets: sectionsSelector(state),
+    ethBalance: walletBalanceSelector(walletId, BLOCKCHAIN_ETHEREUM)(state),
   }
 }
 
@@ -51,6 +62,8 @@ function mapDispatchToProps (dispatch) {
       dispatch(change(FORM_ADD_NEW_WALLET, 'ethWalletType', type))
     },
     reset: () => dispatch(resetWalletsForm()),
+    estimateGas: (tx) => (
+      dispatch(estimateGas(tx))),
   }
 }
 
@@ -59,47 +72,28 @@ export default class AddWalletWidget extends PureComponent {
   static propTypes = {
     blockchain: PropTypes.string,
     ethWalletType: PropTypes.string,
+    ethBalance: PropTypes.number,
     selectWalletBlockchain: PropTypes.func,
     selectWalletType: PropTypes.func,
     reset: PropTypes.func,
+    wallets: PropTypes.arrayOf(
+      PropTypes.shape({
+        title: PropTypes.string,
+        address: PropTypes.string,
+        wallet: PropTypes.oneOfType([
+          PropTypes.instanceOf(MainWalletModel),
+          PropTypes.instanceOf(MultisigEthWalletModel),
+        ]),
+      }),
+    ),
   }
 
   componentWillUnmount () {
     this.props.reset()
   }
 
-  handleSubmitEthMultisig = (values, dispatch, props) => {
-    // owners
-    const owners = values.get('owners')
-    let ownersCollection = []
-    ownersCollection.push(props.account)
-    owners.forEach(({ address }) => {
-      ownersCollection.push(address)
-    })
-
-    // date
-    let releaseTime = new Date(0)
-    const isTimeLocked = values.get('isTimeLocked')
-    if (isTimeLocked) {
-      const date = values.get('timeLockDate')
-      const time = values.get('timeLockTime')
-      releaseTime = new Date(date.setHours(
-        time.getHours(),
-        time.getMinutes(),
-        time.getSeconds(),
-        time.getMilliseconds(),
-      ))
-    }
-
-    const wallet = new MultisigEthWalletModel({
-      ...props.initialValues.toJS(),
-      ...values.toJS(),
-      requiredSignatures: values.get('requiredSignatures').toString(),
-      releaseTime,
-      owners: ownersCollection,
-      address: uuid(),
-    })
-
+  handleSubmitEthMultisig = async (values, dispatch, props) => {
+  const wallet = this.createNewWallet(values, props)
     dispatch(createWallet(wallet))
     dispatch(navigateToWallets())
     dispatch(resetWalletsForm())
@@ -129,6 +123,51 @@ export default class AddWalletWidget extends PureComponent {
     dispatch(change(FORM_2FA_WALLET, 'step', FORM_2FA_STEPS[1]))
   }
 
+  isHaveMoneyToCreate = async (values, props) => {
+    const wallet = this.createNewWallet(values, props)
+    if(wallet){
+      const tx = this.props.walletsManagerDAO.createWallet(wallet)
+      const { gasLimit, gasPrice } = await this.props.estimateGas(tx)
+      const needAmount = gasLimit * gasPrice / 10 ** 18
+      return this.props.ethBalance < needAmount
+    }
+   return false
+  }
+
+  createNewWallet = (values, props) => {
+    if( !values ) return null
+    const owners = values.get('owners')
+    if( !owners ) return null
+    let ownersCollection = []
+    ownersCollection.push(props.account)
+    owners.forEach(({ address }) => {
+      ownersCollection.push(address)
+    })
+
+    // date
+    let releaseTime = new Date(0)
+    const isTimeLocked = values.get('isTimeLocked')
+    if (isTimeLocked) {
+      const date = values.get('timeLockDate')
+      const time = values.get('timeLockTime')
+      releaseTime = new Date(date.setHours(
+        time.getHours(),
+        time.getMinutes(),
+        time.getSeconds(),
+        time.getMilliseconds(),
+      ))
+    }
+
+    return new MultisigEthWalletModel({
+      ...props.initialValues.toJS(),
+      ...values.toJS(),
+      requiredSignatures: values.get('requiredSignatures').toString(),
+      releaseTime,
+      owners: ownersCollection,
+      address: uuid(),
+    })
+  }
+
   onSelectWalletBlockchain = (blockchain: string) => {
     this.props.selectWalletBlockchain(blockchain)
   }
@@ -155,7 +194,7 @@ export default class AddWalletWidget extends PureComponent {
       case 'TL':
         title = `${prefix}.timeLockedWallet`
         Component = TimeLockedWalletForm
-        componentProps = { onSubmit: this.handleSubmitEthMultisig }
+        componentProps = { onSubmit: this.handleSubmitEthMultisig, isHaveMoneyToCreate: this.isHaveMoneyToCreate, balance: this.props.ethBalance }
         break
       case 'CW':
         title = `${prefix}.customWallet`
