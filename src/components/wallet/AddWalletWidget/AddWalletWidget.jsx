@@ -48,7 +48,6 @@ function mapStateToProps (state) {
     blockchain: selector(state, 'blockchain'),
     ethWalletType: selector(state, 'ethWalletType'),
     walletsManagerDAO: daoByType('WalletsManager')(state),
-    wallets: sectionsSelector(state),
     ethBalance: walletBalanceSelector(walletId, BLOCKCHAIN_ETHEREUM)(state),
   }
 }
@@ -94,9 +93,11 @@ export default class AddWalletWidget extends PureComponent {
 
   handleSubmitEthMultisig = async (values, dispatch, props) => {
   const wallet = this.createNewWallet(values, props)
-    dispatch(createWallet(wallet))
-    dispatch(navigateToWallets())
-    dispatch(resetWalletsForm())
+    if(wallet){
+      dispatch(createWallet(wallet))
+      dispatch(navigateToWallets())
+      dispatch(resetWalletsForm())
+    }
   }
 
   handleSubmitEth2FA = (values, dispatch, props) => {
@@ -123,13 +124,13 @@ export default class AddWalletWidget extends PureComponent {
     dispatch(change(FORM_2FA_WALLET, 'step', FORM_2FA_STEPS[1]))
   }
 
-  isHaveMoneyToCreate = async (values, props) => {
+  isHaveEthToCreate = async (values, props) => {
     const wallet = this.createNewWallet(values, props)
     if(wallet){
       const tx = this.props.walletsManagerDAO.createWallet(wallet)
       const { gasLimit, gasPrice } = await this.props.estimateGas(tx)
       const needAmount = gasLimit * gasPrice / 10 ** 18
-      return this.props.ethBalance < needAmount
+      return this.props.ethBalance > needAmount
     }
    return false
   }
@@ -194,7 +195,7 @@ export default class AddWalletWidget extends PureComponent {
       case 'TL':
         title = `${prefix}.timeLockedWallet`
         Component = TimeLockedWalletForm
-        componentProps = { onSubmit: this.handleSubmitEthMultisig, isHaveMoneyToCreate: this.isHaveMoneyToCreate, balance: this.props.ethBalance }
+        componentProps = { onSubmit: this.handleSubmitEthMultisig, isHaveEthToCreate: this.isHaveEthToCreate, balance: this.props.ethBalance }
         break
       case 'CW':
         title = `${prefix}.customWallet`

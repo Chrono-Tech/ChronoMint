@@ -19,6 +19,8 @@ import { FORM_TIME_LOCKED_WALLET_ADD } from 'components/constants'
 import { prefix } from './lang'
 import './TimeLockedWalletForm.scss'
 
+const required = value => (value || typeof value === 'number' ? undefined : 'Required')
+
 function mapStateToProps (state, ownProps) {
   const selector = formValueSelector(FORM_TIME_LOCKED_WALLET_ADD)
   let owners = selector(state, 'owners')
@@ -56,11 +58,12 @@ export default class TimeLockedWalletForm extends PureComponent {
     ...formPropTypes,
   }
   state = {
-    isHaveMoney: false
+    isHaveEth: false
   }
+
   componentWillReceiveProps (nextProps): void {
-    if (nextProps.balance !== this.props.balance || nextProps.data !== this.props.data) {
-      this.props.isHaveMoneyToCreate(this.props.data, this.props).then( data => this.setState({ isHaveMoney: data }))
+    if ((nextProps.balance !== this.props.balance || nextProps.data !== this.props.data) && nextProps.valid) {
+      this.props.isHaveEthToCreate(this.props.data, this.props).then( data => this.setState({ isHaveEth: data }))
     }
   }
 
@@ -74,6 +77,7 @@ export default class TimeLockedWalletForm extends PureComponent {
               component={TextField}
               name='name'
               fullWidth
+              validate={[required]}
               label={<Translate value={`${prefix}.name`} />}
             />
           </div>
@@ -105,7 +109,7 @@ export default class TimeLockedWalletForm extends PureComponent {
             styleName='action'
             label={<Translate value={`${prefix}.addWallet`} />}
             type='submit'
-            disabled={pristine || !valid || !this.state.isHaveMoney}
+            disabled={pristine || !valid || !this.state.isHaveEth}
           />
         </div>
       </form>
