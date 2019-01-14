@@ -59,7 +59,7 @@ module.exports = Object.assign({}, baseWebpackConfig, {
       defaultAttribute: 'async',
       sync: [
         'chronomint-presentation/js/vendor.js',
-        'dist/chronomint-presentation/js/index.js',
+        'chronomint-presentation/js/index.js',
       ],
     }),
     new webpack.DefinePlugin({

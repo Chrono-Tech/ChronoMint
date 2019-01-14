@@ -29,15 +29,10 @@ fs.writeFileSync(buildPath + '/i18nJson.js', 'var i18nJson = {}')
 module.exports = Object.assign({}, baseWebpackConfig, {
   mode: 'development',
   devtool: 'eval-cheap-module-source-map',
-  // entry: {
-  //   app: path.resolve(__dirname, '../src/index.js'),
-  //   adminApp: './src/adminApp.js',
-  // },
   entry: path.resolve(__dirname, '../src/index.js'),
   output: {
     filename: '[name].js',
     chunkFilename: '[name].chunk.js',
-    // path: path.resolve(__dirname, '../dist')
     publicPath: '/',
   },
   optimization: {
@@ -54,7 +49,6 @@ module.exports = Object.assign({}, baseWebpackConfig, {
     headers: {
       'Access-Control-Allow-Origin': '*',
     },
-    // publicPath: '/dist',
     hot: true,
     inline: true,
     historyApiFallback: true,
@@ -67,7 +61,6 @@ module.exports = Object.assign({}, baseWebpackConfig, {
     }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
-      // WEB3_RPC_LOCATION: '"' + process.env.WEB3_RPC_LOCATION + '"',
       PUBLIC_BACKEND_REST_URL: '"' + (process.env.PUBLIC_BACKEND_REST_URL || 'https://backend.chronobank.io') + '"',
     }),
     new HtmlWebpackPlugin({
