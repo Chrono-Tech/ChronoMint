@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -34,7 +34,7 @@ const HeaderGroup = ({ group, ...props }) => (
   </div>
 )
 
-const MenuCustomItem = ({ network, onClickEdit, children, checked, ...props }) => (
+const MenuCustomItem = ({ /*network,*/ onClickEdit, children, checked, ...props }) => (
   <div
     styleName={classnames({
       providerItem: true,

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  *
  * @flow
@@ -166,12 +166,12 @@ export const autoSelect = () => (dispatch, getState) => {
 
   const handleNetwork = (status) => {
     switch (status) {
-      case NETWORK_STATUS_OFFLINE:
-        runNextChecker()
-        break
-      case NETWORK_STATUS_ONLINE:
-        resetCheckers()
-        break
+    case NETWORK_STATUS_OFFLINE:
+      runNextChecker()
+      break
+    case NETWORK_STATUS_ONLINE:
+      resetCheckers()
+      break
     }
   }
 

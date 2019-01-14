@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -53,7 +53,7 @@ export default class Preloader extends PureComponent {
 
   render () {
     const { size, thickness } = this.props
-    let preset = PRESETS[this.getPreset()]
+    const preset = PRESETS[this.getPreset()]
 
     if (size) {
       preset.size = size

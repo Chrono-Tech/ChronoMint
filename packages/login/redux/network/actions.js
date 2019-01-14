@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  *
  * @flow
@@ -33,6 +33,7 @@ import {
   NETWORK_SET_PROVIDER,
   NETWORK_SET_TEST_METAMASK,
   NETWORK_SET_WALLET_FILE_IMPORTED,
+  NETWORK_DISABLE_PROVIDER,
 } from './constants'
 
 export const loading = (isLoading = true) => ({
@@ -156,4 +157,9 @@ export const setTestMetamask = () => ({
 export const selectAccount = (selectedAccount) => ({
   type: NETWORK_SELECT_ACCOUNT,
   selectedAccount,
+})
+
+export const disableProvider = (providerId) => ({
+  type: NETWORK_DISABLE_PROVIDER,
+  providerId,
 })

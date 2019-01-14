@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -50,12 +50,12 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
       return
     }
     switch (data.event) {
-      case 'WalletCreated' :
-        this.handleWalletCreate(data)
-        break
-      case 'WalletRemoved':
-        this.handleWalletRemoved(data)
-        break
+    case 'WalletCreated' :
+      this.handleWalletCreate(data)
+      break
+    case 'WalletRemoved':
+      this.handleWalletRemoved(data)
+      break
     }
   }
 

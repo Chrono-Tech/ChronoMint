@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -108,12 +108,12 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
 
   async _decodeArgs (func, args: Object) {
     switch (func) {
-      case TX_ATTACH_PLATFORM:
-        return {
-          platform: args['_platform'],
-        }
-      default:
-        return args
+    case TX_ATTACH_PLATFORM:
+      return {
+        platform: args['_platform'],
+      }
+    default:
+      return args
     }
   }
 }

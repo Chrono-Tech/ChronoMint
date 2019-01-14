@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -14,17 +14,17 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case a.TOKENS_FORM:
-      return {
-        ...state,
-        selected: action.token,
-      }
-    case a.TOKENS_FORM_FETCH:
-      return {
-        ...state,
-        formFetching: !(action.end || false),
-      }
-    default:
-      return state
+  case a.TOKENS_FORM:
+    return {
+      ...state,
+      selected: action.token,
+    }
+  case a.TOKENS_FORM_FETCH:
+    return {
+      ...state,
+      formFetching: !(action.end || false),
+    }
+  default:
+    return state
   }
 }

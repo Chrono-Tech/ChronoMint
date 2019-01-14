@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -21,7 +21,7 @@ import './MultisigWalletForm.scss'
 
 function mapStateToProps (state, ownProps) {
   const selector = formValueSelector(FORM_MULTISIG_WALLET_ADD)
-  let owners = selector(state, 'owners')
+  const owners = selector(state, 'owners')
   const wallet = ownProps.wallet || new MultisigEthWalletModel()
 
   return {

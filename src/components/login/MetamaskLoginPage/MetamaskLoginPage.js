@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -52,35 +52,35 @@ class MetamaskLoginPage extends PureComponent {
 
   getCurrentPage () {
     switch(this.state.page){
-      case MetamaskLoginPage.PAGES.DEVICE_SELECT_FORM:
-        return (
-          <LoginWithMetamaskContainer
-            previousPage={this.previousPage.bind(this)}
-            onDeviceSelect={this.onSubmitDevice.bind(this)}
-          />
-        )
+    case MetamaskLoginPage.PAGES.DEVICE_SELECT_FORM:
+      return (
+        <LoginWithMetamaskContainer
+          previousPage={this.previousPage.bind(this)}
+          onDeviceSelect={this.onSubmitDevice.bind(this)}
+        />
+      )
 
-      case MetamaskLoginPage.PAGES.ACCOUNT_NAME_FORM:
-        return (
-          <AccountNameContainer
-            previousPage={this.previousPage.bind(this)}
-            onSubmit={this.onSubmitAccountName.bind(this)}
-          />
-        )
+    case MetamaskLoginPage.PAGES.ACCOUNT_NAME_FORM:
+      return (
+        <AccountNameContainer
+          previousPage={this.previousPage.bind(this)}
+          onSubmit={this.onSubmitAccountName.bind(this)}
+        />
+      )
 
-      default:
-        return (
-          <LoginWithMetamaskContainer
-            previousPage={this.previousPage.bind(this)}
-            onDeviceSelect={this.onSubmitDevice.bind(this)}
-          />
-        )
+    default:
+      return (
+        <LoginWithMetamaskContainer
+          previousPage={this.previousPage.bind(this)}
+          onDeviceSelect={this.onSubmitDevice.bind(this)}
+        />
+      )
     }
   }
 
   async onSubmitDevice (device) {
     this.setState({
-      device: device
+      device: device,
     })
 
     let response = null, userName = null, profile = null

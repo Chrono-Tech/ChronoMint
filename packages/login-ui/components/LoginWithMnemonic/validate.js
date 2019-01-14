@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -10,7 +10,7 @@ export default (values) => {
 
   const mnemonic = values.get('mnemonic')
 
-  let mnemonicErrors = new ErrorList()
+  const mnemonicErrors = new ErrorList()
   mnemonicErrors.add(validator.required(mnemonic))
 
   return {

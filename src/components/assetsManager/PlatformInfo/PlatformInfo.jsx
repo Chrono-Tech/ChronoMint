@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -190,14 +190,14 @@ export default class PlatformInfo extends PureComponent {
     const { selectedToken } = this.props
     let value
     switch (selectedToken.withFee()) {
-      case true:
-        value = <span>{selectedToken.fee().fee().toString()}<span>%</span></span>
-        break
-      case false:
-        value = <Translate value={prefix('withoutFee')} />
-        break
-      default:
-        value = <div styleName='preloader'><Preloader /></div>
+    case true:
+      value = <span>{selectedToken.fee().fee().toString()}<span>%</span></span>
+      break
+    case false:
+      value = <Translate value={prefix('withoutFee')} />
+      break
+    default:
+      value = <div styleName='preloader'><Preloader /></div>
     }
     return (
       <div styleName='fee'>

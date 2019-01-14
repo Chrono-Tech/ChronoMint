@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 @import "~styles/partials/variables";
@@ -31,6 +31,7 @@
     padding: 0;
     border: 0;
   }
+
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
@@ -47,7 +48,7 @@
 
   .transition-swipe-enter.transition-swipe-enter-active {
     top: 0;
-    transition: top 250ms $cubic-animation;
+    transition: top $animation-timeout $cubic-animation;
   }
 
   .transition-swipe-leave {
@@ -56,7 +57,7 @@
 
   .transition-swipe-leave.transition-swipe-leave-active {
     top: 100vh;
-    transition: top 250ms $cubic-animation;
+    transition: top $animation-timeout $cubic-animation;
   }
 
   .transition-swipe-appear {
@@ -65,7 +66,7 @@
 
   .transition-swipe-appear.transition-swipe-appear-active {
     top: 0;
-    transition: top 250ms $cubic-animation;
+    transition: top $animation-timeout $cubic-animation;
   }
 
   .transition-opacity-enter {
@@ -74,7 +75,7 @@
 
   .transition-opacity-enter.transition-opacity-enter-active {
     opacity: 1;
-    transition: opacity 250ms ease-in-out;
+    transition: opacity $animation-timeout ease-in-out;
   }
 
   .transition-opacity-leave {
@@ -83,7 +84,7 @@
 
   .transition-opacity-leave.transition-opacity-leave-active {
     opacity: 0;
-    transition: opacity 250ms ease-in-out;
+    transition: opacity $animation-timeout ease-in-out;
   }
 
   .transition-opacity-appear {
@@ -92,7 +93,7 @@
 
   .transition-opacity-appear.transition-opacity-appear-active {
     opacity: 1;
-    transition: opacity 250ms ease-in-out;
+    transition: opacity $animation-timeout ease-in-out;
   }
 
   .popover.popover-overflow-x-hidden {
@@ -113,6 +114,7 @@
       }
     }
   }
+
   .chronobank-icon {
     font-family: ChronoBankIcons;
     font-style: normal;
@@ -120,6 +122,7 @@
     text-transform: none;
     font-weight: 400;
   }
+
   button {
     background: none;
     border: none;

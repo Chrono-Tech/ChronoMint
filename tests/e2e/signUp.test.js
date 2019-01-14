@@ -1,4 +1,11 @@
+/**
+ * Copyright 2017–2019, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 /*global TimeoutLength*/
+/* eslint-disable */
+
 import faker from 'faker'
 
 import { clickText, getText, openBrowser, openPage } from './utils'

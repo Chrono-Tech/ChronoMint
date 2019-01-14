@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -10,7 +10,7 @@ export default (values) => {
 
   const accountName = values.get('accountName')
 
-  let accountNameErrors = new ErrorList()
+  const accountNameErrors = new ErrorList()
   accountNameErrors.add(validator.required(accountName))
 
   return {

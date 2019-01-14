@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -23,7 +23,7 @@ export default class HDWalletProvider {
   // returns the address of the given address_index, first checking the cache
   getAddress (idx) {
     if (!(idx in Object.keys(this.addresses))) {
-      let wallet = this.hdwallet.derivePath(`${this.wallet_hdpath}/${idx}`).getWallet()
+      const wallet = this.hdwallet.derivePath(`${this.wallet_hdpath}/${idx}`).getWallet()
       this.wallets.push(wallet)
       this.addresses[idx] = wallet.getAddressString()
     }
@@ -31,7 +31,7 @@ export default class HDWalletProvider {
   }
 
   pushWallet (idx) {
-    let wallet = this.hdwallet.derivePath(`${this.wallet_hdpath}/${idx}`).getWallet()
+    const wallet = this.hdwallet.derivePath(`${this.wallet_hdpath}/${idx}`).getWallet()
     this.wallets.push(wallet)
     this.addresses[Object.values(this.addresses).length] = wallet.getAddressString()
   }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -14,24 +14,24 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case a.NOTIFIER_MESSAGE:
-      return {
-        ...state,
-        notice: action.notice,
-        list: action.isStorable ? state.list.push(action.notice) : state.list,
-        unreadNotices: (state.unreadNotices || 0) + (action.isStorable ? 1 : 0),
-      }
-    case a.NOTIFIER_READ:
-      return {
-        ...state,
-        unreadNotices: 0,
-      }
-    case a.NOTIFIER_CLOSE:
-      return {
-        ...state,
-        notice: null,
-      }
-    default:
-      return state
+  case a.NOTIFIER_MESSAGE:
+    return {
+      ...state,
+      notice: action.notice,
+      list: action.isStorable ? state.list.push(action.notice) : state.list,
+      unreadNotices: (state.unreadNotices || 0) + (action.isStorable ? 1 : 0),
+    }
+  case a.NOTIFIER_READ:
+    return {
+      ...state,
+      unreadNotices: 0,
+    }
+  case a.NOTIFIER_CLOSE:
+    return {
+      ...state,
+      notice: null,
+    }
+  default:
+    return state
   }
 }

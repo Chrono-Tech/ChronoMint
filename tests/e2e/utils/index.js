@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2019, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 /*global windowSize*/
 import puppeteer from 'puppeteer'
 
@@ -17,7 +22,7 @@ export async function openBrowser () {
   return await puppeteer.launch({
     headless: false,
     args: [`--window-size=${windowSize.width},${windowSize.height}`],
-    ignoreHTTPSErrors: true
+    ignoreHTTPSErrors: true,
   })
 }
 

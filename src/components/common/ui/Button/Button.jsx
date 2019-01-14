@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -38,9 +38,9 @@ export default class Button extends PureComponent {
   componentDidMount () {
     const callback = function (e) {
       const rec = this.getBoundingClientRect()
-      let X = e.pageX - rec.x - window.pageXOffset
-      let Y = e.pageY - rec.y - window.pageYOffset
-      let rippleDiv = document.createElement("div")
+      const X = e.pageX - rec.x - window.pageXOffset
+      const Y = e.pageY - rec.y - window.pageYOffset
+      const rippleDiv = document.createElement("div")
       rippleDiv.classList.add('ripple')
       rippleDiv.setAttribute("style", "top:" + Y + "px; left:" + X + "px;")
       this.appendChild(rippleDiv)

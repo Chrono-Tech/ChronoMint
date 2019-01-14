@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -22,7 +22,7 @@ import { prefix } from './lang'
 
 function makeMapStateToProps (state, props) {
   const { wallet } = props
-  let getAmount = walletTokensAmountSelector(wallet.id)
+  const getAmount = walletTokensAmountSelector(wallet.id)
   const mapStateToProps = (ownState) => {
     const selectedCurrency = selectCurrentCurrency(state)
     return {

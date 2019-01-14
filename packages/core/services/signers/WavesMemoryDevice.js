@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -28,7 +28,7 @@ export default class WavesMemoryDevice {
   async signTransaction (unsignedTxData) {
     const transactionData = {
       ...unsignedTxData,
-      senderPublicKey: this.getPublicKey()
+      senderPublicKey: this.getPublicKey(),
     }
 
     const transferTransaction = new this.waves.Transactions.TransferTransaction(transactionData)

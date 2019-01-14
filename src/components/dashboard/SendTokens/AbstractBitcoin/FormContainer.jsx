@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -15,7 +15,7 @@ import {
 } from 'components/constants'
 
 export const mapStateToProps = (state, props) => ({
-  token: state.get(DUCK_TOKENS).item(props.tokenSymbol)
+  token: state.get(DUCK_TOKENS).item(props.tokenSymbol),
 })
 
 export function mapDispatchToProps (dispatch) {

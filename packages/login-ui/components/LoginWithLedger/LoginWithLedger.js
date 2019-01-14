@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -46,11 +46,11 @@ class LoginWithLedger extends Component {
 
   renderState () {
     switch (this.props.deviceState) {
-      case STATE_LOADING:
-        return this.renderLoading()
+    case STATE_LOADING:
+      return this.renderLoading()
 
-      case STATE_ERROR:
-        return this.renderError()
+    case STATE_ERROR:
+      return this.renderError()
     }
   }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -89,52 +89,52 @@ class NotificationContent extends PureComponent {
 
   convertToCurrentTransactionNotification (transaction) {
     switch (true) {
-      // Eth transactions
-      case transaction instanceof TxExecModel:
-        return new CurrentTransactionNotificationModel({
-          id: transaction.id(),
-          hash: transaction.hash,
-          title: transaction.title(),
-          date: transaction.time,
-          details: transaction.details(),
-        })
+    // Eth transactions
+    case transaction instanceof TxExecModel:
+      return new CurrentTransactionNotificationModel({
+        id: transaction.id(),
+        hash: transaction.hash,
+        title: transaction.title(),
+        date: transaction.time,
+        details: transaction.details(),
+      })
 
       // BTC transactions
-      case transaction instanceof TxModel:
-        return new CurrentTransactionNotificationModel({
-          id: transaction.txHash(),
-          hash: transaction.txHash(),
-          title: `${transaction.symbol()} Transfer`,
-          date: transaction.time(),
-          details: transaction.details(),
-        })
+    case transaction instanceof TxModel:
+      return new CurrentTransactionNotificationModel({
+        id: transaction.txHash(),
+        hash: transaction.txHash(),
+        title: `${transaction.symbol()} Transfer`,
+        date: transaction.time(),
+        details: transaction.details(),
+      })
 
-      case transaction instanceof TxDescModel:
-        return new CurrentTransactionNotificationModel({
-          id: transaction.hash,
-          hash: transaction.hash,
-          title: `${transaction.value.symbol()} Transfer`,
-          date: transaction.time,
-          details: transaction.details,
-        })
+    case transaction instanceof TxDescModel:
+      return new CurrentTransactionNotificationModel({
+        id: transaction.hash,
+        hash: transaction.hash,
+        title: `${transaction.value.symbol()} Transfer`,
+        date: transaction.time,
+        details: transaction.details,
+      })
 
-      case transaction instanceof CurrentTransactionNotificationModel:
-        return transaction
+    case transaction instanceof CurrentTransactionNotificationModel:
+      return transaction
 
-      case transaction instanceof TxEntryModel:
-        //TODO change to describer
-        return new CurrentTransactionNotificationModel({
-          id: transaction.key,
-          hash: transaction.hash || <Translate value={`${prefix}.pending`} />,
-          title: <Translate value={`${prefix}.newTx`} />,
-          date: transaction.tx.time,
-          details: [
-            { label: 'From', value: transaction.tx.from },
-            { label: 'To', value: transaction.tx.to },
-          ],
-        })
-      default:
-        break
+    case transaction instanceof TxEntryModel:
+      //TODO change to describer
+      return new CurrentTransactionNotificationModel({
+        id: transaction.key,
+        hash: transaction.hash || <Translate value={`${prefix}.pending`} />,
+        title: <Translate value={`${prefix}.newTx`} />,
+        date: transaction.tx.time,
+        details: [
+          { label: 'From', value: transaction.tx.from },
+          { label: 'To', value: transaction.tx.to },
+        ],
+      })
+    default:
+      break
     }
 
   }

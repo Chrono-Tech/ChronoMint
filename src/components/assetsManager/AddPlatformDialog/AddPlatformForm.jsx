@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -37,7 +37,7 @@ const onSubmit = (values, dispatch) => {
 export default class AddPlatformForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
-    ...formPropTypes
+    ...formPropTypes,
   }
 
   render () {

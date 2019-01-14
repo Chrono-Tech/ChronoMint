@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -46,7 +46,19 @@ import { executeNemTransaction } from '../nem/thunks'
 import { getEthereumSigner } from '../ethereum/selectors'
 import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 import { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
-import { BCC, BTC, DASH, ETH, LHT, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, LTC, WAVES, XEM } from '../../dao/constants'
+import {
+  BCC,
+  BTC,
+  DASH,
+  ETH,
+  LHT,
+  EVENT_NEW_TRANSFER,
+  EVENT_UPDATE_BALANCE,
+  EVENT_UPDATE_TRANSACTION,
+  LTC,
+  WAVES,
+  XEM,
+} from '../../dao/constants'
 
 import TxDescModel from '../../models/TxDescModel'
 import { getTokens } from '../tokens/selectors'
@@ -58,6 +70,7 @@ import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 import { DUCK_ETH_MULTISIG_WALLET, ETH_MULTISIG_BALANCE, ETH_MULTISIG_FETCHED } from '../multisigWallet/constants'
 import BalanceModel from '../../models/tokens/BalanceModel'
 import { getMultisigWallets } from '../wallet/selectors/models'
+import { serializeToTxDescModel } from './utils'
 
 const isOwner = (wallet, account) => {
   return wallet.owners.includes(account)
@@ -158,7 +171,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
     .on(EVENT_UPDATE_BALANCE, ({ account, balance }) => {
 
       switch (token.blockchain()) {
-        case BLOCKCHAIN_ETHEREUM:
+        case BLOCKCHAIN_ETHEREUM: {
           const wallets = getState().get(DUCK_ETH_MULTISIG_WALLET)
           if (wallets.item(account)) {
             dispatch({
@@ -174,22 +187,57 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
             dispatch({ type: WALLETS_UPDATE_BALANCE, walletId: wallet.id, balance: new Amount(balance, token.symbol()) })
           }
           break
-
+        }
         case BLOCKCHAIN_NEM:
         case BLOCKCHAIN_BITCOIN:
         case BLOCKCHAIN_BITCOIN_CASH:
         case BLOCKCHAIN_DASH:
         case BLOCKCHAIN_LITECOIN:
-        case BLOCKCHAIN_WAVES:
+        case BLOCKCHAIN_WAVES: {
           const wallet = getWallet(token.blockchain(), account)(getState())
           dispatch({ type: WALLETS_UPDATE_BALANCE, walletId: wallet.id, balance: new Amount(balance, token.symbol()) })
           break
-
+        }
         default:
           //eslint-disable-next-line no-console
           console.warn('Update balance of unknown token blockchain: ', account, balance, token.toJSON())
           break
       }
+    })
+    .on(EVENT_UPDATE_TRANSACTION, ({ tx }) => {
+      const wallet = getMainWalletForBlockchain(token.blockchain())(getState())
+      const tdx = serializeToTxDescModel(tx)
+      const blocks = { ...wallet.transactions.blocks }
+      if (blocks[tx.blockNumber()]) {
+        let isOut = true
+        const transactions = blocks[tx.blockNumber()].transactions
+        for (const i in transactions) {
+          if (transactions[i].hash === tdx.hash) {
+            transactions[i] = tdx
+            isOut = false
+            break
+          }
+        }
+        if (isOut) {
+          transactions.push(tdx)
+        }
+      } else {
+        blocks[tx.blockNumber()] = {
+          transactions: [tdx],
+        }
+      }
+
+      dispatch({
+        type: WALLETS_UPDATE_WALLET,
+        wallet: new WalletModel({
+          ...wallet,
+          transactions: new TxHistoryModel(
+            {
+              blocks,
+              isFetching: true,
+            }),
+        }),
+      })
     })
 
   dispatch(marketAddToken(token.symbol()))
@@ -336,7 +384,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
 
   switch (blockchain) {
     case BLOCKCHAIN_ETHEREUM:
-    case BLOCKCHAIN_LABOR_HOUR:
+    case BLOCKCHAIN_LABOR_HOUR: {
       if (newDeriveNumber === undefined || newDeriveNumber === null) {
         newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
       }
@@ -344,7 +392,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
       const newWalletSigner = await EthereumMemoryDevice.getDerivedWallet(signer.privateKey, derivedPath)
       address = newWalletSigner.address
       break
-
+    }
     case BLOCKCHAIN_BITCOIN:
       if (newDeriveNumber === undefined || newDeriveNumber === null) {
         newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
@@ -393,7 +441,6 @@ export const getTransactionsForMainWallet = ({ blockchain, address, forcedOffset
   if (!wallet) {
     return null
   }
-
   dispatch({
     type: WALLETS_UPDATE_WALLET,
     wallet: new WalletModel({

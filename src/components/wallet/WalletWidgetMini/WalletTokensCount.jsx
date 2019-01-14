@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -13,7 +13,7 @@ import { prefix } from './lang'
 
 function makeMapStateToProps (state, ownProps) {
   const { wallet } = ownProps
-  let getTokensCount = tokensCountSelector(wallet.id)
+  const getTokensCount = tokensCountSelector(wallet.id)
   const mapStateToProps = (ownState) => {
     return {
       tokensCount: getTokensCount(ownState),

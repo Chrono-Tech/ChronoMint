@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -13,7 +13,7 @@ export const WAVES_MAINNET_NODE = new WavesMiddlewareNode({
     timeout: 30000,
   }),
   socket: {
-    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
+    baseURL: 'wss://rabbitmq-prod-ws.chronobank.io/ws',
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
@@ -30,7 +30,7 @@ export const WAVES_TESTNET_NODE = new WavesMiddlewareNode({
     timeout: 30000,
   }),
   socket: {
-    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
+    baseURL: 'wss://rabbitmq-stage-webstomp.chronobank.io/ws',
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {

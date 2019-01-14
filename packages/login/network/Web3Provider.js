@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -150,7 +150,7 @@ export class Web3Provider {
   }
 }
 
-declare type Web3Provider = {
+/*declare type Web3Provider = {
   ...Web3Provider,
   getBlock: Function,
   getBlockNumber: Function,
@@ -162,6 +162,6 @@ declare type Web3Provider = {
   getCode: Function,
   getGasPrice: Function,
   estimateGas: Function,
-}
+}*/
 
 export default new Web3Provider(null, true)

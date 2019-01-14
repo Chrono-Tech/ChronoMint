@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -15,7 +15,7 @@ import { selectCurrentCurrency } from '@chronobank/market/redux/selectors'
 function makeMapStateToProps (state, ownProps) {
   const { wallet } = ownProps
   const mainSymbol = getMainSymbolForBlockchain(wallet.blockchain)
-  let getBalance = walletBalanceSelector(wallet.id, mainSymbol)
+  const getBalance = walletBalanceSelector(wallet.id, mainSymbol)
   const mapStateToProps = (ownState) => {
     const selectedCurrency = selectCurrentCurrency(state)
     return {

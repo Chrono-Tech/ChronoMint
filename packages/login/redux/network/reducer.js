@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -64,7 +64,7 @@ export default (state = initialState, action) => {
     case actions.NETWORK_RESET_NETWORK:
       return {
         ...state,
-        selectedNetworkId:  null,
+        selectedNetworkId: null,
       }
     case actions.NETWORK_SET_PROVIDER:
       return {
@@ -173,6 +173,16 @@ export default (state = initialState, action) => {
       }
     case actions.NETWORK_GET_ACCOUNTS:
       return state
+    case actions.NETWORK_DISABLE_PROVIDER:
+      return {
+        ...state,
+        providers: [...state.providers.map(provider => {
+          if (provider.id === action.providerId) {
+            provider.disabled = true
+          }
+          return provider
+        })],
+      }
     default:
       return state
   }

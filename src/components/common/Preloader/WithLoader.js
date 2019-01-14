@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -38,7 +38,7 @@ export default class WithLoader extends PureComponent {
   }
 
   renderContent () {
-    const { children, payload, loader, showLoader, ...rest } = this.props
+    const { children, payload, ...rest } = this.props
 
     if (typeof children !== 'function') {
       return 'Children is not a function'

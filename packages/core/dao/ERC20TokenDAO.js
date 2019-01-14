@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -95,12 +95,12 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
       return
     }
     switch (`${data.event}`.toLowerCase()) {
-      case 'transfer':
-        this.handleTransferData(data)
-        break
-      case 'approval':
-        this.handleApprovalData(data)
-        break
+    case 'transfer':
+      this.handleTransferData(data)
+      break
+    case 'approval':
+      this.handleApprovalData(data)
+      break
     }
   }
 

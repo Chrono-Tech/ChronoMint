@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -19,44 +19,44 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    // session
-    case types.SESSION_CREATE:
-      return {
-        ...state,
-        account: action.account,
-        isSession: true,
-      }
-    case types.SESSION_DESTROY: {
-      return initialState
+  // session
+  case types.SESSION_CREATE:
+    return {
+      ...state,
+      account: action.account,
+      isSession: true,
     }
-    // profile CRUD
-    case types.SESSION_PROFILE:
-      return {
-        ...state,
-        profile: action.profile,
-        isCBE: action.isCBE,
-      }
-    case types.SESSION_PROFILE_UPDATE:
-      return {
-        ...state,
-        profile: action.profile,
-      }
-    case types.GAS_SLIDER_MULTIPLIER_CHANGE:
-      return {
-        ...state,
-        gasPriceMultiplier: state.gasPriceMultiplier.set(action.id, action.value),
-      }
-    case types.SET_PROFILE_SIGNATURE:
-      return {
-        ...state,
-        profileSignature: action.signature,
-      }
-    case types.SET_WEB3_INSTANCE:
-      return {
-        ...state,
-        web3: action.web3,
-      }
-    default:
-      return state
+  case types.SESSION_DESTROY: {
+    return initialState
+  }
+  // profile CRUD
+  case types.SESSION_PROFILE:
+    return {
+      ...state,
+      profile: action.profile,
+      isCBE: action.isCBE,
+    }
+  case types.SESSION_PROFILE_UPDATE:
+    return {
+      ...state,
+      profile: action.profile,
+    }
+  case types.GAS_SLIDER_MULTIPLIER_CHANGE:
+    return {
+      ...state,
+      gasPriceMultiplier: state.gasPriceMultiplier.set(action.id, action.value),
+    }
+  case types.SET_PROFILE_SIGNATURE:
+    return {
+      ...state,
+      profileSignature: action.signature,
+    }
+  case types.SET_WEB3_INSTANCE:
+    return {
+      ...state,
+      web3: action.web3,
+    }
+  default:
+    return state
   }
 }

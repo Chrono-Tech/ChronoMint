@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -244,34 +244,34 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   async _decodeArgs (func: string, args: Object) {
     switch (func) {
-      case 'transfer': {
-        const symbol = web3Converter.bytesToString(args._symbol)
-        return {
-          symbol,
-          value: new Amount(args._value, symbol),
-          to: args._to,
-        }
+    case 'transfer': {
+      const symbol = web3Converter.bytesToString(args._symbol)
+      return {
+        symbol,
+        value: new Amount(args._value, symbol),
+        to: args._to,
       }
-      case 'changeRequirement':
-        return {
-          requiredSignatures: args._newRequired.toNumber(),
-        }
-      case 'addOwner':
-        return {
-          owner: args._owner,
-        }
-      case 'removeOwner':
-        return {
-          owner: args._owner,
-        }
-      case 'kill':
-        return {
-          to: args._to,
-        }
-      default:
-        // eslint-disable-next-line
+    }
+    case 'changeRequirement':
+      return {
+        requiredSignatures: args._newRequired.toNumber(),
+      }
+    case 'addOwner':
+      return {
+        owner: args._owner,
+      }
+    case 'removeOwner':
+      return {
+        owner: args._owner,
+      }
+    case 'kill':
+      return {
+        to: args._to,
+      }
+    default:
+      // eslint-disable-next-line
         console.warn('warn: decoder not implemented for function: ', func)
-        return args
+      return args
     }
   }
 

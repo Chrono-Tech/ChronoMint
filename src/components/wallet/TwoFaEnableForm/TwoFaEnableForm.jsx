@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -114,7 +114,7 @@ export default class TwoFaEnableForm extends PureComponent {
     const { confirm2FASecret, account, confirmToken } = this.props
     this.setState({ isLoading: true, success: null })
     confirm2FASecret(account, confirmToken, (success) => {
-      let newState = { isLoading: false, success }
+      const newState = { isLoading: false, success }
       if (success) {
         newState.step = STEPS[2]
         this.props.handleSetTwoFAConfirmed(success)

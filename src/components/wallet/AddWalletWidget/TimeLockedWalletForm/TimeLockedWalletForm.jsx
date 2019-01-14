@@ -36,7 +36,7 @@ function mapStateToProps (state, ownProps) {
     ownersCount: owners ? owners.size + 1 : 1,
     account: state.get(DUCK_SESSION).account,
     profile: state.get(DUCK_SESSION).profile,
-    data: Map({ owners, timeLockDate, timeLockTime, requiredSignatures })
+    data: Map({ owners, timeLockDate, timeLockTime, requiredSignatures }),
   }
 }
 
@@ -58,11 +58,12 @@ export default class TimeLockedWalletForm extends PureComponent {
     ...formPropTypes,
   }
   state = {
-    isHaveEth: false
+    isHaveEth: false,
   }
 
-  componentWillReceiveProps (nextProps): void {
-    if ((nextProps.balance !== this.props.balance || nextProps.data !== this.props.data) && nextProps.valid) {
+
+  componentDidUpdate (prevProps): void {
+    if ((prevProps.balance !== this.props.balance || prevProps.data !== this.props.data) && this.props.valid) {
       this.props.isHaveEthToCreate(this.props.data, this.props).then( data => this.setState({ isHaveEth: data }))
     }
   }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -49,24 +49,24 @@ export default class SendTokens extends PureComponent {
 
   getFormName (blockchain: string) {
     switch (blockchain) {
-      case BLOCKCHAIN_BITCOIN:
-      case BLOCKCHAIN_BITCOIN_CASH:
-      case BLOCKCHAIN_LITECOIN:
-        return Bitcoin
-      case BLOCKCHAIN_DASH:
-        return Dash
-      case BLOCKCHAIN_ETHEREUM:
-        return Ethereum
-      case BLOCKCHAIN_LABOR_HOUR:
-        return LaborHour
-      case BLOCKCHAIN_WAVES:
-        return Waves
-      case BLOCKCHAIN_NEM:
-        return Nem
-      case BLOCKCHAIN_EOS:
-        return Eos
-      default:
-        return null
+    case BLOCKCHAIN_BITCOIN:
+    case BLOCKCHAIN_BITCOIN_CASH:
+    case BLOCKCHAIN_LITECOIN:
+      return Bitcoin
+    case BLOCKCHAIN_DASH:
+      return Dash
+    case BLOCKCHAIN_ETHEREUM:
+      return Ethereum
+    case BLOCKCHAIN_LABOR_HOUR:
+      return LaborHour
+    case BLOCKCHAIN_WAVES:
+      return Waves
+    case BLOCKCHAIN_NEM:
+      return Nem
+    case BLOCKCHAIN_EOS:
+      return Eos
+    default:
+      return null
     }
   }
 

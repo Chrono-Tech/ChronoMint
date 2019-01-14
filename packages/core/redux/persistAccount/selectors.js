@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -81,10 +81,10 @@ export const getAddressCache = createSelector(
 
 export const getActiveBlockchainListByType = (walletType) => {
   switch (walletType) {
-    case WALLET_TYPE_TREZOR:
-      return TREZOR_ACTIVE_BLOCKCHAINS
+  case WALLET_TYPE_TREZOR:
+    return TREZOR_ACTIVE_BLOCKCHAINS
 
-    default:
-      return DEFAULT_ACTIVE_BLOCKCHAINS
+  default:
+    return DEFAULT_ACTIVE_BLOCKCHAINS
   }
 }

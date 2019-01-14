@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -21,7 +21,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-class SidePanel extends PureComponent {
+export default class SidePanel extends PureComponent {
 
   static propTypes = {
     isOpened: PropTypes.bool,
@@ -102,5 +102,3 @@ class SidePanel extends PureComponent {
     )
   }
 }
-
-export default SidePanel

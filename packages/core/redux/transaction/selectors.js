@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -42,7 +42,7 @@ export const pendingTransactionsSelector = () => createSelector(
   (scope) => {
     let pendingTransactions = []
 
-    Object.values(scope).map(blockchainScope => {
+    Object.values(scope).map((blockchainScope) => {
       if (blockchainScope == null || blockchainScope.pending == null) {
         return null
       }

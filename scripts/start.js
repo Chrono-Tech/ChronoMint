@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
@@ -13,7 +13,7 @@ const os = require('os')
 const chalk = require('chalk')
 const webpack = require('webpack')
 const WebpackDevServer = require('webpack-dev-server')
-const config = require('../config/webpack.config.dev')
+const config = require('../config/webpack.new.dev')
 
 const baseSchema = process.env.BASE_SCHEMA || 'https'
 
@@ -66,115 +66,115 @@ function clearConsole () {
   // process.stdout.write('\x1B[2J\x1B[0f');
 }
 
-const compiler = webpack(config, handleCompile)
+// const compiler = webpack(config, handleCompile)
+//
+// compiler.plugin('invalid', function () {
+//   clearConsole()
+//   // eslint-disable-next-line
+//   console.log('Compiling...')
+// })
+//
+// const decycle = (obj) => {
+//   let pathArr = []
+//   const recurs = (obj) => {
+//     pathArr.push(obj)
+//     for (let o in obj) {
+//       if (obj.hasOwnProperty(o)) {
+//         if (pathArr.includes(obj[o])) {
+//           obj[o] = 'Circular'
+//         } else {
+//           recurs(obj[o])
+//         }
+//       }
+//     }
+//     pathArr.pop()
+//   }
+//   recurs(obj)
+// }
+//
+// const showAddresses = (interfaces) => {
+//   for (let k in interfaces) {
+//     for (let k2 in interfaces[k]) {
+//       let address = interfaces[k][k2]
+//       if (address.family === 'IPv4' && !address.internal) {
+//         // eslint-disable-next-line
+//         console.log(`${baseSchema}://${address.address}:3000/`)
+//       }
+//     }
+//   }
+// }
+//
+// compiler.plugin('done', function (stats) {
+//   clearConsole()
+//   const hasErrors = stats.hasErrors()
+//   const hasWarnings = stats.hasWarnings()
+//   if (!hasErrors && !hasWarnings) {
+//     let showStats = process.argv.some((arg) =>
+//       arg.indexOf('--stats') > -1
+//     )
+//     if (showStats) {
+//       decycle(stats)
+//       let str = JSON.stringify(stats)
+//       // eslint-disable-next-line
+//       console.log(str)
+//       process.exit(0)
+//     }
+//     // eslint-disable-next-line
+//     console.log(chalk.green('Compiled successfully!'))
+//     // eslint-disable-next-line
+//     console.log(`The layout is running at ${baseSchema}://localhost:3000/`)
+//
+//     // eslint-disable-next-line
+//     console.log('External access:')
+//
+//     const interfaces = os.networkInterfaces()
+//     showAddresses(interfaces)
+//     return
+//   }
+//
+//   const json = stats.toJson()
+//   let formattedErrors = json.errors.map((message) =>
+//     'Error in ' + formatMessage(message)
+//   )
+//   const formattedWarnings = json.warnings.map((message) =>
+//     'Warning in ' + formatMessage(message)
+//   )
+//
+//   if (hasErrors) {
+//     // eslint-disable-next-line
+//     console.log(chalk.red('Failed to compile.'))
+//     if (formattedErrors.some(isLikelyASyntaxError)) {
+//       // If there are any syntax errors, show just them.
+//       // This prevents a confusing ESLint parsing error
+//       // preceding a much more useful Babel syntax error.
+//       formattedErrors = formattedErrors.filter(isLikelyASyntaxError)
+//     }
+//     formattedErrors.forEach((message) => {
+//       // eslint-disable-next-line
+//       console.log(message)
+//     })
+//     // If errors exist, ignore warnings.
+//     return
+//   }
+//
+//   if (hasWarnings) {
+//     // eslint-disable-next-line
+//     console.log(chalk.yellow('Compiled with warnings.'))
+//     formattedWarnings.forEach((message) => {
+//       // eslint-disable-next-line
+//       console.log(message)
+//     })
+//
+//     // eslint-disable-next-line
+//     console.log('You may use special comments to disable some warnings.')
+//     // eslint-disable-next-line
+//     console.log('Use ' + chalk.yellow('// eslint-disable-next-line') + ' to ignore the next line.')
+//     // eslint-disable-next-line
+//     console.log('Use ' + chalk.yellow('/* eslint-disable */') + ' to ignore all warnings in a file.')
+//   }
+// })
 
-compiler.plugin('invalid', function () {
-  clearConsole()
-  // eslint-disable-next-line
-  console.log('Compiling...')
-})
-
-const decycle = (obj) => {
-  let pathArr = []
-  const recurs = (obj) => {
-    pathArr.push(obj)
-    for (let o in obj) {
-      if (obj.hasOwnProperty(o)) {
-        if (pathArr.includes(obj[o])) {
-          obj[o] = 'Circular'
-        } else {
-          recurs(obj[o])
-        }
-      }
-    }
-    pathArr.pop()
-  }
-  recurs(obj)
-}
-
-const showAddresses = (interfaces) => {
-  for (let k in interfaces) {
-    for (let k2 in interfaces[k]) {
-      let address = interfaces[k][k2]
-      if (address.family === 'IPv4' && !address.internal) {
-        // eslint-disable-next-line
-        console.log(`${baseSchema}://${address.address}:3000/`)
-      }
-    }
-  }
-}
-
-compiler.plugin('done', function (stats) {
-  clearConsole()
-  const hasErrors = stats.hasErrors()
-  const hasWarnings = stats.hasWarnings()
-  if (!hasErrors && !hasWarnings) {
-    let showStats = process.argv.some((arg) =>
-      arg.indexOf('--stats') > -1
-    )
-    if (showStats) {
-      decycle(stats)
-      let str = JSON.stringify(stats)
-      // eslint-disable-next-line
-      console.log(str)
-      process.exit(0)
-    }
-    // eslint-disable-next-line
-    console.log(chalk.green('Compiled successfully!'))
-    // eslint-disable-next-line
-    console.log(`The layout is running at ${baseSchema}://localhost:3000/`)
-
-    // eslint-disable-next-line
-    console.log('External access:')
-
-    const interfaces = os.networkInterfaces()
-    showAddresses(interfaces)
-    return
-  }
-
-  const json = stats.toJson()
-  let formattedErrors = json.errors.map((message) =>
-    'Error in ' + formatMessage(message)
-  )
-  const formattedWarnings = json.warnings.map((message) =>
-    'Warning in ' + formatMessage(message)
-  )
-
-  if (hasErrors) {
-    // eslint-disable-next-line
-    console.log(chalk.red('Failed to compile.'))
-    if (formattedErrors.some(isLikelyASyntaxError)) {
-      // If there are any syntax errors, show just them.
-      // This prevents a confusing ESLint parsing error
-      // preceding a much more useful Babel syntax error.
-      formattedErrors = formattedErrors.filter(isLikelyASyntaxError)
-    }
-    formattedErrors.forEach((message) => {
-      // eslint-disable-next-line
-      console.log(message)
-    })
-    // If errors exist, ignore warnings.
-    return
-  }
-
-  if (hasWarnings) {
-    // eslint-disable-next-line
-    console.log(chalk.yellow('Compiled with warnings.'))
-    formattedWarnings.forEach((message) => {
-      // eslint-disable-next-line
-      console.log(message)
-    })
-
-    // eslint-disable-next-line
-    console.log('You may use special comments to disable some warnings.')
-    // eslint-disable-next-line
-    console.log('Use ' + chalk.yellow('// eslint-disable-next-line') + ' to ignore the next line.')
-    // eslint-disable-next-line
-    console.log('Use ' + chalk.yellow('/* eslint-disable */') + ' to ignore all warnings in a file.')
-  }
-})
-
-new WebpackDevServer(compiler, {
+new WebpackDevServer(webpack(config), {
   historyApiFallback: true,
   hot: true, // Note: only CSS is currently hot reloaded
   publicPath: config.output.publicPath,
@@ -200,12 +200,14 @@ new WebpackDevServer(compiler, {
     },
   },
 }).listen(3000, '0.0.0.0', function (err, result) {
-  if (err) {
-    // eslint-disable-next-line
-    return console.log(err)
-  }
-
-  clearConsole()
-  // eslint-disable-next-line
-  console.log(chalk.cyan('Starting the development server...'))
+  // TODO @abdulov remove console.log
+  console.log('%c err, result', 'background: #222; color: #fff', err, result)
+  // if (err) {
+  //   // eslint-disable-next-line
+  //   return console.log(err)
+  // }
+  //
+  // clearConsole()
+  // // eslint-disable-next-line
+  // console.log(chalk.cyan('Starting the development server...'))
 })

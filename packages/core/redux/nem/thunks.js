@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -245,6 +245,7 @@ const rejectTransaction = (entry) => (dispatch) => {
 export const enableNem = () => async (dispatch) => {
   await dispatch(initToken())
   await dispatch(initWalletFromKeys())
+  nemProvider.connectCurrentNode()
 }
 
 const initToken = () => async (dispatch) => {
@@ -323,5 +324,6 @@ export const disableNem = () => async (dispatch, getState) => {
     nemProvider.unsubscribe(wallet.address)
     dispatch({ type: WALLETS_UNSET, wallet })
   })
+  nemProvider.disconnectCurrentNode()
 }
 

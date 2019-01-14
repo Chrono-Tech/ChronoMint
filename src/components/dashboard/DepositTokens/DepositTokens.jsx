@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -44,17 +44,17 @@ export default class DepositTokens extends PureComponent {
     const amount = new Amount(token.addDecimals(values.get('amount')), token.id())
 
     switch (values.get('action')) {
-      case ACTION_APPROVE:
-        this.props.mainApprove(token, amount, values.get('spender'), undefined, {
-          skipSlider: true,
-        })
-        break
-      case ACTION_DEPOSIT:
-        this.props.depositAsset(amount, token)
-        break
-      case ACTION_WITHDRAW:
-        this.props.withdrawAsset(amount, token)
-        break
+    case ACTION_APPROVE:
+      this.props.mainApprove(token, amount, values.get('spender'), undefined, {
+        skipSlider: true,
+      })
+      break
+    case ACTION_DEPOSIT:
+      this.props.depositAsset(amount, token)
+      break
+    case ACTION_WITHDRAW:
+      this.props.withdrawAsset(amount, token)
+      break
     }
   }
 

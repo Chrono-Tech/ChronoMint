@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 @import '~material-colors-scss/function';
@@ -110,6 +110,7 @@ $color-grey-1: #E5E5E5;
 $color-grey-2: #7F7F7F;
 $color-hover: #FFB54E;
 $cubic-animation: cubic-bezier(0.23, 1, 0.32, 1);
+$animation-timeout: 200ms;
 $color-blue: #2f2d59;
 $background-color: #242045;
 $icon-color: #dbaa6e;

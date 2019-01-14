@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -32,12 +32,12 @@ export const createWavesTxEntryModel = (entry, options = {}) => {
 
 export const describeTransaction = (type, params) => {
   switch (type) {
-    case TRANSACTION_TYPE_ISSUE :
-      return describeIssueTransaction(params)
-    case TRANSACTION_TYPE_TRANSFER :
-      return describeTransferTransaction(params.to, params.amount)
-    default:
-      return null
+  case TRANSACTION_TYPE_ISSUE :
+    return describeIssueTransaction(params)
+  case TRANSACTION_TYPE_TRANSFER :
+    return describeTransferTransaction(params.to, params.amount)
+  default:
+    return null
   }
 }
 

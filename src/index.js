@@ -1,8 +1,9 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
+import 'regenerator-runtime/runtime'
 import 'flexboxgrid/css/flexboxgrid.css'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import React from 'react'

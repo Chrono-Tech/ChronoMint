@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -65,41 +65,41 @@ class RecoverAccountPage extends PureComponent {
 
   getCurrentPage () {
     switch(this.state.page){
-      case RecoverAccountPage.PAGES.RECOVER_ACCOUNT_FORM:
-        return (
-          <RecoverAccountContainer
-            previousPage={this.previousPage.bind(this)}
-            selectedWallet={this.state.selectedWallet}
-            navigateToSelectWallet={this.navigateToSelectAccount.bind(this)}
-            onSubmitSuccess={this.onSubmitMnemonicSuccess.bind(this)}
-          />
-        )
+    case RecoverAccountPage.PAGES.RECOVER_ACCOUNT_FORM:
+      return (
+        <RecoverAccountContainer
+          previousPage={this.previousPage.bind(this)}
+          selectedWallet={this.state.selectedWallet}
+          navigateToSelectWallet={this.navigateToSelectAccount.bind(this)}
+          onSubmitSuccess={this.onSubmitMnemonicSuccess.bind(this)}
+        />
+      )
 
-      case RecoverAccountPage.PAGES.RESET_PASSWORD_FORM:
-        return (
-          <ResetPasswordContainer
-            previousPage={this.previousPage.bind(this)}
-            selectedWallet={this.state.selectedWallet}
-            onSubmit={this.onSubmitResetPassword.bind(this)}
-          />
-        )
+    case RecoverAccountPage.PAGES.RESET_PASSWORD_FORM:
+      return (
+        <ResetPasswordContainer
+          previousPage={this.previousPage.bind(this)}
+          selectedWallet={this.state.selectedWallet}
+          onSubmit={this.onSubmitResetPassword.bind(this)}
+        />
+      )
 
-      case RecoverAccountPage.PAGES.SELECT_WALLET_FORM:
-        return (
-          <AccountSelectorContainer
-            onWalletSelect={this.onWalletSelect.bind(this)}
-          />
-        )
+    case RecoverAccountPage.PAGES.SELECT_WALLET_FORM:
+      return (
+        <AccountSelectorContainer
+          onWalletSelect={this.onWalletSelect.bind(this)}
+        />
+      )
 
-      default:
-        return (
-          <RecoverAccountContainer
-            previousPage={this.previousPage.bind(this)}
-            selectedWallet={this.state.selectedWallet}
-            navigateToSelectWallet={this.navigateToSelectAccount.bind(this)}
-            onSubmitSuccess={this.onSubmitMnemonicSuccess.bind(this)}
-          />
-        )
+    default:
+      return (
+        <RecoverAccountContainer
+          previousPage={this.previousPage.bind(this)}
+          selectedWallet={this.state.selectedWallet}
+          navigateToSelectWallet={this.navigateToSelectAccount.bind(this)}
+          onSubmitSuccess={this.onSubmitMnemonicSuccess.bind(this)}
+        />
+      )
     }
   }
 

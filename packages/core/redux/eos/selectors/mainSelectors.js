@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -60,10 +60,10 @@ export const getEosSigner = (state) => {
   const account = getPersistAccount(state)
 
   switch (account.decryptedWallet.entry.encrypted[0].type) {
-    case WALLET_TYPE_MEMORY: {
-      const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
-      return new EosMemoryDevice({ privateKey })
-    }
+  case WALLET_TYPE_MEMORY: {
+    const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
+    return new EosMemoryDevice({ privateKey })
+  }
   }
 }
 

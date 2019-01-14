@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -23,15 +23,15 @@ export const getDashSigner = (state) => {
   const isTestnet = networkData[BLOCKCHAIN_DASH] === 'testnet'
 
   switch (account.decryptedWallet.entry.encrypted[0].type) {
-    case WALLET_TYPE_MEMORY: {
-      const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
-      return new DashMemoryDevice({ privateKey, network })
-    }
-    case WALLET_TYPE_TREZOR: {
-      return new DashTrezorDevice({ network, isTestnet })
-    }
-    case WALLET_TYPE_METAMASK: {
-      return new MetamaskPlugin()
-    }
+  case WALLET_TYPE_MEMORY: {
+    const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
+    return new DashMemoryDevice({ privateKey, network })
+  }
+  case WALLET_TYPE_TREZOR: {
+    return new DashTrezorDevice({ network, isTestnet })
+  }
+  case WALLET_TYPE_METAMASK: {
+    return new MetamaskPlugin()
+  }
   }
 }

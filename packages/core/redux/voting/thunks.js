@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -44,27 +44,27 @@ export const selectPoll = (id) => (dispatch) =>
 
 export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
   switch (notice.status()) {
-    case IS_CREATED: {
-      dispatch(VotingActions.handlePollRemoved(notice.transactionHash()))
-      const noticePoll = notice.poll()
-      if (noticePoll) {
-        dispatch(VotingActions.handlePollCreated(noticePoll))
-      }
-      break
+  case IS_CREATED: {
+    dispatch(VotingActions.handlePollRemoved(notice.transactionHash()))
+    const noticePoll = notice.poll()
+    if (noticePoll) {
+      dispatch(VotingActions.handlePollCreated(noticePoll))
     }
-    case IS_REMOVED:
-      dispatch(VotingActions.handlePollRemoved(notice.pollId()))
-      break
-    case IS_ACTIVATED:
-    case IS_ENDED:
-    case IS_VOTED:
-    case IS_UPDATED: {
-      const noticePoll = notice.poll()
-      if (noticePoll) {
-        dispatch(VotingActions.handlePollCreated(noticePoll))
-      }
-      break
+    break
+  }
+  case IS_REMOVED:
+    dispatch(VotingActions.handlePollRemoved(notice.pollId()))
+    break
+  case IS_ACTIVATED:
+  case IS_ENDED:
+  case IS_VOTED:
+  case IS_UPDATED: {
+    const noticePoll = notice.poll()
+    if (noticePoll) {
+      dispatch(VotingActions.handlePollCreated(noticePoll))
     }
+    break
+  }
   }
   dispatch(notify(notice))
 }

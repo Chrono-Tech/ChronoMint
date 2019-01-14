@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 import { Address, Script, Transaction, Unit } from 'dashcore-lib'
@@ -84,7 +84,7 @@ async function getUnsignedTransaction (dispatch, from, to, amount, blockchain) {
     throw new Error(`Can't find utxos for address: ${from}`)
   }
 
-  const utxos = utxosRawData.map(utxo => {
+  const utxos = utxosRawData.map((utxo) => {
     utxo.scriptPubKey = Script.fromAddress(utxo.address)
     return new Transaction.UnspentOutput(utxo)
   })

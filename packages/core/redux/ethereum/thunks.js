@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -59,6 +59,7 @@ export const initEthereum = ({ web3 }) => (dispatch) => {
 export const enableEthereum = () => async (dispatch) => {
   await dispatch(initTokens())
   await dispatch(initWallet())
+  ethereumProvider.connectCurrentNode()
 }
 
 export const initTokens = () => async (dispatch, getState) => {
@@ -158,13 +159,14 @@ export const updateWalletBalanceMiddleware = (wallet) => (dispatch) => {
   getWalletBalances({ wallet })
     .then((balancesResult) => {
       try {
-        dispatch({ type: WALLETS_SET, wallet: new WalletModel({
-          ...wallet,
-          balances: {
-            ...wallet.balances,
-            ...formatBalances(wallet.blockchain, balancesResult),
-          },
-        }),
+        dispatch({
+          type: WALLETS_SET, wallet: new WalletModel({
+            ...wallet,
+            balances: {
+              ...wallet.balances,
+              ...formatBalances(wallet.blockchain, balancesResult),
+            },
+          }),
         })
       } catch (e) {
         // eslint-disable-next-line no-console

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -16,7 +16,6 @@ import { BLOCKCHAIN_EOS } from '@chronobank/core/dao/constants'
 import { connect } from 'react-redux'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { DUCK_WALLET } from '@chronobank/core/redux/wallet/constants'
-import { formatDataAndGetTransactionsForWallet } from '@chronobank/core/redux/wallet/actions'
 import { getWalletInfo } from '@chronobank/core/redux/wallets/selectors/wallet'
 import { isTestingNetwork } from '@chronobank/login/network/settings'
 import { navigateToWallets } from 'redux/ui/navigation'
@@ -26,6 +25,7 @@ import './WalletContent.scss'
 function makeMapStateToProps (state) {
   const { blockchain, address } = state.get(DUCK_WALLET)
   const getWallet = getWalletInfo(blockchain, address)
+
   const mapStateToProps = (ownState) => {
     const network = state.get(DUCK_NETWORK)
     return {
@@ -41,7 +41,6 @@ function makeMapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     navigateToWallets: () => dispatch(navigateToWallets()),
-    getTransactions: (params) => dispatch(formatDataAndGetTransactionsForWallet(params)),
   }
 }
 
@@ -67,43 +66,37 @@ export default class WalletContent extends Component {
   }
 
   componentDidMount () {
-    this.handleGetTransactions(true)
     window.scrollTo(0, 0)
-  }
-
-  handleGetTransactions = (forcedOffset) => {
-    const { wallet, address, blockchain } = this.props
-    this.props.getTransactions({ wallet, address, blockchain, forcedOffset })
   }
 
   getWidgets () {
     const { wallet } = this.props
     switch (wallet.blockchain) {
-      case BLOCKCHAIN_EOS:
-        return (
-          <div styleName='root'>
-            <WalletWidgetDetail wallet={wallet} />
+    case BLOCKCHAIN_EOS:
+      return (
+        <div styleName='root'>
+          <WalletWidgetDetail wallet={wallet} />
 
-            <TokensListWidget walletId={wallet.id} />
+          <TokensListWidget walletId={wallet.id} />
 
-            <TransactionsListWidget wallet={wallet} />
-          </div>
-        )
-      default:
-        // TODO @Abdulov refactor this case after wallets refactoring
-        return (
-          <div styleName='root'>
-            <WalletWidgetDetail wallet={wallet} />
+          <TransactionsListWidget wallet={wallet} />
+        </div>
+      )
+    default:
+      // TODO @Abdulov refactor this case after wallets refactoring
+      return (
+        <div styleName='root'>
+          <WalletWidgetDetail wallet={wallet} />
 
-            <TokensListWidget walletId={wallet.id} />
+          <TokensListWidget walletId={wallet.id} />
 
-            <PendingTxWidget wallet={wallet} />
+          <PendingTxWidget wallet={wallet} />
 
-            <OwnersListWidget wallet={wallet} />
+          <OwnersListWidget wallet={wallet} />
 
-            <TransactionsListWidget wallet={wallet} />
-          </div>
-        )
+          <TransactionsListWidget wallet={wallet} />
+        </div>
+      )
     }
 
   }

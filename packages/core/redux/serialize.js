@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -79,76 +79,76 @@ function serialize (Immutable, refs) {
       if (typeof value === 'object' && value !== null && '__serializedType__' in value) {
         const data = value.data
         switch (value.__serializedType__) {
-          case 'Date':
-            return new Date(data)
-          case 'Amount':
-            return new models.Amount(data.value, data.symbol, data.isLoaded)
-          case 'BigNumber':
-            return new BigNumber(data)
-          case 'WalletModel':
-            return new models.WalletModel(data)
-          case 'MultisigEthWalletModel':
-            return new models.MultisigEthWalletModel(data)
-          case 'TxHistoryModel':
-            return new models.TxHistoryModel(data)
-          case 'BalanceModel':
-            return new models.BalanceModel(data)
-          case 'BalancesCollection':
-            return new models.BalancesCollection(data)
-          case 'TxModel':
-            return new models.TxModel(data)
-          case 'TransactionsCollection':
-            return new models.TransactionsCollection(data)
-          case 'OwnerModel':
-            return new models.OwnerModel(data)
-          case 'OwnerCollection':
-            return new models.OwnerCollection(data)
-          case 'TxExecModel':
-            return new models.TxExecModel(data)
-          case 'MultisigWalletPendingTxModel':
-            return new models.MultisigWalletPendingTxModel(data)
-          case 'AddressModel':
-            return new models.AddressModel(data)
-          case 'AddressesCollection':
-            return new models.AddressesCollection(data)
-          case 'DerivedWalletModel':
-            return new models.DerivedWalletModel(data)
-          case 'MultisigWalletCollection':
-            return new models.MultisigWalletCollection(data)
-          case 'AllowanceModel':
-            return new models.AllowanceModel(data)
-          case 'AllowanceCollection':
-            return new models.AllowanceCollection(data)
-          case 'MainWalletModel':
-            return new models.MainWalletModel(data)
-          case 'AccountModel':
-            return null
+        case 'Date':
+          return new Date(data)
+        case 'Amount':
+          return new models.Amount(data.value, data.symbol, data.isLoaded)
+        case 'BigNumber':
+          return new BigNumber(data)
+        case 'WalletModel':
+          return new models.WalletModel(data)
+        case 'MultisigEthWalletModel':
+          return new models.MultisigEthWalletModel(data)
+        case 'TxHistoryModel':
+          return new models.TxHistoryModel(data)
+        case 'BalanceModel':
+          return new models.BalanceModel(data)
+        case 'BalancesCollection':
+          return new models.BalancesCollection(data)
+        case 'TxModel':
+          return new models.TxModel(data)
+        case 'TransactionsCollection':
+          return new models.TransactionsCollection(data)
+        case 'OwnerModel':
+          return new models.OwnerModel(data)
+        case 'OwnerCollection':
+          return new models.OwnerCollection(data)
+        case 'TxExecModel':
+          return new models.TxExecModel(data)
+        case 'MultisigWalletPendingTxModel':
+          return new models.MultisigWalletPendingTxModel(data)
+        case 'AddressModel':
+          return new models.AddressModel(data)
+        case 'AddressesCollection':
+          return new models.AddressesCollection(data)
+        case 'DerivedWalletModel':
+          return new models.DerivedWalletModel(data)
+        case 'MultisigWalletCollection':
+          return new models.MultisigWalletCollection(data)
+        case 'AllowanceModel':
+          return new models.AllowanceModel(data)
+        case 'AllowanceCollection':
+          return new models.AllowanceCollection(data)
+        case 'MainWalletModel':
+          return new models.MainWalletModel(data)
+        case 'AccountModel':
+          return null
 
           // Immutable types
-          case 'ImmutableMap':
-            return Immutable.Map(data)
-          case 'ImmutableOrderedMap':
-            return Immutable.OrderedMap(data)
-          case 'ImmutableList':
-            return Immutable.List(data)
-          case 'ImmutableRange':
-            return Immutable.Range(data._start, data._end, data._step)
-          case 'ImmutableRepeat':
-            return Immutable.Repeat(data._value, data.size)
-          case 'ImmutableSet':
-            return Immutable.Set(data)
-          case 'ImmutableOrderedSet':
-            return Immutable.OrderedSet(data)
-          case 'ImmutableSeq':
-            return Immutable.Seq(data)
-          case 'ImmutableStack':
-            return Immutable.Stack(data)
-          case 'ImmutableRecord':
-            return refs && refs[value.__serializedRef__]
-              ? new refs[value.__serializedRef__](data)
-              : Immutable.Map(data)
-          default:
-            return data
+        case 'ImmutableMap':
+          return Immutable.Map(data)
+        case 'ImmutableOrderedMap':
+          return Immutable.OrderedMap(data)
+        case 'ImmutableList':
+          return Immutable.List(data)
+        case 'ImmutableRange':
+          return Immutable.Range(data._start, data._end, data._step)
+        case 'ImmutableRepeat':
+          return Immutable.Repeat(data._value, data.size)
+        case 'ImmutableSet':
+          return Immutable.Set(data)
+        case 'ImmutableOrderedSet':
+          return Immutable.OrderedSet(data)
+        case 'ImmutableSeq':
+          return Immutable.Seq(data)
+        case 'ImmutableStack':
+          return Immutable.Stack(data)
+        case 'ImmutableRecord':
+          return refs && refs[value.__serializedRef__]
+            ? new refs[value.__serializedRef__](data)
+            : Immutable.Map(data)
+        default:
+          return data
         }
       }
       return value

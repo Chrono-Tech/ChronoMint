@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -17,21 +17,21 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case actions.CHANGE_NETWORK_STATUS:
-      return {
-        ...state,
-        network: {
-          status: action.status,
-        },
-      }
-    case actions.CHANGE_SYNC_STATUS:
-      return {
-        ...state,
-        sync: {
-          status: action.status,
-          progress: action.progress,
-        },
-      }
+  case actions.CHANGE_NETWORK_STATUS:
+    return {
+      ...state,
+      network: {
+        status: action.status,
+      },
+    }
+  case actions.CHANGE_SYNC_STATUS:
+    return {
+      ...state,
+      sync: {
+        status: action.status,
+        progress: action.progress,
+      },
+    }
   }
   return state
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -62,22 +62,22 @@ export default class PendingTxWidget extends PureComponent {
     let icon = null
     let styleName = ''
     switch (func) {
-      case'transfer':
-        icon = 'send'
-        break
-      case'addOwner':
-        icon = 'profile'
-        break
-      case'removeOwner':
-        icon = 'profile'
-        styleName = 'redColor'
-        break
-      case'kill':
-        icon = 'delete'
-        break
-      case'changeRequirement':
-        icon = 'lock'
-        break
+    case'transfer':
+      icon = 'send'
+      break
+    case'addOwner':
+      icon = 'profile'
+      break
+    case'removeOwner':
+      icon = 'profile'
+      styleName = 'redColor'
+      break
+    case'kill':
+      icon = 'delete'
+      break
+    case'changeRequirement':
+      icon = 'lock'
+      break
     }
     return (
       <div styleName={classnames('iconWrapper', { [styleName]: styleName })}>

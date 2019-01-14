@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -51,38 +51,38 @@ class LedgerLoginPage extends PureComponent {
 
   getCurrentPage () {
     switch(this.state.page){
-      case LedgerLoginPage.PAGES.DEVICE_SELECT_FORM:
-        return (
-          <LoginWithLedgerContainer
-            previousPage={this.previousPage.bind(this)}
-            onDeviceSelect={this.onSubmitDevice.bind(this)}
-            navigateToDerivationPathForm={this.navigateToDerivationPathForm.bind(this)}
-          />
-        )
+    case LedgerLoginPage.PAGES.DEVICE_SELECT_FORM:
+      return (
+        <LoginWithLedgerContainer
+          previousPage={this.previousPage.bind(this)}
+          onDeviceSelect={this.onSubmitDevice.bind(this)}
+          navigateToDerivationPathForm={this.navigateToDerivationPathForm.bind(this)}
+        />
+      )
 
-      case LedgerLoginPage.PAGES.ACCOUNT_NAME_FORM:
-        return (
-          <AccountNameContainer
-            previousPage={this.previousPage.bind(this)}
-            onSubmit={this.onSubmitAccountName.bind(this)}
-          />
-        )
+    case LedgerLoginPage.PAGES.ACCOUNT_NAME_FORM:
+      return (
+        <AccountNameContainer
+          previousPage={this.previousPage.bind(this)}
+          onSubmit={this.onSubmitAccountName.bind(this)}
+        />
+      )
 
-      case LedgerLoginPage.PAGES.DERIVATION_PATH_FORM:
-        return (
-          <DerivationPathFormContainer
-            previousPage={this.navigateToDeviceSelectForm.bind(this)}
-            onSubmit={this.onSubmitDerivationPath.bind(this)}
-          />
-        )
+    case LedgerLoginPage.PAGES.DERIVATION_PATH_FORM:
+      return (
+        <DerivationPathFormContainer
+          previousPage={this.navigateToDeviceSelectForm.bind(this)}
+          onSubmit={this.onSubmitDerivationPath.bind(this)}
+        />
+      )
 
-      default:
-        return (
-          <LoginWithLedgerContainer
-            previousPage={this.previousPage.bind(this)}
-            onDeviceSelect={this.onSubmitDevice.bind(this)}
-          />
-        )
+    default:
+      return (
+        <LoginWithLedgerContainer
+          previousPage={this.previousPage.bind(this)}
+          onDeviceSelect={this.onSubmitDevice.bind(this)}
+        />
+      )
     }
   }
 

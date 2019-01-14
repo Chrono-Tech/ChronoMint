@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -10,7 +10,7 @@ import { estimateLaborHourGasTransfer } from '@chronobank/core/redux/tokens/thun
 import Form, { mapStateToProps as mapFormStateToProps } from '../AbstractEthereum/Form'
 import FormContainer, {
   mapStateToProps as mapContainerStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 } from '../AbstractEthereum/FormContainer'
 
 function mapFormDispatchToProps (dispatch) {

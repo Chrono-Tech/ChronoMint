@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -42,7 +42,7 @@ export default class MetamaskPlugin {
     return []
   }
 
-  async signTransaction ({ gas, gasPrice, ...txData }) {
+  async signTransaction ({ /*gas, gasPrice,*/ ...txData }) {
     const signed = await this.web3.eth.sendTransaction({
       ...txData,
     })

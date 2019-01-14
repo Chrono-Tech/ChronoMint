@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -68,44 +68,44 @@ class PrivateKeyImportPage extends PureComponent {
 
   getCurrentPage () {
     switch(this.state.page){
-      case PrivateKeyImportPage.PAGES.PRIVATE_KEY_FORM:
-        return (
-          <LoginWithPrivateKeyContainer
-            previousPage={this.previousPage.bind(this)}
-            onSubmit={this.onSubmitPrivateKey.bind(this)}
-          />
-        )
+    case PrivateKeyImportPage.PAGES.PRIVATE_KEY_FORM:
+      return (
+        <LoginWithPrivateKeyContainer
+          previousPage={this.previousPage.bind(this)}
+          onSubmit={this.onSubmitPrivateKey.bind(this)}
+        />
+      )
 
-      case PrivateKeyImportPage.PAGES.CREATE_ACCOUNT_FORM:
-        return (
-          <CreateAccountContainer
-            privateKey={this.state.privateKey}
-            accountProfile={this.state.accountProfile}
-            previousPage={this.previousPage.bind(this)}
-            onSubmit={this.onSubmitCreateAccount.bind(this)}
-          />
-        )
+    case PrivateKeyImportPage.PAGES.CREATE_ACCOUNT_FORM:
+      return (
+        <CreateAccountContainer
+          privateKey={this.state.privateKey}
+          accountProfile={this.state.accountProfile}
+          previousPage={this.previousPage.bind(this)}
+          onSubmit={this.onSubmitCreateAccount.bind(this)}
+        />
+      )
 
-      case PrivateKeyImportPage.PAGES.BLOCKCHAIN_CHOICE_FORM:
-        return (
-          <BlockchainChoiceContainer
-            previousPage={this.previousPage.bind(this)}
-            onSubmitSuccess={this.onSubmitBlockchainChoiceFormSuccess.bind(this)}
-          />
-        )
+    case PrivateKeyImportPage.PAGES.BLOCKCHAIN_CHOICE_FORM:
+      return (
+        <BlockchainChoiceContainer
+          previousPage={this.previousPage.bind(this)}
+          onSubmitSuccess={this.onSubmitBlockchainChoiceFormSuccess.bind(this)}
+        />
+      )
 
-      case PrivateKeyImportPage.PAGES.DOWNLOAD_WALLET_PAGE:
-        return (
-          <GenerateWalletContainer />
-        )
+    case PrivateKeyImportPage.PAGES.DOWNLOAD_WALLET_PAGE:
+      return (
+        <GenerateWalletContainer />
+      )
 
-      default:
-        return (
-          <LoginWithPrivateKeyContainer
-            previousPage={this.previousPage.bind(this)}
-            onSubmitSuccess={this.onSubmitPrivateKey.bind(this)}
-          />
-        )
+    default:
+      return (
+        <LoginWithPrivateKeyContainer
+          previousPage={this.previousPage.bind(this)}
+          onSubmitSuccess={this.onSubmitPrivateKey.bind(this)}
+        />
+      )
     }
   }
 

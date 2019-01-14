@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -64,17 +64,17 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
             continue
           }
           switch (t) {
-            case 'address':
-              inputs[key] = `0x${v.toString(16)}`
-              break
-            case 'bool':
-              inputs[key] = !!v
-              break
-            case 'string':
-              inputs[key] = String(v)
-              break
-            default:
-              throw new TypeError(`unknown type ${t}`)
+          case 'address':
+            inputs[key] = `0x${v.toString(16)}`
+            break
+          case 'bool':
+            inputs[key] = !!v
+            break
+          case 'string':
+            inputs[key] = String(v)
+            break
+          default:
+            throw new TypeError(`unknown type ${t}`)
           }
         }
       }

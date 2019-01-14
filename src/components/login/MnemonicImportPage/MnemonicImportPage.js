@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -65,45 +65,45 @@ class MnemonicImportPage extends PureComponent {
 
   getCurrentPage () {
     switch(this.state.page) {
-      case MnemonicImportPage.PAGES.MNEMONIC_FORM:
-        return (
-          <LoginWithMnemonicContainer
-            previousPage={this.previousPage.bind(this)}
-            onSubmit={this.onSubmitMnemonic.bind(this)}
-          />
-        )
+    case MnemonicImportPage.PAGES.MNEMONIC_FORM:
+      return (
+        <LoginWithMnemonicContainer
+          previousPage={this.previousPage.bind(this)}
+          onSubmit={this.onSubmitMnemonic.bind(this)}
+        />
+      )
 
-      case MnemonicImportPage.PAGES.CREATE_ACCOUNT_FORM:
-        return (
-          <CreateAccountContainer
-            mnemonic={this.state.mnemonic}
-            accountProfile={this.state.accountProfile}
-            previousPage={this.previousPage.bind(this)}
-            onSubmit={this.onSubmitCreateAccount.bind(this)}
-            onSubmitSuccess={this.onSubmitCreateAccountSuccess.bind(this)}
-          />
-        )
+    case MnemonicImportPage.PAGES.CREATE_ACCOUNT_FORM:
+      return (
+        <CreateAccountContainer
+          mnemonic={this.state.mnemonic}
+          accountProfile={this.state.accountProfile}
+          previousPage={this.previousPage.bind(this)}
+          onSubmit={this.onSubmitCreateAccount.bind(this)}
+          onSubmitSuccess={this.onSubmitCreateAccountSuccess.bind(this)}
+        />
+      )
 
-      case MnemonicImportPage.PAGES.BLOCKCHAIN_CHOICE_FORM:
-        return (
-          <BlockchainChoiceContainer
-            previousPage={this.previousPage.bind(this)}
-            onSubmitSuccess={this.onSubmitBlockchainChoiceFormSuccess.bind(this)}
-          />
-        )
+    case MnemonicImportPage.PAGES.BLOCKCHAIN_CHOICE_FORM:
+      return (
+        <BlockchainChoiceContainer
+          previousPage={this.previousPage.bind(this)}
+          onSubmitSuccess={this.onSubmitBlockchainChoiceFormSuccess.bind(this)}
+        />
+      )
 
-      case MnemonicImportPage.PAGES.DOWNLOAD_WALLET_PAGE:
-        return (
-          <GenerateWalletContainer />
-        )
+    case MnemonicImportPage.PAGES.DOWNLOAD_WALLET_PAGE:
+      return (
+        <GenerateWalletContainer />
+      )
 
-      default:
-        return (
-          <LoginWithMnemonicContainer
-            previousPage={this.previousPage.bind(this)}
-            onSubmitSuccess={this.onSubmitMnemonic.bind(this)}
-          />
-        )
+    default:
+      return (
+        <LoginWithMnemonicContainer
+          previousPage={this.previousPage.bind(this)}
+          onSubmitSuccess={this.onSubmitMnemonic.bind(this)}
+        />
+      )
     }
   }
 

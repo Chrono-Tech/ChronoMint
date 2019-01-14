@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -80,13 +80,13 @@ export default class SendTokens extends PureComponent {
     const value = new Amount(token.addDecimals(amount), symbol)
 
     switch (action) {
-      case ACTION_APPROVE:
-        !wallet.isMultisig && this.props.mainApprove(token, value, recipient, feeMultiplier)
-        break
-      case ACTION_TRANSFER:
-        wallet.isMultisig
-          ? this.props.multisigTransfer(wallet, token, value, recipient, feeMultiplier, advancedModeParams)
-          : this.props.mainTransfer(wallet, token, value, recipient, feeMultiplier, advancedModeParams)
+    case ACTION_APPROVE:
+      !wallet.isMultisig && this.props.mainApprove(token, value, recipient, feeMultiplier)
+      break
+    case ACTION_TRANSFER:
+      wallet.isMultisig
+        ? this.props.multisigTransfer(wallet, token, value, recipient, feeMultiplier, advancedModeParams)
+        : this.props.mainTransfer(wallet, token, value, recipient, feeMultiplier, advancedModeParams)
     }
   }
 
