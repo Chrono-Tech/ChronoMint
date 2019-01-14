@@ -152,7 +152,7 @@
   "scripts": {
     "lint:errors": "node ./node_modules/eslint/bin/eslint.js --ext .js,.jsx --quiet .",
     "start": "webpack-dev-server --hot --config config/webpack.new.dev.js",
-    "build": "node ./scripts/build.js",
+    "build": "node --max-old-space-size=4096 ./scripts/build.js",
     "i18n:pack": "node ./scripts/i18npack.js",
     "build:i18n": "node ./scripts/build.js --src-app=i18nApp",
     "build-archive": "yarn build && node ./scripts/compress.js build build.zip",

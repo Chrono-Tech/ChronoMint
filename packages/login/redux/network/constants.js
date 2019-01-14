@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -37,3 +37,4 @@ export const NETWORK_SET_TEST_METAMASK = '@login/network/SET_TEST_METAMASK'
 export const NETWORK_SET_TEST_MNEMONIC = '@login/network/SET_TEST_MNEMONIC'
 export const NETWORK_SET_TEST_WALLET_FILE = '@login/network/SET_TEST_WALLET_FILE'
 export const NETWORK_SET_WALLET_FILE_IMPORTED = '@login/network/SET_WALLET_FILE_IMPORTED'
+export const NETWORK_DISABLE_PROVIDER = '@login/network/NETWORK_DISABLE_PROVIDER'

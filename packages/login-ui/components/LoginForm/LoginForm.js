@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -104,7 +104,7 @@ class LoginForm extends React.Component {
   }
 
   renderDefaultTypeForm () {
-    const { classes, submitting, error } = this.props
+    const { classes, submitting, error, navigateToRecoverAccountPage } = this.props
 
     return (
       <div>
@@ -130,7 +130,7 @@ class LoginForm extends React.Component {
 
           {error ? (<div styleName='form-error'>{error}</div>) : null}
 
-          <button onClick={navigateToRecoverAccountPage} styleName='link'>
+          <button onClick={navigateToRecoverAccountPage} styleName='link' type='button'>
             <Translate value='LoginForm.forgotPassword' />
           </button>
         </div>
@@ -167,16 +167,16 @@ class LoginForm extends React.Component {
     }
 
     switch (selectedWallet.type) {
-    case WALLET_TYPE_MEMORY:
-      return this.renderDefaultTypeForm()
+      case WALLET_TYPE_MEMORY:
+        return this.renderDefaultTypeForm()
 
-    case WALLET_TYPE_LEDGER:
-    case WALLET_TYPE_TREZOR:
-    case WALLET_TYPE_METAMASK:
-      return this.renderDeviceTypeForm()
+      case WALLET_TYPE_LEDGER:
+      case WALLET_TYPE_TREZOR:
+      case WALLET_TYPE_METAMASK:
+        return this.renderDeviceTypeForm()
 
-    default:
-      return this.renderDefaultTypeForm()
+      default:
+        return this.renderDefaultTypeForm()
     }
   }
 

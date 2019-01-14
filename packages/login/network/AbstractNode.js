@@ -1,10 +1,9 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
 import EventEmitter from 'events'
-import SockJS from 'sockjs-client'
 import Stomp from 'webstomp-client'
 
 const TIMEOUT_BASE = 1000
@@ -75,7 +74,7 @@ export default class AbstractNode extends EventEmitter {
     if (!this._socket) {
       return
     }
-    this._ws = new SockJS(this._socket.baseURL)
+    this._ws = new WebSocket(this._socket.baseURL)
     this._client = Stomp.over(this._ws, {
       heartbeat: false,
       debug: false,
@@ -89,8 +88,8 @@ export default class AbstractNode extends EventEmitter {
   }
 
   disconnect () {
-    if (this._socket) {
-      this._ws.close()
+    if (this._socket && this._ws) {
+      this._client.disconnect()
     }
   }
 

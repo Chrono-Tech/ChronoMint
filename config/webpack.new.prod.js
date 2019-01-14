@@ -16,16 +16,12 @@ const isInNodeModules = path.basename(path.resolve(path.join(__dirname, '..', '.
 const relativePath = isInNodeModules ? '../../..' : '..'
 const modulesPath = path.resolve(__dirname, relativePath, 'node_modules')
 const indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html')
-const indexPresentationHtmlPath = path.resolve(
-  __dirname,
-  relativePath,
-  'index-presentation.html',
-)
+const indexPresentationHtmlPath = path.resolve(__dirname, relativePath, 'index-presentation.html')
 const faviconPath = path.resolve(__dirname, relativePath, 'favicon.png')
 const buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
 
 module.exports = Object.assign({}, baseWebpackConfig, {
-  mode: 'development',
+  mode: 'production',
   devtool: 'eval-cheap-module-source-map',
   entry: path.resolve(__dirname, '../src/index.js'),
   output: {
@@ -39,10 +35,11 @@ module.exports = Object.assign({}, baseWebpackConfig, {
   plugins: [
     new HtmlWebpackPlugin({
       inject: 'head',
-      template:
-        process.env.NODE_ENV === 'standalone'
-          ? indexHtmlPath
-          : indexPresentationHtmlPath,
+      // TODO @Abdulov Fix presentation layout
+      // template: process.env.NODE_ENV === 'standalone'
+      //   ? indexHtmlPath
+      //   : indexPresentationHtmlPath,
+      template: indexHtmlPath,
       favicon: faviconPath,
       hash: true,
       minify: {
@@ -62,7 +59,7 @@ module.exports = Object.assign({}, baseWebpackConfig, {
       defaultAttribute: 'async',
       sync: [
         'chronomint-presentation/js/vendor.js',
-        'dist/chronomint-presentation/js/index.js',
+        'chronomint-presentation/js/index.js',
       ],
     }),
     new webpack.DefinePlugin({

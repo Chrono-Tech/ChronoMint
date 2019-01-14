@@ -98,44 +98,7 @@ module.exports = {
           'sass-loader',
         ],
       },
-      /*{
-        test: /\.scss$/,
-        exclude: /node_modules/,
-        use: [
-          process.env.NODE_ENV !== 'production' ? 'style-loader' : MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: {
-              sourceMap: false,
-              modules: true,
-              import: true,
-              importLoaders: 1,
-              localIdentName: '[name]__[local]___[hash:base64:5]',
-            },
-          },
-          {
-            loader: 'postcss-loader',
-            options: {
-              sourceMap: false,
-              ident: 'postcss',
-              plugins: () => [require('postcss-cssnext')(), require('postcss-modules-values')],
-            },
-          },
-          {
-            loader: 'sass-loader',
-            options: {
-              sourceMap: false,
-              outputStyle: 'expanded',
-            },
-          },
-        ],
-      },
-      {
-        test: /\.css$/,
-        include: /node_modules/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader'],
-      },*/
-      { test: /\.eot(\?v=\d+.\d+.\d+)?$/, loader: 'file-loader' },
+     { test: /\.eot(\?v=\d+.\d+.\d+)?$/, loader: 'file-loader' },
       { test: /\.otf(\?v=\d+.\d+.\d+)?$/, loader: 'file-loader' },
       { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, use: [{ loader: 'url-loader', options: { limit: '10000', mimetype: 'application/font-woff' } }] },
       { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, use: [{ loader: 'url-loader', options: { limit: '10000', mimetype: 'octet-stream' } }] },
@@ -170,14 +133,7 @@ module.exports = {
         test: /\.html$/,
         use: 'html-loader',
       },
-      // {
-      //   test: /(?!node_modules\/chronobank-smart-contracts\/build\/contracts\/).+\.json$/, // all JSON files except contracts
-      //   loader: 'json-loader',
-      //   exclude: [
-      //     path.resolve('node_modules/chronobank-smart-contracts/build/contracts')
-      //   ]
-      // },
-      {
+     {
         test: /node_modules\/chronobank-smart-contracts\/build\/contracts\/.+\.json$/, // only ABI contracts
         loader: path.resolve('./config/abi-loader'),
         include: [

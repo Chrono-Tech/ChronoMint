@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -18,7 +18,6 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     // TODO @dkchv: still can't combine async + arrow on class
     this.addListener('subscribe', (address) => this._handleSubscribe(address))
     this.addListener('unsubscribe', (address) => this._handleUnsubscribe(address))
-    this.connect()
   }
 
   subscribeNewWallet (address) {
@@ -104,12 +103,6 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
       } catch (e) {
         this.trace('Address unsubscription error', e)
       }
-    }
-  }
-
-  disconnect () {
-    if (this._socket) {
-      this._ws.close()
     }
   }
 

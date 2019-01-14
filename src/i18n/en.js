@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -24,7 +24,7 @@ import nem from './en-tx-nem'
 import eos from './en-tx-eos'
 
 export default {
-  copyright: 'Copyright © 2018 LaborX Pty Ltd. All Rights Reserved.',
+  copyright: 'Copyright © 2019 LaborX Pty Ltd. All Rights Reserved.',
   chronobankSite: 'Chronobank.io',
   qa: 'Q&A',
   contactUs: 'Contact Us',

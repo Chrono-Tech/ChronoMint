@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -25,7 +25,7 @@ const BTC_MAINNET_NODE = new BitcoinMiddlewareNode({
   blockchain: BLOCKCHAIN_BITCOIN,
   symbol: BTC,
   socket: {
-    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
+    baseURL: 'wss://rabbitmq-prod-ws.chronobank.io/ws',
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
@@ -45,7 +45,7 @@ export const BTC_TESTNET_NODE = new BitcoinMiddlewareNode({
   blockchain: BLOCKCHAIN_BITCOIN,
   symbol: BTC,
   socket: {
-    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
+    baseURL: 'wss://rabbitmq-stage-webstomp.chronobank.io/ws',
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
@@ -65,7 +65,7 @@ const BCC_MAINNET_NODE = new BitcoinMiddlewareNode({
   blockchain: BLOCKCHAIN_BITCOIN_CASH,
   symbol: BCC,
   socket: {
-    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
+    baseURL: 'wss://rabbitmq-prod-ws.chronobank.io/ws',
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
@@ -85,7 +85,7 @@ const BCC_TESTNET_NODE = new BitcoinMiddlewareNode({
   blockchain: BLOCKCHAIN_BITCOIN_CASH,
   symbol: BCC,
   socket: {
-    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
+    baseURL: 'wss://rabbitmq-stage-webstomp.chronobank.io/ws',
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
@@ -105,7 +105,7 @@ const DASH_MAINNET_NODE = new BitcoinMiddlewareNode({
   blockchain: BLOCKCHAIN_DASH,
   symbol: DASH,
   socket: {
-    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
+    baseURL: 'wss://rabbitmq-prod-ws.chronobank.io/ws',
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
@@ -125,7 +125,7 @@ const DASH_TESTNET_NODE = new BitcoinMiddlewareNode({
   blockchain: BLOCKCHAIN_DASH,
   symbol: DASH,
   socket: {
-    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
+    baseURL: 'wss://rabbitmq-stage-webstomp.chronobank.io/ws',
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
@@ -146,7 +146,7 @@ export const LTC_MAINNET_NODE = new BitcoinMiddlewareNode({
   blockchain: BLOCKCHAIN_LITECOIN,
   symbol: LTC,
   socket: {
-    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
+    baseURL: 'wss://rabbitmq-prod-ws.chronobank.io/ws',
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
@@ -166,7 +166,7 @@ export const LTC_TESTNET_NODE = new BitcoinMiddlewareNode({
   blockchain: BLOCKCHAIN_LITECOIN,
   symbol: LTC,
   socket: {
-    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
+    baseURL: 'wss://rabbitmq-stage-webstomp.chronobank.io/ws',
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {

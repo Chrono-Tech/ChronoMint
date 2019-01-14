@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -366,7 +366,6 @@ const sendSignedTransaction = (entry) => async (dispatch, getState) => {
               hash: response.hash,
             },
           })
-
           dispatch(BitcoinActions.bitcoinTxUpdate(txEntry))
           dispatch(notifyBitcoinTransfer(txEntry))
         }
@@ -423,6 +422,8 @@ export const enableBitcoin = (blockchainName) => async (dispatch) => {
 
   await dispatch(initToken(blockchainName))
   await dispatch(initWallet(blockchainName))
+  const provider = getProviderByBlockchain(blockchainName)
+  provider.connectCurrentNode()
 }
 
 const initToken = (blockchainName) => async (dispatch, getState) => {
@@ -521,4 +522,7 @@ export const disableBitcoin = (blockchainName) => async (dispatch, getState) => 
     getProviderByBlockchain(blockchainName).unsubscribe(wallet.address)
     dispatch({ type: WALLETS_UNSET, wallet })
   })
+
+  const provider = getProviderByBlockchain(blockchainName)
+  provider.disconnectCurrentNode()
 }
