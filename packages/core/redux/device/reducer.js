@@ -9,6 +9,7 @@ const initialState = {
   deviceList: [],
   selectedDevice: null,
   status: null,
+  web3: null,
 }
 
 export default (state = initialState, action) => {
@@ -42,6 +43,11 @@ export default (state = initialState, action) => {
     return {
       ...state,
       status: a.STATE_ERROR,
+    }
+  case a.SET_WEB3_INSTANCE:
+    return {
+      ...state,
+      web3: action.web3,
     }
 
   default:

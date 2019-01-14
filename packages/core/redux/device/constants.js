@@ -19,3 +19,6 @@ export const DEVICE_CLEAR_LIST = 'DEVICE/CLEAR_LIST'
 export const STATE_LOADING = 'loading'
 export const STATE_LOADED = 'loaded'
 export const STATE_ERROR = 'error'
+
+export const SET_WEB3_INSTANCE = 'DEVICE/SET_WEB3_INSTANCE'
+export const CLEAR_WEB3_INSTANCE = 'DEVICE/CLEAR_WEB3_INSTANCE'

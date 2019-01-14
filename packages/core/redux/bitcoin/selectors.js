@@ -58,25 +58,25 @@ export const getBitcoinSigner = (state) => {
   const isTestnet = networkData[BLOCKCHAIN_BITCOIN] === 'testnet'
 
   switch (account.decryptedWallet.entry.encrypted[0].type) {
-    case WALLET_TYPE_MEMORY: {
-      const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
-      return new BitcoinMemoryDevice({ privateKey, network })
+  case WALLET_TYPE_MEMORY: {
+    const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
+    return new BitcoinMemoryDevice({ privateKey, network })
+  }
+  case WALLET_TYPE_LEDGER: {
+    if (process.env.DEVICE_MOCKS) {
+      return new BitcoinLedgerDeviceMock({ network })
     }
-    case WALLET_TYPE_LEDGER: {
-      if (process.env.DEVICE_MOCKS) {
-        return new BitcoinLedgerDeviceMock({ network })
-      }
-      return new BitcoinLedgerDevice({ network })
+    return new BitcoinLedgerDevice({ network })
+  }
+  case WALLET_TYPE_TREZOR: {
+    if (process.env.DEVICE_MOCKS) {
+      return new BitcoinTrezorDeviceMock({ network })
     }
-    case WALLET_TYPE_TREZOR: {
-      if (process.env.DEVICE_MOCKS) {
-        return new BitcoinTrezorDeviceMock({ network })
-      }
-      return new BitcoinTrezorDevice({ network, isTestnet })
-    }
-    case WALLET_TYPE_METAMASK: {
-      return new MetamaskPlugin()
-    }
+    return new BitcoinTrezorDevice({ network, isTestnet })
+  }
+  case WALLET_TYPE_METAMASK: {
+    return new MetamaskPlugin()
+  }
   }
 }
 
@@ -87,25 +87,25 @@ export const getBitcoinCashSigner = (state) => {
   const isTestnet = networkData[BLOCKCHAIN_BITCOIN_CASH] === 'testnet'
 
   switch (account.decryptedWallet.entry.encrypted[0].type) {
-    case WALLET_TYPE_MEMORY: {
-      const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
-      return new BitcoinCashMemoryDevice({ privateKey, network })
+  case WALLET_TYPE_MEMORY: {
+    const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
+    return new BitcoinCashMemoryDevice({ privateKey, network })
+  }
+  case WALLET_TYPE_LEDGER: {
+    if (process.env.DEVICE_MOCKS) {
+      return new BitcoinCashLedgerDeviceMock({ network })
     }
-    case WALLET_TYPE_LEDGER: {
-      if (process.env.DEVICE_MOCKS) {
-        return new BitcoinCashLedgerDeviceMock({ network })
-      }
-      return new BitcoinCashLedgerDevice({ network })
+    return new BitcoinCashLedgerDevice({ network })
+  }
+  case WALLET_TYPE_TREZOR: {
+    if (process.env.DEVICE_MOCKS) {
+      return new BitcoinCashTrezorDeviceMock({ network })
     }
-    case WALLET_TYPE_TREZOR: {
-      if (process.env.DEVICE_MOCKS) {
-        return new BitcoinCashTrezorDeviceMock({ network })
-      }
-      return new BitcoinCashTrezorDevice({ network, isTestnet })
-    }
-    case WALLET_TYPE_METAMASK: {
-      return new MetamaskPlugin()
-    }
+    return new BitcoinCashTrezorDevice({ network, isTestnet })
+  }
+  case WALLET_TYPE_METAMASK: {
+    return new MetamaskPlugin()
+  }
   }
 }
 
@@ -116,39 +116,39 @@ export const getLitecoinSigner = (state) => {
   const isTestnet = networkData[BLOCKCHAIN_LITECOIN] === 'litecoin_testnet'
 
   switch (account.decryptedWallet.entry.encrypted[0].type) {
-    case WALLET_TYPE_MEMORY: {
-      const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
-      return new BitcoinMemoryDevice({ privateKey, network })
-    }
-    case WALLET_TYPE_LEDGER: {
-      if (process.env.DEVICE_MOCKS) {
-        return new BitcoinMemoryDevice({ network })
-      }
+  case WALLET_TYPE_MEMORY: {
+    const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
+    return new BitcoinMemoryDevice({ privateKey, network })
+  }
+  case WALLET_TYPE_LEDGER: {
+    if (process.env.DEVICE_MOCKS) {
       return new BitcoinMemoryDevice({ network })
     }
-    case WALLET_TYPE_TREZOR: {
-      if (process.env.DEVICE_MOCKS) {
-        return new LitecoinTrezorDevice({ network })
-      }
-      return new LitecoinTrezorDevice({ network, isTestnet })
+    return new BitcoinMemoryDevice({ network })
+  }
+  case WALLET_TYPE_TREZOR: {
+    if (process.env.DEVICE_MOCKS) {
+      return new LitecoinTrezorDevice({ network })
     }
-    case WALLET_TYPE_METAMASK: {
-      return new MetamaskPlugin()
-    }
+    return new LitecoinTrezorDevice({ network, isTestnet })
+  }
+  case WALLET_TYPE_METAMASK: {
+    return new MetamaskPlugin()
+  }
   }
 }
 
 export const getSignerModalComponentName = (state) => {
   const { selectedWallet } = getPersistAccount(state)
   switch (selectedWallet.encrypted[0].type) {
-    // feel free to add your components here. We have only one component at the moment
-    case WALLET_TYPE_TREZOR: {
-      return 'ActionRequestDeviceDialog'
-    }
-    case WALLET_TYPE_LEDGER: {
-      return 'ActionRequestLedgerApplication'
-    }
-    default:
-      return null
+  // feel free to add your components here. We have only one component at the moment
+  case WALLET_TYPE_TREZOR: {
+    return 'ActionRequestDeviceDialog'
+  }
+  case WALLET_TYPE_LEDGER: {
+    return 'ActionRequestLedgerApplication'
+  }
+  default:
+    return null
   }
 }

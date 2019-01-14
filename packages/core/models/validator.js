@@ -111,7 +111,7 @@ export const positiveNumber = (value) => isNaN(value) || !(value > 0) ? 'errors.
 export const positiveNumberOrZero = (value) => isNaN(value) || !(value >= 0) ? 'errors.invalidPositiveNumberOrZero' : null
 
 export const validIpfsFileList = (value) => (!!value && value.indexOf('!') === 0)
-  // '!' marks partially uploaded or inconsistent objects
+// '!' marks partially uploaded or inconsistent objects
   ? 'errors.validIpfsFileList'
   : null
 

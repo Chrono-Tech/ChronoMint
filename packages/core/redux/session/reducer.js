@@ -14,7 +14,6 @@ const initialState = {
   isCBE: false,
   gasPriceMultiplier: new Immutable.Map(),
   profileSignature: null,
-  web3: null,
 }
 
 export default (state = initialState, action) => {
@@ -50,11 +49,6 @@ export default (state = initialState, action) => {
     return {
       ...state,
       profileSignature: action.signature,
-    }
-  case types.SET_WEB3_INSTANCE:
-    return {
-      ...state,
-      web3: action.web3,
     }
   default:
     return state

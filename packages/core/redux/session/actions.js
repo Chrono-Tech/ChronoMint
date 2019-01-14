@@ -40,15 +40,3 @@ export const setProfileSignature = (signature) => ({
   signature,
 })
 
-export const updateSessionWeb3 = (web3) => (
-  {
-    type: SET_WEB3_INSTANCE,
-    web3,
-  }
-)
-
-export const clearSessionWeb3 = () => (
-  {
-    type: CLEAR_WEB3_INSTANCE,
-  }
-)

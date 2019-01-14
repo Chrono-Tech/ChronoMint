@@ -207,7 +207,6 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
   const state = getState()
   // wrong signer
   const signer = getBitcoinSigner(state)
-
   const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key, entry.blockchain)(state)
 
   if (!selectedEntry) {
@@ -268,6 +267,7 @@ export const updateWalletBalance = (wallet) => async (dispatch) => {
 const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   try {
     dispatch(BitcoinActions.bitcoinSignTx())
+    console.log('signTransaction: ', signer, entry)
 
     const network = getSelectedNetwork()(getState())
     const unsignedTxHex = entry.tx.prepared.buildIncomplete().toHex()
@@ -276,6 +276,9 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     // @todo Check cointype for LTC, BCC, DASH in BitcoinUtils.getBitcoinDerivedPath
     const signedHex = await signer.signTransaction(unsignedTxHex, BitcoinUtils.getBitcoinDerivedPath(network[BLOCKCHAIN_BITCOIN]))
     dispatch(closeSignerModal())
+
+    console.log('unsignedTxHex: ', unsignedTxHex)
+    console.log('signedHex: ', signedHex)
 
     const bitcoinTransaction = bitcoin.Transaction.fromHex(signedHex)
     const bitcoinNetwork = bitcoin.networks[network[entry.blockchain]]
@@ -293,7 +296,7 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     return bitcoinTxEntry
   } catch (error) {
     dispatch(closeSignerModal())
-    dispatch(notifyError(error, 'Trezor'))
+    dispatch(notifyError(error, 'Bitcoin'))
 
     const bitcoinErrorTxEntry = BitcoinUtils.createBitcoinTxEntryModel({
       ...entry,

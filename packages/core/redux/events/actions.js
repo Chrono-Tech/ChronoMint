@@ -6,7 +6,7 @@
 import { padStart, unionBy, uniq, sortBy } from 'lodash'
 import { describeEvent, describeTx } from '../../describers'
 import { DUCK_SESSION } from '../session/constants'
-import { initLedgerDevice } from '../device/actions'
+import { initLedgerDevice } from '../device/thunks'
 import { getHistoryKey } from '../../utils/eventHistory'
 import { showSignerModal, closeSignerModal } from '../modals/thunks'
 

@@ -13,7 +13,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const path = require('path')
 
 const isInNodeModules = path.basename(path.resolve(path.join(__dirname, '..', '..'))) === 'node_modules'
-let relativePath = isInNodeModules ? '../../..' : '..'
+const relativePath = isInNodeModules ? '../../..' : '..'
 const modulesPath = path.resolve(__dirname, relativePath, 'node_modules')
 const indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html')
 const indexPresentationHtmlPath = path.resolve(

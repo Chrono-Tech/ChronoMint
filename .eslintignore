@@ -12,5 +12,8 @@ scripts/**
 *.less
 *.scss
 *.svg
+*.lock
 git
+!**/*.js
+!**/*.jss
 **/*.spec.js

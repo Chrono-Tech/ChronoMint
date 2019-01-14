@@ -9,7 +9,7 @@ const axios = require('axios')
 
 const PUBLIC_REST_URL = 'https://backend.chronobank.io'
 
-let backendHostArg = process.argv.find((e) => e.startsWith('--backend='))
+const backendHostArg = process.argv.find((e) => e.startsWith('--backend='))
 const backendHost = backendHostArg ? backendHostArg.substr('--backend='.length) : PUBLIC_REST_URL
 
 const BUILD_FOLDER = path.resolve(__dirname, '../build')

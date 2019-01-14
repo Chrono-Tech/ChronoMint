@@ -12,6 +12,7 @@ import metaMaskResolver from '@chronobank/login/network/metaMaskResolver'
 import { stopMarket } from '@chronobank/market/middleware/thunks'
 
 import * as SessionActions from './actions'
+import * as DeviceActions from '../device/actions'
 import * as PersistAccountActions from '../persistAccount/actions'
 import * as ProfileThunks from '../profile/thunks'
 import ProfileService from '../profile/service'
@@ -41,8 +42,7 @@ export const checkMetaMask = () => (dispatch) => {
 
 export const getAccounts = () => (dispatch, getState) => {
   const state = getState()
-  const accounts = state.get(DUCK_NETWORK).accounts
-  return accounts
+  return state.get(DUCK_NETWORK).accounts
 }
 
 export const loadAccounts = () => async (dispatch) => {
@@ -81,48 +81,6 @@ export const getProviderSettings = () => (dispatch, getState) => {
 export const selectProvider = (selectedProviderId) => (dispatch) => {
   dispatch(NetworkActions.networkResetNetwork())
   dispatch(NetworkActions.networkSetProvider(selectedProviderId))
-}
-
-/**
- * At the moment it used only for Trezor login page. Getting addresses balances
- * @param selectedNetworkId
- * @param selectedProviderId
- * @returns {function(*=, *): Promise<any>}
- */
-export const updateSessionWeb3 = (selectedNetworkId, selectedProviderId) => (dispatch, getState) => {
-  const state = getState()
-  if (!selectedNetworkId || !selectedProviderId) {
-    const network = state.get(DUCK_NETWORK)
-    selectedNetworkId = network.selectedNetworkId
-    selectedProviderId = network.selectedProviderId
-  }
-
-  const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
-  let network = getNetworkById(selectedNetworkId, selectedProviderId)
-
-  if (!network.id) {
-    network = customNetworksList.find((network) => network.id === selectedNetworkId)
-  }
-
-  return new Promise((resolve, fail) => {
-    const web3 = web3Factory(network)
-    web3.eth.net.isListening().then(() => {
-      dispatch(SessionActions.updateSessionWeb3(web3))
-      resolve()
-    }).catch((e) => {
-      fail(e)
-    })
-  })
-}
-
-/**
- * Close session web3 connection and remove it from the store. At the moment used only for Trezor login
- */
-export const clearSessionWeb3 = () => (dispatch, getState) => {
-  dispatch(SessionActions.clearSessionWeb3())
-
-  const web3 = getState().get(DUCK_SESSION).web3
-  web3.currentProvider.disconnect()
 }
 
 export const changeGasSlideValue = (value, blockchain) => (dispatch) =>
@@ -168,7 +126,7 @@ export const login = (account) => async (dispatch, getState) => {
     throw new Error('Session has not been created')
   }
 
-  dispatch(SessionActions.clearSessionWeb3())
+  dispatch(DeviceActions.clearSessionWeb3())
 
   let network = getNetworkById(selectedNetworkId, selectedProviderId)
   if (!network.id) {

@@ -25,12 +25,10 @@ export default class BitcoinLedgerDevice {
   }
 
   async getAddress (path) {
-    console.log('BitcoinLedgerDevice getAddress (path): ', path)
     EventService.emit(EVENT_LEDGER_MODAL_SHOW, { blockchain: BLOCKCHAIN_BITCOIN })
     const transport = await TransportU2F.create()
     const app = new AppBTC(transport)
     const result = await app.getWalletPublicKey(path)
-    console.log('BitcoinLedgerDevice getAddress result: ', result)
     EventService.emit(EVENT_LEDGER_MODAL_HIDE)
 
     return result.bitcoinAddress
@@ -62,14 +60,21 @@ export default class BitcoinLedgerDevice {
     const txb = new bitcoin.TransactionBuilder.fromTransaction(bitcoin.Transaction.fromHex(rawTx), this.network)
     const inputs = []
 
-    await txb.buildIncomplete().ins.forEach(async (input) => {
+    const asyncForeach = async (ins, callback) => {
+      for (let index = 0; index < ins.length; index++) {
+        await callback(ins[index])
+      }
+    }
+    const handleInput = async (input) => {
       const { data } = await API.get(
         `rawtx/${Buffer.from(input.hash)
           .reverse()
           .toString('hex')}`
       )
-      inputs.push([await this.splitTransaction(data.rawtx), input.index])
-    })
+      const split = await this.splitTransaction(data.rawtx)
+      inputs.push([split, input.index])
+    }
+    await asyncForeach(txb.buildIncomplete().ins, handleInput)
 
     const bufferedInput = await this.splitTransaction(rawTx)
     const outputScript = await this.serializeTransactionOutputs(bufferedInput)

@@ -102,14 +102,14 @@ export const getAccountAddresses = createSelector(
       .reduce((accumulator, wallet) => {
         // replace all non chars symbols with -
         const blockchain = wallet.blockchain.toLowerCase().replace(/\W/, '-')
-				accumulator.push({
-						type: `${blockchain}-address`,
-						value: wallet.address,
-					}
-				)
+        accumulator.push({
+          type: `${blockchain}-address`,
+          value: wallet.address,
+        }
+        )
 
         return accumulator
-			}, [])
+      }, [])
   },
 )
 
@@ -118,20 +118,17 @@ export const getDeviceAccountAddresses = createSelector(
     getAddressCache,
   ],
   (addresses) => {
-    console.log('getDeviceAccountAddresses: ', addresses)
-
     return Object.entries(addresses)
       .reduce((accumulator, [blockchainName, data]) => {
-      	console.log('blockchainName, data: ', accumulator, blockchainName, data)
         // replace all non chars symbols with -
         const blockchain = blockchainName.toLowerCase().replace(/\W/, '-')
-				accumulator.push({
-						type: `${blockchain}-address`,
-						value: data.address,
-					}
-				)
+        accumulator.push({
+          type: `${blockchain}-address`,
+          value: data.address,
+        }
+        )
 
-				return accumulator
+        return accumulator
       }, [])
   },
 )

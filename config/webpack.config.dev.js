@@ -61,7 +61,7 @@ module.exports = config.buildConfig(
         favicon: faviconPath,
       }),
       new FilterWarningsPlugin({
-        exclude: /Critical dependency: the request of a dependency is an expression/
+        exclude: /Critical dependency: the request of a dependency is an expression/,
       }),
       new webpack.optimize.CommonsChunkPlugin({
         name: 'src',
@@ -70,7 +70,7 @@ module.exports = config.buildConfig(
           /packages\/login/,
           /packages\/login-ui/,
           /src/,
-        ].map(regExp => regExp.test(m.context)).includes(true)
+        ].map((regExp) => regExp.test(m.context)).includes(true),
       }),
       new webpack.ProvidePlugin({
         'Web3': 'web3',

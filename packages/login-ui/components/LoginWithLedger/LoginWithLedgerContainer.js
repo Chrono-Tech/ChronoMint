@@ -6,12 +6,8 @@
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
-import {
-  DUCK_DEVICE_ACCOUNT,
-} from '@chronobank/core/redux/device/constants'
-import {
-  initLedgerDevice,
-} from '@chronobank/core/redux/device/actions'
+import { DUCK_DEVICE_ACCOUNT } from '@chronobank/core/redux/device/constants'
+import { initLedgerDevice } from '@chronobank/core/redux/device/thunks'
 import { DeviceEntryModel } from '@chronobank/core/models'
 import './LoginWithLedger.scss'
 import {
@@ -29,7 +25,6 @@ function mapDispatchToProps (dispatch) {
 function mapStateToProps (state) {
   const deviceAccount = state.get(DUCK_DEVICE_ACCOUNT)
   const deviceList = state.get(DUCK_DEVICE_ACCOUNT).deviceList
-  console.log('DUCK_DEVICE_ACCOUNT: ', deviceAccount )
 
   return {
     deviceList: Array.isArray(deviceList) ? deviceList.map(

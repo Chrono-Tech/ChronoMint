@@ -10,20 +10,20 @@ import BigNumber from 'bignumber.js'
 import { connect } from 'react-redux'
 import { DECIMALS_ETHEREUM } from '@chronobank/core/dao/constants'
 import DeviceEntryModel from '@chronobank/core/models/device/DeviceEntryModel'
-import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
+import { DUCK_DEVICE_ACCOUNT} from '@chronobank/core/redux/device/constants'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
-import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 
+import { integerWithDelimiter } from '@chronobank/core/utils/formatter'
 import './LoginWithTrezor.scss'
 
 function mapStateToProps (state) {
-  const session = state.get(DUCK_SESSION)
+  const deviceAccount = state.get(DUCK_DEVICE_ACCOUNT)
   const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
 
   return {
     selectedNetworkId,
     selectedProviderId,
-    web3: session.web3,
+    web3: deviceAccount.web3,
   }
 }
 

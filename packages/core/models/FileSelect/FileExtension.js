@@ -15,7 +15,7 @@ export const DOC_MIME_TYPE = [
   // 'application/vnd.openxmlformats-officedocument.wordprocessingml.template', //dotx
   // 'application/vnd.ms-word.document.macroEnabled.12', //docm
   // 'application/vnd.ms-word.template.macroEnabled.12' //dotm
-  'OpenDocument text document	application/vnd.oasis.opendocument.text', // .odt
+  'OpenDocument text document  application/vnd.oasis.opendocument.text', // .odt
   'application/rtf', // .rtf
   'text/plain',
   'text/*',

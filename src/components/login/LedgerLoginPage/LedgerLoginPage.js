@@ -56,48 +56,48 @@ class LedgerLoginPage extends PureComponent {
 
   getCurrentPage () {
     switch(this.state.page){
-			case LedgerLoginPage.PAGES.DEVICE_SELECT_FORM:
-				return (
-					<LoginWithLedgerContainer
-						previousPage={this.previousPage.bind(this)}
-						onDeviceSelect={this.onSubmitDevice.bind(this)}
-						navigateToDerivationPathForm={this.navigateToDerivationPathForm.bind(this)}
-					/>
-				)
+    case LedgerLoginPage.PAGES.DEVICE_SELECT_FORM:
+      return (
+        <LoginWithLedgerContainer
+          previousPage={this.previousPage.bind(this)}
+          onDeviceSelect={this.onSubmitDevice.bind(this)}
+          navigateToDerivationPathForm={this.navigateToDerivationPathForm.bind(this)}
+        />
+      )
 
-			case LedgerLoginPage.PAGES.ACCOUNT_NAME_FORM:
-				return (
-					<AccountNameContainer
-						previousPage={this.previousPage.bind(this)}
-						onSubmit={this.onSubmitAccountName.bind(this)}
-					/>
-				)
+    case LedgerLoginPage.PAGES.ACCOUNT_NAME_FORM:
+      return (
+        <AccountNameContainer
+          previousPage={this.previousPage.bind(this)}
+          onSubmit={this.onSubmitAccountName.bind(this)}
+        />
+      )
 
-			case LedgerLoginPage.PAGES.BLOCKCHAIN_CHOICE_FORM:
-				return (
-						<BlockchainChoiceContainer
-								previousPage={this.previousPage.bind(this)}
-								onSubmitSuccess={this.onSubmitBlockchainChoiceFormSuccess.bind(this)}
-								activeBlockchainList={LEDGER_ACTIVE_BLOCKCHAINS}
-						/>
-				)
+    case LedgerLoginPage.PAGES.BLOCKCHAIN_CHOICE_FORM:
+      return (
+        <BlockchainChoiceContainer
+          previousPage={this.previousPage.bind(this)}
+          onSubmitSuccess={this.onSubmitBlockchainChoiceFormSuccess.bind(this)}
+          activeBlockchainList={LEDGER_ACTIVE_BLOCKCHAINS}
+        />
+      )
 
-			case LedgerLoginPage.PAGES.DERIVATION_PATH_FORM:
-				return (
-					<DerivationPathFormContainer
-						previousPage={this.navigateToDeviceSelectForm.bind(this)}
-						onSubmit={this.onSubmitDerivationPath.bind(this)}
-					/>
-				)
+    case LedgerLoginPage.PAGES.DERIVATION_PATH_FORM:
+      return (
+        <DerivationPathFormContainer
+          previousPage={this.navigateToDeviceSelectForm.bind(this)}
+          onSubmit={this.onSubmitDerivationPath.bind(this)}
+        />
+      )
 
-			default:
-				return (
-					<LoginWithLedgerContainer
-						previousPage={this.previousPage.bind(this)}
-						onDeviceSelect={this.onSubmitDevice.bind(this)}
-					/>
-				)
-			}
+    default:
+      return (
+        <LoginWithLedgerContainer
+          previousPage={this.previousPage.bind(this)}
+          onDeviceSelect={this.onSubmitDevice.bind(this)}
+        />
+      )
+    }
   }
 
   async onSubmitDevice (device) {

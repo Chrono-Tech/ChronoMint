@@ -3,13 +3,13 @@ module.exports = {
     [
       'env',
       {
-        modules: false
-      }
+        modules: false,
+      },
     ],
-    'react'
+    'react',
   ],
   plugins: [
     'transform-class-properties',
-    'transform-es2015-modules-commonjs'
-  ]
-};
+    'transform-es2015-modules-commonjs',
+  ],
+}

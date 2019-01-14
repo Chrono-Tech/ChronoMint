@@ -44,8 +44,7 @@ class LoginWithTrezorContainer extends PureComponent {
   }
 
   static defaultProps = {
-    onDeviceSelect: () => {
-    },
+    onDeviceSelect: () => {},
     deviceList: [],
   }
 
