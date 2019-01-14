@@ -16,7 +16,6 @@ import { BLOCKCHAIN_EOS } from '@chronobank/core/dao/constants'
 import { connect } from 'react-redux'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/constants'
 import { DUCK_WALLET } from '@chronobank/core/redux/wallet/constants'
-import { formatDataAndGetTransactionsForWallet } from '@chronobank/core/redux/wallet/actions'
 import { getWalletInfo } from '@chronobank/core/redux/wallets/selectors/wallet'
 import { isTestingNetwork } from '@chronobank/login/network/settings'
 import { navigateToWallets } from 'redux/ui/navigation'
@@ -26,6 +25,7 @@ import './WalletContent.scss'
 function makeMapStateToProps (state) {
   const { blockchain, address } = state.get(DUCK_WALLET)
   const getWallet = getWalletInfo(blockchain, address)
+
   const mapStateToProps = (ownState) => {
     const network = state.get(DUCK_NETWORK)
     return {
@@ -41,7 +41,6 @@ function makeMapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     navigateToWallets: () => dispatch(navigateToWallets()),
-    getTransactions: (params) => dispatch(formatDataAndGetTransactionsForWallet(params)),
   }
 }
 
@@ -67,13 +66,7 @@ export default class WalletContent extends Component {
   }
 
   componentDidMount () {
-    this.handleGetTransactions(true)
     window.scrollTo(0, 0)
-  }
-
-  handleGetTransactions = (forcedOffset) => {
-    const { wallet, address, blockchain } = this.props
-    this.props.getTransactions({ wallet, address, blockchain, forcedOffset })
   }
 
   getWidgets () {
