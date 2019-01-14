@@ -173,6 +173,16 @@ export default (state = initialState, action) => {
       }
     case actions.NETWORK_GET_ACCOUNTS:
       return state
+    case actions.NETWORK_DISABLE_PROVIDER:
+      return {
+        ...state,
+        providers: [...state.providers.map(provider => {
+          if (provider.id === action.providerId) {
+            provider.disabled = true
+          }
+          return provider
+        })],
+      }
     default:
       return state
   }
