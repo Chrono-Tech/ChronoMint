@@ -66,6 +66,7 @@ export default class TransactionsListWidget extends PureComponent {
           walletAddress={wallet.address}
           blockchain={wallet.blockchain}
           onGetTransactions={this.handleGetTransactions}
+          transactions={this.props.transactions}
         />
       </div>
     )
