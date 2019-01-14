@@ -418,6 +418,8 @@ export const enableBitcoin = (blockchainName) => async (dispatch) => {
 
   await dispatch(initToken(blockchainName))
   await dispatch(initWallet(blockchainName))
+  const provider = getProviderByBlockchain(blockchainName)
+  provider.connectCurrentNode()
 }
 
 const initToken = (blockchainName) => async (dispatch, getState) => {
@@ -516,4 +518,7 @@ export const disableBitcoin = (blockchainName) => async (dispatch, getState) => 
     getProviderByBlockchain(blockchainName).unsubscribe(wallet.address)
     dispatch({ type: WALLETS_UNSET, wallet })
   })
+
+  const provider = getProviderByBlockchain(blockchainName)
+  provider.disconnectCurrentNode()
 }
