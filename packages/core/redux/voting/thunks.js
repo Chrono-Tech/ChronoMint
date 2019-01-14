@@ -44,27 +44,27 @@ export const selectPoll = (id) => (dispatch) =>
 
 export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
   switch (notice.status()) {
-    case IS_CREATED: {
-      dispatch(VotingActions.handlePollRemoved(notice.transactionHash()))
-      const noticePoll = notice.poll()
-      if (noticePoll) {
-        dispatch(VotingActions.handlePollCreated(noticePoll))
-      }
-      break
+  case IS_CREATED: {
+    dispatch(VotingActions.handlePollRemoved(notice.transactionHash()))
+    const noticePoll = notice.poll()
+    if (noticePoll) {
+      dispatch(VotingActions.handlePollCreated(noticePoll))
     }
-    case IS_REMOVED:
-      dispatch(VotingActions.handlePollRemoved(notice.pollId()))
-      break
-    case IS_ACTIVATED:
-    case IS_ENDED:
-    case IS_VOTED:
-    case IS_UPDATED: {
-      const noticePoll = notice.poll()
-      if (noticePoll) {
-        dispatch(VotingActions.handlePollCreated(noticePoll))
-      }
-      break
+    break
+  }
+  case IS_REMOVED:
+    dispatch(VotingActions.handlePollRemoved(notice.pollId()))
+    break
+  case IS_ACTIVATED:
+  case IS_ENDED:
+  case IS_VOTED:
+  case IS_UPDATED: {
+    const noticePoll = notice.poll()
+    if (noticePoll) {
+      dispatch(VotingActions.handlePollCreated(noticePoll))
     }
+    break
+  }
   }
   dispatch(notify(notice))
 }

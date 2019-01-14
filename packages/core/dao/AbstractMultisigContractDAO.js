@@ -64,17 +64,17 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
             continue
           }
           switch (t) {
-            case 'address':
-              inputs[key] = `0x${v.toString(16)}`
-              break
-            case 'bool':
-              inputs[key] = !!v
-              break
-            case 'string':
-              inputs[key] = String(v)
-              break
-            default:
-              throw new TypeError(`unknown type ${t}`)
+          case 'address':
+            inputs[key] = `0x${v.toString(16)}`
+            break
+          case 'bool':
+            inputs[key] = !!v
+            break
+          case 'string':
+            inputs[key] = String(v)
+            break
+          default:
+            throw new TypeError(`unknown type ${t}`)
           }
         }
       }

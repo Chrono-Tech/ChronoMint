@@ -133,20 +133,20 @@ export default class MenuTokenMoreInfo extends PureComponent {
     const { networkStatus, syncStatus } = this.props
 
     switch (networkStatus.status) {
-      case NETWORK_STATUS_ONLINE: {
-        switch (syncStatus.status) {
-          case SYNC_STATUS_SYNCED:
-            return (<div styleName='icon status-synced'><Translate value={`${prefix}.synced`} /></div>)
-          case SYNC_STATUS_SYNCING:
-          default:
-            return (<div styleName='icon status-syncing'><Translate value={`${prefix}.syncing`} /></div>)
-        }
-      }
-      case NETWORK_STATUS_OFFLINE:
-        return (<div styleName='icon status-offline'><Translate value={`${prefix}.offline`} /></div>)
-      case NETWORK_STATUS_UNKNOWN:
+    case NETWORK_STATUS_ONLINE: {
+      switch (syncStatus.status) {
+      case SYNC_STATUS_SYNCED:
+        return (<div styleName='icon status-synced'><Translate value={`${prefix}.synced`} /></div>)
+      case SYNC_STATUS_SYNCING:
       default:
-        return null
+        return (<div styleName='icon status-syncing'><Translate value={`${prefix}.syncing`} /></div>)
+      }
+    }
+    case NETWORK_STATUS_OFFLINE:
+      return (<div styleName='icon status-offline'><Translate value={`${prefix}.offline`} /></div>)
+    case NETWORK_STATUS_UNKNOWN:
+    default:
+      return null
     }
   }
 

@@ -60,10 +60,10 @@ export const getEosSigner = (state) => {
   const account = getPersistAccount(state)
 
   switch (account.decryptedWallet.entry.encrypted[0].type) {
-    case WALLET_TYPE_MEMORY: {
-      const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
-      return new EosMemoryDevice({ privateKey })
-    }
+  case WALLET_TYPE_MEMORY: {
+    const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
+    return new EosMemoryDevice({ privateKey })
+  }
   }
 }
 

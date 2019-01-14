@@ -7,9 +7,9 @@ import ErrorList from 'utils/ErrorList'
 import validator from '@chronobank/core/models/validator'
 
 export default function validate (values) {
-  let result = {}
+  const result = {}
 
-  let platformAddressErrors = new ErrorList()
+  const platformAddressErrors = new ErrorList()
   values.get('alreadyHave') && platformAddressErrors.add(validator.address(values.get('platformAddress'), true))
   if (platformAddressErrors.getErrors()) {
     result.platformAddress = platformAddressErrors.getErrors()

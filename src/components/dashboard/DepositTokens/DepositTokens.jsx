@@ -44,17 +44,17 @@ export default class DepositTokens extends PureComponent {
     const amount = new Amount(token.addDecimals(values.get('amount')), token.id())
 
     switch (values.get('action')) {
-      case ACTION_APPROVE:
-        this.props.mainApprove(token, amount, values.get('spender'), undefined, {
-          skipSlider: true,
-        })
-        break
-      case ACTION_DEPOSIT:
-        this.props.depositAsset(amount, token)
-        break
-      case ACTION_WITHDRAW:
-        this.props.withdrawAsset(amount, token)
-        break
+    case ACTION_APPROVE:
+      this.props.mainApprove(token, amount, values.get('spender'), undefined, {
+        skipSlider: true,
+      })
+      break
+    case ACTION_DEPOSIT:
+      this.props.depositAsset(amount, token)
+      break
+    case ACTION_WITHDRAW:
+      this.props.withdrawAsset(amount, token)
+      break
     }
   }
 

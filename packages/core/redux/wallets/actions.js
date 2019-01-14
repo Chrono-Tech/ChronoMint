@@ -57,7 +57,7 @@ import {
   EVENT_UPDATE_TRANSACTION,
   LTC,
   WAVES,
-  XEM
+  XEM,
 } from '../../dao/constants'
 
 import TxDescModel from '../../models/TxDescModel'
@@ -171,7 +171,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
     .on(EVENT_UPDATE_BALANCE, ({ account, balance }) => {
 
       switch (token.blockchain()) {
-        case BLOCKCHAIN_ETHEREUM:
+        case BLOCKCHAIN_ETHEREUM: {
           const wallets = getState().get(DUCK_ETH_MULTISIG_WALLET)
           if (wallets.item(account)) {
             dispatch({
@@ -187,17 +187,17 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
             dispatch({ type: WALLETS_UPDATE_BALANCE, walletId: wallet.id, balance: new Amount(balance, token.symbol()) })
           }
           break
-
+        }
         case BLOCKCHAIN_NEM:
         case BLOCKCHAIN_BITCOIN:
         case BLOCKCHAIN_BITCOIN_CASH:
         case BLOCKCHAIN_DASH:
         case BLOCKCHAIN_LITECOIN:
-        case BLOCKCHAIN_WAVES:
+        case BLOCKCHAIN_WAVES: {
           const wallet = getWallet(token.blockchain(), account)(getState())
           dispatch({ type: WALLETS_UPDATE_BALANCE, walletId: wallet.id, balance: new Amount(balance, token.symbol()) })
           break
-
+        }
         default:
           //eslint-disable-next-line no-console
           console.warn('Update balance of unknown token blockchain: ', account, balance, token.toJSON())
@@ -218,7 +218,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
             break
           }
         }
-        if (isOut){
+        if (isOut) {
           transactions.push(tdx)
         }
       } else {
@@ -384,7 +384,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
 
   switch (blockchain) {
     case BLOCKCHAIN_ETHEREUM:
-    case BLOCKCHAIN_LABOR_HOUR:
+    case BLOCKCHAIN_LABOR_HOUR: {
       if (newDeriveNumber === undefined || newDeriveNumber === null) {
         newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
       }
@@ -392,7 +392,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
       const newWalletSigner = await EthereumMemoryDevice.getDerivedWallet(signer.privateKey, derivedPath)
       address = newWalletSigner.address
       break
-
+    }
     case BLOCKCHAIN_BITCOIN:
       if (newDeriveNumber === undefined || newDeriveNumber === null) {
         newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0

@@ -13,7 +13,7 @@ import { prefix } from './lang'
 
 function makeMapStateToProps (state, ownProps) {
   const { wallet } = ownProps
-  let getTokensCount = tokensCountSelector(wallet.id)
+  const getTokensCount = tokensCountSelector(wallet.id)
   const mapStateToProps = (ownState) => {
     return {
       tokensCount: getTokensCount(ownState),

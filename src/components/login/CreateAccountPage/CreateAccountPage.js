@@ -59,49 +59,49 @@ class CreateAccountPage extends PureComponent {
 
   getCurrentPage () {
     switch(this.state.page){
-      case CreateAccountPage.PAGES.CREATE_ACCOUNT_FORM:
-        return (
-          <CreateAccountContainer
-            onSubmit={this.onSubmitCreateAccount.bind(this)}
-          />
-        )
+    case CreateAccountPage.PAGES.CREATE_ACCOUNT_FORM:
+      return (
+        <CreateAccountContainer
+          onSubmit={this.onSubmitCreateAccount.bind(this)}
+        />
+      )
 
-      case CreateAccountPage.PAGES.GENERATE_MNEMONIC_FORM:
-        return (
-          <GenerateMnemonicContainer
-            mnemonic={this.state.mnemonic}
-            onProceed={this.onProceedGenerateMnemonic.bind(this)}
-          />
-        )
+    case CreateAccountPage.PAGES.GENERATE_MNEMONIC_FORM:
+      return (
+        <GenerateMnemonicContainer
+          mnemonic={this.state.mnemonic}
+          onProceed={this.onProceedGenerateMnemonic.bind(this)}
+        />
+      )
 
-      case CreateAccountPage.PAGES.CONFIRM_MNEMONIC_FORM:
-        return (
-          <ConfirmMnemonicContainer
-            mnemonic={this.state.mnemonic}
-            onSubmit={this.onSubmitConfirmMnemonic.bind(this)}
-            previousPage={this.previousPage.bind(this)}
-          />
-        )
+    case CreateAccountPage.PAGES.CONFIRM_MNEMONIC_FORM:
+      return (
+        <ConfirmMnemonicContainer
+          mnemonic={this.state.mnemonic}
+          onSubmit={this.onSubmitConfirmMnemonic.bind(this)}
+          previousPage={this.previousPage.bind(this)}
+        />
+      )
 
-      case CreateAccountPage.PAGES.BLOCKCHAIN_CHOICE_FORM:
-        return (
-          <BlockchainChoiceContainer
-            previousPage={this.previousPage.bind(this)}
-            onSubmitSuccess={this.onSubmitBlockchainChoiceFormSuccess.bind(this)}
-          />
-        )
+    case CreateAccountPage.PAGES.BLOCKCHAIN_CHOICE_FORM:
+      return (
+        <BlockchainChoiceContainer
+          previousPage={this.previousPage.bind(this)}
+          onSubmitSuccess={this.onSubmitBlockchainChoiceFormSuccess.bind(this)}
+        />
+      )
 
-      case CreateAccountPage.PAGES.DOWNLOAD_WALLET_PAGE:
-        return (
-          <GenerateWalletContainer />
-        )
+    case CreateAccountPage.PAGES.DOWNLOAD_WALLET_PAGE:
+      return (
+        <GenerateWalletContainer />
+      )
 
-      default:
-        return (
-          <CreateAccountContainer
-            onSubmit={this.onSubmitCreateAccount.bind(this)}
-          />
-        )
+    default:
+      return (
+        <CreateAccountContainer
+          onSubmit={this.onSubmitCreateAccount.bind(this)}
+        />
+      )
     }
   }
 

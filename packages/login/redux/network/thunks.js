@@ -166,12 +166,12 @@ export const autoSelect = () => (dispatch, getState) => {
 
   const handleNetwork = (status) => {
     switch (status) {
-      case NETWORK_STATUS_OFFLINE:
-        runNextChecker()
-        break
-      case NETWORK_STATUS_ONLINE:
-        resetCheckers()
-        break
+    case NETWORK_STATUS_OFFLINE:
+      runNextChecker()
+      break
+    case NETWORK_STATUS_ONLINE:
+      resetCheckers()
+      break
     }
   }
 

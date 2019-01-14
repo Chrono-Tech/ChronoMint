@@ -10,7 +10,7 @@ export default (values) => {
 
   const mnemonic = values.get('mnemonic')
 
-  let mnemonicErrors = new ErrorList()
+  const mnemonicErrors = new ErrorList()
   mnemonicErrors.add(validator.required(mnemonic))
 
   return {

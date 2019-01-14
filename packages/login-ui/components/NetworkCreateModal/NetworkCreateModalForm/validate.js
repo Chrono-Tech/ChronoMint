@@ -9,18 +9,18 @@ import * as validator from '@chronobank/core/models/validator'
 export default (values) => {
   const alias = values.get('alias')
 
-  let aliasErrors = new ErrorList()
+  const aliasErrors = new ErrorList()
   aliasErrors.add(validator.required(alias))
 
   const url = values.get('url')
 
-  let urlErrors = new ErrorList()
+  const urlErrors = new ErrorList()
   urlErrors.add(validator.required(url))
   urlErrors.add(validator.urlAddress(url))
 
   const ws = values.get('ws')
 
-  let wsErrors = new ErrorList()
+  const wsErrors = new ErrorList()
   wsErrors.add(validator.required(ws))
   wsErrors.add(validator.urlAddress(ws))
 

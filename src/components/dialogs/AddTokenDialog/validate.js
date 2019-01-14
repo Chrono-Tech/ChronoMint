@@ -11,19 +11,19 @@ const validateSmallestUnit = (value) => validator.between(value, 0, 20, true)
 export const normalizeSmallestUnit = (value) => validateSmallestUnit(value) ? 0 : value
 
 export default function validate (values) {
-  let addressErrors = new ErrorList()
+  const addressErrors = new ErrorList()
   addressErrors.add(validator.address(values.get('address')))
 
-  let nameErrors = new ErrorList()
+  const nameErrors = new ErrorList()
   nameErrors.add(validator.name(values.get('name')))
 
-  let symbolErrors = new ErrorList()
+  const symbolErrors = new ErrorList()
   symbolErrors.add(validator.name(values.get('symbol')))
 
-  let decimalsErrors = new ErrorList()
+  const decimalsErrors = new ErrorList()
   decimalsErrors.add(validateSmallestUnit(values.get('decimals')))
 
-  let urlErrors = new ErrorList()
+  const urlErrors = new ErrorList()
   urlErrors.add(validator.url(values.get('url')))
 
   return {

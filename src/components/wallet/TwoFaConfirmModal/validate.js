@@ -7,7 +7,7 @@ import ErrorList from 'utils/ErrorList'
 import * as validator from '@chronobank/core/models/validator'
 
 export default function validate (values) {
-  let confirmTokenErrors = new ErrorList()
+  const confirmTokenErrors = new ErrorList()
   confirmTokenErrors.add(validator.confirm2FACode(values.get('confirmToken')))
 
   return {

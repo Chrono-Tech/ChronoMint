@@ -13,19 +13,19 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case a.WALLET_SWITCH_WALLET:
-      return {
-        ...state,
-        isMultisig: action.isMultisig,
-      }
-    case a.WALLET_SELECT_WALLET:
-      return {
-        ...state,
-        blockchain: action.blockchain,
-        address: action.address,
-      }
+  case a.WALLET_SWITCH_WALLET:
+    return {
+      ...state,
+      isMultisig: action.isMultisig,
+    }
+  case a.WALLET_SELECT_WALLET:
+    return {
+      ...state,
+      blockchain: action.blockchain,
+      address: action.address,
+    }
 
-    default:
-      return state
+  default:
+    return state
   }
 }

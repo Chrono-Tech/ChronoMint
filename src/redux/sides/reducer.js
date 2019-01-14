@@ -45,69 +45,71 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case SIDES_OPEN:
-      return {
-        ...state,
-        stack: {
-          ...state.stack,
-          [action.panelKey]: {
-            panelKey: action.panelKey,
-            componentName: action.componentName,
-            componentProps: action.componentProps,
-            className: action.className,
-            isOpened: action.isOpened,
-            anchor: action.anchor,
-            drawerProps: action.drawerProps,
-            preCloseAction: action.preCloseAction,
-          },
+  case SIDES_OPEN:
+    return {
+      ...state,
+      stack: {
+        ...state.stack,
+        [action.panelKey]: {
+          panelKey: action.panelKey,
+          componentName: action.componentName,
+          componentProps: action.componentProps,
+          className: action.className,
+          isOpened: action.isOpened,
+          anchor: action.anchor,
+          drawerProps: action.drawerProps,
+          preCloseAction: action.preCloseAction,
         },
-      }
-    case SIDES_TOGGLE:
-      return {
-        ...state,
-        stack: {
-          ...state.stack,
-          [action.panelKey]: {
-            ...state.stack[action.panelKey],
-            isOpened: action.isOpened,
-          },
+      },
+    }
+  case SIDES_TOGGLE:
+    return {
+      ...state,
+      stack: {
+        ...state.stack,
+        [action.panelKey]: {
+          ...state.stack[action.panelKey],
+          isOpened: action.isOpened,
         },
-      }
-    case SIDES_CLOSE_ALL:
-      let newStackToClose = { ...state.stack }
-      Object.keys(state.stack).forEach((key) => {
-        newStackToClose[key].isOpened = false
-      })
-      return {
-        ...state,
-        stack: {
-          ...newStackToClose,
-        },
-      }
-    case SIDES_CLOSE:
-      let newStack = { ...state.stack }
-      delete newStack[action.panelKey]
+      },
+    }
+  case SIDES_CLOSE_ALL: {
+    const newStackToClose = { ...state.stack }
+    Object.keys(state.stack).forEach((key) => {
+      newStackToClose[key].isOpened = false
+    })
+    return {
+      ...state,
+      stack: {
+        ...newStackToClose,
+      },
+    }
+  }
+  case SIDES_CLOSE: {
+    const newStack = { ...state.stack }
+    delete newStack[action.panelKey]
 
-      return {
-        ...state,
-        stack: { ...newStack },
-      }
-    case SIDES_CLEAR:
-      return {
-        ...state,
-        stack: {},
-      }
-    case SIDES_TOGGLE_MAIN_MENU:
-      return {
-        ...state,
-        mainMenuIsOpen: action.mainMenuIsOpen,
-      }
-    case SIDES_SELECT_BLOCKCHAIN_IN_MAIN_MENU:
-      return {
-        ...state,
-        selectedBlockchain: action.selectedBlockchain,
-      }
-    default:
-      return state
+    return {
+      ...state,
+      stack: { ...newStack },
+    }
+  }
+  case SIDES_CLEAR:
+    return {
+      ...state,
+      stack: {},
+    }
+  case SIDES_TOGGLE_MAIN_MENU:
+    return {
+      ...state,
+      mainMenuIsOpen: action.mainMenuIsOpen,
+    }
+  case SIDES_SELECT_BLOCKCHAIN_IN_MAIN_MENU:
+    return {
+      ...state,
+      selectedBlockchain: action.selectedBlockchain,
+    }
+  default:
+    return state
   }
 }

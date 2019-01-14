@@ -114,7 +114,7 @@ export default class TwoFaEnableForm extends PureComponent {
     const { confirm2FASecret, account, confirmToken } = this.props
     this.setState({ isLoading: true, success: null })
     confirm2FASecret(account, confirmToken, (success) => {
-      let newState = { isLoading: false, success }
+      const newState = { isLoading: false, success }
       if (success) {
         newState.step = STEPS[2]
         this.props.handleSetTwoFAConfirmed(success)

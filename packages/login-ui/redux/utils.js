@@ -7,12 +7,12 @@ const isNetworkAvailable = async (network) => {
   try {
     const isListening = await w3.eth.net.isListening()
     return isListening
-  } catch (e){
-   return false
+  } catch (e) {
+    return false
   }
 }
 
- export async function findProvider (providersList){
+export async function findProvider (providersList) {
   let num = 0
   while (providersList[num]) {
     const netData = {
@@ -33,7 +33,7 @@ export async function checkNetwork (selectedNetworkId, selectedProviderId) {
   let network = getNetworkById(selectedNetworkId, selectedProviderId)
   let networkLevel
   const isNetworkWorks = await isNetworkAvailable(network)
-  if(isNetworkWorks) return null
+  if (isNetworkWorks) return null
   for (let i in providersList) {
     const level = providersList[i]
     for (let k in level.providers) {

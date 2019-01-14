@@ -95,12 +95,12 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
       return
     }
     switch (`${data.event}`.toLowerCase()) {
-      case 'transfer':
-        this.handleTransferData(data)
-        break
-      case 'approval':
-        this.handleApprovalData(data)
-        break
+    case 'transfer':
+      this.handleTransferData(data)
+      break
+    case 'approval':
+      this.handleApprovalData(data)
+      break
     }
   }
 

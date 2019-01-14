@@ -157,15 +157,15 @@ export default class DepositTokensForm extends PureComponent {
     if (newProps.amount > 0 && newProps.feeMultiplier > 0 && (newProps.amount !== this.props.amount || newProps.feeMultiplier !== this.props.feeMultiplier)) {
       let action = null
       switch (this.state.step) {
-        case DEPOSIT_FIRST:
-          action = TX_APPROVE
-          break
-        case DEPOSIT_SECOND:
-          action = TX_DEPOSIT
-          break
-        case ASSET_DEPOSIT_WITHDRAW:
-          action = ASSET_DEPOSIT_WITHDRAW
-          break
+      case DEPOSIT_FIRST:
+        action = TX_APPROVE
+        break
+      case DEPOSIT_SECOND:
+        action = TX_DEPOSIT
+        break
+      case ASSET_DEPOSIT_WITHDRAW:
+        action = ASSET_DEPOSIT_WITHDRAW
+        break
       }
       this.handleGetGasPrice(action, newProps.amount, newProps.feeMultiplier, this.props.spender)
     }

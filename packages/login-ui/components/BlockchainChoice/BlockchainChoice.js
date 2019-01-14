@@ -45,27 +45,27 @@ class BlockchainChoice extends PureComponent {
 
   getUpdateButton = () => {
     switch (this.props.pageType) {
-      case 'login':
-        return (
-          <div styleName='finish'>
-            <Button
-              styleName='save-button'
-              type='submit'
-              buttonType='login'
-              label={<Translate value={`${prefix}.saveButtonTitle`} />}
-            />
-          </div>
-        )
-      case 'main':
-        return (
-          <div styleName='row-save-button'>
-            <Button
-              styleName='save-button'
-              type='submit'
-              label={<Translate value={`${prefix}.updateButtonTitle`} />}
-            />
-          </div>
-        )
+    case 'login':
+      return (
+        <div styleName='finish'>
+          <Button
+            styleName='save-button'
+            type='submit'
+            buttonType='login'
+            label={<Translate value={`${prefix}.saveButtonTitle`} />}
+          />
+        </div>
+      )
+    case 'main':
+      return (
+        <div styleName='row-save-button'>
+          <Button
+            styleName='save-button'
+            type='submit'
+            label={<Translate value={`${prefix}.updateButtonTitle`} />}
+          />
+        </div>
+      )
     }
   }
 
@@ -118,4 +118,3 @@ class BlockchainChoice extends PureComponent {
 }
 
 export default BlockchainChoice
-

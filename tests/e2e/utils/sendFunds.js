@@ -40,7 +40,7 @@ export default async function send (page, senderAddress, recipientAddress, curre
     address: senderAddress,
     username: 'sender',
     password: 'sender',
-    mnemonicKey: 'consider injury federal west guitar nut blast maple quick unhappy multiply night'
+    mnemonicKey: 'consider injury federal west guitar nut blast maple quick unhappy multiply night',
   }
 
   await signInByMnemonicKey(page, sender.username, sender.password, sender.mnemonicKey)
@@ -51,7 +51,7 @@ export default async function send (page, senderAddress, recipientAddress, curre
     address: recipientAddress,
     username: 'recipient',
     password: 'recipient',
-    mnemonicKey: 'prize transfer park kitten glass hungry sibling abstract saddle lend wait layer'
+    mnemonicKey: 'prize transfer park kitten glass hungry sibling abstract saddle lend wait layer',
   }
 
   await signInByMnemonicKey(page, recipient.username, recipient.password, recipient.mnemonicKey)

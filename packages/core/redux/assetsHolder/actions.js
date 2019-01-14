@@ -189,15 +189,15 @@ export const estimateGasForDeposit = (mode: string, params, callback, gasPriceMu
   let dao
   let tx
   switch (mode) {
-    case TX_APPROVE:
-      dao = await tokenService.getDAO(TIME)
-      tx = dao[TX_APPROVE](...params)
-      break
-    case TX_DEPOSIT:
-    case ASSET_DEPOSIT_WITHDRAW:
-      dao = daoByType('TimeHolder')(getState())
-      tx = dao[mode](...params)
-      break
+  case TX_APPROVE:
+    dao = await tokenService.getDAO(TIME)
+    tx = dao[TX_APPROVE](...params)
+    break
+  case TX_DEPOSIT:
+  case ASSET_DEPOSIT_WITHDRAW:
+    dao = daoByType('TimeHolder')(getState())
+    tx = dao[mode](...params)
+    break
   }
   try {
     const { gasLimit, gasFee, gasPrice } = await dispatch(estimateGas(tx))

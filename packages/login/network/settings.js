@@ -226,28 +226,28 @@ export const providerMap = {
 // eslint-disable-next-line complexity
 export const getNetworksByProvider = (providerId) => {
   switch (providerId) {
-    case providerMap.uport.id:
-    case providerMap.metamask.id: {
-      return [...BASE_NETWORK_MAP]
-    }
-    case providerMap.infura.id: {
-      const networks = [...infuraNetworkMap]
-      return networks
-    }
-    case providerMap.giveth.id: {
-      const networks = [...givethNetworkMap]
-      return networks
-    }
-    case providerMap.mew.id: {
-      const networks = [...mewNetworkMap]
-      return networks
-    }
-    case providerMap.chronoBank.id: {
-      return [...chronoBankMap]
-    }
-    default: {
-      return []
-    }
+  case providerMap.uport.id:
+  case providerMap.metamask.id: {
+    return [...BASE_NETWORK_MAP]
+  }
+  case providerMap.infura.id: {
+    const networks = [...infuraNetworkMap]
+    return networks
+  }
+  case providerMap.giveth.id: {
+    const networks = [...givethNetworkMap]
+    return networks
+  }
+  case providerMap.mew.id: {
+    const networks = [...mewNetworkMap]
+    return networks
+  }
+  case providerMap.chronoBank.id: {
+    return [...chronoBankMap]
+  }
+  default: {
+    return []
+  }
   }
 }
 

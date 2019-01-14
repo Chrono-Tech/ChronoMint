@@ -71,7 +71,7 @@ export default class AddWalletWidget extends PureComponent {
   handleSubmitEthMultisig = (values, dispatch, props) => {
     // owners
     const owners = values.get('owners')
-    let ownersCollection = []
+    const ownersCollection = []
     ownersCollection.push(props.account)
     owners.forEach(({ address }) => {
       ownersCollection.push(address)
@@ -108,14 +108,14 @@ export default class AddWalletWidget extends PureComponent {
   handleSubmitEth2FA = (values, dispatch, props) => {
     // owners
     const owners = values.get('owners')
-    let ownersCollection = []
+    const ownersCollection = []
     ownersCollection.push(props.account)
     owners.forEach(({ address }) => {
       ownersCollection.push(address)
     })
 
     // date
-    let releaseTime = new Date(0)
+    const releaseTime = new Date(0)
 
     const wallet = new MultisigEthWalletModel({
       ...props.initialValues.toJS(),
@@ -142,30 +142,30 @@ export default class AddWalletWidget extends PureComponent {
     let Component = null
     let componentProps = {}
     switch (ethWalletType) {
-      case 'ST':
-        title = `${prefix}.createWallet`
-        Component = StandardWalletForm
-        componentProps = { initialValues: { blockchain: BLOCKCHAIN_ETHEREUM } }
-        break
-      case 'MS':
-        title = `${prefix}.multisignatureWallet`
-        Component = MultisigWalletForm
-        componentProps = { onSubmit: this.handleSubmitEthMultisig }
-        break
-      case 'TL':
-        title = `${prefix}.timeLockedWallet`
-        Component = TimeLockedWalletForm
-        componentProps = { onSubmit: this.handleSubmitEthMultisig }
-        break
-      case 'CW':
-        title = `${prefix}.customWallet`
-        Component = CustomWalletForm
-        componentProps = { symbol: ETH, blockchain: BLOCKCHAIN_ETHEREUM }
-        break
-      case '2FA':
-        title = `${prefix}.twoFA`
-        Component = TwoFaWalletForm
-        componentProps = { onSubmit: this.handleSubmitEth2FA }
+    case 'ST':
+      title = `${prefix}.createWallet`
+      Component = StandardWalletForm
+      componentProps = { initialValues: { blockchain: BLOCKCHAIN_ETHEREUM } }
+      break
+    case 'MS':
+      title = `${prefix}.multisignatureWallet`
+      Component = MultisigWalletForm
+      componentProps = { onSubmit: this.handleSubmitEthMultisig }
+      break
+    case 'TL':
+      title = `${prefix}.timeLockedWallet`
+      Component = TimeLockedWalletForm
+      componentProps = { onSubmit: this.handleSubmitEthMultisig }
+      break
+    case 'CW':
+      title = `${prefix}.customWallet`
+      Component = CustomWalletForm
+      componentProps = { symbol: ETH, blockchain: BLOCKCHAIN_ETHEREUM }
+      break
+    case '2FA':
+      title = `${prefix}.twoFA`
+      Component = TwoFaWalletForm
+      componentProps = { onSubmit: this.handleSubmitEth2FA }
     }
 
     return (
@@ -179,29 +179,29 @@ export default class AddWalletWidget extends PureComponent {
     const { blockchain, ethWalletType } = this.props
     if (blockchain) {
       switch (blockchain) {
-        case BLOCKCHAIN_BITCOIN:
-        case BLOCKCHAIN_DASH:
-        case BLOCKCHAIN_LABOR_HOUR:
-        case BLOCKCHAIN_LITECOIN:
+      case BLOCKCHAIN_BITCOIN:
+      case BLOCKCHAIN_DASH:
+      case BLOCKCHAIN_LABOR_HOUR:
+      case BLOCKCHAIN_LITECOIN:
+        return (
+          <WidgetContainer title={`${prefix}.createWallet`} blockchain={blockchain}>
+            <StandardWalletForm initialValues={{ blockchain }} />
+          </WidgetContainer>
+        )
+      case BLOCKCHAIN_NEM:
+        return (
+          <div>soon</div>
+        )
+      case BLOCKCHAIN_ETHEREUM:
+        if (ethWalletType) {
+          return this.renderEthWalletForm(ethWalletType)
+        } else {
           return (
-            <WidgetContainer title={`${prefix}.createWallet`} blockchain={blockchain}>
-              <StandardWalletForm initialValues={{ blockchain }} />
+            <WidgetContainer title={`${prefix}.createWallet`} blockchain={BLOCKCHAIN_ETHEREUM}>
+              <SelectEthWallet handleTouchTap={this.onSelectWalletType} />
             </WidgetContainer>
           )
-        case BLOCKCHAIN_NEM:
-          return (
-            <div>soon</div>
-          )
-        case BLOCKCHAIN_ETHEREUM:
-          if (ethWalletType) {
-            return this.renderEthWalletForm(ethWalletType)
-          } else {
-            return (
-              <WidgetContainer title={`${prefix}.createWallet`} blockchain={BLOCKCHAIN_ETHEREUM}>
-                <SelectEthWallet handleTouchTap={this.onSelectWalletType} />
-              </WidgetContainer>
-            )
-          }
+        }
       }
     } else {
       return (

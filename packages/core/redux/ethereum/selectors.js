@@ -33,20 +33,20 @@ export const getEthereumSigner = (state) => {
   const account = getPersistAccount(state)
 
   switch (account.selectedWallet.type) {
-    case WALLET_TYPE_TREZOR: {
-      if (process.env.DEVICE_MOCKS) {
-        return new EthereumTrezorDeviceMock()
-      }
-      return new EthereumTrezorDevice()
+  case WALLET_TYPE_TREZOR: {
+    if (process.env.DEVICE_MOCKS) {
+      return new EthereumTrezorDeviceMock()
     }
-    case WALLET_TYPE_LEDGER: {
-      if (process.env.DEVICE_MOCKS) {
-        return new EthereumLedgerDeviceMock()
-      }
-      return new EthereumLedgerDevice()
+    return new EthereumTrezorDevice()
+  }
+  case WALLET_TYPE_LEDGER: {
+    if (process.env.DEVICE_MOCKS) {
+      return new EthereumLedgerDeviceMock()
     }
-    case WALLET_TYPE_MEMORY: {
-      return new EthereumMemoryDevice(account.decryptedWallet.privateKey)
-    }
+    return new EthereumLedgerDevice()
+  }
+  case WALLET_TYPE_MEMORY: {
+    return new EthereumMemoryDevice(account.decryptedWallet.privateKey)
+  }
   }
 }

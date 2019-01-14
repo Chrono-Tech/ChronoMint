@@ -4,6 +4,8 @@
  */
 
 /*global TimeoutLength*/
+/* eslint-disable */
+
 import { openBrowser, openPage } from './utils'
 import { checkNotAuthorized, signInByMnemonicKey, signOut } from './utils/signInOutUp'
 

@@ -53,24 +53,24 @@ export const isBTCLikeBlockchain = (blockchain) => {
 
 export const getMainSymbolForBlockchain = (blockchain) => {
   switch (blockchain) {
-    case BLOCKCHAIN_BITCOIN:
-      return BTC
-    case BLOCKCHAIN_BITCOIN_CASH:
-      return BCC
-    case BLOCKCHAIN_LITECOIN:
-      return LTC
-    case BLOCKCHAIN_DASH:
-      return DASH
-    case BLOCKCHAIN_ETHEREUM:
-      return ETH
-    case BLOCKCHAIN_LABOR_HOUR:
-      return LHT
-    case BLOCKCHAIN_NEM:
-      return XEM
-    case BLOCKCHAIN_WAVES:
-      return WAVES
-    case BLOCKCHAIN_EOS:
-      return EOS
+  case BLOCKCHAIN_BITCOIN:
+    return BTC
+  case BLOCKCHAIN_BITCOIN_CASH:
+    return BCC
+  case BLOCKCHAIN_LITECOIN:
+    return LTC
+  case BLOCKCHAIN_DASH:
+    return DASH
+  case BLOCKCHAIN_ETHEREUM:
+    return ETH
+  case BLOCKCHAIN_LABOR_HOUR:
+    return LHT
+  case BLOCKCHAIN_NEM:
+    return XEM
+  case BLOCKCHAIN_WAVES:
+    return WAVES
+  case BLOCKCHAIN_EOS:
+    return EOS
   }
 }
 

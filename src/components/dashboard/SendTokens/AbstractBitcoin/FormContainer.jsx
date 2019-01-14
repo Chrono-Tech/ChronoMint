@@ -15,7 +15,7 @@ import {
 } from 'components/constants'
 
 export const mapStateToProps = (state, props) => ({
-  token: state.get(DUCK_TOKENS).item(props.tokenSymbol)
+  token: state.get(DUCK_TOKENS).item(props.tokenSymbol),
 })
 
 export function mapDispatchToProps (dispatch) {

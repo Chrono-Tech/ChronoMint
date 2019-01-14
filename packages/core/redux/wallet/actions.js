@@ -25,10 +25,10 @@ export const selectWallet = (blockchain: string, address: string) => (dispatch) 
  */
 export const formatDataAndGetTransactionsForWallet = ({ wallet, address, blockchain }) => async (dispatch) => {
   switch (true) {
-    case wallet && wallet.isMain:
-      return dispatch(getTransactionsForMainWallet({ address, blockchain }))
-    case wallet && wallet.isMultisig:
-      return dispatch(getTransactionsForEthMultisigWallet({ wallet, address, blockchain }))
+  case wallet && wallet.isMain:
+    return dispatch(getTransactionsForMainWallet({ address, blockchain }))
+  case wallet && wallet.isMultisig:
+    return dispatch(getTransactionsForEthMultisigWallet({ wallet, address, blockchain }))
   }
 }
 
@@ -52,14 +52,14 @@ export const subscribeWallet = ({ wallet }) => async (dispatch) => {
   }
 
   switch (wallet.blockchain) {
-    case BLOCKCHAIN_ETHEREUM:
-      ethereumDAO.on('tx', listener)
-      return listener
-    case BLOCKCHAIN_LABOR_HOUR:
-      laborHourDAO.on('tx', listener)
-      return listener
-    default:
-      return
+  case BLOCKCHAIN_ETHEREUM:
+    ethereumDAO.on('tx', listener)
+    return listener
+  case BLOCKCHAIN_LABOR_HOUR:
+    laborHourDAO.on('tx', listener)
+    return listener
+  default:
+    return
   }
 }
 
@@ -71,13 +71,13 @@ export const subscribeWallet = ({ wallet }) => async (dispatch) => {
  */
 export const unsubscribeWallet = ({ wallet, listener }) => async () => {
   switch (wallet.blockchain) {
-    case BLOCKCHAIN_ETHEREUM:
-      ethereumDAO.removeListener('tx', listener)
-      return listener
-    case BLOCKCHAIN_LABOR_HOUR:
-      laborHourDAO.removeListener('tx', listener)
-      return listener
-    default:
-      return
+  case BLOCKCHAIN_ETHEREUM:
+    ethereumDAO.removeListener('tx', listener)
+    return listener
+  case BLOCKCHAIN_LABOR_HOUR:
+    laborHourDAO.removeListener('tx', listener)
+    return listener
+  default:
+    return
   }
 }

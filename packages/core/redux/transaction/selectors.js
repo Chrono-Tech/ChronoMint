@@ -42,7 +42,7 @@ export const pendingTransactionsSelector = () => createSelector(
   (scope) => {
     let pendingTransactions = []
 
-    Object.values(scope).map(blockchainScope => {
+    Object.values(scope).map((blockchainScope) => {
       if (blockchainScope == null || blockchainScope.pending == null) {
         return null
       }

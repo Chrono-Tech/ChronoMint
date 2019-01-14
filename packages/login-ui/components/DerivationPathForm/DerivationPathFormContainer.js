@@ -18,7 +18,8 @@ export default class DerivationPathFormContainer extends PureComponent {
   }
 
   static defaultProps = {
-    previousPage: () => {}
+    previousPage: () => {
+    },
   }
 
   async handleSubmit (values) {

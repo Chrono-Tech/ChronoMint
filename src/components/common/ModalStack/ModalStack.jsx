@@ -28,9 +28,7 @@ export default class ModalStack extends PureComponent {
       <div styleName='root'>
         {
           this.props.stack
-            .map((modal, ) => (
-              <ModalsSelector {...modal} />
-            ))
+            .map((modal) => <ModalsSelector key={modal.key} {...modal} />)
         }
       </div>
     )

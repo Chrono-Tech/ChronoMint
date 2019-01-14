@@ -9,7 +9,7 @@ import { required, email as emailValidator } from '@chronobank/core/models/valid
 export default (values) => {
 
   const email = values.get('email')
-  let emailErrors = new ErrorList()
+  const emailErrors = new ErrorList()
   emailErrors.add(required(email))
   emailErrors.add(emailValidator(email))
 

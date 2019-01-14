@@ -28,7 +28,7 @@ export default class WavesMemoryDevice {
   async signTransaction (unsignedTxData) {
     const transactionData = {
       ...unsignedTxData,
-      senderPublicKey: this.getPublicKey()
+      senderPublicKey: this.getPublicKey(),
     }
 
     const transferTransaction = new this.waves.Transactions.TransferTransaction(transactionData)

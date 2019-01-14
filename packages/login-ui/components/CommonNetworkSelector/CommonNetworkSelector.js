@@ -34,7 +34,7 @@ const HeaderGroup = ({ group, ...props }) => (
   </div>
 )
 
-const MenuCustomItem = ({ network, onClickEdit, children, checked, ...props }) => (
+const MenuCustomItem = ({ /*network,*/ onClickEdit, children, checked, ...props }) => (
   <div
     styleName={classnames({
       providerItem: true,

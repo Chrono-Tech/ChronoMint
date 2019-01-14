@@ -12,40 +12,40 @@ export const normalizeSmallestUnit = (value) => validateSmallestUnit(value) ? 0 
 
 export default function validate (values) {
   const result = {}
-  let platformErrors = new ErrorList()
+  const platformErrors = new ErrorList()
   platformErrors.add(validator.required(values.get('platform')))
   if (platformErrors.getErrors()) {
     result.platform = platformErrors.getErrors()
   }
 
-  let tokenSymbolErrors = new ErrorList()
+  const tokenSymbolErrors = new ErrorList()
   tokenSymbolErrors.add(validator.name(values.get('tokenSymbol'), true))
   tokenSymbolErrors.add(validator.bytes32(values.get('tokenSymbol')))
   if (tokenSymbolErrors.getErrors()) {
     result.tokenSymbol = tokenSymbolErrors.getErrors()
   }
 
-  let descriptionErrors = new ErrorList()
+  const descriptionErrors = new ErrorList()
   descriptionErrors.add(validator.required(values.get('description')))
   if (descriptionErrors.getErrors()) {
     result.description = descriptionErrors.getErrors()
   }
 
-  let smallestUnitErrors = new ErrorList()
+  const smallestUnitErrors = new ErrorList()
   smallestUnitErrors.add(validateSmallestUnit(values.get('smallestUnit')))
   if (smallestUnitErrors.getErrors()) {
     result.smallestUnit = smallestUnitErrors.getErrors()
   }
 
-  let amountErrors = new ErrorList()
+  const amountErrors = new ErrorList()
   amountErrors.add(validator.positiveNumber(values.get('amount')))
   amountErrors.add(validator.required(values.get('amount')))
   if (amountErrors.getErrors()) {
     result.amount = amountErrors.getErrors()
   }
 
-  let feePercentErrors = new ErrorList()
-  let feeAddressErrors = new ErrorList()
+  const feePercentErrors = new ErrorList()
+  const feeAddressErrors = new ErrorList()
   if (values.get('withFee')) {
     feePercentErrors.add(validator.positiveNumber(values.get('feePercent')))
     feePercentErrors.add(validator.required(values.get('feePercent')))

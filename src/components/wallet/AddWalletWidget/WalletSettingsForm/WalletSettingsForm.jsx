@@ -36,16 +36,16 @@ function mapDispatchToProps (dispatch, ownProps) {
       const name = values.get('name')
       const { wallet } = ownProps
       switch (wallet.blockchain) {
-        case BLOCKCHAIN_EOS:
-          dispatch(setEOSWalletName(wallet.id, name))
-          break
-        default:
-          // TODO refactor this after wallet refactoring
-          if (wallet.isMain) {
-            dispatch(setWalletName(wallet.id, name))
-          } else {
-            dispatch(setMultisigWalletName(wallet.id, name))
-          }
+      case BLOCKCHAIN_EOS:
+        dispatch(setEOSWalletName(wallet.id, name))
+        break
+      default:
+        // TODO refactor this after wallet refactoring
+        if (wallet.isMain) {
+          dispatch(setWalletName(wallet.id, name))
+        } else {
+          dispatch(setMultisigWalletName(wallet.id, name))
+        }
       }
       dispatch(modalsClose())
     },

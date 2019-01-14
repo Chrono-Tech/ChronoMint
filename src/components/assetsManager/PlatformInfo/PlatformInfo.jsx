@@ -190,14 +190,14 @@ export default class PlatformInfo extends PureComponent {
     const { selectedToken } = this.props
     let value
     switch (selectedToken.withFee()) {
-      case true:
-        value = <span>{selectedToken.fee().fee().toString()}<span>%</span></span>
-        break
-      case false:
-        value = <Translate value={prefix('withoutFee')} />
-        break
-      default:
-        value = <div styleName='preloader'><Preloader /></div>
+    case true:
+      value = <span>{selectedToken.fee().fee().toString()}<span>%</span></span>
+      break
+    case false:
+      value = <Translate value={prefix('withoutFee')} />
+      break
+    default:
+      value = <div styleName='preloader'><Preloader /></div>
     }
     return (
       <div styleName='fee'>

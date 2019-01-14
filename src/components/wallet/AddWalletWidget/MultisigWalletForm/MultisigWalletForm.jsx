@@ -21,7 +21,7 @@ import './MultisigWalletForm.scss'
 
 function mapStateToProps (state, ownProps) {
   const selector = formValueSelector(FORM_MULTISIG_WALLET_ADD)
-  let owners = selector(state, 'owners')
+  const owners = selector(state, 'owners')
   const wallet = ownProps.wallet || new MultisigEthWalletModel()
 
   return {
