@@ -7,17 +7,14 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
 import {
-  DUCK_DEVICE_ACCOUNT,
-} from '@chronobank/core/redux/device/constants'
-import {
   initMetamaskPlugin,
 } from '@chronobank/core/redux/device/actions'
-import { DeviceEntryModel } from '@chronobank/core/models'
 import './LoginWithMetamask.scss'
 import {
   navigateToCreateAccount,
 } from '../../redux/navigation'
 import LoginWithMetamask from './LoginWithMetamask'
+import { deviceListSelector } from '@chronobank/core/redux/device/selectors'
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -28,9 +25,7 @@ function mapDispatchToProps (dispatch) {
 
 function mapStateToProps (state) {
   return {
-    deviceList: state.get(DUCK_DEVICE_ACCOUNT).deviceList.map(
-      (wallet) => new DeviceEntryModel({ ...wallet }),
-    ),
+    deviceList: deviceListSelector(state),
   }
 }
 

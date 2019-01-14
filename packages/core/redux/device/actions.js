@@ -23,29 +23,20 @@ import {
 } from './constants'
 import { updateSessionWeb3 } from '../session/thunks'
 
-export const deviceAdd = (wallet) => (dispatch) => {
-  dispatch({ type: DEVICE_ADD, wallet })
-}
+export const deviceAdd = (wallet) => ({ type: DEVICE_ADD, wallet })
 
-export const deviceSelect = (wallet) => (dispatch) => {
-  dispatch({ type: DEVICE_SELECT, wallet })
-}
+export const deviceSelect = (wallet) => ({ type: DEVICE_SELECT, wallet })
 
-export const deviceDeselect = (wallet) => (dispatch) => {
-  dispatch({ type: DEVICE_DESELECT, wallet })
-}
+export const deviceDeselect = (wallet) => ({ type: DEVICE_DESELECT, wallet })
 
-export const deviceLoad = (wallet) => (dispatch) => {
-  dispatch({ type: DEVICE_LOAD, wallet })
-}
+export const deviceLoad = (wallet) => ({ type: DEVICE_LOAD, wallet })
 
-export const deviceUpdateList = (deviceList) => (dispatch) => {
-  dispatch({ type: DEVICE_UPDATE_LIST, deviceList })
-}
+export const deviceUpdateList = (deviceList) => ({
+  type: DEVICE_UPDATE_LIST,
+  deviceList,
+})
 
-export const deviceClearList = () => (dispatch) => {
-  dispatch({ type: DEVICE_CLEAR_LIST })
-}
+export const deviceClearList = () => ({ type: DEVICE_CLEAR_LIST })
 
 // eslint-disable-next-line no-unused-vars
 export const initLedgerDevice = (wallet) => async (dispatch) => {
@@ -72,10 +63,8 @@ export const initTrezorDevice = (wallet) => async (dispatch) => {
   }
 }
 
-// eslint-disable-next-line no-unused-vars
-export const initMetamaskPlugin = (wallet) => async (dispatch) => {
+export const initMetamaskPlugin = () => async (dispatch) => {
   const metamask = new MetamaskPlugin()
-  await metamask.init()
   const result = await metamask.getAddressInfoList()
   dispatch(deviceUpdateList(result))
 }

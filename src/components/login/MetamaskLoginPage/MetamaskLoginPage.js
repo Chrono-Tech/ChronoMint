@@ -19,7 +19,9 @@ import {
   AccountNameContainer,
 } from '@chronobank/login-ui/components'
 import * as ProfileThunks from '@chronobank/core/redux/profile/thunks'
-import { getAddress } from '@chronobank/core/redux/persistAccount/utils'
+import { formatBlockchainListToArray, getAddress } from '@chronobank/core/redux/persistAccount/utils'
+import BlockchainChoiceContainer from '@chronobank/login-ui/components/BlockchainChoice/BlockchainChoiceContainer'
+import { METAMASK_ACTIVE_BLOCKCHAINS } from '@chronobank/core/redux/persistAccount/constants'
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -34,6 +36,7 @@ class MetamaskLoginPage extends PureComponent {
   static PAGES = {
     DEVICE_SELECT_FORM: 1,
     ACCOUNT_NAME_FORM: 2,
+    BLOCKCHAIN_CHOICE_FORM: 3,
   }
 
   static propTypes = {
@@ -51,7 +54,7 @@ class MetamaskLoginPage extends PureComponent {
   }
 
   getCurrentPage () {
-    switch(this.state.page){
+    switch (this.state.page) {
     case MetamaskLoginPage.PAGES.DEVICE_SELECT_FORM:
       return (
         <LoginWithMetamaskContainer
@@ -65,6 +68,15 @@ class MetamaskLoginPage extends PureComponent {
         <AccountNameContainer
           previousPage={this.previousPage.bind(this)}
           onSubmit={this.onSubmitAccountName.bind(this)}
+        />
+      )
+
+    case MetamaskLoginPage.PAGES.BLOCKCHAIN_CHOICE_FORM:
+      return (
+        <BlockchainChoiceContainer
+          previousPage={this.previousPage.bind(this)}
+          onSubmitSuccess={this.onSubmitBlockchainChoiceFormSuccess.bind(this)}
+          activeBlockchainList={METAMASK_ACTIVE_BLOCKCHAINS}
         />
       )
 
@@ -92,7 +104,7 @@ class MetamaskLoginPage extends PureComponent {
       profile = response.data[0]
       userName = profile.userName
 
-      if (userName){
+      if (userName) {
         this.props.onCreateWalletFromDevice(userName, device, profile)
         this.props.navigateToSelectWallet()
       } else {
@@ -109,9 +121,22 @@ class MetamaskLoginPage extends PureComponent {
   }
 
   async onSubmitAccountName (accountName) {
-    const { onCreateWalletFromDevice, navigateToSelectWallet } = this.props
+    this.setState({
+      accountName,
+      page: MetamaskLoginPage.PAGES.BLOCKCHAIN_CHOICE_FORM,
+    })
+  }
 
-    onCreateWalletFromDevice(accountName, this.state.device, null)
+  async onSubmitBlockchainChoiceFormSuccess (blockchainListValues) {
+    const { onCreateWalletFromDevice, navigateToSelectWallet } = this.props
+    const { accountName, device } = this.state
+
+    onCreateWalletFromDevice(
+      accountName,
+      device,
+      null,
+      formatBlockchainListToArray(blockchainListValues.toJS(), (name, isEnable) => isEnable),
+    )
     navigateToSelectWallet()
   }
 
@@ -122,10 +147,10 @@ class MetamaskLoginPage extends PureComponent {
   }
 
   previousPage () {
-    if (this.state.page === MetamaskLoginPage.PAGES.DEVICE_SELECT_FORM){
+    if (this.state.page === MetamaskLoginPage.PAGES.DEVICE_SELECT_FORM) {
       this.props.navigateBack()
     } else {
-      this.setState ({ page: this.state.page - 1 })
+      this.setState({ page: this.state.page - 1 })
     }
   }
 

@@ -49,5 +49,8 @@ export const TREZOR_ACTIVE_BLOCKCHAINS = [
   BLOCKCHAIN_NEM,
 ]
 
+export const METAMASK_ACTIVE_BLOCKCHAINS = [
+]
+
 export const FORM_BLOCKCHAIN_ACTIVATE = 'FormBlockchainActivate'
 export const FORM_BLOCKCHAIN_CHOICE_LOGIN_STEP = 'FormBlockchainChoiceLoginStep'

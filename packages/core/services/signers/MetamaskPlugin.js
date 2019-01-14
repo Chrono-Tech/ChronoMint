@@ -4,8 +4,9 @@
  */
 
 import Web3 from 'web3'
+import EventEmitter from 'events'
 
-export default class MetamaskPlugin {
+export default class MetamaskPlugin extends EventEmitter {
   get name () {
     return 'metamask'
   }
@@ -26,20 +27,26 @@ export default class MetamaskPlugin {
         this.web3 = web3
         this.address = accounts[0]
         this.emit('connected')
+        return {
+          address: this.address,
+        }
       }
     }
+    return null
   }
 
   async getAddressInfoList () {
-    if (this.isConnected) {
-      const accounts = await this.web3.eth.getAccounts()
-      return accounts.map((address) => ({
-        address,
-        type: this.name,
-      }))
+    if (!this.isConnected || !this.address) {
+      await this.init()
     }
 
-    return []
+    const ethBalance = await this.web3.eth.getBalance(this.address)
+    return [
+      {
+        address: this.address,
+        ethBalance: this.web3.utils.fromWei(ethBalance),
+        type: this.name,
+      }]
   }
 
   async signTransaction ({ /*gas, gasPrice,*/ ...txData }) {

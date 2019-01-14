@@ -25,11 +25,10 @@ class LoginWithMetamask extends Component {
       >
         <div styleName='account-item-content'>
           <div styleName='account-item-address'>
-            { item.address }
+            {item.address}
           </div>
           <div styleName='account-item-additional'>
-            {/* Wallet balance field*/}
-            ETH 1.00
+            ETH {item.ethBalance}
           </div>
         </div>
         <div styleName='account-item-icon'>
