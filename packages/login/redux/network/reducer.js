@@ -46,134 +46,144 @@ const initialState = {
 // eslint-disable-next-line complexity
 export default (state = initialState, action) => {
   switch (action.type) {
-  case actions.NETWORK_LOADING:
-    return {
-      ...state,
-      isLoading: action.isLoading,
-    }
-  case actions.NETWORK_SET_TEST_METAMASK:
-    return {
-      ...state,
-      isMetamask: true,
-    }
-  case actions.NETWORK_SET_NETWORK:
-    return {
-      ...state,
-      selectedNetworkId: action.selectedNetworkId,
-    }
-  case actions.NETWORK_RESET_NETWORK:
-    return {
-      ...state,
-      selectedNetworkId:  null,
-    }
-  case actions.NETWORK_SET_PROVIDER:
-    return {
-      ...state,
-      selectedProviderId: action.selectedProviderId,
-      networks: getNetworksByProvider(action.selectedProviderId),
-    }
-  case actions.NETWORK_SET_ACCOUNTS:
-    return { ...state, accounts: action.accounts }
-  case actions.NETWORK_SELECT_ACCOUNT:
-    return { ...state, selectedAccount: action.selectedAccount }
-  case actions.NETWORK_CLEAR_ERRORS:
-    return { ...state, errors: [] }
-  case actions.NETWORK_SET_TEST_MNEMONIC:
-    return { ...state, isMnemonic: true }
-  case actions.NETWORK_SET_TEST_WALLET_FILE:
-    return { ...state, isWalletFile: true }
-  case actions.NETWORK_ADD_ERROR:
-    return {
-      ...state,
-      isLoading: false,
-      errors: [...state.errors, action.error],
-    }
-  case actions.NETWORK_SET_NEW_ACCOUNT_CREDENTIALS:
-    return {
-      ...state,
-      newAccountName: action.walletName,
-      newAccountPassword: action.walletPassword,
-    }
-  case actions.NETWORK_RESET_NEW_ACCOUNT_CREDENTIALS:
-    return {
-      ...state,
-      newAccountName: null,
-      newAccountPassword: null,
-    }
-  case actions.NETWORK_SET_NEW_MNEMONIC:
-    return {
-      ...state,
-      newAccountMnemonic: action.mnemonic,
-    }
-  case actions.NETWORK_RESET_NEW_MNEMONIC:
-    return {
-      ...state,
-      newAccountMnemonic: null,
-    }
-  case actions.NETWORK_SET_IMPORT_PRIVATE_KEY:
-    return {
-      ...state,
-      newAccountPrivateKey: action.privateKey,
-    }
-  case actions.NETWORK_RESET_IMPORT_PRIVATE_KEY:
-    return {
-      ...state,
-      newAccountPrivateKey: null,
-    }
-  case actions.NETWORK_SET_LOGIN_SUBMITTING:
-    return {
-      ...state,
-      isLoginSubmitting: true,
-    }
-  case actions.NETWORK_RESET_LOGIN_SUBMITTING:
-    return {
-      ...state,
-      isLoginSubmitting: false,
-    }
-  case actions.NETWORK_SET_ACCOUNT_RECOVERY_MODE:
-    return {
-      ...state,
-      accountRecoveryMode: true,
-    }
-  case actions.NETWORK_RESET_ACCOUNT_RECOVERY_MODE:
-    return {
-      ...state,
-      accountRecoveryMode: false,
-    }
-  case actions.NETWORK_SET_IMPORT_WALLET_FILE:
-    return {
-      ...state,
-      walletFileImportMode: true,
-    }
-  case actions.NETWORK_RESET_IMPORT_WALLET_FILE:
-    return {
-      ...state,
-      walletFileImportMode: false,
-    }
-  case actions.NETWORK_ACCOUNTS_SIGNATURES_LOADING:
-    return {
-      ...state,
-      loadingAccountSignatures: true,
-    }
-  case actions.NETWORK_ACCOUNTS_SIGNATURES_RESET_LOADING:
-    return {
-      ...state,
-      loadingAccountSignatures: false,
-    }
+    case actions.NETWORK_LOADING:
+      return {
+        ...state,
+        isLoading: action.isLoading,
+      }
+    case actions.NETWORK_SET_TEST_METAMASK:
+      return {
+        ...state,
+        isMetamask: true,
+      }
+    case actions.NETWORK_SET_NETWORK:
+      return {
+        ...state,
+        selectedNetworkId: action.selectedNetworkId,
+      }
+    case actions.NETWORK_RESET_NETWORK:
+      return {
+        ...state,
+        selectedNetworkId: null,
+      }
+    case actions.NETWORK_SET_PROVIDER:
+      return {
+        ...state,
+        selectedProviderId: action.selectedProviderId,
+        networks: getNetworksByProvider(action.selectedProviderId),
+      }
+    case actions.NETWORK_SET_ACCOUNTS:
+      return { ...state, accounts: action.accounts }
+    case actions.NETWORK_SELECT_ACCOUNT:
+      return { ...state, selectedAccount: action.selectedAccount }
+    case actions.NETWORK_CLEAR_ERRORS:
+      return { ...state, errors: [] }
+    case actions.NETWORK_SET_TEST_MNEMONIC:
+      return { ...state, isMnemonic: true }
+    case actions.NETWORK_SET_TEST_WALLET_FILE:
+      return { ...state, isWalletFile: true }
+    case actions.NETWORK_ADD_ERROR:
+      return {
+        ...state,
+        isLoading: false,
+        errors: [...state.errors, action.error],
+      }
+    case actions.NETWORK_SET_NEW_ACCOUNT_CREDENTIALS:
+      return {
+        ...state,
+        newAccountName: action.walletName,
+        newAccountPassword: action.walletPassword,
+      }
+    case actions.NETWORK_RESET_NEW_ACCOUNT_CREDENTIALS:
+      return {
+        ...state,
+        newAccountName: null,
+        newAccountPassword: null,
+      }
+    case actions.NETWORK_SET_NEW_MNEMONIC:
+      return {
+        ...state,
+        newAccountMnemonic: action.mnemonic,
+      }
+    case actions.NETWORK_RESET_NEW_MNEMONIC:
+      return {
+        ...state,
+        newAccountMnemonic: null,
+      }
+    case actions.NETWORK_SET_IMPORT_PRIVATE_KEY:
+      return {
+        ...state,
+        newAccountPrivateKey: action.privateKey,
+      }
+    case actions.NETWORK_RESET_IMPORT_PRIVATE_KEY:
+      return {
+        ...state,
+        newAccountPrivateKey: null,
+      }
+    case actions.NETWORK_SET_LOGIN_SUBMITTING:
+      return {
+        ...state,
+        isLoginSubmitting: true,
+      }
+    case actions.NETWORK_RESET_LOGIN_SUBMITTING:
+      return {
+        ...state,
+        isLoginSubmitting: false,
+      }
+    case actions.NETWORK_SET_ACCOUNT_RECOVERY_MODE:
+      return {
+        ...state,
+        accountRecoveryMode: true,
+      }
+    case actions.NETWORK_RESET_ACCOUNT_RECOVERY_MODE:
+      return {
+        ...state,
+        accountRecoveryMode: false,
+      }
+    case actions.NETWORK_SET_IMPORT_WALLET_FILE:
+      return {
+        ...state,
+        walletFileImportMode: true,
+      }
+    case actions.NETWORK_RESET_IMPORT_WALLET_FILE:
+      return {
+        ...state,
+        walletFileImportMode: false,
+      }
+    case actions.NETWORK_ACCOUNTS_SIGNATURES_LOADING:
+      return {
+        ...state,
+        loadingAccountSignatures: true,
+      }
+    case actions.NETWORK_ACCOUNTS_SIGNATURES_RESET_LOADING:
+      return {
+        ...state,
+        loadingAccountSignatures: false,
+      }
 
-  case actions.NETWORK_SET_WALLET_FILE_IMPORTED:
-    return {
-      ...state,
-      walletFileImportObject: action.wallet,
-    }
-  case actions.NETWORK_RESET_WALLET_FILE_IMPORTED:
-    return {
-      ...state,
-      walletFileImportObject: null,
-    }
-  case actions.NETWORK_GET_ACCOUNTS:
-    return state
-  default:
-    return state
+    case actions.NETWORK_SET_WALLET_FILE_IMPORTED:
+      return {
+        ...state,
+        walletFileImportObject: action.wallet,
+      }
+    case actions.NETWORK_RESET_WALLET_FILE_IMPORTED:
+      return {
+        ...state,
+        walletFileImportObject: null,
+      }
+    case actions.NETWORK_GET_ACCOUNTS:
+      return state
+    case actions.NETWORK_DISABLE_PROVIDER:
+      return {
+        ...state,
+        providers: [...state.providers.map(provider => {
+          if (provider.id === action.providerId) {
+            provider.disabled = true
+          }
+          return provider
+        })],
+      }
+    default:
+      return state
   }
 }
