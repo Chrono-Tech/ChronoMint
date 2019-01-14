@@ -206,6 +206,7 @@ const acceptTransaction = (entry) => async (dispatch, getState) => {
 
   const state = getState()
   // wrong signer
+
   const signer = getBitcoinSigner(state)
   const selectedEntry = pendingEntrySelector(entry.tx.from, entry.key, entry.blockchain)(state)
 
