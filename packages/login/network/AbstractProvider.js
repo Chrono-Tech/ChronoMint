@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -36,5 +36,15 @@ export default class AbstractProvider extends EventEmitter {
     const node = this._selectNode(this.networkSettings)
     node.emit('unsubscribe', address)
     return node
+  }
+
+  connectCurrentNode () {
+    const node = this._selectNode(this.networkSettings)
+    node.connect()
+  }
+
+  disconnectCurrentNode () {
+    const node = this._selectNode(this.networkSettings)
+    node.disconnect()
   }
 }

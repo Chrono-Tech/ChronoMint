@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 
@@ -25,9 +25,6 @@ export const TOKEN_ICONS = {
   LTC: require('./img/icn-litecoin.svg'),
   TIME: require('./img/icn-time.svg'),
   LHT: require('./img/icn-lht.svg'),
-  LHUS: require('./img/icn-lhus.svg'),
-  LHEU: require('./img/icn-lheu.svg'),
-  LHAU: require('./img/icn-lhau.svg'),
   XEM: require('./img/icn-xem.svg'),
   XMIN: require('./img/icn-xmin.svg'),
   WAVES: require('./img/icn-waves.svg'),

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017–2018, LaborX PTY
+ * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
 import EthCrypto from 'eth-crypto'
@@ -22,7 +22,6 @@ export default class EthereumMiddlewareNode extends AbstractNode {
 
     this.addListener('subscribe', (address) => this._handleSubscribe(address))
     this.addListener('unsubscribe', (address) => this._handleUnsubscribe(address))
-    this.connect()
   }
 
   subscribeNewWallet (ethAddress) {
