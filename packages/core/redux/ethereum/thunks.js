@@ -59,6 +59,7 @@ export const initEthereum = ({ web3 }) => (dispatch) => {
 export const enableEthereum = () => async (dispatch) => {
   await dispatch(initTokens())
   await dispatch(initWallet())
+  ethereumProvider.connectCurrentNode()
 }
 
 export const initTokens = () => async (dispatch, getState) => {
@@ -158,13 +159,14 @@ export const updateWalletBalanceMiddleware = (wallet) => (dispatch) => {
   getWalletBalances({ wallet })
     .then((balancesResult) => {
       try {
-        dispatch({ type: WALLETS_SET, wallet: new WalletModel({
-          ...wallet,
-          balances: {
-            ...wallet.balances,
-            ...formatBalances(wallet.blockchain, balancesResult),
-          },
-        }),
+        dispatch({
+          type: WALLETS_SET, wallet: new WalletModel({
+            ...wallet,
+            balances: {
+              ...wallet.balances,
+              ...formatBalances(wallet.blockchain, balancesResult),
+            },
+          }),
         })
       } catch (e) {
         // eslint-disable-next-line no-console

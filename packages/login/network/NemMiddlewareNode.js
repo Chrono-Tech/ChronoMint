@@ -14,7 +14,6 @@ export default class NemMiddlewareNode extends NemAbstractNode {
     // TODO @dkchv: still can't combine async + arrow on class
     this.addListener('subscribe', (address) => this._handleSubscribe(address))
     this.addListener('unsubscribe', (address) => this._handleUnsubscribe(address))
-    this.connect()
   }
 
   async _handleSubscribe (address) {

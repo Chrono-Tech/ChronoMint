@@ -108,10 +108,11 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     const signedPreparedTx = await signer.signTransaction(entry.tx.prepared, selectedWallet.encrypted[0].path)
     dispatch(closeSignerModal())
 
-    const newEntry = WavesUtils.createWavesTxEntryModel({ ...entry, tx: new TxExecModel({
-      ...entry.tx,
-      prepared: signedPreparedTx,
-    }),
+    const newEntry = WavesUtils.createWavesTxEntryModel({
+      ...entry, tx: new TxExecModel({
+        ...entry.tx,
+        prepared: signedPreparedTx,
+      }),
     })
 
     return newEntry
@@ -173,6 +174,7 @@ export const updateWalletBalance = (wallet) => (dispatch) => {
 export const enableWaves = () => async (dispatch) => {
   dispatch(initToken())
   dispatch(initWalletFromKeys())
+  wavesProvider.connectCurrentNode()
 }
 
 const initToken = () => async (dispatch) => {
@@ -249,5 +251,6 @@ export const disableWaves = () => async (dispatch, getState) => {
     wavesProvider.unsubscribe(wallet.address)
     dispatch({ type: WALLETS_UNSET, wallet })
   })
+  wavesProvider.disconnectCurrentNode()
 }
 
