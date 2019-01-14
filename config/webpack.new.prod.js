@@ -35,9 +35,11 @@ module.exports = Object.assign({}, baseWebpackConfig, {
   plugins: [
     new HtmlWebpackPlugin({
       inject: 'head',
-      template: process.env.NODE_ENV === 'standalone'
-        ? indexHtmlPath
-        : indexPresentationHtmlPath,
+      // TODO @Abdulov Fix presentation layout
+      // template: process.env.NODE_ENV === 'standalone'
+      //   ? indexHtmlPath
+      //   : indexPresentationHtmlPath,
+      template: indexHtmlPath,
       favicon: faviconPath,
       hash: true,
       minify: {
