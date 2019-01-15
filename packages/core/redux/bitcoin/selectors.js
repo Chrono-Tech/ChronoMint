@@ -143,7 +143,8 @@ export const getSignerModalComponentName = (state) => {
   switch (selectedWallet.encrypted[0].type) {
   // feel free to add your components here. We have only one component at the moment
   case WALLET_TYPE_TREZOR:
-  case WALLET_TYPE_LEDGER: {
+  case WALLET_TYPE_LEDGER:
+  case WALLET_TYPE_METAMASK: {
     return 'ActionRequestDeviceDialog'
   }
   default:

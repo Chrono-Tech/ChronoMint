@@ -7,6 +7,13 @@ import Web3 from 'web3'
 import EventEmitter from 'events'
 
 export default class MetamaskPlugin extends EventEmitter {
+  constructor () {
+    super()
+    if (window.web3 && window.web3.currentProvider) {
+      this.web3 = new Web3(window.web3.currentProvider)
+    }
+  }
+
   get name () {
     return 'metamask'
   }
@@ -21,10 +28,11 @@ export default class MetamaskPlugin extends EventEmitter {
 
   async init () {
     if (window.web3 && window.web3.currentProvider) {
-      const web3 = new Web3(window.web3.currentProvider)
-      const accounts = await web3.eth.getAccounts()
+      if (!this.web3) {
+        this.web3 = new Web3(window.web3.currentProvider)
+      }
+      const accounts = await this.web3.eth.getAccounts()
       if (accounts.length) {
-        this.web3 = web3
         this.address = accounts[0]
         this.emit('connected')
         return {

@@ -27,6 +27,7 @@ import TransactionHandler from '../abstractEthereum/utils/TransactionHandler'
 import { web3Selector, getEthereumSigner } from './selectors'
 import { daoByAddress, daoByType } from '../daos/selectors'
 import { LHT, EVENT_NEW_BLOCK } from '../../dao/constants'
+import { subscribeOnTokens } from '../tokens/thunks'
 
 class EthereumTransactionHandler extends TransactionHandler {
   constructor () {
@@ -176,6 +177,7 @@ export const updateWalletBalanceMiddleware = (wallet) => (dispatch) => {
     .catch((e) => {
       // eslint-disable-next-line no-console
       console.error('call balances from middleware is failed getWalletBalances', e)
+      dispatch(updateWalletBalanceWeb3(wallet))
     })
 }
 
@@ -186,22 +188,34 @@ export const updateWalletBalance = (wallet) => (dispatch /*, getState*/) => {
 export const updateWalletBalanceWeb3 = (wallet) => (dispatch, getState) => {
   try {
     const web3 = web3Selector()(getState())
-    web3.eth.getBalance(wallet.address)
-      .then((balance) => {
-        dispatch({
-          type: WALLETS_SET, wallet: new WalletModel({
-            ...wallet,
-            balances: {
-              ...wallet.balances,
-              ...formatBalances(wallet.blockchain, balance),
-            },
-          }),
+    const callback = (balance) => {
+      dispatch({
+        type: WALLETS_SET, wallet: new WalletModel({
+          ...wallet,
+          balances: {
+            ...wallet.balances,
+            ...formatBalances(wallet.blockchain, balance),
+          },
+        }),
+      })
+    }
+    dispatch(subscribeOnTokens((token) => {
+      const dao = tokenService.getDAO(token)
+      // TODO @abdulov remove console.log
+      console.log('%c token', 'background: #222; color: #fff', token.toJS())
+      dao.getAccountBalance(wallet.address)
+        .then(callback)
+        .catch((e) => {
+          // TODO @abdulov remove console.log
+          console.log('%c e', 'background: #222; color: #fff', e)
         })
-      })
-      .catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error('call balances from Web3 is failed: ', error)
-      })
+    }))
+    // web3.eth.getBalance(wallet.address)
+    //   .then(callback)
+    //   .catch((error) => {
+    //     // eslint-disable-next-line no-console
+    //     console.error('call balances from Web3 is failed: ', error)
+    //   })
 
   } catch (e) {
     // eslint-disable-next-line no-console
