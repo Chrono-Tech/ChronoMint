@@ -8,8 +8,8 @@ import { NETWORK_MAIN_ID } from '@chronobank/login/network/settings'
 import * as Utils from './utils'
 import { deepSortByKey } from '../../utils/formatter'
 
-const URL_PROFILE_HOST = 'https://profile-stage.laborx.io/'
-const URL_PROFILE_HOST_TESTNET = 'https://profile-stage-testnet.laborx.io/'
+const URL_PROFILE_HOST = 'https://profile.laborx.io/'
+const URL_PROFILE_HOST_TESTNET = 'https://profile-stage.laborx.io/'
 const URL_PROFILE_BASE_PATH = 'api/v1/'
 
 const URL_PROFILE_USER_INFO = 'security/persons/query'

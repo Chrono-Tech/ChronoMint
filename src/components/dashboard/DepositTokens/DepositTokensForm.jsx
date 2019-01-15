@@ -42,6 +42,7 @@ import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import { ACTION_APPROVE, ACTION_DEPOSIT, ACTION_WITHDRAW, FORM_DEPOSIT_TOKENS } from 'components/constants'
 import './DepositTokensForm.scss'
 import validate from './validate'
+import { TIME } from '@chronobank/core/dao/constants'
 
 const DEPOSIT_FIRST = 'depositFirst'
 const DEPOSIT_SECOND = 'depositSecond'
@@ -61,15 +62,15 @@ function mapStateToProps (state) {
   const assetHolder = state.get(DUCK_ASSETS_HOLDER)
   const tokens = state.get(DUCK_TOKENS)
   const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
+  const assets = assetHolder.assets()
 
-  const token = tokens.item(tokenId)
+  const token = tokens.item(tokenId || TIME)
   const wallet: WalletModel = getMainWalletForBlockchain(token.blockchain())(state)
 
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
   const balance = wallet.balances[tokenId] || new Amount(0, tokenId)
   const symbol = getMainSymbolForBlockchain(wallet.blockchain)
   const balanceEth = wallet.balances[symbol] || new Amount(0, symbol)
-  const assets = assetHolder.assets()
   const spender = assetHolder.wallet()
 
   return {
@@ -434,7 +435,7 @@ export default class DepositTokensForm extends PureComponent {
             />
           </div>
         )}
-        { (
+        {(
           <div styleName='action'>
             <Button
               styleName='actionButton'

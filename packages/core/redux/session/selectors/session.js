@@ -38,12 +38,12 @@ export const getBlockchainAddressesList = () => createSelector(
   [getAddressesList()],
   (addresses) => {
     return PROFILE_PANEL_TOKENS
-      .map((token) =>({
+      .map((token) => ({
         ...token,
         address: addresses[token.blockchain],
       }))
       .filter(({ blockchain }) => Object.keys(addresses).includes(blockchain))
-  }
+  },
 )
 
 export const isCBE = () => createSelector(
@@ -118,7 +118,7 @@ export const getDeviceAccountAddresses = createSelector(
     getAddressCache,
   ],
   (addresses) => {
-    return Object.entries(addresses)
+    const res = Object.entries(addresses)
       .reduce((accumulator, [blockchainName, data]) => {
         // replace all non chars symbols with -
         const blockchain = blockchainName.toLowerCase().replace(/\W/, '-')
@@ -129,6 +129,7 @@ export const getDeviceAccountAddresses = createSelector(
             value: data.address,
           },
         ]
-      }, {})
+      }, [])
+    return res
   },
 )

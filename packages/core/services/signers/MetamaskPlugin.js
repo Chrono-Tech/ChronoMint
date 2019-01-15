@@ -35,6 +35,14 @@ export default class MetamaskPlugin extends EventEmitter {
     return null
   }
 
+  async getAddress () {
+    if (!this.isConnected || !this.address) {
+      await this.init()
+    }
+
+    return this.address
+  }
+
   async getAddressInfoList () {
     if (!this.isConnected || !this.address) {
       await this.init()

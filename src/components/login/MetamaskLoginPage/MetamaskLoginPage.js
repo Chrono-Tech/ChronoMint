@@ -27,7 +27,7 @@ function mapDispatchToProps (dispatch) {
   return {
     getUserInfo: (addresses: string[]) => dispatch(ProfileThunks.getUserInfo(addresses)),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
-    onCreateWalletFromDevice: (name, device, profile) => dispatch(onCreateWalletFromDevice(name, device, profile, WALLET_TYPE_METAMASK)),
+    onCreateWalletFromDevice: (name, device, profile, activeBlockchainList) => dispatch(onCreateWalletFromDevice(name, device, profile, WALLET_TYPE_METAMASK, activeBlockchainList)),
     navigateBack: () => dispatch(navigateBack()),
   }
 }
@@ -105,7 +105,7 @@ class MetamaskLoginPage extends PureComponent {
       userName = profile.userName
 
       if (userName) {
-        this.props.onCreateWalletFromDevice(userName, device, profile)
+        this.props.onCreateWalletFromDevice(userName, device, profile, METAMASK_ACTIVE_BLOCKCHAINS)
         this.props.navigateToSelectWallet()
       } else {
         this.setState({

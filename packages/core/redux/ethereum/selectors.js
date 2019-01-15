@@ -9,6 +9,7 @@ import { DUCK_ETHEREUM } from './constants'
 import {
   WALLET_TYPE_LEDGER,
   WALLET_TYPE_MEMORY,
+  WALLET_TYPE_METAMASK,
   WALLET_TYPE_TREZOR,
 } from '../../models/constants/AccountEntryModel'
 import { getPersistAccount } from '../persistAccount/selectors'
@@ -17,6 +18,7 @@ import EthereumLedgerDeviceMock from '../../services/signers/EthereumLedgerDevic
 import EthereumLedgerDevice from '../../services/signers/EthereumLedgerDevice'
 import EthereumTrezorDeviceMock from '../../services/signers/EthereumTrezorDeviceMock'
 import EthereumTrezorDevice from '../../services/signers/EthereumTrezorDevice'
+import MetamaskPlugin from '../../services/signers/MetamaskPlugin'
 
 export const ethereumSelector = () => (state) => state.get(DUCK_ETHEREUM)
 
@@ -47,6 +49,9 @@ export const getEthereumSigner = (state) => {
   }
   case WALLET_TYPE_MEMORY: {
     return new EthereumMemoryDevice(account.decryptedWallet.privateKey)
+  }
+  case WALLET_TYPE_METAMASK: {
+    return new MetamaskPlugin()
   }
   }
 }
