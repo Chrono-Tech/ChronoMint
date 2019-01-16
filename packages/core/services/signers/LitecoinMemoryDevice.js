@@ -22,6 +22,7 @@ export default class LitecoinMemoryDevice {
   }
 
   signTransaction (tx) {
+    console.log('signTransaction: ', tx, this)
     tx.sign(new PrivateKey(this.privateKey))
   }
 }

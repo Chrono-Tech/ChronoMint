@@ -25,7 +25,7 @@ export default class LitecoinMiddlewareService {
     }
 
     return currentNode.post(url, {
-      rawtx: tx.toString(),
+      tx: tx.toString(),
     })
   }
 }

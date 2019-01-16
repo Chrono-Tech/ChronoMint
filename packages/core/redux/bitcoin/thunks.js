@@ -313,6 +313,7 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
 
 // TODO: need to continue rework of this method. Pushed to merge with other changes.
 const sendSignedTransaction = (entry) => async (dispatch, getState) => {
+  console.log('sendSignedTransaction: ', entry)
   if (!entry) {
     const error = new Error('Can\'t send empty Tx. There is no entry at BTC sendSignedTransaction')
     dispatch(BitcoinActions.bitcoinHttpPostSendTxFailure(error))

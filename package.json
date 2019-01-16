@@ -177,5 +177,8 @@
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "resolutions": {
+    "litecore-lib/**/bn.js": "=2.0.4"
+  }
 }

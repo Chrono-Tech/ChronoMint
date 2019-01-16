@@ -2,7 +2,7 @@
  * Copyright 2017–2019, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-import { Address, Script, Transaction, Unit } from 'dashcore-lib'
+import { Address, Script, Transaction, Unit } from 'litecore-lib'
 import BigNumber from 'bignumber.js'
 
 import { TransferNoticeModel, TxExecModel } from '../../models'
@@ -19,9 +19,10 @@ import { getAddressUTXOS } from '../abstractBitcoin/thunks'
 import * as BitcoinUtils from '../abstractBitcoin/utils'
 
 import { getLitecoinSigner } from './selectors'
-import DashMiddlewareService from './LitecoinMiddlewareService'
+import LitecoinMiddlewareService from './LitecoinMiddlewareService'
 
 export const executeLitecoinTransaction = ({ tx, options }) => async (dispatch, getState) => {
+  console.log('executeLitecoinTransaction: ', tx, options)
   dispatch(BitcoinActions.bitcoinExecuteTx())
   try {
     const state = getState()
@@ -32,9 +33,12 @@ export const executeLitecoinTransaction = ({ tx, options }) => async (dispatch, 
     const transaction = await getUnsignedTransaction(dispatch, tx.from, tx.to, tx.value.toNumber(), blockchain)
     const transferFee = getTransferFee(transaction, options.feeMultiplier)
     transaction.fee(transferFee)
+    console.log('executeLitecoinTransaction 1: ', transaction)
 
     const signer = getLitecoinSigner(state)
+    console.log('signer: ', signer)
     signer.signTransaction(transaction)
+    console.log('executeLitecoinTransaction 2: ', transaction, signer)
 
     const txExecModel = new TxExecModel({
       from: tx.from,
@@ -52,14 +56,16 @@ export const executeLitecoinTransaction = ({ tx, options }) => async (dispatch, 
         entry,
         description,
         accept: () => async (dispatch) => {
-          const response = await DashMiddlewareService.requestSendTx(transaction, blockchain, network[blockchain],
+          const response = await LitecoinMiddlewareService.requestSendTx(transaction, blockchain, network[blockchain],
             options.instantSend)
+          console.log('LitecoinMiddlewareService.requestSendTx: ', response)
           dispatch(notify(new TransferNoticeModel({
             amount: token.removeDecimals(tx.value),
             symbol: token.symbol(),
             from: tx.from,
             to: tx.to,
           })))
+
           return dispatch(BitcoinActions.bitcoinExecuteTxSuccess(response.data))
         },
         reject: (entry) => (dispatch) => dispatch(BitcoinActions.bitcoinTxReject({ tx: entry, blockchain })),
@@ -67,6 +73,7 @@ export const executeLitecoinTransaction = ({ tx, options }) => async (dispatch, 
     }))
 
   } catch (error) {
+    console.error(error)
     dispatch(BitcoinActions.bitcoinExecuteTxFailure(error))
   }
 }
@@ -84,7 +91,10 @@ async function getUnsignedTransaction (dispatch, from, to, amount, blockchain) {
     throw new Error(`Can't find utxos for address: ${from}`)
   }
 
+  console.log('utxos: ', utxos, utxosRawData)
+
   const utxos = utxosRawData.map((utxo) => {
+    console.log('utxosRawData.map: ', utxo.address)
     utxo.scriptPubKey = Script.fromAddress(utxo.address)
     return new Transaction.UnspentOutput(utxo)
   })
