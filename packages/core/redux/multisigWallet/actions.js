@@ -14,8 +14,7 @@ import MultisigWalletPendingTxModel from '../../models/wallet/MultisigWalletPend
 import OwnerModel from '../../models/wallet/OwnerModel'
 import { notify, notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/constants'
-import { subscribeOnTokens } from '../tokens/thunks'
-import { formatBalances, getWalletBalances } from '../tokens/utils'
+import { formatBalances, getWalletBalances, subscribeOnTokens } from '../tokens/utils'
 import {
   EE_CONFIRMATION,
   EE_CONFIRMATION_NEEDED,

@@ -271,40 +271,6 @@ export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKe
  * TODO: to add description
  * TODO: to rework it
  */
-export const onSubmitCreateHWAccountPage = (walletName) =>
-  async (dispatch, getState) => {
-    const validateName = dispatch(PersistAccountActions.validateAccountName(walletName))
-
-    if (!validateName) {
-      throw new SubmissionError({ walletName: 'Wrong wallet name' })
-    }
-
-    dispatch(NetworkActions.setAccountCredentials(walletName, walletName))
-
-    const state = getState()
-    const {
-      newAccountPrivateKey,
-    } = state.get(DUCK_NETWORK)
-
-    try {
-      const wallet = await dispatch(PersistAccountActions.createHWAccount({
-        name: walletName,
-        pupblicKey: newAccountPrivateKey,
-        numberOfAccounts: 0,
-      }))
-
-      dispatch(PersistAccountActions.accountAdd(wallet))
-      dispatch(PersistAccountActions.accountSelect(wallet))
-    } catch (e) {
-      throw new SubmissionError({ _error: e && e.message })
-    }
-  }
-
-/*
- * Thunk dispatched by "" screen.
- * TODO: to add description
- * TODO: to rework it
- */
 export const onSubmitCreateHWAccountPageSuccess = () => {
   // FIXME: empty thunk
 }

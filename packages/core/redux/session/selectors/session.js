@@ -109,7 +109,7 @@ export const getAccountAddresses = createSelector(
             value: wallet.address,
           },
         ]
-      }, {})
+      }, [])
   },
 )
 
