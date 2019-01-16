@@ -7,7 +7,7 @@ import AssetModel from '../../models/assetHolder/AssetModel'
 import RewardsPeriodModel from '../../models/rewards/RewardsPeriodModel'
 import TokenModel from '../../models/tokens/TokenModel'
 import { DUCK_SESSION } from '../session/constants'
-import { subscribeOnTokens } from '../tokens/thunks'
+import { subscribeOnTokens } from '../tokens/utils'
 
 //#region CONSTANTS
 import {
