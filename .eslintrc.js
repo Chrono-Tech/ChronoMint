@@ -30,7 +30,7 @@ module.exports = {
   plugins: [
     'babel',
     'import',
-    'jsx-a11y'
+    'jsx-a11y',
   ],
   extends: [
     'eslint:recommended',

@@ -269,7 +269,6 @@ export const updateWalletBalance = (wallet) => async (dispatch) => {
 const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
   try {
     dispatch(BitcoinActions.bitcoinSignTx())
-    console.log('signTransaction: ', signer, entry)
 
     const network = getSelectedNetwork()(getState())
     const unsignedTxHex = entry.tx.prepared.buildIncomplete().toHex()
@@ -278,9 +277,6 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
     // @todo Check cointype for LTC, BCC, DASH in BitcoinUtils.getBitcoinDerivedPath
     const signedHex = await signer.signTransaction(unsignedTxHex, BitcoinUtils.getBitcoinDerivedPath(network[BLOCKCHAIN_BITCOIN]))
     dispatch(closeSignerModal())
-
-    console.log('unsignedTxHex: ', unsignedTxHex)
-    console.log('signedHex: ', signedHex)
 
     const bitcoinTransaction = bitcoin.Transaction.fromHex(signedHex)
     const bitcoinNetwork = bitcoin.networks[network[entry.blockchain]]
@@ -313,7 +309,6 @@ const signTransaction = ({ entry, signer }) => async (dispatch, getState) => {
 
 // TODO: need to continue rework of this method. Pushed to merge with other changes.
 const sendSignedTransaction = (entry) => async (dispatch, getState) => {
-  console.log('sendSignedTransaction: ', entry)
   if (!entry) {
     const error = new Error('Can\'t send empty Tx. There is no entry at BTC sendSignedTransaction')
     dispatch(BitcoinActions.bitcoinHttpPostSendTxFailure(error))

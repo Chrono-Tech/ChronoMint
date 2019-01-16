@@ -9,8 +9,6 @@ import {
   SESSION_DESTROY,
   SESSION_PROFILE,
   SET_PROFILE_SIGNATURE,
-  SET_WEB3_INSTANCE,
-  CLEAR_WEB3_INSTANCE,
 } from './constants'
 
 // TODO: to think about better place for this action

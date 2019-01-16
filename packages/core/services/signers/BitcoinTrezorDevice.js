@@ -37,13 +37,9 @@ export default class BitcoinTrezorDevice {
       .fromTransaction(bitcoin.Transaction.fromHex(unsignedTxHex), this.network)
     const localAddress = await this.getAddress(path)
 
-    console.log('txb.buildIncomplete(): ', txb.buildIncomplete())
-
     if (!localAddress) {
       return
     }
-
-    console.log('path.split(\'/\'): ', path.split('/'), path)
 
     const address_n = path.split('/').map((entry) =>
       entry[entry.length - 1] === "'"
@@ -67,7 +63,7 @@ export default class BitcoinTrezorDevice {
     txb.buildIncomplete().outs.forEach((out) => {
       const address = bitcoin.address
         .fromOutputScript(out.script, this.network)
-      console.log('addressaddress: ', address)
+
       let output = {
         address: address,
         amount: out.value.toString(),
@@ -80,8 +76,6 @@ export default class BitcoinTrezorDevice {
       outputs.push(output)
     })
 
-    console.log('Before Trezor send: ', inputs, outputs, this.coin, this)
-
     const result = await TrezorConnect.signTransaction({
       inputs: inputs,
       outputs: outputs,
@@ -89,7 +83,6 @@ export default class BitcoinTrezorDevice {
     })
 
     if (!result.success) {
-      console.log('Trezor error: ', result)
       const { code, error } = result.payload
       throw new TrezorError(code, error)
     }

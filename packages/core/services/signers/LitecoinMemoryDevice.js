@@ -17,12 +17,10 @@ export default class LitecoinMemoryDevice {
   }
 
   getAddress () {
-    console.log('LitecoinMemoryDevice: ', dashProvider.getNetworkType())
     return new Address(PublicKey(new PrivateKey(this.privateKey)), dashProvider.getNetworkType()).toString()
   }
 
   signTransaction (tx) {
-    console.log('signTransaction: ', tx, this)
     tx.sign(new PrivateKey(this.privateKey))
   }
 }

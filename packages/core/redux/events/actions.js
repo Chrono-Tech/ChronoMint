@@ -35,19 +35,16 @@ export const watchEventService = () => async (dispatch) => {
 export const watchLedgerModal = () => async (dispatch) => {
 
   EventService.on(EVENT_LEDGER_MODAL_SHOW, (event) => {
-    console.log('EVENT_LEDGER_MODAL_SHOW: ', event)
     dispatch(showSignerModal({ props: event }))
   })
 
   EventService.on(EVENT_LEDGER_MODAL_HIDE, (event) => {
-    console.log('EVENT_LEDGER_MODAL_HIDE: ', event)
     dispatch(closeSignerModal(event))
   })
 }
 
 export const watchLedgerReinit = () => async (dispatch) => {
   EventService.on(EVENT_LEDGER_REINIT_DEVICE, (event) => {
-    console.log('EVENT_LEDGER_REINIT_DEVICE: ', event)
     setTimeout(() => {
       dispatch(initLedgerDevice())
     }, 2000)

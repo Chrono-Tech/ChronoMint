@@ -304,8 +304,6 @@ export const mainTransfer = (
       [BLOCKCHAIN_LABOR_HOUR]: executeLaborHourTransaction,
     }
 
-    console.log('executeLitecoinTransaction: ', executeMap[wallet.blockchain])
-
     // execute
     dispatch(executeMap[wallet.blockchain]({
       tx,
