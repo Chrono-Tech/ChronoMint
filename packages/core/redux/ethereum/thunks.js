@@ -12,8 +12,8 @@ import ethereumDAO from '../../dao/EthereumDAO'
 import { WALLETS_CACHE_ADDRESS } from '../persistAccount/constants'
 import * as ethActions from './actions'
 import WalletModel from '../../models/wallet/WalletModel'
-import { WALLETS_SET } from '../wallets/constants'
-import { formatBalances, getWalletBalances } from '../tokens/utils'
+import { WALLETS_SET, WALLETS_UPDATE_BALANCE } from '../wallets/constants'
+import { formatBalances, getWalletBalances, subscribeOnTokens } from '../tokens/utils'
 import * as Utils from './utils'
 
 import { DUCK_TOKENS } from '../tokens/constants'
@@ -27,7 +27,7 @@ import TransactionHandler from '../abstractEthereum/utils/TransactionHandler'
 import { web3Selector, getEthereumSigner } from './selectors'
 import { daoByAddress, daoByType } from '../daos/selectors'
 import { LHT, EVENT_NEW_BLOCK } from '../../dao/constants'
-import { subscribeOnTokens } from '../tokens/thunks'
+import Amount from '../../models/Amount'
 
 class EthereumTransactionHandler extends TransactionHandler {
   constructor () {
@@ -152,7 +152,7 @@ const initWallet = () => async (dispatch, getState) => {
   ethereumProvider.subscribe(wallet.address)
   dispatch({ type: WALLETS_SET, wallet })
 
-  dispatch(updateWalletBalanceWeb3(wallet))
+  dispatch(updateWalletBalance(wallet))
 }
 
 export const updateWalletBalanceMiddleware = (wallet) => (dispatch) => {
@@ -185,38 +185,14 @@ export const updateWalletBalance = (wallet) => (dispatch /*, getState*/) => {
   dispatch(updateWalletBalanceMiddleware(wallet))
 }
 
-export const updateWalletBalanceWeb3 = (wallet) => (dispatch, getState) => {
+export const updateWalletBalanceWeb3 = (wallet) => (dispatch) => {
   try {
-    const web3 = web3Selector()(getState())
-    const callback = (balance) => {
-      dispatch({
-        type: WALLETS_SET, wallet: new WalletModel({
-          ...wallet,
-          balances: {
-            ...wallet.balances,
-            ...formatBalances(wallet.blockchain, balance),
-          },
-        }),
-      })
-    }
-    dispatch(subscribeOnTokens((token) => {
+    const callback = (token) => async (dispatch) => {
       const dao = tokenService.getDAO(token)
-      // TODO @abdulov remove console.log
-      console.log('%c token', 'background: #222; color: #fff', token.toJS())
-      dao.getAccountBalance(wallet.address)
-        .then(callback)
-        .catch((e) => {
-          // TODO @abdulov remove console.log
-          console.log('%c e', 'background: #222; color: #fff', e)
-        })
-    }))
-    // web3.eth.getBalance(wallet.address)
-    //   .then(callback)
-    //   .catch((error) => {
-    //     // eslint-disable-next-line no-console
-    //     console.error('call balances from Web3 is failed: ', error)
-    //   })
-
+      const balance = await dao.getAccountBalance(wallet.address)
+      dispatch({ type: WALLETS_UPDATE_BALANCE, walletId: wallet.id, balance: new Amount(balance, token.symbol()) })
+    }
+    dispatch(subscribeOnTokens(callback))
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error('call balances from is failed: ', e)

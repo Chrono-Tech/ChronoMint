@@ -7,19 +7,6 @@ import tokenService from '../../services/TokenService'
 import Amount from '../../models/Amount'
 import { estimateGas as estimateEthereumGas } from '../ethereum/thunks'
 import { estimateLaborHourGas } from '../laborHour/thunks'
-import { EVENT_NEW_TOKEN } from '../../dao/constants'
-
-import {
-  DUCK_TOKENS,
-} from './constants'
-
-export const subscribeOnTokens = (callback) => (dispatch, getState) => {
-  const handleToken = (token) => dispatch(callback(token))
-  tokenService.on(EVENT_NEW_TOKEN, handleToken)
-  // fetch for existing tokens
-  const tokens = getState().get(DUCK_TOKENS)
-  tokens.list().forEach(handleToken)
-}
 
 export const estimateGasTransfer = (tokenId, params, gasPriceMultiplier = 1, address) => {
   return estimateAbstractEthereumGasTransfer(tokenId, params, gasPriceMultiplier, address, estimateEthereumGas)

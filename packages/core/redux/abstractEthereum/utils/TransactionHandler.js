@@ -61,9 +61,6 @@ export default class TransactionHandler extends TransactionGuide {
       signer = await this.getDerivedWallet(signer.privateKey, entry.walletDerivedPath)
     }
 
-    // TODO @abdulov remove console.log
-    console.log('%c signer', 'background: #222; color: #fff', signer)
-
     return dispatch(this.processTransaction({
       web3: this.getWeb3(state),
       entry: this.selectors.pendingEntry(entry.tx.from, entry.key)(state),
