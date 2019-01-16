@@ -26,8 +26,10 @@ import { EVENT_ERC20_TOKENS_COUNT, EVENT_NEW_ERC20_TOKEN } from '../../dao/const
 import TransactionHandler from '../abstractEthereum/utils/TransactionHandler'
 import { web3Selector, getEthereumSigner } from './selectors'
 import { daoByAddress, daoByType } from '../daos/selectors'
-import { LHT, EVENT_NEW_BLOCK } from '../../dao/constants'
+import { LHT, EVENT_NEW_BLOCK, ETH } from '../../dao/constants'
 import Amount from '../../models/Amount'
+import BigNumber from 'bignumber.js/bignumber'
+import { getTokens } from '../tokens/selectors'
 
 class EthereumTransactionHandler extends TransactionHandler {
   constructor () {
@@ -156,7 +158,6 @@ const initWallet = () => async (dispatch, getState) => {
 }
 
 export const updateWalletBalanceMiddleware = (wallet) => (dispatch) => {
-
   getWalletBalances({ wallet })
     .then((balancesResult) => {
       try {
@@ -181,7 +182,10 @@ export const updateWalletBalanceMiddleware = (wallet) => (dispatch) => {
     })
 }
 
-export const updateWalletBalance = (wallet) => (dispatch /*, getState*/) => {
+export const updateWalletBalance = (wallet, tx) => (dispatch /*, getState*/) => {
+  if (tx) {
+    return dispatch(updateTokenBalance(wallet, tx))
+  }
   dispatch(updateWalletBalanceMiddleware(wallet))
 }
 
@@ -198,3 +202,19 @@ export const updateWalletBalanceWeb3 = (wallet) => (dispatch) => {
     console.error('call balances from is failed: ', e)
   }
 }
+
+export const updateTokenBalance = (wallet, tx) => async (dispatch, getState) => {
+  if (tx.value && new BigNumber(tx.value).gt(0)) {
+    const balance = await ethereumDAO.getAccountBalance(wallet.address)
+    dispatch({ type: WALLETS_UPDATE_BALANCE, walletId: wallet.id, balance: new Amount(balance, ETH) })
+  }
+
+  const tokens = getTokens(getState())
+  const token = tokens.getByAddress(tx.to)
+  if (token.isFetched()) {
+    const dao = tokenService.getDAO(token)
+    const balance = await dao.getAccountBalance(wallet.address)
+    dispatch({ type: WALLETS_UPDATE_BALANCE, walletId: wallet.id, balance: new Amount(balance, token.symbol()) })
+  }
+}
+

@@ -65,12 +65,8 @@ export default class MetamaskPlugin extends EventEmitter {
       }]
   }
 
-  async signTransaction ({ /*gas, gasPrice,*/ ...txData }) {
-    const signed = await this.web3.eth.sendTransaction({
-      ...txData,
-    })
-
-    return signed
+  signTransaction ({ ...txData }) {
+    return this.web3.eth.sendTransaction({ ...txData })
   }
 
   async signData (data) {

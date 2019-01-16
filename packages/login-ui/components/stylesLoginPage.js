@@ -20,10 +20,6 @@ const commonInputStyles = {
     right: 0,
     borderBottom: '2px solid rgba(255, 255, 255, 0.6)',
   },
-  floatingLabelStyle: {
-    color: stylesConfig.colors.colorWhite,
-    opacity: '0.6',
-  },
   errorStyle: {
     marginTop: 15,
   },
@@ -47,11 +43,6 @@ const styles = {
     menuStyle: {
       marginTop: 0,
       display: 'block',
-    },
-    floatingLabelStyle: {
-      lineHeight: 0,
-      color: stylesConfig.colors.colorWhite,
-      opacity: 0.6,
     },
     menuItemStyle: {
       wordWrap: 'break-word',

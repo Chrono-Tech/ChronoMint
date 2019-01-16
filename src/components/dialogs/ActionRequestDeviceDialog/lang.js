@@ -9,6 +9,7 @@ export default {
   en: {
     title: 'Action required',
     pleaseConfirm: 'Please confirm the operation on your device.',
+    pleaseConfirmMetamask: 'Please confirm the operation in Metamask plugin.',
     closeAutomatically: 'The window will close automatically upon your confirmation.',
   },
 }

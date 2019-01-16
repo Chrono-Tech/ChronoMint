@@ -43,7 +43,7 @@ export const subscribeWallet = ({ wallet }) => async (dispatch) => {
     const checkedTo = data.to ? data.to.toLowerCase() === wallet.address.toLowerCase() : false
     if (checkedFrom || checkedTo) {
       if (wallet.isMain || wallet.isDerived) {
-        dispatch(updateEthWalletBalance({ wallet }))
+        dispatch(updateEthWalletBalance({ wallet, tx: data }))
       }
       if (wallet.isMultisig) {
         dispatch(updateEthMultisigWalletBalance({ wallet }))

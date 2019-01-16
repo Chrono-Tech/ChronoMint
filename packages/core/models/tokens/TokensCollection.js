@@ -26,6 +26,7 @@ export default class TokensCollection extends abstractFetchingCollection({
   }
 
   getByAddress (address: string) {
+    address = address.toLowerCase()
     let resultItem = this.get('emptyModel')
     this.items().some((item: TokenModel) => {
       if (item.transactionHash() === address || item.address() === address) {

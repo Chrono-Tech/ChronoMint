@@ -9,13 +9,13 @@ import {
   BLOCKCHAIN_LABOR_HOUR,
 } from '../../dao/constants'
 
-export const updateEthWalletBalance = ({ wallet }) => (dispatch) => {
+export const updateEthWalletBalance = ({ wallet, tx }) => (dispatch) => {
   switch (wallet.blockchain) {
   case BLOCKCHAIN_ETHEREUM:
-    dispatch(updateWalletBalance(wallet))
+    dispatch(updateWalletBalance(wallet, tx))
     break
   case BLOCKCHAIN_LABOR_HOUR:
-    dispatch(updateWalletBalance(wallet))
+    dispatch(updateWalletBalance(wallet, tx))
     break
   default:
     return

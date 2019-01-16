@@ -284,17 +284,6 @@ export default class WalletWidget extends PureComponent {
                       onClick={this.handleReceive}
                     />
                   </div>
-                  {/*blockchain === BLOCKCHAIN_ETHEREUM && (
-                  <div styleName='action'>
-                    <Button
-                      disabled={false}
-                      flat
-                      type='submit'
-                      label={<Translate value={`${prefix}.depositButton`} />}
-                      onClick={this.handleDeposit}
-                    />
-                  </div>
-                )*/}
                 </div>
               </div>
             </div>

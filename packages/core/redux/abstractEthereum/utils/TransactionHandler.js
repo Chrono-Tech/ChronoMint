@@ -92,6 +92,9 @@ export default class TransactionHandler extends TransactionGuide {
   }
 
   processTransaction = ({ web3, entry, signer }) => {
+    if (signer.constructor.name === 'MetamaskPlugin') {
+      return this.signAndSendWithMetamask({ entry, signer })
+    }
     return (
       async (dispatch, getState) => {
         await dispatch(this.signTransaction({ entry, signer }))
@@ -165,6 +168,30 @@ export default class TransactionHandler extends TransactionGuide {
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('signTransaction error: ', error)
+      dispatch(closeSignerModal())
+      dispatch(this.txStatus(entry.key, entry.tx.from, { isErrored: true, error }))
+      throw error
+    }
+  }
+
+  signAndSendWithMetamask = ({ entry, signer }) => async (dispatch, getState) => {
+    try {
+      const { selectedWallet } = getState().get(DUCK_PERSIST_ACCOUNT)
+
+      dispatch(showSignerModal(true /*isMetamask flag*/))
+      signer.signTransaction(omitBy(entry.tx, isNil), selectedWallet.encrypted[0].path)
+        .on('transactionHash', (hash) => {
+          dispatch(closeSignerModal())
+          dispatch(this.txStatus(entry.key, entry.tx.from, { isSent: true, hash }))
+        })
+        .on('receipt', (receipt) => {
+          dispatch(this.txStatus(entry.key, entry.tx.from, { isMined: true, receipt }))
+        })
+        .on('error', (error) => {
+          dispatch(closeSignerModal())
+          dispatch(this.txStatus(entry.key, entry.tx.from, { isErrored: true, error }))
+        })
+    } catch (error) {
       dispatch(closeSignerModal())
       dispatch(this.txStatus(entry.key, entry.tx.from, { isErrored: true, error }))
       throw error

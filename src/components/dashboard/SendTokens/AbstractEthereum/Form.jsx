@@ -289,7 +289,6 @@ export default class Ethereum extends PureComponent {
                     name='symbol'
                     styleName='symbolSelector'
                     menu-symbol='symbolSelectorMenu'
-                    floatingLabelStyle={{ color: 'white' }}
                   >
                     {walletInfo.tokens
                       .map((tokenData) => {
