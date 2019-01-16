@@ -15,6 +15,7 @@ export default class BitcoinMemoryDevice {
   getAddress () {
     const keyPair = this.getKeyPair()
     const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: this.network })
+    console.log('getAddress litecoin: ', this, address)
     return address
   }
 

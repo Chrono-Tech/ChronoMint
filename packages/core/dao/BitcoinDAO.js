@@ -5,6 +5,7 @@
 
 import { bccProvider, btcProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { dashProvider } from '@chronobank/login/network/DashProvider'
+import { litecoinProvider } from '@chronobank/login/network/LitecoinProvider'
 import EventEmitter from 'events'
 import BigNumber from 'bignumber.js'
 import Amount from '../models/Amount'

@@ -114,6 +114,7 @@
     "js-file-download": "^0.4.1",
     "jsan": "^3.1.10",
     "lodash": "^4.17.4",
+    "litecore-lib": "^0.13.22",
     "material-colors-scss": "^1.0.0",
     "material-ui-pickers": "^1.0.0-rc.11",
     "moment": "^2.17.1",

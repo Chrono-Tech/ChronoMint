@@ -33,6 +33,7 @@ import { executeTransaction } from '../ethereum/thunks'
 import { executeLaborHourTransaction } from '../laborHour/thunks'
 import { executeWavesTransaction } from '../waves/thunks'
 import { executeBitcoinTransaction } from '../bitcoin/thunks'
+import { executeLitecoinTransaction } from '../litecoin/thunks'
 import {
   WALLETS_LOGOUT,
   WALLETS_SET,
@@ -297,7 +298,7 @@ export const mainTransfer = (
       [BLOCKCHAIN_NEM]: executeNemTransaction,
       [BLOCKCHAIN_BITCOIN]: executeBitcoinTransaction,
       [BLOCKCHAIN_BITCOIN_CASH]: executeBitcoinTransaction,
-      [BLOCKCHAIN_LITECOIN]: executeBitcoinTransaction,
+      [BLOCKCHAIN_LITECOIN]: executeLitecoinTransaction,
       [BLOCKCHAIN_DASH]: executeDashTransaction,
       [BLOCKCHAIN_WAVES]: executeWavesTransaction,
       [BLOCKCHAIN_LABOR_HOUR]: executeLaborHourTransaction,

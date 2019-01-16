@@ -16,7 +16,6 @@ import {
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_LITECOIN,
 } from '../../dao/constants'
 import MetamaskPlugin from '../../services/signers/MetamaskPlugin'
 import BitcoinMemoryDevice from '../../services/signers/BitcoinMemoryDevice'
@@ -30,8 +29,6 @@ import BitcoinCashLedgerDeviceMock from '../../services/signers/BitcoinCashLedge
 import BitcoinCashLedgerDevice from '../../services/signers/BitcoinCashLedgerDevice'
 import BitcoinCashTrezorDeviceMock from '../../services/signers/BitcoinCashTrezorDeviceMock'
 import BitcoinCashTrezorDevice from '../../services/signers/BitcoinCashTrezorDevice'
-
-import LitecoinTrezorDevice from '../../services/signers/LitecoinTrezorDevice'
 
 export const bitcoinSelector = () => (state) =>
   state.get(DUCK_BITCOIN)
@@ -110,34 +107,6 @@ export const getBitcoinCashSigner = (state) => {
   }
 }
 
-export const getLitecoinSigner = (state) => {
-  const account = getPersistAccount(state)
-  const networkData = getSelectedNetwork()(state)
-  const network = bitcoin.networks[networkData[BLOCKCHAIN_LITECOIN]]
-  const isTestnet = networkData[BLOCKCHAIN_LITECOIN] === 'litecoin_testnet'
-
-  switch (account.decryptedWallet.entry.encrypted[0].type) {
-  case WALLET_TYPE_MEMORY: {
-    const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
-    return new BitcoinMemoryDevice({ privateKey, network })
-  }
-  case WALLET_TYPE_LEDGER: {
-    if (process.env.DEVICE_MOCKS) {
-      return new BitcoinMemoryDevice({ network })
-    }
-    return new BitcoinMemoryDevice({ network })
-  }
-  case WALLET_TYPE_TREZOR: {
-    if (process.env.DEVICE_MOCKS) {
-      return new LitecoinTrezorDevice({ network })
-    }
-    return new LitecoinTrezorDevice({ network, isTestnet })
-  }
-  case WALLET_TYPE_METAMASK: {
-    return new MetamaskPlugin()
-  }
-  }
-}
 
 export const getSignerModalComponentName = (state) => {
   const { selectedWallet } = getPersistAccount(state)

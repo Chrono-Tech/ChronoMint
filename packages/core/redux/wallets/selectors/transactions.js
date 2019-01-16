@@ -19,8 +19,9 @@ import {
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
 } from '../../../dao/constants'
-import { getBitcoinCashSigner, getBitcoinSigner, getLitecoinSigner } from '../../bitcoin/selectors'
+import { getBitcoinCashSigner, getBitcoinSigner } from '../../bitcoin/selectors'
 import { getDashSigner } from '../../dash/selectors'
+import { getLitecoinSigner } from '../../litecoin/selectors'
 import { getEthereumSigner } from '../../ethereum/selectors'
 import { getWavesSigner } from '../../waves/selectors'
 import { getNemSigner } from '../../nem/selectors'
