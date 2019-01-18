@@ -559,7 +559,7 @@ async-eventemitter@^0.2.2:
   dependencies:
     async "^2.4.0"
 
-"async-eventemitter@github:ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c":
+async-eventemitter@ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c:
   version "0.2.3"
   resolved "https://codeload.github.com/ahultgren/async-eventemitter/tar.gz/fa06e39e56786ba541c180061dbf2c0a5bbf951c"
   dependencies:
@@ -7050,9 +7050,9 @@ lcov-parse@0.0.10:
   version "0.0.10"
   resolved "https://registry.yarnpkg.com/lcov-parse/-/lcov-parse-0.0.10.tgz#1b0b8ff9ac9c7889250582b70b71315d9da6d9a3"
 
-"ledger-wallet-provider@github:mikefluff/ledger-wallet-provider":
-  version "1.15.6"
-  resolved "https://codeload.github.com/mikefluff/ledger-wallet-provider/tar.gz/2ce0e474fe00ca69b6511758afc1811d87b37d8e"
+"ledger-wallet-provider@github:mikefluff/ledger-wallet-provider#50dbc9d7176db0cfc934bf55f564aa412aeeab45":
+  version "1.15.7"
+  resolved "https://codeload.github.com/mikefluff/ledger-wallet-provider/tar.gz/50dbc9d7176db0cfc934bf55f564aa412aeeab45"
   dependencies:
     "@ledgerhq/hw-app-eth" "^4.14.0"
     "@ledgerhq/hw-transport-u2f" "^4.13.0"
@@ -12081,7 +12081,7 @@ truffle-error@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/truffle-error/-/truffle-error-0.0.2.tgz#01b189b78505566ae1689c239c7ca2dd121cfe4c"
 
-"truffle-hdwallet-provider@github:mikefluff/truffle-hdwallet-provider#7a2eccca1ba17c235a3ef258914ca74ea5f13014":
+truffle-hdwallet-provider@mikefluff/truffle-hdwallet-provider#7a2eccca1ba17c235a3ef258914ca74ea5f13014:
   version "0.0.5"
   resolved "https://codeload.github.com/mikefluff/truffle-hdwallet-provider/tar.gz/7a2eccca1ba17c235a3ef258914ca74ea5f13014"
   dependencies:
