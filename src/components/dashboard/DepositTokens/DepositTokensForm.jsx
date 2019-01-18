@@ -24,7 +24,15 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_ASSETS_HOLDER } from 'redux/assetsHolder/actions'
-import { DUCK_MAIN_WALLET, estimateGasForDeposit, ETH, FEE_RATE_MULTIPLIER, mainApprove, mainRevoke, requireTIME } from 'redux/mainWallet/actions'
+import {
+  DUCK_MAIN_WALLET,
+  estimateGasForDeposit,
+  ETH,
+  FEE_RATE_MULTIPLIER,
+  mainApprove,
+  mainRevoke,
+  requireTIME,
+} from 'redux/mainWallet/actions'
 import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from 'dao/AssetHolderDAO'
 import { TX_APPROVE } from 'dao/ERC20DAO'
 import { DUCK_SESSION } from 'redux/session/actions'
@@ -100,7 +108,10 @@ function mapDispatchToProps (dispatch) {
       skipSlider: true,
     })),
     requireTIME: () => dispatch(requireTIME()),
-    receiveToken: (tokenId, blockchain) => dispatch(modalsOpen({ component: ReceiveTokenModal, props: { tokenId, blockchain } })),
+    receiveToken: (tokenId, blockchain) => dispatch(modalsOpen({
+      component: ReceiveTokenModal,
+      props: { tokenId, blockchain },
+    })),
   }
 }
 
@@ -369,7 +380,7 @@ export default class DepositTokensForm extends PureComponent {
               <Translate value={prefix('noteEth')} />
             </div>
           )}
-          {balance.lte(0) && (
+          {balance.lte(0) && this.state.step !== WITHDRAW && (
             <div styleName='note'>
               <div styleName='icon'>
                 <i className='chronobank-icon'>warning</i>
