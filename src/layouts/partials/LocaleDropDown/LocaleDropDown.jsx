@@ -32,7 +32,7 @@ export default class LocaleDropDown extends PureComponent {
   static propTypes = {
     locale: PropTypes.string,
     onChangeLocale: PropTypes.func,
-    translations: PropTypes.arrayOf(PropTypes.object),
+    translations: PropTypes.objectOf(PropTypes.object),
   }
 
   constructor (props) {

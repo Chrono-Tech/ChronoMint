@@ -4,7 +4,6 @@
  */
 
 import EventEmitter from 'events'
-import SockJS from 'sockjs-client'
 import Stomp from 'webstomp-client'
 
 const TIMEOUT_BASE = 1000
@@ -75,7 +74,7 @@ export default class AbstractNode extends EventEmitter {
     if (!this._socket) {
       return
     }
-    this._ws = new SockJS(this._socket.baseURL)
+    this._ws = new WebSocket(this._socket.baseURL)
     this._client = Stomp.over(this._ws, {
       heartbeat: false,
       debug: false,
