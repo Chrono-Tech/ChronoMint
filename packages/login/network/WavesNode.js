@@ -4,8 +4,8 @@
  */
 
 import axios from 'axios'
-import WavesMiddlewareNode from './WavesMiddlewareNode'
 import * as WavesApi from '@waves/waves-api'
+import WavesMiddlewareNode from './WavesMiddlewareNode'
 
 export const WAVES_MAINNET_NODE = new WavesMiddlewareNode({
   api: axios.create({
@@ -13,7 +13,7 @@ export const WAVES_MAINNET_NODE = new WavesMiddlewareNode({
     timeout: 30000,
   }),
   socket: {
-    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
+    baseURL: 'wss://rabbitmq-prod-ws.chronobank.io/ws',
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
@@ -30,7 +30,7 @@ export const WAVES_TESTNET_NODE = new WavesMiddlewareNode({
     timeout: 30000,
   }),
   socket: {
-    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
+    baseURL: 'wss://rabbitmq-stage-webstomp.chronobank.io/ws',
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {

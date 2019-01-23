@@ -1,6 +1,6 @@
 {
   "name": "@chronobank/mint",
-  "version": "0.9.8",
+  "version": "0.9.10",
   "description": "Control panel for ChronoBank",
   "private": true,
   "author": "chronobank",
